@@ -3,6 +3,10 @@ API Documentation
 
 This section contains the complete API documentation for py3plex, automatically generated from docstrings.
 
+.. tip::
+   
+   **Looking for algorithm documentation?** Visit :doc:`algorithm_reference` for a conceptual overview of all algorithms organized by category with working examples. Then come back here for detailed API signatures.
+
 For auto-generated module documentation, run::
 
     cd docfiles

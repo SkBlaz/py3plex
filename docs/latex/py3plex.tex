@@ -202,8 +202,8 @@ See the complete {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\D
 \end{sphinxadmonition}
 
 
-\chapter{Quick Start}
-\label{\detokenize{index:quick-start}}
+\chapter{Quickstart}
+\label{\detokenize{index:quickstart}}
 \sphinxAtStartPar
 Install:
 
@@ -229,7 +229,33 @@ Create a multilayer network:
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-See {\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}} (5 min) or {\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}} (10 min) for complete introductions.
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Number of nodes: 6
+Number of edges: 3
+\end{sphinxVerbatim}
+
+
+\chapter{Recommended Path}
+\label{\detokenize{index:recommended-path}}
+\sphinxAtStartPar
+New to py3plex? Follow this learning path:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{5\sphinxhyphen{}Minute Quickstart} ({\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}}) — Create your first network and run basic analysis
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{10\sphinxhyphen{}Minute Tutorial} ({\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}}) — Complete workflow from data loading to visualization
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Working with Networks} ({\hyperref[\detokenize{user_guide/networks::doc}]{\sphinxcrossref{\DUrole{doc}{Working with Networks}}}}) — Deep dive into network creation, manipulation, and queries
+
+\end{enumerate}
 
 
 \chapter{Documentation Contents}
@@ -2097,7 +2123,24 @@ Understand multilayer network theory and py3plex’s design philosophy.
 \subsection{Concepts \& Architecture}
 \label{\detokenize{concepts/part_intro:concepts-architecture}}\label{\detokenize{concepts/part_intro::doc}}
 \sphinxAtStartPar
-This section covers multilayer network theory and py3plex’s internal design.
+Multilayer networks capture systems where entities interact through multiple types of relationships simultaneously. This section explains the theory behind multilayer networks and how py3plex implements them.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Reading Paths:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{New to multilayer networks?} Start with {\hyperref[\detokenize{concepts/multilayer_networks_101::doc}]{\sphinxcrossref{\DUrole{doc}{Multilayer Networks 101}}}} for essential concepts, then {\hyperref[\detokenize{concepts/py3plex_core_model::doc}]{\sphinxcrossref{\DUrole{doc}{Chapter 4: The py3plex Core Model}}}} to see how py3plex represents them. This foundation is crucial before using the library.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Coming from NetworkX?} Read {\hyperref[\detokenize{concepts/py3plex_core_model::doc}]{\sphinxcrossref{\DUrole{doc}{Chapter 4: The py3plex Core Model}}}} to understand the node\sphinxhyphen{}layer pair abstraction and supra\sphinxhyphen{}adjacency matrix, then {\hyperref[\detokenize{concepts/design_principles::doc}]{\sphinxcrossref{\DUrole{doc}{Chapter 5: Design Principles}}}} for design decisions. Skip the theory in 101 if you’re familiar with complex networks.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Building expertise?} Read all four chapters in order: theory ({\hyperref[\detokenize{concepts/multilayer_networks_101::doc}]{\sphinxcrossref{\DUrole{doc}{Multilayer Networks 101}}}}), implementation ({\hyperref[\detokenize{concepts/py3plex_core_model::doc}]{\sphinxcrossref{\DUrole{doc}{Chapter 4: The py3plex Core Model}}}}), design rationale ({\hyperref[\detokenize{concepts/design_principles::doc}]{\sphinxcrossref{\DUrole{doc}{Chapter 5: Design Principles}}}}), and available tools ({\hyperref[\detokenize{concepts/algorithm_landscape::doc}]{\sphinxcrossref{\DUrole{doc}{Algorithm Landscape}}}}).
+
+\end{itemize}
 
 \sphinxAtStartPar
 \sphinxstylestrong{This section covers:}
@@ -2140,12 +2183,6 @@ Interpret results correctly
 Avoid common pitfalls (e.g., flattening important structure)
 
 \end{itemize}
-
-\sphinxAtStartPar
-\sphinxstylestrong{Short on time?} Read {\hyperref[\detokenize{concepts/multilayer_networks_101::doc}]{\sphinxcrossref{\DUrole{doc}{Multilayer Networks 101}}}} before using py3plex—this covers essential concepts.
-
-\sphinxAtStartPar
-\sphinxstylestrong{Building expertise?} Read all chapters in order for a solid foundation.
 
 \begin{sphinxadmonition}{tip}{Tip:}
 \sphinxAtStartPar
@@ -6120,7 +6157,7 @@ Comprehensive how\sphinxhyphen{}to guides for every major feature.
 \subsection{User Guide}
 \label{\detokenize{user_guide/part_intro:user-guide}}\label{\detokenize{user_guide/part_intro::doc}}
 \sphinxAtStartPar
-This section provides comprehensive how\sphinxhyphen{}to guides for every major py3plex capability.
+Comprehensive how\sphinxhyphen{}to guides covering every major py3plex capability—from basic network operations to advanced analysis workflows.
 
 \begin{sphinxadmonition}{note}{Featured: DSL Query Language}
 
@@ -6147,6 +6184,23 @@ The DSL makes complex analyses concise and maintainable. See {\hyperref[\detoken
 \end{sphinxadmonition}
 
 \sphinxAtStartPar
+\sphinxstylestrong{Reading Paths:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{New users:} Start with {\hyperref[\detokenize{user_guide/networks::doc}]{\sphinxcrossref{\DUrole{doc}{Working with Networks}}}} (creating and loading networks), then {\hyperref[\detokenize{user_guide/statistics::doc}]{\sphinxcrossref{\DUrole{doc}{Network Statistics}}}} (basic metrics), then explore {\hyperref[\detokenize{user_guide/visualization::doc}]{\sphinxcrossref{\DUrole{doc}{Visualization}}}} (seeing your data). This gives you the core workflow: load \(\rightarrow\) analyze \(\rightarrow\) visualize.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{NetworkX users:} Jump to {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} to see py3plex’s query language, then {\hyperref[\detokenize{user_guide/community_detection::doc}]{\sphinxcrossref{\DUrole{doc}{Community Detection}}}} and {\hyperref[\detokenize{user_guide/statistics::doc}]{\sphinxcrossref{\DUrole{doc}{Network Statistics}}}} for multilayer\sphinxhyphen{}specific algorithms that extend what you know from single\sphinxhyphen{}layer analysis.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Advanced users:} Begin with {\hyperref[\detokenize{user_guide/multilayer_dynamics::doc}]{\sphinxcrossref{\DUrole{doc}{Multilayer Dynamics}}}} for simulations, {\hyperref[\detokenize{user_guide/random_walks_embeddings::doc}]{\sphinxcrossref{\DUrole{doc}{Random Walk Algorithms}}}} for learning representations, and {\hyperref[\detokenize{user_guide/recipes_and_workflows::doc}]{\sphinxcrossref{\DUrole{doc}{Analysis Recipes \& Workflows}}}} for production patterns. See {\hyperref[\detokenize{user_guide/case_studies::doc}]{\sphinxcrossref{\DUrole{doc}{Use Cases \& Case Studies}}}} for complete real\sphinxhyphen{}world examples.
+
+\end{itemize}
+
+\sphinxAtStartPar
 \sphinxstylestrong{This section covers:}
 \begin{itemize}
 \item {} 
@@ -6160,6 +6214,10 @@ The DSL makes complex analyses concise and maintainable. See {\hyperref[\detoken
 \item {} 
 \sphinxAtStartPar
 \sphinxstylestrong{Community Detection} — Find groups of nodes that cluster together across layers
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Multilayer Dynamics} — Simulate epidemic spread and diffusion processes
 
 \item {} 
 \sphinxAtStartPar
@@ -6190,21 +6248,6 @@ The DSL makes complex analyses concise and maintainable. See {\hyperref[\detoken
 \sphinxstylestrong{Case Studies} — Complete end\sphinxhyphen{}to\sphinxhyphen{}end analyses
 
 \end{itemize}
-
-
-\subsubsection{How to Use}
-\label{\detokenize{user_guide/part_intro:how-to-use}}
-\sphinxAtStartPar
-\sphinxstylestrong{Learning:} Read chapters in order—each builds on previous concepts.
-
-\sphinxAtStartPar
-\sphinxstylestrong{Reference:} Use the Recipes \& Workflows chapter for specific solutions.
-
-\sphinxAtStartPar
-\sphinxstylestrong{Expertise:} Case Studies show how to approach real problems.
-
-\sphinxAtStartPar
-Start with {\hyperref[\detokenize{user_guide/networks::doc}]{\sphinxcrossref{\DUrole{doc}{Working with Networks}}}} for fundamental operations.
 
 \sphinxstepscope
 
@@ -9492,7 +9535,7 @@ See {\hyperref[\detokenize{reference/citation_and_acknowledgements::doc}]{\sphin
 \subsection{Multilayer Dynamics}
 \label{\detokenize{user_guide/multilayer_dynamics:multilayer-dynamics}}\label{\detokenize{user_guide/multilayer_dynamics::doc}}
 \sphinxAtStartPar
-\sphinxstyleemphasis{Simulating epidemic spread, diffusion, and other dynamical processes on multilayer networks.}
+Consider a disease spreading through a community where people interact both in\sphinxhyphen{}person (physical layer) and online (digital layer). An individual infected in person can spread to their physical contacts, but awareness spread online might change behavior and reduce transmission. \sphinxstylestrong{Multilayer dynamics} simulates these coupled processes across interaction types.
 
 \begin{sphinxadmonition}{note}{🔬 DSL for Dynamics}
 
@@ -9522,9 +9565,6 @@ See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQ
 
 \bigskip\hrule\bigskip
 
-
-\sphinxAtStartPar
-Many real\sphinxhyphen{}world phenomena involve \sphinxstylestrong{processes that evolve over time} on network structures. Epidemics spread through contact networks. Information diffuses through social media. Ideas propagate through collaboration networks. \sphinxstylestrong{Multilayer dynamics} capture how these processes unfold when nodes interact through multiple, simultaneous channels.
 
 \sphinxAtStartPar
 This chapter shows you how to:
@@ -10540,7 +10580,34 @@ Network with 100,000 nodes, 100 steps: \textasciitilde{}2 minutes
 \subsubsection{DSL Integration}
 \label{\detokenize{user_guide/multilayer_dynamics:dsl-integration}}
 \sphinxAtStartPar
-The {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} provides declarative syntax for dynamics:
+The dynamics module integrates with py3plex’s {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} to provide declarative simulation syntax. The dynamics builder API follows the same philosophy as the network query DSL: chainable method calls that construct a simulation specification before execution.
+
+\sphinxAtStartPar
+\sphinxstylestrong{How Dynamics DSL Aligns with Query DSL:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Same Builder Pattern}: Both use \sphinxcode{\sphinxupquote{D.process()}} and \sphinxcode{\sphinxupquote{Q.nodes()}} as entry points that return builder objects
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Chainable Configuration}: Methods like \sphinxcode{\sphinxupquote{.steps()}}, \sphinxcode{\sphinxupquote{.measure()}}, and \sphinxcode{\sphinxupquote{.seed()}} mirror \sphinxcode{\sphinxupquote{.where()}}, \sphinxcode{\sphinxupquote{.compute()}}, and \sphinxcode{\sphinxupquote{.limit()}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Lazy Execution}: Both builders construct a specification; execution happens when you call \sphinxcode{\sphinxupquote{.run()}} or \sphinxcode{\sphinxupquote{.execute()}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Clean Separation}: Configuration (what to simulate/query) is separate from execution (running the simulation/query)
+
+\end{itemize}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} for the complete query DSL documentation, which shares these design principles.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{D}\PYG{p}{,} \PYG{n}{SIS}\PYG{p}{,} \PYG{n}{SIR}\PYG{p}{,} \PYG{n}{RandomWalk}
@@ -10568,11 +10635,11 @@ The {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQ
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-{\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} — Complete DSL documentation
+{\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} — Complete network query DSL documentation with builder API details
 
 \item {} 
 \sphinxAtStartPar
-\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../../../book/part3\_dsl/chapter10\_advanced\_queries\_workflows}}} — Advanced dynamics DSL with formalism
+\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../../../book/part3\_dsl/chapter10\_advanced\_queries\_workflows}}} — Advanced dynamics DSL with mathematical formalism
 
 \end{itemize}
 
@@ -12762,7 +12829,7 @@ This chapter shows you how to create visualizations that reveal structure rather
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/visualization:id2}}{\hyperref[\detokenize{user_guide/visualization:quick-start}]{\sphinxcrossref{Quick Start}}}
+\phantomsection\label{\detokenize{user_guide/visualization:id2}}{\hyperref[\detokenize{user_guide/visualization:quickstart}]{\sphinxcrossref{Quickstart}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
@@ -12984,8 +13051,8 @@ This chapter shows you how to create visualizations that reveal structure rather
 
 
 
-\subsubsection{Quick Start}
-\label{\detokenize{user_guide/visualization:quick-start}}
+\subsubsection{Quickstart}
+\label{\detokenize{user_guide/visualization:quickstart}}
 
 \paragraph{Basic Multilayer Visualization}
 \label{\detokenize{user_guide/visualization:basic-multilayer-visualization}}
@@ -15003,231 +15070,245 @@ in the GitHub repository.
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id11}}{\hyperref[\detokenize{user_guide/dsl:python-builder-api-dsl-v2}]{\sphinxcrossref{Python Builder API (DSL v2)}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id11}}{\hyperref[\detokenize{user_guide/dsl:dsl-syntax-comparison-string-vs-builder-api}]{\sphinxcrossref{DSL Syntax Comparison: String vs Builder API}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id12}}{\hyperref[\detokenize{user_guide/dsl:basic-usage}]{\sphinxcrossref{Basic Usage}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id12}}{\hyperref[\detokenize{user_guide/dsl:when-to-use-each}]{\sphinxcrossref{When to Use Each}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id13}}{\hyperref[\detokenize{user_guide/dsl:query-builder-methods}]{\sphinxcrossref{Query Builder Methods}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id14}}{\hyperref[\detokenize{user_guide/dsl:where-conditions}]{\sphinxcrossref{WHERE Conditions}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id15}}{\hyperref[\detokenize{user_guide/dsl:compute-with-aliases}]{\sphinxcrossref{COMPUTE with Aliases}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id16}}{\hyperref[\detokenize{user_guide/dsl:order-by-and-limit}]{\sphinxcrossref{ORDER BY and LIMIT}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id17}}{\hyperref[\detokenize{user_guide/dsl:layer-algebra}]{\sphinxcrossref{Layer Algebra}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id18}}{\hyperref[\detokenize{user_guide/dsl:complete-builder-example}]{\sphinxcrossref{Complete Builder Example}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id19}}{\hyperref[\detokenize{user_guide/dsl:queryresult-object}]{\sphinxcrossref{QueryResult Object}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id20}}{\hyperref[\detokenize{user_guide/dsl:declarative-file-exports}]{\sphinxcrossref{Declarative File Exports}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id21}}{\hyperref[\detokenize{user_guide/dsl:explain-mode}]{\sphinxcrossref{EXPLAIN Mode}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id22}}{\hyperref[\detokenize{user_guide/dsl:parameterized-queries}]{\sphinxcrossref{Parameterized Queries}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id23}}{\hyperref[\detokenize{user_guide/dsl:convert-builder-to-dsl-string}]{\sphinxcrossref{Convert Builder to DSL String}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id24}}{\hyperref[\detokenize{user_guide/dsl:error-handling-with-suggestions}]{\sphinxcrossref{Error Handling with Suggestions}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id25}}{\hyperref[\detokenize{user_guide/dsl:measure-registry}]{\sphinxcrossref{Measure Registry}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id13}}{\hyperref[\detokenize{user_guide/dsl:side-by-side-examples}]{\sphinxcrossref{Side\sphinxhyphen{}by\sphinxhyphen{}Side Examples}}}
 
 \end{itemize}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id26}}{\hyperref[\detokenize{user_guide/dsl:example-queries}]{\sphinxcrossref{Example Queries}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id14}}{\hyperref[\detokenize{user_guide/dsl:python-builder-api-dsl-v2}]{\sphinxcrossref{Python Builder API (DSL v2)}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id27}}{\hyperref[\detokenize{user_guide/dsl:basic-queries}]{\sphinxcrossref{Basic Queries}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id15}}{\hyperref[\detokenize{user_guide/dsl:basic-usage}]{\sphinxcrossref{Basic Usage}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id28}}{\hyperref[\detokenize{user_guide/dsl:complex-queries}]{\sphinxcrossref{Complex Queries}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id16}}{\hyperref[\detokenize{user_guide/dsl:query-builder-methods}]{\sphinxcrossref{Query Builder Methods}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id29}}{\hyperref[\detokenize{user_guide/dsl:analytical-queries}]{\sphinxcrossref{Analytical Queries}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id17}}{\hyperref[\detokenize{user_guide/dsl:where-conditions}]{\sphinxcrossref{WHERE Conditions}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id18}}{\hyperref[\detokenize{user_guide/dsl:compute-with-aliases}]{\sphinxcrossref{COMPUTE with Aliases}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id19}}{\hyperref[\detokenize{user_guide/dsl:order-by-and-limit}]{\sphinxcrossref{ORDER BY and LIMIT}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id20}}{\hyperref[\detokenize{user_guide/dsl:layer-algebra}]{\sphinxcrossref{Layer Algebra}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id21}}{\hyperref[\detokenize{user_guide/dsl:complete-builder-example}]{\sphinxcrossref{Complete Builder Example}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id22}}{\hyperref[\detokenize{user_guide/dsl:queryresult-object}]{\sphinxcrossref{QueryResult Object}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id23}}{\hyperref[\detokenize{user_guide/dsl:declarative-file-exports}]{\sphinxcrossref{Declarative File Exports}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id24}}{\hyperref[\detokenize{user_guide/dsl:explain-mode}]{\sphinxcrossref{EXPLAIN Mode}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id25}}{\hyperref[\detokenize{user_guide/dsl:parameterized-queries}]{\sphinxcrossref{Parameterized Queries}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id26}}{\hyperref[\detokenize{user_guide/dsl:convert-builder-to-dsl-string}]{\sphinxcrossref{Convert Builder to DSL String}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id27}}{\hyperref[\detokenize{user_guide/dsl:error-handling-with-suggestions}]{\sphinxcrossref{Error Handling with Suggestions}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id28}}{\hyperref[\detokenize{user_guide/dsl:measure-registry}]{\sphinxcrossref{Measure Registry}}}
 
 \end{itemize}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id30}}{\hyperref[\detokenize{user_guide/dsl:working-with-results}]{\sphinxcrossref{Working with Results}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id29}}{\hyperref[\detokenize{user_guide/dsl:example-queries}]{\sphinxcrossref{Example Queries}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id31}}{\hyperref[\detokenize{user_guide/dsl:formatting-results}]{\sphinxcrossref{Formatting Results}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id30}}{\hyperref[\detokenize{user_guide/dsl:basic-queries}]{\sphinxcrossref{Basic Queries}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id31}}{\hyperref[\detokenize{user_guide/dsl:complex-queries}]{\sphinxcrossref{Complex Queries}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id32}}{\hyperref[\detokenize{user_guide/dsl:analytical-queries}]{\sphinxcrossref{Analytical Queries}}}
 
 \end{itemize}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id32}}{\hyperref[\detokenize{user_guide/dsl:convenience-functions}]{\sphinxcrossref{Convenience Functions}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id33}}{\hyperref[\detokenize{user_guide/dsl:use-cases}]{\sphinxcrossref{Use Cases}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id33}}{\hyperref[\detokenize{user_guide/dsl:working-with-results}]{\sphinxcrossref{Working with Results}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id34}}{\hyperref[\detokenize{user_guide/dsl:hub-identification}]{\sphinxcrossref{Hub Identification}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id35}}{\hyperref[\detokenize{user_guide/dsl:layer-comparison}]{\sphinxcrossref{Layer Comparison}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id36}}{\hyperref[\detokenize{user_guide/dsl:node-importance-ranking}]{\sphinxcrossref{Node Importance Ranking}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id37}}{\hyperref[\detokenize{user_guide/dsl:network-filtering}]{\sphinxcrossref{Network Filtering}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id34}}{\hyperref[\detokenize{user_guide/dsl:formatting-results}]{\sphinxcrossref{Formatting Results}}}
 
 \end{itemize}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id38}}{\hyperref[\detokenize{user_guide/dsl:error-handling}]{\sphinxcrossref{Error Handling}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id35}}{\hyperref[\detokenize{user_guide/dsl:convenience-functions}]{\sphinxcrossref{Convenience Functions}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id36}}{\hyperref[\detokenize{user_guide/dsl:use-cases}]{\sphinxcrossref{Use Cases}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id39}}{\hyperref[\detokenize{user_guide/dsl:legacy-error-types}]{\sphinxcrossref{Legacy Error Types}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id37}}{\hyperref[\detokenize{user_guide/dsl:hub-identification}]{\sphinxcrossref{Hub Identification}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id40}}{\hyperref[\detokenize{user_guide/dsl:dsl-v2-error-types}]{\sphinxcrossref{DSL v2 Error Types}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id38}}{\hyperref[\detokenize{user_guide/dsl:layer-comparison}]{\sphinxcrossref{Layer Comparison}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id41}}{\hyperref[\detokenize{user_guide/dsl:common-dsl-errors}]{\sphinxcrossref{Common DSL Errors}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id39}}{\hyperref[\detokenize{user_guide/dsl:node-importance-ranking}]{\sphinxcrossref{Node Importance Ranking}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id40}}{\hyperref[\detokenize{user_guide/dsl:network-filtering}]{\sphinxcrossref{Network Filtering}}}
 
 \end{itemize}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id42}}{\hyperref[\detokenize{user_guide/dsl:complete-working-examples}]{\sphinxcrossref{Complete Working Examples}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id41}}{\hyperref[\detokenize{user_guide/dsl:error-handling}]{\sphinxcrossref{Error Handling}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id43}}{\hyperref[\detokenize{user_guide/dsl:example-1-basic-network-querying}]{\sphinxcrossref{Example 1: Basic Network Querying}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id42}}{\hyperref[\detokenize{user_guide/dsl:legacy-error-types}]{\sphinxcrossref{Legacy Error Types}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id44}}{\hyperref[\detokenize{user_guide/dsl:example-2-multilayer-network-analysis}]{\sphinxcrossref{Example 2: Multilayer Network Analysis}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id43}}{\hyperref[\detokenize{user_guide/dsl:dsl-v2-error-types}]{\sphinxcrossref{DSL v2 Error Types}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id45}}{\hyperref[\detokenize{user_guide/dsl:example-3-hub-identification}]{\sphinxcrossref{Example 3: Hub Identification}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id46}}{\hyperref[\detokenize{user_guide/dsl:example-4-layer-comparison-workflow}]{\sphinxcrossref{Example 4: Layer Comparison Workflow}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id47}}{\hyperref[\detokenize{user_guide/dsl:example-files}]{\sphinxcrossref{Example Files}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id44}}{\hyperref[\detokenize{user_guide/dsl:common-dsl-errors}]{\sphinxcrossref{Common DSL Errors}}}
 
 \end{itemize}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id48}}{\hyperref[\detokenize{user_guide/dsl:api-reference}]{\sphinxcrossref{API Reference}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id45}}{\hyperref[\detokenize{user_guide/dsl:complete-working-examples}]{\sphinxcrossref{Complete Working Examples}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id49}}{\hyperref[\detokenize{user_guide/dsl:main-functions}]{\sphinxcrossref{Main Functions}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id46}}{\hyperref[\detokenize{user_guide/dsl:example-1-basic-network-querying}]{\sphinxcrossref{Example 1: Basic Network Querying}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id50}}{\hyperref[\detokenize{user_guide/dsl:id1}]{\sphinxcrossref{Convenience Functions}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id47}}{\hyperref[\detokenize{user_guide/dsl:example-2-multilayer-network-analysis}]{\sphinxcrossref{Example 2: Multilayer Network Analysis}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id51}}{\hyperref[\detokenize{user_guide/dsl:dsl-v2-builder-api}]{\sphinxcrossref{DSL v2 Builder API}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id48}}{\hyperref[\detokenize{user_guide/dsl:example-3-hub-identification}]{\sphinxcrossref{Example 3: Hub Identification}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id49}}{\hyperref[\detokenize{user_guide/dsl:example-4-layer-comparison-workflow}]{\sphinxcrossref{Example 4: Layer Comparison Workflow}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id50}}{\hyperref[\detokenize{user_guide/dsl:example-files}]{\sphinxcrossref{Example Files}}}
 
 \end{itemize}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id52}}{\hyperref[\detokenize{user_guide/dsl:dsl-based-dynamics-simulation}]{\sphinxcrossref{DSL\sphinxhyphen{}Based Dynamics Simulation}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id51}}{\hyperref[\detokenize{user_guide/dsl:api-reference}]{\sphinxcrossref{API Reference}}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id53}}{\hyperref[\detokenize{user_guide/dsl:quick-start}]{\sphinxcrossref{Quick Start}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id52}}{\hyperref[\detokenize{user_guide/dsl:main-functions}]{\sphinxcrossref{Main Functions}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id54}}{\hyperref[\detokenize{user_guide/dsl:available-processes}]{\sphinxcrossref{Available Processes}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id53}}{\hyperref[\detokenize{user_guide/dsl:id1}]{\sphinxcrossref{Convenience Functions}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id55}}{\hyperref[\detokenize{user_guide/dsl:multilayer-dynamics}]{\sphinxcrossref{Multilayer Dynamics}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id56}}{\hyperref[\detokenize{user_guide/dsl:integration-with-query-dsl}]{\sphinxcrossref{Integration with Query DSL}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id57}}{\hyperref[\detokenize{user_guide/dsl:result-analysis}]{\sphinxcrossref{Result Analysis}}}
-
-\item {} 
-\sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id58}}{\hyperref[\detokenize{user_guide/dsl:complete-example}]{\sphinxcrossref{Complete Example}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id54}}{\hyperref[\detokenize{user_guide/dsl:dsl-v2-builder-api}]{\sphinxcrossref{DSL v2 Builder API}}}
 
 \end{itemize}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id59}}{\hyperref[\detokenize{user_guide/dsl:limitations-and-future-work}]{\sphinxcrossref{Limitations and Future Work}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id55}}{\hyperref[\detokenize{user_guide/dsl:dsl-based-dynamics-simulation}]{\sphinxcrossref{DSL\sphinxhyphen{}Based Dynamics Simulation}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id56}}{\hyperref[\detokenize{user_guide/dsl:quickstart}]{\sphinxcrossref{Quickstart}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id60}}{\hyperref[\detokenize{user_guide/dsl:best-practices}]{\sphinxcrossref{Best Practices}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id57}}{\hyperref[\detokenize{user_guide/dsl:available-processes}]{\sphinxcrossref{Available Processes}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id61}}{\hyperref[\detokenize{user_guide/dsl:performance-considerations}]{\sphinxcrossref{Performance Considerations}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id58}}{\hyperref[\detokenize{user_guide/dsl:multilayer-dynamics}]{\sphinxcrossref{Multilayer Dynamics}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id62}}{\hyperref[\detokenize{user_guide/dsl:id2}]{\sphinxcrossref{Further Reading}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id59}}{\hyperref[\detokenize{user_guide/dsl:integration-with-query-dsl}]{\sphinxcrossref{Integration with Query DSL}}}
 
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{user_guide/dsl:id63}}{\hyperref[\detokenize{user_guide/dsl:see-also}]{\sphinxcrossref{See Also}}}
+\phantomsection\label{\detokenize{user_guide/dsl:id60}}{\hyperref[\detokenize{user_guide/dsl:result-analysis}]{\sphinxcrossref{Result Analysis}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id61}}{\hyperref[\detokenize{user_guide/dsl:complete-example}]{\sphinxcrossref{Complete Example}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id62}}{\hyperref[\detokenize{user_guide/dsl:limitations-and-future-work}]{\sphinxcrossref{Limitations and Future Work}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id63}}{\hyperref[\detokenize{user_guide/dsl:best-practices}]{\sphinxcrossref{Best Practices}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id64}}{\hyperref[\detokenize{user_guide/dsl:performance-considerations}]{\sphinxcrossref{Performance Considerations}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id65}}{\hyperref[\detokenize{user_guide/dsl:id2}]{\sphinxcrossref{Further Reading}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/dsl:id66}}{\hyperref[\detokenize{user_guide/dsl:see-also}]{\sphinxcrossref{See Also}}}
 
 \end{itemize}
 \end{sphinxcontents}
@@ -15575,8 +15656,12 @@ Specifies what to select from the network:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{n}{SELECT} \PYG{n}{nodes}     \PYG{c+c1}{\PYGZsh{} Select nodes}
-\PYG{n}{SELECT} \PYG{n}{edges}     \PYG{c+c1}{\PYGZsh{} Select edges (edge queries in development)}
 \end{sphinxVerbatim}
+
+\begin{sphinxadmonition}{warning}{Warning:}
+\sphinxAtStartPar
+\sphinxstylestrong{Edge Queries (Experimental)}: Edge queries (\sphinxcode{\sphinxupquote{SELECT edges}}) are currently in development and not fully supported. The DSL primarily focuses on node queries at this time. Use node\sphinxhyphen{}based queries for production work.
+\end{sphinxadmonition}
 
 \sphinxAtStartPar
 \sphinxstylestrong{Note}: Current version primarily supports node queries.
@@ -15694,6 +15779,174 @@ Calculates network measures for filtered nodes:
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{n}{COMPUTE} \PYG{n}{degree} \PYG{n}{betweenness\PYGZus{}centrality} \PYG{n}{closeness\PYGZus{}centrality}
 \end{sphinxVerbatim}
+
+
+\subsubsection{DSL Syntax Comparison: String vs Builder API}
+\label{\detokenize{user_guide/dsl:dsl-syntax-comparison-string-vs-builder-api}}
+\sphinxAtStartPar
+Py3plex provides two complementary ways to query networks: the \sphinxstylestrong{SQL\sphinxhyphen{}like string DSL} and the \sphinxstylestrong{Python builder API (DSL v2)}. Both execute the same underlying query engine, but offer different developer experiences.
+
+
+\paragraph{When to Use Each}
+\label{\detokenize{user_guide/dsl:when-to-use-each}}
+\sphinxAtStartPar
+\sphinxstylestrong{Use String DSL when:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Writing quick, exploratory queries in notebooks
+
+\item {} 
+\sphinxAtStartPar
+Teaching network concepts with familiar SQL syntax
+
+\item {} 
+\sphinxAtStartPar
+Scripting simple one\sphinxhyphen{}off analyses
+
+\item {} 
+\sphinxAtStartPar
+Maximum readability for domain experts
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Use Builder API when:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Building production pipelines
+
+\item {} 
+\sphinxAtStartPar
+Needing IDE autocompletion and type checking
+
+\item {} 
+\sphinxAtStartPar
+Constructing complex, dynamic queries programmatically
+
+\item {} 
+\sphinxAtStartPar
+Exporting results to multiple formats
+
+\item {} 
+\sphinxAtStartPar
+Requiring advanced features (layer algebra, EXPLAIN mode)
+
+\end{itemize}
+
+
+\paragraph{Side\sphinxhyphen{}by\sphinxhyphen{}Side Examples}
+\label{\detokenize{user_guide/dsl:side-by-side-examples}}
+\sphinxAtStartPar
+Here’s the same query implemented both ways:
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example 1: Basic node filtering}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}\PYG{p}{,} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Create a small network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Carol}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Carol}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} STRING DSL: SQL\PYGZhy{}like syntax}
+\PYG{n}{result\PYGZus{}string} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
+    \PYG{n}{network}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE layer=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{ AND degree \PYGZgt{} 1}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{String DSL found: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result\PYGZus{}string}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} BUILDER API: Pythonic chainable calls}
+\PYG{n}{result\PYGZus{}builder} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Builder API found: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result\PYGZus{}builder}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+String DSL found: 1 nodes
+Builder API found: 1 nodes
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example 2: Computing centrality with ordering}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} STRING DSL: Compute and return all results}
+\PYG{n}{result\PYGZus{}string} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
+    \PYG{n}{network}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE layer=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{ }\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{COMPUTE betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Manual sorting needed}
+\PYG{n}{centralities} \PYG{o}{=} \PYG{n}{result\PYGZus{}string}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{computed}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+\PYG{n}{sorted\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{centralities}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{k}{lambda} \PYG{n}{x}\PYG{p}{:} \PYG{o}{\PYGZhy{}}\PYG{n}{x}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{top\PYGZus{}3} \PYG{o}{=} \PYG{n}{sorted\PYGZus{}nodes}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{3}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZsh{} BUILDER API: Ordering and limiting built\PYGZhy{}in}
+\PYG{n}{result\PYGZus{}builder} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Results already ordered and limited}
+\PYG{n}{top\PYGZus{}3} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{result\PYGZus{}builder}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example 3: Layer algebra}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} BUILDER API: Advanced layer operations}
+\PYG{c+c1}{\PYGZsh{} Union: nodes in social OR work layer}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{+} \PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Difference: nodes in social BUT NOT bots}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bots}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Intersection: nodes in BOTH social AND work}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{\PYGZam{}} \PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+Layer algebra operations (union, difference, intersection) are \sphinxstylestrong{only available in the Builder API}. The string DSL uses OR/AND operators but these work differently (node\sphinxhyphen{}level boolean logic, not layer sets).
+\end{sphinxadmonition}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Recommendation:} Start with the string DSL for learning and exploration. Migrate to the builder API when building production workflows or needing advanced features.
 
 
 \subsubsection{Python Builder API (DSL v2)}
@@ -17164,8 +17417,8 @@ dynamics DSL for epidemic modeling and other dynamical processes.
 For detailed documentation and formalism, see \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../../../book/part3\_dsl/chapter10\_advanced\_queries\_workflows}}}.
 
 
-\paragraph{Quick Start}
-\label{\detokenize{user_guide/dsl:quick-start}}
+\paragraph{Quickstart}
+\label{\detokenize{user_guide/dsl:quickstart}}
 \sphinxAtStartPar
 The dynamics DSL uses a builder API similar to the query DSL:
 
@@ -21937,7 +22190,7 @@ This guide provides comprehensive instructions for using Py3plex via Docker.
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\phantomsection\label{\detokenize{deployment/cli_and_docker:id2}}{\hyperref[\detokenize{deployment/cli_and_docker:quick-start}]{\sphinxcrossref{Quick Start}}}
+\phantomsection\label{\detokenize{deployment/cli_and_docker:id2}}{\hyperref[\detokenize{deployment/cli_and_docker:quickstart}]{\sphinxcrossref{Quickstart}}}
 
 \item {} 
 \sphinxAtStartPar
@@ -22125,8 +22378,8 @@ This guide provides comprehensive instructions for using Py3plex via Docker.
 \end{sphinxcontents}
 
 
-\subsubsection{Quick Start}
-\label{\detokenize{deployment/cli_and_docker:quick-start}}
+\subsubsection{Quickstart}
+\label{\detokenize{deployment/cli_and_docker:quickstart}}
 \sphinxAtStartPar
 The fastest way to get started with Py3plex using Docker:
 
@@ -24206,6 +24459,128 @@ Export results for further analysis
 \end{itemize}
 
 
+\subsubsection{Running the GUI Locally}
+\label{\detokenize{gui/part_intro:running-the-gui-locally}}
+\sphinxAtStartPar
+\sphinxstylestrong{Quick start (Docker \sphinxhyphen{} Recommended):}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Clone the repository}
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex/gui
+
+\PYG{c+c1}{\PYGZsh{} Copy environment configuration}
+cp\PYG{+w}{ }.env.example\PYG{+w}{ }.env
+
+\PYG{c+c1}{\PYGZsh{} Start all services}
+make\PYG{+w}{ }up
+
+\PYG{c+c1}{\PYGZsh{} Open browser to http://localhost:8080}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Alternative: Install from source:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Install with GUI extras}
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}gui\PYG{o}{]}
+
+\PYG{c+c1}{\PYGZsh{} Or install from source}
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
+pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}.[gui]\PYGZdq{}}
+
+\PYG{c+c1}{\PYGZsh{} Navigate to GUI directory and start services}
+\PYG{n+nb}{cd}\PYG{+w}{ }gui
+make\PYG{+w}{ }up
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The GUI will be available at \sphinxcode{\sphinxupquote{http://localhost:8080}}. See {\hyperref[\detokenize{gui/gui_deployment::doc}]{\sphinxcrossref{\DUrole{doc}{GUI Deployment Guide}}}} for detailed setup instructions and troubleshooting.
+
+
+\subsubsection{GUI Actions vs py3plex APIs}
+\label{\detokenize{gui/part_intro:gui-actions-vs-py3plex-apis}}
+\sphinxAtStartPar
+The GUI provides a point\sphinxhyphen{}and\sphinxhyphen{}click interface for common py3plex operations. Here’s how GUI actions map to Python API calls:
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{30}{100}\X{70}{100}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+GUI Action
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Equivalent Python API
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+\sphinxstylestrong{Load Network} (upload file)
+&
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{network = multinet.multi\_layer\_network().load\_network(file\_path, input\_type="...")}}
+\\
+\sphinxhline
+\sphinxAtStartPar
+\sphinxstylestrong{Compute Statistics} \(\rightarrow\) Basic Stats
+&
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{network.basic\_stats()}}
+\\
+\sphinxhline
+\sphinxAtStartPar
+\sphinxstylestrong{Compute Statistics} \(\rightarrow\) Layer Density
+&
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{from py3plex.algorithms.statistics import multilayer\_statistics as mls}} 
+\sphinxcode{\sphinxupquote{mls.layer\_density(network, layer\_name)}}
+\\
+\sphinxhline
+\sphinxAtStartPar
+\sphinxstylestrong{Detect Communities} \(\rightarrow\) Louvain
+&
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{from py3plex.algorithms.community\_detection import community\_louvain}} 
+\sphinxcode{\sphinxupquote{partition = community\_louvain.best\_partition(network.get\_layers(){[}layer{]})}}
+\\
+\sphinxhline
+\sphinxAtStartPar
+\sphinxstylestrong{Compute Centrality} \(\rightarrow\) Degree
+&
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{from py3plex.algorithms.multilayer\_algorithms.centrality import MultilayerCentrality}} 
+\sphinxcode{\sphinxupquote{calc = MultilayerCentrality(network)}} 
+\sphinxcode{\sphinxupquote{degree = calc.overlapping\_degree\_centrality()}}
+\\
+\sphinxhline
+\sphinxAtStartPar
+\sphinxstylestrong{Visualize Network}
+&
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{from py3plex.visualization.multilayer import draw\_multilayer\_default}} 
+\sphinxcode{\sphinxupquote{draw\_multilayer\_default({[}network{]}, display=True)}}
+\\
+\sphinxhline
+\sphinxAtStartPar
+\sphinxstylestrong{Export} \(\rightarrow\) JSON
+&
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{network.save\_network("output.json", output\_type="json")}}
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+This mapping helps you transition from GUI exploration to programmatic analysis.
+
+
 \subsubsection{When to Use the GUI}
 \label{\detokenize{gui/part_intro:when-to-use-the-gui}}
 \sphinxAtStartPar
@@ -24281,8 +24656,8 @@ The Py3plex GUI provides an intuitive web interface for multilayer network analy
 \end{DUlineblock}
 
 
-\subsubsection{Quick Start}
-\label{\detokenize{gui/gui_user_guide:quick-start}}
+\subsubsection{Quickstart}
+\label{\detokenize{gui/gui_user_guide:quickstart}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{c+c1}{\PYGZsh{} Navigate to the gui directory}
 \PYG{n+nb}{cd}\PYG{+w}{ }gui
@@ -25243,8 +25618,8 @@ See {\hyperref[\detokenize{gui/gui_user_guide::doc}]{\sphinxcrossref{\DUrole{doc
 \subsubsection{Local Development Setup}
 \label{\detokenize{gui/gui_deployment:local-development-setup}}
 
-\paragraph{Quick Start}
-\label{\detokenize{gui/gui_deployment:quick-start}}
+\paragraph{Quickstart}
+\label{\detokenize{gui/gui_deployment:quickstart}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{c+c1}{\PYGZsh{} Clone repository}
 git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
@@ -28980,6 +29355,144 @@ sphinx\PYGZhy{}build\PYG{+w}{ }\PYGZhy{}b\PYG{+w}{ }html\PYG{+w}{ }.\PYG{+w}{ }\
 The built documentation will be in \sphinxcode{\sphinxupquote{docfiles/\_build/html/}}.
 
 
+\paragraph{Documentation Style Guide}
+\label{\detokenize{dev/development_guide:documentation-style-guide}}
+\sphinxAtStartPar
+When contributing to documentation, follow these conventions for consistency:
+
+\sphinxAtStartPar
+\sphinxstylestrong{Naming Conventions:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use “Quickstart” (one word) instead of “Quick Start” or “Quickstart Guide”
+
+\item {} 
+\sphinxAtStartPar
+Use “multilayer” (no hyphen) consistently, not “multi\sphinxhyphen{}layer” or “multi layer”
+
+\item {} 
+\sphinxAtStartPar
+Use short, direct section titles without boilerplate
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Tone and Structure:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Write first paragraphs that directly explain why the reader is on this page
+
+\item {} 
+\sphinxAtStartPar
+Avoid boilerplate like “This chapter will introduce…” or “In this section, you will learn…”
+
+\item {} 
+\sphinxAtStartPar
+Start with concrete examples rather than abstract explanations
+
+\item {} 
+\sphinxAtStartPar
+Provide 2\sphinxhyphen{}3 explicit reading paths for different audiences (new users, experienced users, advanced users)
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Code Examples:}
+
+\sphinxAtStartPar
+All code examples must include:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Imports} — Always show required imports
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Network creation} — Build a tiny example network from scratch or via helper
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Core operation} — Run one focused operation
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output} — Show what the user should see
+
+\end{enumerate}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example structure:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} 1. Imports}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{statistics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multilayer\PYGZus{}statistics} \PYG{k}{as} \PYG{n}{mls}
+
+\PYG{c+c1}{\PYGZsh{} 2. Create network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} 3. Run operation}
+\PYG{n}{density} \PYG{o}{=} \PYG{n}{mls}\PYG{o}{.}\PYG{n}{layer\PYGZus{}density}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Density: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{density}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Density: 1.000
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Marking Experimental APIs:}
+
+\sphinxAtStartPar
+Use warning directives for experimental or unstable features:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{p}{..} \PYG{o+ow}{warning}\PYG{p}{::}
+
+   \PYG{g+gs}{**Experimental Feature:**} This API is under active development and may change in future versions.
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Cross\sphinxhyphen{}references:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Link to related sections using \sphinxcode{\sphinxupquote{:doc:}} for documentation pages
+
+\item {} 
+\sphinxAtStartPar
+Link to algorithm details using \sphinxcode{\sphinxupquote{:ref:}} for labeled sections
+
+\item {} 
+\sphinxAtStartPar
+When documenting algorithms, link to the Algorithm Roadmap as the conceptual entry point
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Version Labels:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use consistent version strings throughout (e.g., “py3plex 1.0.0 documentation”)
+
+\item {} 
+\sphinxAtStartPar
+Update version in \sphinxcode{\sphinxupquote{conf.py}} and \sphinxcode{\sphinxupquote{pyproject.toml}} together
+
+\end{itemize}
+
+
 \subsubsection{Resources}
 \label{\detokenize{dev/development_guide:resources}}\begin{itemize}
 \item {} 
@@ -32163,6 +32676,34 @@ These algorithms identify groups of densely connected nodes (communities) in mul
 
 \sphinxAtStartPar
 \sphinxstylestrong{Complexity:} O(n log n)
+
+\sphinxAtStartPar
+\sphinxstylestrong{Runnable Example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{community\PYGZus{}louvain} \PYG{k}{as} \PYG{n}{louvain}
+
+\PYG{c+c1}{\PYGZsh{} Create a network with clear community structure}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Detect communities}
+\PYG{n}{partition} \PYG{o}{=} \PYG{n}{louvain}\PYG{o}{.}\PYG{n}{best\PYGZus{}partition}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Calculate modularity}
+\PYG{n}{mod} \PYG{o}{=} \PYG{n}{louvain}\PYG{o}{.}\PYG{n}{modularity}\PYG{p}{(}\PYG{n}{partition}\PYG{p}{,} \PYG{n}{G}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Communities found: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Modularity: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{mod}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Communities found: 4
+Modularity: 0.4198
+\end{sphinxVerbatim}
 \begin{description}
 \sphinxlineitem{\sphinxstylestrong{Related algorithms:}}\begin{itemize}
 \item {} 
@@ -32205,11 +32746,36 @@ These algorithms identify groups of densely connected nodes (communities) in mul
 
 \sphinxAtStartPar
 \sphinxstylestrong{Complexity:} O(m log n) where m is edges, n is nodes
+
+\sphinxAtStartPar
+\sphinxstylestrong{Runnable Example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{community\PYGZus{}wrapper}
+
+\PYG{c+c1}{\PYGZsh{} Create a network}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Detect communities with Infomap (requires Infomap binary installed)}
+\PYG{k}{try}\PYG{p}{:}
+    \PYG{n}{communities} \PYG{o}{=} \PYG{n}{community\PYGZus{}wrapper}\PYG{o}{.}\PYG{n}{infomap\PYGZus{}communities}\PYG{p}{(}
+        \PYG{n}{G}\PYG{p}{,}
+        \PYG{n}{binary\PYGZus{}path}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/usr/local/bin/Infomap}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} Adjust path as needed}
+        \PYG{n}{arguments}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}\PYGZhy{}two\PYGZhy{}level}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Communities found: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{communities}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{except} \PYG{n+ne}{FileNotFoundError}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Infomap binary not found. Install from infomap.org}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Note:} Infomap requires the external Infomap binary. Install from \sphinxurl{https://www.mapequation.org/infomap/}
 \begin{description}
 \sphinxlineitem{\sphinxstylestrong{Related algorithms:}}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-{\hyperref[\detokenize{reference/algorithm_reference:louvain-algorithm}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Louvain Algorithm}}}}} (faster alternative)
+{\hyperref[\detokenize{reference/algorithm_reference:louvain-algorithm}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Louvain Algorithm}}}}} (faster alternative, no external dependencies)
 
 \end{itemize}
 
@@ -32246,6 +32812,47 @@ These algorithms identify groups of densely connected nodes (communities) in mul
 
 \sphinxAtStartPar
 \sphinxstylestrong{Algorithm details:} Implements Mucha et al. (2010) multilayer modularity optimization
+
+\sphinxAtStartPar
+\sphinxstylestrong{Runnable Example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multilayer\PYGZus{}modularity} \PYG{k}{as} \PYG{n}{mlmod}
+
+\PYG{c+c1}{\PYGZsh{} Create two\PYGZhy{}layer network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{20}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+    \PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Add edges creating two communities}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+    \PYG{p}{]}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{20}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{10}\PYG{o}{+}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{10}\PYG{o}{+}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+    \PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Build supra\PYGZhy{}adjacency matrix and detect communities}
+\PYG{n}{supra\PYGZus{}adj} \PYG{o}{=} \PYG{n}{mlmod}\PYG{o}{.}\PYG{n}{build\PYGZus{}supra\PYGZus{}modularity\PYGZus{}matrix}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{omega}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{)}
+\PYG{n}{partition} \PYG{o}{=} \PYG{n}{mlmod}\PYG{o}{.}\PYG{n}{louvain\PYGZus{}multilayer}\PYG{p}{(}\PYG{n}{supra\PYGZus{}adj}\PYG{p}{,} \PYG{n}{omega}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Communities found: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Communities found: 2
+\end{sphinxVerbatim}
 \begin{description}
 \sphinxlineitem{\sphinxstylestrong{Related algorithms:}}\begin{itemize}
 \item {} 
@@ -32453,6 +33060,53 @@ These algorithms measure the importance or influence of nodes in multilayer netw
 \sphinxAtStartPar
 \sphinxstylestrong{Main class for computing various centrality measures.}
 
+\sphinxAtStartPar
+\sphinxstylestrong{Runnable Example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}algorithms}\PYG{n+nn}{.}\PYG{n+nn}{centrality}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{MultilayerCentrality}
+
+\PYG{c+c1}{\PYGZsh{} Create a small multilayer network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Add nodes and edges to two layers}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+    \PYG{p}{]}\PYG{p}{)}
+
+\PYG{n}{edges} \PYG{o}{=} \PYG{p}{[}
+    \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{l+m+mi}{4}\PYG{p}{)}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} Layer 1: chain}
+    \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{4}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{4}\PYG{p}{)}           \PYG{c+c1}{\PYGZsh{} Layer 2: triangle\PYGZhy{}like}
+\PYG{p}{]}
+\PYG{k}{for} \PYG{n}{src}\PYG{p}{,} \PYG{n}{tgt} \PYG{o+ow}{in} \PYG{n}{edges}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{src}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{tgt}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{src}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{tgt}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+    \PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Compute centrality measures}
+\PYG{n}{calc} \PYG{o}{=} \PYG{n}{MultilayerCentrality}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Overlapping degree (sum across layers)}
+\PYG{n}{overlap\PYGZus{}deg} \PYG{o}{=} \PYG{n}{calc}\PYG{o}{.}\PYG{n}{overlapping\PYGZus{}degree\PYGZus{}centrality}\PYG{p}{(}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Node 2 overlapping degree: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{overlap\PYGZus{}deg}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{]}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} PageRank}
+\PYG{n}{pr} \PYG{o}{=} \PYG{n}{calc}\PYG{o}{.}\PYG{n}{pagerank\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.85}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Node 2 PageRank: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{pr}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{]}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Node 2 overlapping degree: 6.00
+Node 2 PageRank: 0.0892
+\end{sphinxVerbatim}
+
 
 \subparagraph{Basic Centrality Measures}
 \label{\detokenize{reference/algorithm_reference:basic-centrality-measures}}
@@ -32652,6 +33306,40 @@ All centrality measures in {\hyperref[\detokenize{reference/algorithm_reference:
 
 \sphinxAtStartPar
 \sphinxstylestrong{Complexity:} Depends on matrix operations, typically O(n\(\sp{\text{2}}\)) or O(n\(\sp{\text{3}}\))
+
+\sphinxAtStartPar
+\sphinxstylestrong{Runnable Example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}algorithms}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{supra\PYGZus{}matrix\PYGZus{}function\PYGZus{}centrality} \PYG{k}{as} \PYG{n}{smfc}
+
+\PYG{c+c1}{\PYGZsh{} Create small network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Build supra\PYGZhy{}adjacency matrix}
+\PYG{n}{supra\PYGZus{}matrix} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}supra\PYGZus{}adjacency\PYGZus{}matrix}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Compute communicability centrality}
+\PYG{n}{comm\PYGZus{}cent} \PYG{o}{=} \PYG{n}{smfc}\PYG{o}{.}\PYG{n}{communicability\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{supra\PYGZus{}matrix}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.5}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Node 1 communicability: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{comm\PYGZus{}cent}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{]}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Node 1 communicability: 2.3562
+\end{sphinxVerbatim}
 \begin{description}
 \sphinxlineitem{\sphinxstylestrong{Related measures:}}\begin{itemize}
 \item {} 
@@ -32682,6 +33370,50 @@ All centrality measures in {\hyperref[\detokenize{reference/algorithm_reference:
 
 \sphinxAtStartPar
 \sphinxstylestrong{Algorithm details:} Extends PageRank to multiplex/heterogeneous networks
+
+\sphinxAtStartPar
+\sphinxstylestrong{Runnable Example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}algorithms}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multixrank}
+
+\PYG{c+c1}{\PYGZsh{} Create a simple bipartite\PYGZhy{}like structure}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Add users and items layers}
+\PYG{n}{users} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{u1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{u2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{u3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+\PYG{n}{items} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{i1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{i2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+
+\PYG{k}{for} \PYG{n}{u} \PYG{o+ow}{in} \PYG{n}{users}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{u}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{users}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n}{items}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{items}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Add interactions (users \PYGZhy{}\PYGZgt{} items)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{u1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{i1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{users}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{items}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{u2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{i1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{users}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{items}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{u2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{i2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{users}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{items}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Configure and run MultiXRank}
+\PYG{n}{config} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{alpha}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.85}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{max\PYGZus{}iter}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{100}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tol}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{1e\PYGZhy{}6}
+\PYG{p}{\PYGZcb{}}
+\PYG{n}{scores} \PYG{o}{=} \PYG{n}{multixrank}\PYG{o}{.}\PYG{n}{multixrank\PYGZus{}from\PYGZus{}py3plex\PYGZus{}networks}\PYG{p}{(}\PYG{p}{[}\PYG{n}{network}\PYG{p}{]}\PYG{p}{,} \PYG{n}{config}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{User u1 score: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{scores}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{u1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{users}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+User u1 score: 0.0833
+\end{sphinxVerbatim}
 \begin{description}
 \sphinxlineitem{\sphinxstylestrong{Related algorithms:}}\begin{itemize}
 \item {} 
@@ -33847,6 +34579,11 @@ See {\hyperref[\detokenize{reference/citation_and_acknowledgements::doc}]{\sphin
 \label{\detokenize{reference/api_index:api-documentation}}\label{\detokenize{reference/api_index::doc}}
 \sphinxAtStartPar
 This section contains the complete API documentation for py3plex, automatically generated from docstrings.
+
+\begin{sphinxadmonition}{tip}{Tip:}
+\sphinxAtStartPar
+\sphinxstylestrong{Looking for algorithm documentation?} Visit {\hyperref[\detokenize{reference/algorithm_reference::doc}]{\sphinxcrossref{\DUrole{doc}{Algorithm Roadmap}}}} for a conceptual overview of all algorithms organized by category with working examples. Then come back here for detailed API signatures.
+\end{sphinxadmonition}
 
 \sphinxAtStartPar
 For auto\sphinxhyphen{}generated module documentation, run:

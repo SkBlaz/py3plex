@@ -182,7 +182,7 @@
              
   <section id="multilayer-dynamics">
 <h1>Multilayer Dynamics<a class="headerlink" href="#multilayer-dynamics" title="Link to this heading"></a></h1>
-<p><em>Simulating epidemic spread, diffusion, and other dynamical processes on multilayer networks.</em></p>
+<p>Consider a disease spreading through a community where people interact both in-person (physical layer) and online (digital layer). An individual infected in person can spread to their physical contacts, but awareness spread online might change behavior and reduce transmission. <strong>Multilayer dynamics</strong> simulates these coupled processes across interaction types.</p>
 <div class="dsl-example admonition">
 <p class="admonition-title">🔬 DSL for Dynamics</p>
 <p>Run dynamics simulations declaratively with the DSL:</p>
@@ -204,7 +204,6 @@
 <p>See <a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for complete dynamics DSL documentation!</p>
 </div>
 <hr class="docutils" />
-<p>Many real-world phenomena involve <strong>processes that evolve over time</strong> on network structures. Epidemics spread through contact networks. Information diffuses through social media. Ideas propagate through collaboration networks. <strong>Multilayer dynamics</strong> capture how these processes unfold when nodes interact through multiple, simultaneous channels.</p>
 <p>This chapter shows you how to:</p>
 <ul class="simple">
 <li><p>Simulate <strong>epidemic dynamics</strong> (SIR, SIS) on multilayer networks</p></li>
@@ -896,7 +895,16 @@ p_{\\text{lazy}} &amp; \\text{if } j = i \\\\
 <hr class="docutils" />
 <section id="dsl-integration">
 <h2>DSL Integration<a class="headerlink" href="#dsl-integration" title="Link to this heading"></a></h2>
-<p>The <a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> provides declarative syntax for dynamics:</p>
+<p>The dynamics module integrates with py3plex’s <a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> to provide declarative simulation syntax. The dynamics builder API follows the same philosophy as the network query DSL: chainable method calls that construct a simulation specification before execution.</p>
+<p><strong>How Dynamics DSL Aligns with Query DSL:</strong></p>
+<ul class="simple">
+<li><p><strong>Same Builder Pattern</strong>: Both use <code class="docutils literal notranslate"><span class="pre">D.process()</span></code> and <code class="docutils literal notranslate"><span class="pre">Q.nodes()</span></code> as entry points that return builder objects</p></li>
+<li><p><strong>Chainable Configuration</strong>: Methods like <code class="docutils literal notranslate"><span class="pre">.steps()</span></code>, <code class="docutils literal notranslate"><span class="pre">.measure()</span></code>, and <code class="docutils literal notranslate"><span class="pre">.seed()</span></code> mirror <code class="docutils literal notranslate"><span class="pre">.where()</span></code>, <code class="docutils literal notranslate"><span class="pre">.compute()</span></code>, and <code class="docutils literal notranslate"><span class="pre">.limit()</span></code></p></li>
+<li><p><strong>Lazy Execution</strong>: Both builders construct a specification; execution happens when you call <code class="docutils literal notranslate"><span class="pre">.run()</span></code> or <code class="docutils literal notranslate"><span class="pre">.execute()</span></code></p></li>
+<li><p><strong>Clean Separation</strong>: Configuration (what to simulate/query) is separate from execution (running the simulation/query)</p></li>
+</ul>
+<p>See <a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for the complete query DSL documentation, which shares these design principles.</p>
+<p><strong>Example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">SIS</span><span class="p">,</span> <span class="n">SIR</span><span class="p">,</span> <span class="n">RandomWalk</span>
 
 <span class="c1"># Define simulation</span>
@@ -919,8 +927,8 @@ p_{\\text{lazy}} &amp; \\text{if } j = i \\\\
 </div>
 <p><strong>See also:</strong></p>
 <ul class="simple">
-<li><p><a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> — Complete DSL documentation</p></li>
-<li><p><span class="xref std std-doc">../../../book/part3_dsl/chapter10_advanced_queries_workflows</span> — Advanced dynamics DSL with formalism</p></li>
+<li><p><a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> — Complete network query DSL documentation with builder API details</p></li>
+<li><p><span class="xref std std-doc">../../../book/part3_dsl/chapter10_advanced_queries_workflows</span> — Advanced dynamics DSL with mathematical formalism</p></li>
 </ul>
 </section>
 <hr class="docutils" />

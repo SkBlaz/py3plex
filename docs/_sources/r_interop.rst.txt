@@ -34,8 +34,8 @@ Install required packages:
     pip install py3plex
     pip install python-igraph
 
-Quick Start: Simple Use Case with Centrality
----------------------------------------------
+Quickstart: Simple Use Case with Centrality
+--------------------------------------------
 
 This example demonstrates creating a multilayer social network, converting it to igraph, and computing centrality measures in R.
 

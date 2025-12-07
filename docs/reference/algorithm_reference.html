@@ -243,6 +243,28 @@
 </ul>
 <p><strong>Best for:</strong> Fast community detection on large single-layer networks</p>
 <p><strong>Complexity:</strong> O(n log n)</p>
+<p><strong>Runnable Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span> <span class="k">as</span> <span class="n">louvain</span>
+
+<span class="c1"># Create a network with clear community structure</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Detect communities</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Calculate modularity</span>
+<span class="n">mod</span> <span class="o">=</span> <span class="n">louvain</span><span class="o">.</span><span class="n">modularity</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Modularity: </span><span class="si">{</span><span class="n">mod</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Communities found: 4
+Modularity: 0.4198
+</pre></div>
+</div>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a> (multilayer extension)</p></li>
@@ -262,9 +284,29 @@
 </ul>
 <p><strong>Best for:</strong> Flow-based community detection, hierarchical structure</p>
 <p><strong>Complexity:</strong> O(m log n) where m is edges, n is nodes</p>
+<p><strong>Runnable Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_wrapper</span>
+
+<span class="c1"># Create a network</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Detect communities with Infomap (requires Infomap binary installed)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
+        <span class="n">G</span><span class="p">,</span>
+        <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/usr/local/bin/Infomap&quot;</span><span class="p">,</span>  <span class="c1"># Adjust path as needed</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="s2">&quot;--two-level&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Infomap binary not found. Install from infomap.org&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> Infomap requires the external Infomap binary. Install from <a class="reference external" href="https://www.mapequation.org/infomap/">https://www.mapequation.org/infomap/</a></p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (faster alternative)</p></li>
+<li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (faster alternative, no external dependencies)</p></li>
 </ul>
 </dd>
 </dl>
@@ -281,6 +323,41 @@
 <p><strong>Best for:</strong> Community detection across multiple layers with inter-layer coupling</p>
 <p><strong>Complexity:</strong> O(n² L) where L is number of layers</p>
 <p><strong>Algorithm details:</strong> Implements Mucha et al. (2010) multilayer modularity optimization</p>
+<p><strong>Runnable Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_modularity</span> <span class="k">as</span> <span class="n">mlmod</span>
+
+<span class="c1"># Create two-layer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+    <span class="p">])</span>
+
+<span class="c1"># Add edges creating two communities</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+    <span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+    <span class="p">])</span>
+
+<span class="c1"># Build supra-adjacency matrix and detect communities</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">mlmod</span><span class="o">.</span><span class="n">build_supra_modularity_matrix</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">mlmod</span><span class="o">.</span><span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">supra_adj</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Communities found: 2
+</pre></div>
+</div>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (single-layer version)</p></li>
@@ -378,6 +455,47 @@
 <h3>MultilayerCentrality Class<a class="headerlink" href="#multilayercentrality-class" title="Link to this heading"></a></h3>
 <p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">multilayer_algorithms.centrality.MultilayerCentrality</span></code></p>
 <p><strong>Main class for computing various centrality measures.</strong></p>
+<p><strong>Runnable Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultilayerCentrality</span>
+
+<span class="c1"># Create a small multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Add nodes and edges to two layers</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+    <span class="p">])</span>
+
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>  <span class="c1"># Layer 1: chain</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>           <span class="c1"># Layer 2: triangle-like</span>
+<span class="p">]</span>
+<span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">tgt</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">tgt</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+    <span class="p">])</span>
+
+<span class="c1"># Compute centrality measures</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Overlapping degree (sum across layers)</span>
+<span class="n">overlap_deg</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">overlapping_degree_centrality</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node 2 overlapping degree: </span><span class="si">{</span><span class="n">overlap_deg</span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;layer1&#39;</span><span class="p">)]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># PageRank</span>
+<span class="n">pr</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">pagerank_centrality</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node 2 PageRank: </span><span class="si">{</span><span class="n">pr</span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;layer1&#39;</span><span class="p">)]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Node 2 overlapping degree: 6.00
+Node 2 PageRank: 0.0892
+</pre></div>
+</div>
 <section id="basic-centrality-measures">
 <h4>Basic Centrality Measures<a class="headerlink" href="#basic-centrality-measures" title="Link to this heading"></a></h4>
 <p><strong>Methods:</strong></p>
@@ -477,6 +595,34 @@
 </ul>
 <p><strong>Best for:</strong> Advanced centrality using matrix functions on supra-adjacency</p>
 <p><strong>Complexity:</strong> Depends on matrix operations, typically O(n²) or O(n³)</p>
+<p><strong>Runnable Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">supra_matrix_function_centrality</span> <span class="k">as</span> <span class="n">smfc</span>
+
+<span class="c1"># Create small network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Build supra-adjacency matrix</span>
+<span class="n">supra_matrix</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
+
+<span class="c1"># Compute communicability centrality</span>
+<span class="n">comm_cent</span> <span class="o">=</span> <span class="n">smfc</span><span class="o">.</span><span class="n">communicability_centrality</span><span class="p">(</span><span class="n">supra_matrix</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node 1 communicability: </span><span class="si">{</span><span class="n">comm_cent</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;layer1&#39;</span><span class="p">)]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Node 1 communicability: 2.3562
+</pre></div>
+</div>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a> (standard measures)</p></li>
@@ -493,6 +639,44 @@
 </ul>
 <p><strong>Best for:</strong> Ranking in multiplex heterogeneous networks with bipartite layers</p>
 <p><strong>Algorithm details:</strong> Extends PageRank to multiplex/heterogeneous networks</p>
+<p><strong>Runnable Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">multixrank</span>
+
+<span class="c1"># Create a simple bipartite-like structure</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Add users and items layers</span>
+<span class="n">users</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u1&#39;</span><span class="p">,</span> <span class="s1">&#39;u2&#39;</span><span class="p">,</span> <span class="s1">&#39;u3&#39;</span><span class="p">]</span>
+<span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;i1&#39;</span><span class="p">,</span> <span class="s1">&#39;i2&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">u</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;users&#39;</span><span class="p">}])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;items&#39;</span><span class="p">}])</span>
+
+<span class="c1"># Add interactions (users -&gt; items)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;u1&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;i1&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;items&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;u2&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;i1&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;items&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;u2&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;i2&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;items&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Configure and run MultiXRank</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span>
+    <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span>
+<span class="p">}</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">multixrank</span><span class="o">.</span><span class="n">multixrank_from_py3plex_networks</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">config</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User u1 score: </span><span class="si">{</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s1">&#39;u1&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;users&#39;</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>User u1 score: 0.0833
+</pre></div>
+</div>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p>PageRank in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>

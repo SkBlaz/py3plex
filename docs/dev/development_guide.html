@@ -99,7 +99,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#code-quality">Code Quality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#documentation-style-guide">Documentation Style Guide</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
 </ul>
 </li>
@@ -269,6 +272,70 @@ sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w
 </pre></div>
 </div>
 <p>The built documentation will be in <code class="docutils literal notranslate"><span class="pre">docfiles/_build/html/</span></code>.</p>
+<section id="documentation-style-guide">
+<h3>Documentation Style Guide<a class="headerlink" href="#documentation-style-guide" title="Link to this heading"></a></h3>
+<p>When contributing to documentation, follow these conventions for consistency:</p>
+<p><strong>Naming Conventions:</strong></p>
+<ul class="simple">
+<li><p>Use “Quickstart” (one word) instead of “Quick Start” or “Quickstart Guide”</p></li>
+<li><p>Use “multilayer” (no hyphen) consistently, not “multi-layer” or “multi layer”</p></li>
+<li><p>Use short, direct section titles without boilerplate</p></li>
+</ul>
+<p><strong>Tone and Structure:</strong></p>
+<ul class="simple">
+<li><p>Write first paragraphs that directly explain why the reader is on this page</p></li>
+<li><p>Avoid boilerplate like “This chapter will introduce…” or “In this section, you will learn…”</p></li>
+<li><p>Start with concrete examples rather than abstract explanations</p></li>
+<li><p>Provide 2-3 explicit reading paths for different audiences (new users, experienced users, advanced users)</p></li>
+</ul>
+<p><strong>Code Examples:</strong></p>
+<p>All code examples must include:</p>
+<ol class="arabic simple">
+<li><p><strong>Imports</strong> — Always show required imports</p></li>
+<li><p><strong>Network creation</strong> — Build a tiny example network from scratch or via helper</p></li>
+<li><p><strong>Core operation</strong> — Run one focused operation</p></li>
+<li><p><strong>Expected output</strong> — Show what the user should see</p></li>
+</ol>
+<p><strong>Example structure:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Imports</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+
+<span class="c1"># 2. Create network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}</span>
+<span class="p">])</span>
+
+<span class="c1"># 3. Run operation</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Density: 1.000
+</pre></div>
+</div>
+<p><strong>Marking Experimental APIs:</strong></p>
+<p>Use warning directives for experimental or unstable features:</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">warning</span><span class="p">::</span>
+
+   <span class="gs">**Experimental Feature:**</span> This API is under active development and may change in future versions.
+</pre></div>
+</div>
+<p><strong>Cross-references:</strong></p>
+<ul class="simple">
+<li><p>Link to related sections using <code class="docutils literal notranslate"><span class="pre">:doc:</span></code> for documentation pages</p></li>
+<li><p>Link to algorithm details using <code class="docutils literal notranslate"><span class="pre">:ref:</span></code> for labeled sections</p></li>
+<li><p>When documenting algorithms, link to the Algorithm Roadmap as the conceptual entry point</p></li>
+</ul>
+<p><strong>Version Labels:</strong></p>
+<ul class="simple">
+<li><p>Use consistent version strings throughout (e.g., “py3plex 1.0.0 documentation”)</p></li>
+<li><p>Update version in <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> and <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> together</p></li>
+</ul>
+</section>
 </section>
 <section id="resources">
 <h2>Resources<a class="headerlink" href="#resources" title="Link to this heading"></a></h2>

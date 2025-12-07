@@ -84,6 +84,8 @@
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">GUI: Web Interface for Network Exploration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-gui-locally">Running the GUI Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gui-actions-vs-py3plex-apis">GUI Actions vs py3plex APIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#when-to-use-the-gui">When to Use the GUI</a></li>
 </ul>
 </li>
@@ -160,6 +162,82 @@
 <li><p><a class="reference internal" href="gui_architecture.html"><span class="doc">Py3plex GUI Architecture</span></a> — How the GUI is built</p></li>
 <li><p><a class="reference internal" href="gui_testing.html"><span class="doc">GUI Testing Guide</span></a> — Testing infrastructure</p></li>
 </ul>
+<section id="running-the-gui-locally">
+<h2>Running the GUI Locally<a class="headerlink" href="#running-the-gui-locally" title="Link to this heading"></a></h2>
+<p><strong>Quick start (Docker - Recommended):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex/gui
+
+<span class="c1"># Copy environment configuration</span>
+cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+
+<span class="c1"># Start all services</span>
+make<span class="w"> </span>up
+
+<span class="c1"># Open browser to http://localhost:8080</span>
+</pre></div>
+</div>
+<p><strong>Alternative: Install from source:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install with GUI extras</span>
+pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>gui<span class="o">]</span>
+
+<span class="c1"># Or install from source</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[gui]&quot;</span>
+
+<span class="c1"># Navigate to GUI directory and start services</span>
+<span class="nb">cd</span><span class="w"> </span>gui
+make<span class="w"> </span>up
+</pre></div>
+</div>
+<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>. See <a class="reference internal" href="gui_deployment.html"><span class="doc">GUI Deployment Guide</span></a> for detailed setup instructions and troubleshooting.</p>
+</section>
+<section id="gui-actions-vs-py3plex-apis">
+<h2>GUI Actions vs py3plex APIs<a class="headerlink" href="#gui-actions-vs-py3plex-apis" title="Link to this heading"></a></h2>
+<p>The GUI provides a point-and-click interface for common py3plex operations. Here’s how GUI actions map to Python API calls:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>GUI Action</p></th>
+<th class="head"><p>Equivalent Python API</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Load Network</strong> (upload file)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">network</span> <span class="pre">=</span> <span class="pre">multinet.multi_layer_network().load_network(file_path,</span> <span class="pre">input_type=&quot;...&quot;)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Compute Statistics</strong> → Basic Stats</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">network.basic_stats()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Compute Statistics</strong> → Layer Density</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.algorithms.statistics</span> <span class="pre">import</span> <span class="pre">multilayer_statistics</span> <span class="pre">as</span> <span class="pre">mls</span></code> <br />
+<code class="docutils literal notranslate"><span class="pre">mls.layer_density(network,</span> <span class="pre">layer_name)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Detect Communities</strong> → Louvain</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.algorithms.community_detection</span> <span class="pre">import</span> <span class="pre">community_louvain</span></code> <br />
+<code class="docutils literal notranslate"><span class="pre">partition</span> <span class="pre">=</span> <span class="pre">community_louvain.best_partition(network.get_layers()[layer])</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Compute Centrality</strong> → Degree</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="pre">import</span> <span class="pre">MultilayerCentrality</span></code> <br />
+<code class="docutils literal notranslate"><span class="pre">calc</span> <span class="pre">=</span> <span class="pre">MultilayerCentrality(network)</span></code> <br />
+<code class="docutils literal notranslate"><span class="pre">degree</span> <span class="pre">=</span> <span class="pre">calc.overlapping_degree_centrality()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Visualize Network</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.visualization.multilayer</span> <span class="pre">import</span> <span class="pre">draw_multilayer_default</span></code> <br />
+<code class="docutils literal notranslate"><span class="pre">draw_multilayer_default([network],</span> <span class="pre">display=True)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Export</strong> → JSON</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">network.save_network(&quot;output.json&quot;,</span> <span class="pre">output_type=&quot;json&quot;)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>This mapping helps you transition from GUI exploration to programmatic analysis.</p>
+</section>
 <section id="when-to-use-the-gui">
 <h2>When to Use the GUI<a class="headerlink" href="#when-to-use-the-gui" title="Link to this heading"></a></h2>
 <p><strong>Use GUI for:</strong></p>

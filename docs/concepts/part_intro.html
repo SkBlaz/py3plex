@@ -136,7 +136,13 @@
              
   <section id="concepts-architecture">
 <h1>Concepts &amp; Architecture<a class="headerlink" href="#concepts-architecture" title="Link to this heading"></a></h1>
-<p>This section covers multilayer network theory and py3plex’s internal design.</p>
+<p>Multilayer networks capture systems where entities interact through multiple types of relationships simultaneously. This section explains the theory behind multilayer networks and how py3plex implements them.</p>
+<p><strong>Reading Paths:</strong></p>
+<ul class="simple">
+<li><p><strong>New to multilayer networks?</strong> Start with <a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> for essential concepts, then <a class="reference internal" href="py3plex_core_model.html"><span class="doc">Chapter 4: The py3plex Core Model</span></a> to see how py3plex represents them. This foundation is crucial before using the library.</p></li>
+<li><p><strong>Coming from NetworkX?</strong> Read <a class="reference internal" href="py3plex_core_model.html"><span class="doc">Chapter 4: The py3plex Core Model</span></a> to understand the node-layer pair abstraction and supra-adjacency matrix, then <a class="reference internal" href="design_principles.html"><span class="doc">Chapter 5: Design Principles</span></a> for design decisions. Skip the theory in 101 if you’re familiar with complex networks.</p></li>
+<li><p><strong>Building expertise?</strong> Read all four chapters in order: theory (<a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a>), implementation (<a class="reference internal" href="py3plex_core_model.html"><span class="doc">Chapter 4: The py3plex Core Model</span></a>), design rationale (<a class="reference internal" href="design_principles.html"><span class="doc">Chapter 5: Design Principles</span></a>), and available tools (<a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a>).</p></li>
+</ul>
 <p><strong>This section covers:</strong></p>
 <ul class="simple">
 <li><p><strong>Multilayer Networks 101</strong> — Types (multiplex, heterogeneous, temporal) and when to use them</p></li>
@@ -151,8 +157,6 @@
 <li><p>Interpret results correctly</p></li>
 <li><p>Avoid common pitfalls (e.g., flattening important structure)</p></li>
 </ul>
-<p><strong>Short on time?</strong> Read <a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> before using py3plex—this covers essential concepts.</p>
-<p><strong>Building expertise?</strong> Read all chapters in order for a solid foundation.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p><strong>Quick check:</strong> After reading this section, you should be able to answer:</p>

@@ -186,8 +186,8 @@
 </ul>
 <p>See the complete <a class="reference internal" href="user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> guide for all features!</p>
 </div>
-<section id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="quickstart">
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h2>
 <p>Install:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
@@ -206,7 +206,20 @@
 <span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a> (5 min) or <a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial</span></a> (10 min) for complete introductions.</p>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 6
+Number of edges: 3
+</pre></div>
+</div>
+</section>
+<section id="recommended-path">
+<h2>Recommended Path<a class="headerlink" href="#recommended-path" title="Link to this heading"></a></h2>
+<p>New to py3plex? Follow this learning path:</p>
+<ol class="arabic simple">
+<li><p><strong>5-Minute Quickstart</strong> (<a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a>) — Create your first network and run basic analysis</p></li>
+<li><p><strong>10-Minute Tutorial</strong> (<a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial</span></a>) — Complete workflow from data loading to visualization</p></li>
+<li><p><strong>Working with Networks</strong> (<a class="reference internal" href="user_guide/networks.html"><span class="doc">Working with Networks</span></a>) — Deep dive into network creation, manipulation, and queries</p></li>
+</ol>
 </section>
 <section id="documentation-contents">
 <h2>Documentation Contents<a class="headerlink" href="#documentation-contents" title="Link to this heading"></a></h2>
@@ -346,10 +359,7 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/part_intro.html">User Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/part_intro.html#how-to-use">How to Use</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/part_intro.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/networks.html#creating-networks-from-scratch">Creating Networks from Scratch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/networks.html#loading-networks-from-files">Loading Networks from Files</a></li>
@@ -444,7 +454,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#preset-visualization-modes">Preset Visualization Modes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#layout-options">Layout Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#auto-scaling-features">Auto-Scaling Features</a></li>
@@ -464,6 +474,7 @@
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dsl.html#dsl-cheat-sheet">DSL Cheat Sheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dsl.html#quick-start-example">Quick Start Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dsl.html#query-components">Query Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/dsl.html#dsl-syntax-comparison-string-vs-builder-api">DSL Syntax Comparison: String vs Builder API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dsl.html#python-builder-api-dsl-v2">Python Builder API (DSL v2)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dsl.html#example-queries">Example Queries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/dsl.html#working-with-results">Working with Results</a></li>
@@ -535,7 +546,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="deployment/cli_and_docker.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment/cli_and_docker.html#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deployment/cli_and_docker.html#building-the-image">Building the Image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deployment/cli_and_docker.html#running-commands">Running Commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deployment/cli_and_docker.html#working-with-files">Working with Files</a></li>
@@ -576,12 +587,14 @@
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="gui/part_intro.html">GUI: Web Interface for Network Exploration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui/part_intro.html#running-the-gui-locally">Running the GUI Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui/part_intro.html#gui-actions-vs-py3plex-apis">GUI Actions vs py3plex APIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui/part_intro.html#when-to-use-the-gui">When to Use the GUI</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gui/gui_user_guide.html#visual-overview">Visual Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gui/gui_user_guide.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui/gui_user_guide.html#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui/gui_user_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui/gui_user_guide.html#architecture">Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui/gui_user_guide.html#features">Features</a></li>

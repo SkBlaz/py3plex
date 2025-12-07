@@ -18,7 +18,7 @@ See :doc:`gui_user_guide` for basic usage and :doc:`gui_architecture` for techni
 Local Development Setup
 -----------------------
 
-Quick Start
+Quickstart
 ~~~~~~~~~~~
 
 .. code-block:: bash

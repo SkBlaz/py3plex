@@ -13,7 +13,7 @@ customization options, and best practices for different network scales.
    :local:
    :depth: 2
 
-Quick Start
+Quickstart
 -----------
 
 Basic Multilayer Visualization
