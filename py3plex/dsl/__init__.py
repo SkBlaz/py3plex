@@ -133,6 +133,20 @@ from .operator_registry import (
 
 from .context import DSLExecutionContext
 
+# Import lint module
+from .lint import (
+    lint,
+    explain,
+    ExplainResult,
+    Diagnostic,
+    SuggestedFix,
+    SchemaProvider,
+    NetworkSchemaProvider,
+    EntityRef,
+    AttrType,
+    TypeEnvironment,
+)
+
 # Import legacy functions for backward compatibility
 from py3plex.dsl_legacy import (
     execute_query,
@@ -229,6 +243,17 @@ __all__ = [
     "describe_operator",
     # Execution Context
     "DSLExecutionContext",
+    # Linting and Analysis
+    "lint",
+    "explain",
+    "ExplainResult",
+    "Diagnostic",
+    "SuggestedFix",
+    "SchemaProvider",
+    "NetworkSchemaProvider",
+    "EntityRef",
+    "AttrType",
+    "TypeEnvironment",
     # Legacy functions (backward compatibility)
     "execute_query",
     "format_result",
