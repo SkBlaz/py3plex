@@ -71,7 +71,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Dec 06, 2025}
+\date{Dec 07, 2025}
 \release{1.0}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -43736,6 +43736,42 @@ Chainable query builder.
 \sphinxAtStartPar
 Use Q.nodes() or Q.edges() to create a builder, then chain methods
 to construct the query.
+\index{at() (py3plex.dsl.QueryBuilder method)@\spxentry{at()}\spxextra{py3plex.dsl.QueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.at}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{at}}}
+{\sphinxparam{\DUrole{n}{t}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Add temporal snapshot constraint (AT clause).
+
+\sphinxAtStartPar
+Filters edges to only those active at a specific point in time.
+For point\sphinxhyphen{}in\sphinxhyphen{}time edges (with ‘t’ attribute), includes edges where t\_edge == t.
+For interval edges (with ‘t\_start’, ‘t\_end’), includes edges where t is in {[}t\_start, t\_end{]}.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{t}} \textendash{} Timestamp for snapshot
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Self for chaining
+
+\end{description}\end{quote}
+\subsubsection*{Examples}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Snapshot at specific time}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{at}\PYG{p}{(}\PYG{l+m+mf}{150.0}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{compute() (py3plex.dsl.QueryBuilder method)@\spxentry{compute()}\spxextra{py3plex.dsl.QueryBuilder method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -43769,6 +43805,55 @@ Add measures to compute.
 Self for chaining
 
 \end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{during() (py3plex.dsl.QueryBuilder method)@\spxentry{during()}\spxextra{py3plex.dsl.QueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.during}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{during}}}
+{\sphinxparam{\DUrole{n}{t0}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{t1}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Add temporal range constraint (DURING clause).
+
+\sphinxAtStartPar
+Filters edges to only those active during a time range {[}t0, t1{]}.
+For point\sphinxhyphen{}in\sphinxhyphen{}time edges, includes edges where t is in {[}t0, t1{]}.
+For interval edges, includes edges where the interval overlaps {[}t0, t1{]}.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{t0}} \textendash{} Start of time range (None means \sphinxhyphen{}infinity)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{t1}} \textendash{} End of time range (None means +infinity)
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Self for chaining
+
+\end{description}\end{quote}
+\subsubsection*{Examples}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Time range query}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{during}\PYG{p}{(}\PYG{l+m+mf}{100.0}\PYG{p}{,} \PYG{l+m+mf}{200.0}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Open\PYGZhy{}ended ranges}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{during}\PYG{p}{(}\PYG{l+m+mf}{100.0}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} From 100 onwards}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{during}\PYG{p}{(}\PYG{k+kc}{None}\PYG{p}{,} \PYG{l+m+mf}{200.0}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Up to 200}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -44386,7 +44471,7 @@ pandas.DataFrame with items and computed attributes
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{SelectStmt}}}
-{\sphinxparam{\DUrole{n}{target: \textasciitilde{}py3plex.dsl.ast.Target}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layer\_expr: \textasciitilde{}py3plex.dsl.ast.LayerExpr | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{where: \textasciitilde{}py3plex.dsl.ast.ConditionExpr | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{compute: \textasciitilde{}typing.List{[}\textasciitilde{}py3plex.dsl.ast.ComputeItem{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{order\_by: \textasciitilde{}typing.List{[}\textasciitilde{}py3plex.dsl.ast.OrderItem{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit: int | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{export: \textasciitilde{}py3plex.dsl.ast.ExportTarget | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{file\_export: \textasciitilde{}py3plex.dsl.ast.ExportSpec | None = None}}}
+{\sphinxparam{\DUrole{n}{target: \textasciitilde{}py3plex.dsl.ast.Target}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layer\_expr: \textasciitilde{}py3plex.dsl.ast.LayerExpr | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{where: \textasciitilde{}py3plex.dsl.ast.ConditionExpr | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{compute: \textasciitilde{}typing.List{[}\textasciitilde{}py3plex.dsl.ast.ComputeItem{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{order\_by: \textasciitilde{}typing.List{[}\textasciitilde{}py3plex.dsl.ast.OrderItem{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit: int | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{export: \textasciitilde{}py3plex.dsl.ast.ExportTarget | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{file\_export: \textasciitilde{}py3plex.dsl.ast.ExportSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{temporal\_context: \textasciitilde{}py3plex.dsl.ast.TemporalContext | None = None}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -44546,6 +44631,25 @@ Optional file export specification (for writing to files)
 
 \end{fulllineitems}\end{savenotes}
 
+\index{temporal\_context (py3plex.dsl.SelectStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.SelectStmt attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.SelectStmt.temporal_context}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{temporal\_context}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Optional temporal context for time\sphinxhyphen{}based queries
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.dsl.TemporalContext}]{\sphinxcrossref{py3plex.dsl.ast.TemporalContext}}} | None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{compute (py3plex.dsl.SelectStmt attribute)@\spxentry{compute}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -44616,10 +44720,20 @@ Optional file export specification (for writing to files)
 \pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
-\index{where (py3plex.dsl.SelectStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}}
+\index{temporal\_context (py3plex.dsl.SelectStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:id78}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{temporal\_context}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.TemporalContext}]{\sphinxcrossref{TemporalContext}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{where (py3plex.dsl.SelectStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id79}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{where}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ConditionExpr}]{\sphinxcrossref{ConditionExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -44706,7 +44820,7 @@ Dict{[}str, Any{]}
 \index{kind (py3plex.dsl.SpecialPredicate attribute)@\spxentry{kind}\spxextra{py3plex.dsl.SpecialPredicate attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id79}}
+\phantomsection\label{\detokenize{reference/api_index:id80}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{kind}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -44716,7 +44830,7 @@ Dict{[}str, Any{]}
 \index{params (py3plex.dsl.SpecialPredicate attribute)@\spxentry{params}\spxextra{py3plex.dsl.SpecialPredicate attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id80}}
+\phantomsection\label{\detokenize{reference/api_index:id81}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -44758,6 +44872,159 @@ Query target \sphinxhyphen{} what to select from the network.
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{NODES}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}nodes\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{TemporalContext (class in py3plex.dsl)@\spxentry{TemporalContext}\spxextra{class in py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.TemporalContext}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{TemporalContext}}}
+{\sphinxparam{\DUrole{n}{kind}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{t0}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{t1}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{range\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Temporal context for time\sphinxhyphen{}based queries.
+
+\sphinxAtStartPar
+This represents temporal constraints on a query, specified via AT or DURING clauses.
+\index{kind (py3plex.dsl.TemporalContext attribute)@\spxentry{kind}\spxextra{py3plex.dsl.TemporalContext attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.TemporalContext.kind}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{kind}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Type of temporal constraint (“at” for point\sphinxhyphen{}in\sphinxhyphen{}time, “during” for interval)
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+str
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{t0 (py3plex.dsl.TemporalContext attribute)@\spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.TemporalContext.t0}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{t0}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Start time for interval queries (None for point\sphinxhyphen{}in\sphinxhyphen{}time)
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+float | None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{t1 (py3plex.dsl.TemporalContext attribute)@\spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.TemporalContext.t1}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{t1}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+End time for interval queries (None for point\sphinxhyphen{}in\sphinxhyphen{}time)
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+float | None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{range\_name (py3plex.dsl.TemporalContext attribute)@\spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.TemporalContext.range_name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{range\_name}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Optional named range reference (e.g., “Q1\_2023”)
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+str | None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\subsubsection*{Examples}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Point\PYGZhy{}in\PYGZhy{}time: AT 1234567890}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{TemporalContext}\PYG{p}{(}\PYG{n}{kind}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{at}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{t0}\PYG{o}{=}\PYG{l+m+mf}{1234567890.0}\PYG{p}{,} \PYG{n}{t1}\PYG{o}{=}\PYG{l+m+mf}{1234567890.0}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Time range: DURING [100, 200]}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{TemporalContext}\PYG{p}{(}\PYG{n}{kind}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{during}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{t0}\PYG{o}{=}\PYG{l+m+mf}{100.0}\PYG{p}{,} \PYG{n}{t1}\PYG{o}{=}\PYG{l+m+mf}{200.0}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Named range: DURING RANGE \PYGZdq{}Q1\PYGZus{}2023\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{TemporalContext}\PYG{p}{(}\PYG{n}{kind}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{during}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{range\PYGZus{}name}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Q1\PYGZus{}2023}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+\index{kind (py3plex.dsl.TemporalContext attribute)@\spxentry{kind}\spxextra{py3plex.dsl.TemporalContext attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id82}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{kind}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{range\_name (py3plex.dsl.TemporalContext attribute)@\spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id83}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{range\_name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{t0 (py3plex.dsl.TemporalContext attribute)@\spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id84}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{t0}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{t1 (py3plex.dsl.TemporalContext attribute)@\spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id85}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{t1}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
 \pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
