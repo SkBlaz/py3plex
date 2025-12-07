@@ -177,10 +177,9 @@ Here's a complete working example to get you started::
     
     Query: SELECT nodes WHERE degree > 1
     Target: nodes
-    Count: 2
+    Count: 1
     
-    Nodes (showing 2 of 2):
-      ('Alice', 'social')
+    Nodes (showing 1 of 1):
       ('Bob', 'social')
     
     ('Alice', 'social'): 0.0000

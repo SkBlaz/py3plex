@@ -105,3 +105,5 @@ comparison_results/
 network.gpickle
 network.txt
 book/_build/
+*.csv
+results/
