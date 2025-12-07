@@ -1,0 +1,12 @@
+{
+  "id": [
+    "('Alice', 'social')",
+    "('Bob', 'social')",
+    "('Charlie', 'social')"
+  ],
+  "degree": [
+    2,
+    3,
+    3
+  ]
+}

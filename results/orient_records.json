@@ -1,0 +1,14 @@
+[
+  {
+    "id": "('Alice', 'social')",
+    "degree": 2
+  },
+  {
+    "id": "('Bob', 'social')",
+    "degree": 3
+  },
+  {
+    "id": "('Charlie', 'social')",
+    "degree": 3
+  }
+]

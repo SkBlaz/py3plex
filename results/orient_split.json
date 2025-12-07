@@ -1,0 +1,25 @@
+{
+  "columns": [
+    "id",
+    "degree"
+  ],
+  "index": [
+    0,
+    1,
+    2
+  ],
+  "data": [
+    [
+      "('Alice', 'social')",
+      2
+    ],
+    [
+      "('Bob', 'social')",
+      3
+    ],
+    [
+      "('Charlie', 'social')",
+      3
+    ]
+  ]
+}
