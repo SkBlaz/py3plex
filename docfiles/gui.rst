@@ -24,7 +24,7 @@ The Py3plex GUI provides an intuitive web interface for multilayer network analy
 
 |
 
-Quick Start
+Quickstart
 ===========
 
 .. code-block:: bash

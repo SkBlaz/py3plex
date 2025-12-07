@@ -33,7 +33,7 @@ If you prefer Docker, the CLI is also available via the Docker container:
 
 See :doc:`cli_and_docker` for complete Docker documentation.
 
-Quick Start
+Quickstart
 -----------
 
 **New to py3plex?** Start with these essential commands:

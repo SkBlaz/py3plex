@@ -46,7 +46,7 @@ This chapter shows you how to create visualizations that reveal structure rather
 
 ----
 
-Quick Start
+Quickstart
 -----------
 
 Basic Multilayer Visualization

@@ -1539,7 +1539,7 @@ dynamics DSL for epidemic modeling and other dynamical processes.
 
 For detailed documentation and formalism, see :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows`.
 
-Quick Start
+Quickstart
 ~~~~~~~~~~~
 
 The dynamics DSL uses a builder API similar to the query DSL:

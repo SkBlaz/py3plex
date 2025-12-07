@@ -32,7 +32,7 @@ Technology Stack
 Running Locally
 ---------------
 
-Quick Start
+Quickstart
 ~~~~~~~~~~~
 
 .. code-block:: bash

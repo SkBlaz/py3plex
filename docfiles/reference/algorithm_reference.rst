@@ -91,8 +91,31 @@ Infomap Algorithm
 
 **Complexity:** O(m log n) where m is edges, n is nodes
 
+**Runnable Example:**
+
+.. code-block:: python
+
+    import networkx as nx
+    from py3plex.algorithms.community_detection import community_wrapper
+
+    # Create a network
+    G = nx.karate_club_graph()
+
+    # Detect communities with Infomap (requires Infomap binary installed)
+    try:
+        communities = community_wrapper.infomap_communities(
+            G, 
+            binary_path="/usr/local/bin/Infomap",  # Adjust path as needed
+            arguments="--two-level"
+        )
+        print(f"Communities found: {len(set(communities.values()))}")
+    except FileNotFoundError:
+        print("Infomap binary not found. Install from infomap.org")
+
+**Note:** Infomap requires the external Infomap binary. Install from https://www.mapequation.org/infomap/
+
 **Related algorithms:**
-  - :ref:`louvain-algorithm` (faster alternative)
+  - :ref:`louvain-algorithm` (faster alternative, no external dependencies)
 
 .. _multilayer-louvain:
 

@@ -1,7 +1,7 @@
 Multilayer Dynamics
 ===================
 
-*Simulating epidemic spread, diffusion, and other dynamical processes on multilayer networks.*
+Consider a disease spreading through a community where people interact both in-person (physical layer) and online (digital layer). An individual infected in person can spread to their physical contacts, but awareness spread online might change behavior and reduce transmission. **Multilayer dynamics** simulates these coupled processes across interaction types.
 
 .. admonition:: 🔬 DSL for Dynamics
    :class: dsl-example
@@ -27,8 +27,6 @@ Multilayer Dynamics
    See :doc:`dsl` for complete dynamics DSL documentation!
 
 ----
-
-Many real-world phenomena involve **processes that evolve over time** on network structures. Epidemics spread through contact networks. Information diffuses through social media. Ideas propagate through collaboration networks. **Multilayer dynamics** capture how these processes unfold when nodes interact through multiple, simultaneous channels.
 
 This chapter shows you how to:
 

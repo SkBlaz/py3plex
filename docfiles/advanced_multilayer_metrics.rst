@@ -26,7 +26,7 @@ These metrics are included in py3plex. Ensure you have the required dependencies
 
     pip install numpy scipy networkx matplotlib seaborn
 
-Quick Start
+Quickstart
 -----------
 
 .. code-block:: python
