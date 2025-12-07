@@ -24,14 +24,6 @@ class AttrType(Enum):
         if self == other:
             return True
         
-        # Numeric can be compared with numeric
-        if self == AttrType.NUMERIC and other == AttrType.NUMERIC:
-            return True
-        
-        # Categorical can be compared with categorical
-        if self == AttrType.CATEGORICAL and other == AttrType.CATEGORICAL:
-            return True
-        
         # Unknown is compatible with everything (for now)
         if self == AttrType.UNKNOWN or other == AttrType.UNKNOWN:
             return True

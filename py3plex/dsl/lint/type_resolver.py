@@ -116,7 +116,12 @@ class TypeResolver:
         self.type_env.set_computed_type(result_name, measure_type)
     
     def _infer_literal_type(self, value) -> AttrType:
-        """Infer type from a literal value."""
+        """Infer type from a literal value.
+        
+        Note: Does not distinguish between int and float - both are NUMERIC.
+        This is intentional to simplify the type system and avoid false positives
+        in type checking (e.g., comparing int with float is valid).
+        """
         if isinstance(value, bool):
             return AttrType.BOOLEAN
         if isinstance(value, (int, float)):

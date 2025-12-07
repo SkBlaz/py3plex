@@ -89,8 +89,9 @@ class UnsatisfiablePredicateRule:
         """Check if two comparisons are contradictory."""
         # Try to convert to numbers
         try:
-            val1 = float(comp1.right) if not isinstance(comp1.right, str) else None
-            val2 = float(comp2.right) if not isinstance(comp2.right, str) else None
+            # Convert to float, handling both numeric and string values
+            val1 = float(comp1.right) if isinstance(comp1.right, (int, float, str)) else None
+            val2 = float(comp2.right) if isinstance(comp2.right, (int, float, str)) else None
             
             if val1 is None or val2 is None:
                 return False

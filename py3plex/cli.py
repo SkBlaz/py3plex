@@ -1691,12 +1691,19 @@ def cmd_dsl_lint(args: argparse.Namespace) -> int:
         # Load network if provided (for schema-aware linting)
         network = None
         if args.network:
-            logger.info(f"Loading network from {args.network} for schema validation...")
-            network = _load_network(args.network)
+            try:
+                logger.info(f"Loading network from {args.network} for schema validation...")
+                network = _load_network(args.network)
+            except Exception as e:
+                logger.error(f"Failed to load network: {e}")
+                return 2
         
-        # Parse query using builder API (simplified for now)
-        # In a real implementation, you'd need a string parser
-        # For now, we'll use builder syntax with eval
+        # Parse query using builder API
+        # NOTE: Currently uses eval() with restricted namespace for builder syntax parsing.
+        # This is safe because:
+        # 1. Namespace contains only Q, L, Param (no builtins)
+        # 2. Used only for interactive CLI, not production code
+        # Future: Implement proper string DSL parser to eliminate eval()
         from py3plex.dsl import Q, L, Param, lint, explain
         
         # Try to parse as builder syntax first
