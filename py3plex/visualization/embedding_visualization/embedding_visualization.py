@@ -1,6 +1,7 @@
 # embedding
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from sklearn.manifold import TSNE
 
 
@@ -8,6 +9,10 @@ def visualize_embedding(multinet, labels=None, verbose=True):
     embedding = multinet.embedding
     X = embedding[0]
     indices = embedding[1]
+    
+    # Convert np.matrix to np.array for compatibility with sklearn
+    if isinstance(X, np.matrix):
+        X = np.asarray(X)
 
     if verbose:
         print("------ Starting embedding visualization -------")

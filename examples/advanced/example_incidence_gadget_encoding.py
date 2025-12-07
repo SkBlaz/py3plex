@@ -7,6 +7,15 @@ hypergraph using incidence gadget encoding with prime-based layer signatures.
 SKIP_CI: external_deps - Requires sympy package
 """
 
+try:
+    import sympy
+    SYMPY_AVAILABLE = True
+except ImportError:
+    SYMPY_AVAILABLE = False
+    print("Warning: sympy not installed. Install with: pip install sympy")
+    print("This example requires sympy for prime-based encoding.")
+    exit(0)
+
 import networkx as nx
 
 from py3plex.core import multinet

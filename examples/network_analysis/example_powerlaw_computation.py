@@ -2,6 +2,16 @@
 # SKIP_CI: external_deps - Requires specific dataset files
 
 import networkx as nx
+
+try:
+    import mpmath
+    MPMATH_AVAILABLE = True
+except ImportError:
+    MPMATH_AVAILABLE = False
+    print("Warning: mpmath not installed. Install with: pip install mpmath")
+    print("This example requires mpmath for power law fitting.")
+    exit(0)
+
 from py3plex.algorithms.statistics.topology import plot_power_law
 from py3plex.core import multinet
 from py3plex.utils import get_dataset_path

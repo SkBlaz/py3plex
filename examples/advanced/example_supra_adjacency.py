@@ -110,7 +110,7 @@ else:
     
     print(f"  [OK] Matrix computed")
     print(f"  Matrix shape: {mat.shape}")
-    print(f"  Rows/Cols per layer: {mat.shape[0] // comNet.get_number_of_layers()}")
+    print(f"  Rows/Cols per layer: {mat.shape[0] // comNet.layer_count}")
     
     # Visualize the matrix structure
     print("\n  Visualizing matrix structure...")
