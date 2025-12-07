@@ -1,35 +1,31 @@
-Reference & Citation
-====================
+API & DSL Reference
+===================
 
-This section provides detailed algorithm documentation, API reference, and citation information.
+Complete reference documentation for py3plex APIs, algorithms, DSL syntax, and configuration.
 
-**This section contains:**
+**This section includes:**
 
-* :doc:`algorithm_reference` — Parameters, complexity, usage examples for each algorithm
-* :doc:`api_index` — Complete list of public classes, functions, and constants
-* :doc:`citation_and_acknowledgements` — How to cite py3plex and acknowledgements
+Python API Reference
+--------------------
 
-When to Use
------------
+* :doc:`api_index` — Full API documentation for all modules and classes
+* :doc:`algorithm_reference` — Complete algorithm reference with parameters and examples
 
-* **Algorithm details** — Exact parameters, behavior, computational complexity
-* **API lookup** — Find specific classes and functions
-* **Citation** — BibTeX entries for academic papers
+DSL & Query Reference
+---------------------
 
-Citation
---------
+* :doc:`dsl_reference` — Complete DSL syntax and operator reference
+* :doc:`configuration` — Configuration options and environment variables
 
-If you use py3plex in published research, please cite:
+**Reading Paths:**
 
-.. code-block:: bibtex
+* **Need DSL syntax?** → :doc:`dsl_reference` for complete grammar
+* **Looking for an algorithm?** → :doc:`algorithm_reference` for all available algorithms
+* **Need API details?** → :doc:`api_index` for function signatures and parameters
+* **Configuration options?** → :doc:`configuration` for setup and tuning
 
-    @Article{Skrlj2019,
-      author={Škrlj, Blaž and Kralj, Jan and Lavrač, Nada},
-      title={Py3plex toolkit for visualization and analysis of multilayer networks},
-      journal={Applied Network Science},
-      year={2019},
-      volume={4},
-      number={1},
-      pages={94},
-      doi={10.1007/s41109-019-0203-7}
-    }
+**Relation to other sections:**
+
+* **How-to Guides** show you *how* to accomplish tasks. This Reference section documents *what* each function does.
+* **Concepts** explain *why* algorithms work. This section provides precise API details.
+* **Examples** show complete workflows. This section provides isolated reference information.

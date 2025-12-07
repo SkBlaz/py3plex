@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Simulate Multilayer Dynamics &mdash; py3plex 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How to Run Random Walk Algorithms" href="run_random_walks.html" />
+    <link rel="prev" title="How to Run Community Detection on Multilayer Networks" href="run_community_detection.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to Simulate Multilayer Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sir-epidemic-model">SIR Epidemic Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sis-epidemic-model">SIS Epidemic Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#random-walk-dynamics">Random Walk Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#layer-specific-transmission-rates">Layer-Specific Transmission Rates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#analyzing-results-over-time">Analyzing Results Over Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#comparing-intervention-strategies">Comparing Intervention Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-dynamics">Custom Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How to Simulate Multilayer Dynamics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/how-to/simulate_dynamics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="how-to-simulate-multilayer-dynamics">
+<h1>How to Simulate Multilayer Dynamics<a class="headerlink" href="#how-to-simulate-multilayer-dynamics" title="Link to this heading"></a></h1>
+<p><strong>Goal:</strong> Model epidemic spread, diffusion processes, and other dynamic phenomena on multilayer networks.</p>
+<p><strong>Prerequisites:</strong> A loaded network (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>).</p>
+<section id="sir-epidemic-model">
+<h2>SIR Epidemic Model<a class="headerlink" href="#sir-epidemic-model" title="Link to this heading"></a></h2>
+<p>Simulate disease spread with Susceptible-Infected-Recovered dynamics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+
+<span class="c1"># Create network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Configure SIR model</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>    <span class="c1"># Infection rate</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>   <span class="c1"># Recovery rate</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mi">5</span>  <span class="c1"># Number of initially infected nodes</span>
+<span class="p">)</span>
+
+<span class="c1"># Run simulation</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># View results</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Peak prevalence: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s1">&#39;peak_prevalence&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final recovered: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s1">&#39;final_recovered&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Peak prevalence: 35.29%
+Final recovered: 87.45%
+</pre></div>
+</div>
+</section>
+<section id="sis-epidemic-model">
+<h2>SIS Epidemic Model<a class="headerlink" href="#sis-epidemic-model" title="Link to this heading"></a></h2>
+<p>Susceptible-Infected-Susceptible model (no permanent immunity):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SISDynamics</span>
+
+<span class="c1"># Configure SIS model</span>
+<span class="n">sis</span> <span class="o">=</span> <span class="n">SISDynamics</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>    <span class="c1"># Infection rate</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>   <span class="c1"># Recovery rate</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mi">5</span>
+<span class="p">)</span>
+
+<span class="c1"># Run simulation</span>
+<span class="n">sis</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Check endemic prevalence</span>
+<span class="n">endemic</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s1">&#39;endemic_prevalence&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Endemic prevalence: </span><span class="si">{</span><span class="n">endemic</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Endemic prevalence: 23.18%
+</pre></div>
+</div>
+</section>
+<section id="random-walk-dynamics">
+<h2>Random Walk Dynamics<a class="headerlink" href="#random-walk-dynamics" title="Link to this heading"></a></h2>
+<p>Simulate random walks on the multilayer network:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomWalkDynamics</span>
+
+<span class="c1"># Configure random walk</span>
+<span class="n">rw</span> <span class="o">=</span> <span class="n">RandomWalkDynamics</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">start_node</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">1000</span>
+<span class="p">)</span>
+
+<span class="c1"># Run simulation</span>
+<span class="n">rw</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">rw</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># Analyze visited nodes</span>
+<span class="n">visit_counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s1">&#39;visit_counts&#39;</span><span class="p">)</span>
+
+<span class="c1"># Most visited nodes</span>
+<span class="n">sorted_visits</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+    <span class="n">visit_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Most visited nodes:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">sorted_visits</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> visits&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-transmission-rates">
+<h2>Layer-Specific Transmission Rates<a class="headerlink" href="#layer-specific-transmission-rates" title="Link to this heading"></a></h2>
+<p>Set different infection rates per layer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+
+<span class="c1"># Define layer-specific rates</span>
+<span class="n">layer_rates</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;household&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>   <span class="c1"># High transmission</span>
+    <span class="s1">&#39;workplace&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>   <span class="c1"># Medium transmission</span>
+    <span class="s1">&#39;social&#39;</span><span class="p">:</span> <span class="mf">0.1</span>       <span class="c1"># Low transmission</span>
+<span class="p">}</span>
+
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="n">layer_rates</span><span class="p">,</span>   <span class="c1"># Pass dict instead of float</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mi">5</span>
+<span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="analyzing-results-over-time">
+<h2>Analyzing Results Over Time<a class="headerlink" href="#analyzing-results-over-time" title="Link to this heading"></a></h2>
+<p>Track epidemic progression:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Get time series</span>
+<span class="n">time_series</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s1">&#39;time_series&#39;</span><span class="p">)</span>
+
+<span class="c1"># Plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="s1">&#39;susceptible&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Susceptible&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="s1">&#39;infected&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Infected&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="s1">&#39;recovered&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Recovered&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time step&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of nodes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;SIR Epidemic Progression&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;sir_progression.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="comparing-intervention-strategies">
+<h2>Comparing Intervention Strategies<a class="headerlink" href="#comparing-intervention-strategies" title="Link to this heading"></a></h2>
+<p>Test different scenarios:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Social distancing&#39;</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Faster recovery&#39;</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">scenario</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="p">:</span>
+    <span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
+        <span class="n">network</span><span class="p">,</span>
+        <span class="n">beta</span><span class="o">=</span><span class="n">scenario</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">],</span>
+        <span class="n">gamma</span><span class="o">=</span><span class="n">scenario</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">],</span>
+        <span class="n">initial_infected</span><span class="o">=</span><span class="mi">5</span>
+    <span class="p">)</span>
+    <span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">scenario</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;peak&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s1">&#39;peak_prevalence&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;final&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s1">&#39;final_recovered&#39;</span><span class="p">)</span>
+    <span class="p">})</span>
+
+<span class="c1"># Compare</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: peak=</span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;peak&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">, final=</span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Baseline: peak=35.29%, final=87.45%
+Social distancing: peak=18.42%, final=62.33%
+Faster recovery: peak=28.91%, final=79.21%
+</pre></div>
+</div>
+</section>
+<section id="custom-dynamics">
+<h2>Custom Dynamics<a class="headerlink" href="#custom-dynamics" title="Link to this heading"></a></h2>
+<p>Implement custom dynamics models:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDynamics</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomDynamics</span><span class="p">(</span><span class="n">BaseDynamics</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param2</span> <span class="o">=</span> <span class="n">param2</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Single simulation step.&quot;&quot;&quot;</span>
+        <span class="c1"># Your custom logic here</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run simulation for specified steps.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../reference/api_index.html"><span class="doc">API Documentation</span></a> for the BaseDynamics API.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Visualize dynamics:</strong> <a class="reference internal" href="visualize_networks.html"><span class="doc">How to Visualize Multilayer Networks</span></a></p></li>
+<li><p><strong>Understand theory:</strong> <a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a></p></li>
+<li><p><strong>See examples:</strong> <a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a></p></li>
+<li><p><strong>API reference:</strong> <a class="reference internal" href="../reference/algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="run_community_detection.html" class="btn btn-neutral float-left" title="How to Run Community Detection on Multilayer Networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_random_walks.html" class="btn btn-neutral float-right" title="How to Run Random Walk Algorithms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

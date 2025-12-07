@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Run Community Detection on Multilayer Networks &mdash; py3plex 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How to Simulate Multilayer Dynamics" href="simulate_dynamics.html" />
+    <link rel="prev" title="How to Compute Network Statistics" href="compute_statistics.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to Run Community Detection on Multilayer Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start-louvain-algorithm">Quick Start: Louvain Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multilayer-specific-multilayer-louvain">Multilayer-Specific: Multilayer Louvain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#infomap-algorithm">Infomap Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#label-propagation">Label Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#analyzing-community-structure">Analyzing Community Structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#count-nodes-per-community">Count Nodes Per Community</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualize-communities">Visualize Communities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-communities">Export Communities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#compare-algorithms">Compare Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#layer-specific-communities">Layer-Specific Communities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cross-layer-community-analysis">Cross-Layer Community Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quality-metrics">Quality Metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#compute-modularity">Compute Modularity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How to Run Community Detection on Multilayer Networks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/how-to/run_community_detection.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="how-to-run-community-detection-on-multilayer-networks">
+<h1>How to Run Community Detection on Multilayer Networks<a class="headerlink" href="#how-to-run-community-detection-on-multilayer-networks" title="Link to this heading"></a></h1>
+<p><strong>Goal:</strong> Identify groups of densely connected nodes in multilayer networks.</p>
+<p><strong>Prerequisites:</strong> A loaded network with multiple layers (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>).</p>
+<section id="quick-start-louvain-algorithm">
+<h2>Quick Start: Louvain Algorithm<a class="headerlink" href="#quick-start-louvain-algorithm" title="Link to this heading"></a></h2>
+<p>The Louvain algorithm is fast and works well for most multilayer networks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run Louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># View results</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> → Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 4 communities
+Node (&#39;Alice&#39;, &#39;friends&#39;) → Community 0
+Node (&#39;Bob&#39;, &#39;friends&#39;) → Community 0
+Node (&#39;Carol&#39;, &#39;work&#39;) → Community 1
+</pre></div>
+</div>
+</section>
+<section id="multilayer-specific-multilayer-louvain">
+<h2>Multilayer-Specific: Multilayer Louvain<a class="headerlink" href="#multilayer-specific-multilayer-louvain" title="Link to this heading"></a></h2>
+<p>Optimizes multilayer modularity, accounting for inter-layer connections:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_louvain</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">multilayer_louvain</span>
+<span class="p">)</span>
+
+<span class="c1"># Run multilayer Louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">multilayer_louvain</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span>  <span class="c1"># Inter-layer coupling strength</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <cite>omega</cite> parameter controls how much inter-layer connections influence communities:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">omega=0</span></code>: Layers are independent (same as single-layer on each layer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">omega=1</span></code>: Strong coupling (communities span layers)</p></li>
+</ul>
+</section>
+<section id="infomap-algorithm">
+<h2>Infomap Algorithm<a class="headerlink" href="#infomap-algorithm" title="Link to this heading"></a></h2>
+<p>Infomap finds communities by minimizing information flow description:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">infomap_communities</span>
+
+<span class="n">communities</span> <span class="o">=</span> <span class="n">infomap_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="label-propagation">
+<h2>Label Propagation<a class="headerlink" href="#label-propagation" title="Link to this heading"></a></h2>
+<p>Fast algorithm for large networks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">label_propagation</span>
+
+<span class="n">communities</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="analyzing-community-structure">
+<h2>Analyzing Community Structure<a class="headerlink" href="#analyzing-community-structure" title="Link to this heading"></a></h2>
+<section id="count-nodes-per-community">
+<h3>Count Nodes Per Community<a class="headerlink" href="#count-nodes-per-community" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="n">comm_sizes</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Community sizes:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">comm_sizes</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="visualize-communities">
+<h3>Visualize Communities<a class="headerlink" href="#visualize-communities" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_communities</span>
+
+<span class="n">visualize_communities</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">communities</span><span class="p">,</span>
+    <span class="n">output_file</span><span class="o">=</span><span class="s2">&quot;communities.png&quot;</span><span class="p">,</span>
+    <span class="n">show</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="export-communities">
+<h3>Export Communities<a class="headerlink" href="#export-communities" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Convert to DataFrame</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+        <span class="s1">&#39;community&#39;</span><span class="p">:</span> <span class="n">comm_id</span>
+    <span class="p">})</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;communities.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="compare-algorithms">
+<h2>Compare Algorithms<a class="headerlink" href="#compare-algorithms" title="Link to this heading"></a></h2>
+<p>Run multiple algorithms and compare:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">louvain_communities</span><span class="p">,</span>
+    <span class="n">infomap_communities</span><span class="p">,</span>
+    <span class="n">label_propagation</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">adjusted_rand_score</span>
+
+<span class="c1"># Run algorithms</span>
+<span class="n">louvain_comms</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">infomap_comms</span> <span class="o">=</span> <span class="n">infomap_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">label_prop_comms</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Compare (using adjusted Rand index)</span>
+<span class="c1"># Convert to lists in same order</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">louvain_comms</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">louvain_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">louvain_comms</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+<span class="n">infomap_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">infomap_comms</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+
+<span class="n">similarity</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">louvain_labels</span><span class="p">,</span> <span class="n">infomap_labels</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Louvain vs Infomap similarity: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-communities">
+<h2>Layer-Specific Communities<a class="headerlink" href="#layer-specific-communities" title="Link to this heading"></a></h2>
+<p>Detect communities in individual layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;friends&#39;</span>
+
+<span class="c1"># Extract single layer</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Run community detection on this layer</span>
+<span class="n">layer_communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">subgraph</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">layer_communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities in </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cross-layer-community-analysis">
+<h2>Cross-Layer Community Analysis<a class="headerlink" href="#cross-layer-community-analysis" title="Link to this heading"></a></h2>
+<p>Check if communities are consistent across layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get communities for multiple layers</span>
+<span class="n">layer_communities</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="n">subgraph</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">layer_communities</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">subgraph</span><span class="p">)</span>
+
+<span class="c1"># Compare community assignments across layers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalized_mutual_information_score</span> <span class="k">as</span> <span class="n">nmi</span>
+
+<span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">layer_communities</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
+        <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">layers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="c1"># Get common nodes</span>
+        <span class="n">nodes1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">layer_communities</span><span class="p">[</span><span class="n">layer1</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">nodes2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">layer_communities</span><span class="p">[</span><span class="n">layer2</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">common</span> <span class="o">=</span> <span class="n">nodes1</span> <span class="o">&amp;</span> <span class="n">nodes2</span>
+
+        <span class="k">if</span> <span class="n">common</span><span class="p">:</span>
+            <span class="n">labels1</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_communities</span><span class="p">[</span><span class="n">layer1</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">common</span><span class="p">]</span>
+            <span class="n">labels2</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_communities</span><span class="p">[</span><span class="n">layer2</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">common</span><span class="p">]</span>
+
+            <span class="n">similarity</span> <span class="o">=</span> <span class="n">nmi</span><span class="p">(</span><span class="n">labels1</span><span class="p">,</span> <span class="n">labels2</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer1</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">layer2</span><span class="si">}</span><span class="s2">: NMI = </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="quality-metrics">
+<h2>Quality Metrics<a class="headerlink" href="#quality-metrics" title="Link to this heading"></a></h2>
+<section id="compute-modularity">
+<h3>Compute Modularity<a class="headerlink" href="#compute-modularity" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_modularity</span>
+
+<span class="n">modularity</span> <span class="o">=</span> <span class="n">calculate_modularity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Modularity: </span><span class="si">{</span><span class="n">modularity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Higher modularity (closer to 1) indicates better community structure.</p>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Visualize results:</strong> <a class="reference internal" href="visualize_networks.html"><span class="doc">How to Visualize Multilayer Networks</span></a></p></li>
+<li><p><strong>Understand algorithms:</strong> <a class="reference internal" href="../concepts/algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a></p></li>
+<li><p><strong>API reference:</strong> <a class="reference internal" href="../reference/algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="compute_statistics.html" class="btn btn-neutral float-left" title="How to Compute Network Statistics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simulate_dynamics.html" class="btn btn-neutral float-right" title="How to Simulate Multilayer Dynamics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

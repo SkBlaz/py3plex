@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration &amp; Environment &mdash; py3plex 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Examples &amp; Recipes" href="../examples/index.html" />
+    <link rel="prev" title="API Documentation" href="api_index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_index.html">API Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration &amp; Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-files">Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-formats">Input Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-formats">Output Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#algorithm-configuration">Algorithm Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#community-detection">Community Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node2vec">Node2Vec</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamics">Dynamics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#visualization-configuration">Visualization Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logging-configuration">Logging Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-tuning">Performance Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Configuration &amp; Environment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="configuration-environment">
+<h1>Configuration &amp; Environment<a class="headerlink" href="#configuration-environment" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TODO: This page needs to be populated with configuration options and environment variables.</p>
+</div>
+<section id="configuration-files">
+<h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading"></a></h2>
+<p><strong>TODO:</strong> Document configuration file formats and options</p>
+<ul class="simple">
+<li><p>Network configuration</p></li>
+<li><p>Algorithm parameters</p></li>
+<li><p>Visualization settings</p></li>
+</ul>
+</section>
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<p><strong>TODO:</strong> Document environment variables used by py3plex</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_DATA_DIR</span></code> — Data directory location</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_CACHE_DIR</span></code> — Cache directory</p></li>
+<li><p>Performance tuning variables</p></li>
+</ul>
+</section>
+<section id="input-formats">
+<h2>Input Formats<a class="headerlink" href="#input-formats" title="Link to this heading"></a></h2>
+<p>Supported file formats:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> — Multilayer edge list format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edgelist</span></code> — Standard edge list</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> — JSON network format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">graphml</span></code> — GraphML format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parquet</span></code> — Apache Parquet (high performance)</p></li>
+</ul>
+<p>See <a class="reference internal" href="../how-to/load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a> for format details.</p>
+</section>
+<section id="output-formats">
+<h2>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading"></a></h2>
+<p>Networks can be exported to:</p>
+<ul class="simple">
+<li><p>Pickle (Python serialization)</p></li>
+<li><p>JSON</p></li>
+<li><p>CSV/TSV</p></li>
+<li><p>GraphML</p></li>
+<li><p>Parquet</p></li>
+</ul>
+<p>See <a class="reference internal" href="../how-to/export_serialize.html"><span class="doc">How to Export and Serialize Networks</span></a> for export details.</p>
+</section>
+<section id="algorithm-configuration">
+<h2>Algorithm Configuration<a class="headerlink" href="#algorithm-configuration" title="Link to this heading"></a></h2>
+<p>Many algorithms accept configuration parameters:</p>
+<section id="community-detection">
+<h3>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_louvain</span>
+
+<span class="n">communities</span> <span class="o">=</span> <span class="n">multilayer_louvain</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Resolution parameter</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span>        <span class="c1"># Inter-layer coupling</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="node2vec">
+<h3>Node2Vec<a class="headerlink" href="#node2vec" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_node2vec</span>
+
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>      <span class="c1"># Embedding size</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>      <span class="c1"># Walk length</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>        <span class="c1"># Walks per node</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>              <span class="c1"># Return parameter</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>              <span class="c1"># In-out parameter</span>
+    <span class="n">workers</span><span class="o">=</span><span class="mi">4</span>           <span class="c1"># Parallel workers</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dynamics">
+<h3>Dynamics<a class="headerlink" href="#dynamics" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>           <span class="c1"># Infection rate</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>          <span class="c1"># Recovery rate</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mi">5</span>  <span class="c1"># Initial infected count</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> for complete parameter documentation.</p>
+</section>
+</section>
+<section id="visualization-configuration">
+<h2>Visualization Configuration<a class="headerlink" href="#visualization-configuration" title="Link to this heading"></a></h2>
+<p>Customize visualization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span>
+    <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;network.png&#39;</span><span class="p">,</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force_directed&#39;</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+    <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../how-to/visualize_networks.html"><span class="doc">How to Visualize Multilayer Networks</span></a> for visualization options.</p>
+</section>
+<section id="logging-configuration">
+<h2>Logging Configuration<a class="headerlink" href="#logging-configuration" title="Link to this heading"></a></h2>
+<p><strong>TODO:</strong> Document logging configuration</p>
+<ul class="simple">
+<li><p>Log levels</p></li>
+<li><p>Log file location</p></li>
+<li><p>Custom logging handlers</p></li>
+</ul>
+</section>
+<section id="performance-tuning">
+<h2>Performance Tuning<a class="headerlink" href="#performance-tuning" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../project/benchmarking.html"><span class="doc">Benchmarking &amp; Performance</span></a> for performance optimization strategies.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Load networks:</strong> <a class="reference internal" href="../how-to/load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a></p></li>
+<li><p><strong>Export networks:</strong> <a class="reference internal" href="../how-to/export_serialize.html"><span class="doc">How to Export and Serialize Networks</span></a></p></li>
+<li><p><strong>Algorithm reference:</strong> <a class="reference internal" href="algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api_index.html" class="btn btn-neutral float-left" title="API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../examples/index.html" class="btn btn-neutral float-right" title="Examples &amp; Recipes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

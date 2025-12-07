@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reference &amp; Citation &mdash; py3plex 1.0 documentation</title>
+  <title>API &amp; DSL Reference &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Algorithm Roadmap" href="algorithm_reference.html" />
-    <link rel="prev" title="Examples" href="../examples/index.html" /> 
+    <link rel="prev" title="Algorithm Landscape" href="../concepts/algorithm_landscape.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,74 +44,83 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API &amp; DSL Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python-api-reference">Python API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dsl-query-reference">DSL &amp; Query Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/multilayer_dynamics.html">Multilayer Dynamics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference &amp; Citation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#when-to-use">When to Use</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#citation">Citation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="algorithm_reference.html">Algorithm Roadmap</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_index.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="citation_and_acknowledgements.html">Citation and References</a></li>
 </ul>
 
         </div>
@@ -128,7 +137,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Reference &amp; Citation</li>
+      <li class="breadcrumb-item active">API &amp; DSL Reference</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/reference/part_intro.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -138,38 +147,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="reference-citation">
-<h1>Reference &amp; Citation<a class="headerlink" href="#reference-citation" title="Link to this heading"></a></h1>
-<p>This section provides detailed algorithm documentation, API reference, and citation information.</p>
-<p><strong>This section contains:</strong></p>
+  <section id="api-dsl-reference">
+<h1>API &amp; DSL Reference<a class="headerlink" href="#api-dsl-reference" title="Link to this heading"></a></h1>
+<p>Complete reference documentation for py3plex APIs, algorithms, DSL syntax, and configuration.</p>
+<p><strong>This section includes:</strong></p>
+<section id="python-api-reference">
+<h2>Python API Reference<a class="headerlink" href="#python-api-reference" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> — Parameters, complexity, usage examples for each algorithm</p></li>
-<li><p><a class="reference internal" href="api_index.html"><span class="doc">API Documentation</span></a> — Complete list of public classes, functions, and constants</p></li>
-<li><p><a class="reference internal" href="citation_and_acknowledgements.html"><span class="doc">Citation and References</span></a> — How to cite py3plex and acknowledgements</p></li>
-</ul>
-<section id="when-to-use">
-<h2>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><strong>Algorithm details</strong> — Exact parameters, behavior, computational complexity</p></li>
-<li><p><strong>API lookup</strong> — Find specific classes and functions</p></li>
-<li><p><strong>Citation</strong> — BibTeX entries for academic papers</p></li>
+<li><p><a class="reference internal" href="api_index.html"><span class="doc">API Documentation</span></a> — Full API documentation for all modules and classes</p></li>
+<li><p><a class="reference internal" href="algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> — Complete algorithm reference with parameters and examples</p></li>
 </ul>
 </section>
-<section id="citation">
-<h2>Citation<a class="headerlink" href="#citation" title="Link to this heading"></a></h2>
-<p>If you use py3plex in published research, please cite:</p>
-<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Skrlj2019</span><span class="p">,</span>
-<span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Škrlj, Blaž and Kralj, Jan and Lavrač, Nada}</span><span class="p">,</span>
-<span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{Py3plex toolkit for visualization and analysis of multilayer networks}</span><span class="p">,</span>
-<span class="w">  </span><span class="na">journal</span><span class="p">=</span><span class="s">{Applied Network Science}</span><span class="p">,</span>
-<span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2019}</span><span class="p">,</span>
-<span class="w">  </span><span class="na">volume</span><span class="p">=</span><span class="s">{4}</span><span class="p">,</span>
-<span class="w">  </span><span class="na">number</span><span class="p">=</span><span class="s">{1}</span><span class="p">,</span>
-<span class="w">  </span><span class="na">pages</span><span class="p">=</span><span class="s">{94}</span><span class="p">,</span>
-<span class="w">  </span><span class="na">doi</span><span class="p">=</span><span class="s">{10.1007/s41109-019-0203-7}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
+<section id="dsl-query-reference">
+<h2>DSL &amp; Query Reference<a class="headerlink" href="#dsl-query-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="dsl_reference.html"><span class="doc">DSL Reference</span></a> — Complete DSL syntax and operator reference</p></li>
+<li><p><a class="reference internal" href="configuration.html"><span class="doc">Configuration &amp; Environment</span></a> — Configuration options and environment variables</p></li>
+</ul>
+<p><strong>Reading Paths:</strong></p>
+<ul class="simple">
+<li><p><strong>Need DSL syntax?</strong> → <a class="reference internal" href="dsl_reference.html"><span class="doc">DSL Reference</span></a> for complete grammar</p></li>
+<li><p><strong>Looking for an algorithm?</strong> → <a class="reference internal" href="algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> for all available algorithms</p></li>
+<li><p><strong>Need API details?</strong> → <a class="reference internal" href="api_index.html"><span class="doc">API Documentation</span></a> for function signatures and parameters</p></li>
+<li><p><strong>Configuration options?</strong> → <a class="reference internal" href="configuration.html"><span class="doc">Configuration &amp; Environment</span></a> for setup and tuning</p></li>
+</ul>
+<p><strong>Relation to other sections:</strong></p>
+<ul class="simple">
+<li><p><strong>How-to Guides</strong> show you <em>how</em> to accomplish tasks. This Reference section documents <em>what</em> each function does.</p></li>
+<li><p><strong>Concepts</strong> explain <em>why</em> algorithms work. This section provides precise API details.</p></li>
+<li><p><strong>Examples</strong> show complete workflows. This section provides isolated reference information.</p></li>
+</ul>
 </section>
 </section>
 
@@ -177,7 +184,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../examples/index.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../concepts/algorithm_landscape.html" class="btn btn-neutral float-left" title="Algorithm Landscape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="algorithm_reference.html" class="btn btn-neutral float-right" title="Algorithm Roadmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

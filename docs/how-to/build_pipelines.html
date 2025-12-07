@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Build Analysis Pipelines with Dplyr-style Operations &mdash; py3plex 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How to Reproduce Common Analysis Workflows" href="reproduce_workflows.html" />
+    <link rel="prev" title="How to Query Multilayer Graphs with the SQL-like DSL" href="query_with_dsl.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to Build Analysis Pipelines with Dplyr-style Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-pipeline">Basic Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#node-operations">Node Operations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#available-operations">Available Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#filter">filter()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mutate">mutate()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#select">select()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arrange">arrange()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#group-by-and-summarize">group_by() and summarize()</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#complex-pipelines">Complex Pipelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multi-step-analysis">Multi-Step Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#combining-with-dsl">Combining with DSL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sklearn-style-pipelines">Sklearn-Style Pipelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exporting-pipelines">Exporting Pipelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#save-pipeline-definition">Save Pipeline Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-and-execute">Load and Execute</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reusable-pipelines">Reusable Pipelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-pipeline-functions">Create Pipeline Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How to Build Analysis Pipelines with Dplyr-style Operations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/how-to/build_pipelines.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="how-to-build-analysis-pipelines-with-dplyr-style-operations">
+<h1>How to Build Analysis Pipelines with Dplyr-style Operations<a class="headerlink" href="#how-to-build-analysis-pipelines-with-dplyr-style-operations" title="Link to this heading"></a></h1>
+<p><strong>Goal:</strong> Chain operations to build reproducible analysis workflows.</p>
+<p><strong>Prerequisites:</strong> A loaded network (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>).</p>
+<section id="basic-pipeline">
+<h2>Basic Pipeline<a class="headerlink" href="#basic-pipeline" title="Link to this heading"></a></h2>
+<section id="node-operations">
+<h3>Node Operations<a class="headerlink" href="#node-operations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Build pipeline</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="available-operations">
+<h2>Available Operations<a class="headerlink" href="#available-operations" title="Link to this heading"></a></h2>
+<section id="filter">
+<h3>filter()<a class="headerlink" href="#filter" title="Link to this heading"></a></h3>
+<p>Select nodes based on condition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;friends&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mutate">
+<h3>mutate()<a class="headerlink" href="#mutate" title="Link to this heading"></a></h3>
+<p>Add or modify columns:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+        <span class="n">degree_squared</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">is_hub</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="select">
+<h3>select()<a class="headerlink" href="#select" title="Link to this heading"></a></h3>
+<p>Choose specific columns:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="arrange">
+<h3>arrange()<a class="headerlink" href="#arrange" title="Link to this heading"></a></h3>
+<p>Sort results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Descending</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="group-by-and-summarize">
+<h3>group_by() and summarize()<a class="headerlink" href="#group-by-and-summarize" title="Link to this heading"></a></h3>
+<p>Aggregate data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">summarize</span><span class="p">(</span>
+        <span class="n">avg_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="n">max_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+        <span class="n">count</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>      layer  avg_degree  max_degree  count
+0   friends        3.45          12     46
+1      work        2.87          08     46
+2    family        4.12          15     42
+</pre></div>
+</div>
+</section>
+</section>
+<section id="complex-pipelines">
+<h2>Complex Pipelines<a class="headerlink" href="#complex-pipelines" title="Link to this heading"></a></h2>
+<section id="multi-step-analysis">
+<h3>Multi-Step Analysis<a class="headerlink" href="#multi-step-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="c1"># Step 1: Filter active nodes</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer_count&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Step 2: Add computed score</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+        <span class="n">activity_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer_count&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="c1"># Step 3: Filter by score</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;activity_score&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="c1"># Step 4: Sort by score</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;activity_score&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Step 5: Get top 20</span>
+    <span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+    <span class="c1"># Convert to pandas</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="combining-with-dsl">
+<h2>Combining with DSL<a class="headerlink" href="#combining-with-dsl" title="Link to this heading"></a></h2>
+<p>Mix dplyr-style and DSL:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
+
+<span class="c1"># Use DSL to compute metrics</span>
+<span class="n">dsl_result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Use dplyr-style to filter and transform</span>
+<span class="n">final_result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">dsl_result</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+        <span class="n">centrality_rank</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;centrality_rank&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sklearn-style-pipelines">
+<h2>Sklearn-Style Pipelines<a class="headerlink" href="#sklearn-style-pipelines" title="Link to this heading"></a></h2>
+<p>For machine learning workflows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">NetworkPipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+
+<span class="c1"># Define pipeline</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">NetworkPipeline</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_features&#39;</span><span class="p">),</span>  <span class="c1"># Extract features</span>
+    <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>       <span class="c1"># Normalize</span>
+    <span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">,</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>   <span class="c1"># Cluster</span>
+<span class="p">])</span>
+
+<span class="c1"># Fit and predict</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Assigned </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span><span class="si">}</span><span class="s2"> clusters&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="exporting-pipelines">
+<h2>Exporting Pipelines<a class="headerlink" href="#exporting-pipelines" title="Link to this heading"></a></h2>
+<section id="save-pipeline-definition">
+<h3>Save Pipeline Definition<a class="headerlink" href="#save-pipeline-definition" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">pipeline_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;steps&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s1">&#39;operation&#39;</span><span class="p">:</span> <span class="s1">&#39;filter&#39;</span><span class="p">,</span> <span class="s1">&#39;condition&#39;</span><span class="p">:</span> <span class="s1">&#39;degree &gt; 2&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;operation&#39;</span><span class="p">:</span> <span class="s1">&#39;mutate&#39;</span><span class="p">,</span> <span class="s1">&#39;column&#39;</span><span class="p">:</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;expr&#39;</span><span class="p">:</span> <span class="s1">&#39;degree * 2&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;operation&#39;</span><span class="p">:</span> <span class="s1">&#39;arrange&#39;</span><span class="p">,</span> <span class="s1">&#39;by&#39;</span><span class="p">:</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;reverse&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;pipeline.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="load-and-execute">
+<h3>Load and Execute<a class="headerlink" href="#load-and-execute" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;pipeline.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># Execute pipeline from config</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">execute_pipeline</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="reusable-pipelines">
+<h2>Reusable Pipelines<a class="headerlink" href="#reusable-pipelines" title="Link to this heading"></a></h2>
+<section id="create-pipeline-functions">
+<h3>Create Pipeline Functions<a class="headerlink" href="#create-pipeline-functions" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">identify_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reusable pipeline to identify hub nodes.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">hub_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer_count&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;hub_score&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    <span class="p">)</span>
+
+<span class="c1"># Use</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="n">identify_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hubs</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Query with DSL:</strong> <a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a></p></li>
+<li><p><strong>Complete workflows:</strong> <a class="reference internal" href="reproduce_workflows.html"><span class="doc">How to Reproduce Common Analysis Workflows</span></a></p></li>
+<li><p><strong>API reference:</strong> <a class="reference internal" href="../reference/api_index.html"><span class="doc">API Documentation</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="query_with_dsl.html" class="btn btn-neutral float-left" title="How to Query Multilayer Graphs with the SQL-like DSL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reproduce_workflows.html" class="btn btn-neutral float-right" title="How to Reproduce Common Analysis Workflows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

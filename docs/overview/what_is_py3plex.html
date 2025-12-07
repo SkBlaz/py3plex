@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What is py3plex? &mdash; py3plex 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Key Use Cases" href="key_use_cases.html" />
+    <link rel="prev" title="Overview" href="part_intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">What is py3plex?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-network-structures">Multilayer Network Structures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sql-like-dsl-for-network-queries">SQL-like DSL for Network Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#comprehensive-algorithm-suite">Comprehensive Algorithm Suite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#publication-ready-visualizations">Publication-Ready Visualizations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#high-performance-i-o">High-Performance I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#what-makes-py3plex-unique">What Makes py3plex Unique?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#when-to-use-py3plex">When to Use py3plex?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-projects">Related Projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">What is py3plex?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/overview/what_is_py3plex.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="what-is-py3plex">
+<h1>What is py3plex?<a class="headerlink" href="#what-is-py3plex" title="Link to this heading"></a></h1>
+<p>py3plex is a Python library for scalable analysis and visualization of multilayer and multiplex networks.</p>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<section id="multilayer-network-structures">
+<h3>Multilayer Network Structures<a class="headerlink" href="#multilayer-network-structures" title="Link to this heading"></a></h3>
+<p>py3plex provides native support for:</p>
+<ul class="simple">
+<li><p><strong>Multiplex networks</strong> — Same nodes across multiple layers (e.g., social networks with friendship, collaboration, and family ties)</p></li>
+<li><p><strong>Heterogeneous networks</strong> — Different node types across layers (e.g., author-paper-venue networks)</p></li>
+<li><p><strong>Temporal networks</strong> — Networks that evolve over time with temporal attributes</p></li>
+</ul>
+<p>All network types are first-class citizens with consistent APIs.</p>
+</section>
+<section id="sql-like-dsl-for-network-queries">
+<h3>SQL-like DSL for Network Queries<a class="headerlink" href="#sql-like-dsl-for-network-queries" title="Link to this heading"></a></h3>
+<p>Query networks using intuitive SQL-inspired syntax:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+
+<span class="c1"># String DSL: readable and concise</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span>
+    <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot; AND degree &gt; 5 &#39;</span>
+    <span class="s1">&#39;COMPUTE betweenness_centrality&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Or use the type-safe builder API:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Builder API: with IDE autocompletion</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The DSL makes complex network analyses readable and maintainable.</p>
+</section>
+<section id="comprehensive-algorithm-suite">
+<h3>Comprehensive Algorithm Suite<a class="headerlink" href="#comprehensive-algorithm-suite" title="Link to this heading"></a></h3>
+<p>py3plex includes 17+ multilayer-specific algorithms:</p>
+<ul class="simple">
+<li><p><strong>Community detection:</strong> Louvain, Infomap, multilayer modularity</p></li>
+<li><p><strong>Centrality measures:</strong> Multilayer PageRank, betweenness, versatility</p></li>
+<li><p><strong>Random walks:</strong> Node2Vec, DeepWalk for network embeddings</p></li>
+<li><p><strong>Dynamics:</strong> SIR/SIS epidemic models, diffusion processes</p></li>
+</ul>
+<p>All algorithms handle multilayer structure natively without flattening.</p>
+</section>
+<section id="publication-ready-visualizations">
+<h3>Publication-Ready Visualizations<a class="headerlink" href="#publication-ready-visualizations" title="Link to this heading"></a></h3>
+<p>Create professional network diagrams with:</p>
+<ul class="simple">
+<li><p>Automatic multilayer layouts</p></li>
+<li><p>Customizable styling and colors</p></li>
+<li><p>Support for large networks (1000+ nodes)</p></li>
+<li><p>Export to multiple formats (PNG, PDF, SVG)</p></li>
+</ul>
+</section>
+<section id="high-performance-i-o">
+<h3>High-Performance I/O<a class="headerlink" href="#high-performance-i-o" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Apache Arrow/Parquet support for large datasets</p></li>
+<li><p>NetworkX compatibility for easy integration</p></li>
+<li><p>Multiple input formats (edge lists, adjacency matrices, JSON)</p></li>
+</ul>
+</section>
+</section>
+<section id="what-makes-py3plex-unique">
+<h2>What Makes py3plex Unique?<a class="headerlink" href="#what-makes-py3plex-unique" title="Link to this heading"></a></h2>
+<p><strong>Native Multilayer Representation</strong></p>
+<p>Unlike tools that flatten multilayer networks into single-layer graphs, py3plex preserves the multilayer structure throughout the analysis pipeline. This leads to more accurate results for multilayer-specific properties.</p>
+<p><strong>Node-Layer Pair Abstraction</strong></p>
+<p>py3plex represents multilayer networks using node-layer pairs: a node in layer A is distinct from the same node in layer B. This clean abstraction enables:</p>
+<ul class="simple">
+<li><p>Layer-specific queries</p></li>
+<li><p>Inter-layer and intra-layer edge differentiation</p></li>
+<li><p>Efficient supra-adjacency matrix operations</p></li>
+</ul>
+<p><strong>Production-Ready Design</strong></p>
+<p>py3plex is designed for both research and production:</p>
+<ul class="simple">
+<li><p>Sklearn-style pipelines for reproducible workflows</p></li>
+<li><p>Comprehensive type hints and documentation</p></li>
+<li><p>Extensive test suite (500+ tests)</p></li>
+<li><p>CLI and Docker deployment options</p></li>
+</ul>
+</section>
+<section id="when-to-use-py3plex">
+<h2>When to Use py3plex?<a class="headerlink" href="#when-to-use-py3plex" title="Link to this heading"></a></h2>
+<p>py3plex is ideal when you have:</p>
+<ul class="simple">
+<li><p><strong>Multiple relationship types</strong> between entities (e.g., email + phone + in-person contacts)</p></li>
+<li><p><strong>Heterogeneous networks</strong> with different node types (e.g., users, posts, hashtags)</p></li>
+<li><p><strong>Temporal networks</strong> where relationships change over time</p></li>
+<li><p><strong>Need for layer-specific analysis</strong> (e.g., comparing community structure across layers)</p></li>
+</ul>
+<p>If you only need single-layer network analysis, NetworkX or igraph might be simpler choices.</p>
+</section>
+<section id="related-projects">
+<h2>Related Projects<a class="headerlink" href="#related-projects" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>NetworkX:</strong> py3plex builds on NetworkX for single-layer operations</p></li>
+<li><p><strong>igraph:</strong> Faster for single-layer networks, but limited multilayer support</p></li>
+<li><p><strong>pymnet:</strong> Pure Python multilayer library, different API design</p></li>
+<li><p><strong>graph-tool:</strong> High performance, but steeper learning curve</p></li>
+</ul>
+<p>py3plex balances ease of use with multilayer-specific functionality.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Get started:</strong> <a class="reference internal" href="../getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a></p></li>
+<li><p><strong>See use cases:</strong> <a class="reference internal" href="key_use_cases.html"><span class="doc">Key Use Cases</span></a></p></li>
+<li><p><strong>Understand multilayer networks:</strong> <a class="reference internal" href="multilayer_in_2min.html"><span class="doc">Multilayer Networks in 2 Minutes</span></a></p></li>
+<li><p><strong>Deep dive:</strong> <a class="reference internal" href="../concepts/py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part_intro.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="key_use_cases.html" class="btn btn-neutral float-right" title="Key Use Cases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

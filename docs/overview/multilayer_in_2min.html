@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multilayer Networks in 2 Minutes &mdash; py3plex 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting Started (Tutorials)" href="../getting_started/part_intro.html" />
+    <link rel="prev" title="Key Use Cases" href="key_use_cases.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multilayer Networks in 2 Minutes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-core-idea">The Core Idea</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visual-intuition">Visual Intuition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#types-of-multilayer-networks">Types of Multilayer Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-multilayer-matters">Why Multilayer Matters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#real-world-impact">Real-World Impact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-example-in-code">Quick Example in Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#when-to-use-multilayer-analysis">When to Use Multilayer Analysis?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multilayer Networks in 2 Minutes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/overview/multilayer_in_2min.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multilayer-networks-in-2-minutes">
+<h1>Multilayer Networks in 2 Minutes<a class="headerlink" href="#multilayer-networks-in-2-minutes" title="Link to this heading"></a></h1>
+<p>A <strong>multilayer network</strong> represents systems where entities can be connected through multiple types of relationships simultaneously.</p>
+<section id="the-core-idea">
+<h2>The Core Idea<a class="headerlink" href="#the-core-idea" title="Link to this heading"></a></h2>
+<p>In the real world, relationships are rarely uniform. Consider a group of researchers:</p>
+<ul class="simple">
+<li><p>They <strong>co-author papers</strong> (collaboration network)</p></li>
+<li><p>They <strong>cite each other</strong> (citation network)</p></li>
+<li><p>They <strong>attend conferences</strong> together (social network)</p></li>
+<li><p>They may <strong>share funding</strong> (grant network)</p></li>
+</ul>
+<p>A single-layer network can only capture one of these relationships. A multilayer network captures all of them.</p>
+</section>
+<section id="visual-intuition">
+<h2>Visual Intuition<a class="headerlink" href="#visual-intuition" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Single-layer network (e.g., only co-authorship):
+
+Alice --- Bob --- Carol
+          |
+        David
+
+Multilayer network (co-authorship + citations):
+
+Layer 1 (Co-authorship):
+Alice --- Bob --- Carol
+          |
+        David
+
+Layer 2 (Citations):
+Alice --&gt; Bob --&gt; Carol
+          ↓
+        David
+
+Inter-layer connections:
+Alice in Layer 1 ↔ Alice in Layer 2 (same person)
+</pre></div>
+</div>
+</section>
+<section id="key-concepts">
+<h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
+<p><strong>Layers</strong></p>
+<p>Each layer represents a type of relationship (e.g., friendship, collaboration, family).</p>
+<p><strong>Intra-layer edges</strong></p>
+<p>Connections within a single layer (e.g., Alice friends with Bob).</p>
+<p><strong>Inter-layer edges</strong></p>
+<p>Connections between layers, usually representing the same entity across layers (e.g., Alice in the friendship layer is the same person as Alice in the collaboration layer).</p>
+<p><strong>Node-layer pairs</strong></p>
+<p>In py3plex, a node in layer A is conceptually distinct from the same node in layer B. This is the fundamental abstraction that makes multilayer analysis possible.</p>
+</section>
+<section id="types-of-multilayer-networks">
+<h2>Types of Multilayer Networks<a class="headerlink" href="#types-of-multilayer-networks" title="Link to this heading"></a></h2>
+<p><strong>Multiplex networks</strong></p>
+<ul class="simple">
+<li><p>Same nodes across all layers</p></li>
+<li><p>Different edge types per layer</p></li>
+<li><p>Example: Social media (same users, different platforms)</p></li>
+</ul>
+<p><strong>Heterogeneous networks</strong></p>
+<ul class="simple">
+<li><p>Different node types in different layers</p></li>
+<li><p>Example: Author-Paper-Venue networks</p></li>
+</ul>
+<p><strong>Temporal networks</strong></p>
+<ul class="simple">
+<li><p>Layers represent time slices</p></li>
+<li><p>Same nodes and edge types, but edges appear/disappear over time</p></li>
+<li><p>Example: Communication networks over days/weeks</p></li>
+</ul>
+</section>
+<section id="why-multilayer-matters">
+<h2>Why Multilayer Matters<a class="headerlink" href="#why-multilayer-matters" title="Link to this heading"></a></h2>
+<p><strong>Information is lost when flattening</strong></p>
+<p>If you merge all layers into a single network, you lose critical information:</p>
+<ul class="simple">
+<li><p>Which type of relationship connects two nodes?</p></li>
+<li><p>Are communities consistent across layers or layer-specific?</p></li>
+<li><p>How do different relationship types interact?</p></li>
+</ul>
+<p><strong>New properties emerge</strong></p>
+<p>Multilayer networks have properties that don’t exist in single-layer networks:</p>
+<ul class="simple">
+<li><p><strong>Node versatility:</strong> How many layers does a node participate in?</p></li>
+<li><p><strong>Layer correlation:</strong> Are connections in layer A predictive of layer B?</p></li>
+<li><p><strong>Multilayer communities:</strong> Groups that span multiple relationship types</p></li>
+<li><p><strong>Multiplexity:</strong> Number of different relationship types between two nodes</p></li>
+</ul>
+</section>
+<section id="real-world-impact">
+<h2>Real-World Impact<a class="headerlink" href="#real-world-impact" title="Link to this heading"></a></h2>
+<p><strong>Example: Disease spread</strong></p>
+<p>In epidemic modeling, people interact through:</p>
+<ul class="simple">
+<li><p>Household contacts (high transmission rate)</p></li>
+<li><p>Workplace contacts (medium rate, large reach)</p></li>
+<li><p>Social gatherings (variable)</p></li>
+</ul>
+<p>A single-layer model that averages these interactions will give incorrect predictions. A multilayer model preserves the structure and transmission dynamics of each contact type.</p>
+<p><strong>Example: Social influence</strong></p>
+<p>A person might be influential on Twitter (many followers) but not on LinkedIn (few connections). Flattening these into a single “social network” loses this nuance.</p>
+</section>
+<section id="quick-example-in-code">
+<h2>Quick Example in Code<a class="headerlink" href="#quick-example-in-code" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Add edges in different layers</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="c1"># Friendship layer</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+
+    <span class="c1"># Collaboration layer</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Analyze</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edges: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;edges&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layers: 2
+Nodes: 8  (4 unique entities × 2 layers)
+Edges: 4
+</pre></div>
+</div>
+</section>
+<section id="when-to-use-multilayer-analysis">
+<h2>When to Use Multilayer Analysis?<a class="headerlink" href="#when-to-use-multilayer-analysis" title="Link to this heading"></a></h2>
+<p>Use multilayer networks when:</p>
+<ul class="simple">
+<li><p>✅ You have <strong>multiple relationship types</strong> between entities</p></li>
+<li><p>✅ The <strong>type of relationship matters</strong> for your analysis</p></li>
+<li><p>✅ You want to <strong>preserve layer-specific structure</strong></p></li>
+<li><p>✅ You’re studying <strong>cross-layer effects</strong> (e.g., how Twitter activity affects LinkedIn connections)</p></li>
+</ul>
+<p>Stick with single-layer when:</p>
+<ul class="simple">
+<li><p>❌ All relationships are of the same type</p></li>
+<li><p>❌ Relationship type doesn’t affect your analysis</p></li>
+<li><p>❌ You only care about aggregate connectivity</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Try it yourself:</strong> <a class="reference internal" href="../getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a></p></li>
+<li><p><strong>Deeper theory:</strong> <a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a></p></li>
+<li><p><strong>See how py3plex works:</strong> <a class="reference internal" href="../concepts/py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a></p></li>
+<li><p><strong>Start analyzing:</strong> <a class="reference internal" href="../how-to/load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="key_use_cases.html" class="btn btn-neutral float-left" title="Key Use Cases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../getting_started/part_intro.html" class="btn btn-neutral float-right" title="Getting Started (Tutorials)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

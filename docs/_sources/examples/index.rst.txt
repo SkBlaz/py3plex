@@ -1,7 +1,20 @@
-Examples
-========
+Examples & Recipes
+==================
 
-This page provides a curated list of example scripts demonstrating py3plex features. All examples are available in the `examples/ directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ of the repository.
+Complete working examples demonstrating py3plex capabilities. All examples are available in the `examples/ directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ of the repository.
+
+**What's here:**
+
+* **Runnable Examples** — Copy-paste code for common tasks
+* **Analysis Recipes** — Reusable patterns (:doc:`../user_guide/recipes_and_workflows`)
+* **Case Studies** — In-depth applications (:doc:`../user_guide/case_studies`)
+
+**Quick Start:**
+
+* **DSL examples:** ``example_dsl_builder_api.py`` — Best starting point
+* **Visualization:** ``example_multilayer_visualization.py``
+* **Community detection:** ``example_community_detection.py``
+* **10-minute tutorial:** ``tutorial_10min.py``
 
 .. admonition:: Featured: DSL Examples
    :class: dsl-example

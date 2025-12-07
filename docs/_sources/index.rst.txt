@@ -95,22 +95,42 @@ Create a multilayer network:
     Number of nodes: 6
     Number of edges: 3
 
-Recommended Path
-================
+Start Here
+==========
 
-New to py3plex? Follow this learning path:
+**New to py3plex?** → Begin with the :doc:`getting_started/quickstart_5min` to create your first network in 5 minutes.
 
-1. **5-Minute Quickstart** (:doc:`getting_started/quickstart_5min`) — Create your first network and run basic analysis
-2. **10-Minute Tutorial** (:doc:`getting_started/tutorial_10min`) — Complete workflow from data loading to visualization
-3. **Working with Networks** (:doc:`user_guide/networks`) — Deep dive into network creation, manipulation, and queries
+**Already familiar with multilayer networks?** → Jump to :doc:`how-to/run_community_detection` or explore the :doc:`how-to/part_intro`.
 
-Documentation Contents
-======================
+**Just need the API?** → Go straight to :doc:`reference/api_index` or :doc:`reference/dsl_reference`.
 
-Part I: Getting Started
------------------------
+**Want to understand the concepts?** → Read :doc:`concepts/multilayer_networks_101` for the theory behind multilayer networks.
 
-Installation, quick start guides, and tutorials to get you up and running with py3plex.
+Documentation Structure
+=======================
+
+This documentation follows the `Diátaxis <https://diataxis.fr/>`_ framework with 7 top-level sections:
+
+Part I: Overview
+----------------
+
+High-level introduction to py3plex and multilayer networks.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Overview
+
+   overview/part_intro
+   overview/what_is_py3plex
+   overview/key_use_cases
+   overview/multilayer_in_2min
+
+----
+
+Part II: Getting Started (Tutorials)
+-------------------------------------
+
+Step-by-step tutorials for beginners. Start here if you're new to py3plex.
 
 .. toctree::
    :maxdepth: 2
@@ -124,14 +144,37 @@ Installation, quick start guides, and tutorials to get you up and running with p
 
 ----
 
-Part II: Concepts & Architecture
---------------------------------
+Part III: How-to Guides
+------------------------
 
-Understand multilayer network theory and py3plex's design philosophy.
+Task-oriented guides answering "How do I...?" questions.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Concepts & Architecture
+   :caption: How-to Guides
+
+   how-to/part_intro
+   how-to/load_and_build_networks
+   how-to/compute_statistics
+   how-to/run_community_detection
+   how-to/simulate_dynamics
+   how-to/run_random_walks
+   how-to/export_serialize
+   how-to/visualize_networks
+   how-to/query_with_dsl
+   how-to/build_pipelines
+   how-to/reproduce_workflows
+
+----
+
+Part IV: Concepts & Explanations
+---------------------------------
+
+Theoretical background and architectural explanations.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Concepts & Explanations
 
    concepts/part_intro
    concepts/multilayer_networks_101
@@ -141,106 +184,76 @@ Understand multilayer network theory and py3plex's design philosophy.
 
 ----
 
-Part III: User Guide
---------------------
+Part V: API & DSL Reference
+----------------------------
 
-Comprehensive how-to guides for every major feature.
+Complete reference documentation for APIs and DSL syntax.
 
 .. toctree::
    :maxdepth: 2
-   :caption: User Guide
+   :caption: API & DSL Reference
 
-   user_guide/part_intro
-   user_guide/networks
-   user_guide/statistics
-   user_guide/community_detection
-   user_guide/multilayer_dynamics
-   user_guide/random_walks_embeddings
-   user_guide/io_and_formats
-   user_guide/visualization
-   user_guide/dsl
-   user_guide/graph_ops
+   reference/part_intro
+   reference/algorithm_reference
+   reference/dsl_reference
+   reference/api_index
+   reference/configuration
+
+----
+
+Part VI: Examples & Recipes
+----------------------------
+
+Complete working examples and analysis recipes.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples & Recipes
+
+   examples/index
    user_guide/recipes_and_workflows
    user_guide/case_studies
 
 ----
 
-Part IV: Environments & Deployment
-----------------------------------
+Part VII: Project Info
+-----------------------
 
-CLI, Docker, and performance optimization for production use.
+Project information, contributing guidelines, and citations.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Environments & Deployment
+   :caption: Project Info
+
+   project/part_intro
+   project/changelog
+   project/roadmap
+   project/contributing
+   project/benchmarking
+   project/citing
+
+----
+
+Additional Sections
+-------------------
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Deployment & GUI
 
    deployment/part_intro
    deployment/cli_and_docker
    deployment/performance_scalability
-
-----
-
-Part V: Py3plex GUI
--------------------
-
-Web-based graphical interface for interactive network exploration.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Py3plex GUI
-
    gui/part_intro
    gui/gui_user_guide
-   gui/gui_deployment
-   gui/gui_api_reference
-   gui/gui_architecture
-   gui/gui_testing
-
-----
-
-Part VI: Developer & Contributor Docs
--------------------------------------
-
-Development setup, architecture, and contribution guidelines.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Developer & Contributor Docs
+   :maxdepth: 1
+   :caption: Developer Docs
 
    dev/part_intro
    dev/development_guide
    dev/code_architecture
-   dev/repo_layout
-   dev/contributing
-
-----
-
-Part VII: Examples
-------------------
-
-Working code examples for various use cases.
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Examples
-
-   examples/index
-
-----
-
-Part VIII: Reference & Citation
--------------------------------
-
-API documentation and citation information.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Reference & Citation
-
-   reference/part_intro
-   reference/algorithm_reference
-   reference/api_index
-   reference/citation_and_acknowledgements
 
 Citation
 ========
