@@ -21,7 +21,7 @@ This is particularly useful for:
 * **Reporting**: Generate summaries for papers, presentations, or documentation
 * **Teaching**: Demonstrate multiple network analysis concepts at once
 
-Quick Start
+Quickstart
 -----------
 
 Basic Usage

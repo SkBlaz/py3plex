@@ -196,7 +196,10 @@ SELECT Clause
 Specifies what to select from the network::
 
     SELECT nodes     # Select nodes
-    SELECT edges     # Select edges (edge queries in development)
+
+.. warning::
+
+   **Edge Queries (Experimental)**: Edge queries (``SELECT edges``) are currently in development and not fully supported. The DSL primarily focuses on node queries at this time. Use node-based queries for production work.
 
 **Note**: Current version primarily supports node queries.
 
@@ -254,6 +257,135 @@ Calculates network measures for filtered nodes::
 **Multiple measures**::
 
     COMPUTE degree betweenness_centrality closeness_centrality
+
+DSL Syntax Comparison: String vs Builder API
+---------------------------------------------
+
+Py3plex provides two complementary ways to query networks: the **SQL-like string DSL** and the **Python builder API (DSL v2)**. Both execute the same underlying query engine, but offer different developer experiences.
+
+When to Use Each
+~~~~~~~~~~~~~~~~
+
+**Use String DSL when:**
+
+* Writing quick, exploratory queries in notebooks
+* Teaching network concepts with familiar SQL syntax
+* Scripting simple one-off analyses
+* Maximum readability for domain experts
+
+**Use Builder API when:**
+
+* Building production pipelines
+* Needing IDE autocompletion and type checking
+* Constructing complex, dynamic queries programmatically
+* Exporting results to multiple formats
+* Requiring advanced features (layer algebra, EXPLAIN mode)
+
+Side-by-Side Examples
+~~~~~~~~~~~~~~~~~~~~~
+
+Here's the same query implemented both ways:
+
+**Example 1: Basic node filtering**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query, Q, L
+
+    # Create a small network
+    network = multinet.multi_layer_network(directed=False)
+    network.add_nodes([
+        {'source': 'Alice', 'type': 'social'},
+        {'source': 'Bob', 'type': 'social'},
+        {'source': 'Carol', 'type': 'social'},
+    ])
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Carol', 'source_type': 'social', 'target_type': 'social'},
+    ])
+
+    # STRING DSL: SQL-like syntax
+    result_string = execute_query(
+        network,
+        'SELECT nodes WHERE layer="social" AND degree > 1'
+    )
+    print(f"String DSL found: {result_string['count']} nodes")
+
+    # BUILDER API: Pythonic chainable calls
+    result_builder = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .where(degree__gt=1)
+         .execute(network)
+    )
+    print(f"Builder API found: {result_builder.count} nodes")
+
+**Expected output:**
+
+.. code-block:: text
+
+    String DSL found: 1 nodes
+    Builder API found: 1 nodes
+
+**Example 2: Computing centrality with ordering**
+
+.. code-block:: python
+
+    # STRING DSL: Compute and return all results
+    result_string = execute_query(
+        network,
+        'SELECT nodes WHERE layer="social" '
+        'COMPUTE betweenness_centrality'
+    )
+    # Manual sorting needed
+    centralities = result_string['computed']['betweenness_centrality']
+    sorted_nodes = sorted(centralities.items(), key=lambda x: -x[1])
+    top_3 = sorted_nodes[:3]
+
+    # BUILDER API: Ordering and limiting built-in
+    result_builder = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("betweenness_centrality")
+         .order_by("-betweenness_centrality")
+         .limit(3)
+         .execute(network)
+    )
+    # Results already ordered and limited
+    top_3 = list(result_builder)
+
+**Example 3: Layer algebra**
+
+.. code-block:: python
+
+    # BUILDER API: Advanced layer operations
+    # Union: nodes in social OR work layer
+    result = (
+        Q.nodes()
+         .from_layers(L["social"] + L["work"])
+         .execute(network)
+    )
+
+    # Difference: nodes in social BUT NOT bots
+    result = (
+        Q.nodes()
+         .from_layers(L["social"] - L["bots"])
+         .execute(network)
+    )
+
+    # Intersection: nodes in BOTH social AND work
+    result = (
+        Q.nodes()
+         .from_layers(L["social"] & L["work"])
+         .execute(network)
+    )
+
+.. note::
+
+   Layer algebra operations (union, difference, intersection) are **only available in the Builder API**. The string DSL uses OR/AND operators but these work differently (node-level boolean logic, not layer sets).
+
+**Recommendation:** Start with the string DSL for learning and exploration. Migrate to the builder API when building production workflows or needing advanced features.
 
 Python Builder API (DSL v2)
 ---------------------------
@@ -1407,7 +1539,7 @@ dynamics DSL for epidemic modeling and other dynamical processes.
 
 For detailed documentation and formalism, see :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows`.
 
-Quick Start
+Quickstart
 ~~~~~~~~~~~
 
 The dynamics DSL uses a builder API similar to the query DSL:

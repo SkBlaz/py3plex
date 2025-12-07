@@ -20,7 +20,7 @@ This is particularly useful for:
 * Explaining centrality to non-technical stakeholders
 * Debugging and validating centrality computations
 
-Quick Start
+Quickstart
 -----------
 
 .. code-block:: python

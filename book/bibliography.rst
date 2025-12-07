@@ -83,7 +83,7 @@ Biological Networks
 Social Networks
 ~~~~~~~~~~~~~~~
 
-.. [Magnani2013] Magnani, M., & Rossi, L. (2013). Pareto distance for multi-layer network analysis. In *Social Computing, Behavioral-Cultural Modeling and Prediction* (pp. 249-256). Springer. https://doi.org/10.1007/978-3-642-37210-0_27
+.. [Magnani2013] Magnani, M., & Rossi, L. (2013). Pareto distance for multilayer network analysis. In *Social Computing, Behavioral-Cultural Modeling and Prediction* (pp. 249-256). Springer. https://doi.org/10.1007/978-3-642-37210-0_27
    
    Social network analysis with multilayer methods.
 

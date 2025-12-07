@@ -157,7 +157,7 @@ Function-Based API
 For advanced users who need direct access to sparse matrices and detailed control,
 the function-based API is also available.
 
-Quick Start
+Quickstart
 ~~~~~~~~~~~
 
 Discrete-Time Simulation

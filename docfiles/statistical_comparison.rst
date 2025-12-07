@@ -30,7 +30,7 @@ The module is part of py3plex. Ensure you have the required dependencies:
 
     pip install numpy scipy pandas networkx
 
-Quick Start
+Quickstart
 -----------
 
 .. code-block:: python

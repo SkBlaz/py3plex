@@ -214,7 +214,7 @@ The DSL provides powerful layer algebra operations.
        # Complex: (social OR work) - bots
        Q.nodes().from_layers(L["social"] + L["work"] - L["bots"])
 
-   This makes multi-layer queries intuitive and expressive!
+   This makes multilayer queries intuitive and expressive!
 
 Simple Layer Selection
 ~~~~~~~~~~~~~~~~~~~~~~
