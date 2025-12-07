@@ -107,7 +107,7 @@ This book follows these refactoring principles from the original issue:
 Key source files from `docfiles/` have been restructured:
 
 - **Foundations** — From `concepts/`, `multilayer_networks_101.rst`, `supra.rst`
-- **Installation** — From `getting_started/installation.rst`, `quickstart_5min.rst`
+- **Installation** — From `getting_started/installation.rst`, `tutorial_10min.rst`
 - **Data Loading** — From `user_guide/io_and_formats.rst`, `io_serialization.rst`
 - **DSL** — From `user_guide/dsl.rst` and `examples/network_analysis/example_dsl_*.py`
 - **GUI** — From `gui/*.rst` files
