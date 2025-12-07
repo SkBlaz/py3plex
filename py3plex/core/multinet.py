@@ -87,6 +87,62 @@ except ImportError:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Temporal Attribute Conventions
+# ─────────────────────────────────────────────────────────────────────────────
+"""
+Temporal Attributes for Edges
+===============================
+
+Py3plex supports optional temporal information on edges. This allows for 
+time-aware network analysis without requiring invasive changes to existing code.
+
+Supported Temporal Attributes:
+    - **t**: A scalar timestamp (float, int, or ISO string) representing a 
+      point-in-time when the edge is active. For example, t=100.0 means the 
+      edge occurs at time 100.
+
+    - **t_start** and **t_end**: Interval timestamps representing a time range 
+      during which the edge is active. For example, t_start=100.0 and t_end=200.0 
+      means the edge is active from time 100 to time 200 (inclusive).
+
+Precedence Rules:
+    - If both **t** and **t_start**/**t_end** are present, the interval form 
+      (t_start/t_end) takes precedence.
+    
+    - If only **t_start** is present, the interval extends to infinity.
+    
+    - If only **t_end** is present, the interval starts from negative infinity.
+
+Atemporal Edges:
+    - Edges without any temporal attributes (no **t**, **t_start**, or **t_end**) 
+      are considered "atemporal" and are always included in temporal queries.
+    
+    - This ensures backward compatibility with existing networks.
+
+Usage with TemporalMultinetView:
+    >>> from py3plex.temporal_view import TemporalMultinetView
+    >>> 
+    >>> # Add temporal edges
+    >>> network.add_edges([
+    ...     {'source': 'A', 'target': 'B', 't': 100.0,
+    ...      'source_type': 'layer1', 'target_type': 'layer1'},
+    ...     {'source': 'B', 'target': 'C', 't_start': 150.0, 't_end': 250.0,
+    ...      'source_type': 'layer1', 'target_type': 'layer1'}
+    ... ])
+    >>> 
+    >>> # Create temporal view
+    >>> view = TemporalMultinetView(network)
+    >>> snapshot = view.snapshot_at(150.0)  # Only edges active at t=150
+    >>> range_view = view.with_slice(100.0, 200.0)  # Edges active in [100, 200]
+
+For more details, see:
+    - py3plex.temporal_utils: Utilities for parsing and extracting temporal data
+    - py3plex.temporal_view: TemporalMultinetView wrapper for temporal filtering
+    - DSL temporal queries: AT and DURING clauses for time-based queries
+"""
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Helper functions for visualization (extracted from visualize_network method)
 # ─────────────────────────────────────────────────────────────────────────────
 

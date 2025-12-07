@@ -213,6 +213,34 @@ class OrderItem:
 
 
 @dataclass
+class TemporalContext:
+    """Temporal context for time-based queries.
+    
+    This represents temporal constraints on a query, specified via AT or DURING clauses.
+    
+    Attributes:
+        kind: Type of temporal constraint ("at" for point-in-time, "during" for interval)
+        t0: Start time for interval queries (None for point-in-time)
+        t1: End time for interval queries (None for point-in-time)
+        range_name: Optional named range reference (e.g., "Q1_2023")
+    
+    Examples:
+        >>> # Point-in-time: AT 1234567890
+        >>> TemporalContext(kind="at", t0=1234567890.0, t1=1234567890.0)
+        
+        >>> # Time range: DURING [100, 200]
+        >>> TemporalContext(kind="during", t0=100.0, t1=200.0)
+        
+        >>> # Named range: DURING RANGE "Q1_2023"
+        >>> TemporalContext(kind="during", range_name="Q1_2023")
+    """
+    kind: str  # "at" or "during"
+    t0: Optional[float] = None
+    t1: Optional[float] = None
+    range_name: Optional[str] = None
+
+
+@dataclass
 class SelectStmt:
     """A SELECT statement.
     
@@ -225,6 +253,7 @@ class SelectStmt:
         limit: Optional limit on results
         export: Optional export target (for result format conversion)
         file_export: Optional file export specification (for writing to files)
+        temporal_context: Optional temporal context for time-based queries
     """
     target: Target
     layer_expr: Optional[LayerExpr] = None
@@ -234,6 +263,7 @@ class SelectStmt:
     limit: Optional[int] = None
     export: Optional[ExportTarget] = None
     file_export: Optional['ExportSpec'] = None
+    temporal_context: Optional['TemporalContext'] = None
 
 
 @dataclass
