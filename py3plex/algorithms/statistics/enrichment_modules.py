@@ -204,7 +204,7 @@ def compute_enrichment(
         finalFrame = pd.concat(all_results, ignore_index=True)
     else:
         finalFrame = pd.DataFrame()
-    
+
     return finalFrame
 
 
