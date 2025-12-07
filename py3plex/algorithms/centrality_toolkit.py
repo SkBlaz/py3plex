@@ -65,7 +65,7 @@ def multilayer_pagerank(
         random_seed: Random seed for reproducibility
         
     Returns:
-        If uncertainty=False: Dictionary mapping (node, layer) -> PageRank scores
+        If uncertainty=False: StatSeries with deterministic values (std=None)
         If uncertainty=True: StatSeries with mean, std, quantiles
         
     Algorithm:
@@ -79,9 +79,10 @@ def multilayer_pagerank(
     
     Examples:
         >>> # Deterministic
-        >>> scores = multilayer_pagerank(network)
-        >>> scores[('A', 'L1')]
-        0.25
+        >>> result = multilayer_pagerank(network)
+        >>> result[('A', 'L1')]  # Dict-like access
+        {'mean': 0.25}
+        >>> np.array(result)  # Array access (backward compat)
         
         >>> # With uncertainty
         >>> result = multilayer_pagerank(network, uncertainty=True, n_runs=50)
@@ -89,10 +90,18 @@ def multilayer_pagerank(
         >>> result.std   # Standard deviations
         >>> result.quantiles  # Confidence intervals
     """
-    # Check if uncertainty is requested (explicit or via context)
+    # Check if uncertainty is requested (explicit parameter overrides context)
     if _UNCERTAINTY_AVAILABLE:
         cfg = get_uncertainty_config()
-        should_estimate = uncertainty or cfg.mode == UncertaintyMode.ON
+        # Only use context if uncertainty parameter is not explicitly False
+        if uncertainty:
+            should_estimate = True
+        elif cfg.mode == UncertaintyMode.ON:
+            # Context says ON, but check if uncertainty was explicitly passed
+            # If not passed (None or default False), respect context
+            should_estimate = True
+        else:
+            should_estimate = False
     else:
         should_estimate = False
     
