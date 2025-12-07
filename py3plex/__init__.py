@@ -178,6 +178,20 @@ from py3plex.dynamics import (
     MissingInitialConditionError,
 )
 
+# Uncertainty module for first-class uncertainty estimation
+from py3plex.uncertainty import (
+    StatSeries,
+    StatMatrix,
+    CommunityStats,
+    ResamplingStrategy,
+    UncertaintyMode,
+    UncertaintyConfig,
+    get_uncertainty_config,
+    set_uncertainty_config,
+    uncertainty_enabled,
+    estimate_uncertainty,
+)
+
 __all__ = [
     # Version info
     "__version__",
@@ -289,4 +303,15 @@ __all__ = [
     "DynamicsError",
     "UnknownProcessError",
     "MissingInitialConditionError",
+    # Uncertainty (first-class uncertainty support)
+    "StatSeries",
+    "StatMatrix",
+    "CommunityStats",
+    "ResamplingStrategy",
+    "UncertaintyMode",
+    "UncertaintyConfig",
+    "get_uncertainty_config",
+    "set_uncertainty_config",
+    "uncertainty_enabled",
+    "estimate_uncertainty",
 ]

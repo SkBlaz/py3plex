@@ -9,15 +9,32 @@ Implements core multilayer variants of centrality measures:
 
 These algorithms properly account for the multilayer structure of networks.
 
+All centrality functions now support first-class uncertainty estimation via
+the `uncertainty` parameter.
+
 Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 import numpy as np
 import networkx as nx
 import scipy.sparse as sp
 from scipy.sparse.linalg import eigs
+
+# Import uncertainty types (will be None if uncertainty module not available)
+try:
+    from py3plex.uncertainty import (
+        StatSeries,
+        ResamplingStrategy,
+        estimate_uncertainty,
+        get_uncertainty_config,
+        UncertaintyMode,
+    )
+    _UNCERTAINTY_AVAILABLE = True
+except ImportError:
+    _UNCERTAINTY_AVAILABLE = False
+    StatSeries = None
 
 
 def multilayer_pagerank(
@@ -25,9 +42,13 @@ def multilayer_pagerank(
     alpha: float = 0.85,
     max_iter: int = 100,
     tol: float = 1e-6,
-    personalization: Optional[Dict] = None
-) -> Dict[Tuple, float]:
-    """Compute multilayer PageRank centrality.
+    personalization: Optional[Dict] = None,
+    uncertainty: bool = False,
+    n_runs: Optional[int] = None,
+    resampling: Optional[ResamplingStrategy] = None,
+    random_seed: Optional[int] = None,
+) -> Union[Dict[Tuple, float], 'StatSeries']:
+    """Compute multilayer PageRank centrality with optional uncertainty estimation.
     
     Implements PageRank on the supra-adjacency matrix, accounting for
     random walks across layers.
@@ -38,9 +59,14 @@ def multilayer_pagerank(
         max_iter: Maximum number of iterations
         tol: Convergence tolerance
         personalization: Optional personalization vector (node -> weight)
+        uncertainty: If True, estimate uncertainty via resampling
+        n_runs: Number of runs for uncertainty estimation (default from config)
+        resampling: Resampling strategy (default from config)
+        random_seed: Random seed for reproducibility
         
     Returns:
-        Dictionary mapping (node, layer) tuples to PageRank scores
+        If uncertainty=False: StatSeries with deterministic values (std=None)
+        If uncertainty=True: StatSeries with mean, std, quantiles
         
     Algorithm:
         PR = (1-α)/N + α * A^T * PR
@@ -50,53 +76,121 @@ def multilayer_pagerank(
     References:
         - Halu, A., et al. (2013). "Multiplex PageRank."
           PLoS ONE, 8(10), e78293.
+    
+    Examples:
+        >>> # Deterministic
+        >>> result = multilayer_pagerank(network)
+        >>> result[('A', 'L1')]  # Dict-like access
+        {'mean': 0.25}
+        >>> np.array(result)  # Array access (backward compat)
+        
+        >>> # With uncertainty
+        >>> result = multilayer_pagerank(network, uncertainty=True, n_runs=50)
+        >>> result.mean  # Average PageRank values
+        >>> result.std   # Standard deviations
+        >>> result.quantiles  # Confidence intervals
     """
-    # Get supra-adjacency matrix
-    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
-    n = supra_adj.shape[0]
-    
-    # Get node order
-    if hasattr(network, 'node_order_in_matrix'):
-        node_order = network.node_order_in_matrix
+    # Check if uncertainty is requested (explicit parameter overrides context)
+    if _UNCERTAINTY_AVAILABLE:
+        cfg = get_uncertainty_config()
+        # Only use context if uncertainty parameter is not explicitly False
+        if uncertainty:
+            should_estimate = True
+        elif cfg.mode == UncertaintyMode.ON:
+            # Context says ON, but check if uncertainty was explicitly passed
+            # If not passed (None or default False), respect context
+            should_estimate = True
+        else:
+            should_estimate = False
     else:
-        node_order = list(network.get_nodes())
+        should_estimate = False
     
-    # Initialize PageRank vector
-    if personalization:
-        pr = np.zeros(n)
+    if should_estimate and not _UNCERTAINTY_AVAILABLE:
+        import warnings
+        warnings.warn(
+            "Uncertainty estimation requested but uncertainty module not available. "
+            "Returning deterministic result.",
+            RuntimeWarning
+        )
+        should_estimate = False
+    
+    # Define the core computation function
+    def _compute_pagerank(net):
+        # Get supra-adjacency matrix
+        supra_adj = net.get_supra_adjacency_matrix(mtype="sparse")
+        n = supra_adj.shape[0]
+        
+        # Get node order
+        if hasattr(net, 'node_order_in_matrix'):
+            node_order = net.node_order_in_matrix
+        else:
+            node_order = list(net.get_nodes())
+        
+        # Initialize PageRank vector
+        if personalization:
+            pr = np.zeros(n)
+            for i, node in enumerate(node_order):
+                pr[i] = personalization.get(node, 1.0/n)
+            pr = pr / pr.sum()  # Normalize
+        else:
+            pr = np.ones(n) / n
+        
+        # Column-normalize the supra-adjacency matrix
+        # out-degree of each node
+        out_degree = np.array(supra_adj.sum(axis=0)).flatten()
+        # For nodes with zero out-degree, use 1 to avoid division by zero
+        # This effectively gives them uniform transition probability
+        out_degree[out_degree == 0] = 1
+        
+        # Create column-normalized matrix
+        D_inv = sp.diags(1.0 / out_degree)
+        A_norm = supra_adj @ D_inv
+        
+        # Power iteration
+        for iteration in range(max_iter):
+            pr_new = (1 - alpha) / n + alpha * A_norm @ pr
+            
+            # Check convergence
+            if np.abs(pr_new - pr).sum() < tol:
+                break
+            
+            pr = pr_new
+        
+        # Create result dictionary
+        result = {}
         for i, node in enumerate(node_order):
-            pr[i] = personalization.get(node, 1.0/n)
-        pr = pr / pr.sum()  # Normalize
+            result[node] = float(pr[i])
+        
+        return result
+    
+    # If uncertainty requested, use estimate_uncertainty
+    if should_estimate:
+        result = estimate_uncertainty(
+            network,
+            _compute_pagerank,
+            n_runs=n_runs,
+            resampling=resampling,
+            random_seed=random_seed,
+        )
+        return result
+    
+    # Otherwise, run deterministic computation and wrap in StatSeries
+    scores = _compute_pagerank(network)
+    
+    if _UNCERTAINTY_AVAILABLE:
+        # Wrap in StatSeries for consistency
+        nodes = sorted(scores.keys(), key=lambda x: str(x))
+        mean_vals = np.array([scores[n] for n in nodes])
+        return StatSeries(
+            index=nodes,
+            mean=mean_vals,
+            std=None,
+            quantiles=None,
+            meta={"alpha": alpha, "max_iter": max_iter, "tol": tol}
+        )
     else:
-        pr = np.ones(n) / n
-    
-    # Column-normalize the supra-adjacency matrix
-    # out-degree of each node
-    out_degree = np.array(supra_adj.sum(axis=0)).flatten()
-    # For nodes with zero out-degree, use 1 to avoid division by zero
-    # This effectively gives them uniform transition probability
-    out_degree[out_degree == 0] = 1
-    
-    # Create column-normalized matrix
-    D_inv = sp.diags(1.0 / out_degree)
-    A_norm = supra_adj @ D_inv
-    
-    # Power iteration
-    for iteration in range(max_iter):
-        pr_new = (1 - alpha) / n + alpha * A_norm @ pr
-        
-        # Check convergence
-        if np.abs(pr_new - pr).sum() < tol:
-            break
-        
-        pr = pr_new
-    
-    # Create result dictionary
-    result = {}
-    for i, node in enumerate(node_order):
-        result[node] = float(pr[i])
-    
-    return result
+        # Return plain dict for backward compatibility
+        return scores
 
 
 def multilayer_betweenness_centrality(
