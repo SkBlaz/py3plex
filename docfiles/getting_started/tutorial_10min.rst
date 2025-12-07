@@ -1,28 +1,33 @@
 10-Minute Tutorial
 ==================
 
-Build a complete multilayer network analysis pipeline: load data, compute metrics, detect communities, and visualize.
+Create a multilayer network, compute statistics, detect communities, and visualize—all in 10 minutes. This comprehensive tutorial takes you from basic network creation to advanced multilayer analysis.
 
 **You will learn:**
 
-* Load networks from files
-* Navigate and extract subnetworks
-* Compute centrality and multilayer statistics
+* Create multilayer networks from scratch and load from files
+* Display network statistics and understand the multilayer model
+* Compute layer-specific and multilayer metrics
+* Query networks with the SQL-like DSL
 * Detect communities across layers
 * Generate random walks for embeddings
-* Create visualizations
+* Create publication-ready visualizations
 
-Prerequisites
--------------
+Installation
+------------
 
 .. code-block:: bash
 
     pip install py3plex
 
+For Docker setup or optional dependencies, see :doc:`installation`.
+
 ----
 
-Part 1: Loading Networks (2 min)
---------------------------------
+Part 1: Your First Network (2 min)
+----------------------------------
+
+Let's create a simple multilayer network and explore its basic properties.
 
 Create from scratch:
 
@@ -31,18 +36,46 @@ Create from scratch:
     from py3plex.core import multinet
 
     network = multinet.multi_layer_network()
+    
+    # Format: [source_node, source_layer, target_node, target_layer, weight]
     network.add_edges([
-        ['A', 'layer1', 'B', 'layer1', 1],
-        ['B', 'layer1', 'C', 'layer1', 1],
-        ['A', 'layer2', 'B', 'layer2', 1],
-        ['B', 'layer2', 'D', 'layer2', 1]
+        ['Alice', 'friends', 'Bob', 'friends', 1],
+        ['Bob', 'friends', 'Carol', 'friends', 1],
+        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
+        ['Bob', 'colleagues', 'Dave', 'colleagues', 1]
     ], input_type="list")
+    
     network.basic_stats()
+
+**Output:**
+
+.. code-block:: text
+
+    Number of nodes: 6
+    Number of edges: 4
+    Number of unique nodes (as node-layer tuples): 6
+    Number of unique node IDs (across all layers): 4
+    Nodes per layer:
+      Layer 'friends': 3 nodes
+      Layer 'colleagues': 3 nodes
+
+**Key concept:** The network has 6 node-layer pairs but only 4 unique people. Alice appears in both layers as ``('Alice', 'friends')`` and ``('Alice', 'colleagues')``.
+
+Visualize your network:
+
+.. code-block:: python
+
+    from py3plex.visualization.multilayer import draw_multilayer_default
+    
+    draw_multilayer_default([network], display=True)
+
+Nodes are colored by layer. Edges connect nodes within and across layers.
 
 Load from file:
 
 .. code-block:: python
 
+    # For larger networks, load from files
     network = multinet.multi_layer_network().load_network(
         "datasets/multiedgelist.txt",
         input_type="multiedgelist",  # Format: source target layer
@@ -52,44 +85,105 @@ Load from file:
 
 **Supported formats:** ``multiedgelist`` (source, target, layer), ``edgelist`` (source, target), ``gpickle``, ``gml``, ``graphml``
 
-Part 2: Exploring Structure (2 min)
------------------------------------
+----
 
-Iterate through nodes and edges:
+Part 2: Basic Analysis (2 min)
+------------------------------
+
+Compute layer-specific metrics:
 
 .. code-block:: python
 
+    from py3plex.algorithms.statistics import multilayer_statistics as mls
+    
+    # Layer density: how connected is each layer?
+    print(f"Friends density: {mls.layer_density(network, 'friends'):.3f}")
+    print(f"Colleagues density: {mls.layer_density(network, 'colleagues'):.3f}")
+    
+    # Node activity: what fraction of layers does Bob appear in?
+    print(f"Bob's activity: {mls.node_activity(network, 'Bob'):.3f}")
+
+**Output:**
+
+.. code-block:: text
+
+    Friends density: 0.667
+    Colleagues density: 0.667
+    Bob's activity: 1.000
+
+* **Density 0.667** — 2 of 3 possible edges exist
+* **Activity 1.0** — Bob appears in 100% of layers (both)
+
+Query with the DSL:
+
+Py3plex features a powerful SQL-like DSL for querying networks!
+
+.. admonition:: DSL Example: Network Queries
+   :class: dsl-example
+
+   Use SQL-like queries for network exploration:
+
+   .. code-block:: python
+
+       from py3plex.dsl import execute_query, Q, L
+       
+       # String DSL syntax
+       result = execute_query(network, 'SELECT nodes WHERE degree > 1')
+       print(f"Found {result['count']} high-degree nodes")
+       
+       # Builder API (recommended for production)
+       result = (
+           Q.nodes()
+            .from_layers(L["friends"])
+            .where(degree__gt=1)
+            .compute("betweenness_centrality")
+            .execute(network)
+       )
+
+   The DSL makes complex network analysis intuitive and concise!
+
+See :doc:`../user_guide/dsl` for complete DSL documentation.
+
+Explore network structure:
+
+.. code-block:: python
+
+    # Iterate through nodes and edges
     for node in network.get_nodes(data=True):
-        print(node)  # (('1', '1'), {'type': '1'})
+        print(node)  # (('Alice', 'friends'), {'type': 'friends'})
 
     for edge in network.get_edges(data=True):
-        print(edge)  # (('1', '1'), ('2', '1'), {'weight': '1'})
+        print(edge)  # Edge with attributes
 
-    neighbors = list(network.get_neighbors("1", layer_id="1"))
+    # Get neighbors of a node in a specific layer
+    neighbors = list(network.get_neighbors("Alice", layer_id="friends"))
 
 Extract subnetworks:
 
 .. code-block:: python
 
     # Single layer
-    layer_1 = network.subnetwork(['1'], subset_by="layers")
+    friends_layer = network.subnetwork(['friends'], subset_by="layers")
 
     # Specific nodes across all layers
-    subset = network.subnetwork(['1', '2'], subset_by="node_names")
+    subset = network.subnetwork(['Alice', 'Bob'], subset_by="node_names")
 
     # Specific node-layer pairs
-    pairs = network.subnetwork([('1', '1'), ('2', '1')], subset_by="node_layer_names")
+    pairs = network.subnetwork([('Alice', 'friends'), ('Bob', 'friends')], 
+                               subset_by="node_layer_names")
 
-Part 3: Computing Metrics (2 min)
----------------------------------
+----
+
+Part 3: Advanced Metrics (2 min)
+--------------------------------
 
 Layer-specific centrality (using NetworkX):
 
 .. code-block:: python
 
-    layer_1 = network.subnetwork(['1'], subset_by="layers")
-    degree_cent = layer_1.monoplex_nx_wrapper("degree_centrality")
-    betweenness = layer_1.monoplex_nx_wrapper("betweenness_centrality")
+    friends_layer = network.subnetwork(['friends'], subset_by="layers")
+    degree_cent = friends_layer.monoplex_nx_wrapper("degree_centrality")
+    betweenness = friends_layer.monoplex_nx_wrapper("betweenness_centrality")
 
 Multilayer centrality:
 
@@ -107,12 +201,14 @@ Multilayer statistics:
 
     from py3plex.algorithms.statistics import multilayer_statistics as mls
 
-    density = mls.layer_density(network, 'layer1')  # Edge density within a layer
-    activity = mls.node_activity(network, node='1')  # Fraction of layers node appears in
-    overlap = mls.edge_overlap(network, 'layer1', 'layer2')  # Shared edges between layers
-    similarity = mls.layer_similarity(network, 'layer1', 'layer2', method='jaccard')
+    density = mls.layer_density(network, 'friends')  # Edge density within a layer
+    activity = mls.node_activity(network, node='Alice')  # Fraction of layers node appears in
+    overlap = mls.edge_overlap(network, 'friends', 'colleagues')  # Shared edges between layers
+    similarity = mls.layer_similarity(network, 'friends', 'colleagues', method='jaccard')
 
 **Available statistics:** ``layer_density``, ``entropy_of_multiplexity``, ``node_activity``, ``edge_overlap``, ``layer_similarity``, ``algebraic_connectivity``, ``multilayer_clustering_coefficient``, and more.
+
+----
 
 Part 4: Community Detection (2 min)
 -----------------------------------
@@ -133,6 +229,8 @@ Part 4: Community Detection (2 min)
     from collections import Counter
     sizes = Counter(partition.values())
     print(f"Sizes: {dict(sizes)}")
+
+----
 
 Part 5: Random Walks (1 min)
 ----------------------------
@@ -165,6 +263,8 @@ Generate walks for embeddings:
     walks = generate_walks(G, num_walks=10, walk_length=10, p=1.0, q=1.0, seed=42)
     # Use with Word2Vec: model = Word2Vec([[str(n) for n in w] for w in walks])
 
+----
+
 Part 6: Visualization (1 min)
 -----------------------------
 
@@ -195,6 +295,23 @@ With community colors:
     plt.savefig("communities.png", dpi=150, bbox_inches='tight')
     plt.close()
 
+----
+
+Key Concepts
+------------
+
+Understanding these core concepts will help you work effectively with py3plex:
+
+1. **Node-layer pairs:** Nodes are ``(node_id, layer_id)`` tuples. Alice in friends is different from Alice in colleagues. This allows the same entity to have different connections in different contexts.
+
+2. **Layers preserve context:** Each layer represents a different relationship type (friends, colleagues, family, etc.). Statistics and algorithms respect layer boundaries, revealing patterns invisible to single-layer analysis.
+
+3. **NetworkX compatible:** py3plex uses NetworkX internally. All NetworkX algorithms work on py3plex networks, giving you access to a rich ecosystem of graph algorithms.
+
+4. **Multilayer statistics:** Metrics like node activity and edge overlap reveal cross-layer patterns. These measures quantify how entities interact across different relationship contexts.
+
+----
+
 Complete Example
 ----------------
 
@@ -216,8 +333,8 @@ Complete Example
     network.basic_stats()
 
     # Analyze
-    layer_1 = network.subnetwork(['1'], subset_by="layers")
-    degree_cent = layer_1.monoplex_nx_wrapper("degree_centrality")
+    friends_layer = network.subnetwork(['friends'], subset_by="layers")
+    degree_cent = friends_layer.monoplex_nx_wrapper("degree_centrality")
     print("Top 5 by degree:", sorted(degree_cent.items(), key=lambda x: x[1], reverse=True)[:5])
 
     # Detect communities
@@ -235,12 +352,14 @@ Complete Example
     plt.savefig("analysis.png", dpi=150, bbox_inches='tight')
     plt.close()
 
-Bonus: Using the DSL (1 min)
+----
+
+DSL: Query Networks Like SQL
 ----------------------------
 
-The SQL-like DSL makes many analysis tasks even simpler:
+The SQL-like DSL makes many analysis tasks simpler and more intuitive:
 
-.. admonition:: DSL Example: Quick Analysis
+.. admonition:: DSL Example: Advanced Analysis
    :class: dsl-example
 
    .. code-block:: python
@@ -262,7 +381,7 @@ The SQL-like DSL makes many analysis tasks even simpler:
        print(df)
 
        # Compare layers
-       for layer_id in ['1', '2']:
+       for layer_id in ['friends', 'colleagues']:
            layer_result = (
                Q.nodes()
                 .from_layers(L[layer_id])
@@ -273,6 +392,8 @@ The SQL-like DSL makes many analysis tasks even simpler:
 
    See :doc:`../user_guide/dsl` for comprehensive DSL documentation!
 
+----
+
 Common Issues
 -------------
 
@@ -282,12 +403,32 @@ Common Issues
 
 **Missing dependencies:** Install extras with ``pip install py3plex[viz,algos]``
 
+----
+
 Next Steps
 ----------
+
+**Continue Learning:**
+
+* :doc:`installation` — Optional dependencies and setup options
+* :doc:`common_issues` — Solutions to common problems
+
+**Advanced Topics:**
+
+* :doc:`../user_guide/recipes_and_workflows` — Ready-to-use analysis workflows and patterns
+* :doc:`../user_guide/dsl` — SQL-like DSL for querying multilayer networks
+* :doc:`../user_guide/graph_ops` — Dplyr-style chainable graph operations
+
+**Deep Dive:**
 
 * :doc:`../concepts/multilayer_networks_101` — Theory and concepts
 * :doc:`../user_guide/statistics` — All available statistics
 * :doc:`../user_guide/community_detection` — Parameter tuning
 * :doc:`../user_guide/visualization` — Advanced visualization
-* ``examples/`` — 80+ working examples
+
+**Examples:**
+
+* ``examples/`` directory — 50+ working examples
+* :doc:`../examples/index` — Annotated example gallery
+
 

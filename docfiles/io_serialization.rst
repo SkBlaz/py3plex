@@ -357,7 +357,7 @@ Complete examples are available in ``examples/io_and_data/``:
 See Also
 --------
 
-* :doc:`getting_started/quickstart_5min` - Getting started guide
+* :doc:`getting_started/tutorial_10min` - Getting started tutorial
 * :doc:`getting_started/tutorial_10min` - Complete tutorial
 * :doc:`networkx_interop` - NetworkX integration details
 * :doc:`deployment/performance_scalability` - Performance optimization tips

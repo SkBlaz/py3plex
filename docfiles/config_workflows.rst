@@ -361,6 +361,6 @@ Common issues:
 Further Reading
 ---------------
 
-* :doc:`CLI Guide <getting_started/quickstart_5min>` - Command-line interface
+* :doc:`CLI Guide <getting_started/tutorial_10min>` - Command-line interface
 * :doc:`API Documentation <apidocs>` - Python API reference
 * :doc:`Examples <example>` - More examples

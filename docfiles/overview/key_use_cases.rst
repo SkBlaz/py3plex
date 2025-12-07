@@ -184,6 +184,6 @@ TODO: Add specific examples for financial networks
 Next Steps
 ----------
 
-* **Try an example:** :doc:`../getting_started/quickstart_5min`
+* **Try an example:** :doc:`../getting_started/tutorial_10min`
 * **See complete examples:** :doc:`../examples/index`
 * **Learn the concepts:** :doc:`../concepts/multilayer_networks_101`

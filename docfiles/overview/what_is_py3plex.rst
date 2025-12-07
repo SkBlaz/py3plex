@@ -127,7 +127,7 @@ py3plex balances ease of use with multilayer-specific functionality.
 Next Steps
 ----------
 
-* **Get started:** :doc:`../getting_started/quickstart_5min`
+* **Get started:** :doc:`../getting_started/tutorial_10min`
 * **See use cases:** :doc:`key_use_cases`
 * **Understand multilayer networks:** :doc:`multilayer_in_2min`
 * **Deep dive:** :doc:`../concepts/py3plex_core_model`

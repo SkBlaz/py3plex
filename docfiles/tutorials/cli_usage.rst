@@ -906,7 +906,7 @@ Solution: Use aggregation to reduce network size before visualization, or comput
 See Also
 --------
 
-* :doc:`../getting_started/quickstart_5min` - Python API quickstart
+* :doc:`../getting_started/tutorial_10min` - Python API quickstart
 * :doc:`../getting_started/tutorial_10min` - 10-minute Python tutorial
 * :doc:`./community_detection` - Community detection algorithms in detail
 * :doc:`./multilayer_centrality` - Centrality measures for multilayer networks

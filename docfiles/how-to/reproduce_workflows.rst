@@ -3,7 +3,7 @@ How to Reproduce Common Analysis Workflows
 
 **Goal:** Use ready-made recipes for common multilayer network analysis tasks.
 
-**Prerequisites:** Basic understanding of py3plex (see :doc:`../getting_started/quickstart_5min`).
+**Prerequisites:** Basic understanding of py3plex (see :doc:`../getting_started/tutorial_10min`).
 
 Complete Workflows
 ------------------
@@ -188,7 +188,7 @@ The following locations contain complete, runnable examples:
 Next Steps
 ----------
 
-* **Learn fundamentals:** :doc:`../getting_started/quickstart_5min`
+* **Learn fundamentals:** :doc:`../getting_started/tutorial_10min`
 * **Detailed recipes:** :doc:`../user_guide/recipes_and_workflows`
 * **Complete case studies:** :doc:`../user_guide/case_studies`
 * **Browse examples:** :doc:`../examples/index`

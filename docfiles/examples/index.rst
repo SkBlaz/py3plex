@@ -338,7 +338,7 @@ See :doc:`../dev/contributing` for detailed guidelines.
 Related Documentation
 ---------------------
 
-* :doc:`../getting_started/quickstart_5min` - Quick start guide
+* :doc:`../getting_started/tutorial_10min` - 10-minute tutorial
 * :doc:`../getting_started/tutorial_10min` - 10-minute tutorial
 * :doc:`../user_guide/networks` - Working with networks
 * :doc:`../user_guide/visualization` - Visualization guide
