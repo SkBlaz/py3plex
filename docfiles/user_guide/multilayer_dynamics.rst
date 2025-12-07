@@ -814,7 +814,18 @@ Performance Considerations
 DSL Integration
 ---------------
 
-The :doc:`dsl` provides declarative syntax for dynamics:
+The dynamics module integrates with py3plex's :doc:`dsl` to provide declarative simulation syntax. The dynamics builder API follows the same philosophy as the network query DSL: chainable method calls that construct a simulation specification before execution.
+
+**How Dynamics DSL Aligns with Query DSL:**
+
+* **Same Builder Pattern**: Both use ``D.process()`` and ``Q.nodes()`` as entry points that return builder objects
+* **Chainable Configuration**: Methods like ``.steps()``, ``.measure()``, and ``.seed()`` mirror ``.where()``, ``.compute()``, and ``.limit()``
+* **Lazy Execution**: Both builders construct a specification; execution happens when you call ``.run()`` or ``.execute()``
+* **Clean Separation**: Configuration (what to simulate/query) is separate from execution (running the simulation/query)
+
+See :doc:`dsl` for the complete query DSL documentation, which shares these design principles.
+
+**Example:**
 
 .. code-block:: python
 
@@ -839,8 +850,8 @@ The :doc:`dsl` provides declarative syntax for dynamics:
 
 **See also:**
 
-- :doc:`dsl` — Complete DSL documentation
-- :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows` — Advanced dynamics DSL with formalism
+- :doc:`dsl` — Complete network query DSL documentation with builder API details
+- :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows` — Advanced dynamics DSL with mathematical formalism
 
 ----
 

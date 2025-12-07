@@ -63,8 +63,8 @@ py3plex provides scalable analysis and visualization of multilayer and multiplex
 
    See the complete :doc:`user_guide/dsl` guide for all features!
 
-Quick Start
-===========
+Quickstart
+==========
 
 Install:
 
@@ -88,7 +88,21 @@ Create a multilayer network:
     network.basic_stats()
     network.visualize_network(show=True)
 
-See :doc:`getting_started/quickstart_5min` (5 min) or :doc:`getting_started/tutorial_10min` (10 min) for complete introductions.
+**Expected output:**
+
+.. code-block:: text
+
+    Number of nodes: 6
+    Number of edges: 3
+
+Recommended Path
+================
+
+New to py3plex? Follow this learning path:
+
+1. **5-Minute Quickstart** (:doc:`getting_started/quickstart_5min`) — Create your first network and run basic analysis
+2. **10-Minute Tutorial** (:doc:`getting_started/tutorial_10min`) — Complete workflow from data loading to visualization
+3. **Working with Networks** (:doc:`user_guide/networks`) — Deep dive into network creation, manipulation, and queries
 
 Documentation Contents
 ======================

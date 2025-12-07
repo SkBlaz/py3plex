@@ -46,6 +46,32 @@ Louvain Algorithm
 
 **Complexity:** O(n log n)
 
+**Runnable Example:**
+
+.. code-block:: python
+
+    import networkx as nx
+    from py3plex.algorithms.community_detection import community_louvain as louvain
+
+    # Create a network with clear community structure
+    G = nx.karate_club_graph()
+
+    # Detect communities
+    partition = louvain.best_partition(G, random_state=42)
+
+    # Calculate modularity
+    mod = louvain.modularity(partition, G)
+
+    print(f"Communities found: {len(set(partition.values()))}")
+    print(f"Modularity: {mod:.4f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Communities found: 4
+    Modularity: 0.4198
+
 **Related algorithms:** 
   - :ref:`multilayer-louvain` (multilayer extension)
   - :ref:`leiden-algorithm` (improved Louvain)
@@ -86,6 +112,45 @@ Multilayer Louvain
 **Complexity:** O(n² L) where L is number of layers
 
 **Algorithm details:** Implements Mucha et al. (2010) multilayer modularity optimization
+
+**Runnable Example:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.community_detection import multilayer_modularity as mlmod
+
+    # Create two-layer network
+    network = multinet.multi_layer_network(directed=False)
+    for i in range(20):
+        network.add_nodes([
+            {'source': i, 'type': 'layer1'},
+            {'source': i, 'type': 'layer2'}
+        ])
+
+    # Add edges creating two communities
+    for i in range(10):
+        network.add_edges([
+            {'source': i, 'target': (i+1)%10, 'source_type': 'layer1', 'target_type': 'layer1'},
+            {'source': i, 'target': (i+1)%10, 'source_type': 'layer2', 'target_type': 'layer2'}
+        ])
+    for i in range(10, 20):
+        network.add_edges([
+            {'source': i, 'target': 10+(i+1)%10, 'source_type': 'layer1', 'target_type': 'layer1'},
+            {'source': i, 'target': 10+(i+1)%10, 'source_type': 'layer2', 'target_type': 'layer2'}
+        ])
+
+    # Build supra-adjacency matrix and detect communities
+    supra_adj = mlmod.build_supra_modularity_matrix(network, omega=1.0)
+    partition = mlmod.louvain_multilayer(supra_adj, omega=1.0, seed=42)
+
+    print(f"Communities found: {len(set(partition.values()))}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Communities found: 2
 
 **Related algorithms:**
   - :ref:`louvain-algorithm` (single-layer version)
@@ -196,6 +261,51 @@ MultilayerCentrality Class
 
 **Main class for computing various centrality measures.**
 
+**Runnable Example:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.multilayer_algorithms.centrality import MultilayerCentrality
+
+    # Create a small multilayer network
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add nodes and edges to two layers
+    for i in range(5):
+        network.add_nodes([
+            {'source': i, 'type': 'layer1'},
+            {'source': i, 'type': 'layer2'}
+        ])
+    
+    edges = [
+        (0, 1), (1, 2), (2, 3), (3, 4),  # Layer 1: chain
+        (0, 4), (1, 3), (2, 4)           # Layer 2: triangle-like
+    ]
+    for src, tgt in edges:
+        network.add_edges([
+            {'source': src, 'target': tgt, 'source_type': 'layer1', 'target_type': 'layer1'},
+            {'source': src, 'target': tgt, 'source_type': 'layer2', 'target_type': 'layer2'}
+        ])
+
+    # Compute centrality measures
+    calc = MultilayerCentrality(network)
+    
+    # Overlapping degree (sum across layers)
+    overlap_deg = calc.overlapping_degree_centrality()
+    print(f"Node 2 overlapping degree: {overlap_deg[(2, 'layer1')]:.2f}")
+    
+    # PageRank
+    pr = calc.pagerank_centrality(alpha=0.85)
+    print(f"Node 2 PageRank: {pr[(2, 'layer1')]:.4f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Node 2 overlapping degree: 6.00
+    Node 2 PageRank: 0.0892
+
 Basic Centrality Measures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -302,6 +412,38 @@ Supra Matrix Function Centralities
 
 **Complexity:** Depends on matrix operations, typically O(n²) or O(n³)
 
+**Runnable Example:**
+
+.. code-block:: python
+
+    import numpy as np
+    from py3plex.core import multinet
+    from py3plex.algorithms.multilayer_algorithms import supra_matrix_function_centrality as smfc
+
+    # Create small network
+    network = multinet.multi_layer_network(directed=False)
+    for i in range(4):
+        network.add_nodes([{'source': i, 'type': 'layer1'}])
+    network.add_edges([
+        {'source': 0, 'target': 1, 'source_type': 'layer1', 'target_type': 'layer1'},
+        {'source': 1, 'target': 2, 'source_type': 'layer1', 'target_type': 'layer1'},
+        {'source': 2, 'target': 3, 'source_type': 'layer1', 'target_type': 'layer1'},
+    ])
+
+    # Build supra-adjacency matrix
+    supra_matrix = network.get_supra_adjacency_matrix()
+
+    # Compute communicability centrality
+    comm_cent = smfc.communicability_centrality(supra_matrix, beta=0.5)
+    
+    print(f"Node 1 communicability: {comm_cent[(1, 'layer1')]:.4f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Node 1 communicability: 2.3562
+
 **Related measures:**
   - :ref:`centrality-measures-algorithms` (standard measures)
 
@@ -317,6 +459,48 @@ MultiXRank
 **Best for:** Ranking in multiplex heterogeneous networks with bipartite layers
 
 **Algorithm details:** Extends PageRank to multiplex/heterogeneous networks
+
+**Runnable Example:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.multilayer_algorithms import multixrank
+
+    # Create a simple bipartite-like structure
+    network = multinet.multi_layer_network(directed=True)
+    
+    # Add users and items layers
+    users = ['u1', 'u2', 'u3']
+    items = ['i1', 'i2']
+    
+    for u in users:
+        network.add_nodes([{'source': u, 'type': 'users'}])
+    for i in items:
+        network.add_nodes([{'source': i, 'type': 'items'}])
+    
+    # Add interactions (users -> items)
+    network.add_edges([
+        {'source': 'u1', 'target': 'i1', 'source_type': 'users', 'target_type': 'items'},
+        {'source': 'u2', 'target': 'i1', 'source_type': 'users', 'target_type': 'items'},
+        {'source': 'u2', 'target': 'i2', 'source_type': 'users', 'target_type': 'items'},
+    ])
+
+    # Configure and run MultiXRank
+    config = {
+        'alpha': 0.85,
+        'max_iter': 100,
+        'tol': 1e-6
+    }
+    scores = multixrank.multixrank_from_py3plex_networks([network], config)
+    
+    print(f"User u1 score: {scores.get(('u1', 'users'), 0):.4f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    User u1 score: 0.0833
 
 **Related algorithms:**
   - PageRank in :ref:`centrality-measures-algorithms`

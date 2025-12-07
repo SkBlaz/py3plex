@@ -140,6 +140,79 @@ Build Sphinx documentation:
 
 The built documentation will be in ``docfiles/_build/html/``.
 
+Documentation Style Guide
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When contributing to documentation, follow these conventions for consistency:
+
+**Naming Conventions:**
+
+* Use "Quickstart" (one word) instead of "Quick Start" or "Quickstart Guide"
+* Use "multilayer" (no hyphen) consistently, not "multi-layer" or "multi layer"
+* Use short, direct section titles without boilerplate
+
+**Tone and Structure:**
+
+* Write first paragraphs that directly explain why the reader is on this page
+* Avoid boilerplate like "This chapter will introduce..." or "In this section, you will learn..."
+* Start with concrete examples rather than abstract explanations
+* Provide 2-3 explicit reading paths for different audiences (new users, experienced users, advanced users)
+
+**Code Examples:**
+
+All code examples must include:
+
+1. **Imports** — Always show required imports
+2. **Network creation** — Build a tiny example network from scratch or via helper
+3. **Core operation** — Run one focused operation
+4. **Expected output** — Show what the user should see
+
+**Example structure:**
+
+.. code-block:: python
+
+    # 1. Imports
+    from py3plex.core import multinet
+    from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+    # 2. Create network
+    network = multinet.multi_layer_network(directed=False)
+    network.add_nodes([{'source': 'A', 'type': 'layer1'}])
+    network.add_edges([
+        {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}
+    ])
+
+    # 3. Run operation
+    density = mls.layer_density(network, 'layer1')
+    print(f"Density: {density:.3f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Density: 1.000
+
+**Marking Experimental APIs:**
+
+Use warning directives for experimental or unstable features:
+
+.. code-block:: rst
+
+    .. warning::
+
+       **Experimental Feature:** This API is under active development and may change in future versions.
+
+**Cross-references:**
+
+* Link to related sections using ``:doc:`` for documentation pages
+* Link to algorithm details using ``:ref:`` for labeled sections
+* When documenting algorithms, link to the Algorithm Roadmap as the conceptual entry point
+
+**Version Labels:**
+
+* Use consistent version strings throughout (e.g., "py3plex 1.0.0 documentation")
+* Update version in ``conf.py`` and ``pyproject.toml`` together
+
 Resources
 ---------
 
