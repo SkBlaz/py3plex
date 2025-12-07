@@ -45,7 +45,7 @@ def _holdout(ruleset, holdout_ratio=0.3, alpha=0.05):
     # Split into discovery and holdout sets
     # Use every k-th rule for holdout to maintain representative sampling
     k = int(1 / holdout_ratio) if holdout_ratio > 0 else n_total
-    holdout_indices = set(range(0, n_total, k))[:n_holdout]
+    holdout_indices = set(list(range(0, n_total, k))[:n_holdout])
     
     discovery_rules = [r for i, r in enumerate(rules) if i not in holdout_indices]
     holdout_rules = [r for i, r in enumerate(rules) if i in holdout_indices]
