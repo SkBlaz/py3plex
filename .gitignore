@@ -29,6 +29,10 @@ wheels/
 # Test artifacts and temporary files
 datasets/animation*.png
 datasets/stored_network.gpickle
+datasets/mirna_*.list
+datasets/test.edgelist
+datasets/test_embedding.emb
+datasets/embedding_coordinates.json
 tests/out/
 tests/custom_dir/
 tests/*.txt

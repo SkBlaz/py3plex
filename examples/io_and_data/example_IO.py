@@ -16,7 +16,7 @@ SKIP_CI: external_deps - Requires specific dataset files that may not be availab
 import os
 
 from py3plex.core import multinet
-from py3plex.utils import get_dataset_path
+from py3plex.utils import get_dataset_path, get_data_path
 
 
 def load_multiedgelist_example() -> None:
@@ -159,7 +159,10 @@ def save_network_example(network: multinet.multi_layer_network) -> None:
         print("No network was successfully loaded, skipping save.")
         return
 
-    output_path = get_dataset_path("stored_network.gpickle")
+    # Get the datasets directory and construct output path
+    datasets_dir = get_data_path("datasets")
+    output_path = os.path.join(datasets_dir, "stored_network.gpickle")
+    
     network.save_network(output_file=output_path, output_type="gpickle")
     print(f"[OK] Network saved to: {output_path}")
     print("\nNote: gpickle format is fastest for loading/saving complex networks")
