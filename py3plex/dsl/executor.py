@@ -59,8 +59,8 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     # Step 3: Wrap network in temporal view if needed
     actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
     
-    # Step 4: Execute SELECT statement
-    return _execute_select(actual_network, bound_query.select)
+    # Step 4: Execute SELECT statement (pass params for dynamic resolution)
+    return _execute_select(actual_network, bound_query.select, params)
 
 
 def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalContext]) -> Any:
@@ -105,9 +105,17 @@ def _bind_parameters(query: Query, params: Dict[str, Any]) -> Query:
     
     Traverses the AST and replaces ParamRef nodes with actual values.
     """
-    # For now, we'll handle parameter binding during condition evaluation
-    # This is a simpler approach that works for the current implementation
-    return query
+    # Create a deep copy of the query to avoid mutating the original
+    import copy
+    bound_query = copy.deepcopy(query)
+    
+    # Bind limit parameter if it's a ParamRef
+    if bound_query.select and bound_query.select.limit is not None:
+        bound_query.select.limit = _resolve_param(bound_query.select.limit, params)
+    
+    # Note: WHERE conditions are resolved dynamically during evaluation
+    # This allows for more flexible parameter handling
+    return bound_query
 
 
 def _resolve_param(value: Any, params: Dict[str, Any]) -> Any:
@@ -213,8 +221,16 @@ def _get_measure_complexity(measure: str, n: int, m: int) -> str:
     return complexities.get(measure, "Unknown")
 
 
-def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
-    """Execute a SELECT statement."""
+def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None) -> QueryResult:
+    """Execute a SELECT statement.
+    
+    Args:
+        network: Multilayer network
+        select: SELECT statement AST
+        params: Parameter bindings for dynamic resolution
+    """
+    params = params or {}
+    
     # Get core network
     if not hasattr(network, 'core_network') or network.core_network is None:
         return QueryResult(
@@ -239,7 +255,7 @@ def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
     
     # Step 3: Apply WHERE conditions
     if select.where:
-        items = _filter_by_conditions(items, select.where, network, G)
+        items = _filter_by_conditions(items, select.where, network, G, params)
     
     # Step 4: Compute measures
     attributes: Dict[str, Dict] = {}
@@ -375,29 +391,32 @@ def _filter_by_layers(items: List[Any], active_layers: Set[str], target: Target)
 
 
 def _filter_by_conditions(items: List[Any], conditions: ConditionExpr,
-                          network: Any, G: nx.Graph) -> List[Any]:
+                          network: Any, G: nx.Graph, params: Optional[Dict[str, Any]] = None) -> List[Any]:
     """Filter items by WHERE conditions."""
+    params = params or {}
     result = []
     
     for item in items:
-        if _evaluate_conditions(item, conditions, network, G):
+        if _evaluate_conditions(item, conditions, network, G, params):
             result.append(item)
     
     return result
 
 
 def _evaluate_conditions(item: Any, conditions: ConditionExpr,
-                         network: Any, G: nx.Graph) -> bool:
+                         network: Any, G: nx.Graph, params: Optional[Dict[str, Any]] = None) -> bool:
     """Evaluate all conditions for an item."""
+    params = params or {}
+    
     if not conditions.atoms:
         return True
     
     # Evaluate first condition
-    result = _evaluate_atom(item, conditions.atoms[0], network, G)
+    result = _evaluate_atom(item, conditions.atoms[0], network, G, params)
     
     # Apply logical operators
     for i, op in enumerate(conditions.ops):
-        next_result = _evaluate_atom(item, conditions.atoms[i + 1], network, G)
+        next_result = _evaluate_atom(item, conditions.atoms[i + 1], network, G, params)
         
         if op == "AND":
             result = result and next_result
@@ -407,10 +426,13 @@ def _evaluate_conditions(item: Any, conditions: ConditionExpr,
     return result
 
 
-def _evaluate_atom(item: Any, atom: ConditionAtom, network: Any, G: nx.Graph) -> bool:
+def _evaluate_atom(item: Any, atom: ConditionAtom, network: Any, G: nx.Graph, 
+                   params: Optional[Dict[str, Any]] = None) -> bool:
     """Evaluate a single condition atom."""
+    params = params or {}
+    
     if atom.comparison:
-        return _evaluate_comparison(item, atom.comparison, network, G)
+        return _evaluate_comparison(item, atom.comparison, network, G, params)
     elif atom.special:
         return _evaluate_special(item, atom.special, network, G)
     elif atom.function:
@@ -420,8 +442,10 @@ def _evaluate_atom(item: Any, atom: ConditionAtom, network: Any, G: nx.Graph) ->
 
 
 def _evaluate_comparison(item: Any, comparison: Comparison,
-                         network: Any, G: nx.Graph) -> bool:
+                         network: Any, G: nx.Graph, params: Optional[Dict[str, Any]] = None) -> bool:
     """Evaluate a comparison condition."""
+    params = params or {}
+    
     # Get actual value
     actual_value = _get_attribute_value(item, comparison.left, network, G)
     
@@ -429,7 +453,7 @@ def _evaluate_comparison(item: Any, comparison: Comparison,
         return False
     
     # Get expected value (resolve param if needed)
-    expected_value = comparison.right
+    expected_value = _resolve_param(comparison.right, params)
     
     # Compare
     op = comparison.op
