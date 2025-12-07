@@ -1,0 +1,12 @@
+name,community,degree,betweenness_centrality
+Eve,1,4,0.5333333333333333
+Henry,1,4,0.4666666666666667
+Alice,0,3,0.35555555555555557
+Frank,1,3,0.0
+Grace,1,3,0.0
+Ivy,2,3,0.35555555555555557
+Bob,0,2,0.0
+Charlie,0,2,0.0
+Diana,0,2,0.4666666666666667
+Jack,2,2,0.0
+Kate,2,2,0.0
