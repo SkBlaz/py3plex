@@ -28,6 +28,7 @@ wheels/
 
 # Test artifacts and temporary files
 datasets/animation*.png
+datasets/animation/
 datasets/stored_network.gpickle
 datasets/mirna_*.list
 datasets/test.edgelist

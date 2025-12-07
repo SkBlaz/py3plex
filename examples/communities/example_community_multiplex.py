@@ -1,8 +1,24 @@
 # multiplex community detection!
 # SKIP_CI: external_deps - Requires specific dataset files (multiplex_example.edgelist)
 
-import louvain
-import igraph as ig
+try:
+    import louvain
+    LOUVAIN_AVAILABLE = True
+except ImportError:
+    LOUVAIN_AVAILABLE = False
+    print("Warning: louvain not installed. Install with: pip install python-louvain")
+    print("This example requires python-louvain for multiplex community detection.")
+    exit(0)
+
+try:
+    import igraph as ig
+    IGRAPH_AVAILABLE = True
+except ImportError:
+    IGRAPH_AVAILABLE = False
+    print("Warning: igraph not installed. Install with: pip install python-igraph")
+    print("This example requires igraph for multiplex community detection.")
+    exit(0)
+
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
 from py3plex.utils import get_dataset_path

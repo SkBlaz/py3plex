@@ -1,6 +1,15 @@
 # a simple FET-based partition enrichment..
 # SKIP_CI: slow - Community detection and enrichment takes more than 10 seconds
 
+try:
+    import statsmodels
+    STATSMODELS_AVAILABLE = True
+except ImportError:
+    STATSMODELS_AVAILABLE = False
+    print("Warning: statsmodels not installed. Install with: pip install statsmodels")
+    print("This example requires statsmodels for statistical enrichment.")
+    exit(0)
+
 # enrichment modules
 from py3plex.algorithms.statistics import enrichment_modules
 

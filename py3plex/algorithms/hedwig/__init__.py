@@ -11,6 +11,7 @@ from tqdm import tqdm
 from .core import ExperimentKB, Rule
 from .core.load import load_graph
 from .core.settings import DESCRIPTION, VERSION, logger
+from .core.converters import convert_mapping_to_rdf, obo2n3
 from .learners import HeuristicLearner, OptimalLearner
 from .stats import Validate, adjustment, scorefunctions, significance
 
