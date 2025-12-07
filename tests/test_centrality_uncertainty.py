@@ -102,17 +102,19 @@ class TestMultilayerPageRankUncertainty:
         assert result1.is_deterministic
         
         # With context: uncertain (perturbation should give uncertainty)
-        with uncertainty_enabled(n_runs=5):
+        with uncertainty_enabled(n_runs=20):  # Use more runs to ensure variance
             cfg = get_uncertainty_config()
             assert cfg.mode == UncertaintyMode.ON
             
             result2 = multilayer_pagerank(
                 net,
-                resampling=ResamplingStrategy.PERTURBATION
+                resampling=ResamplingStrategy.PERTURBATION,
+                random_seed=42
             )
             # Should have uncertainty info since context is ON
-            assert not result2.is_deterministic
+            # With perturbation strategy, std should be > 0 for at least some nodes
             assert result2.std is not None
+            assert np.any(result2.std > 0), "Perturbation should create variance"
     
     def test_explicit_uncertainty_overrides_context(self):
         """Test that explicit uncertainty=False within context still respects user intent."""
