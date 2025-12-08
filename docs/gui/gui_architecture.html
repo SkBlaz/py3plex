@@ -506,10 +506,58 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <li><p>✗ No rate limiting</p></li>
 </ul>
 </section>
-<section id="production-hardening-todo">
-<h3>Production Hardening (TODO)<a class="headerlink" href="#production-hardening-todo" title="Link to this heading"></a></h3>
+<section id="production-hardening">
+<h3>Production Hardening<a class="headerlink" href="#production-hardening" title="Link to this heading"></a></h3>
+<p><strong>Note:</strong> The GUI is designed for local development and research use. For production deployment, consider the following security enhancements:</p>
+<p><strong>Security Checklist:</strong></p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Production Security Requirements</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Security Feature</p></th>
+<th class="head"><p>Implementation Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>HTTPS/TLS</p></td>
+<td><p>Use nginx or Caddy as reverse proxy with SSL certificates</p></td>
+</tr>
+<tr class="row-odd"><td><p>Authentication</p></td>
+<td><p>Implement OAuth2 or JWT-based authentication</p></td>
+</tr>
+<tr class="row-even"><td><p>Authorization</p></td>
+<td><p>Role-based access control (RBAC) for multi-user environments</p></td>
+</tr>
+<tr class="row-odd"><td><p>CORS Configuration</p></td>
+<td><p>Restrict allowed origins to specific domains</p></td>
+</tr>
+<tr class="row-even"><td><p>Rate Limiting</p></td>
+<td><p>Use nginx rate limiting or FastAPI middleware</p></td>
+</tr>
+<tr class="row-odd"><td><p>Input Validation</p></td>
+<td><p>Sanitize all user inputs (file uploads, query strings)</p></td>
+</tr>
+<tr class="row-even"><td><p>Data Isolation</p></td>
+<td><p>Separate user workspaces with filesystem permissions</p></td>
+</tr>
+<tr class="row-odd"><td><p>Audit Logging</p></td>
+<td><p>Log all API access and queries for security auditing</p></td>
+</tr>
+<tr class="row-even"><td><p>Dependency Updates</p></td>
+<td><p>Regularly update frontend and backend dependencies</p></td>
+</tr>
+<tr class="row-odd"><td><p>Container Security</p></td>
+<td><p>Use minimal base images, scan for vulnerabilities</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended Production Architecture:</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────┐
 │        HTTPS Load Balancer              │
+│        (nginx / Caddy)                  │
 └─────────────────┬───────────────────────┘
                   │
                   ▼

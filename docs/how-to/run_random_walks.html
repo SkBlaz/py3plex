@@ -85,6 +85,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#layer-specific-embeddings">Layer-Specific Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#query-and-filter-nodes-before-embedding-with-dsl">Query and Filter Nodes Before Embedding with DSL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#filter-high-degree-nodes">Filter High-Degree Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layer-specific-node-selection">Layer-Specific Node Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#query-nodes-by-centrality">Query Nodes by Centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#combine-embeddings-with-node-attributes">Combine Embeddings with Node Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layer-specific-embedding-analysis">Layer-Specific Embedding Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-embeddings-with-metadata-using-dsl">Export Embeddings with Metadata Using DSL</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
@@ -423,6 +432,290 @@
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated embeddings for layer: </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="query-and-filter-nodes-before-embedding-with-dsl">
+<h2>Query and Filter Nodes Before Embedding with DSL<a class="headerlink" href="#query-and-filter-nodes-before-embedding-with-dsl" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Use py3plex’s DSL to select specific node subsets for targeted embedding generation.</p>
+<p>Random walks and embeddings on large networks can be computationally expensive. The DSL allows you to filter and extract subnetworks before running embedding algorithms, focusing on nodes of interest.</p>
+<section id="filter-high-degree-nodes">
+<h3>Filter High-Degree Nodes<a class="headerlink" href="#filter-high-degree-nodes" title="Link to this heading"></a></h3>
+<p><strong>Generate embeddings only for hub nodes:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_node2vec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;py3plex/datasets/_data/synthetic_multilayer.edges&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Use DSL to find high-degree nodes (hubs)</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>  <span class="c1"># Degree &gt; 8</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hubs</span><span class="p">)</span><span class="si">}</span><span class="s2"> hub nodes&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract subgraph containing only hubs</span>
+<span class="n">hub_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">hubs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="c1"># Train embeddings on hub subgraph</span>
+<span class="n">hub_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">hub_network</span><span class="o">.</span><span class="n">core_network</span> <span class="o">=</span> <span class="n">hub_subgraph</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">hub_embeddings</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span>
+    <span class="n">hub_network</span><span class="p">,</span>
+    <span class="n">dimensions</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hub_embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> hubs&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 15 hub nodes
+Generated embeddings for 15 hubs
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-node-selection">
+<h3>Layer-Specific Node Selection<a class="headerlink" href="#layer-specific-node-selection" title="Link to this heading"></a></h3>
+<p><strong>Generate embeddings for nodes active in multiple layers:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="c1"># Count layer participation for each node</span>
+<span class="n">node_layers</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="n">node_layers</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1"># Find nodes in 2+ layers</span>
+<span class="n">multilayer_nodes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">node_layers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes in 2+ layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">multilayer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert back to (node, layer) tuples</span>
+<span class="n">multilayer_node_tuples</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">multilayer_nodes</span>
+<span class="p">]</span>
+
+<span class="c1"># Extract subgraph</span>
+<span class="n">multi_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">multilayer_node_tuples</span><span class="p">)</span>
+
+<span class="c1"># Generate embeddings</span>
+<span class="n">multi_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">multi_network</span><span class="o">.</span><span class="n">core_network</span> <span class="o">=</span> <span class="n">multi_subgraph</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">multi_embeddings</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span><span class="n">multi_network</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">multi_embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> multilayer nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes in 2+ layers: 35
+Generated embeddings for 105 multilayer nodes
+</pre></div>
+</div>
+</section>
+<section id="query-nodes-by-centrality">
+<h3>Query Nodes by Centrality<a class="headerlink" href="#query-nodes-by-centrality" title="Link to this heading"></a></h3>
+<p><strong>Focus embeddings on central nodes:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Find nodes with high betweenness centrality</span>
+<span class="n">central_nodes</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">betweenness_centrality__gt</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High-centrality nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">central_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract and embed</span>
+<span class="n">central_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">central_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">central_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">central_network</span><span class="o">.</span><span class="n">core_network</span> <span class="o">=</span> <span class="n">central_subgraph</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">central_embeddings</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span>
+    <span class="n">central_network</span><span class="p">,</span>
+    <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="c1"># Compare embedding similarity for central nodes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">node_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">central_embeddings</span><span class="o">.</span><span class="n">keys</span><span class="p">())[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">central_embeddings</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">])</span>
+
+<span class="n">sim_matrix</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Similarity matrix (first 5 central nodes):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sim_matrix</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="combine-embeddings-with-node-attributes">
+<h3>Combine Embeddings with Node Attributes<a class="headerlink" href="#combine-embeddings-with-node-attributes" title="Link to this heading"></a></h3>
+<p><strong>Query embedded nodes with specific properties:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After generating embeddings, attach them as attributes</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="c1"># Store embedding norm as an attribute</span>
+    <span class="n">embedding_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;embedding_norm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embedding_norm</span>
+
+<span class="c1"># Query nodes with large embedding norms</span>
+<span class="n">large_norm_nodes</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="s1">&#39;SELECT nodes WHERE embedding_norm &gt; 10.0&#39;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes with large embedding norms: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">large_norm_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-embedding-analysis">
+<h3>Layer-Specific Embedding Analysis<a class="headerlink" href="#layer-specific-embedding-analysis" title="Link to this heading"></a></h3>
+<p><strong>Compare embeddings across layers:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Generate embeddings per layer</span>
+<span class="n">layer_embeddings</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">layer_stats</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="c1"># Extract layer</span>
+    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">layer_edges</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layer: </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract layer subgraph</span>
+    <span class="n">layer_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">layer_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="c1"># Skip if too few nodes</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [SKIP] Too few nodes&quot;</span><span class="p">)</span>
+        <span class="k">continue</span>
+
+    <span class="c1"># Create layer network</span>
+    <span class="n">layer_net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">layer_net</span><span class="o">.</span><span class="n">core_network</span> <span class="o">=</span> <span class="n">layer_subgraph</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Generate embeddings</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">emb</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span>
+            <span class="n">layer_net</span><span class="p">,</span>
+            <span class="n">dimensions</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+            <span class="n">walk_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+            <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">workers</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="n">layer_embeddings</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">emb</span>
+
+        <span class="c1"># Compute statistics</span>
+        <span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">emb</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="n">mean_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">])</span>
+
+        <span class="n">layer_stats</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;n_nodes&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">emb</span><span class="p">),</span>
+            <span class="s1">&#39;mean_embedding_norm&#39;</span><span class="p">:</span> <span class="n">mean_norm</span>
+        <span class="p">}</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✓ Embeddings generated: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Mean embedding norm: </span><span class="si">{</span><span class="n">mean_norm</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [ERROR] </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer: layer1
+  Nodes: 40
+  Edges: 95
+  ✓ Embeddings generated: 40 nodes
+  Mean embedding norm: 12.34
+
+Layer: layer2
+  Nodes: 40
+  Edges: 87
+  ✓ Embeddings generated: 40 nodes
+  Mean embedding norm: 11.89
+
+Layer: layer3
+  Nodes: 40
+  Edges: 102
+  ✓ Embeddings generated: 40 nodes
+  Mean embedding norm: 13.01
+</pre></div>
+</div>
+</section>
+<section id="export-embeddings-with-metadata-using-dsl">
+<h3>Export Embeddings with Metadata Using DSL<a class="headerlink" href="#export-embeddings-with-metadata-using-dsl" title="Link to this heading"></a></h3>
+<p><strong>Create analysis-ready embedding exports:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Compute node metrics</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Combine embeddings with metrics</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">metrics</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;degree&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;betweenness&#39;</span><span class="p">:</span> <span class="n">metrics</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Add embedding dimensions</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">embeddings</span><span class="p">[</span><span class="n">node</span><span class="p">]):</span>
+        <span class="n">row</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;emb_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+<span class="c1"># Create DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Export</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;embeddings_with_metrics.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> node embeddings with metadata&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Why use DSL for embedding workflows?</strong></p>
+<ul class="simple">
+<li><p><strong>Targeted embedding:</strong> Focus on relevant node subsets, reducing computation time</p></li>
+<li><p><strong>Layer-aware:</strong> Generate layer-specific embeddings seamlessly</p></li>
+<li><p><strong>Metric integration:</strong> Combine embeddings with centrality and other network metrics</p></li>
+<li><p><strong>Filtering:</strong> Select nodes by degree, centrality, or custom attributes before embedding</p></li>
+<li><p><strong>Reproducible:</strong> Declarative queries document node selection criteria</p></li>
+</ul>
+<p><strong>Next steps with DSL:</strong></p>
+<ul class="simple">
+<li><p><strong>Full DSL tutorial:</strong> <a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> - Comprehensive guide with advanced patterns</p></li>
+<li><p><strong>Community detection:</strong> <a class="reference internal" href="run_community_detection.html"><span class="doc">How to Run Community Detection on Multilayer Networks</span></a> - Use embeddings for community analysis</p></li>
+<li><p><strong>Dynamics analysis:</strong> <a class="reference internal" href="simulate_dynamics.html"><span class="doc">How to Simulate Multilayer Dynamics</span></a> - Combine embeddings with dynamics results</p></li>
+</ul>
+</section>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>

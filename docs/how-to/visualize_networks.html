@@ -88,6 +88,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#side-by-side-layer-comparison">Side-by-Side Layer Comparison</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#dsl-driven-visualization-workflows">DSL-Driven Visualization Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#visualize-high-degree-subnetwork">Visualize High-Degree Subnetwork</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualize-community-structure-with-dsl">Visualize Community Structure with DSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layer-specific-visualizations-with-dsl">Layer-Specific Visualizations with DSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualize-central-nodes">Visualize Central Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamics-state-visualization">Dynamics State Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interactive-visualization-with-dsl-filtering">Interactive Visualization with DSL Filtering</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#community-visualization">Community Visualization</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#color-by-communities">Color by Communities</a></li>
 </ul>
@@ -300,6 +309,430 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;layers_comparison.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="dsl-driven-visualization-workflows">
+<h2>DSL-Driven Visualization Workflows<a class="headerlink" href="#dsl-driven-visualization-workflows" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Use DSL queries to select and visualize specific network subsets.</p>
+<p>The DSL enables you to create targeted visualizations by filtering nodes and edges before rendering. This is essential for large multilayer networks where visualizing everything is impractical.</p>
+<section id="visualize-high-degree-subnetwork">
+<h3>Visualize High-Degree Subnetwork<a class="headerlink" href="#visualize-high-degree-subnetwork" title="Link to this heading"></a></h3>
+<p><strong>Focus visualization on hub nodes:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;py3plex/datasets/_data/synthetic_multilayer.edges&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Query high-degree nodes</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hub nodes (degree &gt; 6): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hubs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract hub subgraph</span>
+<span class="n">hub_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">hubs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="c1"># Create visualization</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">hub_subgraph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># Color by layer</span>
+<span class="n">layer_colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;layer1&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">}</span>
+<span class="n">node_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">hub_subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+<span class="c1"># Size by degree</span>
+<span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">hubs</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">hub_subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+    <span class="n">hub_subgraph</span><span class="p">,</span>
+    <span class="n">pos</span><span class="p">,</span>
+    <span class="n">node_color</span><span class="o">=</span><span class="n">node_colors</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="n">node_sizes</span><span class="p">,</span>
+    <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">font_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Hub Nodes Subnetwork (degree &gt; 6)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;hub_subnetwork.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved: hub_subnetwork.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Hub nodes (degree &gt; 6): 18
+Saved: hub_subnetwork.png
+</pre></div>
+</div>
+</section>
+<section id="visualize-community-structure-with-dsl">
+<h3>Visualize Community Structure with DSL<a class="headerlink" href="#visualize-community-structure-with-dsl" title="Link to this heading"></a></h3>
+<p><strong>Community-aware visualization:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.community_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Detect communities</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Attach community labels</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">)][</span><span class="s1">&#39;community&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comm_id</span>
+
+<span class="c1"># Visualize each community separately</span>
+<span class="n">community_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="n">n_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">community_ids</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_communities</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">n_communities</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">community_ids</span><span class="p">)[:</span><span class="mi">4</span><span class="p">]):</span>
+    <span class="c1"># Query community members</span>
+    <span class="n">comm_nodes</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+        <span class="n">network</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s1">&#39;SELECT nodes WHERE community=</span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Extract community subgraph</span>
+    <span class="n">comm_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">comm_nodes</span><span class="p">)</span>
+
+    <span class="c1"># Visualize</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">comm_subgraph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="c1"># Color by layer</span>
+    <span class="n">layer_colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;layer1&#39;</span><span class="p">:</span> <span class="s1">&#39;#FF6B6B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">:</span> <span class="s1">&#39;#4ECDC4&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">:</span> <span class="s1">&#39;#45B7D1&#39;</span><span class="p">}</span>
+    <span class="n">node_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">comm_subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+        <span class="n">comm_subgraph</span><span class="p">,</span>
+        <span class="n">pos</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+        <span class="n">node_color</span><span class="o">=</span><span class="n">node_colors</span><span class="p">,</span>
+        <span class="n">node_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">with_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span>
+    <span class="p">)</span>
+
+    <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="se">\n</span><span class="s1">(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comm_nodes</span><span class="p">)</span><span class="si">}</span><span class="s1"> nodes)&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;communities_separate.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved: communities_separate.png with </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">n_communities</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-visualizations-with-dsl">
+<h3>Layer-Specific Visualizations with DSL<a class="headerlink" href="#layer-specific-visualizations-with-dsl" title="Link to this heading"></a></h3>
+<p><strong>Compare layer structures visually:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">n_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="n">n_layers</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">n_layers</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>
+    <span class="c1"># Query layer nodes and edges</span>
+    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">layer_edges</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+    <span class="c1"># Extract layer subgraph</span>
+    <span class="n">layer_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">layer_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="c1"># Compute metrics for sizing</span>
+    <span class="n">layer_metrics</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Visualization</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">layer_subgraph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Size by degree</span>
+    <span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_metrics</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">50</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layer_subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+        <span class="n">layer_subgraph</span><span class="p">,</span>
+        <span class="n">pos</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+        <span class="n">node_size</span><span class="o">=</span><span class="n">node_sizes</span><span class="p">,</span>
+        <span class="n">node_color</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">,</span>
+        <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+        <span class="n">with_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span>
+    <span class="p">)</span>
+
+    <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s1"> nodes, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_edges</span><span class="p">)</span><span class="si">}</span><span class="s1"> edges&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;layer_comparison.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved: layer_comparison.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Saved: layer_comparison.png
+</pre></div>
+</div>
+</section>
+<section id="visualize-central-nodes">
+<h3>Visualize Central Nodes<a class="headerlink" href="#visualize-central-nodes" title="Link to this heading"></a></h3>
+<p><strong>Highlight nodes by centrality:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Compute centrality for all nodes</span>
+<span class="n">centrality_result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Extract betweenness values for coloring</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">node</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">centrality_result</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="c1"># Create visualization</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># Node colors based on betweenness (using colormap)</span>
+<span class="n">node_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+<span class="n">betw_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">betweenness</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">]</span>
+
+<span class="c1"># Node sizes based on degree</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">centrality_result</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">degrees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">]</span>
+
+<span class="c1"># Draw</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">pos</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="n">node_sizes</span><span class="p">,</span>
+    <span class="n">node_color</span><span class="o">=</span><span class="n">betw_values</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">YlOrRd</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="p">)</span>
+
+<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">pos</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Add colorbar</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Betweenness Centrality&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Network Centrality Visualization</span><span class="se">\n</span><span class="s1">(size=degree, color=betweenness)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;centrality_viz.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved: centrality_viz.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dynamics-state-visualization">
+<h3>Dynamics State Visualization<a class="headerlink" href="#dynamics-state-visualization" title="Link to this heading"></a></h3>
+<p><strong>Visualize epidemic simulation results:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Run SIR simulation</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Attach final state</span>
+<span class="n">final_state</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">final_state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;sir_state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
+
+<span class="c1"># Query infected and recovered nodes</span>
+<span class="n">infected</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">recovered</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">susceptible</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Infected: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">infected</span><span class="p">)</span><span class="si">}</span><span class="s2">, Recovered: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">recovered</span><span class="p">)</span><span class="si">}</span><span class="s2">, Susceptible: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">susceptible</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Visualization</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># Color by SIR state</span>
+<span class="n">state_colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="p">:</span> <span class="s1">&#39;lightblue&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">}</span>
+<span class="n">node_colors</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">state_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sir_state&#39;</span><span class="p">),</span> <span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+<span class="p">]</span>
+
+<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">pos</span><span class="p">,</span>
+    <span class="n">node_color</span><span class="o">=</span><span class="n">node_colors</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+    <span class="n">with_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="p">)</span>
+
+<span class="c1"># Legend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Patch</span>
+<span class="n">legend_elements</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Susceptible (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">susceptible</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">),</span>
+    <span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Infected (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">infected</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">),</span>
+    <span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Recovered (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">recovered</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">legend_elements</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;SIR Epidemic Simulation (t=100)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;sir_visualization.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved: sir_visualization.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Infected: 8, Recovered: 82, Susceptible: 30
+Saved: sir_visualization.png
+</pre></div>
+</div>
+</section>
+<section id="interactive-visualization-with-dsl-filtering">
+<h3>Interactive Visualization with DSL Filtering<a class="headerlink" href="#interactive-visualization-with-dsl-filtering" title="Link to this heading"></a></h3>
+<p><strong>Create interactive plots with Plotly:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Query nodes with metrics</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Extract subgraph (optional: filter for clarity)</span>
+<span class="n">high_degree</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">node</span><span class="p">:</span> <span class="n">data</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">4</span>
+<span class="p">}</span>
+
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">high_degree</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="c1"># Layout</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">subgraph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Create edge trace</span>
+<span class="n">edge_x</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">edge_y</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">edge_x</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+    <span class="n">edge_y</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+
+<span class="n">edge_trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">edge_x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">edge_y</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#888&#39;</span><span class="p">),</span>
+    <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Create node trace</span>
+<span class="n">node_x</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">node_y</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">node_text</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">node_colors</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+    <span class="n">node_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">node_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">degree</span> <span class="o">=</span> <span class="n">high_degree</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span>
+    <span class="n">betw</span> <span class="o">=</span> <span class="n">high_degree</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+
+    <span class="n">node_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s1">&lt;br&gt;Degree: </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s1">&lt;br&gt;Betweenness: </span><span class="si">{</span><span class="n">betw</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">node_sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">degree</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">node_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">betw</span><span class="p">)</span>
+
+<span class="n">node_trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">node_x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">node_y</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="n">node_text</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">showscale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;YlOrRd&#39;</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="n">node_sizes</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">node_colors</span><span class="p">,</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Betweenness&quot;</span>
+        <span class="p">),</span>
+        <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Create figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">edge_trace</span><span class="p">,</span> <span class="n">node_trace</span><span class="p">],</span>
+    <span class="n">layout</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Interactive Network Visualization (degree &gt; 4)&#39;</span><span class="p">,</span>
+        <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+        <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">40</span><span class="p">),</span>
+        <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Save to HTML</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="s1">&#39;interactive_network.html&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved: interactive_network.html (open in browser)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Why use DSL for visualization?</strong></p>
+<ul class="simple">
+<li><p><strong>Targeted views:</strong> Filter nodes/edges to reduce visual clutter</p></li>
+<li><p><strong>Multi-scale:</strong> Visualize different network scales (layer, community, subnetwork)</p></li>
+<li><p><strong>Attribute-driven:</strong> Color/size nodes based on computed metrics</p></li>
+<li><p><strong>Reproducible:</strong> Query-based selections are version-controllable</p></li>
+<li><p><strong>Efficient:</strong> Process only relevant subsets for large networks</p></li>
+</ul>
+<p><strong>Next steps with DSL visualization:</strong></p>
+<ul class="simple">
+<li><p><strong>Full DSL tutorial:</strong> <a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> - Complete DSL reference</p></li>
+<li><p><strong>Community detection:</strong> <a class="reference internal" href="run_community_detection.html"><span class="doc">How to Run Community Detection on Multilayer Networks</span></a> - Visualize communities</p></li>
+<li><p><strong>Dynamics:</strong> <a class="reference internal" href="simulate_dynamics.html"><span class="doc">How to Simulate Multilayer Dynamics</span></a> - Visualize dynamics results</p></li>
+</ul>
 </section>
 </section>
 <section id="community-visualization">

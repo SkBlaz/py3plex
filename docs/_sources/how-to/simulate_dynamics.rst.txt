@@ -959,6 +959,393 @@ To expose custom measures through ``.get_measure()``, override the ``compute_mea
 
 This pattern makes your custom dynamics consistent with built-in models.
 
+Query Dynamics Results with DSL
+--------------------------------
+
+**Goal:** Use py3plex's Domain-Specific Language (DSL) to query and analyze simulation results efficiently.
+
+After running dynamics simulations, the DSL provides powerful tools for querying infected nodes, analyzing layer-specific patterns, and extracting subpopulations. This is especially useful for multilayer networks where dynamics vary across layers.
+
+**Prerequisites:**
+
+* A dynamics simulation result object (from ``SIRDynamics``, ``SISDynamics``, etc.)
+* Familiarity with DSL basics (see :doc:`query_with_dsl` for full tutorial)
+
+Attaching Dynamics State as Node Attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To use DSL for querying simulation results, first attach the dynamics state to the network as node attributes:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.dynamics import SIRDynamics
+    from py3plex.dsl import execute_query, Q
+    
+    # Load network
+    network = multinet.multi_layer_network(directed=False)
+    network.load_network(
+        "py3plex/datasets/_data/synthetic_multilayer.edges",
+        input_type="multiedgelist"
+    )
+    
+    # Run SIR simulation
+    sir = SIRDynamics(
+        network,
+        beta=0.3,
+        gamma=0.1,
+        initial_infected=0.05
+    )
+    sir.set_seed(42)
+    results = sir.run(steps=100)
+    
+    # Attach final state to network as node attributes
+    final_state = results.trajectory[-1]
+    for node, state in final_state.items():
+        network.core_network.nodes[node]['sir_state'] = state
+        # Also add a numeric version for filtering
+        network.core_network.nodes[node]['is_infected'] = (state == 'I')
+        network.core_network.nodes[node]['is_recovered'] = (state == 'R')
+        network.core_network.nodes[node]['is_susceptible'] = (state == 'S')
+
+Query Infected Nodes
+~~~~~~~~~~~~~~~~~~~~
+
+**Find all currently infected nodes:**
+
+.. code-block:: python
+
+    # Using string syntax
+    infected = execute_query(
+        network,
+        'SELECT nodes WHERE sir_state="I"'
+    )
+    
+    print(f"Infected nodes: {len(infected)}")
+    print(f"Sample infected:")
+    for node in list(infected)[:5]:
+        print(f"  {node}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Infected nodes: 12
+    Sample infected:
+      ('node7', 'layer1')
+      ('node12', 'layer2')
+      ('node3', 'layer3')
+      ('node15', 'layer1')
+      ('node8', 'layer2')
+
+**Using builder API for complex queries:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Find infected nodes with high degree
+    high_degree_infected = (
+        Q.nodes()
+         .where(sir_state='I')
+         .compute("degree")
+         .where(degree__gt=5)
+         .order_by("degree", reverse=True)
+         .execute(network)
+    )
+    
+    print(f"High-degree infected nodes: {len(high_degree_infected)}")
+    for node, data in list(high_degree_infected.items())[:5]:
+        print(f"  {node}: degree={data['degree']}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    High-degree infected nodes: 7
+      ('node7', 'layer1'): degree=12
+      ('node12', 'layer2'): degree=10
+      ('node3', 'layer1'): degree=9
+      ('node15', 'layer3'): degree=8
+      ('node8', 'layer2'): degree=7
+
+Layer-Specific Dynamics Queries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Compare infection levels across layers:**
+
+.. code-block:: python
+
+    layers = network.get_layers()
+    
+    print("Infection by layer:")
+    for layer in layers:
+        layer_nodes = (
+            Q.nodes()
+             .from_layers(L[layer])
+             .execute(network)
+        )
+        
+        infected_in_layer = sum(
+            1 for node in layer_nodes
+            if network.core_network.nodes[node].get('sir_state') == 'I'
+        )
+        
+        prevalence = infected_in_layer / len(layer_nodes) if len(layer_nodes) > 0 else 0
+        print(f"  {layer}: {infected_in_layer}/{len(layer_nodes)} ({prevalence:.2%})")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Infection by layer:
+      layer1: 5/40 (12.50%)
+      layer2: 4/40 (10.00%)
+      layer3: 3/40 (7.50%)
+
+**Find susceptible nodes in high-risk layers:**
+
+.. code-block:: python
+
+    # Identify high-risk layers (high infection prevalence)
+    high_risk_layer = 'layer1'  # From analysis above
+    
+    # Find susceptible nodes in high-risk layer
+    at_risk_nodes = (
+        Q.nodes()
+         .from_layers(L[high_risk_layer])
+         .where(sir_state='S')
+         .compute("degree")
+         .execute(network)
+    )
+    
+    # Sort by degree (higher degree = more neighbors, higher risk)
+    at_risk_list = sorted(
+        at_risk_nodes.items(),
+        key=lambda x: x[1]['degree'],
+        reverse=True
+    )
+    
+    print(f"High-risk susceptible nodes in {high_risk_layer}:")
+    for node, data in at_risk_list[:5]:
+        print(f"  {node}: degree={data['degree']}")
+
+Temporal Queries Across Simulation Steps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Track state changes over time:**
+
+.. code-block:: python
+
+    # Select a few nodes to track
+    tracked_nodes = [
+        ('node7', 'layer1'),
+        ('node12', 'layer2'),
+        ('node3', 'layer3')
+    ]
+    
+    print("Temporal evolution:")
+    print("Time  " + "  ".join(f"{n[0]:8}" for n in tracked_nodes))
+    print("-" * 50)
+    
+    # Sample time points
+    time_points = [0, 20, 40, 60, 80, 100]
+    for t in time_points:
+        if t < len(results.trajectory):
+            state_t = results.trajectory[t]
+            states_str = "  ".join(
+                f"{state_t.get(node, '-'):8}"
+                for node in tracked_nodes
+            )
+            print(f"{t:4}  {states_str}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Temporal evolution:
+    Time  node7     node12    node3    
+    --------------------------------------------------
+       0  S         S         S        
+      20  I         S         S        
+      40  R         I         I        
+      60  R         R         I        
+      80  R         R         R        
+     100  R         R         R        
+
+**Query state transitions:**
+
+.. code-block:: python
+
+    # Find nodes that became infected between t=20 and t=40
+    state_20 = results.trajectory[20]
+    state_40 = results.trajectory[40]
+    
+    newly_infected = [
+        node for node in state_20.keys()
+        if state_20[node] == 'S' and state_40.get(node) == 'I'
+    ]
+    
+    print(f"Newly infected between t=20 and t=40: {len(newly_infected)}")
+    print(f"Sample: {newly_infected[:5]}")
+
+Extract Subpopulations
+~~~~~~~~~~~~~~~~~~~~~~
+
+**Extract network of recovered nodes:**
+
+.. code-block:: python
+
+    # Query recovered nodes
+    recovered_nodes = execute_query(
+        network,
+        'SELECT nodes WHERE sir_state="R"'
+    )
+    
+    # Extract induced subgraph
+    recovered_subgraph = network.core_network.subgraph(recovered_nodes)
+    
+    print(f"Recovered subnetwork:")
+    print(f"  Nodes: {recovered_subgraph.number_of_nodes()}")
+    print(f"  Edges: {recovered_subgraph.number_of_edges()}")
+    print(f"  Layers: {set(node[1] for node in recovered_nodes)}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Recovered subnetwork:
+      Nodes: 38
+      Edges: 145
+      Layers: {'layer1', 'layer2', 'layer3'}
+
+**Analyze connectivity within susceptible population:**
+
+.. code-block:: python
+
+    import networkx as nx
+    
+    # Get susceptible nodes
+    susceptible = execute_query(
+        network,
+        'SELECT nodes WHERE sir_state="S"'
+    )
+    
+    # Extract subgraph
+    S_subgraph = network.core_network.subgraph(susceptible)
+    
+    # Compute connected components
+    if S_subgraph.number_of_nodes() > 0:
+        components = list(nx.connected_components(S_subgraph))
+        print(f"Susceptible population:")
+        print(f"  Nodes: {S_subgraph.number_of_nodes()}")
+        print(f"  Connected components: {len(components)}")
+        print(f"  Largest component: {max(len(c) for c in components)} nodes")
+
+Combine with Dynamics Measures
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Identify superspreaders (high-degree infected nodes):**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    # Find infected nodes with highest degree
+    superspreaders = (
+        Q.nodes()
+         .where(sir_state='I')
+         .compute("degree", "betweenness_centrality")
+         .where(degree__gt=7)
+         .order_by("betweenness_centrality", reverse=True)
+         .execute(network)
+    )
+    
+    print(f"Potential superspreaders: {len(superspreaders)}")
+    for node, data in list(superspreaders.items())[:5]:
+        print(f"  {node}: deg={data['degree']}, betw={data['betweenness_centrality']:.4f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Potential superspreaders: 4
+      ('node7', 'layer1'): deg=12, betw=0.0456
+      ('node12', 'layer2'): deg=10, betw=0.0345
+      ('node15', 'layer3'): deg=9, betw=0.0234
+      ('node3', 'layer1'): deg=8, betw=0.0198
+
+**Compute attack rate by layer using DSL:**
+
+.. code-block:: python
+
+    print("Attack rate (recovered / total) by layer:")
+    for layer in network.get_layers():
+        layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
+        
+        recovered = sum(
+            1 for node in layer_nodes
+            if network.core_network.nodes[node].get('sir_state') == 'R'
+        )
+        
+        attack_rate = recovered / len(layer_nodes) if len(layer_nodes) > 0 else 0
+        print(f"  {layer}: {attack_rate:.2%}")
+
+Export Dynamics Results with DSL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Create analysis-ready DataFrame:**
+
+.. code-block:: python
+
+    import pandas as pd
+    from py3plex.dsl import Q
+    
+    # Query all nodes with states and metrics
+    result = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+    )
+    
+    # Convert to DataFrame
+    df = pd.DataFrame([
+        {
+            'node': node[0],
+            'layer': node[1],
+            'sir_state': data.get('sir_state', 'unknown'),
+            'degree': data['degree'],
+            'betweenness': data['betweenness_centrality']
+        }
+        for node, data in result.items()
+    ])
+    
+    # Group by state and compute statistics
+    state_stats = df.groupby('sir_state').agg({
+        'degree': ['mean', 'std', 'max'],
+        'betweenness': ['mean', 'std', 'max']
+    })
+    
+    print("Statistics by SIR state:")
+    print(state_stats)
+    
+    # Export
+    df.to_csv('sir_results_with_metrics.csv', index=False)
+
+**Why use DSL for dynamics analysis?**
+
+* **Declarative filtering:** Express queries naturally without manual loops
+* **Layer-aware:** Built-in support for querying specific layers or cross-layer patterns
+* **Composable:** Chain operations to build complex analyses
+* **Integration:** Seamlessly combine dynamics state with network metrics
+* **Performance:** DSL optimizes query execution for large multilayer networks
+
+**Next steps with DSL:**
+
+* **Full DSL tutorial:** :doc:`query_with_dsl` - Comprehensive guide with advanced patterns
+* **Temporal queries:** :doc:`query_with_dsl` (Temporal Queries section) - Time-varying networks
+* **Community detection integration:** :doc:`run_community_detection` (Query Communities with DSL section)
+
 Next Steps
 ----------
 

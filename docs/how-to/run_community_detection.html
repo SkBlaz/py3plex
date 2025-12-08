@@ -75,6 +75,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#export-communities">Export Communities</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#query-communities-with-dsl">Query Communities with DSL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dsl-basics-for-communities">DSL Basics for Communities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#community-level-queries">Community-Level Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layer-specific-community-queries">Layer-Specific Community Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extract-community-subnetworks">Extract Community Subnetworks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compute-community-level-statistics">Compute Community-Level Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complex-dsl-workflows">Complex DSL Workflows</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#compare-algorithms">Compare Algorithms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#layer-specific-communities">Layer-Specific Communities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cross-layer-community-analysis">Cross-Layer Community Analysis</a></li>
@@ -948,6 +957,346 @@ First few rows:
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Import these into Cytoscape for interactive visualization&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="query-communities-with-dsl">
+<h2>Query Communities with DSL<a class="headerlink" href="#query-communities-with-dsl" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Use py3plex’s Domain-Specific Language (DSL) to query and analyze community-detected networks efficiently.</p>
+<p>The DSL provides a declarative, SQL-like interface for querying multilayer networks. After detecting communities, you can use DSL queries to filter nodes by community membership, compute community-level statistics, and extract subnetworks.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p>Community detection results (e.g., from <code class="docutils literal notranslate"><span class="pre">louvain_communities()</span></code>)</p></li>
+<li><p>Familiarity with DSL basics (see <a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> for full tutorial)</p></li>
+</ul>
+<section id="dsl-basics-for-communities">
+<h3>DSL Basics for Communities<a class="headerlink" href="#dsl-basics-for-communities" title="Link to this heading"></a></h3>
+<p><strong>String Syntax - SQL-like queries:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.community_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+
+<span class="c1"># Load network and detect communities</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;py3plex/datasets/_data/synthetic_multilayer.edges&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Attach community labels as node attributes</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">)][</span><span class="s1">&#39;community&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comm_id</span>
+
+<span class="c1"># DSL Query: Find nodes in community 0</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="s1">&#39;SELECT nodes WHERE community=0&#39;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes in community 0: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes in community 0: 18
+  (&#39;node1&#39;, &#39;layer1&#39;)
+  (&#39;node1&#39;, &#39;layer2&#39;)
+  (&#39;node2&#39;, &#39;layer1&#39;)
+  (&#39;node3&#39;, &#39;layer1&#39;)
+  (&#39;node3&#39;, &#39;layer3&#39;)
+</pre></div>
+</div>
+<p><strong>Builder API - Chainable operations:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Find high-degree nodes in a specific community</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">community</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Convert to pandas for analysis</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;community&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;community&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;High-degree nodes in community 0:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>High-degree nodes in community 0:
+      node   layer  degree  community
+0    node1  layer1      12          0
+1    node1  layer2      10          0
+2    node2  layer1       9          0
+3    node5  layer1       8          0
+4    node5  layer3       7          0
+</pre></div>
+</div>
+</section>
+<section id="community-level-queries">
+<h3>Community-Level Queries<a class="headerlink" href="#community-level-queries" title="Link to this heading"></a></h3>
+<p><strong>Count nodes per community:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all communities</span>
+<span class="n">community_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">community_ids</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+        <span class="n">network</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s1">&#39;SELECT nodes WHERE community=</span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Find inter-community edges:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Attach community labels to edges based on endpoint communities</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="n">source</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">edge</span>
+    <span class="n">source_comm</span> <span class="o">=</span> <span class="n">communities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">target_comm</span> <span class="o">=</span> <span class="n">communities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">edge</span><span class="p">][</span><span class="s1">&#39;source_community&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_comm</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">edge</span><span class="p">][</span><span class="s1">&#39;target_community&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_comm</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">edge</span><span class="p">][</span><span class="s1">&#39;is_intra_community&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">source_comm</span> <span class="o">==</span> <span class="n">target_comm</span><span class="p">)</span>
+
+<span class="c1"># Query inter-community edges</span>
+<span class="n">inter_comm_edges</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">is_intra_community</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">intra_comm_edges</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">is_intra_community</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Intra-community edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">intra_comm_edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-community edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inter_comm_edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ratio: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inter_comm_edges</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">intra_comm_edges</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Intra-community edges: 245
+Inter-community edges: 39
+Ratio: 0.159
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-community-queries">
+<h3>Layer-Specific Community Queries<a class="headerlink" href="#layer-specific-community-queries" title="Link to this heading"></a></h3>
+<p><strong>Find nodes in a specific community and layer:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Community 0 nodes in layer1 only</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">community</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community 0 in layer1: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Compare community structure across layers:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+    <span class="c1"># Count communities present in this layer</span>
+    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">layer_communities</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+        <span class="n">communities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layer_nodes</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_communities</span><span class="p">)</span><span class="si">}</span><span class="s2"> communities, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>layer1: 5 communities, 40 nodes
+layer2: 4 communities, 40 nodes
+layer3: 3 communities, 40 nodes
+</pre></div>
+</div>
+</section>
+<section id="extract-community-subnetworks">
+<h3>Extract Community Subnetworks<a class="headerlink" href="#extract-community-subnetworks" title="Link to this heading"></a></h3>
+<p><strong>Extract a single community as a subnetwork:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Extract community 0</span>
+<span class="n">comm_0_nodes</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="s1">&#39;SELECT nodes WHERE community=0&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Get induced subgraph</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">comm_0_nodes</span><span class="p">)</span>
+
+<span class="c1"># Convert to new multilayer network</span>
+<span class="n">community_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">community_network</span><span class="o">.</span><span class="n">core_network</span> <span class="o">=</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community 0 subnetwork:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nodes: </span><span class="si">{</span><span class="n">community_network</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Edges: </span><span class="si">{</span><span class="n">community_network</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Layers: </span><span class="si">{</span><span class="n">community_network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Community 0 subnetwork:
+  Nodes: 18
+  Edges: 67
+  Layers: [&#39;layer1&#39;, &#39;layer2&#39;, &#39;layer3&#39;]
+</pre></div>
+</div>
+</section>
+<section id="compute-community-level-statistics">
+<h3>Compute Community-Level Statistics<a class="headerlink" href="#compute-community-level-statistics" title="Link to this heading"></a></h3>
+<p><strong>Average centrality per community:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="c1"># Compute centrality for all nodes</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Group by community</span>
+<span class="n">comm_stats</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">comm_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;community&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">comm_stats</span><span class="p">[</span><span class="n">comm_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;betweenness&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+    <span class="p">})</span>
+
+<span class="c1"># Calculate averages</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Community-level statistics:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Community&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Nodes&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Avg Degree&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Avg Betweenness&#39;</span><span class="si">:</span><span class="s2">&lt;18</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">comm_stats</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">comm_stats</span><span class="p">[</span><span class="n">comm_id</span><span class="p">]</span>
+    <span class="n">n_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+    <span class="n">avg_degree</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_nodes</span>
+    <span class="n">avg_betw</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;betweenness&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_nodes</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">comm_id</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">n_nodes</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">avg_degree</span><span class="si">:</span><span class="s2">&lt;12.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">avg_betw</span><span class="si">:</span><span class="s2">&lt;18.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Community-level statistics:
+Community    Nodes    Avg Degree   Avg Betweenness
+--------------------------------------------------
+0            18       7.44         0.012345
+1            15       6.13         0.008234
+2            12       5.25         0.005678
+3            8        4.50         0.003456
+4            7        3.86         0.002123
+</pre></div>
+</div>
+</section>
+<section id="complex-dsl-workflows">
+<h3>Complex DSL Workflows<a class="headerlink" href="#complex-dsl-workflows" title="Link to this heading"></a></h3>
+<p><strong>Multi-step analysis: Find bridge nodes between communities:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Bridge nodes: high betweenness + connect multiple communities</span>
+<span class="c1"># First, compute betweenness</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Identify potential bridges (high betweenness)</span>
+<span class="n">bridges</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.01</span>  <span class="c1"># Threshold</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Potential bridge nodes (betweenness &gt; 0.01): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bridges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># For each bridge, check which communities its neighbors belong to</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">betw</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bridges</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="c1"># Get neighbors</span>
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+    <span class="n">neighbor_comms</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: betweenness=</span><span class="si">{</span><span class="n">betw</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">, connects </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">neighbor_comms</span><span class="p">)</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Potential bridge nodes (betweenness &gt; 0.01): 12
+  (&#39;node7&#39;, &#39;layer1&#39;): betweenness=0.045678, connects 3 communities
+  (&#39;node12&#39;, &#39;layer2&#39;): betweenness=0.034567, connects 2 communities
+  (&#39;node3&#39;, &#39;layer1&#39;): betweenness=0.023456, connects 3 communities
+  (&#39;node15&#39;, &#39;layer3&#39;): betweenness=0.019876, connects 2 communities
+  (&#39;node8&#39;, &#39;layer2&#39;): betweenness=0.015432, connects 2 communities
+</pre></div>
+</div>
+<p><strong>Temporal community analysis (for time-sliced networks):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Assuming layers represent time slices: t1, t2, t3</span>
+<span class="n">time_layers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="s1">&#39;t3&#39;</span><span class="p">]</span>
+
+<span class="c1"># Track specific nodes across time</span>
+<span class="n">tracked_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Community membership over time:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">tracked_nodes</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t_layer</span> <span class="ow">in</span> <span class="n">time_layers</span><span class="p">:</span>
+        <span class="n">node_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">t_layer</span><span class="p">)</span>
+        <span class="n">comm_id</span> <span class="o">=</span> <span class="n">communities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">comm_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">t_layer</span><span class="si">}</span><span class="s2">: Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">t_layer</span><span class="si">}</span><span class="s2">: Not present&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Why use DSL for community analysis?</strong></p>
+<ul class="simple">
+<li><p><strong>Declarative:</strong> Express <em>what</em> you want, not <em>how</em> to compute it</p></li>
+<li><p><strong>Composable:</strong> Chain operations to build complex queries</p></li>
+<li><p><strong>Efficient:</strong> DSL optimizes query execution internally</p></li>
+<li><p><strong>Readable:</strong> SQL-like syntax is self-documenting</p></li>
+<li><p><strong>Interoperable:</strong> Results integrate seamlessly with pandas, NumPy, and visualization tools</p></li>
+</ul>
+<p><strong>Next steps with DSL:</strong></p>
+<ul class="simple">
+<li><p><strong>Full DSL tutorial:</strong> <a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> - Comprehensive guide with advanced patterns</p></li>
+<li><p><strong>Builder API reference:</strong> <span class="xref std std-doc">../reference/dsl_api</span> - Complete API documentation</p></li>
+<li><p><strong>Temporal queries:</strong> <a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> (Temporal Queries section) - Time-varying networks</p></li>
+</ul>
 </section>
 </section>
 <section id="compare-algorithms">

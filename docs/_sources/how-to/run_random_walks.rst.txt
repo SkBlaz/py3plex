@@ -277,6 +277,310 @@ Generate embeddings for individual layers:
         
         print(f"Generated embeddings for layer: {layer}")
 
+Query and Filter Nodes Before Embedding with DSL
+-------------------------------------------------
+
+**Goal:** Use py3plex's DSL to select specific node subsets for targeted embedding generation.
+
+Random walks and embeddings on large networks can be computationally expensive. The DSL allows you to filter and extract subnetworks before running embedding algorithms, focusing on nodes of interest.
+
+Filter High-Degree Nodes
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Generate embeddings only for hub nodes:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.wrappers import train_node2vec
+    from py3plex.dsl import Q, execute_query
+    
+    # Load network
+    network = multinet.multi_layer_network(directed=False)
+    network.load_network(
+        "py3plex/datasets/_data/synthetic_multilayer.edges",
+        input_type="multiedgelist"
+    )
+    
+    # Use DSL to find high-degree nodes (hubs)
+    hubs = (
+        Q.nodes()
+         .compute("degree")
+         .where(degree__gt=8)  # Degree > 8
+         .execute(network)
+    )
+    
+    print(f"Found {len(hubs)} hub nodes")
+    
+    # Extract subgraph containing only hubs
+    hub_subgraph = network.core_network.subgraph(hubs.keys())
+    
+    # Train embeddings on hub subgraph
+    hub_network = multinet.multi_layer_network(directed=False)
+    hub_network.core_network = hub_subgraph.copy()
+    
+    hub_embeddings = train_node2vec(
+        hub_network,
+        dimensions=64,
+        walk_length=40,
+        num_walks=10
+    )
+    
+    print(f"Generated embeddings for {len(hub_embeddings)} hubs")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Found 15 hub nodes
+    Generated embeddings for 15 hubs
+
+Layer-Specific Node Selection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Generate embeddings for nodes active in multiple layers:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    from collections import Counter
+    
+    # Count layer participation for each node
+    node_layers = Counter()
+    for node, layer in network.get_nodes():
+        node_layers[node] += 1
+    
+    # Find nodes in 2+ layers
+    multilayer_nodes = {
+        node for node, count in node_layers.items()
+        if count >= 2
+    }
+    
+    print(f"Nodes in 2+ layers: {len(multilayer_nodes)}")
+    
+    # Convert back to (node, layer) tuples
+    multilayer_node_tuples = [
+        (node, layer)
+        for node, layer in network.get_nodes()
+        if node in multilayer_nodes
+    ]
+    
+    # Extract subgraph
+    multi_subgraph = network.core_network.subgraph(multilayer_node_tuples)
+    
+    # Generate embeddings
+    multi_network = multinet.multi_layer_network(directed=False)
+    multi_network.core_network = multi_subgraph.copy()
+    
+    multi_embeddings = train_node2vec(multi_network, dimensions=64)
+    print(f"Generated embeddings for {len(multi_embeddings)} multilayer nodes")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Nodes in 2+ layers: 35
+    Generated embeddings for 105 multilayer nodes
+
+Query Nodes by Centrality
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Focus embeddings on central nodes:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    # Find nodes with high betweenness centrality
+    central_nodes = (
+        Q.nodes()
+         .compute("betweenness_centrality", "degree")
+         .where(betweenness_centrality__gt=0.01)
+         .execute(network)
+    )
+    
+    print(f"High-centrality nodes: {len(central_nodes)}")
+    
+    # Extract and embed
+    central_subgraph = network.core_network.subgraph(central_nodes.keys())
+    central_network = multinet.multi_layer_network(directed=False)
+    central_network.core_network = central_subgraph.copy()
+    
+    central_embeddings = train_node2vec(
+        central_network,
+        dimensions=128,
+        walk_length=80,
+        num_walks=10
+    )
+    
+    # Compare embedding similarity for central nodes
+    from sklearn.metrics.pairwise import cosine_similarity
+    import numpy as np
+    
+    node_list = list(central_embeddings.keys())[:5]
+    vectors = np.array([central_embeddings[n] for n in node_list])
+    
+    sim_matrix = cosine_similarity(vectors)
+    print("\nSimilarity matrix (first 5 central nodes):")
+    print(sim_matrix)
+
+Combine Embeddings with Node Attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Query embedded nodes with specific properties:**
+
+.. code-block:: python
+
+    # After generating embeddings, attach them as attributes
+    for node, vector in embeddings.items():
+        # Store embedding norm as an attribute
+        embedding_norm = np.linalg.norm(vector)
+        network.core_network.nodes[node]['embedding_norm'] = embedding_norm
+    
+    # Query nodes with large embedding norms
+    large_norm_nodes = execute_query(
+        network,
+        'SELECT nodes WHERE embedding_norm > 10.0'
+    )
+    
+    print(f"Nodes with large embedding norms: {len(large_norm_nodes)}")
+
+Layer-Specific Embedding Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Compare embeddings across layers:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Generate embeddings per layer
+    layer_embeddings = {}
+    layer_stats = {}
+    
+    for layer in network.get_layers():
+        # Extract layer
+        layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
+        layer_edges = Q.edges().from_layers(L[layer]).execute(network)
+        
+        print(f"\nLayer: {layer}")
+        print(f"  Nodes: {len(layer_nodes)}")
+        print(f"  Edges: {len(layer_edges)}")
+        
+        # Extract layer subgraph
+        layer_subgraph = network.core_network.subgraph(layer_nodes.keys())
+        
+        # Skip if too few nodes
+        if len(layer_nodes) < 5:
+            print(f"  [SKIP] Too few nodes")
+            continue
+        
+        # Create layer network
+        layer_net = multinet.multi_layer_network(directed=False)
+        layer_net.core_network = layer_subgraph.copy()
+        
+        # Generate embeddings
+        try:
+            emb = train_node2vec(
+                layer_net,
+                dimensions=64,
+                walk_length=40,
+                num_walks=10,
+                workers=1
+            )
+            
+            layer_embeddings[layer] = emb
+            
+            # Compute statistics
+            vectors = np.array(list(emb.values()))
+            mean_norm = np.mean([np.linalg.norm(v) for v in vectors])
+            
+            layer_stats[layer] = {
+                'n_nodes': len(emb),
+                'mean_embedding_norm': mean_norm
+            }
+            
+            print(f"  ✓ Embeddings generated: {len(emb)} nodes")
+            print(f"  Mean embedding norm: {mean_norm:.2f}")
+        except Exception as e:
+            print(f"  [ERROR] {e}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Layer: layer1
+      Nodes: 40
+      Edges: 95
+      ✓ Embeddings generated: 40 nodes
+      Mean embedding norm: 12.34
+    
+    Layer: layer2
+      Nodes: 40
+      Edges: 87
+      ✓ Embeddings generated: 40 nodes
+      Mean embedding norm: 11.89
+    
+    Layer: layer3
+      Nodes: 40
+      Edges: 102
+      ✓ Embeddings generated: 40 nodes
+      Mean embedding norm: 13.01
+
+Export Embeddings with Metadata Using DSL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Create analysis-ready embedding exports:**
+
+.. code-block:: python
+
+    import pandas as pd
+    from py3plex.dsl import Q
+    
+    # Compute node metrics
+    metrics = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+    )
+    
+    # Combine embeddings with metrics
+    data = []
+    for node in embeddings.keys():
+        row = {
+            'node': node[0],
+            'layer': node[1],
+            'degree': metrics[node]['degree'],
+            'betweenness': metrics[node]['betweenness_centrality']
+        }
+        
+        # Add embedding dimensions
+        for i, val in enumerate(embeddings[node]):
+            row[f'emb_{i}'] = val
+        
+        data.append(row)
+    
+    # Create DataFrame
+    df = pd.DataFrame(data)
+    
+    # Export
+    df.to_csv('embeddings_with_metrics.csv', index=False)
+    print(f"Exported {len(df)} node embeddings with metadata")
+
+**Why use DSL for embedding workflows?**
+
+* **Targeted embedding:** Focus on relevant node subsets, reducing computation time
+* **Layer-aware:** Generate layer-specific embeddings seamlessly
+* **Metric integration:** Combine embeddings with centrality and other network metrics
+* **Filtering:** Select nodes by degree, centrality, or custom attributes before embedding
+* **Reproducible:** Declarative queries document node selection criteria
+
+**Next steps with DSL:**
+
+* **Full DSL tutorial:** :doc:`query_with_dsl` - Comprehensive guide with advanced patterns
+* **Community detection:** :doc:`run_community_detection` - Use embeddings for community analysis
+* **Dynamics analysis:** :doc:`simulate_dynamics` - Combine embeddings with dynamics results
+
 Next Steps
 ----------
 

@@ -320,14 +320,95 @@
 <li><p>Trade networks (goods, services)</p></li>
 <li><p>Financial flows (investments, loans)</p></li>
 <li><p>Ownership structures (subsidiaries, shareholding)</p></li>
+<li><p>Interbank lending networks</p></li>
 </ul>
 <p><strong>Example applications:</strong></p>
 <ul class="simple">
 <li><p>Systemic risk assessment</p></li>
 <li><p>Contagion analysis</p></li>
 <li><p>Market structure analysis</p></li>
+<li><p>Regulatory network analysis</p></li>
 </ul>
-<p>TODO: Add specific examples for financial networks</p>
+<p><strong>Example: Multi-layer financial network</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
+
+<span class="c1"># Build financial network with multiple relationship types</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Trade relationships</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>  <span class="c1"># Trade volume in billions</span>
+    <span class="p">[</span><span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Ownership structures</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;ownership&#39;</span><span class="p">,</span> <span class="s1">&#39;SubsidiaryX&#39;</span><span class="p">,</span> <span class="s1">&#39;ownership&#39;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>  <span class="c1"># 75% ownership</span>
+    <span class="p">[</span><span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;ownership&#39;</span><span class="p">,</span> <span class="s1">&#39;SubsidiaryY&#39;</span><span class="p">,</span> <span class="s1">&#39;ownership&#39;</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Interbank lending</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>  <span class="c1"># Lending amount</span>
+    <span class="p">[</span><span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Identify systemically important institutions</span>
+<span class="c1"># (high degree across multiple relationship types)</span>
+<span class="n">systemic_nodes</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Systemically Important Institutions:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">systemic_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: degree=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;betweenness=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Analyze risk propagation</span>
+<span class="c1"># Find institutions connected across multiple layers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="n">node_layer_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="n">node_layer_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="n">highly_connected</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">node</span><span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">node_layer_count</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span>  <span class="c1"># Present in 2+ layers</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Institutions with multiple relationship types: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">highly_connected</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">highly_connected</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+                          <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> relationship types&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Systemically Important Institutions:
+  (&#39;BankA&#39;, &#39;trade&#39;): degree=4, betweenness=0.1234
+  (&#39;BankB&#39;, &#39;lending&#39;): degree=4, betweenness=0.1156
+  (&#39;BankC&#39;, &#39;trade&#39;): degree=3, betweenness=0.0987
+
+Institutions with multiple relationship types: 3
+  BankA: 3 relationship types
+  BankB: 3 relationship types
+  BankC: 2 relationship types
+</pre></div>
+</div>
+<p><strong>Use cases for financial network analysis:</strong></p>
+<ul class="simple">
+<li><p><strong>Systemic risk:</strong> Identify institutions whose failure would cascade through multiple layers</p></li>
+<li><p><strong>Regulatory oversight:</strong> Detect hidden dependencies across different financial instruments</p></li>
+<li><p><strong>Market surveillance:</strong> Monitor unusual patterns in multi-layer trading relationships</p></li>
+<li><p><strong>Portfolio diversification:</strong> Understand correlation structures across asset types</p></li>
+</ul>
+<p>See <a class="reference internal" href="../how-to/run_community_detection.html"><span class="doc">How to Run Community Detection on Multilayer Networks</span></a> for detecting financial communities and <a class="reference internal" href="../how-to/simulate_dynamics.html"><span class="doc">How to Simulate Multilayer Dynamics</span></a> for contagion modeling.</p>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>

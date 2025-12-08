@@ -160,26 +160,133 @@
              
   <section id="configuration-environment">
 <h1>Configuration &amp; Environment<a class="headerlink" href="#configuration-environment" title="Link to this heading"></a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>TODO: This page needs to be populated with configuration options and environment variables.</p>
-</div>
+<p>This page documents configuration options, environment variables, and file formats for py3plex.</p>
 <section id="configuration-files">
 <h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading"></a></h2>
-<p><strong>TODO:</strong> Document configuration file formats and options</p>
-<ul class="simple">
-<li><p>Network configuration</p></li>
-<li><p>Algorithm parameters</p></li>
-<li><p>Visualization settings</p></li>
-</ul>
+<p>py3plex supports configuration files for reproducible workflows. Configuration can be provided in YAML or JSON format.</p>
+<p><strong>Network Configuration (YAML):</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># network_config.yaml</span>
+<span class="nt">network</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;data/multilayer.edges&quot;</span>
+<span class="w">  </span><span class="nt">input_type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;multiedgelist&quot;</span>
+<span class="w">  </span><span class="nt">directed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">weighted</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="c1"># Load with:</span>
+<span class="c1"># network.load_network(**config[&#39;network&#39;])</span>
+</pre></div>
+</div>
+<p><strong>Algorithm Parameters:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># algorithm_config.yaml</span>
+<span class="nt">community_detection</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;louvain_multilayer&quot;</span>
+<span class="w">  </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="w">    </span><span class="nt">omega</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="w">    </span><span class="nt">random_state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
+
+<span class="nt">node2vec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dimensions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
+<span class="w">  </span><span class="nt">walk_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<span class="w">  </span><span class="nt">num_walks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">  </span><span class="nt">p</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="w">  </span><span class="nt">q</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+
+<span class="nt">dynamics</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SIR&quot;</span>
+<span class="w">  </span><span class="nt">beta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.3</span>
+<span class="w">  </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">  </span><span class="nt">initial_infected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span>
+<span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+</pre></div>
+</div>
+<p><strong>Visualization Settings:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># viz_config.yaml</span>
+<span class="nt">visualization</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">layout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;force_directed&quot;</span>
+<span class="w">  </span><span class="nt">node_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="w">  </span><span class="nt">edge_width</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="nt">dpi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+<span class="w">  </span><span class="nt">output_format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span>
+<span class="w">  </span><span class="nt">color_by_layer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p><strong>Loading configuration:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load config</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;config.yaml&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># Use config</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span>
+    <span class="n">directed</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;network&#39;</span><span class="p">][</span><span class="s1">&#39;directed&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">[</span><span class="s1">&#39;network&#39;</span><span class="p">][</span><span class="s1">&#39;input_file&#39;</span><span class="p">],</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;network&#39;</span><span class="p">][</span><span class="s1">&#39;input_type&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="environment-variables">
 <h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
-<p><strong>TODO:</strong> Document environment variables used by py3plex</p>
+<p>py3plex respects the following environment variables for customization:</p>
+<p><strong>Data Directories:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_DATA_DIR</span></code> — Data directory location</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_CACHE_DIR</span></code> — Cache directory</p></li>
-<li><p>Performance tuning variables</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_DATA_DIR</span></code> — Override default data directory location</p>
+<ul>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">~/.py3plex/data</span></code></p></li>
+<li><p>Used for: Cached datasets, downloaded networks</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_CACHE_DIR</span></code> — Cache directory for computed results</p>
+<ul>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">~/.py3plex/cache</span></code></p></li>
+<li><p>Used for: Embedding caches, computation results</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Performance Tuning:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_NUM_WORKERS</span></code> — Number of parallel workers for algorithms</p>
+<ul>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">os.cpu_count()</span></code></p></li>
+<li><p>Used by: Node2Vec, community detection, some centrality computations</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_MEMORY_LIMIT</span></code> — Memory limit for large-scale operations (in GB)</p>
+<ul>
+<li><p>Default: System memory / 2</p></li>
+<li><p>Used by: Tensor operations, large network processing</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Setting environment variables:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Linux/macOS</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PY3PLEX_DATA_DIR</span><span class="o">=</span><span class="s2">&quot;/path/to/data&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PY3PLEX_NUM_WORKERS</span><span class="o">=</span><span class="m">8</span>
+
+<span class="c1"># Or in Python</span>
+import<span class="w"> </span>os
+os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;/path/to/data&#39;</span>
+</pre></div>
+</div>
+<p><strong>Debugging and Development:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_DEBUG</span></code> — Enable debug mode (verbose output)</p>
+<ul>
+<li><p>Values: <code class="docutils literal notranslate"><span class="pre">0</span></code> (off), <code class="docutils literal notranslate"><span class="pre">1</span></code> (on)</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_PROFILE</span></code> — Enable profiling for performance analysis</p>
+<ul>
+<li><p>Values: <code class="docutils literal notranslate"><span class="pre">0</span></code> (off), <code class="docutils literal notranslate"><span class="pre">1</span></code> (on)</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="input-formats">
@@ -269,12 +376,82 @@
 </section>
 <section id="logging-configuration">
 <h2>Logging Configuration<a class="headerlink" href="#logging-configuration" title="Link to this heading"></a></h2>
-<p><strong>TODO:</strong> Document logging configuration</p>
+<p>py3plex uses Python’s standard <code class="docutils literal notranslate"><span class="pre">logging</span></code> module. Configure logging for debugging and monitoring:</p>
+<p><strong>Basic Logging Setup:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="c1"># Set log level</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Now py3plex operations will log to console</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># ... logs will appear</span>
+</pre></div>
+</div>
+<p><strong>Log Levels:</strong></p>
 <ul class="simple">
-<li><p>Log levels</p></li>
-<li><p>Log file location</p></li>
-<li><p>Custom logging handlers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> — Detailed information, typically of interest only when diagnosing problems</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code> — Confirmation that things are working as expected (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WARNING</span></code> — An indication that something unexpected happened</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ERROR</span></code> — A more serious problem, the software has not been able to perform some function</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code> — A serious error, the program may be unable to continue running</p></li>
 </ul>
+<p><strong>Log to File:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="c1"># Configure file handler</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="n">handlers</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="s1">&#39;py3plex.log&#39;</span><span class="p">),</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>  <span class="c1"># Also log to console</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Log File Location:</strong></p>
+<p>By default, logs are written to:</p>
+<ul class="simple">
+<li><p>Console (stdout) when using <code class="docutils literal notranslate"><span class="pre">StreamHandler</span></code></p></li>
+<li><p>Custom file when using <code class="docutils literal notranslate"><span class="pre">FileHandler</span></code></p></li>
+<li><p>Environment variable <code class="docutils literal notranslate"><span class="pre">PY3PLEX_LOG_FILE</span></code> can override default location</p></li>
+</ul>
+<p><strong>Component-Specific Logging:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="c1"># Enable debug logging only for specific components</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;py3plex.algorithms&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;py3plex.dsl&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;py3plex.dynamics&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Custom Logging Handlers:</strong></p>
+<p>For advanced use cases (e.g., sending logs to external systems):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging.handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">RotatingFileHandler</span>
+
+<span class="c1"># Rotating file handler (10MB max, keep 5 backups)</span>
+<span class="n">handler</span> <span class="o">=</span> <span class="n">RotatingFileHandler</span><span class="p">(</span>
+    <span class="s1">&#39;py3plex.log&#39;</span><span class="p">,</span>
+    <span class="n">maxBytes</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span>
+    <span class="n">backupCount</span><span class="o">=</span><span class="mi">5</span>
+<span class="p">)</span>
+<span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Add to py3plex logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;py3plex&#39;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="performance-tuning">
 <h2>Performance Tuning<a class="headerlink" href="#performance-tuning" title="Link to this heading"></a></h2>

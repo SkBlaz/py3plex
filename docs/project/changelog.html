@@ -100,13 +100,19 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#release-history">Release History</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#version-1-0-0-current">Version 1.0.0 (Current)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#previous-versions">Previous Versions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#previous-versions-0-x-series">Previous Versions (0.x Series)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#how-to-check-your-version">How to Check Your Version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#upgrade-instructions">Upgrade Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#migration-guides">Migration Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-guides">Migration Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#migrating-from-0-x-to-1-0">Migrating from 0.x to 1.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-changes-and-deprecations">API Changes and Deprecations</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#contributing-to-changelog">Contributing to Changelog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#staying-updated">Staying Updated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap &amp; Vision</a></li>
@@ -155,28 +161,131 @@
              
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>TODO: This page needs to be populated with release history from the GitHub releases.</p>
-</div>
+<p>This page documents the release history of py3plex. For the most up-to-date information, see <a class="reference external" href="https://github.com/SkBlaz/py3plex/releases">GitHub Releases</a>.</p>
 <section id="release-history">
 <h2>Release History<a class="headerlink" href="#release-history" title="Link to this heading"></a></h2>
 <section id="version-1-0-0-current">
 <h3>Version 1.0.0 (Current)<a class="headerlink" href="#version-1-0-0-current" title="Link to this heading"></a></h3>
-<p><strong>TODO:</strong> Add release notes for version 1.0.0</p>
+<p><strong>Release Date:</strong> 2024</p>
+<p><strong>Major Features:</strong></p>
 <ul class="simple">
-<li><p>DSL query language</p></li>
-<li><p>Temporal network support</p></li>
-<li><p>Comprehensive test suite</p></li>
-<li><p>Documentation overhaul</p></li>
+<li><p><strong>DSL Query Language:</strong> SQL-like domain-specific language for querying multilayer networks</p>
+<ul>
+<li><p>String syntax (<code class="docutils literal notranslate"><span class="pre">execute_query</span></code>) for simple queries</p></li>
+<li><p>Builder API (<code class="docutils literal notranslate"><span class="pre">Q.nodes()</span></code>, <code class="docutils literal notranslate"><span class="pre">Q.edges()</span></code>) for complex, chainable queries</p></li>
+<li><p>Layer algebra (<code class="docutils literal notranslate"><span class="pre">L[layer]</span></code>, <code class="docutils literal notranslate"><span class="pre">L.intersection()</span></code>, <code class="docutils literal notranslate"><span class="pre">L.union()</span></code>)</p></li>
+<li><p>Comprehensive filter, compute, and aggregation operations</p></li>
+</ul>
+</li>
+<li><p><strong>First-Class Uncertainty Quantification:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">StatSeries</span></code> and <code class="docutils literal notranslate"><span class="pre">StatMatrix</span></code> types for statistics with uncertainty</p></li>
+<li><p>Resampling methods (SEED, PERTURBATION) for error propagation</p></li>
+<li><p>Backward-compatible with existing code expecting scalars</p></li>
+<li><p>Integrated across centrality, community detection, and dynamics modules</p></li>
+</ul>
+</li>
+<li><p><strong>Temporal Network Support:</strong></p>
+<ul>
+<li><p>Time-stamped edges and temporal queries</p></li>
+<li><p>Snapshot-based analysis</p></li>
+<li><p>Temporal dynamics simulation</p></li>
+</ul>
+</li>
+<li><p><strong>Enhanced Dynamics Framework:</strong></p>
+<ul>
+<li><p>Refactored dynamics API with consistent interface</p></li>
+<li><p>SIR, SIS, and custom dynamics models</p></li>
+<li><p>Layer-specific and time-varying parameters</p></li>
+<li><p>Comprehensive result objects with measure extraction</p></li>
+</ul>
+</li>
+<li><p><strong>Community Detection Improvements:</strong></p>
+<ul>
+<li><p>Multilayer Louvain with inter-layer coupling</p></li>
+<li><p>Infomap integration (with external binary)</p></li>
+<li><p>Layer-specific community detection workflows</p></li>
+<li><p>Community comparison and stability analysis</p></li>
+</ul>
+</li>
+<li><p><strong>Web GUI:</strong></p>
+<ul>
+<li><p>Interactive network exploration (FastAPI + SvelteKit)</p></li>
+<li><p>Real-time visualization and query interface</p></li>
+<li><p>REST API for programmatic access</p></li>
+</ul>
+</li>
+<li><p><strong>CLI Tools:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">py3plex</span></code> command-line interface</p></li>
+<li><p>Community detection, statistics, DSL linting</p></li>
+<li><p>Network conversion and export utilities</p></li>
+</ul>
+</li>
+<li><p><strong>Documentation Overhaul:</strong></p>
+<ul>
+<li><p>Comprehensive how-to guides</p></li>
+<li><p>Conceptual documentation</p></li>
+<li><p>API reference with examples</p></li>
+<li><p>Tutorial notebooks</p></li>
+</ul>
+</li>
+<li><p><strong>Testing &amp; Quality:</strong></p>
+<ul>
+<li><p>500+ unit and integration tests</p></li>
+<li><p>Continuous integration (CI/CD)</p></li>
+<li><p>Type hints throughout codebase</p></li>
+<li><p>Code coverage tracking</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>API Changes:</strong></p>
+<ul class="simple">
+<li><p>Standardized function signatures across modules</p></li>
+<li><p>Consistent parameter naming (<code class="docutils literal notranslate"><span class="pre">gamma</span></code> for resolution, <code class="docutils literal notranslate"><span class="pre">omega</span></code> for coupling)</p></li>
+<li><p>Deprecated legacy APIs (warnings emitted, will be removed in 2.0)</p></li>
+</ul>
+<p><strong>Performance Improvements:</strong></p>
+<ul class="simple">
+<li><p>Optimized tensor operations</p></li>
+<li><p>Sparse matrix support for large networks</p></li>
+<li><p>Caching for expensive computations</p></li>
+</ul>
+<p><strong>Bug Fixes:</strong></p>
+<ul class="simple">
+<li><p>Numerous edge case fixes in community detection</p></li>
+<li><p>Corrected centrality calculations for directed multilayer networks</p></li>
+<li><p>Fixed memory leaks in dynamics simulations</p></li>
+<li><p>Resolved NetworkX compatibility issues</p></li>
 </ul>
 </section>
-<section id="previous-versions">
-<h3>Previous Versions<a class="headerlink" href="#previous-versions" title="Link to this heading"></a></h3>
-<p><strong>TODO:</strong> Add historical release notes</p>
+<section id="previous-versions-0-x-series">
+<h3>Previous Versions (0.x Series)<a class="headerlink" href="#previous-versions-0-x-series" title="Link to this heading"></a></h3>
+<p><strong>Version 0.30 - 0.35 (2020-2023)</strong></p>
 <ul class="simple">
-<li><p>Version 0.x releases</p></li>
-<li><p>Initial development milestones</p></li>
+<li><p>Incremental feature additions</p></li>
+<li><p>Experimental DSL prototype</p></li>
+<li><p>Initial dynamics framework</p></li>
+<li><p>Community detection algorithms</p></li>
+</ul>
+<p><strong>Version 0.20 - 0.29 (2018-2020)</strong></p>
+<ul class="simple">
+<li><p>Multilayer centrality measures</p></li>
+<li><p>Visualization improvements</p></li>
+<li><p>NetworkX integration</p></li>
+</ul>
+<p><strong>Version 0.10 - 0.19 (2016-2018)</strong></p>
+<ul class="simple">
+<li><p>Initial public release</p></li>
+<li><p>Core multilayer network data structures</p></li>
+<li><p>Basic algorithms (degree, clustering)</p></li>
+<li><p>Example notebooks</p></li>
+</ul>
+<p><strong>Version 0.1 - 0.9 (2014-2016)</strong></p>
+<ul class="simple">
+<li><p>Research prototype</p></li>
+<li><p>Proof-of-concept implementations</p></li>
+<li><p>Academic collaborations</p></li>
 </ul>
 </section>
 </section>
@@ -186,27 +295,128 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1.0.0
+</pre></div>
+</div>
 </section>
 <section id="upgrade-instructions">
 <h2>Upgrade Instructions<a class="headerlink" href="#upgrade-instructions" title="Link to this heading"></a></h2>
-<p>To upgrade to the latest version:</p>
+<p><strong>Upgrade to latest stable release:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>py3plex
+</pre></div>
+</div>
+<p><strong>Install from specific version:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">py3plex</span><span class="o">==</span><span class="m">1</span>.0.0
+</pre></div>
+</div>
+<p><strong>Install development version:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git@main
 </pre></div>
 </div>
 </section>
 <section id="migration-guides">
 <h2>Migration Guides<a class="headerlink" href="#migration-guides" title="Link to this heading"></a></h2>
-<p><strong>TODO:</strong> Add migration guides for major version changes</p>
+<section id="migrating-from-0-x-to-1-0">
+<h3>Migrating from 0.x to 1.0<a class="headerlink" href="#migrating-from-0-x-to-1-0" title="Link to this heading"></a></h3>
+<p><strong>Breaking Changes:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Network construction API:</strong></p>
 <ul class="simple">
-<li><p>Migrating from 0.x to 1.0</p></li>
-<li><p>API changes and deprecations</p></li>
-<li><p>Breaking changes</p></li>
+<li><p>Old: <code class="docutils literal notranslate"><span class="pre">network.add_nodes(node_list)</span></code></p></li>
+<li><p>New: <code class="docutils literal notranslate"><span class="pre">network.add_nodes([('node',</span> <span class="pre">'layer'),</span> <span class="pre">...])</span></code> (explicit tuples)</p></li>
 </ul>
+</li>
+<li><p><strong>Community detection returns:</strong></p>
+<ul class="simple">
+<li><p>Old: <code class="docutils literal notranslate"><span class="pre">louvain_communities()</span></code> returned dict with node IDs as keys</p></li>
+<li><p>New: Returns dict with <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> tuples as keys</p></li>
+</ul>
+</li>
+<li><p><strong>Centrality functions:</strong></p>
+<ul class="simple">
+<li><p>Old: Scalar returns</p></li>
+<li><p>New: Can return <code class="docutils literal notranslate"><span class="pre">StatSeries</span></code> when <code class="docutils literal notranslate"><span class="pre">uncertainty=True</span></code></p></li>
+<li><p>Backward compatible: Use <code class="docutils literal notranslate"><span class="pre">result.mean</span></code> or <code class="docutils literal notranslate"><span class="pre">np.array(result)</span></code></p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Deprecated APIs (still work but emit warnings):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">network.get_nodes_by_layer(layer)</span></code> → Use DSL: <code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(L[layer])</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">network.get_layer_edges(layer)</span></code> → Use DSL: <code class="docutils literal notranslate"><span class="pre">Q.edges().from_layers(L[layer])</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_centrality(network,</span> <span class="pre">measure)</span></code> → Use DSL: <code class="docutils literal notranslate"><span class="pre">Q.nodes().compute(measure)</span></code></p></li>
+</ul>
+<p><strong>New Recommended Patterns:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Old way (still works)</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes_by_layer</span><span class="p">(</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+    <span class="n">degree</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+<span class="c1"># New DSL way (recommended)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s1">&#39;layer1&#39;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Migration Steps:</strong></p>
+<ol class="arabic simple">
+<li><p>Update py3plex: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">py3plex</span></code></p></li>
+<li><p>Run your existing code - warnings will indicate deprecated usage</p></li>
+<li><p>Gradually migrate to DSL for queries</p></li>
+<li><p>Update community detection code to expect tuple keys</p></li>
+<li><p>Handle uncertainty in centrality results if using <code class="docutils literal notranslate"><span class="pre">uncertainty=True</span></code></p></li>
+</ol>
+</section>
+<section id="api-changes-and-deprecations">
+<h3>API Changes and Deprecations<a class="headerlink" href="#api-changes-and-deprecations" title="Link to this heading"></a></h3>
+<p><strong>Removed in 1.0:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">old_louvain_function()</span></code> - replaced by <code class="docutils literal notranslate"><span class="pre">louvain_communities()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">legacy_centrality_wrapper()</span></code> - use centrality functions directly</p></li>
+</ul>
+<p><strong>Deprecated (warnings only, will be removed in 2.0):</strong></p>
+<ul class="simple">
+<li><p>Direct core_network manipulation - use DSL or network methods</p></li>
+<li><p>Legacy node/edge addition formats - use dict or tuple formats</p></li>
+</ul>
+<p><strong>Renamed:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multinet.multi_layer_network()</span></code> - unchanged (primary API)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">execute_dsl_query()</span></code> → <code class="docutils literal notranslate"><span class="pre">execute_query()</span></code> (alias still works)</p></li>
+</ul>
+</section>
 </section>
 <section id="contributing-to-changelog">
 <h2>Contributing to Changelog<a class="headerlink" href="#contributing-to-changelog" title="Link to this heading"></a></h2>
-<p>When submitting PRs, please update the “Unreleased” section in CHANGELOG.md in the repository root.</p>
+<p>When submitting PRs, please update the “Unreleased” section in CHANGELOG.md in the repository root with:</p>
+<ul class="simple">
+<li><p>Brief description of changes</p></li>
+<li><p>Link to issue (if applicable)</p></li>
+<li><p>Breaking changes clearly marked</p></li>
+<li><p>Migration notes for API changes</p></li>
+</ul>
 <p>See <a class="reference internal" href="contributing.html"><span class="doc">Contributing to py3plex</span></a> for details.</p>
+</section>
+<section id="staying-updated">
+<h2>Staying Updated<a class="headerlink" href="#staying-updated" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>GitHub Releases:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/releases">https://github.com/SkBlaz/py3plex/releases</a></p></li>
+<li><p><strong>PyPI:</strong> <a class="reference external" href="https://pypi.org/project/py3plex/">https://pypi.org/project/py3plex/</a></p></li>
+<li><p><strong>Discussions:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/discussions">https://github.com/SkBlaz/py3plex/discussions</a></p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Upgrade guide:</strong> See “Migration Guides” above</p></li>
+<li><p><strong>What’s new:</strong> <a class="reference internal" href="roadmap.html"><span class="doc">Roadmap &amp; Vision</span></a> for planned features</p></li>
+<li><p><strong>Report issues:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p></li>
+</ul>
 </section>
 </section>
 

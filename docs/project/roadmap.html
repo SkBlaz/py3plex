@@ -100,9 +100,11 @@
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Roadmap &amp; Vision</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#long-term-vision">Long-Term Vision</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#planned-features">Planned Features</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#next-release">Next Release</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#future-releases">Future Releases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#current-focus-v1-0">Current Focus (v1.0+)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#planned-enhancements">Planned Enhancements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#near-term-next-release">Near Term (Next Release)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#medium-term-1-2-releases">Medium Term (1-2 Releases)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#longer-term-future-releases">Longer Term (Future Releases)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#research-directions">Research Directions</a></li>
@@ -112,6 +114,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#contributing-to-development">Contributing to Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#release-cycle">Release Cycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#staying-updated">Staying Updated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to py3plex</a></li>
@@ -159,75 +163,172 @@
              
   <section id="roadmap-vision">
 <h1>Roadmap &amp; Vision<a class="headerlink" href="#roadmap-vision" title="Link to this heading"></a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>TODO: This page needs to be populated with the project roadmap and vision.</p>
-</div>
+<p>This page outlines the vision and planned development for py3plex. For the latest updates, see <a class="reference external" href="https://github.com/SkBlaz/py3plex/releases">GitHub Releases</a> and <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">GitHub Issues</a>.</p>
 <section id="long-term-vision">
 <h2>Long-Term Vision<a class="headerlink" href="#long-term-vision" title="Link to this heading"></a></h2>
-<p><strong>TODO:</strong> Describe the long-term goals for py3plex</p>
+<p>py3plex aims to be the go-to Python library for multilayer network analysis with a focus on:</p>
+<p><strong>Research Goals:</strong></p>
 <ul class="simple">
-<li><p>Research goals</p></li>
-<li><p>Production use cases</p></li>
-<li><p>Community building</p></li>
+<li><p>Implementing state-of-the-art multilayer network algorithms from research literature</p></li>
+<li><p>Providing a flexible framework for developing new multilayer methods</p></li>
+<li><p>Supporting reproducible research with comprehensive documentation and examples</p></li>
+</ul>
+<p><strong>Production Use Cases:</strong></p>
+<ul class="simple">
+<li><p>Enabling analysis of real-world multilayer networks at scale</p></li>
+<li><p>Providing robust APIs for integration into production systems</p></li>
+<li><p>Supporting diverse data formats and interoperability with existing tools</p></li>
+</ul>
+<p><strong>Community Building:</strong></p>
+<ul class="simple">
+<li><p>Growing an active community of researchers and practitioners</p></li>
+<li><p>Facilitating collaboration through open-source development</p></li>
+<li><p>Providing educational resources and workshops</p></li>
 </ul>
 </section>
-<section id="planned-features">
-<h2>Planned Features<a class="headerlink" href="#planned-features" title="Link to this heading"></a></h2>
-<section id="next-release">
-<h3>Next Release<a class="headerlink" href="#next-release" title="Link to this heading"></a></h3>
-<p><strong>TODO:</strong> List features planned for the next release</p>
+<section id="current-focus-v1-0">
+<h2>Current Focus (v1.0+)<a class="headerlink" href="#current-focus-v1-0" title="Link to this heading"></a></h2>
+<p><strong>Established Features:</strong></p>
 <ul class="simple">
-<li><p>Feature 1</p></li>
-<li><p>Feature 2</p></li>
-<li><p>Feature 3</p></li>
+<li><p>Core multilayer network data structures and operations</p></li>
+<li><p>DSL (Domain-Specific Language) for declarative network queries</p></li>
+<li><p>Community detection algorithms (Louvain, Infomap, multilayer variants)</p></li>
+<li><p>Dynamics simulation (SIR, SIS, random walks, custom models)</p></li>
+<li><p>Network embeddings (Node2Vec, DeepWalk)</p></li>
+<li><p>Centrality measures (degree, betweenness, PageRank, multilayer variants)</p></li>
+<li><p>First-class uncertainty quantification</p></li>
+<li><p>Visualization tools (matplotlib, plotly, interactive)</p></li>
+<li><p>CLI tools for common operations</p></li>
+<li><p>Web GUI for interactive exploration</p></li>
 </ul>
 </section>
-<section id="future-releases">
-<h3>Future Releases<a class="headerlink" href="#future-releases" title="Link to this heading"></a></h3>
-<p><strong>TODO:</strong> List longer-term planned features</p>
+<section id="planned-enhancements">
+<h2>Planned Enhancements<a class="headerlink" href="#planned-enhancements" title="Link to this heading"></a></h2>
+<p><strong>Priority areas for future development:</strong></p>
+<section id="near-term-next-release">
+<h3>Near Term (Next Release)<a class="headerlink" href="#near-term-next-release" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Advanced algorithms</p></li>
-<li><p>Performance improvements</p></li>
-<li><p>Additional data formats</p></li>
-<li><p>Enhanced visualization options</p></li>
+<li><p>Performance optimizations for large-scale networks (&gt;1M nodes)</p></li>
+<li><p>Additional temporal network analysis tools</p></li>
+<li><p>Extended DSL capabilities (aggregation, window functions)</p></li>
+<li><p>More community detection algorithms</p></li>
+<li><p>Enhanced visualization options (layer-specific layouts)</p></li>
 </ul>
+</section>
+<section id="medium-term-1-2-releases">
+<h3>Medium Term (1-2 Releases)<a class="headerlink" href="#medium-term-1-2-releases" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>GPU acceleration for select algorithms</p></li>
+<li><p>Streaming network analysis capabilities</p></li>
+<li><p>Advanced temporal dynamics models</p></li>
+<li><p>Integration with graph database systems</p></li>
+<li><p>Additional export formats (Neo4j, GraphML extensions)</p></li>
+<li><p>More comprehensive benchmarking suite</p></li>
+</ul>
+</section>
+<section id="longer-term-future-releases">
+<h3>Longer Term (Future Releases)<a class="headerlink" href="#longer-term-future-releases" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Distributed computing support (Dask, Spark integration)</p></li>
+<li><p>Advanced machine learning on multilayer networks</p></li>
+<li><p>Causal inference tools for multilayer systems</p></li>
+<li><p>Time-varying parameter estimation</p></li>
+<li><p>Additional domain-specific toolkits (bioinformatics, social, transport)</p></li>
+</ul>
+<p><strong>Note:</strong> Feature priorities may shift based on community feedback and research developments. Track specific feature requests and vote on priorities through <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">GitHub Issues</a>.</p>
 </section>
 </section>
 <section id="research-directions">
 <h2>Research Directions<a class="headerlink" href="#research-directions" title="Link to this heading"></a></h2>
-<p><strong>TODO:</strong> Describe ongoing and planned research areas</p>
+<p>py3plex development is informed by ongoing research in multilayer network science:</p>
+<p><strong>Current Research Areas:</strong></p>
 <ul class="simple">
-<li><p>New multilayer algorithms</p></li>
-<li><p>Theoretical developments</p></li>
-<li><p>Application domains</p></li>
+<li><p><strong>Multilayer centrality:</strong> Novel measures that account for layer dependencies</p></li>
+<li><p><strong>Temporal dynamics:</strong> Time-varying multilayer processes and intervention modeling</p></li>
+<li><p><strong>Uncertainty quantification:</strong> Principled handling of measurement error and structural uncertainty</p></li>
+<li><p><strong>Scalability:</strong> Algorithms that scale to networks with millions of nodes and layers</p></li>
+<li><p><strong>Domain applications:</strong> Collaborations in biology, social science, transportation, finance</p></li>
+</ul>
+<p><strong>Contributing Research:</strong></p>
+<p>If you’re developing new multilayer network methods, we welcome contributions! See <a class="reference internal" href="contributing.html"><span class="doc">Contributing to py3plex</span></a> for guidelines on:</p>
+<ul class="simple">
+<li><p>Implementing new algorithms</p></li>
+<li><p>Adding test cases and benchmarks</p></li>
+<li><p>Contributing examples and documentation</p></li>
+<li><p>Citing your research in the codebase</p></li>
 </ul>
 </section>
 <section id="community-requests">
 <h2>Community Requests<a class="headerlink" href="#community-requests" title="Link to this heading"></a></h2>
-<p><strong>TODO:</strong> Link to most-requested features from GitHub issues</p>
-<p>See <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">GitHub Issues</a> for feature requests.</p>
+<p>The following features have been requested by the community. For the full list and to vote on priorities, see <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">GitHub Issues</a>.</p>
+<p><strong>High-Priority Requests:</strong></p>
+<ul class="simple">
+<li><p>Support for very large networks (&gt;10M nodes) - <strong>In progress</strong></p></li>
+<li><p>Additional temporal network analysis tools - <strong>Planned</strong></p></li>
+<li><p>More extensive documentation and tutorials - <strong>Ongoing</strong></p></li>
+<li><p>Enhanced performance for centrality computations - <strong>Planned</strong></p></li>
+<li><p>Integration with popular graph databases - <strong>Under consideration</strong></p></li>
+</ul>
 <section id="vote-on-features">
 <h3>Vote on Features<a class="headerlink" href="#vote-on-features" title="Link to this heading"></a></h3>
+<p>Help prioritize development by:</p>
 <ul class="simple">
-<li><p>Comment on existing feature request issues</p></li>
-<li><p>Open new issues for feature requests</p></li>
-<li><p>Use 👍 reactions to vote on priorities</p></li>
+<li><p>Commenting on existing feature request issues with your use case</p></li>
+<li><p>Opening new issues for feature requests (use the “enhancement” label)</p></li>
+<li><p>Using 👍 reactions to vote on priorities</p></li>
+<li><p>Contributing implementations for features you need</p></li>
 </ul>
 </section>
 </section>
 <section id="contributing-to-development">
 <h2>Contributing to Development<a class="headerlink" href="#contributing-to-development" title="Link to this heading"></a></h2>
-<p>Want to help implement these features? See <a class="reference internal" href="contributing.html"><span class="doc">Contributing to py3plex</span></a> for guidelines.</p>
+<p>Want to help implement these features? We welcome contributions of all kinds:</p>
+<ul class="simple">
+<li><p><strong>Code contributions:</strong> Implement new algorithms, fix bugs, improve performance</p></li>
+<li><p><strong>Documentation:</strong> Write tutorials, improve API docs, add examples</p></li>
+<li><p><strong>Testing:</strong> Add test cases, report bugs, validate algorithms</p></li>
+<li><p><strong>Community:</strong> Answer questions, review PRs, organize workshops</p></li>
+</ul>
+<p>See <a class="reference internal" href="contributing.html"><span class="doc">Contributing to py3plex</span></a> for detailed guidelines.</p>
 </section>
 <section id="release-cycle">
 <h2>Release Cycle<a class="headerlink" href="#release-cycle" title="Link to this heading"></a></h2>
-<p><strong>TODO:</strong> Describe the release cycle and versioning strategy</p>
+<p>py3plex follows semantic versioning (MAJOR.MINOR.PATCH):</p>
+<p><strong>Version Scheme:</strong></p>
 <ul class="simple">
-<li><p>Major releases</p></li>
-<li><p>Minor releases</p></li>
-<li><p>Patch releases</p></li>
-<li><p>Development branches</p></li>
+<li><p><strong>Major releases</strong> (x.0.0): Breaking API changes, major new features</p></li>
+<li><p><strong>Minor releases</strong> (1.x.0): New features, backward-compatible changes</p></li>
+<li><p><strong>Patch releases</strong> (1.0.x): Bug fixes, documentation updates</p></li>
+</ul>
+<p><strong>Development Process:</strong></p>
+<ul class="simple">
+<li><p><strong>Main branch:</strong> Stable, production-ready code</p></li>
+<li><p><strong>Development branches:</strong> Feature development and testing</p></li>
+<li><p><strong>Release candidates:</strong> Beta testing before major releases</p></li>
+<li><p><strong>Documentation:</strong> Updated with each release</p></li>
+</ul>
+<p><strong>Release Timeline:</strong></p>
+<ul class="simple">
+<li><p>Major releases: ~1-2 per year</p></li>
+<li><p>Minor releases: As features are completed (typically quarterly)</p></li>
+<li><p>Patch releases: As needed for bug fixes</p></li>
+</ul>
+<p>See <a class="reference internal" href="changelog.html"><span class="doc">Changelog</span></a> for release history.</p>
+</section>
+<section id="staying-updated">
+<h2>Staying Updated<a class="headerlink" href="#staying-updated" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>GitHub Releases:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/releases">https://github.com/SkBlaz/py3plex/releases</a></p></li>
+<li><p><strong>Issue Tracker:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p></li>
+<li><p><strong>Discussions:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/discussions">https://github.com/SkBlaz/py3plex/discussions</a></p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Current features:</strong> <a class="reference internal" href="../getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial</span></a></p></li>
+<li><p><strong>Contribute:</strong> <a class="reference internal" href="contributing.html"><span class="doc">Contributing to py3plex</span></a></p></li>
+<li><p><strong>Report issues:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p></li>
 </ul>
 </section>
 </section>

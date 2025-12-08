@@ -87,6 +87,14 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#config-driven-workflows">Config-Driven Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dsl-driven-analysis-workflows">DSL-Driven Analysis Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-dsl-workflow-pattern">Basic DSL Workflow Pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-exploration-workflow">Multilayer Exploration Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#community-detection-dsl-workflow">Community Detection + DSL Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamics-dsl-workflow">Dynamics + DSL Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reusable-dsl-query-functions">Reusable DSL Query Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#batch-processing">Batch Processing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#complete-example-templates">Complete Example Templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
@@ -287,6 +295,386 @@
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="../user_guide/recipes_and_workflows.html"><span class="doc">Analysis Recipes &amp; Workflows</span></a> for complete config-driven workflow examples.</p>
+</section>
+<section id="dsl-driven-analysis-workflows">
+<h2>DSL-Driven Analysis Workflows<a class="headerlink" href="#dsl-driven-analysis-workflows" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Use py3plex’s DSL to create reproducible, declarative analysis pipelines.</p>
+<p>The DSL provides a powerful way to express analysis workflows as queries rather than imperative code. This makes workflows more readable, maintainable, and reproducible.</p>
+<section id="basic-dsl-workflow-pattern">
+<h3>Basic DSL Workflow Pattern<a class="headerlink" href="#basic-dsl-workflow-pattern" title="Link to this heading"></a></h3>
+<p><strong>Template for DSL-first analysis:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">execute_query</span>
+
+<span class="c1"># 1. Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;py3plex/datasets/_data/synthetic_multilayer.edges&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># 2. Query and filter nodes with DSL</span>
+<span class="n">high_degree_nodes</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. Extract subnetwork</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">high_degree_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="c1"># 4. Analyze subnetwork</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High-degree subnetwork:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">high_degree_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Edges: </span><span class="si">{</span><span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 5. Export results</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;betweenness&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">high_degree_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;high_degree_analysis.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>High-degree subnetwork:
+  Nodes: 25
+  Edges: 89
+</pre></div>
+</div>
+</section>
+<section id="multilayer-exploration-workflow">
+<h3>Multilayer Exploration Workflow<a class="headerlink" href="#multilayer-exploration-workflow" title="Link to this heading"></a></h3>
+<p><strong>Systematic multilayer network analysis:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;py3plex/datasets/_data/synthetic_multilayer.edges&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MULTILAYER NETWORK EXPLORATION&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+<span class="c1"># Step 1: Per-layer statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">1. Per-Layer Statistics:&quot;</span><span class="p">)</span>
+<span class="n">layer_stats</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="c1"># Query layer nodes</span>
+    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">layer_edges</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+    <span class="c1"># Compute metrics</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">avg_degree</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="n">layer_stats</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+        <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">),</span>
+        <span class="s1">&#39;edges&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_edges</span><span class="p">),</span>
+        <span class="s1">&#39;avg_degree&#39;</span><span class="p">:</span> <span class="n">avg_degree</span>
+    <span class="p">})</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> edges, avg_degree=</span><span class="si">{</span><span class="n">avg_degree</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 2: Find versatile nodes (present in multiple layers)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Versatile Nodes (multilayer presence):&quot;</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="n">node_layer_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="n">node_layer_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="n">versatile_nodes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">node</span><span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">node_layer_count</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Total versatile nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">versatile_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Top 5 most versatile:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">versatile_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> layers&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Layer comparison</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. Layer Overlap Analysis:&quot;</span><span class="p">)</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">layer2</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">nodes1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer1</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">nodes2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer2</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="n">overlap</span> <span class="o">=</span> <span class="n">nodes1</span> <span class="o">&amp;</span> <span class="n">nodes2</span>
+        <span class="n">jaccard</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlap</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes1</span> <span class="o">|</span> <span class="n">nodes2</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">nodes1</span> <span class="o">|</span> <span class="n">nodes2</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">layer1</span><span class="si">}</span><span class="s2"> ∩ </span><span class="si">{</span><span class="n">layer2</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">overlap</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, Jaccard=</span><span class="si">{</span><span class="n">jaccard</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 4: Hub identification across layers</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">4. Cross-Layer Hub Nodes:&quot;</span><span class="p">)</span>
+<span class="n">all_metrics</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Hub nodes (degree &gt; 7): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_metrics</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Group hubs by base node ID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="n">hub_layers</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">all_metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">hub_layers</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Unique hub node IDs: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hub_layers</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Top 5 hub nodes:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layers</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">hub_layers</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: present in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2"> layers - </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>MULTILAYER NETWORK EXPLORATION
+======================================================================
+
+1. Per-Layer Statistics:
+  layer1: 40 nodes, 95 edges, avg_degree=4.75
+  layer2: 40 nodes, 87 edges, avg_degree=4.35
+  layer3: 40 nodes, 102 edges, avg_degree=5.10
+
+2. Versatile Nodes (multilayer presence):
+  Total versatile nodes: 35
+  Top 5 most versatile:
+    node7: 3 layers
+    node12: 3 layers
+    node3: 3 layers
+    node15: 3 layers
+    node1: 3 layers
+
+3. Layer Overlap Analysis:
+  layer1 ∩ layer2: 35 nodes, Jaccard=0.875
+  layer1 ∩ layer3: 32 nodes, Jaccard=0.800
+  layer2 ∩ layer3: 33 nodes, Jaccard=0.825
+
+4. Cross-Layer Hub Nodes:
+  Hub nodes (degree &gt; 7): 18
+  Unique hub node IDs: 12
+  Top 5 hub nodes:
+    node7: present in 3 layers - [&#39;layer1&#39;, &#39;layer2&#39;, &#39;layer3&#39;]
+    node12: present in 3 layers - [&#39;layer1&#39;, &#39;layer2&#39;, &#39;layer3&#39;]
+    node3: present in 3 layers - [&#39;layer1&#39;, &#39;layer2&#39;, &#39;layer3&#39;]
+    node15: present in 2 layers - [&#39;layer1&#39;, &#39;layer3&#39;]
+    node8: present in 2 layers - [&#39;layer2&#39;, &#39;layer3&#39;]
+</pre></div>
+</div>
+</section>
+<section id="community-detection-dsl-workflow">
+<h3>Community Detection + DSL Workflow<a class="headerlink" href="#community-detection-dsl-workflow" title="Link to this heading"></a></h3>
+<p><strong>Combine community detection with DSL queries:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.community_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
+
+<span class="c1"># Detect communities</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Attach as node attributes</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">)][</span><span class="s1">&#39;community&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comm_id</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;COMMUNITY-BASED ANALYSIS&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+<span class="c1"># Query each community</span>
+<span class="n">community_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">community_ids</span><span class="p">):</span>
+    <span class="c1"># Use DSL to get community members</span>
+    <span class="n">comm_nodes</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+        <span class="n">network</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s1">&#39;SELECT nodes WHERE community=</span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Compute community metrics</span>
+    <span class="n">comm_result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">community</span><span class="o">=</span><span class="n">comm_id</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Statistics</span>
+    <span class="n">avg_degree</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">comm_result</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">comm_result</span><span class="p">)</span>
+    <span class="n">avg_betw</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">comm_result</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">comm_result</span><span class="p">)</span>
+
+    <span class="c1"># Layer composition</span>
+    <span class="n">layer_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">comm_nodes</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comm_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Avg degree: </span><span class="si">{</span><span class="n">avg_degree</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Avg betweenness: </span><span class="si">{</span><span class="n">avg_betw</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Layer composition: </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">layer_counts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dynamics-dsl-workflow">
+<h3>Dynamics + DSL Workflow<a class="headerlink" href="#dynamics-dsl-workflow" title="Link to this heading"></a></h3>
+<p><strong>Epidemic simulation with DSL-based analysis:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Run SIR simulation</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="p">)</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Attach final state</span>
+<span class="n">final_state</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">final_state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;sir_state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EPIDEMIC ANALYSIS&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+<span class="c1"># Per-layer infection analysis</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+    <span class="n">state_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sir_state&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layer_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span>
+    <span class="n">infected_pct</span> <span class="o">=</span> <span class="n">state_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">recovered_pct</span> <span class="o">=</span> <span class="n">state_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  S: </span><span class="si">{</span><span class="n">state_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">state_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">total</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  I: </span><span class="si">{</span><span class="n">state_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">infected_pct</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  R: </span><span class="si">{</span><span class="n">state_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">recovered_pct</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Identify superspreaders (infected nodes with high degree)</span>
+<span class="n">superspreaders</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Superspreaders (infected, degree &gt; 6): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">superspreaders</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">superspreaders</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: degree=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, betw=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reusable-dsl-query-functions">
+<h3>Reusable DSL Query Functions<a class="headerlink" href="#reusable-dsl-query-functions" title="Link to this heading"></a></h3>
+<p><strong>Create reusable query templates:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">degree_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get high-degree nodes in a specific layer.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="n">degree_threshold</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_versatile_nodes</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">min_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get nodes present in multiple layers.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+    <span class="n">node_layer_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+        <span class="n">node_layer_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">node</span><span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">node_layer_count</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="n">min_layers</span>
+    <span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_layer_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare centrality distributions between two layers.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+    <span class="n">result1</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer1</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">result2</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer2</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">betw1</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">result1</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+    <span class="n">betw2</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">result2</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;layer1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">betw1</span><span class="p">),</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">betw1</span><span class="p">)},</span>
+        <span class="s1">&#39;layer2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">betw2</span><span class="p">),</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">betw2</span><span class="p">)}</span>
+    <span class="p">}</span>
+
+<span class="c1"># Use reusable functions</span>
+<span class="n">hubs_layer1</span> <span class="o">=</span> <span class="n">get_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="n">degree_threshold</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">versatile</span> <span class="o">=</span> <span class="n">get_versatile_nodes</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">min_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">centrality_comp</span> <span class="o">=</span> <span class="n">compare_layer_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer1 hubs: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hubs_layer1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Highly versatile nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">versatile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Centrality comparison: </span><span class="si">{</span><span class="n">centrality_comp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Why use DSL-driven workflows?</strong></p>
+<ul class="simple">
+<li><p><strong>Declarative:</strong> Express <em>what</em> to analyze, not <em>how</em> to compute</p></li>
+<li><p><strong>Composable:</strong> Chain queries to build complex analyses</p></li>
+<li><p><strong>Reproducible:</strong> Queries are self-documenting and version-controllable</p></li>
+<li><p><strong>Efficient:</strong> DSL optimizes execution internally</p></li>
+<li><p><strong>Readable:</strong> SQL-like syntax is intuitive for data analysis</p></li>
+</ul>
+<p><strong>Next steps with DSL workflows:</strong></p>
+<ul class="simple">
+<li><p><strong>Full DSL tutorial:</strong> <a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> - Comprehensive DSL guide</p></li>
+<li><p><strong>Community detection:</strong> <a class="reference internal" href="run_community_detection.html"><span class="doc">How to Run Community Detection on Multilayer Networks</span></a> - Community + DSL workflows</p></li>
+<li><p><strong>Dynamics simulation:</strong> <a class="reference internal" href="simulate_dynamics.html"><span class="doc">How to Simulate Multilayer Dynamics</span></a> - Dynamics + DSL workflows</p></li>
+</ul>
+</section>
 </section>
 <section id="batch-processing">
 <h2>Batch Processing<a class="headerlink" href="#batch-processing" title="Link to this heading"></a></h2>
