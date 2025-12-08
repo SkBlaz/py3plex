@@ -1995,49 +1995,63 @@ Community-level connectivity:
 <h2>CLI Cross-Reference (Optional)<a class="headerlink" href="#cli-cross-reference-optional" title="Link to this heading"></a></h2>
 <p>py3plex provides command-line tools for quick community detection without writing Python code.</p>
 <p><strong>Basic usage:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Detect communities using Louvain</span>
-py3plex<span class="w"> </span>detect-communities<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--input<span class="w"> </span>datasets/synthetic_multilayer.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--input-type<span class="w"> </span>multiedgelist<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Detect communities using Louvain (default algorithm)</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>datasets/network.edgelist<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--output<span class="w"> </span>communities.csv
+<span class="w">    </span>--output<span class="w"> </span>communities.json
 
-<span class="c1"># With multilayer Louvain (specify omega)</span>
-py3plex<span class="w"> </span>detect-communities<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--input<span class="w"> </span>datasets/synthetic_multilayer.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--input-type<span class="w"> </span>multiedgelist<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--algorithm<span class="w"> </span>multilayer_louvain<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--omega<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--gamma<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--output<span class="w"> </span>communities.csv
+<span class="c1"># Using Infomap (requires Infomap binary installed)</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>datasets/network.edgelist<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--algorithm<span class="w"> </span>infomap<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>communities.json
 
-<span class="c1"># With visualization</span>
-py3plex<span class="w"> </span>detect-communities<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--input<span class="w"> </span>datasets/synthetic_multilayer.txt<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--input-type<span class="w"> </span>multiedgelist<span class="w"> </span><span class="se">\</span>
+<span class="c1"># Using Label Propagation (fast for large networks)</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>datasets/network.edgelist<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--algorithm<span class="w"> </span>label_prop<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>communities.json
+
+<span class="c1"># With custom resolution parameter for Louvain</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>datasets/network.edgelist<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--visualize<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--output<span class="w"> </span>communities.csv<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--viz-output<span class="w"> </span>community_plot.png
+<span class="w">    </span>--resolution<span class="w"> </span><span class="m">1</span>.5<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>communities.json
 </pre></div>
 </div>
 <p><strong>Available algorithms:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">louvain</span></code>: Fast Louvain (flattened network)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_louvain</span></code>: Multilayer Louvain with coupling</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">infomap</span></code>: Infomap (requires binary)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_propagation</span></code>: Fast label propagation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">louvain</span></code>: Fast Louvain method (default) - optimizes modularity on flattened network</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">infomap</span></code>: Infomap algorithm - requires Infomap binary (<a class="reference external" href="https://www.mapequation.org/infomap/">https://www.mapequation.org/infomap/</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label_prop</span></code>: Label propagation - very fast, suitable for large networks</p></li>
 </ul>
 <p><strong>Output format:</strong></p>
-<p>The CLI outputs CSV files with columns: <code class="docutils literal notranslate"><span class="pre">node</span></code>, <code class="docutils literal notranslate"><span class="pre">layer</span></code>, <code class="docutils literal notranslate"><span class="pre">community</span></code>, <code class="docutils literal notranslate"><span class="pre">community_size</span></code></p>
-<p><strong>Integration with pipelines:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Chain with other py3plex CLI tools</span>
-py3plex<span class="w"> </span>load<span class="w"> </span>--input<span class="w"> </span>data.edgelist<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-py3plex<span class="w"> </span>detect-communities<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-py3plex<span class="w"> </span>analyze-structure<span class="w"> </span>--metric<span class="w"> </span>modularity
+<p>The CLI outputs JSON files with structure:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;algorithm&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;num_communities&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;communities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;node1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;node2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;node3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;community_sizes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;0&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<p>For full CLI documentation, see <span class="xref std std-doc">../reference/cli_reference</span>.</p>
+<p><strong>Note on multilayer networks:</strong></p>
+<p>The current CLI <code class="docutils literal notranslate"><span class="pre">community</span></code> command operates on flattened networks. For multilayer-specific community detection (with inter-layer coupling), use the Python API with <code class="docutils literal notranslate"><span class="pre">louvain_multilayer()</span></code> as shown in the examples above. Future CLI versions may add multilayer support.</p>
+<p><strong>Viewing results:</strong></p>
+<p>After running the CLI command, you can analyze the JSON output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View community statistics</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>network.edgelist<span class="w"> </span>--algorithm<span class="w"> </span>louvain
+<span class="c1"># Output printed to console if no --output specified</span>
+</pre></div>
+</div>
+<p>For full CLI documentation, see <a class="reference internal" href="../tutorials/cli_usage.html"><span class="doc">Command-Line Interface (CLI) Tutorial</span></a> or <a class="reference internal" href="../deployment/cli_usage.html"><span class="doc">Command-Line Interface (CLI) Tutorial</span></a>.</p>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>

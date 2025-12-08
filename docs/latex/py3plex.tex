@@ -6577,30 +6577,26 @@ py3plex provides command\sphinxhyphen{}line tools for quick community detection 
 \sphinxstylestrong{Basic usage:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{c+c1}{\PYGZsh{} Detect communities using Louvain}
-py3plex\PYG{+w}{ }detect\PYGZhy{}communities\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}input\PYG{+w}{ }datasets/synthetic\PYGZus{}multilayer.txt\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}input\PYGZhy{}type\PYG{+w}{ }multiedgelist\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{c+c1}{\PYGZsh{} Detect communities using Louvain (default algorithm)}
+py3plex\PYG{+w}{ }community\PYG{+w}{ }datasets/network.edgelist\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
 \PYG{+w}{    }\PYGZhy{}\PYGZhy{}algorithm\PYG{+w}{ }louvain\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }communities.csv
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }communities.json
 
-\PYG{c+c1}{\PYGZsh{} With multilayer Louvain (specify omega)}
-py3plex\PYG{+w}{ }detect\PYGZhy{}communities\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}input\PYG{+w}{ }datasets/synthetic\PYGZus{}multilayer.txt\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}input\PYGZhy{}type\PYG{+w}{ }multiedgelist\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}algorithm\PYG{+w}{ }multilayer\PYGZus{}louvain\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}omega\PYG{+w}{ }\PYG{l+m}{1}.0\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}gamma\PYG{+w}{ }\PYG{l+m}{1}.0\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }communities.csv
+\PYG{c+c1}{\PYGZsh{} Using Infomap (requires Infomap binary installed)}
+py3plex\PYG{+w}{ }community\PYG{+w}{ }datasets/network.edgelist\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}algorithm\PYG{+w}{ }infomap\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }communities.json
 
-\PYG{c+c1}{\PYGZsh{} With visualization}
-py3plex\PYG{+w}{ }detect\PYGZhy{}communities\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}input\PYG{+w}{ }datasets/synthetic\PYGZus{}multilayer.txt\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}input\PYGZhy{}type\PYG{+w}{ }multiedgelist\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{c+c1}{\PYGZsh{} Using Label Propagation (fast for large networks)}
+py3plex\PYG{+w}{ }community\PYG{+w}{ }datasets/network.edgelist\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}algorithm\PYG{+w}{ }label\PYGZus{}prop\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }communities.json
+
+\PYG{c+c1}{\PYGZsh{} With custom resolution parameter for Louvain}
+py3plex\PYG{+w}{ }community\PYG{+w}{ }datasets/network.edgelist\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
 \PYG{+w}{    }\PYGZhy{}\PYGZhy{}algorithm\PYG{+w}{ }louvain\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}visualize\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }communities.csv\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}viz\PYGZhy{}output\PYG{+w}{ }community\PYGZus{}plot.png
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}resolution\PYG{+w}{ }\PYG{l+m}{1}.5\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }communities.json
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -6608,19 +6604,15 @@ py3plex\PYG{+w}{ }detect\PYGZhy{}communities\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxcode{\sphinxupquote{louvain}}: Fast Louvain (flattened network)
+\sphinxcode{\sphinxupquote{louvain}}: Fast Louvain method (default) \sphinxhyphen{} optimizes modularity on flattened network
 
 \item {} 
 \sphinxAtStartPar
-\sphinxcode{\sphinxupquote{multilayer\_louvain}}: Multilayer Louvain with coupling
+\sphinxcode{\sphinxupquote{infomap}}: Infomap algorithm \sphinxhyphen{} requires Infomap binary (\sphinxurl{https://www.mapequation.org/infomap/})
 
 \item {} 
 \sphinxAtStartPar
-\sphinxcode{\sphinxupquote{infomap}}: Infomap (requires binary)
-
-\item {} 
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{label\_propagation}}: Fast label propagation
+\sphinxcode{\sphinxupquote{label\_prop}}: Label propagation \sphinxhyphen{} very fast, suitable for large networks
 
 \end{itemize}
 
@@ -6628,20 +6620,46 @@ py3plex\PYG{+w}{ }detect\PYGZhy{}communities\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
 \sphinxstylestrong{Output format:}
 
 \sphinxAtStartPar
-The CLI outputs CSV files with columns: \sphinxcode{\sphinxupquote{node}}, \sphinxcode{\sphinxupquote{layer}}, \sphinxcode{\sphinxupquote{community}}, \sphinxcode{\sphinxupquote{community\_size}}
-
-\sphinxAtStartPar
-\sphinxstylestrong{Integration with pipelines:}
+The CLI outputs JSON files with structure:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{c+c1}{\PYGZsh{} Chain with other py3plex CLI tools}
-py3plex\PYG{+w}{ }load\PYG{+w}{ }\PYGZhy{}\PYGZhy{}input\PYG{+w}{ }data.edgelist\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-py3plex\PYG{+w}{ }detect\PYGZhy{}communities\PYG{+w}{ }\PYGZhy{}\PYGZhy{}algorithm\PYG{+w}{ }louvain\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-py3plex\PYG{+w}{ }analyze\PYGZhy{}structure\PYG{+w}{ }\PYGZhy{}\PYGZhy{}metric\PYG{+w}{ }modularity
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n+nt}{\PYGZdq{}algorithm\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}louvain\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{  }\PYG{n+nt}{\PYGZdq{}num\PYGZus{}communities\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{p}{,}
+\PYG{+w}{  }\PYG{n+nt}{\PYGZdq{}communities\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n+nt}{\PYGZdq{}node1\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n+nt}{\PYGZdq{}node2\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n+nt}{\PYGZdq{}node3\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}
+\PYG{+w}{    }\PYG{err}{.}\PYG{err}{.}\PYG{err}{.}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{},}
+\PYG{+w}{  }\PYG{n+nt}{\PYGZdq{}community\PYGZus{}sizes\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n+nt}{\PYGZdq{}0\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+m+mi}{42}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n+nt}{\PYGZdq{}1\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+m+mi}{27}\PYG{p}{,}
+\PYG{+w}{    }\PYG{err}{.}\PYG{err}{.}\PYG{err}{.}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-For full CLI documentation, see \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../reference/cli\_reference}}}.
+\sphinxstylestrong{Note on multilayer networks:}
+
+\sphinxAtStartPar
+The current CLI \sphinxcode{\sphinxupquote{community}} command operates on flattened networks. For multilayer\sphinxhyphen{}specific community detection (with inter\sphinxhyphen{}layer coupling), use the Python API with \sphinxcode{\sphinxupquote{louvain\_multilayer()}} as shown in the examples above. Future CLI versions may add multilayer support.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Viewing results:}
+
+\sphinxAtStartPar
+After running the CLI command, you can analyze the JSON output:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} View community statistics}
+py3plex\PYG{+w}{ }community\PYG{+w}{ }network.edgelist\PYG{+w}{ }\PYGZhy{}\PYGZhy{}algorithm\PYG{+w}{ }louvain
+\PYG{c+c1}{\PYGZsh{} Output printed to console if no \PYGZhy{}\PYGZhy{}output specified}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+For full CLI documentation, see \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../tutorials/cli\_usage}}} or \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../deployment/cli\_usage}}}.
 
 
 \subsubsection{Next Steps}

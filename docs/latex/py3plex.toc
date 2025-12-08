@@ -185,95 +185,95 @@
 \contentsline {subsubsection}{Next Steps}{88}{subsubsection*.172}%
 \contentsline {subsection}{\numberline {3.3.5}How to Simulate Multilayer Dynamics}{89}{subsection.3.3.5}%
 \contentsline {subsubsection}{Overview}{89}{subsubsection*.173}%
-\contentsline {subsubsection}{Common Concepts \& API}{89}{subsubsection*.174}%
-\contentsline {paragraph}{Node and Layer Representation}{89}{paragraph*.175}%
+\contentsline {subsubsection}{Common Concepts \& API}{90}{subsubsection*.174}%
+\contentsline {paragraph}{Node and Layer Representation}{90}{paragraph*.175}%
 \contentsline {paragraph}{Time and Synchrony}{90}{paragraph*.176}%
 \contentsline {paragraph}{Randomness \& Reproducibility}{90}{paragraph*.177}%
 \contentsline {paragraph}{Network Requirements}{90}{paragraph*.178}%
-\contentsline {paragraph}{Common Base Interface}{90}{paragraph*.179}%
+\contentsline {paragraph}{Common Base Interface}{91}{paragraph*.179}%
 \contentsline {subsubsection}{SIR Epidemic Model on Multilayer Networks}{91}{subsubsection*.180}%
 \contentsline {paragraph}{Formal Description}{91}{paragraph*.181}%
-\contentsline {paragraph}{Code Example}{91}{paragraph*.182}%
+\contentsline {paragraph}{Code Example}{92}{paragraph*.182}%
 \contentsline {paragraph}{Time Series Visualization}{93}{paragraph*.183}%
-\contentsline {subsubsection}{SIS Epidemic Model on Multilayer Networks}{93}{subsubsection*.184}%
-\contentsline {paragraph}{Formal Description}{93}{paragraph*.185}%
+\contentsline {subsubsection}{SIS Epidemic Model on Multilayer Networks}{94}{subsubsection*.184}%
+\contentsline {paragraph}{Formal Description}{94}{paragraph*.185}%
 \contentsline {paragraph}{Code Example}{94}{paragraph*.186}%
 \contentsline {paragraph}{Comparison with SIR}{95}{paragraph*.187}%
 \contentsline {subsubsection}{Random Walk Dynamics}{96}{subsubsection*.188}%
 \contentsline {paragraph}{Formal Description}{96}{paragraph*.189}%
-\contentsline {paragraph}{Code Example}{96}{paragraph*.190}%
+\contentsline {paragraph}{Code Example}{97}{paragraph*.190}%
 \contentsline {paragraph}{Analyzing Layer Switching}{98}{paragraph*.191}%
-\contentsline {subsubsection}{Layer\sphinxhyphen {}Specific and Time\sphinxhyphen {}Varying Parameters}{98}{subsubsection*.192}%
-\contentsline {paragraph}{Layer\sphinxhyphen {}Specific Transmission Rates}{98}{paragraph*.193}%
-\contentsline {paragraph}{Time\sphinxhyphen {}Varying Parameters (Intervention Scenarios)}{99}{paragraph*.194}%
+\contentsline {subsubsection}{Layer\sphinxhyphen {}Specific and Time\sphinxhyphen {}Varying Parameters}{99}{subsubsection*.192}%
+\contentsline {paragraph}{Layer\sphinxhyphen {}Specific Transmission Rates}{99}{paragraph*.193}%
+\contentsline {paragraph}{Time\sphinxhyphen {}Varying Parameters (Intervention Scenarios)}{100}{paragraph*.194}%
 \contentsline {subsubsection}{Result Objects and Metrics}{100}{subsubsection*.195}%
 \contentsline {paragraph}{DynamicsResult API}{100}{paragraph*.196}%
 \contentsline {paragraph}{Common Measures}{100}{paragraph*.197}%
 \contentsline {paragraph}{Extracting and Analyzing Measures}{101}{paragraph*.198}%
-\contentsline {paragraph}{Converting to pandas DataFrame}{101}{paragraph*.199}%
+\contentsline {paragraph}{Converting to pandas DataFrame}{102}{paragraph*.199}%
 \contentsline {subsubsection}{Reproducible Experiments \& Parameter Sweeps}{102}{subsubsection*.200}%
 \contentsline {paragraph}{Running Multiple Stochastic Realizations}{102}{paragraph*.201}%
 \contentsline {paragraph}{Parameter Grid Sweep}{103}{paragraph*.202}%
 \contentsline {subsubsection}{Custom Dynamics}{104}{subsubsection*.203}%
 \contentsline {paragraph}{Extending BaseDynamics}{104}{paragraph*.204}%
-\contentsline {paragraph}{Example: Threshold Model}{104}{paragraph*.205}%
+\contentsline {paragraph}{Example: Threshold Model}{105}{paragraph*.205}%
 \contentsline {paragraph}{Adding Custom Measures}{106}{paragraph*.206}%
 \contentsline {subsubsection}{Next Steps}{107}{subsubsection*.207}%
-\contentsline {subsection}{\numberline {3.3.6}How to Run Random Walk Algorithms}{107}{subsection.3.3.6}%
-\contentsline {subsubsection}{Node2Vec Embeddings}{107}{subsubsection*.208}%
+\contentsline {subsection}{\numberline {3.3.6}How to Run Random Walk Algorithms}{108}{subsection.3.3.6}%
+\contentsline {subsubsection}{Node2Vec Embeddings}{108}{subsubsection*.208}%
 \contentsline {subsubsection}{DeepWalk Embeddings}{108}{subsubsection*.209}%
-\contentsline {subsubsection}{Using Embeddings for Downstream Tasks}{108}{subsubsection*.210}%
-\contentsline {paragraph}{Node Classification}{108}{paragraph*.211}%
+\contentsline {subsubsection}{Using Embeddings for Downstream Tasks}{109}{subsubsection*.210}%
+\contentsline {paragraph}{Node Classification}{109}{paragraph*.211}%
 \contentsline {paragraph}{Link Prediction}{109}{paragraph*.212}%
-\contentsline {paragraph}{Node Clustering}{109}{paragraph*.213}%
+\contentsline {paragraph}{Node Clustering}{110}{paragraph*.213}%
 \contentsline {subsubsection}{Visualizing Embeddings}{110}{subsubsection*.214}%
-\contentsline {subsubsection}{Saving and Loading Embeddings}{110}{subsubsection*.215}%
-\contentsline {paragraph}{Save to File}{110}{paragraph*.216}%
-\contentsline {paragraph}{Export to CSV}{110}{paragraph*.217}%
+\contentsline {subsubsection}{Saving and Loading Embeddings}{111}{subsubsection*.215}%
+\contentsline {paragraph}{Save to File}{111}{paragraph*.216}%
+\contentsline {paragraph}{Export to CSV}{111}{paragraph*.217}%
 \contentsline {subsubsection}{Parameter Tuning}{111}{subsubsection*.218}%
 \contentsline {paragraph}{Grid Search for Best Parameters}{111}{paragraph*.219}%
 \contentsline {subsubsection}{Layer\sphinxhyphen {}Specific Embeddings}{112}{subsubsection*.220}%
 \contentsline {subsubsection}{Next Steps}{112}{subsubsection*.221}%
-\contentsline {subsection}{\numberline {3.3.7}How to Export and Serialize Networks}{112}{subsection.3.3.7}%
-\contentsline {subsubsection}{Quick Save and Load}{112}{subsubsection*.222}%
-\contentsline {paragraph}{Using Pickle (Recommended)}{112}{paragraph*.223}%
+\contentsline {subsection}{\numberline {3.3.7}How to Export and Serialize Networks}{113}{subsection.3.3.7}%
+\contentsline {subsubsection}{Quick Save and Load}{113}{subsubsection*.222}%
+\contentsline {paragraph}{Using Pickle (Recommended)}{113}{paragraph*.223}%
 \contentsline {subsubsection}{Export as Edge List}{113}{subsubsection*.224}%
 \contentsline {paragraph}{Simple Text Format}{113}{paragraph*.225}%
-\contentsline {paragraph}{CSV Format}{113}{paragraph*.226}%
+\contentsline {paragraph}{CSV Format}{114}{paragraph*.226}%
 \contentsline {subsubsection}{Export as JSON}{114}{subsubsection*.227}%
 \contentsline {paragraph}{Full Network Structure}{114}{paragraph*.228}%
 \contentsline {paragraph}{Load from JSON}{115}{paragraph*.229}%
 \contentsline {subsubsection}{Export to NetworkX}{115}{subsubsection*.230}%
 \contentsline {paragraph}{Convert to Single\sphinxhyphen {}Layer NetworkX Graph}{115}{paragraph*.231}%
-\contentsline {paragraph}{Export Specific Layer}{115}{paragraph*.232}%
+\contentsline {paragraph}{Export Specific Layer}{116}{paragraph*.232}%
 \contentsline {subsubsection}{High\sphinxhyphen {}Performance: Apache Arrow/Parquet}{116}{subsubsection*.233}%
 \contentsline {paragraph}{For Large Networks}{116}{paragraph*.234}%
 \contentsline {paragraph}{Load from Parquet}{117}{paragraph*.235}%
 \contentsline {subsubsection}{Export Statistics and Results}{117}{subsubsection*.236}%
 \contentsline {paragraph}{Save Analysis Results}{117}{paragraph*.237}%
-\contentsline {paragraph}{Save Communities}{117}{paragraph*.238}%
+\contentsline {paragraph}{Save Communities}{118}{paragraph*.238}%
 \contentsline {subsubsection}{Batch Export}{118}{subsubsection*.239}%
 \contentsline {paragraph}{Export Multiple Formats}{118}{paragraph*.240}%
-\contentsline {subsubsection}{Next Steps}{118}{subsubsection*.241}%
-\contentsline {subsection}{\numberline {3.3.8}How to Visualize Multilayer Networks}{118}{subsection.3.3.8}%
-\contentsline {subsubsection}{Basic Visualization}{118}{subsubsection*.242}%
-\contentsline {paragraph}{Quick Plot}{118}{paragraph*.243}%
+\contentsline {subsubsection}{Next Steps}{119}{subsubsection*.241}%
+\contentsline {subsection}{\numberline {3.3.8}How to Visualize Multilayer Networks}{119}{subsection.3.3.8}%
+\contentsline {subsubsection}{Basic Visualization}{119}{subsubsection*.242}%
+\contentsline {paragraph}{Quick Plot}{119}{paragraph*.243}%
 \contentsline {paragraph}{Save to File}{119}{paragraph*.244}%
 \contentsline {subsubsection}{Customizing Visualizations}{119}{subsubsection*.245}%
 \contentsline {paragraph}{Node Sizes and Colors}{119}{paragraph*.246}%
-\contentsline {paragraph}{Edge Weights}{119}{paragraph*.247}%
+\contentsline {paragraph}{Edge Weights}{120}{paragraph*.247}%
 \contentsline {subsubsection}{Layout Algorithms}{120}{subsubsection*.248}%
 \contentsline {paragraph}{Force\sphinxhyphen {}Directed Layout}{120}{paragraph*.249}%
 \contentsline {paragraph}{Circular Layout}{120}{paragraph*.250}%
 \contentsline {subsubsection}{Layer\sphinxhyphen {}Specific Visualization}{120}{subsubsection*.251}%
 \contentsline {paragraph}{Visualize Single Layer}{120}{paragraph*.252}%
-\contentsline {paragraph}{Side\sphinxhyphen {}by\sphinxhyphen {}Side Layer Comparison}{120}{paragraph*.253}%
+\contentsline {paragraph}{Side\sphinxhyphen {}by\sphinxhyphen {}Side Layer Comparison}{121}{paragraph*.253}%
 \contentsline {subsubsection}{Community Visualization}{121}{subsubsection*.254}%
 \contentsline {paragraph}{Color by Communities}{121}{paragraph*.255}%
 \contentsline {subsubsection}{Interactive Visualization}{121}{subsubsection*.256}%
 \contentsline {paragraph}{Using Plotly}{121}{paragraph*.257}%
-\contentsline {subsubsection}{Export for Gephi/Cytoscape}{121}{subsubsection*.258}%
-\contentsline {paragraph}{Export to GraphML}{121}{paragraph*.259}%
+\contentsline {subsubsection}{Export for Gephi/Cytoscape}{122}{subsubsection*.258}%
+\contentsline {paragraph}{Export to GraphML}{122}{paragraph*.259}%
 \contentsline {subsubsection}{Next Steps}{122}{subsubsection*.260}%
 \contentsline {subsection}{\numberline {3.3.9}How to Query Multilayer Graphs with the SQL\sphinxhyphen {}like DSL}{122}{subsection.3.3.9}%
 \contentsline {subsubsection}{Conceptual Overview}{122}{subsubsection*.261}%
@@ -283,63 +283,63 @@
 \contentsline {paragraph}{Filter by Property}{125}{paragraph*.265}%
 \contentsline {paragraph}{Compute Statistics}{125}{paragraph*.266}%
 \contentsline {subsubsection}{Builder API (Type\sphinxhyphen {}Safe)}{126}{subsubsection*.267}%
-\contentsline {paragraph}{Basic Queries}{126}{paragraph*.268}%
+\contentsline {paragraph}{Basic Queries}{127}{paragraph*.268}%
 \contentsline {paragraph}{Filtering}{127}{paragraph*.269}%
 \contentsline {paragraph}{Computing Metrics}{128}{paragraph*.270}%
 \contentsline {paragraph}{Sorting and Limiting}{129}{paragraph*.271}%
-\contentsline {subsubsection}{Working with Results}{129}{subsubsection*.272}%
+\contentsline {subsubsection}{Working with Results}{130}{subsubsection*.272}%
 \contentsline {paragraph}{Access as Dictionary}{130}{paragraph*.273}%
 \contentsline {paragraph}{Convert to Pandas}{130}{paragraph*.274}%
 \contentsline {paragraph}{Filter Results}{132}{paragraph*.275}%
-\contentsline {subsubsection}{Advanced Queries}{132}{subsubsection*.276}%
+\contentsline {subsubsection}{Advanced Queries}{133}{subsubsection*.276}%
 \contentsline {paragraph}{Multiple Layer Selection}{133}{paragraph*.277}%
 \contentsline {paragraph}{Layer Intersection}{133}{paragraph*.278}%
 \contentsline {paragraph}{Query Edges}{134}{paragraph*.279}%
-\contentsline {subsubsection}{Temporal Queries}{135}{subsubsection*.280}%
+\contentsline {subsubsection}{Temporal Queries}{136}{subsubsection*.280}%
 \contentsline {paragraph}{Filter by Time (Snapshot)}{136}{paragraph*.281}%
-\contentsline {paragraph}{Time Range}{136}{paragraph*.282}%
+\contentsline {paragraph}{Time Range}{137}{paragraph*.282}%
 \contentsline {subsubsection}{Common Patterns}{138}{subsubsection*.283}%
 \contentsline {paragraph}{Pattern: Find Influential Nodes}{138}{paragraph*.284}%
 \contentsline {paragraph}{Pattern: Compare Layer Activity}{139}{paragraph*.285}%
 \contentsline {paragraph}{Pattern: Export Subnetwork}{140}{paragraph*.286}%
 \contentsline {subsubsection}{Next Steps}{142}{subsubsection*.287}%
-\contentsline {subsection}{\numberline {3.3.10}How to Build Analysis Pipelines with Dplyr\sphinxhyphen {}style Operations}{142}{subsection.3.3.10}%
+\contentsline {subsection}{\numberline {3.3.10}How to Build Analysis Pipelines with Dplyr\sphinxhyphen {}style Operations}{143}{subsection.3.3.10}%
 \contentsline {subsubsection}{Basic Pipeline}{143}{subsubsection*.288}%
 \contentsline {paragraph}{Node Operations}{143}{paragraph*.289}%
 \contentsline {subsubsection}{Available Operations}{143}{subsubsection*.290}%
 \contentsline {paragraph}{filter()}{143}{paragraph*.291}%
-\contentsline {paragraph}{mutate()}{143}{paragraph*.292}%
+\contentsline {paragraph}{mutate()}{144}{paragraph*.292}%
 \contentsline {paragraph}{select()}{144}{paragraph*.293}%
 \contentsline {paragraph}{arrange()}{144}{paragraph*.294}%
 \contentsline {paragraph}{group\_by() and summarize()}{144}{paragraph*.295}%
-\contentsline {subsubsection}{Complex Pipelines}{144}{subsubsection*.296}%
-\contentsline {paragraph}{Multi\sphinxhyphen {}Step Analysis}{144}{paragraph*.297}%
+\contentsline {subsubsection}{Complex Pipelines}{145}{subsubsection*.296}%
+\contentsline {paragraph}{Multi\sphinxhyphen {}Step Analysis}{145}{paragraph*.297}%
 \contentsline {subsubsection}{Combining with DSL}{145}{subsubsection*.298}%
-\contentsline {subsubsection}{Sklearn\sphinxhyphen {}Style Pipelines}{145}{subsubsection*.299}%
+\contentsline {subsubsection}{Sklearn\sphinxhyphen {}Style Pipelines}{146}{subsubsection*.299}%
 \contentsline {subsubsection}{Exporting Pipelines}{146}{subsubsection*.300}%
 \contentsline {paragraph}{Save Pipeline Definition}{146}{paragraph*.301}%
-\contentsline {paragraph}{Load and Execute}{146}{paragraph*.302}%
-\contentsline {subsubsection}{Reusable Pipelines}{146}{subsubsection*.303}%
-\contentsline {paragraph}{Create Pipeline Functions}{146}{paragraph*.304}%
+\contentsline {paragraph}{Load and Execute}{147}{paragraph*.302}%
+\contentsline {subsubsection}{Reusable Pipelines}{147}{subsubsection*.303}%
+\contentsline {paragraph}{Create Pipeline Functions}{147}{paragraph*.304}%
 \contentsline {subsubsection}{Next Steps}{147}{subsubsection*.305}%
 \contentsline {subsection}{\numberline {3.3.11}How to Reproduce Common Analysis Workflows}{147}{subsection.3.3.11}%
 \contentsline {subsubsection}{Complete Workflows}{147}{subsubsection*.306}%
-\contentsline {subsubsection}{Quick Recipe Index}{147}{subsubsection*.307}%
-\contentsline {paragraph}{Network Construction}{147}{paragraph*.308}%
-\contentsline {paragraph}{Statistical Analysis}{147}{paragraph*.309}%
-\contentsline {paragraph}{Community Detection}{147}{paragraph*.310}%
+\contentsline {subsubsection}{Quick Recipe Index}{148}{subsubsection*.307}%
+\contentsline {paragraph}{Network Construction}{148}{paragraph*.308}%
+\contentsline {paragraph}{Statistical Analysis}{148}{paragraph*.309}%
+\contentsline {paragraph}{Community Detection}{148}{paragraph*.310}%
 \contentsline {paragraph}{Network Embeddings}{148}{paragraph*.311}%
 \contentsline {paragraph}{Visualization}{148}{paragraph*.312}%
 \contentsline {subsubsection}{Domain\sphinxhyphen {}Specific Workflows}{148}{subsubsection*.313}%
 \contentsline {paragraph}{Social Networks}{148}{paragraph*.314}%
-\contentsline {paragraph}{Biological Networks}{148}{paragraph*.315}%
-\contentsline {paragraph}{Transportation Networks}{148}{paragraph*.316}%
+\contentsline {paragraph}{Biological Networks}{149}{paragraph*.315}%
+\contentsline {paragraph}{Transportation Networks}{149}{paragraph*.316}%
 \contentsline {subsubsection}{Config\sphinxhyphen {}Driven Workflows}{149}{subsubsection*.317}%
-\contentsline {subsubsection}{Batch Processing}{149}{subsubsection*.318}%
+\contentsline {subsubsection}{Batch Processing}{150}{subsubsection*.318}%
 \contentsline {subsubsection}{Complete Example Templates}{150}{subsubsection*.319}%
 \contentsline {subsubsection}{Next Steps}{150}{subsubsection*.320}%
-\contentsline {section}{\numberline {3.4}Part IV: Concepts \& Explanations}{150}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Concepts \& Explanations}{150}{subsection.3.4.1}%
+\contentsline {section}{\numberline {3.4}Part IV: Concepts \& Explanations}{151}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Concepts \& Explanations}{151}{subsection.3.4.1}%
 \contentsline {subsubsection}{After Reading This Section}{151}{subsubsection*.321}%
 \contentsline {subsection}{\numberline {3.4.2}Multilayer Networks 101}{152}{subsection.3.4.2}%
 \contentsline {subsubsection}{What are Multilayer Networks?}{152}{subsubsection*.322}%
@@ -349,12 +349,12 @@
 \contentsline {paragraph}{Temporal Networks}{153}{paragraph*.326}%
 \contentsline {paragraph}{Interdependent Networks}{153}{paragraph*.327}%
 \contentsline {subsubsection}{When to Use Multilayer Networks}{153}{subsubsection*.328}%
-\contentsline {subsubsection}{Choosing a Modeling Approach}{153}{subsubsection*.329}%
+\contentsline {subsubsection}{Choosing a Modeling Approach}{154}{subsubsection*.329}%
 \contentsline {subsubsection}{What Goes Wrong When You Flatten}{154}{subsubsection*.330}%
 \contentsline {subsubsection}{Common Pitfalls}{154}{subsubsection*.331}%
 \contentsline {subsubsection}{Key Terminology}{154}{subsubsection*.332}%
 \contentsline {subsubsection}{Next Steps}{154}{subsubsection*.333}%
-\contentsline {subsection}{\numberline {3.4.3}The py3plex Core Model}{154}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.3}The py3plex Core Model}{155}{subsection.3.4.3}%
 \contentsline {subsubsection}{Network Types: Multilayer vs Multiplex}{155}{subsubsection*.334}%
 \contentsline {subsubsection}{The \sphinxstyleliteralintitle {\sphinxupquote {multi\_layer\_network}} Class}{156}{subsubsection*.335}%
 \contentsline {paragraph}{Basic Structure}{156}{paragraph*.336}%
@@ -364,7 +364,7 @@
 \contentsline {paragraph}{Edge Types}{158}{paragraph*.340}%
 \contentsline {subsubsection}{Supra\sphinxhyphen {}Adjacency Matrix}{158}{subsubsection*.341}%
 \contentsline {paragraph}{Mathematical Definition}{158}{paragraph*.342}%
-\contentsline {paragraph}{Numeric Example}{158}{paragraph*.343}%
+\contentsline {paragraph}{Numeric Example}{159}{paragraph*.343}%
 \contentsline {paragraph}{Construction}{160}{paragraph*.344}%
 \contentsline {paragraph}{Memory Implications}{160}{paragraph*.345}%
 \contentsline {paragraph}{Visualization}{160}{paragraph*.346}%
