@@ -383,13 +383,47 @@ Current (Development Mode)
 - ✗ No HTTPS
 - ✗ No rate limiting
 
-Production Hardening (TODO)
-----------------------------
+Production Hardening
+--------------------
+
+**Note:** The GUI is designed for local development and research use. For production deployment, consider the following security enhancements:
+
+**Security Checklist:**
+
+.. list-table:: Production Security Requirements
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Security Feature
+     - Implementation Notes
+   * - HTTPS/TLS
+     - Use nginx or Caddy as reverse proxy with SSL certificates
+   * - Authentication
+     - Implement OAuth2 or JWT-based authentication
+   * - Authorization
+     - Role-based access control (RBAC) for multi-user environments
+   * - CORS Configuration
+     - Restrict allowed origins to specific domains
+   * - Rate Limiting
+     - Use nginx rate limiting or FastAPI middleware
+   * - Input Validation
+     - Sanitize all user inputs (file uploads, query strings)
+   * - Data Isolation
+     - Separate user workspaces with filesystem permissions
+   * - Audit Logging
+     - Log all API access and queries for security auditing
+   * - Dependency Updates
+     - Regularly update frontend and backend dependencies
+   * - Container Security
+     - Use minimal base images, scan for vulnerabilities
+
+**Recommended Production Architecture:**
 
 ::
 
     ┌─────────────────────────────────────────┐
     │        HTTPS Load Balancer              │
+    │        (nginx / Caddy)                  │
     └─────────────────┬───────────────────────┘
                       │
                       ▼

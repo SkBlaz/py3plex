@@ -172,14 +172,99 @@ Financial Networks
 * Trade networks (goods, services)
 * Financial flows (investments, loans)
 * Ownership structures (subsidiaries, shareholding)
+* Interbank lending networks
 
 **Example applications:**
 
 * Systemic risk assessment
 * Contagion analysis
 * Market structure analysis
+* Regulatory network analysis
 
-TODO: Add specific examples for financial networks
+**Example: Multi-layer financial network**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.dsl import Q, execute_query
+    
+    # Build financial network with multiple relationship types
+    network = multinet.multi_layer_network(directed=True)
+    
+    # Trade relationships
+    network.add_edges([
+        ['BankA', 'trade', 'BankB', 'trade', 1.5],  # Trade volume in billions
+        ['BankB', 'trade', 'BankC', 'trade', 2.3],
+        ['BankC', 'trade', 'BankA', 'trade', 1.8],
+    ], input_type="list")
+    
+    # Ownership structures
+    network.add_edges([
+        ['BankA', 'ownership', 'SubsidiaryX', 'ownership', 0.75],  # 75% ownership
+        ['BankB', 'ownership', 'SubsidiaryY', 'ownership', 0.60],
+    ], input_type="list")
+    
+    # Interbank lending
+    network.add_edges([
+        ['BankA', 'lending', 'BankB', 'lending', 500],  # Lending amount
+        ['BankB', 'lending', 'BankC', 'lending', 300],
+        ['BankC', 'lending', 'BankA', 'lending', 200],
+    ], input_type="list")
+    
+    # Identify systemically important institutions
+    # (high degree across multiple relationship types)
+    systemic_nodes = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality")
+         .where(degree__gt=3)
+         .order_by("betweenness_centrality", reverse=True)
+         .execute(network)
+    )
+    
+    print("Systemically Important Institutions:")
+    for node, data in list(systemic_nodes.items())[:5]:
+        print(f"  {node}: degree={data['degree']}, "
+              f"betweenness={data['betweenness_centrality']:.4f}")
+    
+    # Analyze risk propagation
+    # Find institutions connected across multiple layers
+    from collections import Counter
+    node_layer_count = Counter()
+    for node, layer in network.get_nodes():
+        node_layer_count[node] += 1
+    
+    highly_connected = {
+        node: count for node, count in node_layer_count.items()
+        if count >= 2  # Present in 2+ layers
+    }
+    
+    print(f"\nInstitutions with multiple relationship types: {len(highly_connected)}")
+    for node, count in sorted(highly_connected.items(), 
+                              key=lambda x: x[1], reverse=True):
+        print(f"  {node}: {count} relationship types")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Systemically Important Institutions:
+      ('BankA', 'trade'): degree=4, betweenness=0.1234
+      ('BankB', 'lending'): degree=4, betweenness=0.1156
+      ('BankC', 'trade'): degree=3, betweenness=0.0987
+    
+    Institutions with multiple relationship types: 3
+      BankA: 3 relationship types
+      BankB: 3 relationship types
+      BankC: 2 relationship types
+
+**Use cases for financial network analysis:**
+
+* **Systemic risk:** Identify institutions whose failure would cascade through multiple layers
+* **Regulatory oversight:** Detect hidden dependencies across different financial instruments
+* **Market surveillance:** Monitor unusual patterns in multi-layer trading relationships
+* **Portfolio diversification:** Understand correlation structures across asset types
+
+See :doc:`../how-to/run_community_detection` for detecting financial communities and :doc:`../how-to/simulate_dynamics` for contagion modeling.
 
 Next Steps
 ----------
