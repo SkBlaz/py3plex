@@ -439,6 +439,206 @@ Example Applications
 8. **Network resilience**: Apply **percolation centrality** to assess infrastructure robustness
 9. **Information flow**: Use **accessibility** and **local efficiency** to analyze communication networks
 
+Uncertainty Quantification for Centrality Measures
+---------------------------------------------------
+
+**New in version 1.0:** py3plex now supports **first-class uncertainty quantification** for centrality measures. All statistics return typed containers (``StatSeries``) that can carry uncertainty information.
+
+Overview
+~~~~~~~~
+
+Centrality measures can be uncertain due to:
+
+* **Algorithm stochasticity**: Random initial conditions or tie-breaking
+* **Network noise**: Measurement errors, missing edges, temporal variations  
+* **Sampling effects**: Incomplete network observations
+
+The uncertainty module provides tools to **quantify and visualize** this uncertainty through resampling strategies.
+
+Basic Usage: Uncertainty Parameter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add uncertainty estimation to any supported centrality function using the ``uncertainty`` parameter:
+
+.. code-block:: python
+
+    from py3plex.algorithms.centrality_toolkit import multilayer_pagerank
+    from py3plex.uncertainty import ResamplingStrategy
+    
+    # Deterministic computation (default)
+    result = multilayer_pagerank(network, uncertainty=False)
+    print(result.mean)  # Point estimates
+    print(result.is_deterministic)  # True
+    
+    # With uncertainty estimation
+    result_uncertain = multilayer_pagerank(
+        network,
+        uncertainty=True,
+        n_runs=50,
+        resampling=ResamplingStrategy.PERTURBATION,
+        random_seed=42
+    )
+    
+    # Access uncertainty information
+    print(result_uncertain.mean)  # Mean across runs
+    print(result_uncertain.std)   # Standard deviations
+    print(result_uncertain.quantiles[0.025])  # Lower 95% CI
+    print(result_uncertain.quantiles[0.975])  # Upper 95% CI
+
+**Resampling Strategies:**
+
+* ``SEED``: Multiple random seeds (for stochastic algorithms)
+* ``PERTURBATION``: Random edge/node drops (network structure uncertainty)
+* ``BOOTSTRAP``: Bootstrap resampling (future)
+* ``JACKKNIFE``: Leave-one-out (future)
+
+Global Context Manager
+~~~~~~~~~~~~~~~~~~~~~~~
+
+For pipelines with multiple centrality computations, use the ``uncertainty_enabled`` context:
+
+.. code-block:: python
+
+    from py3plex.uncertainty import uncertainty_enabled
+    from py3plex.algorithms.centrality_toolkit import multilayer_pagerank
+    
+    # Enable uncertainty for entire pipeline
+    with uncertainty_enabled(n_runs=100):
+        pagerank_scores = multilayer_pagerank(network)
+        # Automatically has uncertainty quantified
+        
+        betweenness_scores = multilayer_betweenness_centrality(network)
+        # Also has uncertainty quantified
+
+**Benefits:**
+
+* No need to pass ``uncertainty=True`` to every function
+* Consistent uncertainty settings across workflow
+* Clean, readable code
+
+StatSeries Type
+~~~~~~~~~~~~~~~
+
+All centrality functions return ``StatSeries`` objects, whether deterministic or uncertain:
+
+.. code-block:: python
+
+    from py3plex.algorithms.centrality_toolkit import multilayer_pagerank
+    import numpy as np
+    
+    result = multilayer_pagerank(network, uncertainty=True, n_runs=50)
+    
+    # StatSeries properties
+    print(result.index)        # Node IDs
+    print(result.mean)         # Mean centrality values (np.ndarray)
+    print(result.std)          # Standard deviations (np.ndarray or None)
+    print(result.quantiles)    # Dict with quantiles: {0.025: [...], 0.975: [...]}
+    print(result.meta)         # Algorithm metadata
+    
+    # Backward compatibility
+    arr = np.array(result)     # Extracts mean (for plotting, etc.)
+    score = result[node]       # Dict-like access: {'mean': ..., 'std': ...}
+    dict_result = result.to_dict()  # Full conversion to dict
+
+**Checking uncertainty:**
+
+.. code-block:: python
+
+    if not result.is_deterministic:
+        print(f"Certainty: {result.certainty}")  # 0.0 for uncertain
+        print(f"Has std: {result.std is not None}")
+        print(f"Has quantiles: {result.quantiles is not None}")
+
+Visualization with Uncertainty
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Plot centrality with confidence bands:
+
+.. code-block:: python
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from py3plex.algorithms.centrality_toolkit import multilayer_pagerank
+    
+    result = multilayer_pagerank(network, uncertainty=True, n_runs=50)
+    
+    # Sort by mean centrality
+    indices = np.argsort(result.mean)[::-1]
+    
+    # Plot with error bars
+    plt.figure(figsize=(10, 6))
+    plt.errorbar(
+        range(len(result)),
+        result.mean[indices],
+        yerr=result.std[indices] if result.std is not None else None,
+        fmt='o',
+        capsize=5,
+        label='PageRank ± std'
+    )
+    
+    # Or plot with confidence bands
+    plt.fill_between(
+        range(len(result)),
+        result.quantiles[0.025][indices],
+        result.quantiles[0.975][indices],
+        alpha=0.3,
+        label='95% CI'
+    )
+    
+    plt.xlabel('Node rank')
+    plt.ylabel('PageRank centrality')
+    plt.legend()
+    plt.title('PageRank with Uncertainty')
+    plt.show()
+
+Perturbation Parameters
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Customize network perturbations for robustness analysis:
+
+.. code-block:: python
+
+    from py3plex.uncertainty import estimate_uncertainty, ResamplingStrategy
+    from py3plex.algorithms.centrality_toolkit import multilayer_pagerank
+    
+    def my_pagerank(net):
+        # Custom centrality function
+        return {node: 1.0 for node in net.get_nodes()}
+    
+    # Custom perturbation: drop 10% edges, 5% nodes
+    result = estimate_uncertainty(
+        network,
+        my_pagerank,
+        n_runs=100,
+        resampling=ResamplingStrategy.PERTURBATION,
+        perturbation_params={
+            "edge_drop_p": 0.10,  # Drop 10% of edges
+            "node_drop_p": 0.05   # Drop 5% of nodes
+        },
+        random_seed=42
+    )
+
+**Use cases:**
+
+* **Robustness analysis**: How stable is centrality under edge failures?
+* **Network noise**: What if some edges are incorrectly measured?
+* **Sampling effects**: How reliable is centrality from partial observations?
+
+Supported Algorithms
+~~~~~~~~~~~~~~~~~~~~
+
+**Currently supported with uncertainty:**
+
+* ``multilayer_pagerank()`` ✓
+
+**Coming soon:**
+
+* ``multilayer_betweenness_centrality()``
+* ``multilayer_eigenvector_centrality()``
+* ``multiplex_degree_centrality()``
+
+To add uncertainty support to custom centrality functions, see the :doc:`../reference/api_index` documentation for ``py3plex.uncertainty.estimate_uncertainty``.
+
 References
 ----------
 

@@ -530,6 +530,191 @@
 <li><p><strong>Information flow</strong>: Use <strong>accessibility</strong> and <strong>local efficiency</strong> to analyze communication networks</p></li>
 </ol>
 </section>
+<section id="uncertainty-quantification-for-centrality-measures">
+<h2>Uncertainty Quantification for Centrality Measures<a class="headerlink" href="#uncertainty-quantification-for-centrality-measures" title="Link to this heading"></a></h2>
+<p><strong>New in version 1.0:</strong> py3plex now supports <strong>first-class uncertainty quantification</strong> for centrality measures. All statistics return typed containers (<code class="docutils literal notranslate"><span class="pre">StatSeries</span></code>) that can carry uncertainty information.</p>
+<section id="id3">
+<h3>Overview<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Centrality measures can be uncertain due to:</p>
+<ul class="simple">
+<li><p><strong>Algorithm stochasticity</strong>: Random initial conditions or tie-breaking</p></li>
+<li><p><strong>Network noise</strong>: Measurement errors, missing edges, temporal variations</p></li>
+<li><p><strong>Sampling effects</strong>: Incomplete network observations</p></li>
+</ul>
+<p>The uncertainty module provides tools to <strong>quantify and visualize</strong> this uncertainty through resampling strategies.</p>
+</section>
+<section id="basic-usage-uncertainty-parameter">
+<h3>Basic Usage: Uncertainty Parameter<a class="headerlink" href="#basic-usage-uncertainty-parameter" title="Link to this heading"></a></h3>
+<p>Add uncertainty estimation to any supported centrality function using the <code class="docutils literal notranslate"><span class="pre">uncertainty</span></code> parameter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.uncertainty</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResamplingStrategy</span>
+
+<span class="c1"># Deterministic computation (default)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>  <span class="c1"># Point estimates</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">is_deterministic</span><span class="p">)</span>  <span class="c1"># True</span>
+
+<span class="c1"># With uncertainty estimation</span>
+<span class="n">result_uncertain</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">n_runs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">resampling</span><span class="o">=</span><span class="n">ResamplingStrategy</span><span class="o">.</span><span class="n">PERTURBATION</span><span class="p">,</span>
+    <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Access uncertainty information</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_uncertain</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>  <span class="c1"># Mean across runs</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_uncertain</span><span class="o">.</span><span class="n">std</span><span class="p">)</span>   <span class="c1"># Standard deviations</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_uncertain</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.025</span><span class="p">])</span>  <span class="c1"># Lower 95% CI</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_uncertain</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.975</span><span class="p">])</span>  <span class="c1"># Upper 95% CI</span>
+</pre></div>
+</div>
+<p><strong>Resampling Strategies:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SEED</span></code>: Multiple random seeds (for stochastic algorithms)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PERTURBATION</span></code>: Random edge/node drops (network structure uncertainty)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BOOTSTRAP</span></code>: Bootstrap resampling (future)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JACKKNIFE</span></code>: Leave-one-out (future)</p></li>
+</ul>
+</section>
+<section id="global-context-manager">
+<h3>Global Context Manager<a class="headerlink" href="#global-context-manager" title="Link to this heading"></a></h3>
+<p>For pipelines with multiple centrality computations, use the <code class="docutils literal notranslate"><span class="pre">uncertainty_enabled</span></code> context:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.uncertainty</span><span class="w"> </span><span class="kn">import</span> <span class="n">uncertainty_enabled</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+
+<span class="c1"># Enable uncertainty for entire pipeline</span>
+<span class="k">with</span> <span class="n">uncertainty_enabled</span><span class="p">(</span><span class="n">n_runs</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">pagerank_scores</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="c1"># Automatically has uncertainty quantified</span>
+
+    <span class="n">betweenness_scores</span> <span class="o">=</span> <span class="n">multilayer_betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="c1"># Also has uncertainty quantified</span>
+</pre></div>
+</div>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p>No need to pass <code class="docutils literal notranslate"><span class="pre">uncertainty=True</span></code> to every function</p></li>
+<li><p>Consistent uncertainty settings across workflow</p></li>
+<li><p>Clean, readable code</p></li>
+</ul>
+</section>
+<section id="statseries-type">
+<h3>StatSeries Type<a class="headerlink" href="#statseries-type" title="Link to this heading"></a></h3>
+<p>All centrality functions return <code class="docutils literal notranslate"><span class="pre">StatSeries</span></code> objects, whether deterministic or uncertain:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># StatSeries properties</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>        <span class="c1"># Node IDs</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>         <span class="c1"># Mean centrality values (np.ndarray)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">std</span><span class="p">)</span>          <span class="c1"># Standard deviations (np.ndarray or None)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">quantiles</span><span class="p">)</span>    <span class="c1"># Dict with quantiles: {0.025: [...], 0.975: [...]}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>         <span class="c1"># Algorithm metadata</span>
+
+<span class="c1"># Backward compatibility</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>     <span class="c1"># Extracts mean (for plotting, etc.)</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>       <span class="c1"># Dict-like access: {&#39;mean&#39;: ..., &#39;std&#39;: ...}</span>
+<span class="n">dict_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>  <span class="c1"># Full conversion to dict</span>
+</pre></div>
+</div>
+<p><strong>Checking uncertainty:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">is_deterministic</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Certainty: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">certainty</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.0 for uncertain</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Has std: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">std</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Has quantiles: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">quantiles</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="visualization-with-uncertainty">
+<h3>Visualization with Uncertainty<a class="headerlink" href="#visualization-with-uncertainty" title="Link to this heading"></a></h3>
+<p>Plot centrality with confidence bands:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># Sort by mean centrality</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Plot with error bars</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)),</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span>
+    <span class="n">yerr</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">std</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">std</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+    <span class="n">capsize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PageRank ± std&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Or plot with confidence bands</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
+    <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)),</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.025</span><span class="p">][</span><span class="n">indices</span><span class="p">],</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.975</span><span class="p">][</span><span class="n">indices</span><span class="p">],</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;95% CI&#39;</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Node rank&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PageRank centrality&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;PageRank with Uncertainty&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="perturbation-parameters">
+<h3>Perturbation Parameters<a class="headerlink" href="#perturbation-parameters" title="Link to this heading"></a></h3>
+<p>Customize network perturbations for robustness analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.uncertainty</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate_uncertainty</span><span class="p">,</span> <span class="n">ResamplingStrategy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_pagerank</span><span class="p">(</span><span class="n">net</span><span class="p">):</span>
+    <span class="c1"># Custom centrality function</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="mf">1.0</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()}</span>
+
+<span class="c1"># Custom perturbation: drop 10% edges, 5% nodes</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">estimate_uncertainty</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">my_pagerank</span><span class="p">,</span>
+    <span class="n">n_runs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">resampling</span><span class="o">=</span><span class="n">ResamplingStrategy</span><span class="o">.</span><span class="n">PERTURBATION</span><span class="p">,</span>
+    <span class="n">perturbation_params</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;edge_drop_p&quot;</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span>  <span class="c1"># Drop 10% of edges</span>
+        <span class="s2">&quot;node_drop_p&quot;</span><span class="p">:</span> <span class="mf">0.05</span>   <span class="c1"># Drop 5% of nodes</span>
+    <span class="p">},</span>
+    <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use cases:</strong></p>
+<ul class="simple">
+<li><p><strong>Robustness analysis</strong>: How stable is centrality under edge failures?</p></li>
+<li><p><strong>Network noise</strong>: What if some edges are incorrectly measured?</p></li>
+<li><p><strong>Sampling effects</strong>: How reliable is centrality from partial observations?</p></li>
+</ul>
+</section>
+<section id="supported-algorithms">
+<h3>Supported Algorithms<a class="headerlink" href="#supported-algorithms" title="Link to this heading"></a></h3>
+<p><strong>Currently supported with uncertainty:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_pagerank()</span></code> ✓</p></li>
+</ul>
+<p><strong>Coming soon:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_betweenness_centrality()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_eigenvector_centrality()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiplex_degree_centrality()</span></code></p></li>
+</ul>
+<p>To add uncertainty support to custom centrality functions, see the <a class="reference internal" href="../reference/api_index.html"><span class="doc">API Documentation</span></a> documentation for <code class="docutils literal notranslate"><span class="pre">py3plex.uncertainty.estimate_uncertainty</span></code>.</p>
+</section>
+</section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <p>The implementations follow <strong>standard definitions</strong> from multilayer network analysis literature, particularly:</p>

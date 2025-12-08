@@ -273,9 +273,11 @@ Multilayer Benchmarks
 Centrality Measures
 -------------------
 
-**Module:** ``py3plex.algorithms.multilayer_algorithms.centrality``
+**Module:** ``py3plex.algorithms.multilayer_algorithms.centrality``, ``py3plex.algorithms.centrality_toolkit``
 
 These algorithms measure the importance or influence of nodes in multilayer networks.
+
+**New in version 1.0:** Centrality measures now support **first-class uncertainty quantification** via the ``uncertainty`` parameter. See :doc:`../tutorials/multilayer_centrality` for details.
 
 MultilayerCentrality Class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -362,6 +364,98 @@ Eigenvector-Based Measures
 
 **Related measures:**
   - :ref:`hubs-authorities` (directed networks)
+  - :ref:`multilayer-pagerank-toolkit` (with uncertainty support)
+
+.. _multilayer-pagerank-toolkit:
+
+Multilayer PageRank (with Uncertainty)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Path:** ``algorithms.centrality_toolkit.multilayer_pagerank``
+
+**New in version 1.0:** Built-in PageRank with **first-class uncertainty quantification**.
+
+**Function signature:**
+
+.. code-block:: python
+
+    multilayer_pagerank(
+        network,
+        alpha=0.85,
+        max_iter=100,
+        tol=1e-6,
+        personalization=None,
+        uncertainty=False,
+        n_runs=None,
+        resampling=None,
+        random_seed=None
+    ) -> StatSeries
+
+**Parameters:**
+
+* ``uncertainty``: If True, estimate uncertainty via resampling
+* ``n_runs``: Number of runs for uncertainty estimation (default: 50)
+* ``resampling``: Strategy - SEED, PERTURBATION, BOOTSTRAP, JACKKNIFE
+* ``random_seed``: For reproducibility
+
+**Returns:** ``StatSeries`` with mean, std, quantiles (if uncertainty=True)
+
+**Runnable Example:**
+
+.. code-block:: python
+
+    from py3plex.algorithms.centrality_toolkit import multilayer_pagerank
+    from py3plex.uncertainty import ResamplingStrategy
+    from py3plex.core import multinet
+    
+    # Create network
+    network = multinet.multi_layer_network(directed=False)
+    network.add_edges([
+        ['A', 'L1', 'B', 'L1', 1.0],
+        ['B', 'L1', 'C', 'L1', 1.0],
+        ['A', 'L2', 'C', 'L2', 1.0]
+    ], input_type='list')
+    
+    # Deterministic PageRank
+    result = multilayer_pagerank(network)
+    print(f"Node scores: {result.mean}")
+    print(f"Is deterministic: {result.is_deterministic}")
+    
+    # With uncertainty
+    result_unc = multilayer_pagerank(
+        network,
+        uncertainty=True,
+        n_runs=50,
+        resampling=ResamplingStrategy.PERTURBATION,
+        random_seed=42
+    )
+    print(f"Mean scores: {result_unc.mean}")
+    print(f"Std deviations: {result_unc.std}")
+    print(f"95% CI: [{result_unc.quantiles[0.025]}, {result_unc.quantiles[0.975]}]")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Node scores: [0.184 0.183 0.184 ...]
+    Is deterministic: True
+    Mean scores: [0.186 0.192 0.181 ...]
+    Std deviations: [0.019 0.021 0.018 ...]
+    95% CI: [[0.146 0.172 0.146 ...], [0.238 0.241 0.221 ...]]
+
+**Best for:** 
+
+* Influence ranking with confidence intervals
+* Robustness analysis under network perturbations
+* Quantifying centrality uncertainty
+
+**Complexity:** 
+
+* Deterministic: O(m) per iteration
+* With uncertainty: O(m × n_runs)
+
+**Related measures:**
+  - ``MultilayerCentrality.pagerank_centrality()`` (deterministic only)
 
 Path-Based Measures
 ^^^^^^^^^^^^^^^^^^^
