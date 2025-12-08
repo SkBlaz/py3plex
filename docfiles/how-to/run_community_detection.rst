@@ -856,6 +856,382 @@ Export Communities
     print("Exported to cytoscape_nodes.csv and cytoscape_edges.csv")
     print("Import these into Cytoscape for interactive visualization")
 
+Query Communities with DSL
+---------------------------
+
+**Goal:** Use py3plex's Domain-Specific Language (DSL) to query and analyze community-detected networks efficiently.
+
+The DSL provides a declarative, SQL-like interface for querying multilayer networks. After detecting communities, you can use DSL queries to filter nodes by community membership, compute community-level statistics, and extract subnetworks.
+
+**Prerequisites:** 
+
+* Community detection results (e.g., from ``louvain_communities()``)
+* Familiarity with DSL basics (see :doc:`query_with_dsl` for full tutorial)
+
+DSL Basics for Communities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**String Syntax - SQL-like queries:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.community_detection.community_wrapper import louvain_communities
+    from py3plex.dsl import execute_query
+    
+    # Load network and detect communities
+    network = multinet.multi_layer_network(directed=False)
+    network.load_network(
+        "py3plex/datasets/_data/synthetic_multilayer.edges",
+        input_type="multiedgelist"
+    )
+    
+    communities = louvain_communities(network)
+    
+    # Attach community labels as node attributes
+    for (node, layer), comm_id in communities.items():
+        network.core_network.nodes[(node, layer)]['community'] = comm_id
+    
+    # DSL Query: Find nodes in community 0
+    result = execute_query(
+        network, 
+        'SELECT nodes WHERE community=0'
+    )
+    
+    print(f"Nodes in community 0: {len(result)}")
+    for node in list(result)[:5]:
+        print(f"  {node}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Nodes in community 0: 18
+      ('node1', 'layer1')
+      ('node1', 'layer2')
+      ('node2', 'layer1')
+      ('node3', 'layer1')
+      ('node3', 'layer3')
+
+**Builder API - Chainable operations:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Find high-degree nodes in a specific community
+    result = (
+        Q.nodes()
+         .where(community=0)
+         .compute("degree")
+         .where(degree__gt=5)
+         .order_by("degree", reverse=True)
+         .execute(network)
+    )
+    
+    # Convert to pandas for analysis
+    import pandas as pd
+    df = pd.DataFrame([
+        {
+            'node': node[0],
+            'layer': node[1],
+            'degree': data['degree'],
+            'community': data.get('community', -1)
+        }
+        for node, data in result.items()
+    ])
+    
+    print("High-degree nodes in community 0:")
+    print(df.head(10))
+
+**Expected output:**
+
+.. code-block:: text
+
+    High-degree nodes in community 0:
+          node   layer  degree  community
+    0    node1  layer1      12          0
+    1    node1  layer2      10          0
+    2    node2  layer1       9          0
+    3    node5  layer1       8          0
+    4    node5  layer3       7          0
+
+Community-Level Queries
+~~~~~~~~~~~~~~~~~~~~~~~
+
+**Count nodes per community:**
+
+.. code-block:: python
+
+    # Get all communities
+    community_ids = set(communities.values())
+    
+    for comm_id in sorted(community_ids):
+        result = execute_query(
+            network,
+            f'SELECT nodes WHERE community={comm_id}'
+        )
+        print(f"Community {comm_id}: {len(result)} nodes")
+
+**Find inter-community edges:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    # Attach community labels to edges based on endpoint communities
+    for edge in network.core_network.edges():
+        source, target = edge
+        source_comm = communities.get(source, -1)
+        target_comm = communities.get(target, -1)
+        network.core_network.edges[edge]['source_community'] = source_comm
+        network.core_network.edges[edge]['target_community'] = target_comm
+        network.core_network.edges[edge]['is_intra_community'] = (source_comm == target_comm)
+    
+    # Query inter-community edges
+    inter_comm_edges = (
+        Q.edges()
+         .where(is_intra_community=False)
+         .execute(network)
+    )
+    
+    intra_comm_edges = (
+        Q.edges()
+         .where(is_intra_community=True)
+         .execute(network)
+    )
+    
+    print(f"Intra-community edges: {len(intra_comm_edges)}")
+    print(f"Inter-community edges: {len(inter_comm_edges)}")
+    print(f"Ratio: {len(inter_comm_edges)/len(intra_comm_edges):.3f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Intra-community edges: 245
+    Inter-community edges: 39
+    Ratio: 0.159
+
+Layer-Specific Community Queries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Find nodes in a specific community and layer:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Community 0 nodes in layer1 only
+    result = (
+        Q.nodes()
+         .from_layers(L["layer1"])
+         .where(community=0)
+         .compute("degree")
+         .execute(network)
+    )
+    
+    print(f"Community 0 in layer1: {len(result)} nodes")
+    print(f"Average degree: {sum(d['degree'] for d in result.values())/len(result):.2f}")
+
+**Compare community structure across layers:**
+
+.. code-block:: python
+
+    layers = network.get_layers()
+    
+    for layer in layers:
+        # Count communities present in this layer
+        layer_nodes = (
+            Q.nodes()
+             .from_layers(L[layer])
+             .execute(network)
+        )
+        
+        layer_communities = set(
+            communities.get(node, -1) 
+            for node in layer_nodes
+        )
+        
+        print(f"{layer}: {len(layer_communities)} communities, {len(layer_nodes)} nodes")
+
+**Expected output:**
+
+.. code-block:: text
+
+    layer1: 5 communities, 40 nodes
+    layer2: 4 communities, 40 nodes
+    layer3: 3 communities, 40 nodes
+
+Extract Community Subnetworks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Extract a single community as a subnetwork:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    # Extract community 0
+    comm_0_nodes = execute_query(
+        network,
+        'SELECT nodes WHERE community=0'
+    )
+    
+    # Get induced subgraph
+    subgraph = network.core_network.subgraph(comm_0_nodes)
+    
+    # Convert to new multilayer network
+    community_network = multinet.multi_layer_network(directed=False)
+    community_network.core_network = subgraph.copy()
+    
+    print(f"Community 0 subnetwork:")
+    print(f"  Nodes: {community_network.number_of_nodes()}")
+    print(f"  Edges: {community_network.number_of_edges()}")
+    print(f"  Layers: {community_network.get_layers()}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Community 0 subnetwork:
+      Nodes: 18
+      Edges: 67
+      Layers: ['layer1', 'layer2', 'layer3']
+
+Compute Community-Level Statistics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Average centrality per community:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    from collections import defaultdict
+    
+    # Compute centrality for all nodes
+    result = (
+        Q.nodes()
+         .compute("betweenness_centrality", "degree")
+         .execute(network)
+    )
+    
+    # Group by community
+    comm_stats = defaultdict(list)
+    for node, data in result.items():
+        comm_id = data.get('community', -1)
+        comm_stats[comm_id].append({
+            'degree': data['degree'],
+            'betweenness': data['betweenness_centrality']
+        })
+    
+    # Calculate averages
+    print("Community-level statistics:")
+    print(f"{'Community':<12} {'Nodes':<8} {'Avg Degree':<12} {'Avg Betweenness':<18}")
+    print("-" * 50)
+    
+    for comm_id in sorted(comm_stats.keys()):
+        stats = comm_stats[comm_id]
+        n_nodes = len(stats)
+        avg_degree = sum(s['degree'] for s in stats) / n_nodes
+        avg_betw = sum(s['betweenness'] for s in stats) / n_nodes
+        print(f"{comm_id:<12} {n_nodes:<8} {avg_degree:<12.2f} {avg_betw:<18.6f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Community-level statistics:
+    Community    Nodes    Avg Degree   Avg Betweenness    
+    --------------------------------------------------
+    0            18       7.44         0.012345          
+    1            15       6.13         0.008234          
+    2            12       5.25         0.005678          
+    3            8        4.50         0.003456          
+    4            7        3.86         0.002123          
+
+Complex DSL Workflows
+~~~~~~~~~~~~~~~~~~~~~
+
+**Multi-step analysis: Find bridge nodes between communities:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    # Bridge nodes: high betweenness + connect multiple communities
+    # First, compute betweenness
+    result = (
+        Q.nodes()
+         .compute("betweenness_centrality", "degree")
+         .execute(network)
+    )
+    
+    # Identify potential bridges (high betweenness)
+    bridges = [
+        (node, data['betweenness_centrality'])
+        for node, data in result.items()
+        if data['betweenness_centrality'] > 0.01  # Threshold
+    ]
+    
+    print(f"Potential bridge nodes (betweenness > 0.01): {len(bridges)}")
+    
+    # For each bridge, check which communities its neighbors belong to
+    for node, betw in sorted(bridges, key=lambda x: x[1], reverse=True)[:5]:
+        # Get neighbors
+        neighbors = list(network.core_network.neighbors(node))
+        neighbor_comms = set(communities.get(n, -1) for n in neighbors)
+        
+        print(f"  {node}: betweenness={betw:.6f}, connects {len(neighbor_comms)} communities")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Potential bridge nodes (betweenness > 0.01): 12
+      ('node7', 'layer1'): betweenness=0.045678, connects 3 communities
+      ('node12', 'layer2'): betweenness=0.034567, connects 2 communities
+      ('node3', 'layer1'): betweenness=0.023456, connects 3 communities
+      ('node15', 'layer3'): betweenness=0.019876, connects 2 communities
+      ('node8', 'layer2'): betweenness=0.015432, connects 2 communities
+
+**Temporal community analysis (for time-sliced networks):**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Assuming layers represent time slices: t1, t2, t3
+    time_layers = ['t1', 't2', 't3']
+    
+    # Track specific nodes across time
+    tracked_nodes = ['Alice', 'Bob', 'Carol']
+    
+    print("Community membership over time:")
+    for node in tracked_nodes:
+        print(f"\n{node}:")
+        for t_layer in time_layers:
+            node_key = (node, t_layer)
+            comm_id = communities.get(node_key, None)
+            if comm_id is not None:
+                print(f"  {t_layer}: Community {comm_id}")
+            else:
+                print(f"  {t_layer}: Not present")
+
+**Why use DSL for community analysis?**
+
+* **Declarative:** Express *what* you want, not *how* to compute it
+* **Composable:** Chain operations to build complex queries
+* **Efficient:** DSL optimizes query execution internally
+* **Readable:** SQL-like syntax is self-documenting
+* **Interoperable:** Results integrate seamlessly with pandas, NumPy, and visualization tools
+
+**Next steps with DSL:**
+
+* **Full DSL tutorial:** :doc:`query_with_dsl` - Comprehensive guide with advanced patterns
+* **Builder API reference:** :doc:`../reference/dsl_api` - Complete API documentation
+* **Temporal queries:** :doc:`query_with_dsl` (Temporal Queries section) - Time-varying networks
+
 Compare Algorithms
 ------------------
 
