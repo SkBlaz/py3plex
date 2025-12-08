@@ -188,7 +188,7 @@ The ``COMPUTE`` clause calculates network metrics and attaches them to result ro
     result = execute_query(
         network,
         'SELECT nodes WHERE layer="social" '
-        'COMPUTE degree, betweenness_centrality'
+        'COMPUTE degree COMPUTE betweenness_centrality'
     )
     
     # Convert to pandas for analysis
@@ -1026,8 +1026,13 @@ Extract a subnetwork based on query criteria for focused analysis or visualizati
     print(f"Subnetwork mean betweenness: {df['betweenness_centrality'].mean():.4f}")
     
     # Export for visualization or further analysis
-    from py3plex.visualization import multilayer_visualize
-    multilayer_visualize(subnetwork, output_file="subnetwork_viz.png")
+    from py3plex.visualization import draw_multilayer_default
+    import matplotlib.pyplot as plt
+    
+    fig, ax = plt.subplots(figsize=(12, 10))
+    draw_multilayer_default(subnetwork, ax=ax, display=False)
+    plt.savefig("subnetwork_viz.png", dpi=300)
+    plt.close()
     
     # Or export in various formats
     subnetwork.save_network("subnetwork.edgelist", output_type="edgelist")
@@ -1073,15 +1078,21 @@ This pattern is often combined with community detection, dynamics simulation, or
     subnetwork = network.subgraph(core_nodes.keys())
     
     # 2. Run community detection on subnetwork
-    from py3plex.algorithms.community_detection import louvain_communities
+    from py3plex.algorithms.community_detection.community_wrapper import louvain_communities
     communities = louvain_communities(subnetwork)
     
     # 3. Analyze communities
     print(f"Found {len(set(communities.values()))} communities")
     
     # 4. Visualize or export
-    multilayer_visualize(subnetwork, communities=communities, 
-                        output_file="core_network_communities.png")
+    from py3plex.visualization import draw_multilayer_default
+    import matplotlib.pyplot as plt
+    
+    fig, ax = plt.subplots(figsize=(12, 10))
+    # Note: communities dict can be used for node coloring if the visualization function supports it
+    draw_multilayer_default(subnetwork, ax=ax, display=False)
+    plt.savefig("core_network_communities.png", dpi=300)
+    plt.close()
 
 Next Steps
 ----------
