@@ -23,7 +23,7 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * Community detection and centrality measures
 * Network decomposition and embeddings
 
-** Quick Example *"
+**Quick Example**
 
 Find nodes that are betweenness centrality hubs across *all* layers in a multilayer network:
 
