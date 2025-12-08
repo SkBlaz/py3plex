@@ -2038,7 +2038,7 @@ After running the CLI command, you can analyze the JSON output:
     py3plex community network.edgelist --algorithm louvain
     # Output printed to console if no --output specified
 
-For full CLI documentation, see :doc:`../reference/cli_reference`.
+For full CLI documentation, see :doc:`../tutorials/cli_usage` or :doc:`../deployment/cli_usage`.
 
 Next Steps
 ----------
