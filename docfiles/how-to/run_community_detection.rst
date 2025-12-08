@@ -1975,52 +1975,70 @@ py3plex provides command-line tools for quick community detection without writin
 
 .. code-block:: bash
 
-    # Detect communities using Louvain
-    py3plex detect-communities \
-        --input datasets/synthetic_multilayer.txt \
-        --input-type multiedgelist \
+    # Detect communities using Louvain (default algorithm)
+    py3plex community datasets/network.edgelist \
         --algorithm louvain \
-        --output communities.csv
+        --output communities.json
     
-    # With multilayer Louvain (specify omega)
-    py3plex detect-communities \
-        --input datasets/synthetic_multilayer.txt \
-        --input-type multiedgelist \
-        --algorithm multilayer_louvain \
-        --omega 1.0 \
-        --gamma 1.0 \
-        --output communities.csv
+    # Using Infomap (requires Infomap binary installed)
+    py3plex community datasets/network.edgelist \
+        --algorithm infomap \
+        --output communities.json
     
-    # With visualization
-    py3plex detect-communities \
-        --input datasets/synthetic_multilayer.txt \
-        --input-type multiedgelist \
+    # Using Label Propagation (fast for large networks)
+    py3plex community datasets/network.edgelist \
+        --algorithm label_prop \
+        --output communities.json
+    
+    # With custom resolution parameter for Louvain
+    py3plex community datasets/network.edgelist \
         --algorithm louvain \
-        --visualize \
-        --output communities.csv \
-        --viz-output community_plot.png
+        --resolution 1.5 \
+        --output communities.json
 
 **Available algorithms:**
 
-* ``louvain``: Fast Louvain (flattened network)
-* ``multilayer_louvain``: Multilayer Louvain with coupling
-* ``infomap``: Infomap (requires binary)
-* ``label_propagation``: Fast label propagation
+* ``louvain``: Fast Louvain method (default) - optimizes modularity on flattened network
+* ``infomap``: Infomap algorithm - requires Infomap binary (https://www.mapequation.org/infomap/)
+* ``label_prop``: Label propagation - very fast, suitable for large networks
 
 **Output format:**
 
-The CLI outputs CSV files with columns: ``node``, ``layer``, ``community``, ``community_size``
+The CLI outputs JSON files with structure:
 
-**Integration with pipelines:**
+.. code-block:: json
+
+    {
+      "algorithm": "louvain",
+      "num_communities": 5,
+      "communities": {
+        "node1": 0,
+        "node2": 0,
+        "node3": 1,
+        ...
+      },
+      "community_sizes": {
+        "0": 42,
+        "1": 27,
+        ...
+      }
+    }
+
+**Note on multilayer networks:**
+
+The current CLI ``community`` command operates on flattened networks. For multilayer-specific community detection (with inter-layer coupling), use the Python API with ``louvain_multilayer()`` as shown in the examples above. Future CLI versions may add multilayer support.
+
+**Viewing results:**
+
+After running the CLI command, you can analyze the JSON output:
 
 .. code-block:: bash
 
-    # Chain with other py3plex CLI tools
-    py3plex load --input data.edgelist | \
-    py3plex detect-communities --algorithm louvain | \
-    py3plex analyze-structure --metric modularity
+    # View community statistics
+    py3plex community network.edgelist --algorithm louvain
+    # Output printed to console if no --output specified
 
-For full CLI documentation, see :doc:`../reference/cli_reference`.
+For full CLI documentation, see :doc:`../tutorials/cli_usage` or :doc:`../deployment/cli_usage`.
 
 Next Steps
 ----------
