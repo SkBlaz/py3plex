@@ -22,7 +22,7 @@ Quick Start: Louvain Algorithm
 
 **What is Louvain?**
 
-The Louvain algorithm :cite:`blondel2008fast` is a fast, greedy method that optimizes *modularity*, defined as:
+The Louvain algorithm (Blondel et al., 2008) is a fast, greedy method that optimizes *modularity*, defined as:
 
 .. math::
 
@@ -91,7 +91,7 @@ Multilayer-Specific: Multilayer Louvain
 
 **What makes multilayer community detection different?**
 
-Standard Louvain treats a multilayer network as a single flattened graph, losing layer identity. **Multilayer Louvain** :cite:`mucha2010community` optimizes the *multilayer modularity*:
+Standard Louvain treats a multilayer network as a single flattened graph, losing layer identity. **Multilayer Louvain** (Mucha et al., 2010) optimizes the *multilayer modularity*:
 
 .. math::
 
@@ -224,7 +224,7 @@ Infomap Algorithm
 
 **What is Infomap?**
 
-Infomap :cite:`rosvall2008maps` uses information theory to find communities by minimizing the *map equation*:
+Infomap (Rosvall & Bergstrom, 2008) uses information theory to find communities by minimizing the *map equation*:
 
 .. math::
 
@@ -358,7 +358,7 @@ Label Propagation
 
 **What is Label Propagation?**
 
-Label propagation :cite:`raghavan2007near` is an extremely fast, near-linear time algorithm that works by iteratively assigning each node to the most common community among its neighbors.
+Label propagation (Raghavan et al., 2007) is an extremely fast, near-linear time algorithm that works by iteratively assigning each node to the most common community among its neighbors.
 
 **Algorithm:**
 
@@ -2062,8 +2062,9 @@ Next Steps
 * Documentation: https://skblaz.github.io/py3plex/
 * Examples: ``examples/communities/`` directory in the repository
 
-**References:**
+**Key References:**
 
-.. bibliography:: ../refs.bib
-   :filter: cited and ({"blondel2008fast", "mucha2010community", "rosvall2008maps", "raghavan2007near"} & set(docnames))
-   :style: plain
+* Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008). Fast unfolding of communities in large networks. *Journal of Statistical Mechanics: Theory and Experiment*, 2008(10), P10008.
+* Mucha, P. J., Richardson, T., Macon, K., Porter, M. A., & Onnela, J. P. (2010). Community structure in time-dependent, multiscale, and multiplex networks. *Science*, 328(5980), 876-878.
+* Rosvall, M., & Bergstrom, C. T. (2008). Maps of random walks on complex networks reveal community structure. *Proceedings of the National Academy of Sciences*, 105(4), 1118-1123.
+* Raghavan, U. N., Albert, R., & Kumara, S. (2007). Near linear time algorithm to detect community structures in large-scale networks. *Physical Review E*, 76(3), 036106.
