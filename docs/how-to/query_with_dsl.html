@@ -69,6 +69,7 @@
 <li class="toctree-l1"><a class="reference internal" href="export_serialize.html">How to Export and Serialize Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualize_networks.html">How to Visualize Multilayer Networks</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">How to Query Multilayer Graphs with the SQL-like DSL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#conceptual-overview">Conceptual Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#string-syntax-quick-and-readable">String Syntax (Quick and Readable)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-select">Basic SELECT</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filter-by-layer">Filter by Layer</a></li>
@@ -96,7 +97,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#temporal-queries">Temporal Queries</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#filter-by-time">Filter by Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-by-time-snapshot">Filter by Time (Snapshot)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#time-range">Time Range</a></li>
 </ul>
 </li>
@@ -184,12 +185,71 @@
              
   <section id="how-to-query-multilayer-graphs-with-the-sql-like-dsl">
 <h1>How to Query Multilayer Graphs with the SQL-like DSL<a class="headerlink" href="#how-to-query-multilayer-graphs-with-the-sql-like-dsl" title="Link to this heading"></a></h1>
-<p><strong>Goal:</strong> Use the SQL-inspired DSL to query and analyze multilayer networks.</p>
-<p><strong>Prerequisites:</strong> A loaded network (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>). For complete reference, see <a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a>.</p>
+<p><strong>Goal:</strong> Use py3plex’s SQL-inspired Domain-Specific Language (DSL) to query, filter, and analyze multilayer networks. The DSL is a <strong>first-class query language</strong> specifically designed for multilayer graph structures, providing both string syntax for interactive exploration and a type-safe builder API for production code.</p>
+<p><strong>What Makes This DSL Special:</strong></p>
+<ul class="simple">
+<li><p><strong>Graph-aware</strong>: Unlike generic query languages, the DSL understands multilayer structures—layers, layer intersections, intralayer vs. interlayer edges, and (node, layer) tuple semantics.</p></li>
+<li><p><strong>Dual interfaces</strong>: String syntax for rapid prototyping in notebooks; builder API (<code class="docutils literal notranslate"><span class="pre">Q</span></code>, <code class="docutils literal notranslate"><span class="pre">L</span></code>) for IDE autocompletion and type checking.</p></li>
+<li><p><strong>Integrated computation</strong>: Compute centrality, clustering, and other network metrics directly in queries, with results returned as pandas DataFrames or NetworkX graphs.</p></li>
+<li><p><strong>Temporal support</strong>: Query network snapshots and time ranges when your network includes temporal information.</p></li>
+</ul>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p>A loaded <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> object (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>)</p></li>
+<li><p>Basic familiarity with multilayer network concepts (nodes, layers, intralayer/interlayer edges)</p></li>
+<li><p>For complete DSL grammar and operator reference, see <a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a></p></li>
+</ul>
+<section id="conceptual-overview">
+<h2>Conceptual Overview<a class="headerlink" href="#conceptual-overview" title="Link to this heading"></a></h2>
+<p>The DSL has <strong>two complementary interfaces</strong> that compile to the same internal representation:</p>
+<ol class="arabic simple">
+<li><p><strong>String Syntax</strong> (<code class="docutils literal notranslate"><span class="pre">execute_query(network,</span> <span class="pre">&quot;SELECT</span> <span class="pre">nodes</span> <span class="pre">WHERE</span> <span class="pre">...&quot;)</span></code>)</p>
+<ul class="simple">
+<li><p>SQL-like, human-readable</p></li>
+<li><p>Ideal for interactive exploration in Jupyter notebooks or the REPL</p></li>
+<li><p>Quick one-liners for common queries</p></li>
+</ul>
+</li>
+<li><p><strong>Builder API</strong> (<code class="docutils literal notranslate"><span class="pre">Q.nodes().where(...).compute(...).execute(network)</span></code>)</p>
+<ul class="simple">
+<li><p>Pythonic, chainable methods</p></li>
+<li><p>Type-safe with IDE autocompletion</p></li>
+<li><p>Recommended for production code and complex workflows</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Mental Model:</strong></p>
+<p>A typical DSL query follows this pipeline:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SELECT nodes/edges
+→ FROM LAYERS (restrict to specific layers)
+→ WHERE (filter by attributes or special predicates)
+→ COMPUTE (calculate metrics like degree, centrality)
+→ ORDER BY (sort results)
+→ LIMIT (cap number of results)
+→ EXPORT (materialize as DataFrame, NetworkX graph, etc.)
+</pre></div>
+</div>
+<p><strong>Key Concepts:</strong></p>
+<ul class="simple">
+<li><p><strong>Nodes as (node, layer) tuples</strong>: In multilayer networks, a node may appear in multiple layers. The DSL represents these as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_name)</span></code> pairs.</p></li>
+<li><p><strong>Layer algebra</strong>: Combine layers with <code class="docutils literal notranslate"><span class="pre">+</span></code> (union), <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> (intersection), or <code class="docutils literal notranslate"><span class="pre">-</span></code> (difference).</p></li>
+<li><p><strong>Special predicates</strong>: <code class="docutils literal notranslate"><span class="pre">intralayer=True</span></code> selects edges within a layer; <code class="docutils literal notranslate"><span class="pre">interlayer=(&quot;layer1&quot;,</span> <span class="pre">&quot;layer2&quot;)</span></code> selects edges crossing specific layers.</p></li>
+<li><p><strong>Lazy execution</strong>: Queries are built incrementally and executed only when <code class="docutils literal notranslate"><span class="pre">.execute(network)</span></code> is called.</p></li>
+</ul>
+<p><strong>Comparison to SQL:</strong></p>
+<p>Think of the DSL as SQL for graphs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">nodes</span> <span class="pre">WHERE</span> <span class="pre">degree</span> <span class="pre">&gt;</span> <span class="pre">5</span></code> ≈ SQL’s <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">*</span> <span class="pre">FROM</span> <span class="pre">nodes</span> <span class="pre">WHERE</span> <span class="pre">degree</span> <span class="pre">&gt;</span> <span class="pre">5</span></code></p></li>
+<li><p>But instead of tables, you’re querying <strong>nodes and edges</strong> with <strong>multilayer and temporal attributes</strong></p></li>
+<li><p>Layer filters and graph-specific predicates (<code class="docutils literal notranslate"><span class="pre">intralayer</span></code>, <code class="docutils literal notranslate"><span class="pre">interlayer</span></code>) have no SQL equivalent</p></li>
+</ul>
+</section>
 <section id="string-syntax-quick-and-readable">
 <h2>String Syntax (Quick and Readable)<a class="headerlink" href="#string-syntax-quick-and-readable" title="Link to this heading"></a></h2>
+<p>The string syntax provides a concise, SQL-like way to express queries. Best for exploratory analysis and quick investigations.</p>
 <section id="basic-select">
 <h3>Basic SELECT<a class="headerlink" href="#basic-select" title="Link to this heading"></a></h3>
+<p>Select all nodes and inspect the result:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
 
@@ -198,271 +258,935 @@
 
 <span class="c1"># Get all nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes&#39;</span><span class="p">)</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="c1"># Inspect a few items</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">break</span>
 </pre></div>
 </div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 100 nodes
+  (&#39;alice&#39;, &#39;social&#39;): {&#39;degree&#39;: 7, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
+  (&#39;bob&#39;, &#39;social&#39;): {&#39;degree&#39;: 5, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 1}
+  (&#39;charlie&#39;, &#39;work&#39;): {&#39;degree&#39;: 3, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 2}
+  (&#39;diana&#39;, &#39;social&#39;): {&#39;degree&#39;: 9, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 3}
+  (&#39;eve&#39;, &#39;work&#39;): {&#39;degree&#39;: 4, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 1}
+</pre></div>
+</div>
+<p><strong>Note:</strong> Keys are <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> tuples representing node-layer pairs. The <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> attribute indicates how many layers the node appears in across the entire network.</p>
 </section>
 <section id="filter-by-layer">
 <h3>Filter by Layer<a class="headerlink" href="#filter-by-layer" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get nodes in specific layer</span>
+<p>Restrict queries to nodes in a specific layer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get nodes in the &#39;friends&#39; layer only</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="s1">&#39;SELECT nodes WHERE layer=&quot;friends&quot;&#39;</span>
 <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes in &#39;friends&#39; layer: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Understanding Layer Filters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">layer=&quot;friends&quot;</span></code> selects only the node-layer pairs where <code class="docutils literal notranslate"><span class="pre">layer</span> <span class="pre">==</span> <span class="pre">&quot;friends&quot;</span></code></p></li>
+<li><p>This does <strong>not</strong> select all occurrences of nodes across layers—only their representation in the specified layer</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">layer_count</span> <span class="pre">&gt;=</span> <span class="pre">2</span></code> to find nodes appearing in multiple layers</p></li>
+</ul>
+<p><strong>Example with statistics:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="s1">&#39;SELECT nodes WHERE layer=&quot;friends&quot; COMPUTE degree&#39;</span>
+<span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes in &#39;friends&#39;: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree in &#39;friends&#39;: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max degree in &#39;friends&#39;: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes in &#39;friends&#39;: 42
+Average degree in &#39;friends&#39;: 5.23
+Max degree in &#39;friends&#39;: 15
 </pre></div>
 </div>
 </section>
 <section id="filter-by-property">
 <h3>Filter by Property<a class="headerlink" href="#filter-by-property" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get high-degree nodes</span>
+<p>Use comparisons to filter nodes by computed or intrinsic attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># High-degree nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="s1">&#39;SELECT nodes WHERE degree &gt; 5&#39;</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High-degree nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Multiple conditions</span>
+<span class="c1"># Multilayer nodes with high degree</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes WHERE layer=&quot;work&quot; AND degree &gt; 3&#39;</span>
+    <span class="s1">&#39;SELECT nodes WHERE degree &gt; 5 AND layer_count &gt;= 2&#39;</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High-degree multilayer nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Supported operators:</strong> <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">=</span></code>, <code class="docutils literal notranslate"><span class="pre">!=</span></code></p>
+<p><strong>Multiple conditions</strong> are combined with <code class="docutils literal notranslate"><span class="pre">AND</span></code>. For more complex logic, use the builder API (see below).</p>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>High-degree nodes: 34
+High-degree multilayer nodes: 18
 </pre></div>
 </div>
 </section>
 <section id="compute-statistics">
 <h3>Compute Statistics<a class="headerlink" href="#compute-statistics" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute metrics</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">COMPUTE</span></code> clause calculates network metrics and attaches them to result rows. This is where the DSL becomes powerful for analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute degree and betweenness centrality for nodes in &#39;social&#39; layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot; &#39;</span>
     <span class="s1">&#39;COMPUTE degree COMPUTE betweenness_centrality&#39;</span>
 <span class="p">)</span>
 
-<span class="c1"># Convert to DataFrame</span>
+<span class="c1"># Convert to pandas for analysis</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top nodes by betweenness centrality:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Summary statistics:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 </pre></div>
 </div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Top nodes by betweenness centrality:
+                 id  degree  betweenness_centrality
+0  (alice, social)      12                 0.245
+1    (bob, social)       8                 0.189
+2    (eve, social)      15                 0.301
+3  (frank, social)       7                 0.134
+4  (grace, social)      11                 0.221
+
+Summary statistics:
+             degree  betweenness_centrality
+count     65.000000               65.000000
+mean       6.846154                0.112308
+std        3.241057                0.089542
+min        1.000000                0.000000
+25%        4.000000                0.045000
+50%        7.000000                0.089000
+75%       10.000000                0.167000
+max       15.000000                0.301000
+</pre></div>
+</div>
+<p><strong>Available measures</strong> include: <code class="docutils literal notranslate"><span class="pre">degree</span></code>, <code class="docutils literal notranslate"><span class="pre">betweenness_centrality</span></code>, <code class="docutils literal notranslate"><span class="pre">closeness_centrality</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvector_centrality</span></code>, <code class="docutils literal notranslate"><span class="pre">pagerank</span></code>, <code class="docutils literal notranslate"><span class="pre">clustering</span></code>, <code class="docutils literal notranslate"><span class="pre">communities</span></code>. See <a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a> for the complete list.</p>
+<p><strong>Use case:</strong> This pattern is ideal for generating summary statistics for papers, reports, or further statistical analysis.</p>
 </section>
 </section>
 <section id="builder-api-type-safe">
 <h2>Builder API (Type-Safe)<a class="headerlink" href="#builder-api-type-safe" title="Link to this heading"></a></h2>
-<p>Recommended for production code—provides IDE autocompletion and type checking.</p>
+<p>The <strong>builder API is the recommended approach for production code</strong>. It provides:</p>
+<ul class="simple">
+<li><p>IDE autocompletion and inline documentation</p></li>
+<li><p>Type checking with tools like mypy</p></li>
+<li><p>Clearer error messages</p></li>
+<li><p>Easier refactoring and composition of queries</p></li>
+</ul>
+<p>All builder queries compile to the same AST as string queries, ensuring consistent semantics.</p>
 <section id="basic-queries">
 <h3>Basic Queries<a class="headerlink" href="#basic-queries" title="Link to this heading"></a></h3>
+<p>Create and execute queries using the <code class="docutils literal notranslate"><span class="pre">Q</span></code> and <code class="docutils literal notranslate"><span class="pre">L</span></code> imports:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Get all nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Get nodes from specific layer</span>
+<span class="c1"># Get nodes from a specific layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes in &#39;friends&#39; layer: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Query reusability:</strong> You can define a query once and execute it with different networks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">high_degree_query</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+
+<span class="c1"># Execute on multiple networks</span>
+<span class="n">result_network1</span> <span class="o">=</span> <span class="n">high_degree_query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network1</span><span class="p">)</span>
+<span class="n">result_network2</span> <span class="o">=</span> <span class="n">high_degree_query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network2</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="filtering">
 <h3>Filtering<a class="headerlink" href="#filtering" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">where()</span></code> to add filter conditions. The builder API uses Django-style <code class="docutils literal notranslate"><span class="pre">__</span></code> suffixes for comparisons:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filter by property</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes with degree &gt; 5: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Multiple conditions</span>
+<span class="c1"># Multiple conditions (combined with AND)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">layer_count__gte</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multilayer high-degree nodes in &#39;work&#39;: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Supported operators:</p>
+<p><strong>Supported comparison suffixes:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">__gt</span></code>: greater than</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">__gte</span></code>: greater than or equal</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">__lt</span></code>: less than</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">__lte</span></code>: less than or equal</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">__eq</span></code>: equal</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">__ne</span></code>: not equal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__gt</span></code>: greater than (<code class="docutils literal notranslate"><span class="pre">&gt;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__gte</span></code> or <code class="docutils literal notranslate"><span class="pre">__ge</span></code>: greater than or equal (<code class="docutils literal notranslate"><span class="pre">&gt;=</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__lt</span></code>: less than (<code class="docutils literal notranslate"><span class="pre">&lt;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__lte</span></code> or <code class="docutils literal notranslate"><span class="pre">__le</span></code>: less than or equal (<code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__eq</span></code>: equal (<code class="docutils literal notranslate"><span class="pre">=</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__ne</span></code> or <code class="docutils literal notranslate"><span class="pre">__neq</span></code>: not equal (<code class="docutils literal notranslate"><span class="pre">!=</span></code>)</p></li>
 </ul>
+<p><strong>Understanding</strong> <code class="docutils literal notranslate"><span class="pre">layer_count</span></code>:</p>
+<p>In multilayer networks, a node may appear in multiple layers. The <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> attribute indicates how many layers the node participates in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_count__gte=2</span></code>: nodes appearing in at least 2 layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_count__eq=1</span></code>: nodes appearing in exactly 1 layer (layer-specific nodes)</p></li>
+</ul>
+<p>This is useful for identifying “connector” nodes that bridge multiple contexts.</p>
 </section>
 <section id="computing-metrics">
 <h3>Computing Metrics<a class="headerlink" href="#computing-metrics" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">compute()</span></code> to calculate network metrics. Metrics are computed efficiently and attached to result rows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute multiple metrics</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="c1"># Convert to DataFrame and analyze</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># Get top nodes by a metric</span>
+<span class="n">top_by_betweenness</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 10 nodes by betweenness centrality:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">top_by_betweenness</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p><strong>Order of operations:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">compute()</span></code> can be called at any point in the chain</p></li>
+<li><p>Filters (<code class="docutils literal notranslate"><span class="pre">where()</span></code>) can reference computed metrics only if the metric is computed <strong>before</strong> the filter</p></li>
+<li><p>For best performance, filter first, then compute:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good: Filter first, then compute</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                  id  degree  betweenness_centrality  clustering
+0   (alice, social)      12                 0.245000    0.545455
+1     (bob, social)       8                 0.189000    0.642857
+2     (eve, social)      15                 0.301000    0.428571
+3   (frank, social)       7                 0.134000    0.666667
+4   (grace, social)      11                 0.221000    0.509091
+...
+
+Top 10 nodes by betweenness centrality:
+                  id  betweenness_centrality  degree
+2     (eve, social)                 0.301000      15
+0   (alice, social)                 0.245000      12
+4   (grace, social)                 0.221000      11
+1     (bob, social)                 0.189000       8
+...
 </pre></div>
 </div>
 </section>
 <section id="sorting-and-limiting">
 <h3>Sorting and Limiting<a class="headerlink" href="#sorting-and-limiting" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top 10 by degree</span>
+<p>Use <code class="docutils literal notranslate"><span class="pre">order_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">limit()</span></code> to control result ordering and size:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top 10 nodes by degree</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">)</span>  <span class="c1"># - for descending</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">)</span>  <span class="c1"># &quot;-&quot; prefix for descending</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 highest-degree nodes:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: degree=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Sorting conventions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">order_by(&quot;degree&quot;)</span></code>: ascending (low to high)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">order_by(&quot;-degree&quot;)</span></code>: descending (high to low)</p></li>
+<li><p>Multiple keys: <code class="docutils literal notranslate"><span class="pre">order_by(&quot;-degree&quot;,</span> <span class="pre">&quot;layer_count&quot;)</span></code>: sort by degree descending, then layer_count ascending</p></li>
+</ul>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Top 10 highest-degree nodes:
+  (&#39;eve&#39;, &#39;social&#39;): degree=15
+  (&#39;alice&#39;, &#39;social&#39;): degree=12
+  (&#39;grace&#39;, &#39;social&#39;): degree=11
+  (&#39;charlie&#39;, &#39;work&#39;): degree=10
+  (&#39;henry&#39;, &#39;friends&#39;): degree=9
+  (&#39;diana&#39;, &#39;social&#39;): degree=9
+  (&#39;bob&#39;, &#39;social&#39;): degree=8
+  (&#39;frank&#39;, &#39;social&#39;): degree=7
+  (&#39;iris&#39;, &#39;work&#39;): degree=7
+  (&#39;jake&#39;, &#39;friends&#39;): degree=6
 </pre></div>
 </div>
 </section>
 </section>
 <section id="working-with-results">
 <h2>Working with Results<a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
+<p>DSL queries return a <code class="docutils literal notranslate"><span class="pre">QueryResult</span></code> object that provides multiple ways to access and export data. Understanding how to work with results is crucial for integrating DSL queries into analysis pipelines.</p>
 <section id="access-as-dictionary">
 <h3>Access as Dictionary<a class="headerlink" href="#access-as-dictionary" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">QueryResult</span></code> provides dictionary-like access via <code class="docutils literal notranslate"><span class="pre">.items()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
-<span class="c1"># Iterate</span>
+<span class="c1"># Iterate over all items</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: degree=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Inspect one sample entry</span>
+<span class="n">sample_key</span><span class="p">,</span> <span class="n">sample_value</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample key type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sample_key</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample key: </span><span class="si">{</span><span class="n">sample_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample value: </span><span class="si">{</span><span class="n">sample_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Result structure for nodes:</strong></p>
+<ul class="simple">
+<li><p><strong>Keys</strong>: <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer)</span></code> tuples (for multilayer queries) or <code class="docutils literal notranslate"><span class="pre">node_id</span></code> (for single-layer queries)</p></li>
+<li><p><strong>Values</strong>: Dictionaries with computed attributes (<code class="docutils literal notranslate"><span class="pre">{&quot;degree&quot;:</span> <span class="pre">5,</span> <span class="pre">&quot;betweenness_centrality&quot;:</span> <span class="pre">0.23,</span> <span class="pre">...}</span></code>)</p></li>
+</ul>
+<p><strong>Result structure for edges:</strong></p>
+<ul class="simple">
+<li><p><strong>Keys</strong>: <code class="docutils literal notranslate"><span class="pre">((source,</span> <span class="pre">source_layer),</span> <span class="pre">(target,</span> <span class="pre">target_layer),</span> <span class="pre">{edge_data})</span></code> tuples</p></li>
+<li><p><strong>Values</strong>: Dictionaries with edge attributes and computed metrics</p></li>
+</ul>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Sample key type: &lt;class &#39;tuple&#39;&gt;
+Sample key: (&#39;alice&#39;, &#39;social&#39;)
+Sample value: {&#39;degree&#39;: 12, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
 </pre></div>
 </div>
 </section>
 <section id="convert-to-pandas">
 <h3>Convert to Pandas<a class="headerlink" href="#convert-to-pandas" title="Link to this heading"></a></h3>
+<p><strong>This is the recommended way to integrate DSL queries with statistical analysis and plotting libraries.</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Convert to DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># Inspect structure</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Column names:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Summary statistics:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;clustering&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+
+<span class="c1"># Use pandas for further analysis</span>
+<span class="n">high_influence</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">High-influence nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">high_influence</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>DataFrame structure:</strong></p>
+<ul class="simple">
+<li><p><strong>For node queries</strong>: Columns include <code class="docutils literal notranslate"><span class="pre">id</span></code> (the node-layer tuple or node ID), plus all computed attributes</p></li>
+<li><p><strong>For edge queries</strong>: Columns include <code class="docutils literal notranslate"><span class="pre">source</span></code>, <code class="docutils literal notranslate"><span class="pre">target</span></code>, <code class="docutils literal notranslate"><span class="pre">source_layer</span></code>, <code class="docutils literal notranslate"><span class="pre">target_layer</span></code>, <code class="docutils literal notranslate"><span class="pre">weight</span></code>, plus computed attributes</p></li>
+</ul>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                  id  degree  betweenness_centrality  clustering
+0   (alice, social)      12                 0.245000    0.545455
+1     (bob, social)       8                 0.189000    0.642857
+2     (eve, social)      15                 0.301000    0.428571
+3   (frank, social)       7                 0.134000    0.666667
+4   (grace, social)      11                 0.221000    0.509091
+
+Column names: [&#39;id&#39;, &#39;degree&#39;, &#39;betweenness_centrality&#39;, &#39;clustering&#39;]
+
+Summary statistics:
+             degree  betweenness_centrality  clustering
+count     65.000000               65.000000   65.000000
+mean       6.846154                0.112308    0.587692
+std        3.241057                0.089542    0.145231
+...
+
+High-influence nodes: 8
+</pre></div>
+</div>
+<p><strong>Multi-index option:</strong></p>
+<p>For more complex analyses, you can reshape the <code class="docutils literal notranslate"><span class="pre">id</span></code> tuple into a multi-index:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+<span class="c1"># Split &#39;id&#39; tuple into separate columns</span>
+<span class="n">df</span><span class="p">[[</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
 <section id="filter-results">
 <h3>Filter Results<a class="headerlink" href="#filter-results" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get only nodes with degree &gt; 5</span>
+<p>You can filter results in two ways: <strong>using the DSL’s</strong> <code class="docutils literal notranslate"><span class="pre">where()</span></code> <strong>clause</strong> (recommended) or <strong>post-processing</strong> with Python/pandas.</p>
+<p><strong>Option 1: Filter in the query (recommended for large networks):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filter before computation for efficiency</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Option 2: Filter the result dictionary (for small networks or ad-hoc filtering):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Pure Python filtering</span>
 <span class="n">high_degree</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">node</span><span class="p">:</span> <span class="n">data</span>
     <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span>
 <span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High-degree nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">high_degree</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Option 3: Filter the DataFrame (most flexible for complex conditions):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># Use pandas boolean indexing</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="c1"># Complex conditions</span>
+<span class="n">interesting_nodes</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Performance note:</strong> For very large networks (millions of nodes), filtering in the DSL query (Option 1) is most efficient because it avoids materializing unnecessary results. For smaller networks, pandas filtering (Option 3) is often more convenient.</p>
 </section>
 </section>
 <section id="advanced-queries">
 <h2>Advanced Queries<a class="headerlink" href="#advanced-queries" title="Link to this heading"></a></h2>
+<p>This section showcases the DSL’s power for sophisticated multilayer network analysis. These patterns are common in research and can be adapted to your specific needs.</p>
 <section id="multiple-layer-selection">
 <h3>Multiple Layer Selection<a class="headerlink" href="#multiple-layer-selection" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Combine layers</span>
+<p>Use <strong>layer algebra</strong> to combine layers. The <code class="docutils literal notranslate"><span class="pre">L</span></code> object supports set operations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Union: nodes/edges from EITHER layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combined nodes from &#39;friends&#39; and &#39;work&#39;: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree across both layers: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Set semantics:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;friends&quot;]</span> <span class="pre">+</span> <span class="pre">L[&quot;work&quot;]</span></code>: <strong>Union</strong> of nodes/edges from both layers (nodes appearing in either layer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;friends&quot;]</span> <span class="pre">&amp;</span> <span class="pre">L[&quot;work&quot;]</span></code>: <strong>Intersection</strong> (see next section)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;friends&quot;]</span> <span class="pre">-</span> <span class="pre">L[&quot;work&quot;]</span></code>: <strong>Difference</strong> (nodes in friends but not work)</p></li>
+</ul>
+<p><strong>Use case:</strong> Compare activity across related contexts. For example, analyze user behavior across social and professional networks together.</p>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Combined nodes from &#39;friends&#39; and &#39;work&#39;: 87
+Average degree across both layers: 6.12
 </pre></div>
 </div>
 </section>
 <section id="layer-intersection">
 <h3>Layer Intersection<a class="headerlink" href="#layer-intersection" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes present in BOTH layers</span>
+<p>Find nodes that appear in <strong>multiple specific layers</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes present in BOTH &#39;friends&#39; AND &#39;work&#39; layers</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes in both &#39;friends&#39; and &#39;work&#39;: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">These are &#39;connector&#39; nodes bridging social and professional contexts&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Semantics:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;friends&quot;]</span> <span class="pre">&amp;</span> <span class="pre">L[&quot;work&quot;]</span></code> selects nodes that have representations in <strong>both</strong> layers</p></li>
+<li><p>This is different from <code class="docutils literal notranslate"><span class="pre">layer_count</span> <span class="pre">&gt;=</span> <span class="pre">2</span></code>, which selects nodes in <strong>any</strong> two layers</p></li>
+<li><p>Use intersection to find nodes bridging specific contexts</p></li>
+</ul>
+<p><strong>Alternative approach using</strong> <code class="docutils literal notranslate"><span class="pre">layer_count</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># More general: nodes in at least 2 layers (any layers)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer_count__gte</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multilayer nodes (any 2+ layers): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes in both &#39;friends&#39; and &#39;work&#39;: 23
+
+These are &#39;connector&#39; nodes bridging social and professional contexts
+                   id  degree  betweenness_centrality
+0    (alice, friends)      12                 0.245000
+1      (alice, work)       8                 0.189000
+2  (charlie, friends)      10                 0.201000
+3    (charlie, work)       7                 0.145000
+...
 </pre></div>
 </div>
 </section>
 <section id="query-edges">
 <h3>Query Edges<a class="headerlink" href="#query-edges" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select edges</span>
+<p>The DSL supports edge queries with the same flexibility as node queries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select edges from a layer with weight filter</span>
 <span class="n">edges</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
      <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;edge_betweenness&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">edges</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High-weight edges in &#39;social&#39; layer: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Sample edges:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="c1"># Analyze edge distribution</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Mean edge weight: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean edge betweenness: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;edge_betweenness&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Edge result structure:</strong></p>
+<p>For edge queries, the DataFrame includes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span></code>, <code class="docutils literal notranslate"><span class="pre">target</span></code>: node identifiers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_layer</span></code>, <code class="docutils literal notranslate"><span class="pre">target_layer</span></code>: layer names (same for intralayer edges)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weight</span></code>: edge weight (default 1.0 if not specified)</p></li>
+<li><p>Computed attributes: <code class="docutils literal notranslate"><span class="pre">edge_betweenness</span></code>, etc.</p></li>
+</ul>
+<p><strong>Filter by edge type:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Only intralayer edges (within a layer)</span>
+<span class="n">intralayer_edges</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">intralayer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Intralayer edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">intralayer_edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Only interlayer edges between specific layers</span>
+<span class="n">interlayer_edges</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">interlayer</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edges between &#39;social&#39; and &#39;work&#39;: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">interlayer_edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>High-weight edges in &#39;social&#39; layer: 156
+
+Sample edges:
+    source  target source_layer target_layer  weight  edge_betweenness
+0    alice     bob       social       social    0.75          0.023400
+1      bob   charlie     social       social    0.80          0.034500
+2    alice   diana       social       social    0.92          0.019800
+3    diana     eve       social       social    0.65          0.028900
+4      eve   frank       social       social    0.88          0.041200
+
+Mean edge weight: 0.723
+Mean edge betweenness: 0.028
 </pre></div>
 </div>
 </section>
 </section>
 <section id="temporal-queries">
 <h2>Temporal Queries<a class="headerlink" href="#temporal-queries" title="Link to this heading"></a></h2>
-<section id="filter-by-time">
-<h3>Filter by Time<a class="headerlink" href="#filter-by-time" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes active at specific time</span>
+<p>The DSL supports temporal filtering for networks with time-stamped edges or nodes. Use <code class="docutils literal notranslate"><span class="pre">.at(t)</span></code> for point-in-time snapshots and <code class="docutils literal notranslate"><span class="pre">.during(t0,</span> <span class="pre">t1)</span></code> for time ranges.</p>
+<p><strong>Prerequisites for temporal queries:</strong></p>
+<ul class="simple">
+<li><p>Edges or nodes must have temporal attributes:</p>
+<ul>
+<li><p><strong>Point-in-time</strong>: <code class="docutils literal notranslate"><span class="pre">t</span></code> attribute (e.g., <code class="docutils literal notranslate"><span class="pre">{&quot;t&quot;:</span> <span class="pre">150.0}</span></code>)</p></li>
+<li><p><strong>Intervals</strong>: <code class="docutils literal notranslate"><span class="pre">t_start</span></code> and <code class="docutils literal notranslate"><span class="pre">t_end</span></code> attributes (e.g., <code class="docutils literal notranslate"><span class="pre">{&quot;t_start&quot;:</span> <span class="pre">100.0,</span> <span class="pre">&quot;t_end&quot;:</span> <span class="pre">200.0}</span></code>)</p></li>
+</ul>
+</li>
+<li><p>Time values are typically numeric (timestamps) or ISO date strings</p></li>
+</ul>
+<p><strong>Temporal semantics:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">at(t)</span></code>: Selects entities active at a specific moment</p>
+<ul>
+<li><p>For point-in-time edges: includes edges where <code class="docutils literal notranslate"><span class="pre">t_edge</span> <span class="pre">==</span> <span class="pre">t</span></code></p></li>
+<li><p>For interval edges: includes edges where <code class="docutils literal notranslate"><span class="pre">t</span></code> is in <code class="docutils literal notranslate"><span class="pre">[t_start,</span> <span class="pre">t_end]</span></code></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">during(t0,</span> <span class="pre">t1)</span></code>: Selects entities active during a time window</p>
+<ul>
+<li><p>For point-in-time edges: includes edges where <code class="docutils literal notranslate"><span class="pre">t</span></code> is in <code class="docutils literal notranslate"><span class="pre">[t0,</span> <span class="pre">t1]</span></code></p></li>
+<li><p>For interval edges: includes edges where the interval <strong>overlaps</strong> <code class="docutils literal notranslate"><span class="pre">[t0,</span> <span class="pre">t1]</span></code></p></li>
+</ul>
+</li>
+</ul>
+<section id="filter-by-time-snapshot">
+<h3>Filter by Time (Snapshot)<a class="headerlink" href="#filter-by-time-snapshot" title="Link to this heading"></a></h3>
+<p>Query the network state at a specific point in time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes active at t=150.0</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="s2">&quot;2024-01-15T10:00:00&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">150.0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes active at t=150: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree at t=150: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top nodes by degree at this snapshot:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">)[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p><strong>Use case:</strong> Analyze network structure at specific moments (e.g., before and after an event, at regular intervals for time series).</p>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes active at t=150: 78
+Average degree at t=150: 5.12
+
+Top nodes by degree at this snapshot:
+                   id  degree
+12    (eve, social)      14
+5   (alice, social)      11
+23  (grace, social)      10
+8     (bob, social)       9
+31  (henry, work)        9
 </pre></div>
 </div>
 </section>
 <section id="time-range">
 <h3>Time Range<a class="headerlink" href="#time-range" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes active during period</span>
+<p>Query entities active during a time window:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes active during January 2024 (assuming numeric timestamps)</span>
+<span class="c1"># For ISO dates, use strings: .during(&quot;2024-01-01&quot;, &quot;2024-01-31&quot;)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">during</span><span class="p">(</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2024-01-31&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">during</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">200.0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes active during [100, 200]: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compare to snapshot</span>
+<span class="n">snapshot_result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mf">150.0</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes at t=150 (snapshot): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">snapshot_result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes during [100, 200] (range): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ratio: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">snapshot_result</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x more nodes in range&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a> for complete temporal query syntax.</p>
+<p><strong>Open-ended ranges:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From t=100 onwards (no upper limit)</span>
+<span class="n">result_after</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">during</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Up to t=200 (no lower limit)</span>
+<span class="n">result_before</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">during</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mf">200.0</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use case:</strong> Study network evolution, identify persistent vs. transient connections, analyze activity bursts.</p>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes active during [100, 200]: 142
+Nodes at t=150 (snapshot): 78
+Ratio: 1.82x more nodes in range
+</pre></div>
+</div>
+<p><strong>Temporal edges example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edges active during a period</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">during</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">200.0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;edge_betweenness&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">edges</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Active edges during [100, 200]: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean edge betweenness: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;edge_betweenness&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note on implementation status:</strong></p>
+<p>Temporal queries are <strong>fully implemented</strong> for edge-level temporal data. Node-level temporal filtering depends on your network’s representation:</p>
+<ul class="simple">
+<li><p>If nodes have explicit <code class="docutils literal notranslate"><span class="pre">t</span></code> attributes, <code class="docutils literal notranslate"><span class="pre">.at()</span></code> and <code class="docutils literal notranslate"><span class="pre">.during()</span></code> work directly</p></li>
+<li><p>If only edges are timestamped, node activity is inferred from edge presence</p></li>
+<li><p>For most use cases, temporal edge queries are sufficient</p></li>
+</ul>
+<p>See <a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a> for complete temporal query syntax and examples with ISO date strings.</p>
 </section>
 </section>
 <section id="common-patterns">
 <h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h2>
+<p>This section presents <strong>end-to-end recipes</strong> for common multilayer network analysis tasks. These patterns are production-ready and can be adapted to your research questions.</p>
 <section id="pattern-find-influential-nodes">
 <h3>Pattern: Find Influential Nodes<a class="headerlink" href="#pattern-find-influential-nodes" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># High degree + high betweenness</span>
+<p>Identify nodes that are both well-connected (high degree) and structurally important (high betweenness centrality):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># High-degree nodes ranked by betweenness centrality</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;layer_count&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
      <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Top 20 influential nodes (degree &gt; 10):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_count&#39;</span><span class="p">]])</span>
+
+<span class="c1"># Export for further analysis or publication</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;influential_nodes.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Visualize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">],</span>
+            <span class="n">s</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;layer_count&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Degree&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Betweenness Centrality&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Influential Nodes (size = layer_count)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;influential_nodes.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Why this pattern works:</strong></p>
+<ul class="simple">
+<li><p><strong>Degree</strong> measures local connectivity (how many neighbors)</p></li>
+<li><p><strong>Betweenness centrality</strong> measures global importance (how often the node appears on shortest paths)</p></li>
+<li><p>Nodes high in both metrics are <strong>influential bridges</strong> in the network</p></li>
+</ul>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Top 20 influential nodes (degree &gt; 10):
+                   id  degree  betweenness_centrality  layer_count
+0     (eve, social)      15                 0.301000            3
+1   (alice, social)      12                 0.245000            2
+2   (grace, social)      11                 0.221000            2
+3     (bob, social)      12                 0.198000            1
+4   (diana, work)        14                 0.187000            3
+...
 </pre></div>
 </div>
 </section>
 <section id="pattern-compare-layer-activity">
 <h3>Pattern: Compare Layer Activity<a class="headerlink" href="#pattern-compare-layer-activity" title="Link to this heading"></a></h3>
+<p>Compute summary statistics for each layer to understand layer-specific dynamics:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
 
+<span class="n">layer_stats</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
          <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, avg degree=</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">layer_stats</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+        <span class="s1">&#39;num_nodes&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+        <span class="s1">&#39;mean_degree&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s1">&#39;max_degree&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+        <span class="s1">&#39;mean_clustering&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+    <span class="p">})</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;avg degree=</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;avg clustering=</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create comparison DataFrame</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">comparison</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">layer_stats</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layer comparison:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">comparison</span><span class="p">)</span>
+
+<span class="c1"># Visualize</span>
+<span class="n">comparison</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mean_degree&#39;</span><span class="p">,</span> <span class="s1">&#39;mean_clustering&#39;</span><span class="p">],</span>
+                <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Value&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Layer Activity Comparison&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;layer_comparison.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use case:</strong> Understand how network structure varies across different contexts (e.g., online vs. offline interactions, different communication channels).</p>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>friends: 50 nodes, avg degree=4.20, avg clustering=0.623
+work: 72 nodes, avg degree=3.15, avg clustering=0.512
+social: 65 nodes, avg degree=5.01, avg clustering=0.587
+family: 38 nodes, avg degree=6.84, avg clustering=0.701
+
+Layer comparison:
+      layer  num_nodes  mean_degree  max_degree  mean_clustering
+0   friends         50         4.20          15            0.623
+1      work         72         3.15          12            0.512
+2    social         65         5.01          18            0.587
+3    family         38         6.84          21            0.701
 </pre></div>
 </div>
 </section>
 <section id="pattern-export-subnetwork">
 <h3>Pattern: Export Subnetwork<a class="headerlink" href="#pattern-export-subnetwork" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract high-activity nodes</span>
+<p>Extract a subnetwork based on query criteria for focused analysis or visualization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract high-activity multilayer nodes</span>
 <span class="n">active_nodes</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer_count__gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="c1"># Create subnetwork</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> multilayer nodes&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create subnetwork containing only these nodes</span>
 <span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">active_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subnetwork: </span><span class="si">{</span><span class="n">subnetwork</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2"> nodes, &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subnetwork</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+
+<span class="c1"># Analyze subnetwork</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">active_nodes</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Subnetwork mean degree: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subnetwork mean betweenness: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Export for visualization or further analysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">subnetwork</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;subnetwork_viz.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Or export in various formats</span>
+<span class="n">subnetwork</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">&quot;subnetwork.edgelist&quot;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>What</strong> <code class="docutils literal notranslate"><span class="pre">layer_count__gt=2</span></code> <strong>means:</strong></p>
+<ul class="simple">
+<li><p>Selects nodes appearing in <strong>more than 2 layers</strong></p></li>
+<li><p>These are “connector” nodes that participate in multiple contexts</p></li>
+<li><p>Useful criterion for studying nodes that bridge different social spheres</p></li>
+</ul>
+<p><strong>Alternative criteria:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># High betweenness nodes</span>
+<span class="n">influential</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+    <span class="n">betweenness_centrality__gt</span><span class="o">=</span><span class="mf">0.1</span>
+<span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Nodes in specific community</span>
+<span class="n">community_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;communities&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+    <span class="n">communities__eq</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Selected 34 multilayer nodes
+Subnetwork: 34 nodes, 127 edges
+
+Subnetwork mean degree: 7.47
+Subnetwork mean betweenness: 0.0892
+</pre></div>
+</div>
+<p><strong>Workflow integration:</strong></p>
+<p>This pattern is often combined with community detection, dynamics simulation, or centrality analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Select subnetwork</span>
+<span class="n">core_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer_count__gte</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">core_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="c1"># 2. Run community detection on subnetwork</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.community_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">subnetwork</span><span class="p">)</span>
+
+<span class="c1"># 3. Analyze communities</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+
+<span class="c1"># 4. Visualize or export</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="c1"># Note: communities dict can be used for node coloring if the visualization function supports it</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">subnetwork</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;core_network_communities.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Now that you understand the DSL, explore these related resources:</p>
 <ul class="simple">
-<li><p><strong>Complete DSL reference:</strong> <a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a></p></li>
-<li><p><strong>Build analysis pipelines:</strong> <a class="reference internal" href="build_pipelines.html"><span class="doc">How to Build Analysis Pipelines with Dplyr-style Operations</span></a></p></li>
-<li><p><strong>See examples:</strong> <a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a></p></li>
+<li><p><strong>DSL Reference</strong> (<a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a>): Complete grammar, all operators, full list of built-in measures, and advanced features (EXPLAIN queries, parameter binding, custom operators)</p></li>
+<li><p><strong>Dplyr-Style Pipelines</strong> (<a class="reference internal" href="build_pipelines.html"><span class="doc">How to Build Analysis Pipelines with Dplyr-style Operations</span></a>): Combine DSL queries with pipeline operations for more complex data transformation workflows. The pipeline API (<code class="docutils literal notranslate"><span class="pre">nodes()</span></code>, <code class="docutils literal notranslate"><span class="pre">mutate()</span></code>, <code class="docutils literal notranslate"><span class="pre">arrange()</span></code>) complements the DSL for when you need procedural transformations.</p></li>
+<li><p><strong>Community Detection</strong> (<a class="reference internal" href="run_community_detection.html"><span class="doc">How to Run Community Detection on Multilayer Networks</span></a>): Use DSL queries to select nodes, then apply community detection algorithms. Pattern: query → detect communities → analyze community structure.</p></li>
+<li><p><strong>Network Dynamics</strong> (<a class="reference internal" href="simulate_dynamics.html"><span class="doc">How to Simulate Multilayer Dynamics</span></a>): Run dynamics simulations on DSL-selected subnetworks. Pattern: query → extract subnetwork → simulate → analyze outcomes.</p></li>
+<li><p><strong>Linting and Validation</strong> (<a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a>): The DSL includes a linting subsystem (<code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">dsl-lint</span></code>) that checks queries for errors, performance issues, and suggests optimizations. Use it to validate complex queries.</p></li>
+<li><p><strong>Examples Repository</strong> (<a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a>): Full scripts showing DSL in context, including data loading, query composition, analysis, and visualization.</p></li>
+</ul>
+<p><strong>Key Takeaways:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Use the builder API</strong> (<code class="docutils literal notranslate"><span class="pre">Q</span></code>, <code class="docutils literal notranslate"><span class="pre">L</span></code>) for production code—it’s type-safe, refactorable, and IDE-friendly.</p></li>
+<li><p><strong>Filter early</strong>: Add <code class="docutils literal notranslate"><span class="pre">where()</span></code> clauses before <code class="docutils literal notranslate"><span class="pre">compute()</span></code> for better performance on large networks.</p></li>
+<li><p><strong>Embrace pandas</strong>: Use <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code> for result analysis—it integrates seamlessly with the scientific Python stack.</p></li>
+<li><p><strong>Layer algebra is powerful</strong>: <code class="docutils literal notranslate"><span class="pre">L[&quot;a&quot;]</span> <span class="pre">+</span> <span class="pre">L[&quot;b&quot;]</span></code> (union), <code class="docutils literal notranslate"><span class="pre">L[&quot;a&quot;]</span> <span class="pre">&amp;</span> <span class="pre">L[&quot;b&quot;]</span></code> (intersection) enable sophisticated multilayer queries.</p></li>
+<li><p><strong>Temporal queries</strong> require timestamped edges/nodes but unlock time-series network analysis.</p></li>
+</ol>
+<p><strong>Community and Support:</strong></p>
+<ul class="simple">
+<li><p>Report issues or request features: <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p></li>
+<li><p>Example notebooks: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/main/examples">https://github.com/SkBlaz/py3plex/tree/main/examples</a></p></li>
+<li><p>py3plex documentation: <a class="reference external" href="https://skblaz.github.io/py3plex/">https://skblaz.github.io/py3plex/</a></p></li>
 </ul>
 </section>
 </section>
