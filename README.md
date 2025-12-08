@@ -23,6 +23,33 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * Community detection and centrality measures
 * Network decomposition and embeddings
 
+## Quick Example
+
+Find nodes that are betweenness centrality hubs across *all* layers in a multilayer network:
+
+```python
+from py3plex.core import random_generators
+from py3plex.dsl import Q, L
+
+# Generate a random multilayer network
+net = random_generators.random_multilayer_ER(n=300, l=3, p=0.02, directed=False)
+layer_top = {}
+
+# Find top 5 betweenness hubs in each layer
+for layer in net.layers:
+    res = (Q.nodes().from_layers(L[str(layer)])
+                   .where(degree__gt=1)
+                   .compute("degree", "betweenness_centrality")
+                   .order_by("-betweenness_centrality")
+                   .limit(5)
+                   .execute(net))
+    layer_top[layer] = set(res.to_pandas()["id"])
+
+# Find nodes that are hubs in ALL layers
+multi_hubs = set.intersection(*layer_top.values())
+print("Nodes that are betweenness hubs in *all* layers:", multi_hubs)
+```
+
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
 ## Getting Started
