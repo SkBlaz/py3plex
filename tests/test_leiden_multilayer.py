@@ -236,23 +236,29 @@ class TestLeidenMultilayer(unittest.TestCase):
         # Create a larger test network
         large_network = multinet.multi_layer_network(directed=False)
         
-        # Layer 1: Two cliques
+        # Layer 1: Two cliques - batch add all edges
+        layer1_edges = []
         for i in range(5):
             for j in range(i + 1, 5):
-                large_network.add_edges([[i, 'L1', j, 'L1', 1]], input_type="list")
+                layer1_edges.append([i, 'L1', j, 'L1', 1])
         
         for i in range(5, 10):
             for j in range(i + 1, 10):
-                large_network.add_edges([[i, 'L1', j, 'L1', 1]], input_type="list")
+                layer1_edges.append([i, 'L1', j, 'L1', 1])
         
-        # Layer 2: Similar structure
+        large_network.add_edges(layer1_edges, input_type="list")
+        
+        # Layer 2: Similar structure - batch add all edges
+        layer2_edges = []
         for i in range(5):
             for j in range(i + 1, 5):
-                large_network.add_edges([[i, 'L2', j, 'L2', 1]], input_type="list")
+                layer2_edges.append([i, 'L2', j, 'L2', 1])
         
         for i in range(5, 10):
             for j in range(i + 1, 10):
-                large_network.add_edges([[i, 'L2', j, 'L2', 1]], input_type="list")
+                layer2_edges.append([i, 'L2', j, 'L2', 1])
+        
+        large_network.add_edges(layer2_edges, input_type="list")
         
         result = leiden_multilayer(
             large_network,
