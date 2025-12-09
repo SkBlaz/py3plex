@@ -1580,7 +1580,6 @@ def execute_dynamics_stmt(network: Any, stmt: Any) -> Any:
     # Import dynamics components
     from py3plex.dynamics import run_simulation
     from py3plex.dynamics.ast import SimulationStmt, InitialSpec
-    from py3plex.dsl.executor import _resolve_layers
     
     # Build initial conditions
     initial_dict = {}

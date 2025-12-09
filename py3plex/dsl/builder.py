@@ -1099,7 +1099,7 @@ class Q:
         return QueryBuilder(Target.EDGES, autocompute=autocompute)
     
     @staticmethod
-    def dynamics(process_name: str, **params) -> DynamicsBuilder:
+    def dynamics(process_name: str, **params) -> "DynamicsBuilder":
         """Create a dynamics simulation builder.
         
         Args:
@@ -1121,7 +1121,7 @@ class Q:
         return DynamicsBuilder(process_name, **params)
     
     @staticmethod
-    def trajectories(process_ref: str) -> TrajectoriesBuilder:
+    def trajectories(process_ref: str) -> "TrajectoriesBuilder":
         """Create a trajectories query builder.
         
         Args:
