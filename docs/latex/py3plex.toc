@@ -324,711 +324,724 @@
 \contentsline {paragraph}{Multiple Layer Selection}{164}{paragraph*.306}%
 \contentsline {paragraph}{Layer Intersection}{164}{paragraph*.307}%
 \contentsline {paragraph}{Query Edges}{165}{paragraph*.308}%
-\contentsline {subsubsection}{Temporal Queries}{166}{subsubsection*.309}%
-\contentsline {paragraph}{Filter by Time (Snapshot)}{167}{paragraph*.310}%
-\contentsline {paragraph}{Time Range}{167}{paragraph*.311}%
-\contentsline {subsubsection}{Common Patterns}{169}{subsubsection*.312}%
-\contentsline {paragraph}{Pattern: Find Influential Nodes}{169}{paragraph*.313}%
-\contentsline {paragraph}{Pattern: Compare Layer Activity}{170}{paragraph*.314}%
-\contentsline {paragraph}{Pattern: Export Subnetwork}{171}{paragraph*.315}%
-\contentsline {paragraph}{Pattern: Per\sphinxhyphen {}Layer Top\sphinxhyphen {}K with Coverage (Multi\sphinxhyphen {}Layer Hub Detection)}{173}{paragraph*.316}%
-\contentsline {subsubsection}{Next Steps}{176}{subsubsection*.317}%
-\contentsline {subsection}{\numberline {3.3.10}How to Build Analysis Pipelines with Dplyr\sphinxhyphen {}style Operations}{177}{subsection.3.3.10}%
-\contentsline {subsubsection}{Basic Pipeline}{177}{subsubsection*.318}%
-\contentsline {paragraph}{Node Operations}{177}{paragraph*.319}%
-\contentsline {subsubsection}{Available Operations}{177}{subsubsection*.320}%
-\contentsline {paragraph}{filter()}{177}{paragraph*.321}%
-\contentsline {paragraph}{mutate()}{178}{paragraph*.322}%
-\contentsline {paragraph}{select()}{178}{paragraph*.323}%
-\contentsline {paragraph}{arrange()}{178}{paragraph*.324}%
-\contentsline {paragraph}{group\_by() and summarize()}{178}{paragraph*.325}%
-\contentsline {subsubsection}{Complex Pipelines}{179}{subsubsection*.326}%
-\contentsline {paragraph}{Multi\sphinxhyphen {}Step Analysis}{179}{paragraph*.327}%
-\contentsline {subsubsection}{Combining with DSL}{179}{subsubsection*.328}%
-\contentsline {subsubsection}{Sklearn\sphinxhyphen {}Style Pipelines}{180}{subsubsection*.329}%
-\contentsline {subsubsection}{Exporting Pipelines}{180}{subsubsection*.330}%
-\contentsline {paragraph}{Save Pipeline Definition}{180}{paragraph*.331}%
-\contentsline {paragraph}{Load and Execute}{181}{paragraph*.332}%
-\contentsline {subsubsection}{Reusable Pipelines}{181}{subsubsection*.333}%
-\contentsline {paragraph}{Create Pipeline Functions}{181}{paragraph*.334}%
-\contentsline {subsubsection}{Next Steps}{181}{subsubsection*.335}%
-\contentsline {subsection}{\numberline {3.3.11}How to Reproduce Common Analysis Workflows}{181}{subsection.3.3.11}%
-\contentsline {subsubsection}{Complete Workflows}{181}{subsubsection*.336}%
-\contentsline {subsubsection}{Quick Recipe Index}{182}{subsubsection*.337}%
-\contentsline {paragraph}{Network Construction}{182}{paragraph*.338}%
-\contentsline {paragraph}{Statistical Analysis}{182}{paragraph*.339}%
-\contentsline {paragraph}{Community Detection}{182}{paragraph*.340}%
-\contentsline {paragraph}{Network Embeddings}{182}{paragraph*.341}%
-\contentsline {paragraph}{Visualization}{182}{paragraph*.342}%
-\contentsline {subsubsection}{Domain\sphinxhyphen {}Specific Workflows}{182}{subsubsection*.343}%
-\contentsline {paragraph}{Social Networks}{182}{paragraph*.344}%
-\contentsline {paragraph}{Biological Networks}{183}{paragraph*.345}%
-\contentsline {paragraph}{Transportation Networks}{183}{paragraph*.346}%
-\contentsline {subsubsection}{Config\sphinxhyphen {}Driven Workflows}{183}{subsubsection*.347}%
-\contentsline {subsubsection}{DSL\sphinxhyphen {}Driven Analysis Workflows}{184}{subsubsection*.348}%
-\contentsline {paragraph}{Basic DSL Workflow Pattern}{184}{paragraph*.349}%
-\contentsline {paragraph}{Multilayer Exploration Workflow}{185}{paragraph*.350}%
-\contentsline {paragraph}{Community Detection + DSL Workflow}{188}{paragraph*.351}%
-\contentsline {paragraph}{Dynamics + DSL Workflow}{189}{paragraph*.352}%
-\contentsline {paragraph}{Reusable DSL Query Functions}{190}{paragraph*.353}%
-\contentsline {subsubsection}{Batch Processing}{191}{subsubsection*.354}%
-\contentsline {subsubsection}{Complete Example Templates}{192}{subsubsection*.355}%
-\contentsline {subsubsection}{Next Steps}{192}{subsubsection*.356}%
-\contentsline {section}{\numberline {3.4}Part IV: Concepts \& Explanations}{193}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Concepts \& Explanations}{193}{subsection.3.4.1}%
-\contentsline {subsubsection}{After Reading This Section}{193}{subsubsection*.357}%
-\contentsline {subsection}{\numberline {3.4.2}Multilayer Networks 101}{194}{subsection.3.4.2}%
-\contentsline {subsubsection}{What are Multilayer Networks?}{194}{subsubsection*.358}%
-\contentsline {subsubsection}{Types of Multilayer Networks}{194}{subsubsection*.359}%
-\contentsline {paragraph}{Multiplex Networks}{194}{paragraph*.360}%
-\contentsline {paragraph}{Heterogeneous Information Networks}{195}{paragraph*.361}%
-\contentsline {paragraph}{Temporal Networks}{195}{paragraph*.362}%
-\contentsline {paragraph}{Interdependent Networks}{195}{paragraph*.363}%
-\contentsline {subsubsection}{When to Use Multilayer Networks}{195}{subsubsection*.364}%
-\contentsline {subsubsection}{Choosing a Modeling Approach}{196}{subsubsection*.365}%
-\contentsline {subsubsection}{What Goes Wrong When You Flatten}{196}{subsubsection*.366}%
-\contentsline {subsubsection}{Common Pitfalls}{196}{subsubsection*.367}%
-\contentsline {subsubsection}{Key Terminology}{196}{subsubsection*.368}%
-\contentsline {subsubsection}{Next Steps}{196}{subsubsection*.369}%
-\contentsline {subsection}{\numberline {3.4.3}The py3plex Core Model}{197}{subsection.3.4.3}%
-\contentsline {subsubsection}{Network Types: Multilayer vs Multiplex}{197}{subsubsection*.370}%
-\contentsline {subsubsection}{The \sphinxstyleliteralintitle {\sphinxupquote {multi\_layer\_network}} Class}{198}{subsubsection*.371}%
-\contentsline {paragraph}{Basic Structure}{198}{paragraph*.372}%
-\contentsline {paragraph}{Key Components}{198}{paragraph*.373}%
-\contentsline {subsubsection}{Internal Representation}{199}{subsubsection*.374}%
-\contentsline {paragraph}{Node\sphinxhyphen {}Layer Pairs}{199}{paragraph*.375}%
-\contentsline {paragraph}{Edge Types}{200}{paragraph*.376}%
-\contentsline {subsubsection}{Supra\sphinxhyphen {}Adjacency Matrix}{200}{subsubsection*.377}%
-\contentsline {paragraph}{Mathematical Definition}{200}{paragraph*.378}%
-\contentsline {paragraph}{Numeric Example}{201}{paragraph*.379}%
-\contentsline {paragraph}{Construction}{202}{paragraph*.380}%
-\contentsline {paragraph}{Memory Implications}{202}{paragraph*.381}%
-\contentsline {paragraph}{Visualization}{202}{paragraph*.382}%
-\contentsline {subsubsection}{How py3plex Uses NetworkX Under the Hood}{203}{subsubsection*.383}%
-\contentsline {paragraph}{The Role of MultiGraph/MultiDiGraph}{203}{paragraph*.384}%
-\contentsline {paragraph}{Attribute Propagation}{203}{paragraph*.385}%
-\contentsline {paragraph}{Using NetworkX Functions Directly}{204}{paragraph*.386}%
-\contentsline {subsubsection}{Design Trade\sphinxhyphen {}offs}{204}{subsubsection*.387}%
-\contentsline {paragraph}{Node\sphinxhyphen {}Layer Pairs vs. Alternative Representations}{204}{paragraph*.388}%
-\contentsline {paragraph}{Consequences for Algorithm Implementation}{205}{paragraph*.389}%
-\contentsline {paragraph}{Consequences for I/O}{206}{paragraph*.390}%
-\contentsline {subsubsection}{Network Construction}{206}{subsubsection*.391}%
-\contentsline {paragraph}{Creating Networks from Scratch}{206}{paragraph*.392}%
-\contentsline {paragraph}{Loading from Files}{207}{paragraph*.393}%
-\contentsline {subsubsection}{Network Operations}{207}{subsubsection*.394}%
-\contentsline {paragraph}{Querying Network Elements}{207}{paragraph*.395}%
-\contentsline {paragraph}{Basic Statistics}{208}{paragraph*.396}%
-\contentsline {paragraph}{Subnetwork Extraction}{208}{paragraph*.397}%
-\contentsline {paragraph}{Matrix Representations}{208}{paragraph*.398}%
-\contentsline {subsubsection}{Integration with NetworkX}{209}{subsubsection*.399}%
-\contentsline {paragraph}{Full NetworkX Compatibility}{209}{paragraph*.400}%
-\contentsline {paragraph}{NetworkX Wrappers}{209}{paragraph*.401}%
-\contentsline {paragraph}{Converting Between Formats}{210}{paragraph*.402}%
-\contentsline {subsubsection}{Performance Considerations}{210}{subsubsection*.403}%
-\contentsline {paragraph}{Sparse vs. Dense Matrices}{210}{paragraph*.404}%
-\contentsline {paragraph}{Memory Usage}{210}{paragraph*.405}%
-\contentsline {paragraph}{Tensor\sphinxhyphen {}Like Indexing}{211}{paragraph*.406}%
-\contentsline {subsubsection}{Design Principles}{211}{subsubsection*.407}%
-\contentsline {subsubsection}{Comparison with Other Representations}{211}{subsubsection*.408}%
-\contentsline {paragraph}{Why Node\sphinxhyphen {}Layer Pairs?}{211}{paragraph*.409}%
-\contentsline {subsubsection}{What You Learned}{212}{subsubsection*.410}%
-\contentsline {subsubsection}{What’s Next?}{212}{subsubsection*.411}%
-\contentsline {subsection}{\numberline {3.4.4}Design Principles}{213}{subsection.3.4.4}%
-\contentsline {subsubsection}{Core Philosophy}{213}{subsubsection*.412}%
-\contentsline {paragraph}{Simple, Off\sphinxhyphen {}the\sphinxhyphen {}Shelf Functionality}{213}{paragraph*.413}%
-\contentsline {paragraph}{NetworkX Compatibility}{213}{paragraph*.414}%
-\contentsline {paragraph}{Modular Architecture}{214}{paragraph*.415}%
-\contentsline {subsubsection}{Implementation Principles}{214}{subsubsection*.416}%
-\contentsline {paragraph}{Flexibility}{214}{paragraph*.417}%
-\contentsline {paragraph}{Lazy Evaluation}{215}{paragraph*.418}%
-\contentsline {paragraph}{Graceful Degradation}{215}{paragraph*.419}%
-\contentsline {paragraph}{Explicit Over Implicit}{216}{paragraph*.420}%
-\contentsline {subsubsection}{Performance Considerations}{216}{subsubsection*.421}%
-\contentsline {paragraph}{Sparse Representations}{216}{paragraph*.422}%
-\contentsline {paragraph}{Efficient Data Structures}{216}{paragraph*.423}%
-\contentsline {paragraph}{Algorithmic Defaults}{217}{paragraph*.424}%
-\contentsline {subsubsection}{Extensibility}{217}{subsubsection*.425}%
-\contentsline {paragraph}{Plugin\sphinxhyphen {}Friendly Architecture}{217}{paragraph*.426}%
-\contentsline {paragraph}{Clear Interfaces}{218}{paragraph*.427}%
-\contentsline {subsubsection}{Documentation and Testing}{218}{subsubsection*.428}%
-\contentsline {paragraph}{Comprehensive Documentation}{218}{paragraph*.429}%
-\contentsline {paragraph}{Extensive Testing}{218}{paragraph*.430}%
-\contentsline {subsubsection}{Interoperability}{219}{subsubsection*.431}%
-\contentsline {paragraph}{Standard Formats}{219}{paragraph*.432}%
-\contentsline {paragraph}{Cross\sphinxhyphen {}Platform Compatibility}{219}{paragraph*.433}%
-\contentsline {subsubsection}{Research\sphinxhyphen {}Oriented Design}{219}{subsubsection*.434}%
-\contentsline {paragraph}{Citation and Attribution}{219}{paragraph*.435}%
-\contentsline {paragraph}{Reproducibility}{220}{paragraph*.436}%
-\contentsline {paragraph}{Validation and Benchmarking}{220}{paragraph*.437}%
-\contentsline {subsubsection}{Practical Implications}{220}{subsubsection*.438}%
-\contentsline {paragraph}{For Users}{220}{paragraph*.439}%
-\contentsline {paragraph}{For Contributors}{221}{paragraph*.440}%
-\contentsline {subsubsection}{Comparison with Other Libraries}{221}{subsubsection*.441}%
-\contentsline {paragraph}{py3plex vs. Pure NetworkX}{221}{paragraph*.442}%
-\contentsline {paragraph}{py3plex vs. Other Multilayer Tools}{221}{paragraph*.443}%
-\contentsline {subsubsection}{What You Learned}{222}{subsubsection*.444}%
-\contentsline {subsubsection}{What’s Next?}{222}{subsubsection*.445}%
-\contentsline {subsection}{\numberline {3.4.5}Algorithm Landscape}{222}{subsection.3.4.5}%
-\contentsline {subsubsection}{Overview}{222}{subsubsection*.446}%
-\contentsline {subsubsection}{Community Detection}{223}{subsubsection*.447}%
-\contentsline {paragraph}{When to Use}{223}{paragraph*.448}%
-\contentsline {paragraph}{Algorithm Families}{223}{paragraph*.449}%
-\contentsline {paragraph}{Choosing a Community Detection Method}{225}{paragraph*.450}%
-\contentsline {subsubsection}{Centrality \& Importance}{225}{subsubsection*.451}%
-\contentsline {paragraph}{When to Use}{225}{paragraph*.452}%
-\contentsline {paragraph}{Algorithm Families}{225}{paragraph*.453}%
-\contentsline {paragraph}{Choosing a Centrality Measure}{227}{paragraph*.454}%
-\contentsline {subsubsection}{Network Statistics}{227}{subsubsection*.455}%
-\contentsline {paragraph}{When to Use}{227}{paragraph*.456}%
-\contentsline {paragraph}{Statistic Families}{227}{paragraph*.457}%
-\contentsline {subsubsection}{Random Walks \& Embeddings}{228}{subsubsection*.458}%
-\contentsline {paragraph}{When to Use}{228}{paragraph*.459}%
-\contentsline {paragraph}{Algorithm Families}{229}{paragraph*.460}%
-\contentsline {paragraph}{Choosing Walk Parameters}{230}{paragraph*.461}%
-\contentsline {subsubsection}{Visualization \& Layout}{230}{subsubsection*.462}%
-\contentsline {paragraph}{When to Use}{230}{paragraph*.463}%
-\contentsline {paragraph}{Layout Families}{231}{paragraph*.464}%
-\contentsline {subsubsection}{Benchmarking \& Generation}{232}{subsubsection*.465}%
-\contentsline {paragraph}{When to Use}{232}{paragraph*.466}%
-\contentsline {paragraph}{Generator Families}{232}{paragraph*.467}%
-\contentsline {subsubsection}{Algorithm Combinations}{232}{subsubsection*.468}%
-\contentsline {paragraph}{Common Workflows}{232}{paragraph*.469}%
-\contentsline {subsubsection}{Performance Considerations}{233}{subsubsection*.470}%
-\contentsline {paragraph}{Algorithm Complexity}{233}{paragraph*.471}%
-\contentsline {subsubsection}{Next Steps}{234}{subsubsection*.472}%
-\contentsline {section}{\numberline {3.5}Part V: API \& DSL Reference}{234}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}API \& DSL Reference}{234}{subsection.3.5.1}%
-\contentsline {subsubsection}{Python API Reference}{234}{subsubsection*.473}%
-\contentsline {subsubsection}{DSL \& Query Reference}{234}{subsubsection*.474}%
-\contentsline {subsection}{\numberline {3.5.2}Algorithm Roadmap}{235}{subsection.3.5.2}%
-\contentsline {subsubsection}{Algorithm Categories}{235}{subsubsection*.475}%
-\contentsline {subsubsection}{Community Detection Algorithms}{235}{subsubsection*.476}%
-\contentsline {paragraph}{Louvain Algorithm}{235}{paragraph*.477}%
-\contentsline {paragraph}{Infomap Algorithm}{236}{paragraph*.478}%
-\contentsline {paragraph}{Multilayer Louvain}{237}{paragraph*.479}%
-\contentsline {paragraph}{Leiden Algorithm}{238}{paragraph*.480}%
-\contentsline {paragraph}{NoRC Algorithm}{238}{paragraph*.481}%
-\contentsline {paragraph}{Community Measures}{239}{paragraph*.482}%
-\contentsline {paragraph}{Community Ranking}{239}{paragraph*.483}%
-\contentsline {paragraph}{Multilayer Benchmarks}{239}{paragraph*.484}%
-\contentsline {subsubsection}{Centrality Measures}{239}{subsubsection*.485}%
-\contentsline {paragraph}{MultilayerCentrality Class}{240}{paragraph*.486}%
-\contentsline {subparagraph}{Basic Centrality Measures}{241}{subparagraph*.487}%
-\contentsline {subparagraph}{Eigenvector\sphinxhyphen {}Based Measures}{241}{subparagraph*.488}%
-\contentsline {paragraph}{Multilayer PageRank (with Uncertainty)}{241}{paragraph*.489}%
-\contentsline {subparagraph}{Path\sphinxhyphen {}Based Measures}{243}{subparagraph*.490}%
-\contentsline {paragraph}{Hubs and Authorities (HITS)}{243}{paragraph*.491}%
-\contentsline {subparagraph}{Utility Functions}{243}{subparagraph*.492}%
-\contentsline {paragraph}{Versatility Centrality}{243}{paragraph*.493}%
-\contentsline {paragraph}{Supra Matrix Function Centralities}{244}{paragraph*.494}%
-\contentsline {paragraph}{MultiXRank}{244}{paragraph*.495}%
-\contentsline {subsubsection}{Network Statistics}{246}{subsubsection*.496}%
-\contentsline {paragraph}{Multilayer Statistics}{246}{paragraph*.497}%
-\contentsline {paragraph}{Multilayer Statistics (Detailed)}{246}{paragraph*.498}%
-\contentsline {paragraph}{Basic Statistics}{246}{paragraph*.499}%
-\contentsline {paragraph}{Topology Analysis}{247}{paragraph*.500}%
-\contentsline {paragraph}{Correlation Networks}{247}{paragraph*.501}%
-\contentsline {paragraph}{Enrichment Analysis}{247}{paragraph*.502}%
-\contentsline {paragraph}{Statistical Comparison}{247}{paragraph*.503}%
-\contentsline {paragraph}{Power Law Analysis}{248}{paragraph*.504}%
-\contentsline {subsubsection}{Node Ranking \& Classification}{248}{subsubsection*.505}%
-\contentsline {paragraph}{Node Ranking}{248}{paragraph*.506}%
-\contentsline {paragraph}{Label Propagation}{248}{paragraph*.507}%
-\contentsline {paragraph}{Personalized PageRank (PPR)}{249}{paragraph*.508}%
-\contentsline {subsubsection}{Random Walks \& Embeddings}{249}{subsubsection*.509}%
-\contentsline {paragraph}{Random Walk Primitives}{249}{paragraph*.510}%
-\contentsline {paragraph}{Node2Vec Embedding}{250}{paragraph*.511}%
-\contentsline {paragraph}{DeepWalk Embedding}{250}{paragraph*.512}%
-\contentsline {paragraph}{Entanglement Analysis}{250}{paragraph*.513}%
-\contentsline {subsubsection}{Visualization Algorithms}{251}{subsubsection*.514}%
-\contentsline {paragraph}{Layout Algorithms}{251}{paragraph*.515}%
-\contentsline {paragraph}{Multilayer Visualization}{251}{paragraph*.516}%
-\contentsline {paragraph}{Drawing Machinery}{251}{paragraph*.517}%
-\contentsline {paragraph}{Color Schemes}{252}{paragraph*.518}%
-\contentsline {paragraph}{Embedding Visualization}{252}{paragraph*.519}%
-\contentsline {subsubsection}{Benchmark \& Utilities}{252}{subsubsection*.520}%
-\contentsline {paragraph}{Network Classification Benchmark}{252}{paragraph*.521}%
-\contentsline {paragraph}{Benchmark Visualizations}{252}{paragraph*.522}%
-\contentsline {subsubsection}{Algorithm Selection Guide}{252}{subsubsection*.523}%
-\contentsline {paragraph}{By Task Type}{252}{paragraph*.524}%
-\contentsline {paragraph}{By Network Size}{253}{paragraph*.525}%
-\contentsline {paragraph}{By Network Type}{253}{paragraph*.526}%
-\contentsline {subsubsection}{Algorithm Dependencies}{254}{subsubsection*.527}%
-\contentsline {subsubsection}{Common Algorithm Workflows}{254}{subsubsection*.528}%
-\contentsline {paragraph}{Community Detection Workflow}{254}{paragraph*.529}%
-\contentsline {paragraph}{Centrality Analysis Workflow}{255}{paragraph*.530}%
-\contentsline {paragraph}{Embedding Workflow}{255}{paragraph*.531}%
-\contentsline {paragraph}{Statistical Analysis Workflow}{255}{paragraph*.532}%
-\contentsline {subsubsection}{Further Reading}{256}{subsubsection*.533}%
-\contentsline {subsubsection}{Citation Information}{256}{subsubsection*.534}%
-\contentsline {subsection}{\numberline {3.5.3}DSL Reference}{256}{subsection.3.5.3}%
-\contentsline {subsubsection}{Overview}{256}{subsubsection*.535}%
-\contentsline {subsubsection}{String Syntax Reference}{257}{subsubsection*.536}%
-\contentsline {paragraph}{Basic Structure}{257}{paragraph*.537}%
-\contentsline {paragraph}{Targets}{257}{paragraph*.538}%
-\contentsline {paragraph}{Layer Selection}{257}{paragraph*.539}%
-\contentsline {paragraph}{Conditions}{257}{paragraph*.540}%
-\contentsline {paragraph}{Compute Clause}{257}{paragraph*.541}%
-\contentsline {paragraph}{Order By}{258}{paragraph*.542}%
-\contentsline {paragraph}{Limit}{258}{paragraph*.543}%
-\contentsline {paragraph}{Complete Examples}{258}{paragraph*.544}%
-\contentsline {subsubsection}{Builder API Reference}{258}{subsubsection*.545}%
-\contentsline {paragraph}{Import}{258}{paragraph*.546}%
-\contentsline {paragraph}{Query Construction}{259}{paragraph*.547}%
-\contentsline {paragraph}{Layer Selection}{259}{paragraph*.548}%
-\contentsline {paragraph}{Filtering}{259}{paragraph*.549}%
-\contentsline {paragraph}{Computing Metrics}{259}{paragraph*.550}%
-\contentsline {paragraph}{Sorting}{259}{paragraph*.551}%
-\contentsline {paragraph}{Limiting}{260}{paragraph*.552}%
-\contentsline {paragraph}{Execution}{260}{paragraph*.553}%
-\contentsline {paragraph}{Chaining}{260}{paragraph*.554}%
-\contentsline {subsubsection}{Temporal Queries}{260}{subsubsection*.555}%
-\contentsline {paragraph}{Filter by Time Point}{260}{paragraph*.556}%
-\contentsline {paragraph}{Filter by Time Range}{260}{paragraph*.557}%
-\contentsline {paragraph}{Temporal Edge Attributes}{261}{paragraph*.558}%
-\contentsline {subsubsection}{Grouping and Coverage Queries}{261}{subsubsection*.559}%
-\contentsline {paragraph}{Per\sphinxhyphen {}Layer Grouping}{261}{paragraph*.560}%
-\contentsline {paragraph}{Top\sphinxhyphen {}K Per Group}{261}{paragraph*.561}%
-\contentsline {paragraph}{Coverage Filtering}{262}{paragraph*.562}%
-\contentsline {paragraph}{Wildcard Layer Selection}{263}{paragraph*.563}%
-\contentsline {paragraph}{General Grouping}{263}{paragraph*.564}%
-\contentsline {paragraph}{Limitations}{263}{paragraph*.565}%
-\contentsline {subsubsection}{Working with Results}{263}{subsubsection*.566}%
-\contentsline {paragraph}{Result Object}{263}{paragraph*.567}%
-\contentsline {paragraph}{Convert to Pandas}{264}{paragraph*.568}%
-\contentsline {subsubsection}{Extensibility}{264}{subsubsection*.569}%
-\contentsline {paragraph}{Custom Operators}{264}{paragraph*.570}%
-\contentsline {subsubsection}{Performance Considerations}{264}{subsubsection*.571}%
-\contentsline {subsubsection}{Next Steps}{264}{subsubsection*.572}%
-\contentsline {subsection}{\numberline {3.5.4}API Documentation}{264}{subsection.3.5.4}%
-\contentsline {subsubsection}{Core Modules}{265}{subsubsection*.573}%
-\contentsline {paragraph}{HINMINE Network Decomposition}{306}{paragraph*.700}%
-\contentsline {subsubsection}{Configuration and Utilities}{308}{subsubsection*.725}%
-\contentsline {subsubsection}{Domain\sphinxhyphen {}Specific Language (DSL)}{319}{subsubsection*.785}%
-\contentsline {subsubsection}{Uncertainty Quantification}{366}{subsubsection*.1203}%
-\contentsline {subsubsection}{Algorithms}{384}{subsubsection*.1316}%
-\contentsline {paragraph}{Community Detection}{384}{paragraph*.1317}%
-\contentsline {paragraph}{Statistics}{407}{paragraph*.1350}%
-\contentsline {paragraph}{Multilayer Algorithms}{436}{paragraph*.1396}%
-\contentsline {subparagraph}{Weight Handling Notes:}{436}{subparagraph*.1397}%
-\contentsline {paragraph}{General Algorithms}{468}{paragraph*.1470}%
-\contentsline {paragraph}{Node Ranking}{474}{paragraph*.1478}%
-\contentsline {paragraph}{Network Classification}{476}{paragraph*.1487}%
-\contentsline {subsubsection}{Visualization}{480}{subsubsection*.1488}%
-\contentsline {subsubsection}{Wrappers}{507}{subsubsection*.1546}%
-\contentsline {subsubsection}{I/O Operations}{509}{subsubsection*.1555}%
-\contentsline {subsubsection}{Profiling Utilities}{511}{subsubsection*.1560}%
-\contentsline {subsubsection}{Logging Configuration}{514}{subsubsection*.1571}%
-\contentsline {subsubsection}{I/O Schema and Validation}{515}{subsubsection*.1574}%
-\contentsline {subsubsection}{Hedwig Rule Learning}{521}{subsubsection*.1583}%
-\contentsline {subsubsection}{Force Atlas 2 Visualization}{523}{subsubsection*.1613}%
-\contentsline {subsubsection}{Embedding Visualization}{524}{subsubsection*.1640}%
-\contentsline {subsubsection}{Network Generation and Benchmarking}{524}{subsubsection*.1642}%
-\contentsline {subsubsection}{Additional Statistics and Analysis}{524}{subsubsection*.1643}%
-\contentsline {subsubsection}{Community Detection Advanced}{529}{subsubsection*.1655}%
-\contentsline {subsubsection}{Node Ranking and Classification}{530}{subsubsection*.1662}%
-\contentsline {subsubsection}{Embeddings and Wrappers}{539}{subsubsection*.1682}%
-\contentsline {subsubsection}{Network Motifs and Patterns}{541}{subsubsection*.1686}%
-\contentsline {subsubsection}{HINMINE Data Structures}{541}{subsubsection*.1687}%
-\contentsline {subsubsection}{Command\sphinxhyphen {}Line Interface}{542}{subsubsection*.1699}%
-\contentsline {subsubsection}{Validation Utilities}{545}{subsubsection*.1718}%
-\contentsline {subsubsection}{Network Comparison and Testing}{547}{subsubsection*.1725}%
-\contentsline {subsubsection}{Hedwig Learning Algorithms}{547}{subsubsection*.1726}%
-\contentsline {subsubsection}{Hedwig Statistics and Scoring}{548}{subsubsection*.1756}%
-\contentsline {subsubsection}{Hedwig Core Components}{549}{subsubsection*.1770}%
-\contentsline {subsubsection}{Time Series and Temporal Analysis}{551}{subsubsection*.1812}%
-\contentsline {subsubsection}{Advanced Visualization}{551}{subsubsection*.1813}%
-\contentsline {subsubsection}{Link Prediction}{552}{subsubsection*.1815}%
-\contentsline {subsection}{\numberline {3.5.5}Configuration \& Environment}{552}{subsection.3.5.5}%
-\contentsline {subsubsection}{Configuration Files}{552}{subsubsection*.1816}%
-\contentsline {subsubsection}{Environment Variables}{553}{subsubsection*.1817}%
-\contentsline {subsubsection}{Input Formats}{554}{subsubsection*.1818}%
-\contentsline {subsubsection}{Output Formats}{554}{subsubsection*.1819}%
-\contentsline {subsubsection}{Algorithm Configuration}{555}{subsubsection*.1820}%
-\contentsline {paragraph}{Community Detection}{555}{paragraph*.1821}%
-\contentsline {paragraph}{Node2Vec}{555}{paragraph*.1822}%
-\contentsline {paragraph}{Dynamics}{555}{paragraph*.1823}%
-\contentsline {subsubsection}{Visualization Configuration}{556}{subsubsection*.1824}%
-\contentsline {subsubsection}{Logging Configuration}{556}{subsubsection*.1825}%
-\contentsline {subsubsection}{Performance Tuning}{558}{subsubsection*.1826}%
-\contentsline {subsubsection}{Next Steps}{558}{subsubsection*.1827}%
-\contentsline {section}{\numberline {3.6}Part VI: Examples \& Recipes}{558}{section.3.6}%
-\contentsline {subsection}{\numberline {3.6.1}Examples \& Recipes}{558}{subsection.3.6.1}%
-\contentsline {subsubsection}{Getting Started Examples}{559}{subsubsection*.1829}%
-\contentsline {subsubsection}{Visualization Examples}{559}{subsubsection*.1830}%
-\contentsline {subsubsection}{Community Detection Examples}{559}{subsubsection*.1831}%
-\contentsline {subsubsection}{DSL and Query Examples}{560}{subsubsection*.1832}%
-\contentsline {subsubsection}{Network Statistics Examples}{560}{subsubsection*.1833}%
-\contentsline {subsubsection}{I/O and Data Format Examples}{560}{subsubsection*.1834}%
-\contentsline {subsubsection}{Random Walks and Embeddings}{561}{subsubsection*.1835}%
-\contentsline {subsubsection}{Network Decomposition}{561}{subsubsection*.1836}%
-\contentsline {subsubsection}{Network Manipulation}{561}{subsubsection*.1837}%
-\contentsline {subsubsection}{Algorithms and Analysis}{561}{subsubsection*.1838}%
-\contentsline {subsubsection}{NetworkX Integration}{562}{subsubsection*.1839}%
-\contentsline {subsubsection}{Benchmarking}{562}{subsubsection*.1840}%
-\contentsline {subsubsection}{GUI and API}{562}{subsubsection*.1841}%
-\contentsline {subsubsection}{Real\sphinxhyphen {}World Datasets}{562}{subsubsection*.1842}%
-\contentsline {subsubsection}{Running Examples}{562}{subsubsection*.1843}%
-\contentsline {subsubsection}{Example Template}{563}{subsubsection*.1844}%
-\contentsline {subsubsection}{Contributing Examples}{564}{subsubsection*.1845}%
-\contentsline {subsubsection}{Related Documentation}{564}{subsubsection*.1846}%
-\contentsline {subsection}{\numberline {3.6.2}Analysis Recipes \& Workflows}{564}{subsection.3.6.2}%
-\contentsline {subsubsection}{Data Import \& Setup}{566}{subsubsection*.1889}%
-\contentsline {paragraph}{Recipe 1: Load Network from Multiple File Formats}{566}{paragraph*.1890}%
-\contentsline {paragraph}{Recipe 2: Create Synthetic Benchmark Networks}{567}{paragraph*.1891}%
-\contentsline {paragraph}{Recipe 3: Convert Between Network Formats}{568}{paragraph*.1892}%
-\contentsline {subsubsection}{Network Exploration \& Analysis}{568}{subsubsection*.1893}%
-\contentsline {paragraph}{Recipe 4: Quick Network Summary}{568}{paragraph*.1894}%
-\contentsline {paragraph}{Recipe 5: Layer\sphinxhyphen {}by\sphinxhyphen {}Layer Analysis}{569}{paragraph*.1895}%
-\contentsline {paragraph}{Recipe 6: Compute Multilayer Statistics}{570}{paragraph*.1896}%
-\contentsline {subsubsection}{Centrality \& Node Importance}{571}{subsubsection*.1897}%
-\contentsline {paragraph}{Recipe 7: Single\sphinxhyphen {}Layer Centrality Analysis}{571}{paragraph*.1898}%
-\contentsline {paragraph}{Recipe 8: Multiplex Participation Coefficient}{572}{paragraph*.1899}%
-\contentsline {subsubsection}{Community Detection}{573}{subsubsection*.1900}%
-\contentsline {paragraph}{Recipe 9: Multilayer Community Detection}{573}{paragraph*.1901}%
-\contentsline {paragraph}{Recipe 10: Compare Community Detection Algorithms}{574}{paragraph*.1902}%
-\contentsline {subsubsection}{Visualization}{575}{subsubsection*.1903}%
-\contentsline {paragraph}{Recipe 11: Basic Network Visualization}{575}{paragraph*.1904}%
-\contentsline {paragraph}{Recipe 12: Visualize Communities on Network}{576}{paragraph*.1905}%
-\contentsline {subsubsection}{Advanced Workflows}{577}{subsubsection*.1906}%
-\contentsline {paragraph}{Recipe 13: Complete Analysis Pipeline}{577}{paragraph*.1907}%
-\contentsline {paragraph}{Recipe 14: Network Comparison Study}{578}{paragraph*.1908}%
-\contentsline {paragraph}{Recipe 15: Random Walks for Node Embeddings}{580}{paragraph*.1909}%
-\contentsline {subsubsection}{Performance \& Optimization}{581}{subsubsection*.1910}%
-\contentsline {paragraph}{Recipe 16: Handle Large Networks Efficiently}{581}{paragraph*.1911}%
-\contentsline {paragraph}{Recipe 17: Benchmark and Profile Your Analysis}{582}{paragraph*.1912}%
-\contentsline {subsubsection}{Tips \& Best Practices}{584}{subsubsection*.1913}%
-\contentsline {paragraph}{General Tips}{584}{paragraph*.1914}%
-\contentsline {paragraph}{Performance Tips}{584}{paragraph*.1915}%
-\contentsline {paragraph}{Visualization Tips}{584}{paragraph*.1916}%
-\contentsline {paragraph}{Community Detection Tips}{585}{paragraph*.1917}%
-\contentsline {subsubsection}{Common Issues \& Solutions}{585}{subsubsection*.1918}%
-\contentsline {paragraph}{Issue: “Network appears to be empty”}{585}{paragraph*.1919}%
-\contentsline {paragraph}{Issue: “No module named ‘community’”}{585}{paragraph*.1920}%
-\contentsline {paragraph}{Issue: “Visualization doesn’t appear”}{585}{paragraph*.1921}%
-\contentsline {paragraph}{Issue: “Memory error with large network”}{586}{paragraph*.1922}%
-\contentsline {paragraph}{Issue: “Community detection is slow”}{586}{paragraph*.1923}%
-\contentsline {subsubsection}{Further Reading}{586}{subsubsection*.1924}%
-\contentsline {subsubsection}{DSL Query Recipes}{586}{subsubsection*.1925}%
-\contentsline {paragraph}{Recipe 18: Hub Identification with DSL}{586}{paragraph*.1926}%
-\contentsline {paragraph}{Recipe 19: Multi\sphinxhyphen {}Layer Comparative Analysis}{587}{paragraph*.1927}%
-\contentsline {paragraph}{Recipe 20: Advanced Filtering and Export}{588}{paragraph*.1928}%
-\contentsline {paragraph}{Recipe 21: Parameterized Query Templates}{589}{paragraph*.1929}%
-\contentsline {paragraph}{Recipe 22: DSL with EXPLAIN Mode}{589}{paragraph*.1930}%
-\contentsline {subsection}{\numberline {3.6.3}Use Cases \& Case Studies}{590}{subsection.3.6.3}%
-\contentsline {subsubsection}{Why Case Studies Matter}{591}{subsubsection*.1931}%
-\contentsline {subsubsection}{Lessons from the Field}{591}{subsubsection*.1932}%
-\contentsline {subsubsection}{Case Study 1: Biological Network Analysis}{592}{subsubsection*.1933}%
-\contentsline {paragraph}{Real\sphinxhyphen {}World Impact}{592}{paragraph*.1934}%
-\contentsline {paragraph}{Multilayer Protein\sphinxhyphen {}Protein Interaction Network}{592}{paragraph*.1935}%
-\contentsline {subsubsection}{Case Study 2: Multi\sphinxhyphen {}Platform Social Network Analysis}{596}{subsubsection*.1936}%
-\contentsline {paragraph}{Cross\sphinxhyphen {}Platform Influence Analysis}{596}{paragraph*.1937}%
-\contentsline {subsubsection}{Case Study 3: Multi\sphinxhyphen {}Modal Transportation Analysis}{600}{subsubsection*.1938}%
-\contentsline {paragraph}{Urban Mobility and Resilience}{600}{paragraph*.1939}%
-\contentsline {subsubsection}{Case Study 4: Heterogeneous Academic Network}{603}{subsubsection*.1940}%
-\contentsline {paragraph}{Research Collaboration and Impact Analysis}{603}{paragraph*.1941}%
-\contentsline {subsubsection}{Adapting Case Studies to Your Domain}{608}{subsubsection*.1942}%
-\contentsline {paragraph}{General Adaptation Process}{608}{paragraph*.1943}%
-\contentsline {paragraph}{Data Loading Templates}{608}{paragraph*.1944}%
-\contentsline {subsubsection}{Conclusion: Patterns Across Domains}{609}{subsubsection*.1945}%
-\contentsline {paragraph}{The Meta\sphinxhyphen {}Lesson}{609}{paragraph*.1946}%
-\contentsline {subsubsection}{Further Reading}{610}{subsubsection*.1947}%
-\contentsline {section}{\numberline {3.7}Part VII: Project Info}{610}{section.3.7}%
-\contentsline {subsection}{\numberline {3.7.1}Project Info}{610}{subsection.3.7.1}%
-\contentsline {subsubsection}{Getting Involved}{610}{subsubsection*.1948}%
-\contentsline {subsubsection}{License}{611}{subsubsection*.1949}%
-\contentsline {subsubsection}{Acknowledgements}{611}{subsubsection*.1950}%
-\contentsline {subsection}{\numberline {3.7.2}Changelog}{611}{subsection.3.7.2}%
-\contentsline {subsubsection}{Release History}{611}{subsubsection*.1952}%
-\contentsline {paragraph}{Version 1.0.0 (Current)}{611}{paragraph*.1953}%
-\contentsline {paragraph}{Previous Versions (0.x Series)}{613}{paragraph*.1954}%
-\contentsline {subsubsection}{How to Check Your Version}{613}{subsubsection*.1955}%
-\contentsline {subsubsection}{Upgrade Instructions}{613}{subsubsection*.1956}%
-\contentsline {subsubsection}{Migration Guides}{614}{subsubsection*.1957}%
-\contentsline {paragraph}{Migrating from 0.x to 1.0}{614}{paragraph*.1958}%
-\contentsline {paragraph}{API Changes and Deprecations}{615}{paragraph*.1959}%
-\contentsline {subsubsection}{Contributing to Changelog}{615}{subsubsection*.1960}%
-\contentsline {subsubsection}{Staying Updated}{615}{subsubsection*.1961}%
-\contentsline {subsubsection}{Next Steps}{615}{subsubsection*.1962}%
-\contentsline {subsection}{\numberline {3.7.3}Roadmap \& Vision}{615}{subsection.3.7.3}%
-\contentsline {subsubsection}{Long\sphinxhyphen {}Term Vision}{616}{subsubsection*.1965}%
-\contentsline {subsubsection}{Current Focus (v1.0+)}{616}{subsubsection*.1966}%
-\contentsline {subsubsection}{Planned Enhancements}{616}{subsubsection*.1967}%
-\contentsline {paragraph}{Near Term (Next Release)}{616}{paragraph*.1968}%
-\contentsline {paragraph}{Medium Term (1\sphinxhyphen {}2 Releases)}{617}{paragraph*.1969}%
-\contentsline {paragraph}{Longer Term (Future Releases)}{617}{paragraph*.1970}%
-\contentsline {subsubsection}{Research Directions}{617}{subsubsection*.1972}%
-\contentsline {subsubsection}{Community Requests}{618}{subsubsection*.1973}%
-\contentsline {paragraph}{Vote on Features}{618}{paragraph*.1975}%
-\contentsline {subsubsection}{Contributing to Development}{618}{subsubsection*.1976}%
-\contentsline {subsubsection}{Release Cycle}{618}{subsubsection*.1977}%
-\contentsline {subsubsection}{Staying Updated}{619}{subsubsection*.1978}%
-\contentsline {subsubsection}{Next Steps}{619}{subsubsection*.1979}%
-\contentsline {subsection}{\numberline {3.7.4}Contributing to py3plex}{619}{subsection.3.7.4}%
-\contentsline {subsubsection}{Ways to Contribute}{619}{subsubsection*.1980}%
-\contentsline {subsubsection}{Getting Started}{619}{subsubsection*.1981}%
-\contentsline {paragraph}{Fork and Clone}{619}{paragraph*.1982}%
-\contentsline {paragraph}{Development Setup}{620}{paragraph*.1983}%
-\contentsline {subsubsection}{Development Workflow}{620}{subsubsection*.1984}%
-\contentsline {paragraph}{Create a Branch}{620}{paragraph*.1985}%
-\contentsline {paragraph}{Make Changes}{620}{paragraph*.1986}%
-\contentsline {paragraph}{Run Tests}{621}{paragraph*.1987}%
-\contentsline {paragraph}{Run Linters}{621}{paragraph*.1988}%
-\contentsline {paragraph}{Commit Changes}{621}{paragraph*.1989}%
-\contentsline {paragraph}{Push and Create PR}{621}{paragraph*.1990}%
-\contentsline {subsubsection}{Coding Standards}{621}{subsubsection*.1991}%
-\contentsline {paragraph}{Code Style}{621}{paragraph*.1992}%
-\contentsline {paragraph}{Naming Conventions}{622}{paragraph*.1993}%
-\contentsline {paragraph}{Docstrings}{622}{paragraph*.1994}%
-\contentsline {paragraph}{Type Hints}{623}{paragraph*.1995}%
-\contentsline {subsubsection}{Testing Guidelines}{623}{subsubsection*.1996}%
-\contentsline {paragraph}{Test Requirements}{623}{paragraph*.1997}%
-\contentsline {paragraph}{Writing Tests}{624}{paragraph*.1998}%
-\contentsline {paragraph}{Test Coverage}{624}{paragraph*.1999}%
-\contentsline {subsubsection}{Documentation}{624}{subsubsection*.2000}%
-\contentsline {paragraph}{Update Documentation}{624}{paragraph*.2001}%
-\contentsline {paragraph}{Build Documentation}{625}{paragraph*.2002}%
-\contentsline {paragraph}{Documentation Style}{625}{paragraph*.2003}%
-\contentsline {subsubsection}{Pull Request Guidelines}{625}{subsubsection*.2004}%
-\contentsline {paragraph}{Before Submitting}{625}{paragraph*.2005}%
-\contentsline {paragraph}{PR Description}{625}{paragraph*.2006}%
-\contentsline {paragraph}{Review Process}{626}{paragraph*.2007}%
-\contentsline {subsubsection}{Reporting Issues}{626}{subsubsection*.2008}%
-\contentsline {paragraph}{Bug Reports}{626}{paragraph*.2009}%
-\contentsline {paragraph}{Feature Requests}{627}{paragraph*.2010}%
-\contentsline {subsubsection}{Code of Conduct}{627}{subsubsection*.2011}%
-\contentsline {subsubsection}{License}{628}{subsubsection*.2012}%
-\contentsline {subsubsection}{Recognition}{628}{subsubsection*.2013}%
-\contentsline {subsubsection}{Getting Help}{628}{subsubsection*.2014}%
-\contentsline {subsubsection}{Next Steps}{628}{subsubsection*.2015}%
-\contentsline {subsection}{\numberline {3.7.5}Benchmarking \& Performance}{628}{subsection.3.7.5}%
-\contentsline {subsubsection}{Network Scale Guidelines}{628}{subsubsection*.2018}%
-\contentsline {subsubsection}{Performance Tips}{629}{subsubsection*.2019}%
-\contentsline {paragraph}{Use Sparse Matrices}{629}{paragraph*.2020}%
-\contentsline {paragraph}{Batch Operations}{629}{paragraph*.2021}%
-\contentsline {paragraph}{Use Arrow/Parquet for I/O}{629}{paragraph*.2022}%
-\contentsline {paragraph}{Parallel Processing}{629}{paragraph*.2023}%
-\contentsline {subsubsection}{Benchmark Results}{630}{subsubsection*.2024}%
-\contentsline {paragraph}{Algorithm Runtimes vs. Network Size}{630}{paragraph*.2025}%
-\contentsline {subparagraph}{Community Detection (Louvain)}{630}{subparagraph*.2026}%
-\contentsline {subparagraph}{Centrality Computation (Betweenness)}{630}{subparagraph*.2027}%
-\contentsline {subparagraph}{Node2Vec Embeddings}{630}{subparagraph*.2028}%
-\contentsline {subparagraph}{Dynamics Simulation (SIR)}{631}{subparagraph*.2029}%
-\contentsline {paragraph}{Memory Usage Profiles}{631}{paragraph*.2030}%
-\contentsline {paragraph}{Comparison with Other Tools}{631}{paragraph*.2031}%
-\contentsline {subparagraph}{Community Detection: py3plex vs. NetworkX}{631}{subparagraph*.2032}%
-\contentsline {subparagraph}{Node Embeddings: py3plex vs. node2vec}{631}{subparagraph*.2033}%
-\contentsline {subsubsection}{Running Benchmarks}{632}{subsubsection*.2034}%
-\contentsline {subsubsection}{Profiling Your Code}{632}{subsubsection*.2035}%
-\contentsline {paragraph}{Memory Profiling}{632}{paragraph*.2036}%
-\contentsline {subsubsection}{Optimization Strategies}{632}{subsubsection*.2037}%
-\contentsline {paragraph}{For Large Networks}{632}{paragraph*.2038}%
-\contentsline {paragraph}{For Repeated Analysis}{633}{paragraph*.2039}%
-\contentsline {paragraph}{For Production}{633}{paragraph*.2040}%
-\contentsline {subsubsection}{Hardware Recommendations}{633}{subsubsection*.2041}%
-\contentsline {subsubsection}{Next Steps}{633}{subsubsection*.2042}%
-\contentsline {subsection}{\numberline {3.7.6}Citation and References}{633}{subsection.3.7.6}%
-\contentsline {subsubsection}{Primary Citation}{633}{subsubsection*.2043}%
-\contentsline {subsubsection}{Conference Paper}{634}{subsubsection*.2044}%
-\contentsline {subsubsection}{Algorithm\sphinxhyphen {}Specific Citations}{634}{subsubsection*.2045}%
-\contentsline {paragraph}{Multilayer Modularity}{634}{paragraph*.2046}%
-\contentsline {paragraph}{Node2Vec}{635}{paragraph*.2047}%
-\contentsline {paragraph}{Louvain Algorithm}{635}{paragraph*.2048}%
-\contentsline {paragraph}{Infomap}{635}{paragraph*.2049}%
-\contentsline {paragraph}{MultiXRank}{636}{paragraph*.2050}%
-\contentsline {paragraph}{DeepWalk}{636}{paragraph*.2051}%
-\contentsline {paragraph}{Multilayer Network Theory}{636}{paragraph*.2052}%
-\contentsline {subsubsection}{Complete Citation List}{637}{subsubsection*.2053}%
-\contentsline {subsubsection}{Acknowledgments}{637}{subsubsection*.2054}%
-\contentsline {paragraph}{Development and Contributors}{637}{paragraph*.2055}%
-\contentsline {paragraph}{Funding and Support}{637}{paragraph*.2056}%
-\contentsline {paragraph}{External Libraries}{637}{paragraph*.2057}%
-\contentsline {paragraph}{Community Acknowledgments}{638}{paragraph*.2058}%
-\contentsline {subsubsection}{License Information}{638}{subsubsection*.2059}%
-\contentsline {subsubsection}{Contact}{638}{subsubsection*.2060}%
-\contentsline {subsubsection}{Related Work}{639}{subsubsection*.2061}%
-\contentsline {subsubsection}{Usage in Publications}{639}{subsubsection*.2062}%
-\contentsline {subsubsection}{See Also}{639}{subsubsection*.2063}%
-\contentsline {section}{\numberline {3.8}Additional Sections}{639}{section.3.8}%
-\contentsline {subsection}{\numberline {3.8.1}Environments \& Deployment}{639}{subsection.3.8.1}%
-\contentsline {subsubsection}{When to Use This Section}{639}{subsubsection*.2066}%
-\contentsline {subsection}{\numberline {3.8.2}Docker Usage Guide}{640}{subsection.3.8.2}%
-\contentsline {subsubsection}{Quickstart}{641}{subsubsection*.2109}%
-\contentsline {subsubsection}{Building the Image}{642}{subsubsection*.2110}%
-\contentsline {paragraph}{Using Docker}{642}{paragraph*.2111}%
-\contentsline {paragraph}{Using Docker Compose}{642}{paragraph*.2112}%
-\contentsline {subsubsection}{Running Commands}{642}{subsubsection*.2113}%
-\contentsline {paragraph}{Basic Commands}{642}{paragraph*.2114}%
-\contentsline {paragraph}{Using Docker Compose}{642}{paragraph*.2115}%
-\contentsline {subsubsection}{Working with Files}{643}{subsubsection*.2116}%
-\contentsline {paragraph}{Creating a Data Directory}{643}{paragraph*.2117}%
-\contentsline {paragraph}{Mounting Volumes}{643}{paragraph*.2118}%
-\contentsline {paragraph}{Complete Workflow Example}{643}{paragraph*.2119}%
-\contentsline {subsubsection}{Advanced Usage}{644}{subsubsection*.2120}%
-\contentsline {paragraph}{Interactive Shell}{644}{paragraph*.2121}%
-\contentsline {paragraph}{Using Python API}{644}{paragraph*.2122}%
-\contentsline {paragraph}{Custom Image Builds}{645}{paragraph*.2123}%
-\contentsline {paragraph}{Docker Compose with Multiple Services}{645}{paragraph*.2124}%
-\contentsline {subsubsection}{Helper Scripts}{646}{subsubsection*.2125}%
-\contentsline {paragraph}{py3plex\sphinxhyphen {}docker.sh}{646}{paragraph*.2126}%
-\contentsline {paragraph}{test\sphinxhyphen {}docker\sphinxhyphen {}setup.sh}{646}{paragraph*.2127}%
-\contentsline {subsubsection}{Docker Configuration Files}{647}{subsubsection*.2128}%
-\contentsline {paragraph}{.dockerignore}{647}{paragraph*.2129}%
-\contentsline {subsubsection}{Troubleshooting}{647}{subsubsection*.2130}%
-\contentsline {paragraph}{Testing the Docker Setup}{647}{paragraph*.2131}%
-\contentsline {paragraph}{Permission Issues}{648}{paragraph*.2132}%
-\contentsline {paragraph}{Container Not Found}{648}{paragraph*.2133}%
-\contentsline {paragraph}{Network Issues During Build}{648}{paragraph*.2134}%
-\contentsline {paragraph}{Out of Disk Space}{648}{paragraph*.2135}%
-\contentsline {paragraph}{Debugging Build Issues}{648}{paragraph*.2136}%
-\contentsline {subsubsection}{Best Practices}{648}{subsubsection*.2137}%
-\contentsline {subsubsection}{Practical Examples}{649}{subsubsection*.2138}%
-\contentsline {paragraph}{Basic Network Analysis}{649}{paragraph*.2139}%
-\contentsline {paragraph}{Community Detection}{649}{paragraph*.2140}%
-\contentsline {paragraph}{Centrality Analysis}{649}{paragraph*.2141}%
-\contentsline {paragraph}{Batch Processing}{650}{paragraph*.2142}%
-\contentsline {paragraph}{Custom Analysis Script}{650}{paragraph*.2143}%
-\contentsline {paragraph}{Complete Analysis Pipeline}{651}{paragraph*.2144}%
-\contentsline {paragraph}{Comparative Network Analysis}{652}{paragraph*.2145}%
-\contentsline {subsubsection}{CI/CD Integration}{652}{subsubsection*.2146}%
-\contentsline {paragraph}{GitHub Actions}{652}{paragraph*.2147}%
-\contentsline {paragraph}{GitLab CI}{653}{paragraph*.2148}%
-\contentsline {subsubsection}{Additional Resources}{654}{subsubsection*.2149}%
-\contentsline {subsubsection}{Support}{654}{subsubsection*.2154}%
-\contentsline {subsection}{\numberline {3.8.3}Performance and Scalability Best Practices}{654}{subsection.3.8.3}%
-\contentsline {subsubsection}{Network Scale Guidelines}{655}{subsubsection*.2190}%
-\contentsline {subsubsection}{Sparse Matrix Backend}{656}{subsubsection*.2191}%
-\contentsline {paragraph}{Why Sparse Matrices?}{656}{paragraph*.2192}%
-\contentsline {paragraph}{Automatic Sparse Matrix Usage}{656}{paragraph*.2193}%
-\contentsline {paragraph}{Force Sparse Operations}{656}{paragraph*.2194}%
-\contentsline {subsubsection}{Network Sampling}{657}{subsubsection*.2195}%
-\contentsline {paragraph}{When to Sample}{657}{paragraph*.2196}%
-\contentsline {paragraph}{Random Node Sampling}{657}{paragraph*.2197}%
-\contentsline {paragraph}{Stratified Sampling (Preserve Layer Distribution)}{658}{paragraph*.2198}%
-\contentsline {paragraph}{Hub\sphinxhyphen {}Based Sampling (Keep Important Nodes)}{658}{paragraph*.2199}%
-\contentsline {subsubsection}{Algorithm Optimization}{658}{subsubsection*.2200}%
-\contentsline {paragraph}{Choose Efficient Algorithms}{658}{paragraph*.2201}%
-\contentsline {paragraph}{Limit Algorithm Iterations}{659}{paragraph*.2202}%
-\contentsline {subsubsection}{Parallel Processing}{659}{subsubsection*.2203}%
-\contentsline {paragraph}{Multi\sphinxhyphen {}Core Processing}{659}{paragraph*.2204}%
-\contentsline {paragraph}{GPU Acceleration (Advanced)}{660}{paragraph*.2205}%
-\contentsline {subsubsection}{Visualization Optimization}{660}{subsubsection*.2206}%
-\contentsline {paragraph}{Reduce Visual Complexity}{660}{paragraph*.2207}%
-\contentsline {paragraph}{Save to File Instead of Display}{661}{paragraph*.2208}%
-\contentsline {paragraph}{Use Lower Resolution}{661}{paragraph*.2209}%
-\contentsline {subsubsection}{Memory Management}{661}{subsubsection*.2210}%
-\contentsline {paragraph}{Monitor Memory Usage}{661}{paragraph*.2211}%
-\contentsline {paragraph}{Free Memory When Done}{661}{paragraph*.2212}%
-\contentsline {paragraph}{Use Generators Instead of Lists}{662}{paragraph*.2213}%
-\contentsline {subsubsection}{Batch Processing}{662}{subsubsection*.2214}%
-\contentsline {paragraph}{Process Networks in Batches}{662}{paragraph*.2215}%
-\contentsline {subsubsection}{Benchmark Results}{663}{subsubsection*.2216}%
-\contentsline {paragraph}{Performance Benchmarks (2025)}{663}{paragraph*.2217}%
-\contentsline {paragraph}{Scaling Recommendations}{663}{paragraph*.2218}%
-\contentsline {subsubsection}{Alternative Tools for Scale}{663}{subsubsection*.2219}%
-\contentsline {paragraph}{When Py3plex Isn’t Enough}{663}{paragraph*.2220}%
-\contentsline {subsubsection}{Quick Performance Checklist}{664}{subsubsection*.2221}%
-\contentsline {paragraph}{Before Running on Large Network}{664}{paragraph*.2222}%
-\contentsline {paragraph}{Optimization Order}{664}{paragraph*.2223}%
-\contentsline {subsubsection}{Next Steps}{665}{subsubsection*.2224}%
-\contentsline {subsection}{\numberline {3.8.4}GUI: Web Interface for Network Exploration}{665}{subsection.3.8.4}%
-\contentsline {subsubsection}{Running the GUI Locally}{665}{subsubsection*.2226}%
-\contentsline {subsubsection}{GUI Actions vs py3plex APIs}{666}{subsubsection*.2227}%
-\contentsline {subsubsection}{When to Use the GUI}{666}{subsubsection*.2228}%
-\contentsline {subsection}{\numberline {3.8.5}Py3plex GUI}{667}{subsection.3.8.5}%
-\contentsline {subsubsection}{Visual Overview}{667}{subsubsection*.2229}%
-\contentsline {subsubsection}{Quickstart}{668}{subsubsection*.2230}%
-\contentsline {subsubsection}{Prerequisites}{668}{subsubsection*.2231}%
-\contentsline {subsubsection}{Architecture}{668}{subsubsection*.2232}%
-\contentsline {subsubsection}{Features}{669}{subsubsection*.2233}%
-\contentsline {paragraph}{Data Loading}{669}{paragraph*.2234}%
-\contentsline {paragraph}{Visualization}{670}{paragraph*.2235}%
-\contentsline {paragraph}{Analysis (Async via Celery)}{671}{paragraph*.2236}%
-\contentsline {paragraph}{Export}{672}{paragraph*.2237}%
-\contentsline {paragraph}{Workspace Bundles}{672}{paragraph*.2238}%
-\contentsline {paragraph}{Job Monitoring}{673}{paragraph*.2239}%
-\contentsline {subsubsection}{Development Guide}{673}{subsubsection*.2240}%
-\contentsline {paragraph}{Project Structure}{673}{paragraph*.2241}%
-\contentsline {paragraph}{Makefile Commands}{674}{paragraph*.2242}%
-\contentsline {paragraph}{Local Development Against py3plex}{675}{paragraph*.2243}%
-\contentsline {subsubsection}{Configuration}{675}{subsubsection*.2244}%
-\contentsline {paragraph}{Environment Variables (.env)}{675}{paragraph*.2245}%
-\contentsline {paragraph}{GPU Support (Optional)}{675}{paragraph*.2246}%
-\contentsline {subsubsection}{Data Formats}{675}{subsubsection*.2247}%
-\contentsline {paragraph}{Accepted Input Formats}{675}{paragraph*.2248}%
-\contentsline {paragraph}{Example Dataset}{676}{paragraph*.2249}%
-\contentsline {subsubsection}{Testing}{676}{subsubsection*.2250}%
-\contentsline {paragraph}{Continuous Integration}{676}{paragraph*.2251}%
-\contentsline {paragraph}{API Tests}{676}{paragraph*.2253}%
-\contentsline {paragraph}{Integration Tests}{677}{paragraph*.2254}%
-\contentsline {paragraph}{Frontend Tests (WIP)}{677}{paragraph*.2255}%
-\contentsline {paragraph}{Manual Testing Workflow}{677}{paragraph*.2256}%
-\contentsline {subsubsection}{Production Deployment}{677}{subsubsection*.2257}%
-\contentsline {paragraph}{Static Build (Recommended)}{677}{paragraph*.2258}%
-\contentsline {paragraph}{Security Considerations}{678}{paragraph*.2259}%
-\contentsline {subsubsection}{Troubleshooting}{678}{subsubsection*.2260}%
-\contentsline {paragraph}{Issue: Port already in use}{678}{paragraph*.2261}%
-\contentsline {paragraph}{Issue: Permission denied on /data}{678}{paragraph*.2262}%
-\contentsline {paragraph}{Issue: py3plex import error in containers}{678}{paragraph*.2263}%
-\contentsline {paragraph}{Issue: Frontend can’t reach API}{678}{paragraph*.2264}%
-\contentsline {subsubsection}{API Documentation}{679}{subsubsection*.2265}%
-\contentsline {paragraph}{Key Endpoints}{679}{paragraph*.2266}%
-\contentsline {paragraph}{Example: Run Analysis}{679}{paragraph*.2267}%
-\contentsline {subsubsection}{Contributing}{679}{subsubsection*.2268}%
-\contentsline {subsubsection}{License}{680}{subsubsection*.2270}%
-\contentsline {subsubsection}{Acknowledgments}{680}{subsubsection*.2271}%
-\contentsline {subsubsection}{Support}{680}{subsubsection*.2278}%
-\contentsline {subsection}{\numberline {3.8.6}Developer \& Contributor Docs}{680}{subsection.3.8.6}%
-\contentsline {subsubsection}{Types of Contributions}{680}{subsubsection*.2280}%
-\contentsline {subsubsection}{Getting Started}{681}{subsubsection*.2281}%
-\contentsline {subsection}{\numberline {3.8.7}Development Guide}{681}{subsection.3.8.7}%
-\contentsline {subsubsection}{Getting Started}{681}{subsubsection*.2282}%
-\contentsline {subsubsection}{Makefile Commands}{681}{subsubsection*.2283}%
-\contentsline {subsubsection}{Testing}{682}{subsubsection*.2284}%
-\contentsline {subsubsection}{Code Quality}{682}{subsubsection*.2285}%
-\contentsline {subsubsection}{Contributing}{683}{subsubsection*.2286}%
-\contentsline {subsubsection}{Documentation}{683}{subsubsection*.2287}%
-\contentsline {paragraph}{Documentation Style Guide}{683}{paragraph*.2288}%
-\contentsline {subsubsection}{Resources}{685}{subsubsection*.2289}%
-\contentsline {subsection}{\numberline {3.8.8}Architecture and Design}{685}{subsection.3.8.8}%
-\contentsline {subsubsection}{System Overview}{685}{subsubsection*.2290}%
-\contentsline {subsubsection}{Architectural Layers}{686}{subsubsection*.2291}%
-\contentsline {paragraph}{Core Layer}{686}{paragraph*.2292}%
-\contentsline {paragraph}{Algorithms Layer}{686}{paragraph*.2293}%
-\contentsline {paragraph}{Visualization Layer}{687}{paragraph*.2294}%
-\contentsline {paragraph}{Wrappers Layer}{687}{paragraph*.2295}%
-\contentsline {subsubsection}{Core Data Structure}{687}{subsubsection*.2296}%
-\contentsline {paragraph}{The multi\_layer\_network Class}{687}{paragraph*.2297}%
-\contentsline {subsubsection}{Design Patterns}{688}{subsubsection*.2298}%
-\contentsline {paragraph}{Facade Pattern}{688}{paragraph*.2299}%
-\contentsline {paragraph}{Strategy Pattern}{688}{paragraph*.2300}%
-\contentsline {paragraph}{Template Method Pattern}{688}{paragraph*.2301}%
-\contentsline {paragraph}{Dependency Injection}{689}{paragraph*.2302}%
-\contentsline {subsubsection}{Data Flow}{689}{subsubsection*.2303}%
-\contentsline {paragraph}{Typical Workflow}{689}{paragraph*.2304}%
-\contentsline {paragraph}{State Management}{690}{paragraph*.2305}%
-\contentsline {subsubsection}{Extension Points}{690}{subsubsection*.2306}%
-\contentsline {paragraph}{Custom Algorithms}{690}{paragraph*.2307}%
-\contentsline {paragraph}{Custom Visualizations}{691}{paragraph*.2308}%
-\contentsline {paragraph}{Custom Parsers}{691}{paragraph*.2309}%
-\contentsline {subsubsection}{Configuration System}{692}{subsubsection*.2310}%
-\contentsline {paragraph}{Centralized Configuration}{692}{paragraph*.2311}%
-\contentsline {subsubsection}{Testing Architecture}{692}{subsubsection*.2312}%
-\contentsline {paragraph}{Test Organization}{692}{paragraph*.2313}%
-\contentsline {paragraph}{Test Patterns}{692}{paragraph*.2314}%
-\contentsline {subsubsection}{Performance Considerations}{693}{subsubsection*.2315}%
-\contentsline {paragraph}{Lazy Evaluation}{693}{paragraph*.2316}%
-\contentsline {paragraph}{Sparse Matrices}{693}{paragraph*.2317}%
-\contentsline {paragraph}{Vectorization}{693}{paragraph*.2318}%
-\contentsline {subsubsection}{Logging Infrastructure}{694}{subsubsection*.2319}%
-\contentsline {paragraph}{Centralized Logging}{694}{paragraph*.2320}%
-\contentsline {paragraph}{Log Levels}{694}{paragraph*.2321}%
-\contentsline {subsubsection}{Error Handling}{694}{subsubsection*.2322}%
-\contentsline {paragraph}{Custom Exceptions}{694}{paragraph*.2323}%
-\contentsline {subsubsection}{Future Architecture}{695}{subsubsection*.2324}%
-\contentsline {paragraph}{Planned Improvements}{695}{paragraph*.2325}%
-\contentsline {subsubsection}{See Also}{695}{subsubsection*.2326}%
-\contentsline {chapter}{\numberline {4}Citation}{696}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Indices and Tables}{697}{chapter.5}%
-\contentsline {chapter}{Python Module Index}{698}{section*.2327}%
-\contentsline {chapter}{Index}{700}{section*.2328}%
+\contentsline {subsubsection}{Smart Defaults and Error Messages}{166}{subsubsection*.309}%
+\contentsline {paragraph}{Auto\sphinxhyphen {}Computing Centrality Metrics}{166}{paragraph*.310}%
+\contentsline {paragraph}{Controlling Autocompute Behavior}{168}{paragraph*.311}%
+\contentsline {paragraph}{Helpful Error Messages with Suggestions}{168}{paragraph*.312}%
+\contentsline {paragraph}{Grouping Requirements and Clear Errors}{169}{paragraph*.313}%
+\contentsline {paragraph}{When Smart Defaults DON’T Apply}{170}{paragraph*.314}%
+\contentsline {paragraph}{Benefits of Smart Defaults}{171}{paragraph*.315}%
+\contentsline {subsubsection}{Temporal Queries}{171}{subsubsection*.316}%
+\contentsline {paragraph}{Temporal Semantics Reference}{172}{paragraph*.317}%
+\contentsline {paragraph}{Filter by Time (Snapshot)}{172}{paragraph*.318}%
+\contentsline {paragraph}{Time Range}{173}{paragraph*.319}%
+\contentsline {paragraph}{Before and After (Convenience Methods)}{174}{paragraph*.320}%
+\contentsline {subsubsection}{Common Patterns}{175}{subsubsection*.321}%
+\contentsline {paragraph}{Pattern: Find Influential Nodes}{175}{paragraph*.322}%
+\contentsline {paragraph}{Pattern: Compare Layer Activity}{176}{paragraph*.323}%
+\contentsline {paragraph}{Pattern: Export Subnetwork}{177}{paragraph*.324}%
+\contentsline {paragraph}{Pattern: Per\sphinxhyphen {}Layer Top\sphinxhyphen {}K with Coverage (Multi\sphinxhyphen {}Layer Hub Detection)}{179}{paragraph*.325}%
+\contentsline {subsubsection}{DSL Result Interoperability}{183}{subsubsection*.326}%
+\contentsline {paragraph}{QueryResult to pandas Workflow}{183}{paragraph*.327}%
+\contentsline {paragraph}{Verb Mapping Table}{184}{paragraph*.328}%
+\contentsline {paragraph}{Example: Combined Workflow}{184}{paragraph*.329}%
+\contentsline {subsubsection}{Next Steps}{186}{subsubsection*.330}%
+\contentsline {subsection}{\numberline {3.3.10}How to Build Analysis Pipelines with Dplyr\sphinxhyphen {}style Operations}{187}{subsection.3.3.10}%
+\contentsline {subsubsection}{Basic Pipeline}{187}{subsubsection*.331}%
+\contentsline {paragraph}{Node Operations}{187}{paragraph*.332}%
+\contentsline {subsubsection}{Available Operations}{187}{subsubsection*.333}%
+\contentsline {paragraph}{filter()}{187}{paragraph*.334}%
+\contentsline {paragraph}{mutate()}{187}{paragraph*.335}%
+\contentsline {paragraph}{select()}{188}{paragraph*.336}%
+\contentsline {paragraph}{arrange()}{188}{paragraph*.337}%
+\contentsline {paragraph}{group\_by() and summarize()}{188}{paragraph*.338}%
+\contentsline {subsubsection}{Complex Pipelines}{189}{subsubsection*.339}%
+\contentsline {paragraph}{Multi\sphinxhyphen {}Step Analysis}{189}{paragraph*.340}%
+\contentsline {subsubsection}{Combining with DSL}{189}{subsubsection*.341}%
+\contentsline {subsubsection}{Sklearn\sphinxhyphen {}Style Pipelines}{190}{subsubsection*.342}%
+\contentsline {subsubsection}{Exporting Pipelines}{190}{subsubsection*.343}%
+\contentsline {paragraph}{Save Pipeline Definition}{190}{paragraph*.344}%
+\contentsline {paragraph}{Load and Execute}{190}{paragraph*.345}%
+\contentsline {subsubsection}{Reusable Pipelines}{190}{subsubsection*.346}%
+\contentsline {paragraph}{Create Pipeline Functions}{190}{paragraph*.347}%
+\contentsline {subsubsection}{Next Steps}{191}{subsubsection*.348}%
+\contentsline {subsection}{\numberline {3.3.11}How to Reproduce Common Analysis Workflows}{191}{subsection.3.3.11}%
+\contentsline {subsubsection}{Complete Workflows}{191}{subsubsection*.349}%
+\contentsline {subsubsection}{Quick Recipe Index}{191}{subsubsection*.350}%
+\contentsline {paragraph}{Network Construction}{191}{paragraph*.351}%
+\contentsline {paragraph}{Statistical Analysis}{191}{paragraph*.352}%
+\contentsline {paragraph}{Community Detection}{192}{paragraph*.353}%
+\contentsline {paragraph}{Network Embeddings}{192}{paragraph*.354}%
+\contentsline {paragraph}{Visualization}{192}{paragraph*.355}%
+\contentsline {subsubsection}{Domain\sphinxhyphen {}Specific Workflows}{192}{subsubsection*.356}%
+\contentsline {paragraph}{Social Networks}{192}{paragraph*.357}%
+\contentsline {paragraph}{Biological Networks}{192}{paragraph*.358}%
+\contentsline {paragraph}{Transportation Networks}{192}{paragraph*.359}%
+\contentsline {subsubsection}{Config\sphinxhyphen {}Driven Workflows}{193}{subsubsection*.360}%
+\contentsline {subsubsection}{DSL\sphinxhyphen {}Driven Analysis Workflows}{193}{subsubsection*.361}%
+\contentsline {paragraph}{Basic DSL Workflow Pattern}{193}{paragraph*.362}%
+\contentsline {paragraph}{Multilayer Exploration Workflow}{194}{paragraph*.363}%
+\contentsline {paragraph}{Community Detection + DSL Workflow}{197}{paragraph*.364}%
+\contentsline {paragraph}{Dynamics + DSL Workflow}{198}{paragraph*.365}%
+\contentsline {paragraph}{Reusable DSL Query Functions}{200}{paragraph*.366}%
+\contentsline {subsubsection}{Batch Processing}{201}{subsubsection*.367}%
+\contentsline {subsubsection}{Complete Example Templates}{202}{subsubsection*.368}%
+\contentsline {subsubsection}{Next Steps}{202}{subsubsection*.369}%
+\contentsline {section}{\numberline {3.4}Part IV: Concepts \& Explanations}{202}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Concepts \& Explanations}{202}{subsection.3.4.1}%
+\contentsline {subsubsection}{After Reading This Section}{203}{subsubsection*.370}%
+\contentsline {subsection}{\numberline {3.4.2}Multilayer Networks 101}{204}{subsection.3.4.2}%
+\contentsline {subsubsection}{What are Multilayer Networks?}{204}{subsubsection*.371}%
+\contentsline {subsubsection}{Types of Multilayer Networks}{204}{subsubsection*.372}%
+\contentsline {paragraph}{Multiplex Networks}{204}{paragraph*.373}%
+\contentsline {paragraph}{Heterogeneous Information Networks}{205}{paragraph*.374}%
+\contentsline {paragraph}{Temporal Networks}{205}{paragraph*.375}%
+\contentsline {paragraph}{Interdependent Networks}{205}{paragraph*.376}%
+\contentsline {subsubsection}{When to Use Multilayer Networks}{205}{subsubsection*.377}%
+\contentsline {subsubsection}{Choosing a Modeling Approach}{205}{subsubsection*.378}%
+\contentsline {subsubsection}{What Goes Wrong When You Flatten}{206}{subsubsection*.379}%
+\contentsline {subsubsection}{Common Pitfalls}{206}{subsubsection*.380}%
+\contentsline {subsubsection}{Key Terminology}{206}{subsubsection*.381}%
+\contentsline {subsubsection}{Next Steps}{206}{subsubsection*.382}%
+\contentsline {subsection}{\numberline {3.4.3}The py3plex Core Model}{206}{subsection.3.4.3}%
+\contentsline {subsubsection}{Network Types: Multilayer vs Multiplex}{207}{subsubsection*.383}%
+\contentsline {subsubsection}{The \sphinxstyleliteralintitle {\sphinxupquote {multi\_layer\_network}} Class}{208}{subsubsection*.384}%
+\contentsline {paragraph}{Basic Structure}{208}{paragraph*.385}%
+\contentsline {paragraph}{Key Components}{208}{paragraph*.386}%
+\contentsline {subsubsection}{Internal Representation}{209}{subsubsection*.387}%
+\contentsline {paragraph}{Node\sphinxhyphen {}Layer Pairs}{209}{paragraph*.388}%
+\contentsline {paragraph}{Edge Types}{210}{paragraph*.389}%
+\contentsline {subsubsection}{Supra\sphinxhyphen {}Adjacency Matrix}{210}{subsubsection*.390}%
+\contentsline {paragraph}{Mathematical Definition}{210}{paragraph*.391}%
+\contentsline {paragraph}{Numeric Example}{210}{paragraph*.392}%
+\contentsline {paragraph}{Construction}{212}{paragraph*.393}%
+\contentsline {paragraph}{Memory Implications}{212}{paragraph*.394}%
+\contentsline {paragraph}{Visualization}{212}{paragraph*.395}%
+\contentsline {subsubsection}{How py3plex Uses NetworkX Under the Hood}{213}{subsubsection*.396}%
+\contentsline {paragraph}{The Role of MultiGraph/MultiDiGraph}{213}{paragraph*.397}%
+\contentsline {paragraph}{Attribute Propagation}{213}{paragraph*.398}%
+\contentsline {paragraph}{Using NetworkX Functions Directly}{214}{paragraph*.399}%
+\contentsline {subsubsection}{Design Trade\sphinxhyphen {}offs}{214}{subsubsection*.400}%
+\contentsline {paragraph}{Node\sphinxhyphen {}Layer Pairs vs. Alternative Representations}{214}{paragraph*.401}%
+\contentsline {paragraph}{Consequences for Algorithm Implementation}{215}{paragraph*.402}%
+\contentsline {paragraph}{Consequences for I/O}{216}{paragraph*.403}%
+\contentsline {subsubsection}{Network Construction}{216}{subsubsection*.404}%
+\contentsline {paragraph}{Creating Networks from Scratch}{216}{paragraph*.405}%
+\contentsline {paragraph}{Loading from Files}{217}{paragraph*.406}%
+\contentsline {subsubsection}{Network Operations}{217}{subsubsection*.407}%
+\contentsline {paragraph}{Querying Network Elements}{217}{paragraph*.408}%
+\contentsline {paragraph}{Basic Statistics}{218}{paragraph*.409}%
+\contentsline {paragraph}{Subnetwork Extraction}{218}{paragraph*.410}%
+\contentsline {paragraph}{Matrix Representations}{218}{paragraph*.411}%
+\contentsline {subsubsection}{Integration with NetworkX}{219}{subsubsection*.412}%
+\contentsline {paragraph}{Full NetworkX Compatibility}{219}{paragraph*.413}%
+\contentsline {paragraph}{NetworkX Wrappers}{219}{paragraph*.414}%
+\contentsline {paragraph}{Converting Between Formats}{220}{paragraph*.415}%
+\contentsline {subsubsection}{Performance Considerations}{220}{subsubsection*.416}%
+\contentsline {paragraph}{Sparse vs. Dense Matrices}{220}{paragraph*.417}%
+\contentsline {paragraph}{Memory Usage}{220}{paragraph*.418}%
+\contentsline {paragraph}{Tensor\sphinxhyphen {}Like Indexing}{221}{paragraph*.419}%
+\contentsline {subsubsection}{Design Principles}{221}{subsubsection*.420}%
+\contentsline {subsubsection}{Comparison with Other Representations}{221}{subsubsection*.421}%
+\contentsline {paragraph}{Why Node\sphinxhyphen {}Layer Pairs?}{221}{paragraph*.422}%
+\contentsline {subsubsection}{What You Learned}{222}{subsubsection*.423}%
+\contentsline {subsubsection}{What’s Next?}{222}{subsubsection*.424}%
+\contentsline {subsection}{\numberline {3.4.4}Design Principles}{223}{subsection.3.4.4}%
+\contentsline {subsubsection}{Core Philosophy}{223}{subsubsection*.425}%
+\contentsline {paragraph}{Simple, Off\sphinxhyphen {}the\sphinxhyphen {}Shelf Functionality}{223}{paragraph*.426}%
+\contentsline {paragraph}{NetworkX Compatibility}{223}{paragraph*.427}%
+\contentsline {paragraph}{Modular Architecture}{224}{paragraph*.428}%
+\contentsline {subsubsection}{Implementation Principles}{224}{subsubsection*.429}%
+\contentsline {paragraph}{Flexibility}{224}{paragraph*.430}%
+\contentsline {paragraph}{Lazy Evaluation}{225}{paragraph*.431}%
+\contentsline {paragraph}{Graceful Degradation}{225}{paragraph*.432}%
+\contentsline {paragraph}{Explicit Over Implicit}{226}{paragraph*.433}%
+\contentsline {subsubsection}{Performance Considerations}{226}{subsubsection*.434}%
+\contentsline {paragraph}{Sparse Representations}{226}{paragraph*.435}%
+\contentsline {paragraph}{Efficient Data Structures}{226}{paragraph*.436}%
+\contentsline {paragraph}{Algorithmic Defaults}{227}{paragraph*.437}%
+\contentsline {subsubsection}{Extensibility}{227}{subsubsection*.438}%
+\contentsline {paragraph}{Plugin\sphinxhyphen {}Friendly Architecture}{227}{paragraph*.439}%
+\contentsline {paragraph}{Clear Interfaces}{228}{paragraph*.440}%
+\contentsline {subsubsection}{Documentation and Testing}{228}{subsubsection*.441}%
+\contentsline {paragraph}{Comprehensive Documentation}{228}{paragraph*.442}%
+\contentsline {paragraph}{Extensive Testing}{228}{paragraph*.443}%
+\contentsline {subsubsection}{Interoperability}{229}{subsubsection*.444}%
+\contentsline {paragraph}{Standard Formats}{229}{paragraph*.445}%
+\contentsline {paragraph}{Cross\sphinxhyphen {}Platform Compatibility}{229}{paragraph*.446}%
+\contentsline {subsubsection}{Research\sphinxhyphen {}Oriented Design}{229}{subsubsection*.447}%
+\contentsline {paragraph}{Citation and Attribution}{229}{paragraph*.448}%
+\contentsline {paragraph}{Reproducibility}{230}{paragraph*.449}%
+\contentsline {paragraph}{Validation and Benchmarking}{230}{paragraph*.450}%
+\contentsline {subsubsection}{Practical Implications}{230}{subsubsection*.451}%
+\contentsline {paragraph}{For Users}{230}{paragraph*.452}%
+\contentsline {paragraph}{For Contributors}{231}{paragraph*.453}%
+\contentsline {subsubsection}{Comparison with Other Libraries}{231}{subsubsection*.454}%
+\contentsline {paragraph}{py3plex vs. Pure NetworkX}{231}{paragraph*.455}%
+\contentsline {paragraph}{py3plex vs. Other Multilayer Tools}{231}{paragraph*.456}%
+\contentsline {subsubsection}{What You Learned}{232}{subsubsection*.457}%
+\contentsline {subsubsection}{What’s Next?}{232}{subsubsection*.458}%
+\contentsline {subsection}{\numberline {3.4.5}Algorithm Landscape}{232}{subsection.3.4.5}%
+\contentsline {subsubsection}{Overview}{232}{subsubsection*.459}%
+\contentsline {subsubsection}{Community Detection}{233}{subsubsection*.460}%
+\contentsline {paragraph}{When to Use}{233}{paragraph*.461}%
+\contentsline {paragraph}{Algorithm Families}{233}{paragraph*.462}%
+\contentsline {paragraph}{Choosing a Community Detection Method}{235}{paragraph*.463}%
+\contentsline {subsubsection}{Centrality \& Importance}{235}{subsubsection*.464}%
+\contentsline {paragraph}{When to Use}{235}{paragraph*.465}%
+\contentsline {paragraph}{Algorithm Families}{235}{paragraph*.466}%
+\contentsline {paragraph}{Choosing a Centrality Measure}{237}{paragraph*.467}%
+\contentsline {subsubsection}{Network Statistics}{237}{subsubsection*.468}%
+\contentsline {paragraph}{When to Use}{237}{paragraph*.469}%
+\contentsline {paragraph}{Statistic Families}{237}{paragraph*.470}%
+\contentsline {subsubsection}{Random Walks \& Embeddings}{238}{subsubsection*.471}%
+\contentsline {paragraph}{When to Use}{238}{paragraph*.472}%
+\contentsline {paragraph}{Algorithm Families}{239}{paragraph*.473}%
+\contentsline {paragraph}{Choosing Walk Parameters}{240}{paragraph*.474}%
+\contentsline {subsubsection}{Visualization \& Layout}{240}{subsubsection*.475}%
+\contentsline {paragraph}{When to Use}{240}{paragraph*.476}%
+\contentsline {paragraph}{Layout Families}{241}{paragraph*.477}%
+\contentsline {subsubsection}{Benchmarking \& Generation}{242}{subsubsection*.478}%
+\contentsline {paragraph}{When to Use}{242}{paragraph*.479}%
+\contentsline {paragraph}{Generator Families}{242}{paragraph*.480}%
+\contentsline {subsubsection}{Algorithm Combinations}{242}{subsubsection*.481}%
+\contentsline {paragraph}{Common Workflows}{242}{paragraph*.482}%
+\contentsline {subsubsection}{Performance Considerations}{243}{subsubsection*.483}%
+\contentsline {paragraph}{Algorithm Complexity}{243}{paragraph*.484}%
+\contentsline {subsubsection}{Next Steps}{244}{subsubsection*.485}%
+\contentsline {section}{\numberline {3.5}Part V: API \& DSL Reference}{244}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}API \& DSL Reference}{244}{subsection.3.5.1}%
+\contentsline {subsubsection}{Python API Reference}{244}{subsubsection*.486}%
+\contentsline {subsubsection}{DSL \& Query Reference}{244}{subsubsection*.487}%
+\contentsline {subsection}{\numberline {3.5.2}Algorithm Roadmap}{245}{subsection.3.5.2}%
+\contentsline {subsubsection}{Algorithm Categories}{245}{subsubsection*.488}%
+\contentsline {subsubsection}{Community Detection Algorithms}{245}{subsubsection*.489}%
+\contentsline {paragraph}{Louvain Algorithm}{245}{paragraph*.490}%
+\contentsline {paragraph}{Infomap Algorithm}{246}{paragraph*.491}%
+\contentsline {paragraph}{Multilayer Louvain}{247}{paragraph*.492}%
+\contentsline {paragraph}{Leiden Algorithm}{248}{paragraph*.493}%
+\contentsline {paragraph}{NoRC Algorithm}{248}{paragraph*.494}%
+\contentsline {paragraph}{Community Measures}{249}{paragraph*.495}%
+\contentsline {paragraph}{Community Ranking}{249}{paragraph*.496}%
+\contentsline {paragraph}{Multilayer Benchmarks}{249}{paragraph*.497}%
+\contentsline {subsubsection}{Centrality Measures}{249}{subsubsection*.498}%
+\contentsline {paragraph}{MultilayerCentrality Class}{250}{paragraph*.499}%
+\contentsline {subparagraph}{Basic Centrality Measures}{251}{subparagraph*.500}%
+\contentsline {subparagraph}{Eigenvector\sphinxhyphen {}Based Measures}{251}{subparagraph*.501}%
+\contentsline {paragraph}{Multilayer PageRank (with Uncertainty)}{251}{paragraph*.502}%
+\contentsline {subparagraph}{Path\sphinxhyphen {}Based Measures}{253}{subparagraph*.503}%
+\contentsline {paragraph}{Hubs and Authorities (HITS)}{253}{paragraph*.504}%
+\contentsline {subparagraph}{Utility Functions}{253}{subparagraph*.505}%
+\contentsline {paragraph}{Versatility Centrality}{253}{paragraph*.506}%
+\contentsline {paragraph}{Supra Matrix Function Centralities}{254}{paragraph*.507}%
+\contentsline {paragraph}{MultiXRank}{254}{paragraph*.508}%
+\contentsline {subsubsection}{Network Statistics}{256}{subsubsection*.509}%
+\contentsline {paragraph}{Multilayer Statistics}{256}{paragraph*.510}%
+\contentsline {paragraph}{Multilayer Statistics (Detailed)}{256}{paragraph*.511}%
+\contentsline {paragraph}{Basic Statistics}{256}{paragraph*.512}%
+\contentsline {paragraph}{Topology Analysis}{257}{paragraph*.513}%
+\contentsline {paragraph}{Correlation Networks}{257}{paragraph*.514}%
+\contentsline {paragraph}{Enrichment Analysis}{257}{paragraph*.515}%
+\contentsline {paragraph}{Statistical Comparison}{257}{paragraph*.516}%
+\contentsline {paragraph}{Power Law Analysis}{258}{paragraph*.517}%
+\contentsline {subsubsection}{Node Ranking \& Classification}{258}{subsubsection*.518}%
+\contentsline {paragraph}{Node Ranking}{258}{paragraph*.519}%
+\contentsline {paragraph}{Label Propagation}{258}{paragraph*.520}%
+\contentsline {paragraph}{Personalized PageRank (PPR)}{259}{paragraph*.521}%
+\contentsline {subsubsection}{Random Walks \& Embeddings}{259}{subsubsection*.522}%
+\contentsline {paragraph}{Random Walk Primitives}{259}{paragraph*.523}%
+\contentsline {paragraph}{Node2Vec Embedding}{260}{paragraph*.524}%
+\contentsline {paragraph}{DeepWalk Embedding}{260}{paragraph*.525}%
+\contentsline {paragraph}{Entanglement Analysis}{260}{paragraph*.526}%
+\contentsline {subsubsection}{Visualization Algorithms}{261}{subsubsection*.527}%
+\contentsline {paragraph}{Layout Algorithms}{261}{paragraph*.528}%
+\contentsline {paragraph}{Multilayer Visualization}{261}{paragraph*.529}%
+\contentsline {paragraph}{Drawing Machinery}{261}{paragraph*.530}%
+\contentsline {paragraph}{Color Schemes}{262}{paragraph*.531}%
+\contentsline {paragraph}{Embedding Visualization}{262}{paragraph*.532}%
+\contentsline {subsubsection}{Benchmark \& Utilities}{262}{subsubsection*.533}%
+\contentsline {paragraph}{Network Classification Benchmark}{262}{paragraph*.534}%
+\contentsline {paragraph}{Benchmark Visualizations}{262}{paragraph*.535}%
+\contentsline {subsubsection}{Algorithm Selection Guide}{262}{subsubsection*.536}%
+\contentsline {paragraph}{By Task Type}{262}{paragraph*.537}%
+\contentsline {paragraph}{By Network Size}{263}{paragraph*.538}%
+\contentsline {paragraph}{By Network Type}{263}{paragraph*.539}%
+\contentsline {subsubsection}{Algorithm Dependencies}{264}{subsubsection*.540}%
+\contentsline {subsubsection}{Common Algorithm Workflows}{264}{subsubsection*.541}%
+\contentsline {paragraph}{Community Detection Workflow}{264}{paragraph*.542}%
+\contentsline {paragraph}{Centrality Analysis Workflow}{265}{paragraph*.543}%
+\contentsline {paragraph}{Embedding Workflow}{265}{paragraph*.544}%
+\contentsline {paragraph}{Statistical Analysis Workflow}{265}{paragraph*.545}%
+\contentsline {subsubsection}{Further Reading}{266}{subsubsection*.546}%
+\contentsline {subsubsection}{Citation Information}{266}{subsubsection*.547}%
+\contentsline {subsection}{\numberline {3.5.3}DSL Reference}{266}{subsection.3.5.3}%
+\contentsline {subsubsection}{Overview}{266}{subsubsection*.548}%
+\contentsline {subsubsection}{String Syntax Reference}{267}{subsubsection*.549}%
+\contentsline {paragraph}{Basic Structure}{267}{paragraph*.550}%
+\contentsline {paragraph}{Targets}{267}{paragraph*.551}%
+\contentsline {paragraph}{Layer Selection}{267}{paragraph*.552}%
+\contentsline {paragraph}{Conditions}{267}{paragraph*.553}%
+\contentsline {paragraph}{Compute Clause}{267}{paragraph*.554}%
+\contentsline {paragraph}{Order By}{268}{paragraph*.555}%
+\contentsline {paragraph}{Limit}{268}{paragraph*.556}%
+\contentsline {paragraph}{Complete Examples}{268}{paragraph*.557}%
+\contentsline {subsubsection}{Builder API Reference}{268}{subsubsection*.558}%
+\contentsline {paragraph}{Import}{268}{paragraph*.559}%
+\contentsline {paragraph}{Query Construction}{269}{paragraph*.560}%
+\contentsline {paragraph}{Layer Selection}{269}{paragraph*.561}%
+\contentsline {paragraph}{Filtering}{269}{paragraph*.562}%
+\contentsline {paragraph}{Computing Metrics}{269}{paragraph*.563}%
+\contentsline {paragraph}{Sorting}{269}{paragraph*.564}%
+\contentsline {paragraph}{Limiting}{270}{paragraph*.565}%
+\contentsline {paragraph}{Execution}{270}{paragraph*.566}%
+\contentsline {paragraph}{Chaining}{270}{paragraph*.567}%
+\contentsline {subsubsection}{Temporal Queries}{270}{subsubsection*.568}%
+\contentsline {paragraph}{Filter by Time Point}{270}{paragraph*.569}%
+\contentsline {paragraph}{Filter by Time Range}{270}{paragraph*.570}%
+\contentsline {paragraph}{Temporal Edge Attributes}{271}{paragraph*.571}%
+\contentsline {subsubsection}{Grouping and Coverage Queries}{271}{subsubsection*.572}%
+\contentsline {paragraph}{Per\sphinxhyphen {}Layer Grouping}{271}{paragraph*.573}%
+\contentsline {paragraph}{Top\sphinxhyphen {}K Per Group}{271}{paragraph*.574}%
+\contentsline {paragraph}{Coverage Filtering}{272}{paragraph*.575}%
+\contentsline {paragraph}{Wildcard Layer Selection}{273}{paragraph*.576}%
+\contentsline {paragraph}{General Grouping}{273}{paragraph*.577}%
+\contentsline {paragraph}{Limitations}{273}{paragraph*.578}%
+\contentsline {subsubsection}{Working with Results}{273}{subsubsection*.579}%
+\contentsline {paragraph}{Result Object}{273}{paragraph*.580}%
+\contentsline {paragraph}{Convert to Pandas}{274}{paragraph*.581}%
+\contentsline {subsubsection}{Extensibility}{274}{subsubsection*.582}%
+\contentsline {paragraph}{Custom Operators}{274}{paragraph*.583}%
+\contentsline {subsubsection}{Performance Considerations}{274}{subsubsection*.584}%
+\contentsline {subsubsection}{Next Steps}{274}{subsubsection*.585}%
+\contentsline {subsection}{\numberline {3.5.4}API Documentation}{274}{subsection.3.5.4}%
+\contentsline {subsubsection}{Core Modules}{275}{subsubsection*.586}%
+\contentsline {paragraph}{HINMINE Network Decomposition}{316}{paragraph*.713}%
+\contentsline {subsubsection}{Configuration and Utilities}{318}{subsubsection*.738}%
+\contentsline {subsubsection}{Domain\sphinxhyphen {}Specific Language (DSL)}{329}{subsubsection*.798}%
+\contentsline {subsubsection}{Uncertainty Quantification}{378}{subsubsection*.1233}%
+\contentsline {subsubsection}{Algorithms}{396}{subsubsection*.1346}%
+\contentsline {paragraph}{Community Detection}{396}{paragraph*.1347}%
+\contentsline {paragraph}{Statistics}{419}{paragraph*.1380}%
+\contentsline {paragraph}{Multilayer Algorithms}{448}{paragraph*.1426}%
+\contentsline {subparagraph}{Weight Handling Notes:}{448}{subparagraph*.1427}%
+\contentsline {paragraph}{General Algorithms}{480}{paragraph*.1500}%
+\contentsline {paragraph}{Node Ranking}{486}{paragraph*.1508}%
+\contentsline {paragraph}{Network Classification}{488}{paragraph*.1517}%
+\contentsline {subsubsection}{Visualization}{492}{subsubsection*.1518}%
+\contentsline {subsubsection}{Wrappers}{519}{subsubsection*.1576}%
+\contentsline {subsubsection}{I/O Operations}{521}{subsubsection*.1585}%
+\contentsline {subsubsection}{Profiling Utilities}{523}{subsubsection*.1590}%
+\contentsline {subsubsection}{Logging Configuration}{526}{subsubsection*.1601}%
+\contentsline {subsubsection}{I/O Schema and Validation}{527}{subsubsection*.1604}%
+\contentsline {subsubsection}{Hedwig Rule Learning}{533}{subsubsection*.1613}%
+\contentsline {subsubsection}{Force Atlas 2 Visualization}{535}{subsubsection*.1643}%
+\contentsline {subsubsection}{Embedding Visualization}{536}{subsubsection*.1670}%
+\contentsline {subsubsection}{Network Generation and Benchmarking}{536}{subsubsection*.1672}%
+\contentsline {subsubsection}{Additional Statistics and Analysis}{536}{subsubsection*.1673}%
+\contentsline {subsubsection}{Community Detection Advanced}{541}{subsubsection*.1685}%
+\contentsline {subsubsection}{Node Ranking and Classification}{542}{subsubsection*.1692}%
+\contentsline {subsubsection}{Embeddings and Wrappers}{551}{subsubsection*.1712}%
+\contentsline {subsubsection}{Network Motifs and Patterns}{553}{subsubsection*.1716}%
+\contentsline {subsubsection}{HINMINE Data Structures}{553}{subsubsection*.1717}%
+\contentsline {subsubsection}{Command\sphinxhyphen {}Line Interface}{554}{subsubsection*.1729}%
+\contentsline {subsubsection}{Validation Utilities}{557}{subsubsection*.1748}%
+\contentsline {subsubsection}{Network Comparison and Testing}{559}{subsubsection*.1755}%
+\contentsline {subsubsection}{Hedwig Learning Algorithms}{559}{subsubsection*.1756}%
+\contentsline {subsubsection}{Hedwig Statistics and Scoring}{560}{subsubsection*.1786}%
+\contentsline {subsubsection}{Hedwig Core Components}{561}{subsubsection*.1800}%
+\contentsline {subsubsection}{Time Series and Temporal Analysis}{563}{subsubsection*.1842}%
+\contentsline {subsubsection}{Advanced Visualization}{563}{subsubsection*.1843}%
+\contentsline {subsubsection}{Link Prediction}{564}{subsubsection*.1845}%
+\contentsline {subsection}{\numberline {3.5.5}Configuration \& Environment}{564}{subsection.3.5.5}%
+\contentsline {subsubsection}{Configuration Files}{564}{subsubsection*.1846}%
+\contentsline {subsubsection}{Environment Variables}{565}{subsubsection*.1847}%
+\contentsline {subsubsection}{Input Formats}{566}{subsubsection*.1848}%
+\contentsline {subsubsection}{Output Formats}{566}{subsubsection*.1849}%
+\contentsline {subsubsection}{Algorithm Configuration}{567}{subsubsection*.1850}%
+\contentsline {paragraph}{Community Detection}{567}{paragraph*.1851}%
+\contentsline {paragraph}{Node2Vec}{567}{paragraph*.1852}%
+\contentsline {paragraph}{Dynamics}{567}{paragraph*.1853}%
+\contentsline {subsubsection}{Visualization Configuration}{568}{subsubsection*.1854}%
+\contentsline {subsubsection}{Logging Configuration}{568}{subsubsection*.1855}%
+\contentsline {subsubsection}{Performance Tuning}{570}{subsubsection*.1856}%
+\contentsline {subsubsection}{Next Steps}{570}{subsubsection*.1857}%
+\contentsline {section}{\numberline {3.6}Part VI: Examples \& Recipes}{570}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Examples \& Recipes}{570}{subsection.3.6.1}%
+\contentsline {subsubsection}{Getting Started Examples}{571}{subsubsection*.1859}%
+\contentsline {subsubsection}{Visualization Examples}{571}{subsubsection*.1860}%
+\contentsline {subsubsection}{Community Detection Examples}{571}{subsubsection*.1861}%
+\contentsline {subsubsection}{DSL and Query Examples}{572}{subsubsection*.1862}%
+\contentsline {subsubsection}{Network Statistics Examples}{572}{subsubsection*.1863}%
+\contentsline {subsubsection}{I/O and Data Format Examples}{572}{subsubsection*.1864}%
+\contentsline {subsubsection}{Random Walks and Embeddings}{573}{subsubsection*.1865}%
+\contentsline {subsubsection}{Network Decomposition}{573}{subsubsection*.1866}%
+\contentsline {subsubsection}{Network Manipulation}{573}{subsubsection*.1867}%
+\contentsline {subsubsection}{Algorithms and Analysis}{573}{subsubsection*.1868}%
+\contentsline {subsubsection}{NetworkX Integration}{574}{subsubsection*.1869}%
+\contentsline {subsubsection}{Benchmarking}{574}{subsubsection*.1870}%
+\contentsline {subsubsection}{GUI and API}{574}{subsubsection*.1871}%
+\contentsline {subsubsection}{Real\sphinxhyphen {}World Datasets}{574}{subsubsection*.1872}%
+\contentsline {subsubsection}{Running Examples}{574}{subsubsection*.1873}%
+\contentsline {subsubsection}{Example Template}{575}{subsubsection*.1874}%
+\contentsline {subsubsection}{Contributing Examples}{576}{subsubsection*.1875}%
+\contentsline {subsubsection}{Related Documentation}{576}{subsubsection*.1876}%
+\contentsline {subsection}{\numberline {3.6.2}Analysis Recipes \& Workflows}{576}{subsection.3.6.2}%
+\contentsline {subsubsection}{Data Import \& Setup}{578}{subsubsection*.1919}%
+\contentsline {paragraph}{Recipe 1: Load Network from Multiple File Formats}{578}{paragraph*.1920}%
+\contentsline {paragraph}{Recipe 2: Create Synthetic Benchmark Networks}{579}{paragraph*.1921}%
+\contentsline {paragraph}{Recipe 3: Convert Between Network Formats}{580}{paragraph*.1922}%
+\contentsline {subsubsection}{Network Exploration \& Analysis}{580}{subsubsection*.1923}%
+\contentsline {paragraph}{Recipe 4: Quick Network Summary}{580}{paragraph*.1924}%
+\contentsline {paragraph}{Recipe 5: Layer\sphinxhyphen {}by\sphinxhyphen {}Layer Analysis}{581}{paragraph*.1925}%
+\contentsline {paragraph}{Recipe 6: Compute Multilayer Statistics}{582}{paragraph*.1926}%
+\contentsline {subsubsection}{Centrality \& Node Importance}{583}{subsubsection*.1927}%
+\contentsline {paragraph}{Recipe 7: Single\sphinxhyphen {}Layer Centrality Analysis}{583}{paragraph*.1928}%
+\contentsline {paragraph}{Recipe 8: Multiplex Participation Coefficient}{584}{paragraph*.1929}%
+\contentsline {subsubsection}{Community Detection}{585}{subsubsection*.1930}%
+\contentsline {paragraph}{Recipe 9: Multilayer Community Detection}{585}{paragraph*.1931}%
+\contentsline {paragraph}{Recipe 10: Compare Community Detection Algorithms}{586}{paragraph*.1932}%
+\contentsline {subsubsection}{Visualization}{587}{subsubsection*.1933}%
+\contentsline {paragraph}{Recipe 11: Basic Network Visualization}{587}{paragraph*.1934}%
+\contentsline {paragraph}{Recipe 12: Visualize Communities on Network}{588}{paragraph*.1935}%
+\contentsline {subsubsection}{Advanced Workflows}{589}{subsubsection*.1936}%
+\contentsline {paragraph}{Recipe 13: Complete Analysis Pipeline}{589}{paragraph*.1937}%
+\contentsline {paragraph}{Recipe 14: Network Comparison Study}{590}{paragraph*.1938}%
+\contentsline {paragraph}{Recipe 15: Random Walks for Node Embeddings}{592}{paragraph*.1939}%
+\contentsline {subsubsection}{Performance \& Optimization}{593}{subsubsection*.1940}%
+\contentsline {paragraph}{Recipe 16: Handle Large Networks Efficiently}{593}{paragraph*.1941}%
+\contentsline {paragraph}{Recipe 17: Benchmark and Profile Your Analysis}{594}{paragraph*.1942}%
+\contentsline {subsubsection}{Tips \& Best Practices}{596}{subsubsection*.1943}%
+\contentsline {paragraph}{General Tips}{596}{paragraph*.1944}%
+\contentsline {paragraph}{Performance Tips}{596}{paragraph*.1945}%
+\contentsline {paragraph}{Visualization Tips}{596}{paragraph*.1946}%
+\contentsline {paragraph}{Community Detection Tips}{597}{paragraph*.1947}%
+\contentsline {subsubsection}{Common Issues \& Solutions}{597}{subsubsection*.1948}%
+\contentsline {paragraph}{Issue: “Network appears to be empty”}{597}{paragraph*.1949}%
+\contentsline {paragraph}{Issue: “No module named ‘community’”}{597}{paragraph*.1950}%
+\contentsline {paragraph}{Issue: “Visualization doesn’t appear”}{597}{paragraph*.1951}%
+\contentsline {paragraph}{Issue: “Memory error with large network”}{598}{paragraph*.1952}%
+\contentsline {paragraph}{Issue: “Community detection is slow”}{598}{paragraph*.1953}%
+\contentsline {subsubsection}{Further Reading}{598}{subsubsection*.1954}%
+\contentsline {subsubsection}{DSL Query Recipes}{598}{subsubsection*.1955}%
+\contentsline {paragraph}{Recipe 18: Hub Identification with DSL}{598}{paragraph*.1956}%
+\contentsline {paragraph}{Recipe 19: Multi\sphinxhyphen {}Layer Comparative Analysis}{599}{paragraph*.1957}%
+\contentsline {paragraph}{Recipe 20: Advanced Filtering and Export}{600}{paragraph*.1958}%
+\contentsline {paragraph}{Recipe 21: Parameterized Query Templates}{601}{paragraph*.1959}%
+\contentsline {paragraph}{Recipe 22: DSL with EXPLAIN Mode}{601}{paragraph*.1960}%
+\contentsline {subsection}{\numberline {3.6.3}Use Cases \& Case Studies}{602}{subsection.3.6.3}%
+\contentsline {subsubsection}{Why Case Studies Matter}{603}{subsubsection*.1961}%
+\contentsline {subsubsection}{Lessons from the Field}{603}{subsubsection*.1962}%
+\contentsline {subsubsection}{Case Study 1: Biological Network Analysis}{604}{subsubsection*.1963}%
+\contentsline {paragraph}{Real\sphinxhyphen {}World Impact}{604}{paragraph*.1964}%
+\contentsline {paragraph}{Multilayer Protein\sphinxhyphen {}Protein Interaction Network}{604}{paragraph*.1965}%
+\contentsline {subsubsection}{Case Study 2: Multi\sphinxhyphen {}Platform Social Network Analysis}{608}{subsubsection*.1966}%
+\contentsline {paragraph}{Cross\sphinxhyphen {}Platform Influence Analysis}{608}{paragraph*.1967}%
+\contentsline {subsubsection}{Case Study 3: Multi\sphinxhyphen {}Modal Transportation Analysis}{612}{subsubsection*.1968}%
+\contentsline {paragraph}{Urban Mobility and Resilience}{612}{paragraph*.1969}%
+\contentsline {subsubsection}{Case Study 4: Heterogeneous Academic Network}{615}{subsubsection*.1970}%
+\contentsline {paragraph}{Research Collaboration and Impact Analysis}{615}{paragraph*.1971}%
+\contentsline {subsubsection}{Adapting Case Studies to Your Domain}{620}{subsubsection*.1972}%
+\contentsline {paragraph}{General Adaptation Process}{620}{paragraph*.1973}%
+\contentsline {paragraph}{Data Loading Templates}{620}{paragraph*.1974}%
+\contentsline {subsubsection}{Conclusion: Patterns Across Domains}{621}{subsubsection*.1975}%
+\contentsline {paragraph}{The Meta\sphinxhyphen {}Lesson}{621}{paragraph*.1976}%
+\contentsline {subsubsection}{Further Reading}{622}{subsubsection*.1977}%
+\contentsline {section}{\numberline {3.7}Part VII: Project Info}{622}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Project Info}{622}{subsection.3.7.1}%
+\contentsline {subsubsection}{Getting Involved}{622}{subsubsection*.1978}%
+\contentsline {subsubsection}{License}{623}{subsubsection*.1979}%
+\contentsline {subsubsection}{Acknowledgements}{623}{subsubsection*.1980}%
+\contentsline {subsection}{\numberline {3.7.2}Changelog}{623}{subsection.3.7.2}%
+\contentsline {subsubsection}{Release History}{623}{subsubsection*.1982}%
+\contentsline {paragraph}{Version 1.0.0 (Current)}{623}{paragraph*.1983}%
+\contentsline {paragraph}{Previous Versions (0.x Series)}{625}{paragraph*.1984}%
+\contentsline {subsubsection}{How to Check Your Version}{625}{subsubsection*.1985}%
+\contentsline {subsubsection}{Upgrade Instructions}{625}{subsubsection*.1986}%
+\contentsline {subsubsection}{Migration Guides}{626}{subsubsection*.1987}%
+\contentsline {paragraph}{Migrating from 0.x to 1.0}{626}{paragraph*.1988}%
+\contentsline {paragraph}{API Changes and Deprecations}{627}{paragraph*.1989}%
+\contentsline {subsubsection}{Contributing to Changelog}{627}{subsubsection*.1990}%
+\contentsline {subsubsection}{Staying Updated}{627}{subsubsection*.1991}%
+\contentsline {subsubsection}{Next Steps}{627}{subsubsection*.1992}%
+\contentsline {subsection}{\numberline {3.7.3}Roadmap \& Vision}{627}{subsection.3.7.3}%
+\contentsline {subsubsection}{Long\sphinxhyphen {}Term Vision}{628}{subsubsection*.1995}%
+\contentsline {subsubsection}{Current Focus (v1.0+)}{628}{subsubsection*.1996}%
+\contentsline {subsubsection}{Planned Enhancements}{628}{subsubsection*.1997}%
+\contentsline {paragraph}{Near Term (Next Release)}{628}{paragraph*.1998}%
+\contentsline {paragraph}{Medium Term (1\sphinxhyphen {}2 Releases)}{629}{paragraph*.1999}%
+\contentsline {paragraph}{Longer Term (Future Releases)}{629}{paragraph*.2000}%
+\contentsline {subsubsection}{Research Directions}{629}{subsubsection*.2002}%
+\contentsline {subsubsection}{Community Requests}{630}{subsubsection*.2003}%
+\contentsline {paragraph}{Vote on Features}{630}{paragraph*.2005}%
+\contentsline {subsubsection}{Contributing to Development}{630}{subsubsection*.2006}%
+\contentsline {subsubsection}{Release Cycle}{630}{subsubsection*.2007}%
+\contentsline {subsubsection}{Staying Updated}{631}{subsubsection*.2008}%
+\contentsline {subsubsection}{Next Steps}{631}{subsubsection*.2009}%
+\contentsline {subsection}{\numberline {3.7.4}Contributing to py3plex}{631}{subsection.3.7.4}%
+\contentsline {subsubsection}{Ways to Contribute}{631}{subsubsection*.2010}%
+\contentsline {subsubsection}{Getting Started}{631}{subsubsection*.2011}%
+\contentsline {paragraph}{Fork and Clone}{631}{paragraph*.2012}%
+\contentsline {paragraph}{Development Setup}{632}{paragraph*.2013}%
+\contentsline {subsubsection}{Development Workflow}{632}{subsubsection*.2014}%
+\contentsline {paragraph}{Create a Branch}{632}{paragraph*.2015}%
+\contentsline {paragraph}{Make Changes}{632}{paragraph*.2016}%
+\contentsline {paragraph}{Run Tests}{633}{paragraph*.2017}%
+\contentsline {paragraph}{Run Linters}{633}{paragraph*.2018}%
+\contentsline {paragraph}{Commit Changes}{633}{paragraph*.2019}%
+\contentsline {paragraph}{Push and Create PR}{633}{paragraph*.2020}%
+\contentsline {subsubsection}{Coding Standards}{633}{subsubsection*.2021}%
+\contentsline {paragraph}{Code Style}{633}{paragraph*.2022}%
+\contentsline {paragraph}{Naming Conventions}{634}{paragraph*.2023}%
+\contentsline {paragraph}{Docstrings}{634}{paragraph*.2024}%
+\contentsline {paragraph}{Type Hints}{635}{paragraph*.2025}%
+\contentsline {subsubsection}{Testing Guidelines}{635}{subsubsection*.2026}%
+\contentsline {paragraph}{Test Requirements}{635}{paragraph*.2027}%
+\contentsline {paragraph}{Writing Tests}{636}{paragraph*.2028}%
+\contentsline {paragraph}{Test Coverage}{636}{paragraph*.2029}%
+\contentsline {subsubsection}{Documentation}{636}{subsubsection*.2030}%
+\contentsline {paragraph}{Update Documentation}{636}{paragraph*.2031}%
+\contentsline {paragraph}{Build Documentation}{637}{paragraph*.2032}%
+\contentsline {paragraph}{Documentation Style}{637}{paragraph*.2033}%
+\contentsline {subsubsection}{Pull Request Guidelines}{637}{subsubsection*.2034}%
+\contentsline {paragraph}{Before Submitting}{637}{paragraph*.2035}%
+\contentsline {paragraph}{PR Description}{637}{paragraph*.2036}%
+\contentsline {paragraph}{Review Process}{638}{paragraph*.2037}%
+\contentsline {subsubsection}{Reporting Issues}{638}{subsubsection*.2038}%
+\contentsline {paragraph}{Bug Reports}{638}{paragraph*.2039}%
+\contentsline {paragraph}{Feature Requests}{639}{paragraph*.2040}%
+\contentsline {subsubsection}{Code of Conduct}{639}{subsubsection*.2041}%
+\contentsline {subsubsection}{License}{640}{subsubsection*.2042}%
+\contentsline {subsubsection}{Recognition}{640}{subsubsection*.2043}%
+\contentsline {subsubsection}{Getting Help}{640}{subsubsection*.2044}%
+\contentsline {subsubsection}{Next Steps}{640}{subsubsection*.2045}%
+\contentsline {subsection}{\numberline {3.7.5}Benchmarking \& Performance}{640}{subsection.3.7.5}%
+\contentsline {subsubsection}{Network Scale Guidelines}{640}{subsubsection*.2048}%
+\contentsline {subsubsection}{Performance Tips}{641}{subsubsection*.2049}%
+\contentsline {paragraph}{Use Sparse Matrices}{641}{paragraph*.2050}%
+\contentsline {paragraph}{Batch Operations}{641}{paragraph*.2051}%
+\contentsline {paragraph}{Use Arrow/Parquet for I/O}{641}{paragraph*.2052}%
+\contentsline {paragraph}{Parallel Processing}{641}{paragraph*.2053}%
+\contentsline {subsubsection}{Benchmark Results}{642}{subsubsection*.2054}%
+\contentsline {paragraph}{Algorithm Runtimes vs. Network Size}{642}{paragraph*.2055}%
+\contentsline {subparagraph}{Community Detection (Louvain)}{642}{subparagraph*.2056}%
+\contentsline {subparagraph}{Centrality Computation (Betweenness)}{642}{subparagraph*.2057}%
+\contentsline {subparagraph}{Node2Vec Embeddings}{642}{subparagraph*.2058}%
+\contentsline {subparagraph}{Dynamics Simulation (SIR)}{643}{subparagraph*.2059}%
+\contentsline {paragraph}{Memory Usage Profiles}{643}{paragraph*.2060}%
+\contentsline {paragraph}{Comparison with Other Tools}{643}{paragraph*.2061}%
+\contentsline {subparagraph}{Community Detection: py3plex vs. NetworkX}{643}{subparagraph*.2062}%
+\contentsline {subparagraph}{Node Embeddings: py3plex vs. node2vec}{643}{subparagraph*.2063}%
+\contentsline {subsubsection}{Running Benchmarks}{644}{subsubsection*.2064}%
+\contentsline {subsubsection}{Profiling Your Code}{644}{subsubsection*.2065}%
+\contentsline {paragraph}{Memory Profiling}{644}{paragraph*.2066}%
+\contentsline {subsubsection}{Optimization Strategies}{644}{subsubsection*.2067}%
+\contentsline {paragraph}{For Large Networks}{644}{paragraph*.2068}%
+\contentsline {paragraph}{For Repeated Analysis}{645}{paragraph*.2069}%
+\contentsline {paragraph}{For Production}{645}{paragraph*.2070}%
+\contentsline {subsubsection}{Hardware Recommendations}{645}{subsubsection*.2071}%
+\contentsline {subsubsection}{Next Steps}{645}{subsubsection*.2072}%
+\contentsline {subsection}{\numberline {3.7.6}Citation and References}{645}{subsection.3.7.6}%
+\contentsline {subsubsection}{Primary Citation}{645}{subsubsection*.2073}%
+\contentsline {subsubsection}{Conference Paper}{646}{subsubsection*.2074}%
+\contentsline {subsubsection}{Algorithm\sphinxhyphen {}Specific Citations}{646}{subsubsection*.2075}%
+\contentsline {paragraph}{Multilayer Modularity}{646}{paragraph*.2076}%
+\contentsline {paragraph}{Node2Vec}{647}{paragraph*.2077}%
+\contentsline {paragraph}{Louvain Algorithm}{647}{paragraph*.2078}%
+\contentsline {paragraph}{Infomap}{647}{paragraph*.2079}%
+\contentsline {paragraph}{MultiXRank}{648}{paragraph*.2080}%
+\contentsline {paragraph}{DeepWalk}{648}{paragraph*.2081}%
+\contentsline {paragraph}{Multilayer Network Theory}{648}{paragraph*.2082}%
+\contentsline {subsubsection}{Complete Citation List}{649}{subsubsection*.2083}%
+\contentsline {subsubsection}{Acknowledgments}{649}{subsubsection*.2084}%
+\contentsline {paragraph}{Development and Contributors}{649}{paragraph*.2085}%
+\contentsline {paragraph}{Funding and Support}{649}{paragraph*.2086}%
+\contentsline {paragraph}{External Libraries}{649}{paragraph*.2087}%
+\contentsline {paragraph}{Community Acknowledgments}{650}{paragraph*.2088}%
+\contentsline {subsubsection}{License Information}{650}{subsubsection*.2089}%
+\contentsline {subsubsection}{Contact}{650}{subsubsection*.2090}%
+\contentsline {subsubsection}{Related Work}{651}{subsubsection*.2091}%
+\contentsline {subsubsection}{Usage in Publications}{651}{subsubsection*.2092}%
+\contentsline {subsubsection}{See Also}{651}{subsubsection*.2093}%
+\contentsline {section}{\numberline {3.8}Additional Sections}{651}{section.3.8}%
+\contentsline {subsection}{\numberline {3.8.1}Environments \& Deployment}{651}{subsection.3.8.1}%
+\contentsline {subsubsection}{When to Use This Section}{651}{subsubsection*.2096}%
+\contentsline {subsection}{\numberline {3.8.2}Docker Usage Guide}{652}{subsection.3.8.2}%
+\contentsline {subsubsection}{Quickstart}{653}{subsubsection*.2139}%
+\contentsline {subsubsection}{Building the Image}{654}{subsubsection*.2140}%
+\contentsline {paragraph}{Using Docker}{654}{paragraph*.2141}%
+\contentsline {paragraph}{Using Docker Compose}{654}{paragraph*.2142}%
+\contentsline {subsubsection}{Running Commands}{654}{subsubsection*.2143}%
+\contentsline {paragraph}{Basic Commands}{654}{paragraph*.2144}%
+\contentsline {paragraph}{Using Docker Compose}{654}{paragraph*.2145}%
+\contentsline {subsubsection}{Working with Files}{655}{subsubsection*.2146}%
+\contentsline {paragraph}{Creating a Data Directory}{655}{paragraph*.2147}%
+\contentsline {paragraph}{Mounting Volumes}{655}{paragraph*.2148}%
+\contentsline {paragraph}{Complete Workflow Example}{655}{paragraph*.2149}%
+\contentsline {subsubsection}{Advanced Usage}{656}{subsubsection*.2150}%
+\contentsline {paragraph}{Interactive Shell}{656}{paragraph*.2151}%
+\contentsline {paragraph}{Using Python API}{656}{paragraph*.2152}%
+\contentsline {paragraph}{Custom Image Builds}{657}{paragraph*.2153}%
+\contentsline {paragraph}{Docker Compose with Multiple Services}{657}{paragraph*.2154}%
+\contentsline {subsubsection}{Helper Scripts}{658}{subsubsection*.2155}%
+\contentsline {paragraph}{py3plex\sphinxhyphen {}docker.sh}{658}{paragraph*.2156}%
+\contentsline {paragraph}{test\sphinxhyphen {}docker\sphinxhyphen {}setup.sh}{658}{paragraph*.2157}%
+\contentsline {subsubsection}{Docker Configuration Files}{659}{subsubsection*.2158}%
+\contentsline {paragraph}{.dockerignore}{659}{paragraph*.2159}%
+\contentsline {subsubsection}{Troubleshooting}{659}{subsubsection*.2160}%
+\contentsline {paragraph}{Testing the Docker Setup}{659}{paragraph*.2161}%
+\contentsline {paragraph}{Permission Issues}{660}{paragraph*.2162}%
+\contentsline {paragraph}{Container Not Found}{660}{paragraph*.2163}%
+\contentsline {paragraph}{Network Issues During Build}{660}{paragraph*.2164}%
+\contentsline {paragraph}{Out of Disk Space}{660}{paragraph*.2165}%
+\contentsline {paragraph}{Debugging Build Issues}{660}{paragraph*.2166}%
+\contentsline {subsubsection}{Best Practices}{660}{subsubsection*.2167}%
+\contentsline {subsubsection}{Practical Examples}{661}{subsubsection*.2168}%
+\contentsline {paragraph}{Basic Network Analysis}{661}{paragraph*.2169}%
+\contentsline {paragraph}{Community Detection}{661}{paragraph*.2170}%
+\contentsline {paragraph}{Centrality Analysis}{661}{paragraph*.2171}%
+\contentsline {paragraph}{Batch Processing}{662}{paragraph*.2172}%
+\contentsline {paragraph}{Custom Analysis Script}{662}{paragraph*.2173}%
+\contentsline {paragraph}{Complete Analysis Pipeline}{663}{paragraph*.2174}%
+\contentsline {paragraph}{Comparative Network Analysis}{664}{paragraph*.2175}%
+\contentsline {subsubsection}{CI/CD Integration}{664}{subsubsection*.2176}%
+\contentsline {paragraph}{GitHub Actions}{664}{paragraph*.2177}%
+\contentsline {paragraph}{GitLab CI}{665}{paragraph*.2178}%
+\contentsline {subsubsection}{Additional Resources}{666}{subsubsection*.2179}%
+\contentsline {subsubsection}{Support}{666}{subsubsection*.2184}%
+\contentsline {subsection}{\numberline {3.8.3}Performance and Scalability Best Practices}{666}{subsection.3.8.3}%
+\contentsline {subsubsection}{Network Scale Guidelines}{667}{subsubsection*.2220}%
+\contentsline {subsubsection}{Sparse Matrix Backend}{668}{subsubsection*.2221}%
+\contentsline {paragraph}{Why Sparse Matrices?}{668}{paragraph*.2222}%
+\contentsline {paragraph}{Automatic Sparse Matrix Usage}{668}{paragraph*.2223}%
+\contentsline {paragraph}{Force Sparse Operations}{668}{paragraph*.2224}%
+\contentsline {subsubsection}{Network Sampling}{669}{subsubsection*.2225}%
+\contentsline {paragraph}{When to Sample}{669}{paragraph*.2226}%
+\contentsline {paragraph}{Random Node Sampling}{669}{paragraph*.2227}%
+\contentsline {paragraph}{Stratified Sampling (Preserve Layer Distribution)}{670}{paragraph*.2228}%
+\contentsline {paragraph}{Hub\sphinxhyphen {}Based Sampling (Keep Important Nodes)}{670}{paragraph*.2229}%
+\contentsline {subsubsection}{Algorithm Optimization}{670}{subsubsection*.2230}%
+\contentsline {paragraph}{Choose Efficient Algorithms}{670}{paragraph*.2231}%
+\contentsline {paragraph}{Limit Algorithm Iterations}{671}{paragraph*.2232}%
+\contentsline {subsubsection}{Parallel Processing}{671}{subsubsection*.2233}%
+\contentsline {paragraph}{Multi\sphinxhyphen {}Core Processing}{671}{paragraph*.2234}%
+\contentsline {paragraph}{GPU Acceleration (Advanced)}{672}{paragraph*.2235}%
+\contentsline {subsubsection}{Visualization Optimization}{672}{subsubsection*.2236}%
+\contentsline {paragraph}{Reduce Visual Complexity}{672}{paragraph*.2237}%
+\contentsline {paragraph}{Save to File Instead of Display}{673}{paragraph*.2238}%
+\contentsline {paragraph}{Use Lower Resolution}{673}{paragraph*.2239}%
+\contentsline {subsubsection}{Memory Management}{673}{subsubsection*.2240}%
+\contentsline {paragraph}{Monitor Memory Usage}{673}{paragraph*.2241}%
+\contentsline {paragraph}{Free Memory When Done}{673}{paragraph*.2242}%
+\contentsline {paragraph}{Use Generators Instead of Lists}{674}{paragraph*.2243}%
+\contentsline {subsubsection}{Batch Processing}{674}{subsubsection*.2244}%
+\contentsline {paragraph}{Process Networks in Batches}{674}{paragraph*.2245}%
+\contentsline {subsubsection}{Benchmark Results}{675}{subsubsection*.2246}%
+\contentsline {paragraph}{Performance Benchmarks (2025)}{675}{paragraph*.2247}%
+\contentsline {paragraph}{Scaling Recommendations}{675}{paragraph*.2248}%
+\contentsline {subsubsection}{Alternative Tools for Scale}{675}{subsubsection*.2249}%
+\contentsline {paragraph}{When Py3plex Isn’t Enough}{675}{paragraph*.2250}%
+\contentsline {subsubsection}{Quick Performance Checklist}{676}{subsubsection*.2251}%
+\contentsline {paragraph}{Before Running on Large Network}{676}{paragraph*.2252}%
+\contentsline {paragraph}{Optimization Order}{676}{paragraph*.2253}%
+\contentsline {subsubsection}{Next Steps}{677}{subsubsection*.2254}%
+\contentsline {subsection}{\numberline {3.8.4}GUI: Web Interface for Network Exploration}{677}{subsection.3.8.4}%
+\contentsline {subsubsection}{Running the GUI Locally}{677}{subsubsection*.2256}%
+\contentsline {subsubsection}{GUI Actions vs py3plex APIs}{678}{subsubsection*.2257}%
+\contentsline {subsubsection}{When to Use the GUI}{678}{subsubsection*.2258}%
+\contentsline {subsection}{\numberline {3.8.5}Py3plex GUI}{679}{subsection.3.8.5}%
+\contentsline {subsubsection}{Visual Overview}{679}{subsubsection*.2259}%
+\contentsline {subsubsection}{Quickstart}{680}{subsubsection*.2260}%
+\contentsline {subsubsection}{Prerequisites}{680}{subsubsection*.2261}%
+\contentsline {subsubsection}{Architecture}{680}{subsubsection*.2262}%
+\contentsline {subsubsection}{Features}{681}{subsubsection*.2263}%
+\contentsline {paragraph}{Data Loading}{681}{paragraph*.2264}%
+\contentsline {paragraph}{Visualization}{682}{paragraph*.2265}%
+\contentsline {paragraph}{Analysis (Async via Celery)}{683}{paragraph*.2266}%
+\contentsline {paragraph}{Export}{684}{paragraph*.2267}%
+\contentsline {paragraph}{Workspace Bundles}{684}{paragraph*.2268}%
+\contentsline {paragraph}{Job Monitoring}{685}{paragraph*.2269}%
+\contentsline {subsubsection}{Development Guide}{685}{subsubsection*.2270}%
+\contentsline {paragraph}{Project Structure}{685}{paragraph*.2271}%
+\contentsline {paragraph}{Makefile Commands}{686}{paragraph*.2272}%
+\contentsline {paragraph}{Local Development Against py3plex}{687}{paragraph*.2273}%
+\contentsline {subsubsection}{Configuration}{687}{subsubsection*.2274}%
+\contentsline {paragraph}{Environment Variables (.env)}{687}{paragraph*.2275}%
+\contentsline {paragraph}{GPU Support (Optional)}{687}{paragraph*.2276}%
+\contentsline {subsubsection}{Data Formats}{687}{subsubsection*.2277}%
+\contentsline {paragraph}{Accepted Input Formats}{687}{paragraph*.2278}%
+\contentsline {paragraph}{Example Dataset}{688}{paragraph*.2279}%
+\contentsline {subsubsection}{Testing}{688}{subsubsection*.2280}%
+\contentsline {paragraph}{Continuous Integration}{688}{paragraph*.2281}%
+\contentsline {paragraph}{API Tests}{688}{paragraph*.2283}%
+\contentsline {paragraph}{Integration Tests}{689}{paragraph*.2284}%
+\contentsline {paragraph}{Frontend Tests (WIP)}{689}{paragraph*.2285}%
+\contentsline {paragraph}{Manual Testing Workflow}{689}{paragraph*.2286}%
+\contentsline {subsubsection}{Production Deployment}{689}{subsubsection*.2287}%
+\contentsline {paragraph}{Static Build (Recommended)}{689}{paragraph*.2288}%
+\contentsline {paragraph}{Security Considerations}{690}{paragraph*.2289}%
+\contentsline {subsubsection}{Troubleshooting}{690}{subsubsection*.2290}%
+\contentsline {paragraph}{Issue: Port already in use}{690}{paragraph*.2291}%
+\contentsline {paragraph}{Issue: Permission denied on /data}{690}{paragraph*.2292}%
+\contentsline {paragraph}{Issue: py3plex import error in containers}{690}{paragraph*.2293}%
+\contentsline {paragraph}{Issue: Frontend can’t reach API}{690}{paragraph*.2294}%
+\contentsline {subsubsection}{API Documentation}{691}{subsubsection*.2295}%
+\contentsline {paragraph}{Key Endpoints}{691}{paragraph*.2296}%
+\contentsline {paragraph}{Example: Run Analysis}{691}{paragraph*.2297}%
+\contentsline {subsubsection}{Contributing}{691}{subsubsection*.2298}%
+\contentsline {subsubsection}{License}{692}{subsubsection*.2300}%
+\contentsline {subsubsection}{Acknowledgments}{692}{subsubsection*.2301}%
+\contentsline {subsubsection}{Support}{692}{subsubsection*.2308}%
+\contentsline {subsection}{\numberline {3.8.6}Developer \& Contributor Docs}{692}{subsection.3.8.6}%
+\contentsline {subsubsection}{Types of Contributions}{692}{subsubsection*.2310}%
+\contentsline {subsubsection}{Getting Started}{693}{subsubsection*.2311}%
+\contentsline {subsection}{\numberline {3.8.7}Development Guide}{693}{subsection.3.8.7}%
+\contentsline {subsubsection}{Getting Started}{693}{subsubsection*.2312}%
+\contentsline {subsubsection}{Makefile Commands}{693}{subsubsection*.2313}%
+\contentsline {subsubsection}{Testing}{694}{subsubsection*.2314}%
+\contentsline {subsubsection}{Code Quality}{694}{subsubsection*.2315}%
+\contentsline {subsubsection}{Contributing}{695}{subsubsection*.2316}%
+\contentsline {subsubsection}{Documentation}{695}{subsubsection*.2317}%
+\contentsline {paragraph}{Documentation Style Guide}{695}{paragraph*.2318}%
+\contentsline {subsubsection}{Resources}{697}{subsubsection*.2319}%
+\contentsline {subsection}{\numberline {3.8.8}Architecture and Design}{697}{subsection.3.8.8}%
+\contentsline {subsubsection}{System Overview}{697}{subsubsection*.2320}%
+\contentsline {subsubsection}{Architectural Layers}{698}{subsubsection*.2321}%
+\contentsline {paragraph}{Core Layer}{698}{paragraph*.2322}%
+\contentsline {paragraph}{Algorithms Layer}{698}{paragraph*.2323}%
+\contentsline {paragraph}{Visualization Layer}{699}{paragraph*.2324}%
+\contentsline {paragraph}{Wrappers Layer}{699}{paragraph*.2325}%
+\contentsline {subsubsection}{Core Data Structure}{699}{subsubsection*.2326}%
+\contentsline {paragraph}{The multi\_layer\_network Class}{699}{paragraph*.2327}%
+\contentsline {subsubsection}{Design Patterns}{700}{subsubsection*.2328}%
+\contentsline {paragraph}{Facade Pattern}{700}{paragraph*.2329}%
+\contentsline {paragraph}{Strategy Pattern}{700}{paragraph*.2330}%
+\contentsline {paragraph}{Template Method Pattern}{700}{paragraph*.2331}%
+\contentsline {paragraph}{Dependency Injection}{701}{paragraph*.2332}%
+\contentsline {subsubsection}{Data Flow}{701}{subsubsection*.2333}%
+\contentsline {paragraph}{Typical Workflow}{701}{paragraph*.2334}%
+\contentsline {paragraph}{State Management}{702}{paragraph*.2335}%
+\contentsline {subsubsection}{Extension Points}{702}{subsubsection*.2336}%
+\contentsline {paragraph}{Custom Algorithms}{702}{paragraph*.2337}%
+\contentsline {paragraph}{Custom Visualizations}{703}{paragraph*.2338}%
+\contentsline {paragraph}{Custom Parsers}{703}{paragraph*.2339}%
+\contentsline {subsubsection}{Configuration System}{704}{subsubsection*.2340}%
+\contentsline {paragraph}{Centralized Configuration}{704}{paragraph*.2341}%
+\contentsline {subsubsection}{Testing Architecture}{704}{subsubsection*.2342}%
+\contentsline {paragraph}{Test Organization}{704}{paragraph*.2343}%
+\contentsline {paragraph}{Test Patterns}{704}{paragraph*.2344}%
+\contentsline {subsubsection}{Performance Considerations}{705}{subsubsection*.2345}%
+\contentsline {paragraph}{Lazy Evaluation}{705}{paragraph*.2346}%
+\contentsline {paragraph}{Sparse Matrices}{705}{paragraph*.2347}%
+\contentsline {paragraph}{Vectorization}{705}{paragraph*.2348}%
+\contentsline {subsubsection}{Logging Infrastructure}{706}{subsubsection*.2349}%
+\contentsline {paragraph}{Centralized Logging}{706}{paragraph*.2350}%
+\contentsline {paragraph}{Log Levels}{706}{paragraph*.2351}%
+\contentsline {subsubsection}{Error Handling}{706}{subsubsection*.2352}%
+\contentsline {paragraph}{Custom Exceptions}{706}{paragraph*.2353}%
+\contentsline {subsubsection}{Future Architecture}{707}{subsubsection*.2354}%
+\contentsline {paragraph}{Planned Improvements}{707}{paragraph*.2355}%
+\contentsline {subsubsection}{See Also}{707}{subsubsection*.2356}%
+\contentsline {chapter}{\numberline {4}Citation}{708}{chapter.4}%
+\contentsline {chapter}{\numberline {5}Indices and Tables}{709}{chapter.5}%
+\contentsline {chapter}{Python Module Index}{710}{section*.2357}%
+\contentsline {chapter}{Index}{712}{section*.2358}%

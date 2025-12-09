@@ -96,9 +96,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#query-edges">Query Edges</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#smart-defaults-and-error-messages">Smart Defaults and Error Messages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#auto-computing-centrality-metrics">Auto-Computing Centrality Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#controlling-autocompute-behavior">Controlling Autocompute Behavior</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helpful-error-messages-with-suggestions">Helpful Error Messages with Suggestions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#grouping-requirements-and-clear-errors">Grouping Requirements and Clear Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-smart-defaults-don-t-apply">When Smart Defaults DON’T Apply</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#benefits-of-smart-defaults">Benefits of Smart Defaults</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#temporal-queries">Temporal Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#temporal-semantics-reference">Temporal Semantics Reference</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filter-by-time-snapshot">Filter by Time (Snapshot)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#time-range">Time Range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#before-and-after-convenience-methods">Before and After (Convenience Methods)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#common-patterns">Common Patterns</a><ul>
@@ -106,6 +117,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#pattern-compare-layer-activity">Pattern: Compare Layer Activity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pattern-export-subnetwork">Pattern: Export Subnetwork</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pattern-per-layer-top-k-with-coverage-multi-layer-hub-detection">Pattern: Per-Layer Top-K with Coverage (Multi-Layer Hub Detection)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dsl-result-interoperability">DSL Result Interoperability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#queryresult-to-pandas-workflow">QueryResult to pandas Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verb-mapping-table">Verb Mapping Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-combined-workflow">Example: Combined Workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
@@ -841,9 +858,244 @@ Mean edge betweenness: 0.028
 </div>
 </section>
 </section>
+<section id="smart-defaults-and-error-messages">
+<h2>Smart Defaults and Error Messages<a class="headerlink" href="#smart-defaults-and-error-messages" title="Link to this heading"></a></h2>
+<p>The DSL includes <strong>smart defaults</strong> that automatically compute commonly used centrality metrics when referenced but not explicitly computed. This feature makes queries more ergonomic while maintaining predictable behavior.</p>
+<section id="auto-computing-centrality-metrics">
+<h3>Auto-Computing Centrality Metrics<a class="headerlink" href="#auto-computing-centrality-metrics" title="Link to this heading"></a></h3>
+<p>When you reference a centrality metric in operations like <code class="docutils literal notranslate"><span class="pre">top_k()</span></code>, <code class="docutils literal notranslate"><span class="pre">order_by()</span></code>, or other ranking operations, the DSL will automatically compute it if not already present:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># The DSL auto-computes betweenness_centrality when needed</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># Auto-computed here</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="c1"># betweenness_centrality column is available even though</span>
+<span class="c1"># we didn&#39;t explicitly call .compute(&quot;betweenness_centrality&quot;)</span>
+</pre></div>
+</div>
+<p><strong>Supported centrality aliases:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">degree</span></code>, <code class="docutils literal notranslate"><span class="pre">degree_centrality</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">betweenness</span></code>, <code class="docutils literal notranslate"><span class="pre">betweenness_centrality</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">closeness</span></code>, <code class="docutils literal notranslate"><span class="pre">closeness_centrality</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">eigenvector</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvector_centrality</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pagerank</span></code></p></li>
+</ul>
+<p><strong>When auto-compute happens:</strong></p>
+<ul class="simple">
+<li><p>When the attribute is referenced in <code class="docutils literal notranslate"><span class="pre">top_k()</span></code></p></li>
+<li><p>When the attribute is used in <code class="docutils literal notranslate"><span class="pre">order_by()</span></code></p></li>
+<li><p>For both per-group (with grouping) and global operations</p></li>
+</ul>
+<p><strong>Example with multiple auto-computed metrics:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Auto-compute degree for filtering and betweenness for ranking</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># degree auto-computed here</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># betweenness auto-computed here</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    node layer  degree  betweenness_centrality
+0  alice social      8                0.143000
+1    bob social      7                0.098000
+2  carol social      6                0.067000
+...
+</pre></div>
+</div>
+</section>
+<section id="controlling-autocompute-behavior">
+<h3>Controlling Autocompute Behavior<a class="headerlink" href="#controlling-autocompute-behavior" title="Link to this heading"></a></h3>
+<p>You can explicitly control whether metrics are automatically computed using the <code class="docutils literal notranslate"><span class="pre">autocompute</span></code> parameter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Disable autocompute - require explicit .compute() calls</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">autocompute</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Autocompute disabled</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>  <span class="c1"># Must explicitly compute</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># This would raise DslMissingMetricError because betweenness is not computed:</span>
+<span class="c1"># Q.nodes(autocompute=False).order_by(&quot;betweenness_centrality&quot;).execute(net)</span>
+</pre></div>
+</div>
+<p><strong>When to disable autocompute:</strong></p>
+<ul class="simple">
+<li><p><strong>Performance-critical code</strong>: Avoid unexpected expensive computations</p></li>
+<li><p><strong>Explicit control</strong>: Make all metric computations visible in code</p></li>
+<li><p><strong>Debugging</strong>: Understand exactly which metrics are computed and when</p></li>
+</ul>
+<p><strong>Tracking computed metrics:</strong></p>
+<p>Query results include a <code class="docutils literal notranslate"><span class="pre">computed_metrics</span></code> attribute that tracks which metrics were computed during execution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># Auto-computed</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Check which metrics were computed</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Computed metrics: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">computed_metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: Computed metrics: {&#39;degree&#39;, &#39;betweenness_centrality&#39;}</span>
+</pre></div>
+</div>
+<p><strong>Use cases for computed_metrics:</strong></p>
+<ul class="simple">
+<li><p>Performance profiling: identify expensive operations</p></li>
+<li><p>Query optimization: avoid redundant computations</p></li>
+<li><p>Debugging: verify expected metrics were computed</p></li>
+</ul>
+</section>
+<section id="helpful-error-messages-with-suggestions">
+<h3>Helpful Error Messages with Suggestions<a class="headerlink" href="#helpful-error-messages-with-suggestions" title="Link to this heading"></a></h3>
+<p>When you reference an unknown attribute, the DSL provides <strong>did you mean?</strong> suggestions using fuzzy string matching:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Typo in attribute name</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># Typo: &quot;betweness&quot; instead of &quot;betweenness&quot;</span>
+         <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="k">except</span> <span class="n">UnknownAttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Unknown attribute &#39;betweness_centrality&#39;. Did you mean &#39;betweenness_centrality&#39;?
+Known attributes: betweenness, betweenness_centrality, closeness, closeness_centrality,
+                  degree, degree_centrality, eigenvector, eigenvector_centrality, pagerank
+</pre></div>
+</div>
+<p><strong>The error includes:</strong></p>
+<ul class="simple">
+<li><p>The incorrect attribute name</p></li>
+<li><p>A suggestion for the most similar correct name (using Levenshtein distance)</p></li>
+<li><p>A list of all available attributes</p></li>
+</ul>
+</section>
+<section id="grouping-requirements-and-clear-errors">
+<h3>Grouping Requirements and Clear Errors<a class="headerlink" href="#grouping-requirements-and-clear-errors" title="Link to this heading"></a></h3>
+<p>Some operations require <strong>active grouping</strong> (via <code class="docutils literal notranslate"><span class="pre">per_layer()</span></code> or <code class="docutils literal notranslate"><span class="pre">group_by()</span></code>). The DSL raises <code class="docutils literal notranslate"><span class="pre">GroupingError</span></code> with clear guidance when these operations are used incorrectly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">GroupingError</span>
+
+<span class="c1"># This will raise GroupingError</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>  <span class="c1"># Error: no grouping active</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="k">except</span> <span class="n">GroupingError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>coverage() requires an active grouping (e.g. per_layer(), group_by(&#39;layer&#39;)).
+No grouping is currently active.
+Example:
+    Q.nodes().from_layers(L[&quot;*&quot;])
+        .per_layer().top_k(5, &quot;degree&quot;).end_grouping()
+        .coverage(mode=&quot;all&quot;)
+</pre></div>
+</div>
+<p><strong>Correct usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># With proper grouping</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>  <span class="c1"># Add grouping here</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>  <span class="c1"># Now works correctly</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="when-smart-defaults-don-t-apply">
+<h3>When Smart Defaults DON’T Apply<a class="headerlink" href="#when-smart-defaults-don-t-apply" title="Link to this heading"></a></h3>
+<p>Smart defaults are <strong>predictable and conservative</strong>. They only apply in specific scenarios:</p>
+<ol class="arabic">
+<li><p><strong>Only for centrality metrics</strong>: Smart defaults work for recognized centrality metrics (degree, betweenness, etc.), not arbitrary attributes.</p></li>
+<li><p><strong>Explicit compute takes precedence</strong>: If you explicitly compute a metric, the DSL uses your computation and doesn’t auto-compute:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Explicit compute - no auto-compute happens</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># Explicit</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># Uses explicit computation</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Edge attributes are not auto-computed</strong>: For edge queries, attributes like <code class="docutils literal notranslate"><span class="pre">weight</span></code> are read from edge data, not auto-computed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edge weight is read from edge data, not computed</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">)</span>  <span class="c1"># Uses edge data[&#39;weight&#39;]</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="benefits-of-smart-defaults">
+<h3>Benefits of Smart Defaults<a class="headerlink" href="#benefits-of-smart-defaults" title="Link to this heading"></a></h3>
+<p><strong>Ergonomics</strong>: Write less boilerplate for common patterns:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before smart defaults (verbose)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;closeness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># With smart defaults (concise)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># Auto-computes what&#39;s needed</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Teaching errors</strong>: When something goes wrong, you get actionable guidance instead of cryptic messages.</p>
+<p><strong>Predictability</strong>: Smart defaults only activate for well-known patterns. Your explicit operations always take precedence.</p>
+</section>
+</section>
 <section id="temporal-queries">
 <h2>Temporal Queries<a class="headerlink" href="#temporal-queries" title="Link to this heading"></a></h2>
-<p>The DSL supports temporal filtering for networks with time-stamped edges or nodes. Use <code class="docutils literal notranslate"><span class="pre">.at(t)</span></code> for point-in-time snapshots and <code class="docutils literal notranslate"><span class="pre">.during(t0,</span> <span class="pre">t1)</span></code> for time ranges.</p>
+<p>The DSL supports temporal filtering for networks with time-stamped edges or nodes. Four convenience methods provide intuitive temporal filtering: <code class="docutils literal notranslate"><span class="pre">.at(t)</span></code>, <code class="docutils literal notranslate"><span class="pre">.during(t0,</span> <span class="pre">t1)</span></code>, <code class="docutils literal notranslate"><span class="pre">.before(t)</span></code>, and <code class="docutils literal notranslate"><span class="pre">.after(t)</span></code>.</p>
 <p><strong>Prerequisites for temporal queries:</strong></p>
 <ul class="simple">
 <li><p>Edges or nodes must have temporal attributes:</p>
@@ -854,7 +1106,48 @@ Mean edge betweenness: 0.028
 </li>
 <li><p>Time values are typically numeric (timestamps) or ISO date strings</p></li>
 </ul>
-<p><strong>Temporal semantics:</strong></p>
+<section id="temporal-semantics-reference">
+<h3>Temporal Semantics Reference<a class="headerlink" href="#temporal-semantics-reference" title="Link to this heading"></a></h3>
+<p>The following table summarizes temporal query semantics:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Temporal Query Operations</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Interval Semantics</p></th>
+<th class="head"><p>Inclusivity</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.at(t)</span></code></p></td>
+<td><p>Snapshot at time t</p></td>
+<td><p>Entities active at exactly t</p></td>
+<td><p>Point (closed)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.during(t0,</span> <span class="pre">t1)</span></code></p></td>
+<td><p>Range from t0 to t1</p></td>
+<td><p>Entities active during [t0, t1]</p></td>
+<td><p>[t0, t1] (closed interval)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.before(t)</span></code></p></td>
+<td><p>Before time t</p></td>
+<td><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">.during(None,</span> <span class="pre">t)</span></code></p></td>
+<td><p>(-∞, t] (closed at t)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.after(t)</span></code></p></td>
+<td><p>After time t</p></td>
+<td><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">.during(t,</span> <span class="pre">None)</span></code></p></td>
+<td><p>[t, +∞) (closed at t)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Detailed semantics:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">at(t)</span></code>: Selects entities active at a specific moment</p>
 <ul>
@@ -864,11 +1157,25 @@ Mean edge betweenness: 0.028
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">during(t0,</span> <span class="pre">t1)</span></code>: Selects entities active during a time window</p>
 <ul>
-<li><p>For point-in-time edges: includes edges where <code class="docutils literal notranslate"><span class="pre">t</span></code> is in <code class="docutils literal notranslate"><span class="pre">[t0,</span> <span class="pre">t1]</span></code></p></li>
+<li><p>For point-in-time edges: includes edges where <code class="docutils literal notranslate"><span class="pre">t</span></code> is in <code class="docutils literal notranslate"><span class="pre">[t0,</span> <span class="pre">t1]</span></code> (closed interval)</p></li>
 <li><p>For interval edges: includes edges where the interval <strong>overlaps</strong> <code class="docutils literal notranslate"><span class="pre">[t0,</span> <span class="pre">t1]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> values: Use <code class="docutils literal notranslate"><span class="pre">t0=None</span></code> for open lower bound, <code class="docutils literal notranslate"><span class="pre">t1=None</span></code> for open upper bound</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">before(t)</span></code>: Selects entities active before (and at) time t</p>
+<ul>
+<li><p>Convenience method equivalent to <code class="docutils literal notranslate"><span class="pre">.during(None,</span> <span class="pre">t)</span></code></p></li>
+<li><p>Inclusive of the boundary: includes entities at exactly time t</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">after(t)</span></code>: Selects entities active after (and at) time t</p>
+<ul>
+<li><p>Convenience method equivalent to <code class="docutils literal notranslate"><span class="pre">.during(t,</span> <span class="pre">None)</span></code></p></li>
+<li><p>Inclusive of the boundary: includes entities at exactly time t</p></li>
 </ul>
 </li>
 </ul>
+</section>
 <section id="filter-by-time-snapshot">
 <h3>Filter by Time (Snapshot)<a class="headerlink" href="#filter-by-time-snapshot" title="Link to this heading"></a></h3>
 <p>Query the network state at a specific point in time:</p>
@@ -939,6 +1246,48 @@ Nodes at t=150 (snapshot): 78
 Ratio: 1.82x more nodes in range
 </pre></div>
 </div>
+</section>
+<section id="before-and-after-convenience-methods">
+<h3>Before and After (Convenience Methods)<a class="headerlink" href="#before-and-after-convenience-methods" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">.before()</span></code> and <code class="docutils literal notranslate"><span class="pre">.after()</span></code> methods provide intuitive alternatives for open-ended temporal queries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all edges before time 100 (inclusive)</span>
+<span class="n">early_edges</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="mf">100.0</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Get all edges after time 200 (inclusive)</span>
+<span class="n">late_edges</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="mf">200.0</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Common pattern: compare network before and after an event</span>
+<span class="n">event_time</span> <span class="o">=</span> <span class="mf">150.0</span>
+
+<span class="n">before_event</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">event_time</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">after_event</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">event_time</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Compare metrics</span>
+<span class="n">df_before</span> <span class="o">=</span> <span class="n">before_event</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="n">df_after</span> <span class="o">=</span> <span class="n">after_event</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree before event: </span><span class="si">{</span><span class="n">df_before</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree after event: </span><span class="si">{</span><span class="n">df_after</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network became </span><span class="si">{</span><span class="s1">&#39;denser&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">df_after</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">df_before</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;sparser&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Average degree before event: 4.35
+Average degree after event: 5.87
+Network became denser
+</pre></div>
+</div>
 <p><strong>Temporal edges example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edges active during a period</span>
 <span class="n">edges</span> <span class="o">=</span> <span class="p">(</span>
@@ -956,7 +1305,7 @@ Ratio: 1.82x more nodes in range
 <p><strong>Note on implementation status:</strong></p>
 <p>Temporal queries are <strong>fully implemented</strong> for edge-level temporal data. Node-level temporal filtering depends on your network’s representation:</p>
 <ul class="simple">
-<li><p>If nodes have explicit <code class="docutils literal notranslate"><span class="pre">t</span></code> attributes, <code class="docutils literal notranslate"><span class="pre">.at()</span></code> and <code class="docutils literal notranslate"><span class="pre">.during()</span></code> work directly</p></li>
+<li><p>If nodes have explicit <code class="docutils literal notranslate"><span class="pre">t</span></code> attributes, <code class="docutils literal notranslate"><span class="pre">.at()</span></code>, <code class="docutils literal notranslate"><span class="pre">.during()</span></code>, <code class="docutils literal notranslate"><span class="pre">.before()</span></code>, and <code class="docutils literal notranslate"><span class="pre">.after()</span></code> work directly</p></li>
 <li><p>If only edges are timestamped, node activity is inferred from edge presence</p></li>
 <li><p>For most use cases, temporal edge queries are sufficient</p></li>
 </ul>
@@ -1322,6 +1671,201 @@ Layer specialists (exactly 1): 15
 </ul>
 <p><strong>Performance Note:</strong></p>
 <p>The per-layer computation is optimized: measures are computed on the selected nodes after layer filtering, and grouping operations leverage efficient dictionaries. For large networks (&gt;100K nodes), consider filtering with <code class="docutils literal notranslate"><span class="pre">where()</span></code> before computing expensive metrics like betweenness centrality.</p>
+</section>
+</section>
+<section id="dsl-result-interoperability">
+<h2>DSL Result Interoperability<a class="headerlink" href="#dsl-result-interoperability" title="Link to this heading"></a></h2>
+<p>DSL query results integrate seamlessly with pandas for data transformation workflows. While QueryResult doesn’t implement pipeline verbs directly, it provides a clean <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code> export that enables the same workflow patterns:</p>
+<ol class="arabic simple">
+<li><p>Start with a DSL query to filter and compute metrics</p></li>
+<li><p>Export to pandas with <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code></p></li>
+<li><p>Use pandas operations for additional transformations</p></li>
+<li><p>Leverage the full pandas ecosystem for analysis and visualization</p></li>
+</ol>
+<section id="queryresult-to-pandas-workflow">
+<h3>QueryResult to pandas Workflow<a class="headerlink" href="#queryresult-to-pandas-workflow" title="Link to this heading"></a></h3>
+<p>The recommended pattern for combining DSL queries with data transformations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Start with DSL query</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Export to pandas for flexible transformations</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># Continue with pandas operations</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">]</span>  <span class="c1"># Filter</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;influence_score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>  <span class="c1"># Mutate</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;influence_score&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Arrange</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>What happens here:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>DSL phase</strong>: <code class="docutils literal notranslate"><span class="pre">Q.nodes()...execute()</span></code> filters nodes, computes centrality metrics</p></li>
+<li><p><strong>Export</strong>: <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code> materializes as a DataFrame</p></li>
+<li><p><strong>pandas phase</strong>: Standard pandas operations for transformation and analysis</p></li>
+</ol>
+<p><strong>Pandas operations equivalent to pipeline verbs:</strong></p>
+<ul class="simple">
+<li><p>Filter rows: <code class="docutils literal notranslate"><span class="pre">df[df[&quot;degree&quot;]</span> <span class="pre">&gt;</span> <span class="pre">5]</span></code></p></li>
+<li><p>Add columns: <code class="docutils literal notranslate"><span class="pre">df['new_col']</span> <span class="pre">=</span> <span class="pre">...</span></code></p></li>
+<li><p>Sort: <code class="docutils literal notranslate"><span class="pre">df.sort_values('col',</span> <span class="pre">ascending=False)</span></code></p></li>
+<li><p>Select columns: <code class="docutils literal notranslate"><span class="pre">df[['col1',</span> <span class="pre">'col2']]</span></code></p></li>
+<li><p>Group and aggregate: <code class="docutils literal notranslate"><span class="pre">df.groupby('col').agg(...)</span></code></p></li>
+</ul>
+</section>
+<section id="verb-mapping-table">
+<h3>Verb Mapping Table<a class="headerlink" href="#verb-mapping-table" title="Link to this heading"></a></h3>
+<p>The following table shows how concepts map across the three interfaces:</p>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">DSL and pandas Verb Mapping</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Concept</p></th>
+<th class="head"><p>String DSL</p></th>
+<th class="head"><p>Builder DSL</p></th>
+<th class="head"><p>pandas</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Filter rows</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">WHERE</span> <span class="pre">degree</span> <span class="pre">&gt;</span> <span class="pre">5</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.where(degree__gt=5)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df[df[&quot;degree&quot;]</span> <span class="pre">&gt;</span> <span class="pre">5]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Select columns</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">id,</span> <span class="pre">degree</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.select(&quot;id&quot;,</span> <span class="pre">&quot;degree&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df[[&quot;id&quot;,</span> <span class="pre">&quot;degree&quot;]]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Sort/Order</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ORDER</span> <span class="pre">BY</span> <span class="pre">degree</span> <span class="pre">DESC</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.order_by(&quot;degree&quot;,</span> <span class="pre">desc=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df.sort_values(&quot;degree&quot;,</span> <span class="pre">ascending=False)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Group by field</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span> <span class="pre">layer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.group_by(&quot;layer&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df.groupby(&quot;layer&quot;)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Add column</p></td>
+<td><p>(not available)</p></td>
+<td><p>(use pandas after export)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df[&quot;score&quot;]</span> <span class="pre">=</span> <span class="pre">...</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Aggregate</p></td>
+<td><p>(not available)</p></td>
+<td><p>(use pandas after export)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df.groupby(&quot;layer&quot;).agg(...)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Limit results</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LIMIT</span> <span class="pre">10</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.limit(10)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df.head(10)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Design rationale:</strong></p>
+<ul class="simple">
+<li><p><strong>DSL</strong>: Declarative, optimized for graph queries (layer algebra, centrality, grouping)</p></li>
+<li><p><strong>pandas</strong>: Procedural, flexible for data transformations (arbitrary computations, reshaping)</p></li>
+<li><p><strong>Workflow</strong>: Use DSL for graph-specific operations, export to pandas for data munging</p></li>
+</ul>
+</section>
+<section id="example-combined-workflow">
+<h3>Example: Combined Workflow<a class="headerlink" href="#example-combined-workflow" title="Link to this heading"></a></h3>
+<p>A realistic workflow combining both DSL and pandas operations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Scenario: Find influential nodes in social network, normalize scores,</span>
+<span class="c1">#           rank within communities, export for visualization</span>
+
+<span class="c1"># DSL: Query and compute graph metrics</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Export to pandas for transformations</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># pandas: Transform and enhance data</span>
+<span class="n">max_betweenness</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+<span class="c1"># Normalize centrality to [0, 1]</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;norm_betweenness&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">max_betweenness</span>
+    <span class="k">if</span> <span class="n">max_betweenness</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+<span class="p">)</span>
+
+<span class="c1"># Composite influence score</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;influence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="mf">0.5</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">+</span>
+    <span class="mf">0.3</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;norm_betweenness&#39;</span><span class="p">]</span> <span class="o">+</span>
+    <span class="mf">0.2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">])</span>
+<span class="p">)</span>
+
+<span class="c1"># Group by community and compute statistics</span>
+<span class="n">community_stats</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;community&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>
+    <span class="s1">&#39;influence&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">]</span>
+<span class="p">})</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Sort communities by average influence</span>
+<span class="n">community_stats</span> <span class="o">=</span> <span class="n">community_stats</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
+    <span class="p">(</span><span class="s1">&#39;influence&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">),</span>
+    <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">community_stats</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>              influence
+                  count  mean    max
+community
+5                  23  0.72   0.89
+2                  31  0.68   0.85
+8                  19  0.61   0.79
+1                  28  0.58   0.74
+...
+</pre></div>
+</div>
+<p><strong>Why this matters:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Single pipeline</strong>: No need to export intermediate results to disk or juggle multiple DataFrames</p></li>
+<li><p><strong>Flexibility</strong>: DSL for graph operations, pandas for everything else</p></li>
+<li><p><strong>Performance</strong>: DSL computes centrality on the multilayer graph once, pandas transforms in-memory</p></li>
+<li><p><strong>Ecosystem</strong>: Full pandas ecosystem available (plotting, statistics, export formats)</p></li>
+</ol>
+<p><strong>When to use each:</strong></p>
+<ul class="simple">
+<li><p><strong>DSL alone</strong>: Simple queries, need graph-specific operations (centrality, grouping, coverage)</p></li>
+<li><p><strong>pandas alone</strong>: Non-graph data, pure data transformations</p></li>
+<li><p><strong>Combined (DSL → pandas)</strong>: Complex analytical workflows, need both graph metrics and custom computations</p></li>
+</ul>
+<p>See <a class="reference internal" href="build_pipelines.html"><span class="doc">How to Build Analysis Pipelines with Dplyr-style Operations</span></a> for the dplyr-style pipeline API (<code class="docutils literal notranslate"><span class="pre">nodes()</span></code>, <code class="docutils literal notranslate"><span class="pre">edges()</span></code> functions) which provides an alternative approach using chainable operations directly on networks.</p>
 </section>
 </section>
 <section id="next-steps">
