@@ -372,6 +372,143 @@ Use ``compute()`` to calculate network metrics. Metrics are computed efficiently
     1     (bob, social)                 0.189000       8
     ...
 
+Computing Metrics with Uncertainty
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**New in py3plex 1.0:** The DSL now supports **first-class uncertainty** for computed metrics. This allows you to estimate statistical uncertainty (confidence intervals, standard deviations) for network statistics via bootstrap, perturbation, or Monte Carlo methods.
+
+**Why uncertainty matters:**
+
+* Networks are often noisy or sampled (e.g., social networks with missing edges)
+* Centrality metrics can be sensitive to small perturbations
+* Uncertainty quantification helps distinguish signal from noise
+* Required for robust statistical inference and hypothesis testing
+
+**Basic usage:**
+
+.. code-block:: python
+
+    # Compute degree with uncertainty estimation
+    result = (
+        Q.nodes()
+         .compute(
+             "degree", 
+             "betweenness_centrality",
+             uncertainty=True,
+             method="perturbation",  # or "bootstrap", "seed"
+             n_samples=100,          # number of resamples
+             ci=0.95                 # confidence interval level
+         )
+         .execute(network)
+    )
+    
+    # Access uncertainty information
+    df = result.to_pandas()
+    print(df.head())
+    
+    # Results contain mean, std, and quantiles for each metric
+    # The 'degree' column now has dict values with uncertainty info
+
+**Uncertainty methods:**
+
+* ``"perturbation"``: Drop a small fraction of edges/nodes randomly (default: 5%)
+* ``"bootstrap"``: Resample nodes/edges with replacement
+* ``"seed"``: Run stochastic algorithms with different random seeds
+* ``"jackknife"``: Leave-one-out resampling
+
+**Parameters:**
+
+* ``uncertainty`` (bool): Enable uncertainty estimation (default: False)
+* ``method`` (str): Resampling strategy (default: "perturbation")
+* ``n_samples`` (int): Number of resamples (default: 50)
+* ``ci`` (float): Confidence interval level, e.g., 0.95 for 95% CI (default: 0.95)
+
+**Example with confidence intervals:**
+
+.. code-block:: python
+
+    # Find hubs with uncertainty bounds
+    hubs = (
+        Q.nodes()
+         .compute(
+             "degree",
+             "betweenness_centrality",
+             uncertainty=True,
+             method="perturbation",
+             n_samples=200,
+             ci=0.95
+         )
+         .order_by("-betweenness_centrality")
+         .limit(10)
+         .execute(network)
+    )
+    
+    # Extract uncertainty information
+    df = hubs.to_pandas()
+    
+    # When uncertainty=True, values are dicts with mean, std, quantiles
+    for idx, row in df.head().iterrows():
+        node_id = row['id']
+        bc_info = row['betweenness_centrality']
+        
+        if isinstance(bc_info, dict):
+            mean = bc_info['mean']
+            std = bc_info.get('std', 0)
+            ci_low = bc_info.get('quantiles', {}).get(0.025, mean)
+            ci_high = bc_info.get('quantiles', {}).get(0.975, mean)
+            
+            print(f"{node_id}:")
+            print(f"  Betweenness: {mean:.4f} ± {std:.4f}")
+            print(f"  95% CI: [{ci_low:.4f}, {ci_high:.4f}]")
+
+**Expected output:**
+
+.. code-block:: text
+
+    ('eve', 'social'):
+      Betweenness: 0.3010 ± 0.0234
+      95% CI: [0.2589, 0.3442]
+    ('alice', 'social'):
+      Betweenness: 0.2450 ± 0.0198
+      95% CI: [0.2087, 0.2821]
+    ('grace', 'social'):
+      Betweenness: 0.2210 ± 0.0176
+      95% CI: [0.1901, 0.2534]
+
+**Backward compatibility:**
+
+When ``uncertainty=False`` (the default), metrics return scalar values as before. Your existing queries work unchanged:
+
+.. code-block:: python
+
+    # Traditional deterministic computation
+    result = Q.nodes().compute("degree").execute(network)
+    # 'degree' values are scalars (int/float)
+    
+    # With uncertainty
+    result_unc = Q.nodes().compute("degree", uncertainty=True).execute(network)
+    # 'degree' values are dicts with mean, std, quantiles
+
+**Use cases:**
+
+1. **Comparing networks**: Test if centrality differences between networks are statistically significant
+2. **Robust ranking**: Identify nodes that consistently rank high across perturbations
+3. **Network inference**: Quantify uncertainty when inferring networks from noisy data
+4. **Hypothesis testing**: Generate null distributions for significance testing
+
+**Performance notes:**
+
+* Uncertainty estimation is **opt-in** and only runs when explicitly requested
+* Cost scales linearly with ``n_samples`` (e.g., 100 samples ≈ 100× slower)
+* Use smaller ``n_samples`` (20-50) for exploration, larger (100-500) for publication
+* Perturbation is fastest; bootstrap and jackknife are more expensive
+
+**Further reading:**
+
+* :doc:`compute_statistics`: General guide to network statistics and uncertainty
+* ``examples/uncertainty/example_first_class_uncertainty.py``: Complete examples
+* ``py3plex.uncertainty`` module: Low-level API for custom uncertainty workflows
+
 Sorting and Limiting
 ~~~~~~~~~~~~~~~~~~~~
 
