@@ -1627,16 +1627,17 @@ The per-layer computation is optimized: measures are computed on the selected no
 DSL Result Interoperability
 ----------------------------
 
-DSL query results seamlessly integrate with py3plex's dplyr-style pipeline API (``nodes()``, ``edges()``, ``mutate()``, ``filter()``, ``arrange()``). This interoperability allows you to:
+DSL query results integrate seamlessly with pandas for data transformation workflows. While QueryResult doesn't implement pipeline verbs directly, it provides a clean ``.to_pandas()`` export that enables the same workflow patterns:
 
 1. Start with a DSL query to filter and compute metrics
-2. Continue with pipeline verbs for additional transformations
-3. Combine the declarative power of DSL with the procedural flexibility of pipelines
+2. Export to pandas with ``.to_pandas()``
+3. Use pandas operations for additional transformations
+4. Leverage the full pandas ecosystem for analysis and visualization
 
-QueryResult as Pipeline Input
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+QueryResult to pandas Workflow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``QueryResult`` object returned by ``.execute()`` provides the same interface as pipeline frames (``NodeFrame``, ``EdgeFrame``), enabling seamless chaining:
+The recommended pattern for combining DSL queries with data transformations:
 
 .. code-block:: python
 
@@ -1647,92 +1648,92 @@ The ``QueryResult`` object returned by ``.execute()`` provides the same interfac
     network = multinet.multi_layer_network()
     network.load_network("data.multiedgelist", input_type="multiedgelist")
     
-    # Start with DSL query, continue with pipeline operations
+    # Start with DSL query
     result = (
         Q.nodes()
          .from_layers(L["*"])
          .compute("degree", "betweenness_centrality")
          .execute(network)
-         .filter(lambda row: row["degree"] > 5)  # Pipeline filter
-         .mutate(
-             # Add computed columns
-             influence_score=lambda row: row["degree"] * row["betweenness_centrality"],
-             is_hub=lambda row: row["degree"] > 10
-         )
-         .arrange("influence_score", reverse=True)  # Pipeline arrange (sort)
-         .to_pandas()  # Export to DataFrame
     )
     
-    print(result.head(10))
+    # Export to pandas for flexible transformations
+    df = result.to_pandas()
+    
+    # Continue with pandas operations
+    df = df[df["degree"] > 5]  # Filter
+    df['influence_score'] = (  # Mutate
+        df["degree"] * df["betweenness_centrality"]
+    )
+    df = df.sort_values('influence_score', ascending=False)  # Arrange
+    
+    print(df.head(10))
 
 **What happens here:**
 
 1. **DSL phase**: ``Q.nodes()...execute()`` filters nodes, computes centrality metrics
-2. **Pipeline phase**: ``.filter()``, ``.mutate()``, ``.arrange()`` transform the result
-3. **Export**: ``.to_pandas()`` materializes as a DataFrame
+2. **Export**: ``.to_pandas()`` materializes as a DataFrame
+3. **pandas phase**: Standard pandas operations for transformation and analysis
 
-**Supported pipeline verbs on QueryResult:**
+**Pandas operations equivalent to pipeline verbs:**
 
-* ``.filter(predicate)``: Keep rows matching predicate
-* ``.mutate(**kwargs)``: Add or transform columns
-* ``.arrange(*cols, reverse=False)``: Sort by columns
-* ``.select(*cols)``: Keep only specified columns
-* ``.group_by(*cols)``: Group rows (enables ``.summarize()``)
-* ``.summarize(**aggs)``: Aggregate grouped data
-* ``.to_pandas()``: Convert to pandas DataFrame
+* Filter rows: ``df[df["degree"] > 5]``
+* Add columns: ``df['new_col'] = ...``
+* Sort: ``df.sort_values('col', ascending=False)``
+* Select columns: ``df[['col1', 'col2']]``
+* Group and aggregate: ``df.groupby('col').agg(...)``
 
 Verb Mapping Table
 ~~~~~~~~~~~~~~~~~~
 
-The following table shows how concepts map across the three interfaces (String DSL, Builder API, Pipeline):
+The following table shows how concepts map across the three interfaces:
 
-.. list-table:: DSL and Pipeline Verb Mapping
+.. list-table:: DSL and pandas Verb Mapping
    :header-rows: 1
    :widths: 20 25 25 30
 
    * - Concept
      - String DSL
      - Builder DSL
-     - Pipeline/dplyr
+     - pandas
    * - Filter rows
      - ``WHERE degree > 5``
      - ``.where(degree__gt=5)``
-     - ``.filter(lambda r: r["degree"] > 5)``
+     - ``df[df["degree"] > 5]``
    * - Select columns
      - ``SELECT id, degree``
      - ``.select("id", "degree")``
-     - ``.select("id", "degree")``
+     - ``df[["id", "degree"]]``
    * - Sort/Order
      - ``ORDER BY degree DESC``
      - ``.order_by("degree", desc=True)``
-     - ``.arrange("degree", reverse=True)``
+     - ``df.sort_values("degree", ascending=False)``
    * - Group by field
      - ``GROUP BY layer``
      - ``.group_by("layer")``
-     - ``.group_by("layer")``
+     - ``df.groupby("layer")``
    * - Add column
      - (not available)
-     - ``.mutate(score=...)``
-     - ``.mutate(score=lambda r: ...)``
+     - (use pandas after export)
+     - ``df["score"] = ...``
    * - Aggregate
      - (not available)
-     - ``.summarize(...)``
-     - ``.summarize(mean_degree="mean(degree)")``
+     - (use pandas after export)
+     - ``df.groupby("layer").agg(...)``
    * - Limit results
      - ``LIMIT 10``
      - ``.limit(10)``
-     - ``.head(10)``
+     - ``df.head(10)``
 
 **Design rationale:**
 
 * **DSL**: Declarative, optimized for graph queries (layer algebra, centrality, grouping)
-* **Pipelines**: Procedural, flexible for data transformations (arbitrary computations, reshaping)
-* **Interoperability**: Use DSL for graph-specific operations, pipelines for data munging
+* **pandas**: Procedural, flexible for data transformations (arbitrary computations, reshaping)
+* **Workflow**: Use DSL for graph-specific operations, export to pandas for data munging
 
 Example: Combined Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A realistic workflow combining both DSL and pipeline operations:
+A realistic workflow combining both DSL and pandas operations:
 
 .. code-block:: python
 
@@ -1741,66 +1742,74 @@ A realistic workflow combining both DSL and pipeline operations:
     # Scenario: Find influential nodes in social network, normalize scores, 
     #           rank within communities, export for visualization
     
+    # DSL: Query and compute graph metrics
     result = (
-        # DSL: Query and compute graph metrics
         Q.nodes()
          .from_layers(L["social"])
          .where(degree__gt=3)
          .compute("degree", "betweenness_centrality", "clustering")
          .execute(network)
-         
-         # Pipeline: Transform and enhance data
-         .mutate(
-             # Normalize centrality to [0, 1]
-             norm_betweenness=lambda r: (
-                 r["betweenness_centrality"] / max_betweenness
-                 if max_betweenness > 0 else 0
-             ),
-             # Composite influence score
-             influence=lambda r: (
-                 0.5 * r["degree"] + 
-                 0.3 * r["norm_betweenness"] + 
-                 0.2 * (1 - r["clustering"])
-             )
-         )
-         .group_by("community")  # Assume community attribute exists
-         .summarize(
-             count="count()",
-             mean_influence="mean(influence)",
-             top_influencer="max(influence)"
-         )
-         .arrange("mean_influence", reverse=True)
-         .to_pandas()
     )
     
-    # Now result is a pandas DataFrame ready for plotting
-    print(result)
+    # Export to pandas for transformations
+    df = result.to_pandas()
+    
+    # pandas: Transform and enhance data
+    max_betweenness = df['betweenness_centrality'].max()
+    
+    # Normalize centrality to [0, 1]
+    df['norm_betweenness'] = (
+        df['betweenness_centrality'] / max_betweenness
+        if max_betweenness > 0 else 0
+    )
+    
+    # Composite influence score
+    df['influence'] = (
+        0.5 * df['degree'] + 
+        0.3 * df['norm_betweenness'] + 
+        0.2 * (1 - df['clustering'])
+    )
+    
+    # Group by community and compute statistics
+    community_stats = df.groupby('community').agg({
+        'influence': ['count', 'mean', 'max']
+    }).round(2)
+    
+    # Sort communities by average influence
+    community_stats = community_stats.sort_values(
+        ('influence', 'mean'), 
+        ascending=False
+    )
+    
+    print(community_stats)
 
 **Expected output:**
 
 .. code-block:: text
 
-    community  count  mean_influence  top_influencer
-    0       5     23            0.72            0.89
-    1       2     31            0.68            0.85
-    2       8     19            0.61            0.79
-    3       1     28            0.58            0.74
+                  influence        
+                      count  mean    max
+    community                          
+    5                  23  0.72   0.89
+    2                  31  0.68   0.85
+    8                  19  0.61   0.79
+    1                  28  0.58   0.74
     ...
 
 **Why this matters:**
 
 1. **Single pipeline**: No need to export intermediate results to disk or juggle multiple DataFrames
-2. **Type safety**: Builder API + pipeline verbs catch errors at query construction time
-3. **Performance**: DSL computes centrality on the multilayer graph once, pipelines transform in-memory
-4. **Expressiveness**: Each interface does what it's best at (DSL for graph queries, pipelines for data transformations)
+2. **Flexibility**: DSL for graph operations, pandas for everything else
+3. **Performance**: DSL computes centrality on the multilayer graph once, pandas transforms in-memory
+4. **Ecosystem**: Full pandas ecosystem available (plotting, statistics, export formats)
 
 **When to use each:**
 
 * **DSL alone**: Simple queries, need graph-specific operations (centrality, grouping, coverage)
-* **Pipelines alone**: Non-graph data, pure data transformations
-* **Combined (DSL → Pipeline)**: Complex analytical workflows, need both graph metrics and custom computations
+* **pandas alone**: Non-graph data, pure data transformations
+* **Combined (DSL → pandas)**: Complex analytical workflows, need both graph metrics and custom computations
 
-See :doc:`build_pipelines` for full pipeline API documentation and additional examples.
+See :doc:`build_pipelines` for the dplyr-style pipeline API (``nodes()``, ``edges()`` functions) which provides an alternative approach using chainable operations directly on networks.
 
 Next Steps
 ----------
