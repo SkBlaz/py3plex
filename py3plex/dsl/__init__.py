@@ -86,6 +86,8 @@ from .ast import (
     CompareStmt,
     NullModelStmt,
     PathStmt,
+    DynamicsStmt,
+    TrajectoriesStmt,
     ExtendedQuery,
 )
 
@@ -103,6 +105,9 @@ from .builder import (
     NullModelBuilder,
     P,
     PathBuilder,
+    # Dynamics builders
+    DynamicsBuilder,
+    TrajectoriesBuilder,
 )
 
 from .expressions import (
@@ -211,6 +216,8 @@ __all__ = [
     "CompareStmt",
     "NullModelStmt",
     "PathStmt",
+    "DynamicsStmt",
+    "TrajectoriesStmt",
     "ExtendedQuery",
     # Builder
     "Q",
@@ -226,6 +233,9 @@ __all__ = [
     "NullModelBuilder",
     "P",
     "PathBuilder",
+    # Dynamics Builders
+    "DynamicsBuilder",
+    "TrajectoriesBuilder",
     # Expression Builder
     "F",
     "FieldExpression",

@@ -1546,3 +1546,128 @@ def _apply_rename(
     
     return result
 
+
+
+# ==============================================================================
+# Dynamics & Trajectories Execution (Part D)
+# ==============================================================================
+
+
+def execute_dynamics_stmt(network: Any, stmt: Any) -> Any:
+    """Execute a DYNAMICS statement on a multilayer network.
+    
+    This function bridges the DSL dynamics API (Q.dynamics) with the existing
+    dynamics module (D.process). It translates the DynamicsStmt AST into
+    a SimulationStmt and executes it using the dynamics executor.
+    
+    Args:
+        network: Multilayer network object
+        stmt: DynamicsStmt from AST
+        
+    Returns:
+        SimulationResult with trajectory data
+        
+    Example:
+        >>> from py3plex.dsl import Q, L
+        >>> sim = (
+        ...     Q.dynamics("SIS", beta=0.3, mu=0.1)
+        ...      .on_layers(L["contacts"])
+        ...      .seed(0.01)
+        ...      .run(steps=100, replicates=10, track=["prevalence"])
+        ...      .execute(network)
+        ... )
+    """
+    # Import dynamics components
+    from py3plex.dynamics import run_simulation
+    from py3plex.dynamics.ast import SimulationStmt, InitialSpec
+    from py3plex.dsl.executor import _resolve_layers
+    
+    # Build initial conditions
+    initial_dict = {}
+    
+    # Handle seeding
+    if stmt.seed_query is not None:
+        # Execute the seed query to get nodes
+        seed_result = _execute_select(network, stmt.seed_query, params={})
+        initial_dict["infected"] = InitialSpec(query=stmt.seed_query)
+    elif stmt.seed_fraction is not None:
+        # Use fraction-based seeding
+        initial_dict["infected"] = InitialSpec(constant=stmt.seed_fraction)
+    else:
+        # Default: 1% infected
+        initial_dict["infected"] = InitialSpec(constant=0.01)
+    
+    # Determine measures to track
+    measures = stmt.track if stmt.track else ["prevalence"]
+    
+    # Build SimulationStmt
+    sim_stmt = SimulationStmt(
+        process_name=stmt.process_name,
+        layer_expr=stmt.layer_expr,
+        coupling={},  # Could be extended in future
+        params=stmt.params,
+        initial=initial_dict,
+        steps=stmt.steps,
+        measures=measures,
+        replicates=stmt.replicates,
+        seed=stmt.seed,
+        export_target=stmt.export_target,
+    )
+    
+    # Execute simulation using dynamics module
+    result = run_simulation(network, sim_stmt)
+    
+    return result
+
+
+def execute_trajectories_stmt(stmt: Any, context: Optional[Any] = None) -> QueryResult:
+    """Execute a TRAJECTORIES statement to query simulation results.
+    
+    This function queries over trajectory data from simulation results,
+    enabling temporal analysis and filtering of dynamical processes.
+    
+    Args:
+        stmt: TrajectoriesStmt from AST
+        context: Optional context containing simulation results
+        
+    Returns:
+        QueryResult with trajectory data
+        
+    Example:
+        >>> from py3plex.dsl import Q
+        >>> result = (
+        ...     Q.trajectories("sim_result")
+        ...      .at(50)
+        ...      .measure("peak_time", "final_state")
+        ...      .execute(context)
+        ... )
+    """
+    from .result import QueryResult
+    
+    # For now, this is a placeholder that demonstrates the API
+    # A full implementation would:
+    # 1. Retrieve simulation results from context using process_ref
+    # 2. Apply WHERE conditions to filter trajectories
+    # 3. Apply temporal filtering (at, during)
+    # 4. Compute requested measures on trajectories
+    # 5. Apply ordering and limits
+    # 6. Return as QueryResult
+    
+    if context is None:
+        raise DslExecutionError(
+            "Trajectory queries require a context with simulation results. "
+            "Pass the result of a Q.dynamics() execution as context."
+        )
+    
+    # Placeholder: Return empty result with metadata
+    result = QueryResult(
+        items=[],
+        attributes={},
+        target="trajectories",
+        meta={
+            "process_ref": stmt.process_ref,
+            "note": "Trajectory queries are under development"
+        }
+    )
+    
+    return result
