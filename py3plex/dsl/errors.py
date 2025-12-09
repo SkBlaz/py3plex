@@ -215,3 +215,38 @@ class GroupingError(DslError):
     def __init__(self, message: str, query: Optional[str] = None,
                  line: Optional[int] = None, column: Optional[int] = None):
         super().__init__(message, query, line, column)
+
+
+class DslMissingMetricError(DslError):
+    """Exception raised when a required metric is missing and cannot be autocomputed.
+    
+    This error occurs when:
+    - A query references a metric that hasn't been computed
+    - Autocompute is disabled or the metric is not autocomputable
+    - The metric is required for an operation (e.g., top_k, where clause)
+    
+    Attributes:
+        metric: The missing metric name
+        required_by: The operation that requires the metric
+        autocompute_enabled: Whether autocompute was enabled
+    """
+    
+    def __init__(self, metric: str, required_by: Optional[str] = None,
+                 autocompute_enabled: bool = True,
+                 query: Optional[str] = None, line: Optional[int] = None,
+                 column: Optional[int] = None):
+        self.metric = metric
+        self.required_by = required_by
+        self.autocompute_enabled = autocompute_enabled
+        
+        message = f"Missing required metric '{metric}'."
+        
+        if required_by:
+            message += f" Required by: {required_by}."
+        
+        if not autocompute_enabled:
+            message += f"\nAutocompute is disabled. Call .compute('{metric}') before using it."
+        else:
+            message += f"\nThis metric cannot be automatically computed. Call .compute('{metric}') explicitly."
+        
+        super().__init__(message, query, line, column)

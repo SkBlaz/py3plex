@@ -126,6 +126,7 @@ from .errors import (
     ParameterMissingError,
     TypeMismatchError,
     GroupingError,
+    DslMissingMetricError,
 )
 
 from .registry import measure_registry
@@ -244,6 +245,7 @@ __all__ = [
     "ParameterMissingError",
     "TypeMismatchError",
     "GroupingError",
+    "DslMissingMetricError",
     # Registry
     "measure_registry",
     # Operator Registry
