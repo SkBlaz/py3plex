@@ -471,6 +471,124 @@ class TestErrorHandling:
         
         with pytest.raises(DslExecutionError, match="context"):
             builder.execute(context=None)
+    
+    def test_trajectories_full_execution(self, sample_network):
+        """Test full trajectory query execution."""
+        # First, run a dynamics simulation
+        sim_result = (
+            Q.dynamics("SIS", beta=0.3, mu=0.1)
+             .seed(0.2)
+             .run(steps=20, replicates=3, track=["prevalence"])
+             .random_seed(42)
+             .execute(sample_network)
+        )
+        
+        # Query all trajectories
+        traj_result = (
+            Q.trajectories("sim_result")
+             .execute(sim_result)
+        )
+        
+        assert traj_result is not None
+        assert len(traj_result.items) > 0
+        assert "replicate" in traj_result.attributes
+        assert "t" in traj_result.attributes
+        assert "value" in traj_result.attributes
+        # Items should be tuples (replicate, t)
+        assert isinstance(traj_result.items[0], tuple)
+    
+    def test_trajectories_with_temporal_filter(self, sample_network):
+        """Test trajectory query with temporal filtering."""
+        # Run simulation
+        sim_result = (
+            Q.dynamics("SIS", beta=0.3, mu=0.1)
+             .seed(0.2)
+             .run(steps=20, replicates=2, track=["prevalence"])
+             .random_seed(42)
+             .execute(sample_network)
+        )
+        
+        # Query at specific time
+        traj_result = (
+            Q.trajectories("sim_result")
+             .at(10)
+             .execute(sim_result)
+        )
+        
+        assert traj_result is not None
+        assert len(traj_result.items) > 0
+        # Should only have data for t=10
+        for item in traj_result.items:
+            # item is (replicate, t)
+            assert item[1] == 10
+    
+    def test_trajectories_with_measures(self, sample_network):
+        """Test trajectory query with computed measures."""
+        # Run simulation
+        sim_result = (
+            Q.dynamics("SIS", beta=0.3, mu=0.1)
+             .seed(0.2)
+             .run(steps=20, replicates=2, track=["prevalence"])
+             .random_seed(42)
+             .execute(sample_network)
+        )
+        
+        # Query with measures
+        traj_result = (
+            Q.trajectories("sim_result")
+             .measure("peak_time", "final_state", "peak_value")
+             .execute(sim_result)
+        )
+        
+        assert traj_result is not None
+        assert "peak_time" in traj_result.attributes
+        assert "final_state" in traj_result.attributes
+        assert "peak_value" in traj_result.attributes
+    
+    def test_trajectories_with_where(self, sample_network):
+        """Test trajectory query with WHERE filtering."""
+        # Run simulation
+        sim_result = (
+            Q.dynamics("SIS", beta=0.3, mu=0.1)
+             .seed(0.2)
+             .run(steps=20, replicates=3, track=["prevalence"])
+             .random_seed(42)
+             .execute(sample_network)
+        )
+        
+        # Query with WHERE condition
+        traj_result = (
+            Q.trajectories("sim_result")
+             .where(replicate=1)
+             .execute(sim_result)
+        )
+        
+        assert traj_result is not None
+        # Should only have items from replicate 1
+        for item in traj_result.items:
+            # item is (replicate, t)
+            assert item[0] == 1
+    
+    def test_trajectories_with_limit(self, sample_network):
+        """Test trajectory query with limit."""
+        # Run simulation
+        sim_result = (
+            Q.dynamics("SIS", beta=0.3, mu=0.1)
+             .seed(0.2)
+             .run(steps=20, replicates=2, track=["prevalence"])
+             .random_seed(42)
+             .execute(sample_network)
+        )
+        
+        # Query with limit
+        traj_result = (
+            Q.trajectories("sim_result")
+             .limit(10)
+             .execute(sim_result)
+        )
+        
+        assert traj_result is not None
+        assert len(traj_result.items) == 10
 
 
 if __name__ == "__main__":

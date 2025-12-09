@@ -13,6 +13,7 @@ except ImportError:
     TYPE_CHECKING = False
 
 import networkx as nx
+import numpy as np
 
 from .ast import (
     Query,
@@ -1635,46 +1636,346 @@ def execute_trajectories_stmt(stmt: TrajectoriesStmt, context: Optional[Any] = N
     
     Args:
         stmt: TrajectoriesStmt from AST
-        context: Optional context containing simulation results
+        context: SimulationResult or dict containing simulation results
         
     Returns:
         QueryResult with trajectory data
         
     Example:
         >>> from py3plex.dsl import Q
+        >>> # First run a dynamics simulation
+        >>> sim_result = Q.dynamics("SIS", beta=0.3, mu=0.1).run(steps=100).execute(network)
+        >>> # Then query trajectories
         >>> result = (
         ...     Q.trajectories("sim_result")
         ...      .at(50)
         ...      .measure("peak_time", "final_state")
-        ...      .execute(context)
+        ...      .execute(sim_result)
         ... )
     """
     from .result import QueryResult
+    import numpy as np
     
-    # For now, this is a placeholder that demonstrates the API
-    # A full implementation would:
-    # 1. Retrieve simulation results from context using process_ref
-    # 2. Apply WHERE conditions to filter trajectories
-    # 3. Apply temporal filtering (at, during)
-    # 4. Compute requested measures on trajectories
-    # 5. Apply ordering and limits
-    # 6. Return as QueryResult
-    
+    # Validate context
     if context is None:
         raise DslExecutionError(
             "Trajectory queries require a context with simulation results. "
             "Pass the result of a Q.dynamics() execution as context."
         )
     
-    # Placeholder: Return empty result with metadata
+    # Extract SimulationResult from context
+    # Context can be either a SimulationResult directly or a dict with process_ref as key
+    sim_result = None
+    if hasattr(context, 'data') and hasattr(context, 'measures'):
+        # It's a SimulationResult object
+        sim_result = context
+    elif isinstance(context, dict) and stmt.process_ref in context:
+        # It's a dict mapping process names to results
+        sim_result = context[stmt.process_ref]
+    else:
+        raise DslExecutionError(
+            f"Cannot find simulation result for process '{stmt.process_ref}' in context. "
+            "Pass a SimulationResult object or dict with the process_ref as key."
+        )
+    
+    # Get the primary measure (typically 'prevalence' or first available)
+    primary_measure = sim_result.measures[0] if sim_result.measures else None
+    if primary_measure is None or primary_measure not in sim_result.data:
+        raise DslExecutionError("No trajectory data found in simulation result")
+    
+    trajectory_data = sim_result.data[primary_measure]  # Shape: (replicates, steps)
+    
+    # Ensure it's a numpy array
+    if not isinstance(trajectory_data, np.ndarray):
+        trajectory_data = np.array(trajectory_data)
+    
+    # Handle temporal filtering
+    time_offset = 0  # Track time offset for filtering
+    if stmt.temporal_context is not None:
+        tc = stmt.temporal_context
+        if tc.kind == "at":
+            # Single time point
+            t_idx = int(tc.t0)
+            time_offset = t_idx
+            if trajectory_data.ndim == 2:
+                trajectory_data = trajectory_data[:, t_idx:t_idx+1]  # Keep 2D shape
+            else:
+                trajectory_data = trajectory_data[t_idx:t_idx+1]
+        elif tc.kind == "during":
+            # Time range [t0, t1]
+            t0_idx = int(tc.t0) if tc.t0 is not None else 0
+            t1_idx = int(tc.t1) + 1 if tc.t1 is not None else trajectory_data.shape[-1]
+            time_offset = t0_idx
+            if trajectory_data.ndim == 2:
+                trajectory_data = trajectory_data[:, t0_idx:t1_idx]
+            else:
+                trajectory_data = trajectory_data[t0_idx:t1_idx]
+    
+    # Build items and attributes for QueryResult
+    # Items are simple tuples: (replicate, t) for trajectory points
+    # This makes them hashable and compatible with QueryResult.to_pandas()
+    items = []
+    attributes = {}
+    
+    # Store item metadata for WHERE filtering
+    item_metadata = []  # List of dicts with replicate, t, value
+    
+    if trajectory_data.ndim == 1:
+        # Single replicate: (steps,)
+        for t_idx in range(len(trajectory_data)):
+            items.append((0, t_idx + time_offset))
+            item_metadata.append({
+                "replicate": 0,
+                "t": t_idx + time_offset,
+                "value": float(trajectory_data[t_idx])
+            })
+    elif trajectory_data.ndim == 2:
+        # Multiple replicates: (replicates, steps)
+        for rep_idx in range(trajectory_data.shape[0]):
+            for t_idx in range(trajectory_data.shape[1]):
+                items.append((rep_idx, t_idx + time_offset))
+                item_metadata.append({
+                    "replicate": rep_idx,
+                    "t": t_idx + time_offset,
+                    "value": float(trajectory_data[rep_idx, t_idx])
+                })
+    
+    # Apply WHERE conditions if present
+    if stmt.where is not None:
+        filtered_items = []
+        filtered_metadata = []
+        for item, metadata in zip(items, item_metadata):
+            if _evaluate_trajectory_condition(metadata, stmt.where):
+                filtered_items.append(item)
+                filtered_metadata.append(metadata)
+        items = filtered_items
+        item_metadata = filtered_metadata
+    
+    # Compute requested measures
+    if stmt.measures:
+        for measure_name in stmt.measures:
+            measure_values = _compute_trajectory_measure(
+                item_metadata, trajectory_data, measure_name, sim_result
+            )
+            # Use items (tuples) as keys
+            attributes[measure_name] = {items[i]: measure_values[i] for i in range(len(items))}
+    
+    # Add basic attributes - use items (tuples) as keys
+    attributes["replicate"] = {items[i]: metadata["replicate"] for i, metadata in enumerate(item_metadata)}
+    attributes["t"] = {items[i]: metadata["t"] for i, metadata in enumerate(item_metadata)}
+    attributes["value"] = {items[i]: metadata["value"] for i, metadata in enumerate(item_metadata)}
+    
+    # Apply ordering
+    if stmt.order_by:
+        items, item_metadata = _apply_trajectory_ordering(items, item_metadata, attributes, stmt.order_by)
+    
+    # Apply limit
+    if stmt.limit is not None:
+        items = items[:stmt.limit]
+        item_metadata = item_metadata[:stmt.limit]
+        # Also trim attributes to match
+        for attr_name in list(attributes.keys()):
+            if isinstance(attributes[attr_name], dict):
+                new_attr = {}
+                for item in items:
+                    if item in attributes[attr_name]:
+                        new_attr[item] = attributes[attr_name][item]
+                attributes[attr_name] = new_attr
+    
+    # Create QueryResult
     result = QueryResult(
-        items=[],
-        attributes={},
+        items=items,
+        attributes=attributes,
         target="trajectories",
         meta={
             "process_ref": stmt.process_ref,
-            "note": "Trajectory queries are under development"
+            "process_name": sim_result.process_name,
+            "measures": sim_result.measures,
+            "num_items": len(items),
         }
     )
     
     return result
+
+
+def _evaluate_trajectory_condition(item: Dict[str, Any], where: ConditionExpr) -> bool:
+    """Evaluate WHERE conditions on a trajectory item.
+    
+    Args:
+        item: Trajectory item dict with replicate, t, value
+        where: ConditionExpr to evaluate
+        
+    Returns:
+        True if condition matches, False otherwise
+    """
+    # Simple evaluation - check each atom
+    results = []
+    for atom in where.atoms:
+        if atom.is_comparison:
+            cmp = atom.comparison
+            left_val = item.get(cmp.left)
+            right_val = cmp.right
+            
+            if left_val is None:
+                results.append(False)
+                continue
+            
+            # Evaluate comparison
+            if cmp.op == "=":
+                results.append(left_val == right_val)
+            elif cmp.op == ">":
+                results.append(left_val > right_val)
+            elif cmp.op == ">=":
+                results.append(left_val >= right_val)
+            elif cmp.op == "<":
+                results.append(left_val < right_val)
+            elif cmp.op == "<=":
+                results.append(left_val <= right_val)
+            elif cmp.op == "!=":
+                results.append(left_val != right_val)
+            else:
+                results.append(False)
+        else:
+            # For non-comparison atoms, default to True
+            results.append(True)
+    
+    # Combine results with operators (default AND)
+    if not results:
+        return True
+    
+    result = results[0]
+    for i, op in enumerate(where.ops):
+        if i + 1 < len(results):
+            if op == "AND":
+                result = result and results[i + 1]
+            elif op == "OR":
+                result = result or results[i + 1]
+    
+    return result
+
+
+def _compute_trajectory_measure(
+    item_metadata: List[Dict[str, Any]],
+    trajectory_data: np.ndarray,
+    measure_name: str,
+    sim_result: Any
+) -> Dict[int, Any]:
+    """Compute a trajectory measure.
+    
+    Args:
+        item_metadata: List of item metadata dicts
+        trajectory_data: Raw trajectory array (post-filtering)
+        measure_name: Name of measure to compute
+        sim_result: SimulationResult object
+        
+    Returns:
+        Dict mapping item index to measure value
+    """
+    import numpy as np
+    
+    # Get the original full trajectory data for computing measures
+    primary_measure = sim_result.measures[0]
+    full_trajectory_data = sim_result.data[primary_measure]
+    if not isinstance(full_trajectory_data, np.ndarray):
+        full_trajectory_data = np.array(full_trajectory_data)
+    
+    measure_values = {}
+    
+    if measure_name == "peak_time":
+        # Time of maximum value for each replicate
+        if full_trajectory_data.ndim == 2:
+            for i, metadata in enumerate(item_metadata):
+                rep_idx = metadata["replicate"]
+                peak_t = int(np.argmax(full_trajectory_data[rep_idx, :]))
+                measure_values[i] = peak_t
+        else:
+            peak_t = int(np.argmax(full_trajectory_data))
+            for i in range(len(item_metadata)):
+                measure_values[i] = peak_t
+    
+    elif measure_name == "final_state":
+        # Final value for each replicate
+        if full_trajectory_data.ndim == 2:
+            for i, metadata in enumerate(item_metadata):
+                rep_idx = metadata["replicate"]
+                final_val = float(full_trajectory_data[rep_idx, -1])
+                measure_values[i] = final_val
+        else:
+            final_val = float(full_trajectory_data[-1])
+            for i in range(len(item_metadata)):
+                measure_values[i] = final_val
+    
+    elif measure_name == "peak_value":
+        # Maximum value for each replicate
+        if full_trajectory_data.ndim == 2:
+            for i, metadata in enumerate(item_metadata):
+                rep_idx = metadata["replicate"]
+                peak_val = float(np.max(full_trajectory_data[rep_idx, :]))
+                measure_values[i] = peak_val
+        else:
+            peak_val = float(np.max(full_trajectory_data))
+            for i in range(len(item_metadata)):
+                measure_values[i] = peak_val
+    
+    elif measure_name == "mean_value":
+        # Mean value over time for each replicate
+        if full_trajectory_data.ndim == 2:
+            for i, metadata in enumerate(item_metadata):
+                rep_idx = metadata["replicate"]
+                mean_val = float(np.mean(full_trajectory_data[rep_idx, :]))
+                measure_values[i] = mean_val
+        else:
+            mean_val = float(np.mean(full_trajectory_data))
+            for i in range(len(item_metadata)):
+                measure_values[i] = mean_val
+    
+    else:
+        # Unknown measure - return zeros
+        for i in range(len(item_metadata)):
+            measure_values[i] = 0.0
+    
+    return measure_values
+
+
+def _apply_trajectory_ordering(
+    items: List[Tuple[int, int]],
+    item_metadata: List[Dict[str, Any]],
+    attributes: Dict[str, Dict],
+    order_specs: List[OrderItem]
+) -> Tuple[List[Tuple[int, int]], List[Dict[str, Any]]]:
+    """Apply ordering to trajectory items.
+    
+    Args:
+        items: List of (replicate, t) tuples
+        item_metadata: List of metadata dicts
+        attributes: Computed attributes dict
+        order_specs: List of OrderItem specifications
+        
+    Returns:
+        Tuple of (sorted items, sorted metadata)
+    """
+    if not order_specs:
+        return items, item_metadata
+    
+    # Create list of (item, metadata, sort_keys) tuples
+    indexed_items = []
+    for i, (item, metadata) in enumerate(zip(items, item_metadata)):
+        sort_keys = []
+        for order_spec in order_specs:
+            key = order_spec.key
+            # Try to get value from metadata first, then attributes
+            if key in metadata:
+                val = metadata[key]
+            elif key in attributes and item in attributes[key]:
+                val = attributes[key][item]
+            else:
+                val = 0  # Default
+            sort_keys.append(val)
+        indexed_items.append((item, metadata, tuple(sort_keys)))
+    
+    # Sort by keys
+    reverse = order_specs[0].desc if order_specs else False
+    indexed_items.sort(key=lambda x: x[2], reverse=reverse)
+    
+    # Return sorted items and metadata
+    return [x[0] for x in indexed_items], [x[1] for x in indexed_items]
