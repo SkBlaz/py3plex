@@ -194,7 +194,25 @@ def _compute_pagerank(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any, fl
 @measure_registry.register("clustering", aliases=["clustering_coefficient"],
                           description="Local clustering coefficient")
 def _compute_clustering(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any, float]:
-    """Compute clustering coefficient for nodes."""
+    """Compute clustering coefficient for nodes.
+    
+    Note: NetworkX clustering is not implemented for MultiGraphs.
+    If G is a MultiGraph, we convert it to a simple Graph by removing
+    parallel edges (keeping the edge with maximum weight if weights exist).
+    """
+    # Convert to simple graph if needed
+    if isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
+        simple_G = nx.Graph()
+        for u, v, data in G.edges(data=True):
+            if simple_G.has_edge(u, v):
+                # If edge already exists, keep the one with maximum weight
+                existing_weight = simple_G[u][v].get('weight', 1)
+                new_weight = data.get('weight', 1)
+                simple_G[u][v]['weight'] = max(existing_weight, new_weight)
+            else:
+                simple_G.add_edge(u, v, weight=data.get('weight', 1))
+        G = simple_G
+    
     if nodes is not None:
         return nx.clustering(G, nodes)
     return nx.clustering(G)

@@ -980,6 +980,21 @@ def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -
     if measure in ('communities', 'community'):
         return _compute_communities(G)
     
+    # Helper function for clustering that handles MultiGraphs
+    def _clustering_with_multigraph_support(g):
+        """Compute clustering, converting MultiGraph to Graph if needed."""
+        if isinstance(g, (nx.MultiGraph, nx.MultiDiGraph)):
+            simple_g = nx.Graph()
+            for u, v, data in g.edges(data=True):
+                if simple_g.has_edge(u, v):
+                    existing_weight = simple_g[u][v].get('weight', 1)
+                    new_weight = data.get('weight', 1)
+                    simple_g[u][v]['weight'] = max(existing_weight, new_weight)
+                else:
+                    simple_g.add_edge(u, v, weight=data.get('weight', 1))
+            g = simple_g
+        return nx.clustering(g)
+    
     # Map measure names to NetworkX functions
     measure_map = {
         'degree': lambda g: dict(g.degree()),
@@ -988,7 +1003,7 @@ def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -
         'closeness_centrality': nx.closeness_centrality,
         'eigenvector_centrality': lambda g: nx.eigenvector_centrality(g, max_iter=1000),
         'pagerank': nx.pagerank,
-        'clustering': nx.clustering,
+        'clustering': _clustering_with_multigraph_support,
         'betweenness': nx.betweenness_centrality,
         'closeness': nx.closeness_centrality,
         'eigenvector': lambda g: nx.eigenvector_centrality(g, max_iter=1000),
