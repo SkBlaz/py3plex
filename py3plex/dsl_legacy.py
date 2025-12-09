@@ -1134,25 +1134,39 @@ def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[s
     
     # Find WHERE and COMPUTE clauses
     where_idx = None
-    compute_idx = None
+    compute_indices = []  # Track all COMPUTE positions
     
     for i in range(idx, len(tokens)):
         if tokens[i].upper() == 'WHERE':
             where_idx = i
         elif tokens[i].upper() == 'COMPUTE':
-            compute_idx = i
+            compute_indices.append(i)
     
     # Parse WHERE conditions
     conditions = []
     if where_idx is not None:
         conditions = _parse_where_clause(tokens, where_idx)
     
-    # Parse COMPUTE measures
+    # Parse COMPUTE measures (support both repeated and comma-separated)
     measures = []
-    if compute_idx is not None:
-        measures = tokens[compute_idx + 1:]
-        # Filter out semicolons
-        measures = [m for m in measures if m != ';']
+    if compute_indices:
+        # Collect all tokens after each COMPUTE keyword
+        for i, compute_idx in enumerate(compute_indices):
+            start = compute_idx + 1
+            # Find end: next COMPUTE, WHERE, or end of tokens
+            end = len(tokens)
+            
+            # Check for next COMPUTE
+            if i + 1 < len(compute_indices):
+                end = compute_indices[i + 1]
+            
+            # Extract measures between this COMPUTE and the next marker
+            measure_tokens = tokens[start:end]
+            
+            # Filter out commas and semicolons, add valid measure names
+            for token in measure_tokens:
+                if token not in [',', ';', 'WHERE']:
+                    measures.append(token)
     
     # Execute query
     result = {
