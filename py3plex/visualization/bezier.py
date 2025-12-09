@@ -144,7 +144,7 @@ def draw_bezier(
                     + str((x1, y1))
                 )
         else:
-            msg = "Unknown linemode '{linemode}' in curve calculation (value must be one of 'upper', 'bottom', 'both'"
+            msg = "Unknown linemode '{lm}' in curve calculation (value must be one of 'upper', 'bottom', 'both'"
             raise ValueError(msg.format(lm=linemode))
         return dfx, dfy
 
