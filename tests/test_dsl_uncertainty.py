@@ -266,7 +266,8 @@ class TestDSLUncertaintyEdgeCases:
     def test_uncertainty_single_node(self):
         """Test uncertainty with single node network."""
         net = multinet.multi_layer_network(directed=False, verbose=False)
-        net.add_edges([["a", "L0", "a", "L0", 1.0]], input_type="list")
+        # Single node with one edge to another node
+        net.add_edges([["a", "L0", "b", "L0", 1.0]], input_type="list")
         
         result = (
             Q.nodes()

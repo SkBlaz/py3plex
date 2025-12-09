@@ -5,6 +5,7 @@ multilayer networks. It supports temporal queries via the TemporalMultinetView w
 """
 
 import copy
+import logging
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
 
 try:
@@ -53,6 +54,15 @@ from py3plex.uncertainty import (
     estimate_uncertainty,
     ResamplingStrategy,
 )
+
+
+# Resampling method mapping for uncertainty estimation
+_RESAMPLING_METHOD_MAP = {
+    "bootstrap": ResamplingStrategy.BOOTSTRAP,
+    "perturbation": ResamplingStrategy.PERTURBATION,
+    "seed": ResamplingStrategy.SEED,
+    "jackknife": ResamplingStrategy.JACKKNIFE,
+}
 
 # Centrality aliases mapping for smart defaults
 # Maps common attribute names to their canonical centrality metric names
@@ -338,7 +348,6 @@ def _ensure_attribute(
                 return
             except Exception as e:
                 # If auto-compute fails, fall through to error
-                import logging
                 logging.getLogger(__name__).debug(
                     f"Failed to auto-compute '{attr_name}': {e}"
                 )
@@ -391,13 +400,7 @@ def _compute_measure_with_uncertainty(
     # Uncertainty requested - use estimate_uncertainty
     # Determine resampling strategy
     method = compute_item.method or "perturbation"
-    method_map = {
-        "bootstrap": ResamplingStrategy.BOOTSTRAP,
-        "perturbation": ResamplingStrategy.PERTURBATION,
-        "seed": ResamplingStrategy.SEED,
-        "jackknife": ResamplingStrategy.JACKKNIFE,
-    }
-    resampling = method_map.get(method.lower(), ResamplingStrategy.PERTURBATION)
+    resampling = _RESAMPLING_METHOD_MAP.get(method.lower(), ResamplingStrategy.PERTURBATION)
     
     # Get number of samples
     n_samples = compute_item.n_samples or 50
@@ -412,6 +415,7 @@ def _compute_measure_with_uncertainty(
             g = net
         
         # Only compute on nodes that exist in the graph
+        # Use generator to avoid creating full list in memory for large networks
         valid_items = [item for item in items if item in g]
         if not valid_items:
             return {}
@@ -502,7 +506,6 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     if operator is not None:
                         # Custom operators don't support uncertainty yet
                         if compute_item.uncertainty:
-                            import logging
                             logging.getLogger(__name__).warning(
                                 f"Uncertainty not supported for custom operator '{compute_item.name}'"
                             )
@@ -536,7 +539,6 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     raise
                 except Exception as e:
                     # Log specific error and continue with other measures
-                    import logging
                     logging.getLogger(__name__).warning(
                         f"Error computing measure '{compute_item.name}': {e}"
                     )
@@ -560,7 +562,6 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     raise
                 except Exception as e:
                     # Log specific error and continue with other measures
-                    import logging
                     logging.getLogger(__name__).warning(
                         f"Error computing edge measure '{compute_item.name}': {e}"
                     )

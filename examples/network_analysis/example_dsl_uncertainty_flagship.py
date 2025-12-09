@@ -69,6 +69,11 @@ def main():
     print("Hub nodes with uncertainty bounds:")
     print("-" * 70)
     
+    # CI level from the query (0.95 -> quantiles at 0.025 and 0.975)
+    ci = 0.95
+    lower_q = (1 - ci) / 2  # 0.025 for 95% CI
+    upper_q = 1 - lower_q   # 0.975 for 95% CI
+    
     for idx, row in df.iterrows():
         node_id = row['id']
         bc_info = row.get('betweenness_centrality')
@@ -81,11 +86,11 @@ def main():
             bc_mean = bc_info['mean']
             bc_std = bc_info.get('std', 0)
             bc_quantiles = bc_info.get('quantiles', {})
-            bc_low = bc_quantiles.get(0.025, bc_mean)
-            bc_high = bc_quantiles.get(0.975, bc_mean)
+            bc_low = bc_quantiles.get(lower_q, bc_mean)
+            bc_high = bc_quantiles.get(upper_q, bc_mean)
             
             print(f"  Betweenness: {bc_mean:.4f} ± {bc_std:.4f}")
-            print(f"  95% CI: [{bc_low:.4f}, {bc_high:.4f}]")
+            print(f"  {int(ci*100)}% CI: [{bc_low:.4f}, {bc_high:.4f}]")
         else:
             # Handle scalar format (without uncertainty)
             print(f"  Betweenness: {bc_info}")
