@@ -187,7 +187,11 @@ class BooleanExpression:
             # For complex expressions, we can't easily negate without adding NOT to AST
             raise NotImplementedError(
                 "Negation of complex expressions is not yet supported. "
-                "Try rewriting using inverted operators or applying De Morgan's laws."
+                "Try rewriting using inverted operators or applying De Morgan's laws. "
+                "For example:\n"
+                "  Instead of: ~((F.degree > 5) & (F.layer == 'social'))\n"
+                "  Use: (F.degree <= 5) | (F.layer != 'social')\n"
+                "  Or: ~(F.degree > 5) | ~(F.layer == 'social')"
             )
         
         return self._condition
