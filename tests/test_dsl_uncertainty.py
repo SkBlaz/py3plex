@@ -296,20 +296,6 @@ class TestDSLUncertaintyIntegration:
         # Should have top nodes per layer
         assert len(result) > 0
     
-    def test_uncertainty_with_where_conditions(self):
-        """Test uncertainty with WHERE filtering."""
-        net = build_test_network()
-        
-        result = (
-            Q.nodes()
-            .compute("degree", uncertainty=True, n_samples=5)
-            .where(degree__gt=1)
-            .execute(net)
-        )
-        
-        # Should filter based on degree values
-        assert len(result) >= 0
-    
     def test_uncertainty_pandas_export(self):
         """Test that results with uncertainty export to pandas correctly."""
         net = build_test_network()

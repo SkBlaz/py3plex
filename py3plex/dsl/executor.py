@@ -547,11 +547,18 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             # Edge measures - new implementation
             for compute_item in select.compute:
                 try:
+                    # Edge measures don't support uncertainty yet
+                    if compute_item.uncertainty:
+                        logging.getLogger(__name__).warning(
+                            f"Uncertainty not yet supported for edge measure '{compute_item.name}'. "
+                            "Computing deterministic value only."
+                        )
+                    
                     # Check if this is an edge-specific measure
                     measure_fn = measure_registry.get(compute_item.name, target="edges")
                     result_name = compute_item.result_name
                     
-                    # Compute the measure on edges
+                    # Compute the measure on edges (always deterministic for now)
                     values = measure_fn(G, items)
                     attributes[result_name] = values
                 except UnknownMeasureError:
