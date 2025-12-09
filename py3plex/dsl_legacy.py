@@ -51,6 +51,7 @@ import networkx as nx
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from dataclasses import dataclass, field
 from py3plex.logging_config import get_logger
+from py3plex.dsl.registry import _convert_multigraph_to_simple
 
 # Import community detection algorithm (Louvain)
 try:
@@ -983,16 +984,7 @@ def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -
     # Helper function for clustering that handles MultiGraphs
     def _clustering_with_multigraph_support(g):
         """Compute clustering, converting MultiGraph to Graph if needed."""
-        if isinstance(g, (nx.MultiGraph, nx.MultiDiGraph)):
-            simple_g = nx.Graph()
-            for u, v, data in g.edges(data=True):
-                if simple_g.has_edge(u, v):
-                    existing_weight = simple_g[u][v].get('weight', 1)
-                    new_weight = data.get('weight', 1)
-                    simple_g[u][v]['weight'] = max(existing_weight, new_weight)
-                else:
-                    simple_g.add_edge(u, v, weight=data.get('weight', 1))
-            g = simple_g
+        g = _convert_multigraph_to_simple(g)
         return nx.clustering(g)
     
     # Map measure names to NetworkX functions
