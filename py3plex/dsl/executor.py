@@ -452,11 +452,20 @@ def _evaluate_layer_expr(layer_expr: LayerExpr, network: Any) -> Set[str]:
 
 
 def _filter_by_layers(items: List[Any], active_layers: Set[str], target: Target) -> List[Any]:
-    """Filter items by layer membership."""
+    """Filter items by layer membership.
+    
+    Args:
+        items: List of items (nodes or edges)
+        active_layers: Set of layer names (as strings)
+        target: Target type (NODES or EDGES)
+        
+    Returns:
+        Filtered list of items
+    """
     if target == Target.NODES:
         # Nodes are tuples (node_id, layer)
         return [item for item in items 
-                if isinstance(item, tuple) and len(item) >= 2 and item[1] in active_layers]
+                if isinstance(item, tuple) and len(item) >= 2 and str(item[1]) in active_layers]
     else:
         # Edges are tuples of node tuples
         filtered = []
@@ -465,7 +474,7 @@ def _filter_by_layers(items: List[Any], active_layers: Set[str], target: Target)
                 source, target_node = item[0], item[1]
                 if isinstance(source, tuple) and isinstance(target_node, tuple):
                     if len(source) >= 2 and len(target_node) >= 2:
-                        if source[1] in active_layers or target_node[1] in active_layers:
+                        if str(source[1]) in active_layers or str(target_node[1]) in active_layers:
                             filtered.append(item)
         return filtered
 
