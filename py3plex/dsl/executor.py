@@ -34,7 +34,24 @@ from .errors import (
     ParameterMissingError,
     UnknownLayerError,
     UnknownMeasureError,
+    UnknownAttributeError,
+    GroupingError,
 )
+
+
+# Centrality aliases mapping for smart defaults
+# Maps common attribute names to their canonical centrality metric names
+CENTRALITY_ALIASES = {
+    "degree": "degree",
+    "degree_centrality": "degree",
+    "betweenness": "betweenness",
+    "betweenness_centrality": "betweenness",
+    "closeness": "closeness",
+    "closeness_centrality": "closeness",
+    "eigenvector": "eigenvector",
+    "eigenvector_centrality": "eigenvector",
+    "pagerank": "pagerank",
+}
 
 
 def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = None) -> Union[QueryResult, ExecutionPlan]:
@@ -243,6 +260,96 @@ def _get_measure_complexity(measure: str, n: int, m: int) -> str:
     return complexities.get(measure, "Unknown")
 
 
+def _ensure_attribute(
+    attr_name: str,
+    attributes: Dict[str, Dict],
+    items: List[Any],
+    network: Any,
+    G: nx.Graph,
+    select: SelectStmt,
+    auto_compute: bool = True,
+) -> None:
+    """Ensure that an attribute exists in the attributes dict.
+    
+    This implements smart defaults by auto-computing centrality metrics
+    when they are referenced but not yet computed.
+    
+    Args:
+        attr_name: The attribute name to ensure exists
+        attributes: The attributes dictionary (modified in place)
+        items: List of items (nodes or edges)
+        network: Multilayer network
+        G: Core network graph
+        select: SELECT statement
+        auto_compute: If True, auto-compute recognized centralities
+        
+    Raises:
+        UnknownAttributeError: If attribute is not found and cannot be auto-computed
+    """
+    # Check if attribute already exists
+    if attr_name in attributes:
+        return
+    
+    # For edges, check if this is an edge data attribute (like "weight")
+    # Don't try to auto-compute centralities for edge attributes
+    if select.target == Target.EDGES:
+        # Check if attribute exists in edge data
+        for item in items:
+            if isinstance(item, tuple) and len(item) >= 3 and isinstance(item[2], dict):
+                if attr_name in item[2]:
+                    # This is a valid edge attribute, don't auto-compute
+                    return
+    
+    # Check if this is a known centrality that can be auto-computed
+    if auto_compute and attr_name in CENTRALITY_ALIASES:
+        # Get the canonical metric name
+        metric_name = CENTRALITY_ALIASES[attr_name]
+        
+        # Auto-compute the centrality
+        if select.target == Target.NODES:
+            try:
+                # Create subgraph for computation
+                subgraph = G.subgraph([item for item in items if item in G]).copy()
+                
+                # Get measure function
+                measure_fn = measure_registry.get(metric_name)
+                values = measure_fn(subgraph, items)
+                
+                # Store with the requested attribute name
+                attributes[attr_name] = values
+                
+                # Also mark that this was implicitly computed
+                # (for potential use in explain() in the future)
+                return
+            except Exception as e:
+                # If auto-compute fails, fall through to error
+                import logging
+                logging.getLogger(__name__).debug(
+                    f"Failed to auto-compute '{attr_name}': {e}"
+                )
+    
+    # Attribute not found and cannot be auto-computed
+    # Build list of available attributes
+    available = list(attributes.keys())
+    
+    # Add known centrality metrics that could be auto-computed
+    available.extend(CENTRALITY_ALIASES.keys())
+    
+    # Also check for node attributes in the graph
+    if select.target == Target.NODES and len(items) > 0:
+        # Get node attributes from first item if it exists in graph
+        first_item = items[0]
+        if first_item in G:
+            node_attrs = list(G.nodes[first_item].keys())
+            available.extend(node_attrs)
+    
+    # Remove duplicates and sort
+    available = sorted(set(available))
+    
+    # Raise error with helpful suggestions
+    raise UnknownAttributeError(attr_name, available)
+
+
 def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None) -> QueryResult:
     """Execute a SELECT statement.
     
@@ -369,6 +476,25 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     else:
         # Step 5: Apply global ORDER BY (only when not grouping)
         if select.order_by:
+            # Smart defaults: Ensure attributes exist before ordering
+            for order_item in select.order_by:
+                # Skip validation for attributes that will be created by summarize
+                if select.summarize_aggs and order_item.key in select.summarize_aggs:
+                    continue
+                
+                # Skip validation for attributes that will be created by rename
+                if select.rename_map and order_item.key in select.rename_map:
+                    continue
+                
+                _ensure_attribute(
+                    attr_name=order_item.key,
+                    attributes=attributes,
+                    items=items,
+                    network=network,
+                    G=G,
+                    select=select,
+                    auto_compute=True,
+                )
             items = _apply_ordering(items, select.order_by, attributes)
     
     # Step 5.5: Apply post-processing operations (summarize, rank, zscore, distinct, select, drop, rename)
@@ -788,11 +914,44 @@ def _apply_grouping_and_coverage(
         DslExecutionError: If configuration is invalid
     """
     # Validate grouping is set up when needed
-    if not select.group_by and (select.limit_per_group is not None or select.coverage_mode):
-        raise DslExecutionError(
-            "Grouping must be configured (via .group_by() or .per_layer()) "
-            "before using .top_k() or .coverage()"
-        )
+    if not select.group_by:
+        # Check for coverage specifically to provide better error
+        if select.coverage_mode:
+            raise GroupingError(
+                "coverage(...) requires an active grouping (e.g. per_layer(), group_by('layer')). "
+                "No grouping is currently active.\n"
+                "Example:\n"
+                "    Q.nodes().from_layers(L[\"*\"])\n"
+                "        .per_layer().top_k(5, \"degree\").end_grouping()\n"
+                "        .coverage(mode=\"all\")"
+            )
+        # Generic check for other operations
+        if select.limit_per_group is not None:
+            raise DslExecutionError(
+                "Grouping must be configured (via .group_by() or .per_layer()) "
+                "before using .top_k()"
+            )
+    
+    # Smart defaults: Ensure attributes exist before ordering
+    if select.order_by:
+        for order_item in select.order_by:
+            # Skip validation for attributes that will be created by summarize
+            if select.summarize_aggs and order_item.key in select.summarize_aggs:
+                continue
+            
+            # Skip validation for attributes that will be created by rename
+            if select.rename_map and order_item.key in select.rename_map:
+                continue
+            
+            _ensure_attribute(
+                attr_name=order_item.key,
+                attributes=attributes,
+                items=items,
+                network=network,
+                G=G,
+                select=select,
+                auto_compute=True,
+            )
     
     # Build groups
     groups: Dict[Any, List[Any]] = {}

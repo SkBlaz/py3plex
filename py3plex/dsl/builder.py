@@ -495,8 +495,14 @@ class QueryBuilder:
         
         # Validate that grouping is set up
         if not self._select.group_by:
-            raise ValueError(
-                "coverage() requires grouping. Call .group_by() or .per_layer() first."
+            from .errors import GroupingError
+            raise GroupingError(
+                "coverage() requires an active grouping (e.g. per_layer(), group_by('layer')). "
+                "No grouping is currently active.\n"
+                "Example:\n"
+                "    Q.nodes().from_layers(L[\"*\"])\n"
+                "        .per_layer().top_k(5, \"degree\").end_grouping()\n"
+                "        .coverage(mode=\"all\")"
             )
         
         self._select.coverage_mode = mode
