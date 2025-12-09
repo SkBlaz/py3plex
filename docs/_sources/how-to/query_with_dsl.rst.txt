@@ -1094,6 +1094,186 @@ This pattern is often combined with community detection, dynamics simulation, or
     plt.savefig("core_network_communities.png", dpi=300)
     plt.close()
 
+Pattern: Per-Layer Top-K with Coverage (Multi-Layer Hub Detection)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Find nodes that are top-k hubs (by any centrality metric) **across all layers**. This pattern is essential for identifying nodes that maintain high influence in the entire multilayer structure, not just in isolated layers.
+
+**The Problem:**
+
+Traditional approaches require manual loops over layers:
+
+.. code-block:: python
+
+    # Old approach: manual iteration
+    layer_top = {}
+    for layer in network.layers:
+        res = (
+            Q.nodes()
+             .from_layers(L[str(layer)])
+             .where(degree__gt=1)
+             .compute("betweenness_centrality")
+             .order_by("-betweenness_centrality")
+             .limit(5)
+             .execute(network)
+        )
+        layer_top[layer] = set(res.to_pandas()["id"])
+    
+    # Find intersection
+    multi_hubs = set.intersection(*layer_top.values())
+
+**The Solution: Grouping and Coverage API**
+
+The new DSL supports per-layer operations in a single query:
+
+.. code-block:: python
+
+    from py3plex.core import random_generators
+    from py3plex.dsl import Q, L
+    
+    # Generate example network
+    net = random_generators.random_multilayer_ER(n=200, l=3, p=0.05, directed=False)
+    
+    # Find nodes that are top-5 betweenness hubs in ALL layers (single query!)
+    multi_hubs = (
+        Q.nodes()
+         .from_layers(L["*"])                   # wildcard: all layers
+         .where(degree__gt=1)
+         .compute("degree", "betweenness_centrality")
+         .per_layer()                           # group by layer
+            .top_k(5, "betweenness_centrality") # top 5 per layer
+         .end_grouping()
+         .coverage(mode="all")                  # nodes in top-5 in ALL layers
+         .execute(net)
+    )
+    
+    df = multi_hubs.to_pandas()
+    print(f"Multi-layer hubs (in top-5 of ALL layers): {set(df['id'])}")
+    print(f"Count: {len(df['id'].unique())}")
+    print(f"\nDetailed results:")
+    print(df[['id', 'layer', 'degree', 'betweenness_centrality']].to_string())
+
+**Expected output:**
+
+.. code-block:: text
+
+    Multi-layer hubs (in top-5 of ALL layers): {23, 45, 67}
+    Count: 3
+    
+    Detailed results:
+        id  layer  degree  betweenness_centrality
+    0   23      0      12                  0.2456
+    1   23      1      14                  0.2891
+    2   23      2      11                  0.2234
+    3   45      0      13                  0.2567
+    4   45      1      11                  0.2123
+    5   45      2      15                  0.3012
+    6   67      0      10                  0.2001
+    7   67      1      12                  0.2345
+    8   67      2      13                  0.2678
+
+**Coverage Modes:**
+
+The ``coverage()`` method supports multiple modes for cross-layer analysis:
+
+.. code-block:: python
+
+    # Mode 1: "all" - intersection (nodes in top-k of ALL layers)
+    all_layers_hubs = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree")
+         .per_layer()
+            .top_k(10, "degree")
+         .end_grouping()
+         .coverage(mode="all")
+         .execute(net)
+    )
+    
+    # Mode 2: "any" - union (nodes in top-k of AT LEAST ONE layer)
+    any_layer_hubs = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree")
+         .per_layer()
+            .top_k(10, "degree")
+         .end_grouping()
+         .coverage(mode="any")
+         .execute(net)
+    )
+    
+    # Mode 3: "at_least" - nodes in top-k of at least K layers
+    two_layer_hubs = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("betweenness_centrality")
+         .per_layer()
+            .top_k(5, "betweenness_centrality")
+         .end_grouping()
+         .coverage(mode="at_least", k=2)  # In at least 2 layers
+         .execute(net)
+    )
+    
+    # Mode 4: "exact" - nodes in top-k of exactly K layers (layer-specific hubs)
+    single_layer_specialists = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree")
+         .per_layer()
+            .top_k(10, "degree")
+         .end_grouping()
+         .coverage(mode="exact", k=1)  # Exactly 1 layer
+         .execute(net)
+    )
+    
+    print(f"Hubs in ALL layers: {len(all_layers_hubs.to_pandas()['id'].unique())}")
+    print(f"Hubs in ANY layer: {len(any_layer_hubs.to_pandas()['id'].unique())}")
+    print(f"Hubs in ≥2 layers: {len(two_layer_hubs.to_pandas()['id'].unique())}")
+    print(f"Layer specialists (exactly 1): {len(single_layer_specialists.to_pandas()['id'].unique())}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Hubs in ALL layers: 3
+    Hubs in ANY layer: 27
+    Hubs in ≥2 layers: 12
+    Layer specialists (exactly 1): 15
+
+**Wildcard Layer Selection:**
+
+The ``L["*"]`` wildcard automatically expands to all layers in the network:
+
+.. code-block:: python
+
+    # All layers
+    Q.nodes().from_layers(L["*"])
+    
+    # All layers except one
+    Q.nodes().from_layers(L["*"] - L["bots"])
+    
+    # All layers intersected with a specific one (same as selecting that layer)
+    Q.nodes().from_layers(L["*"] & L["social"])
+
+**Use Cases:**
+
+1. **Identify persistent influencers**: Nodes that maintain high centrality across all contexts (layers)
+2. **Find layer specialists**: Nodes that are important in only one layer (``mode="exact", k=1``)
+3. **Detect multi-context bridges**: Nodes in top-k in at least 2 layers connect different contexts
+4. **Community structure analysis**: Compare ``mode="all"`` vs ``mode="any"`` to understand layer cohesion
+
+**Why This Pattern Matters:**
+
+In real-world multilayer networks (social media, collaboration networks, biological systems), understanding **cross-layer** vs. **layer-specific** importance is crucial:
+
+* **Email + Phone + Chat network**: Who are the omnipresent communicators vs. email-only specialists?
+* **Author collaboration network**: Who publishes top papers in multiple fields vs. specialists in one domain?
+* **Transportation network**: Which locations are hubs in all modes (bus, train, bike) vs. single-mode hubs?
+
+**Performance Note:**
+
+The per-layer computation is optimized: measures are computed on the selected nodes after layer filtering, and grouping operations leverage efficient dictionaries. For large networks (>100K nodes), consider filtering with ``where()`` before computing expensive metrics like betweenness centrality.
+
 Next Steps
 ----------
 

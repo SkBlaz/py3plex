@@ -105,6 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#pattern-find-influential-nodes">Pattern: Find Influential Nodes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pattern-compare-layer-activity">Pattern: Compare Layer Activity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pattern-export-subnetwork">Pattern: Export Subnetwork</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pattern-per-layer-top-k-with-coverage-multi-layer-hub-detection">Pattern: Per-Layer Top-K with Coverage (Multi-Layer Hub Detection)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
@@ -1161,6 +1162,166 @@ Subnetwork mean betweenness: 0.0892
 <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
+</section>
+<section id="pattern-per-layer-top-k-with-coverage-multi-layer-hub-detection">
+<h3>Pattern: Per-Layer Top-K with Coverage (Multi-Layer Hub Detection)<a class="headerlink" href="#pattern-per-layer-top-k-with-coverage-multi-layer-hub-detection" title="Link to this heading"></a></h3>
+<p>Find nodes that are top-k hubs (by any centrality metric) <strong>across all layers</strong>. This pattern is essential for identifying nodes that maintain high influence in the entire multilayer structure, not just in isolated layers.</p>
+<p><strong>The Problem:</strong></p>
+<p>Traditional approaches require manual loops over layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Old approach: manual iteration</span>
+<span class="n">layer_top</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">layer</span><span class="p">)])</span>
+         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">layer_top</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+
+<span class="c1"># Find intersection</span>
+<span class="n">multi_hubs</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">layer_top</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><strong>The Solution: Grouping and Coverage API</strong></p>
+<p>The new DSL supports per-layer operations in a single query:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_generators</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Generate example network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Find nodes that are top-5 betweenness hubs in ALL layers (single query!)</span>
+<span class="n">multi_hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>                   <span class="c1"># wildcard: all layers</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>                           <span class="c1"># group by layer</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span> <span class="c1"># top 5 per layer</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>                  <span class="c1"># nodes in top-5 in ALL layers</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">multi_hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multi-layer hubs (in top-5 of ALL layers): </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Detailed results:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Multi-layer hubs (in top-5 of ALL layers): {23, 45, 67}
+Count: 3
+
+Detailed results:
+    id  layer  degree  betweenness_centrality
+0   23      0      12                  0.2456
+1   23      1      14                  0.2891
+2   23      2      11                  0.2234
+3   45      0      13                  0.2567
+4   45      1      11                  0.2123
+5   45      2      15                  0.3012
+6   67      0      10                  0.2001
+7   67      1      12                  0.2345
+8   67      2      13                  0.2678
+</pre></div>
+</div>
+<p><strong>Coverage Modes:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">coverage()</span></code> method supports multiple modes for cross-layer analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mode 1: &quot;all&quot; - intersection (nodes in top-k of ALL layers)</span>
+<span class="n">all_layers_hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Mode 2: &quot;any&quot; - union (nodes in top-k of AT LEAST ONE layer)</span>
+<span class="n">any_layer_hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Mode 3: &quot;at_least&quot; - nodes in top-k of at least K layers</span>
+<span class="n">two_layer_hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;at_least&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># In at least 2 layers</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Mode 4: &quot;exact&quot; - nodes in top-k of exactly K layers (layer-specific hubs)</span>
+<span class="n">single_layer_specialists</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Exactly 1 layer</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hubs in ALL layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_layers_hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hubs in ANY layer: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">any_layer_hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hubs in ≥2 layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">two_layer_hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer specialists (exactly 1): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">single_layer_specialists</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Hubs in ALL layers: 3
+Hubs in ANY layer: 27
+Hubs in ≥2 layers: 12
+Layer specialists (exactly 1): 15
+</pre></div>
+</div>
+<p><strong>Wildcard Layer Selection:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">L[&quot;*&quot;]</span></code> wildcard automatically expands to all layers in the network:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All layers</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+
+<span class="c1"># All layers except one</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;bots&quot;</span><span class="p">])</span>
+
+<span class="c1"># All layers intersected with a specific one (same as selecting that layer)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>Use Cases:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Identify persistent influencers</strong>: Nodes that maintain high centrality across all contexts (layers)</p></li>
+<li><p><strong>Find layer specialists</strong>: Nodes that are important in only one layer (<code class="docutils literal notranslate"><span class="pre">mode=&quot;exact&quot;,</span> <span class="pre">k=1</span></code>)</p></li>
+<li><p><strong>Detect multi-context bridges</strong>: Nodes in top-k in at least 2 layers connect different contexts</p></li>
+<li><p><strong>Community structure analysis</strong>: Compare <code class="docutils literal notranslate"><span class="pre">mode=&quot;all&quot;</span></code> vs <code class="docutils literal notranslate"><span class="pre">mode=&quot;any&quot;</span></code> to understand layer cohesion</p></li>
+</ol>
+<p><strong>Why This Pattern Matters:</strong></p>
+<p>In real-world multilayer networks (social media, collaboration networks, biological systems), understanding <strong>cross-layer</strong> vs. <strong>layer-specific</strong> importance is crucial:</p>
+<ul class="simple">
+<li><p><strong>Email + Phone + Chat network</strong>: Who are the omnipresent communicators vs. email-only specialists?</p></li>
+<li><p><strong>Author collaboration network</strong>: Who publishes top papers in multiple fields vs. specialists in one domain?</p></li>
+<li><p><strong>Transportation network</strong>: Which locations are hubs in all modes (bus, train, bike) vs. single-mode hubs?</p></li>
+</ul>
+<p><strong>Performance Note:</strong></p>
+<p>The per-layer computation is optimized: measures are computed on the selected nodes after layer filtering, and grouping operations leverage efficient dictionaries. For large networks (&gt;100K nodes), consider filtering with <code class="docutils literal notranslate"><span class="pre">where()</span></code> before computing expensive metrics like betweenness centrality.</p>
 </section>
 </section>
 <section id="next-steps">

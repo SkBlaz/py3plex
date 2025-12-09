@@ -115,6 +115,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#temporal-edge-attributes">Temporal Edge Attributes</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#grouping-and-coverage-queries">Grouping and Coverage Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#per-layer-grouping">Per-Layer Grouping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#top-k-per-group">Top-K Per Group</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coverage-filtering">Coverage Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wildcard-layer-selection">Wildcard Layer Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#general-grouping">General Grouping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#working-with-results">Working with Results</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#result-object">Result Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#convert-to-pandas">Convert to Pandas</a></li>
@@ -439,6 +448,138 @@ LIMIT 100
 <li><p><code class="docutils literal notranslate"><span class="pre">t_start</span></code> and <code class="docutils literal notranslate"><span class="pre">t_end</span></code> — Time range</p></li>
 </ul>
 <p>See <a class="reference internal" href="../user_guide/networks.html"><span class="doc">Working with Networks</span></a> for creating temporal networks.</p>
+</section>
+</section>
+<section id="grouping-and-coverage-queries">
+<h2>Grouping and Coverage Queries<a class="headerlink" href="#grouping-and-coverage-queries" title="Link to this heading"></a></h2>
+<section id="per-layer-grouping">
+<h3>Per-Layer Grouping<a class="headerlink" href="#per-layer-grouping" title="Link to this heading"></a></h3>
+<p>Group results by layer and apply per-group operations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Group by layer</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>              <span class="c1"># Sugar for .group_by(&quot;layer&quot;)</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>    <span class="c1"># Top 5 per layer</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="top-k-per-group">
+<h3>Top-K Per Group<a class="headerlink" href="#top-k-per-group" title="Link to this heading"></a></h3>
+<p>Select top-k items per group (requires prior grouping):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Top 10 highest-degree nodes per layer</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="coverage-filtering">
+<h3>Coverage Filtering<a class="headerlink" href="#coverage-filtering" title="Link to this heading"></a></h3>
+<p>Filter based on presence across groups:</p>
+<p><strong>Mode: “all”</strong> — Keep items appearing in ALL groups (intersection)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes that are top-5 hubs in ALL layers</span>
+<span class="n">multi_hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Mode: “any”</strong> — Keep items appearing in AT LEAST ONE group (union)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes that are top-5 in any layer</span>
+<span class="n">any_hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Mode: “at_least”</strong> — Keep items appearing in at least K groups</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes in top-10 of at least 2 layers</span>
+<span class="n">two_layer_hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;at_least&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Mode: “exact”</strong> — Keep items appearing in exactly K groups</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Layer specialists: top-5 in exactly 1 layer</span>
+<span class="n">specialists</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="wildcard-layer-selection">
+<h3>Wildcard Layer Selection<a class="headerlink" href="#wildcard-layer-selection" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">L[&quot;*&quot;]</span></code> to select all layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All layers</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+
+<span class="c1"># All layers except &quot;bots&quot;</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;bots&quot;</span><span class="p">])</span>
+
+<span class="c1"># Layer algebra still works</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">((</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;spam&quot;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;verified&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="general-grouping">
+<h3>General Grouping<a class="headerlink" href="#general-grouping" title="Link to this heading"></a></h3>
+<p>Group by arbitrary attributes (not just layer):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Group by multiple attributes</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;community&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;community&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="limitations">
+<h3>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Coverage filtering is currently supported only for <strong>node queries</strong></p></li>
+<li><p>Edge queries with coverage will raise a clear <code class="docutils literal notranslate"><span class="pre">DslExecutionError</span></code></p></li>
+<li><p>Grouping requires computed attributes or inherent node properties (like layer)</p></li>
+</ul>
 </section>
 </section>
 <section id="working-with-results">

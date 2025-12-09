@@ -286,6 +286,154 @@ Edges can have temporal attributes:
 
 See :doc:`../user_guide/networks` for creating temporal networks.
 
+Grouping and Coverage Queries
+------------------------------
+
+Per-Layer Grouping
+~~~~~~~~~~~~~~~~~~
+
+Group results by layer and apply per-group operations:
+
+.. code-block:: python
+
+    # Group by layer
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree")
+         .per_layer()              # Sugar for .group_by("layer")
+            .top_k(5, "degree")    # Top 5 per layer
+         .end_grouping()
+         .execute(network)
+    )
+
+Top-K Per Group
+~~~~~~~~~~~~~~~
+
+Select top-k items per group (requires prior grouping):
+
+.. code-block:: python
+
+    # Top 10 highest-degree nodes per layer
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree", "betweenness_centrality")
+         .per_layer()
+            .top_k(10, "degree")
+         .end_grouping()
+         .execute(network)
+    )
+
+Coverage Filtering
+~~~~~~~~~~~~~~~~~~
+
+Filter based on presence across groups:
+
+**Mode: "all"** — Keep items appearing in ALL groups (intersection)
+
+.. code-block:: python
+
+    # Nodes that are top-5 hubs in ALL layers
+    multi_hubs = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("betweenness_centrality")
+         .per_layer()
+            .top_k(5, "betweenness_centrality")
+         .end_grouping()
+         .coverage(mode="all")
+         .execute(network)
+    )
+
+**Mode: "any"** — Keep items appearing in AT LEAST ONE group (union)
+
+.. code-block:: python
+
+    # Nodes that are top-5 in any layer
+    any_hubs = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree")
+         .per_layer()
+            .top_k(5, "degree")
+         .end_grouping()
+         .coverage(mode="any")
+         .execute(network)
+    )
+
+**Mode: "at_least"** — Keep items appearing in at least K groups
+
+.. code-block:: python
+
+    # Nodes in top-10 of at least 2 layers
+    two_layer_hubs = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree")
+         .per_layer()
+            .top_k(10, "degree")
+         .end_grouping()
+         .coverage(mode="at_least", k=2)
+         .execute(network)
+    )
+
+**Mode: "exact"** — Keep items appearing in exactly K groups
+
+.. code-block:: python
+
+    # Layer specialists: top-5 in exactly 1 layer
+    specialists = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("betweenness_centrality")
+         .per_layer()
+            .top_k(5, "betweenness_centrality")
+         .end_grouping()
+         .coverage(mode="exact", k=1)
+         .execute(network)
+    )
+
+Wildcard Layer Selection
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use ``L["*"]`` to select all layers:
+
+.. code-block:: python
+
+    # All layers
+    Q.nodes().from_layers(L["*"])
+    
+    # All layers except "bots"
+    Q.nodes().from_layers(L["*"] - L["bots"])
+    
+    # Layer algebra still works
+    Q.nodes().from_layers((L["*"] - L["spam"]) & L["verified"])
+
+General Grouping
+~~~~~~~~~~~~~~~~
+
+Group by arbitrary attributes (not just layer):
+
+.. code-block:: python
+
+    # Group by multiple attributes
+    result = (
+        Q.nodes()
+         .compute("degree", "community")
+         .group_by("layer", "community")
+            .top_k(3, "degree")
+         .end_grouping()
+         .execute(network)
+    )
+
+Limitations
+~~~~~~~~~~~
+
+* Coverage filtering is currently supported only for **node queries**
+* Edge queries with coverage will raise a clear ``DslExecutionError``
+* Grouping requires computed attributes or inherent node properties (like layer)
+
 Working with Results
 --------------------
 
