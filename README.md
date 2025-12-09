@@ -33,21 +33,21 @@ from py3plex.dsl import Q, L
 
 # Generate a random multilayer network
 net = random_generators.random_multilayer_ER(n=300, l=3, p=0.02, directed=False)
-layer_top = {}
 
-# Find top 5 betweenness hubs in each layer
-for layer in net.layers:
-    res = (Q.nodes().from_layers(L[str(layer)])
-                   .where(degree__gt=1)
-                   .compute("degree", "betweenness_centrality")
-                   .order_by("-betweenness_centrality")
-                   .limit(5)
-                   .execute(net))
-    layer_top[layer] = set(res.to_pandas()["id"])
+# Find nodes that are top-5 betweenness hubs in ALL layers (single query!)
+multi_hubs = (
+    Q.nodes()
+     .from_layers(L["*"])                   # wildcard: all layers
+     .where(degree__gt=1)
+     .compute("degree", "betweenness_centrality")
+     .per_layer()                           # group by layer
+        .top_k(5, "betweenness_centrality") # top 5 per layer
+     .end_grouping()
+     .coverage(mode="all")                  # nodes in top-5 in ALL layers
+     .execute(net)
+)
 
-# Find nodes that are hubs in ALL layers
-multi_hubs = set.intersection(*layer_top.values())
-print("Nodes that are betweenness hubs in *all* layers:", multi_hubs)
+print("Nodes that are betweenness hubs in *all* layers:", set(multi_hubs.to_pandas()["id"]))
 ```
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)

@@ -133,21 +133,44 @@ class QueryResult:
             return pd.DataFrame(rows)
         
         else:
-            # Node dataframe - existing implementation
-            data = {"id": self.items}
-            
-            # Add attributes - ensure they're aligned with items
-            for attr_name, values in self.attributes.items():
-                if isinstance(values, dict):
-                    # Convert dict to aligned list
-                    data[attr_name] = [values.get(item, None) for item in self.items]
-                elif len(values) == len(self.items):
-                    data[attr_name] = values
+            # Node dataframe
+            rows = []
+            for node_item in self.items:
+                row = {}
+                
+                # Extract node info - nodes are (node_id, layer) tuples
+                if isinstance(node_item, tuple) and len(node_item) >= 2:
+                    row['id'] = node_item[0]
+                    row['layer'] = node_item[1]
                 else:
-                    # Pad or truncate
-                    data[attr_name] = list(values) + [None] * (len(self.items) - len(values))
+                    row['id'] = node_item
+                    row['layer'] = None
+                
+                # Add computed attributes
+                for attr_name, values in self.attributes.items():
+                    if isinstance(values, dict):
+                        # Use node_item (full tuple) as key
+                        if node_item in values:
+                            row[attr_name] = values[node_item]
+                        else:
+                            row[attr_name] = None
+                    else:
+                        # If values is a list, use index
+                        idx = self.items.index(node_item)
+                        if idx < len(values):
+                            row[attr_name] = values[idx]
+                        else:
+                            row[attr_name] = None
+                
+                rows.append(row)
             
-            return pd.DataFrame(data)
+            # Create DataFrame with proper columns even if empty
+            if rows:
+                return pd.DataFrame(rows)
+            else:
+                # Return empty DataFrame with expected columns
+                columns = ['id', 'layer'] + list(self.attributes.keys())
+                return pd.DataFrame(columns=columns)
     
     def to_networkx(self, network: Optional[Any] = None):
         """Export results to NetworkX graph.

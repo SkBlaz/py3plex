@@ -351,6 +351,145 @@ class QueryBuilder:
         self._select.limit = n
         return self
     
+    def group_by(self, *fields: str) -> "QueryBuilder":
+        """Group result items by given fields.
+        
+        This is the low-level grouping primitive used by per_layer().
+        Once grouping is established, you can apply per-group operations like top_k().
+        
+        Args:
+            *fields: Attribute names to group by (e.g., "layer")
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().group_by("layer").top_k(5, "degree")
+        """
+        self._select.group_by = list(fields)
+        return self
+    
+    def per_layer(self) -> "QueryBuilder":
+        """Group results by layer (sugar for group_by("layer")).
+        
+        This is the most common grouping operation for multilayer queries.
+        After calling this, you can apply per-layer operations like top_k().
+        
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().per_layer().top_k(5, "betweenness_centrality")
+        """
+        return self.group_by("layer")
+    
+    def top_k(self, k: int, key: Optional[str] = None) -> "QueryBuilder":
+        """Keep the top-k items per group, ordered by the given key.
+        
+        Requires that group_by() or per_layer() has been called first.
+        
+        Args:
+            k: Number of items to keep per group
+            key: Attribute/measure to sort by (descending). If None, uses existing order_by.
+            
+        Returns:
+            Self for chaining
+            
+        Raises:
+            ValueError: If called without prior grouping
+            
+        Example:
+            >>> Q.nodes().per_layer().top_k(5, "betweenness_centrality")
+        """
+        # Validate that grouping has been set up
+        if not self._select.group_by:
+            raise ValueError(
+                "top_k() requires grouping. Call .group_by() or .per_layer() first."
+            )
+        
+        # If a key is provided, configure order_by accordingly (descending)
+        if key is not None:
+            # Clear existing order_by and set new one
+            self._select.order_by.clear()
+            self.order_by(f"-{key}")
+        
+        # Store the per-group limit
+        self._select.limit_per_group = int(k)
+        return self
+    
+    def end_grouping(self) -> "QueryBuilder":
+        """Marker for the end of grouping configuration.
+        
+        This is purely for API readability and has no effect on execution.
+        It helps visually separate grouping operations from post-grouping operations.
+        
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> (Q.nodes()
+            ...   .per_layer()
+            ...     .top_k(5, "degree")
+            ...   .end_grouping()
+            ...   .coverage(mode="all"))
+        """
+        return self
+    
+    def coverage(
+        self,
+        mode: str = "all",
+        k: Optional[int] = None,
+        id_field: str = "id",
+    ) -> "QueryBuilder":
+        """Configure coverage filtering across groups.
+        
+        Coverage determines which items appear in the final result based on
+        how many groups they appear in after grouping and top_k filtering.
+        
+        Args:
+            mode: Coverage mode:
+                - "all": Keep items that appear in ALL groups
+                - "any": Keep items that appear in AT LEAST ONE group
+                - "at_least": Keep items that appear in at least k groups (requires k parameter)
+                - "exact": Keep items that appear in exactly k groups (requires k parameter)
+            k: Threshold for "at_least" or "exact" modes
+            id_field: Field to use for identity matching (default: "id" for nodes)
+            
+        Returns:
+            Self for chaining
+            
+        Raises:
+            ValueError: If mode is invalid or k is missing for at_least/exact modes
+            ValueError: If called without prior grouping
+            
+        Example:
+            >>> # Nodes that are top-5 hubs in ALL layers
+            >>> Q.nodes().per_layer().top_k(5, "betweenness").coverage(mode="all")
+            
+            >>> # Nodes that are top-5 in at least 2 layers
+            >>> Q.nodes().per_layer().top_k(5, "degree").coverage(mode="at_least", k=2)
+        """
+        allowed_modes = {"all", "any", "at_least", "exact"}
+        if mode not in allowed_modes:
+            raise ValueError(
+                f"Unknown coverage mode: {mode}. "
+                f"Allowed modes: {', '.join(sorted(allowed_modes))}"
+            )
+        
+        if mode in {"at_least", "exact"} and k is None:
+            raise ValueError(f"coverage(mode='{mode}') requires k parameter")
+        
+        # Validate that grouping is set up
+        if not self._select.group_by:
+            raise ValueError(
+                "coverage() requires grouping. Call .group_by() or .per_layer() first."
+            )
+        
+        self._select.coverage_mode = mode
+        self._select.coverage_k = k
+        self._select.coverage_id_field = id_field
+        return self
+    
     def at(self, t: float) -> "QueryBuilder":
         """Add temporal snapshot constraint (AT clause).
         

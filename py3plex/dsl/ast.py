@@ -254,6 +254,11 @@ class SelectStmt:
         export: Optional export target (for result format conversion)
         file_export: Optional file export specification (for writing to files)
         temporal_context: Optional temporal context for time-based queries
+        group_by: List of attribute names to group by (e.g., ["layer"])
+        limit_per_group: Optional per-group limit for top-k filtering
+        coverage_mode: Coverage filtering mode ("all", "any", "at_least", "exact")
+        coverage_k: Threshold for "at_least" or "exact" coverage modes
+        coverage_id_field: Field to use for coverage identity (default: "id")
     """
     target: Target
     layer_expr: Optional[LayerExpr] = None
@@ -264,6 +269,11 @@ class SelectStmt:
     export: Optional[ExportTarget] = None
     file_export: Optional['ExportSpec'] = None
     temporal_context: Optional['TemporalContext'] = None
+    group_by: List[str] = field(default_factory=list)
+    limit_per_group: Optional[int] = None
+    coverage_mode: Optional[str] = None
+    coverage_k: Optional[int] = None
+    coverage_id_field: str = "id"
 
 
 @dataclass
