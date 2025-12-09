@@ -154,3 +154,99 @@ Core dependencies (from `pyproject.toml`):
 ## Documentation
 
 For comprehensive LLM documentation with examples, see `llm.md` in the repository root.
+
+## Behavioral Guidelines
+
+### What TO Do
+
+1. **Make Minimal Changes:** Always prefer the smallest possible change to fix an issue
+2. **Test Before Committing:** Run relevant tests after making changes
+3. **Follow Existing Patterns:** Match the style and patterns of surrounding code
+4. **Preserve Backward Compatibility:** The library has users - don't break existing APIs
+5. **Use Domain Exceptions:** Always use `Py3plexIOError` instead of `FileNotFoundError` for I/O errors
+6. **Validate Edge Cases:** Consider multilayer networks with zero nodes, single layers, disconnected components
+7. **Check Documentation:** Update relevant docstrings and documentation files when changing APIs
+
+### What NOT To Do
+
+1. **Don't Break Tests:** Never modify or remove tests to make your changes pass. Fix the code instead.
+2. **Don't Change Working Code:** If something works, don't refactor it unless specifically asked
+3. **Don't Remove Features:** Even if unused, features may have external users
+4. **Don't Ignore Linters:** Address linting issues in modified files
+5. **Don't Add Unnecessary Dependencies:** Use existing libraries when possible
+6. **Don't Modify Examples:** The `examples/` directory is intentionally excluded from linting
+
+## API-Specific Patterns
+
+### Multi_layer_network API
+
+- The API uses `add_nodes()` and `add_edges()` (plural) - the `multi_layer_network` class doesn't expose singular forms
+- Use `add_edges([...])` with list of dicts, NOT individual edge additions
+- When serializing to JSON format with `to_json()`, the output uses `'edges'` key, not `'links'`
+- The method signature is: `add_edges([{'source': ..., 'target': ..., 'source_type': ..., 'target_type': ...}])`
+
+### DSL Architecture
+
+- **DSL v2:** Modern builder API in `py3plex/dsl/` (preferred)
+- **Legacy DSL:** String-based parsing in `py3plex/dsl_legacy.py` (keep for backward compatibility)
+- Use `Q.nodes()` for builder API, `execute_query()` for legacy string queries
+- DSL supports autocompute of centrality metrics - set `autocompute=False` to disable
+- Layer selection: `FROM layer="name"` (canonical) or `WHERE layer="name"` (backward compat)
+
+### Error Handling
+
+```python
+# Use domain-specific exceptions
+from py3plex.exceptions import Py3plexIOError, Py3plexException
+
+# For I/O errors
+raise Py3plexIOError(f"Failed to read file: {path}")
+
+# For general errors
+raise Py3plexException("Invalid network configuration")
+```
+
+## Common Pitfalls
+
+1. **NetworkX MultiGraph Limitations:** NetworkX's `clustering()` doesn't support MultiGraph. Convert to simple Graph first by merging parallel edges.
+
+2. **Forward References in DSL:** Use string type hints for classes defined later in the same file:
+   ```python
+   def dynamics(self) -> "DynamicsBuilder":  # String, not direct reference
+   ```
+
+3. **Test Dependencies:** Tests require `pytest-benchmark` (listed in `dev` dependencies). Some examples may use additional packages like `sympy`.
+
+4. **Type Checking:** mypy requires Python 3.9+ (see `pyproject.toml`). The project supports 3.8+ for runtime.
+
+5. **Excluded Files:** `powerlaw.py` is intentionally excluded from linting due to legacy code issues.
+
+## Security Guidelines
+
+1. **Input Validation:** Always validate file paths and network data before processing
+2. **No Arbitrary Code Execution:** Don't use `eval()` or `exec()` on user input
+3. **File Operations:** Use safe file operations with proper error handling
+4. **Dependencies:** Check new dependencies for known vulnerabilities before adding
+
+## Testing Strategy
+
+- **Unit Tests:** Extensive test suite in `tests/test_*.py` with comprehensive coverage
+- **Property Tests:** Use Hypothesis for property-based testing (marked with `@pytest.mark.property`)
+- **Integration Tests:** Marked with `@pytest.mark.integration`
+- **Slow Tests:** Marked with `@pytest.mark.slow` - skip during development
+- **Run Subset:** `pytest tests/test_dsl.py -k "test_specific_function"` for targeted testing
+
+## Performance Considerations
+
+1. **Large Networks:** Consider memory usage for networks with >10k nodes
+2. **Centrality Computation:** Betweenness/closeness are expensive for large networks
+3. **DSL Autocompute:** Disable with `autocompute=False` if metrics are pre-computed
+4. **Benchmarks:** Available in `benchmarks/` directory for performance testing
+
+## References
+
+- **README.md:** Quick start and flagship example
+- **llm.md:** Comprehensive LLM-optimized documentation
+- **docfiles/:** Detailed documentation source files
+- **examples/:** Comprehensive collection of working examples demonstrating features
+- **pyproject.toml:** All dependencies, build config, and tool settings
