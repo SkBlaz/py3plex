@@ -995,7 +995,16 @@ def _apply_post_processing(
 ) -> Tuple[List[Any], Dict[str, Dict]]:
     """Apply post-processing operations to query results.
     
-    Handles: summarize, rank_by, zscore, distinct, select, drop, rename.
+    Handles: summarize, rank_by, zscore, distinct, rename, select, drop.
+    
+    Operations are applied in this order:
+    1. summarize (create aggregated columns)
+    2. rank_by (add rank columns)
+    3. zscore (add z-score columns)
+    4. distinct (deduplicate rows)
+    5. rename (rename columns - must be before select/drop)
+    6. select (filter columns)
+    7. drop (remove columns)
     
     Args:
         items: List of items (nodes or edges)
@@ -1023,17 +1032,17 @@ def _apply_post_processing(
     if select.distinct_cols is not None:
         items = _apply_distinct(items, attributes, select)
     
-    # 5. Apply select (filter columns)
+    # 5. Apply rename (rename columns - must be before select/drop)
+    if select.rename_map:
+        attributes = _apply_rename(attributes, select.rename_map)
+    
+    # 6. Apply select (filter columns)
     if select.select_cols:
         attributes = _apply_select(attributes, select.select_cols)
     
-    # 6. Apply drop (remove columns)
+    # 7. Apply drop (remove columns)
     if select.drop_cols:
         attributes = _apply_drop(attributes, select.drop_cols)
-    
-    # 7. Apply rename (rename columns)
-    if select.rename_map:
-        attributes = _apply_rename(attributes, select.rename_map)
     
     return items, attributes
 
