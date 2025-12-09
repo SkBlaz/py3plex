@@ -154,7 +154,7 @@ df = result.to_pandas()
 
 # Add community information
 df['community'] = df['id'].apply(
-    lambda x: network.core_network.nodes[x].get('community', -1)
+    lambda x: network.core_network.nodes.get(x, {}).get('community', -1)
 )
 
 # Extract node name for readability
