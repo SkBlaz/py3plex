@@ -805,6 +805,55 @@ When you reference a centrality metric in operations like ``top_k()``, ``order_b
     2  carol social      6                0.067000
     ...
 
+Controlling Autocompute Behavior
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can explicitly control whether metrics are automatically computed using the ``autocompute`` parameter:
+
+.. code-block:: python
+
+    # Disable autocompute - require explicit .compute() calls
+    result = (
+        Q.nodes(autocompute=False)  # Autocompute disabled
+         .from_layers(L["social"])
+         .compute("degree")  # Must explicitly compute
+         .where(degree__gt=5)
+         .execute(network)
+    )
+    
+    # This would raise DslMissingMetricError because betweenness is not computed:
+    # Q.nodes(autocompute=False).order_by("betweenness_centrality").execute(net)
+
+**When to disable autocompute:**
+
+* **Performance-critical code**: Avoid unexpected expensive computations
+* **Explicit control**: Make all metric computations visible in code
+* **Debugging**: Understand exactly which metrics are computed and when
+
+**Tracking computed metrics:**
+
+Query results include a ``computed_metrics`` attribute that tracks which metrics were computed during execution:
+
+.. code-block:: python
+
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree")
+         .order_by("betweenness_centrality")  # Auto-computed
+         .execute(network)
+    )
+    
+    # Check which metrics were computed
+    print(f"Computed metrics: {result.computed_metrics}")
+    # Output: Computed metrics: {'degree', 'betweenness_centrality'}
+
+**Use cases for computed_metrics:**
+
+* Performance profiling: identify expensive operations
+* Query optimization: avoid redundant computations
+* Debugging: verify expected metrics were computed
+
 Helpful Error Messages with Suggestions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -956,7 +1005,7 @@ Benefits of Smart Defaults
 Temporal Queries
 ----------------
 
-The DSL supports temporal filtering for networks with time-stamped edges or nodes. Use ``.at(t)`` for point-in-time snapshots and ``.during(t0, t1)`` for time ranges.
+The DSL supports temporal filtering for networks with time-stamped edges or nodes. Four convenience methods provide intuitive temporal filtering: ``.at(t)``, ``.during(t0, t1)``, ``.before(t)``, and ``.after(t)``.
 
 **Prerequisites for temporal queries:**
 
@@ -967,7 +1016,37 @@ The DSL supports temporal filtering for networks with time-stamped edges or node
 
 * Time values are typically numeric (timestamps) or ISO date strings
 
-**Temporal semantics:**
+Temporal Semantics Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following table summarizes temporal query semantics:
+
+.. list-table:: Temporal Query Operations
+   :header-rows: 1
+   :widths: 15 25 35 25
+
+   * - Method
+     - Description
+     - Interval Semantics
+     - Inclusivity
+   * - ``.at(t)``
+     - Snapshot at time t
+     - Entities active at exactly t
+     - Point (closed)
+   * - ``.during(t0, t1)``
+     - Range from t0 to t1
+     - Entities active during [t0, t1]
+     - [t0, t1] (closed interval)
+   * - ``.before(t)``
+     - Before time t
+     - Equivalent to ``.during(None, t)``
+     - (-∞, t] (closed at t)
+   * - ``.after(t)``
+     - After time t
+     - Equivalent to ``.during(t, None)``
+     - [t, +∞) (closed at t)
+
+**Detailed semantics:**
 
 * ``at(t)``: Selects entities active at a specific moment
   
@@ -976,8 +1055,19 @@ The DSL supports temporal filtering for networks with time-stamped edges or node
 
 * ``during(t0, t1)``: Selects entities active during a time window
   
-  * For point-in-time edges: includes edges where ``t`` is in ``[t0, t1]``
+  * For point-in-time edges: includes edges where ``t`` is in ``[t0, t1]`` (closed interval)
   * For interval edges: includes edges where the interval **overlaps** ``[t0, t1]``
+  * ``None`` values: Use ``t0=None`` for open lower bound, ``t1=None`` for open upper bound
+
+* ``before(t)``: Selects entities active before (and at) time t
+  
+  * Convenience method equivalent to ``.during(None, t)``
+  * Inclusive of the boundary: includes entities at exactly time t
+
+* ``after(t)``: Selects entities active after (and at) time t
+  
+  * Convenience method equivalent to ``.during(t, None)``
+  * Inclusive of the boundary: includes entities at exactly time t
 
 Filter by Time (Snapshot)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1062,6 +1152,52 @@ Query entities active during a time window:
     Nodes at t=150 (snapshot): 78
     Ratio: 1.82x more nodes in range
 
+Before and After (Convenience Methods)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``.before()`` and ``.after()`` methods provide intuitive alternatives for open-ended temporal queries:
+
+.. code-block:: python
+
+    # Get all edges before time 100 (inclusive)
+    early_edges = Q.edges().before(100.0).execute(network)
+    
+    # Get all edges after time 200 (inclusive)
+    late_edges = Q.edges().after(200.0).execute(network)
+    
+    # Common pattern: compare network before and after an event
+    event_time = 150.0
+    
+    before_event = (
+        Q.nodes()
+         .before(event_time)
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+    )
+    
+    after_event = (
+        Q.nodes()
+         .after(event_time)
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+    )
+    
+    # Compare metrics
+    df_before = before_event.to_pandas()
+    df_after = after_event.to_pandas()
+    
+    print(f"Average degree before event: {df_before['degree'].mean():.2f}")
+    print(f"Average degree after event: {df_after['degree'].mean():.2f}")
+    print(f"Network became {'denser' if df_after['degree'].mean() > df_before['degree'].mean() else 'sparser'}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Average degree before event: 4.35
+    Average degree after event: 5.87
+    Network became denser
+
 **Temporal edges example:**
 
 .. code-block:: python
@@ -1082,7 +1218,7 @@ Query entities active during a time window:
 
 Temporal queries are **fully implemented** for edge-level temporal data. Node-level temporal filtering depends on your network's representation:
 
-* If nodes have explicit ``t`` attributes, ``.at()`` and ``.during()`` work directly
+* If nodes have explicit ``t`` attributes, ``.at()``, ``.during()``, ``.before()``, and ``.after()`` work directly
 * If only edges are timestamped, node activity is inferred from edge presence
 * For most use cases, temporal edge queries are sufficient
 
@@ -1487,6 +1623,184 @@ In real-world multilayer networks (social media, collaboration networks, biologi
 **Performance Note:**
 
 The per-layer computation is optimized: measures are computed on the selected nodes after layer filtering, and grouping operations leverage efficient dictionaries. For large networks (>100K nodes), consider filtering with ``where()`` before computing expensive metrics like betweenness centrality.
+
+DSL Result Interoperability
+----------------------------
+
+DSL query results seamlessly integrate with py3plex's dplyr-style pipeline API (``nodes()``, ``edges()``, ``mutate()``, ``filter()``, ``arrange()``). This interoperability allows you to:
+
+1. Start with a DSL query to filter and compute metrics
+2. Continue with pipeline verbs for additional transformations
+3. Combine the declarative power of DSL with the procedural flexibility of pipelines
+
+QueryResult as Pipeline Input
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``QueryResult`` object returned by ``.execute()`` provides the same interface as pipeline frames (``NodeFrame``, ``EdgeFrame``), enabling seamless chaining:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    from py3plex.core import multinet
+    
+    # Load network
+    network = multinet.multi_layer_network()
+    network.load_network("data.multiedgelist", input_type="multiedgelist")
+    
+    # Start with DSL query, continue with pipeline operations
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+         .filter(lambda row: row["degree"] > 5)  # Pipeline filter
+         .mutate(
+             # Add computed columns
+             influence_score=lambda row: row["degree"] * row["betweenness_centrality"],
+             is_hub=lambda row: row["degree"] > 10
+         )
+         .arrange("influence_score", reverse=True)  # Pipeline arrange (sort)
+         .to_pandas()  # Export to DataFrame
+    )
+    
+    print(result.head(10))
+
+**What happens here:**
+
+1. **DSL phase**: ``Q.nodes()...execute()`` filters nodes, computes centrality metrics
+2. **Pipeline phase**: ``.filter()``, ``.mutate()``, ``.arrange()`` transform the result
+3. **Export**: ``.to_pandas()`` materializes as a DataFrame
+
+**Supported pipeline verbs on QueryResult:**
+
+* ``.filter(predicate)``: Keep rows matching predicate
+* ``.mutate(**kwargs)``: Add or transform columns
+* ``.arrange(*cols, reverse=False)``: Sort by columns
+* ``.select(*cols)``: Keep only specified columns
+* ``.group_by(*cols)``: Group rows (enables ``.summarize()``)
+* ``.summarize(**aggs)``: Aggregate grouped data
+* ``.to_pandas()``: Convert to pandas DataFrame
+
+Verb Mapping Table
+~~~~~~~~~~~~~~~~~~
+
+The following table shows how concepts map across the three interfaces (String DSL, Builder API, Pipeline):
+
+.. list-table:: DSL and Pipeline Verb Mapping
+   :header-rows: 1
+   :widths: 20 25 25 30
+
+   * - Concept
+     - String DSL
+     - Builder DSL
+     - Pipeline/dplyr
+   * - Filter rows
+     - ``WHERE degree > 5``
+     - ``.where(degree__gt=5)``
+     - ``.filter(lambda r: r["degree"] > 5)``
+   * - Select columns
+     - ``SELECT id, degree``
+     - ``.select("id", "degree")``
+     - ``.select("id", "degree")``
+   * - Sort/Order
+     - ``ORDER BY degree DESC``
+     - ``.order_by("degree", desc=True)``
+     - ``.arrange("degree", reverse=True)``
+   * - Group by field
+     - ``GROUP BY layer``
+     - ``.group_by("layer")``
+     - ``.group_by("layer")``
+   * - Add column
+     - (not available)
+     - ``.mutate(score=...)``
+     - ``.mutate(score=lambda r: ...)``
+   * - Aggregate
+     - (not available)
+     - ``.summarize(...)``
+     - ``.summarize(mean_degree="mean(degree)")``
+   * - Limit results
+     - ``LIMIT 10``
+     - ``.limit(10)``
+     - ``.head(10)``
+
+**Design rationale:**
+
+* **DSL**: Declarative, optimized for graph queries (layer algebra, centrality, grouping)
+* **Pipelines**: Procedural, flexible for data transformations (arbitrary computations, reshaping)
+* **Interoperability**: Use DSL for graph-specific operations, pipelines for data munging
+
+Example: Combined Workflow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A realistic workflow combining both DSL and pipeline operations:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Scenario: Find influential nodes in social network, normalize scores, 
+    #           rank within communities, export for visualization
+    
+    result = (
+        # DSL: Query and compute graph metrics
+        Q.nodes()
+         .from_layers(L["social"])
+         .where(degree__gt=3)
+         .compute("degree", "betweenness_centrality", "clustering")
+         .execute(network)
+         
+         # Pipeline: Transform and enhance data
+         .mutate(
+             # Normalize centrality to [0, 1]
+             norm_betweenness=lambda r: (
+                 r["betweenness_centrality"] / max_betweenness
+                 if max_betweenness > 0 else 0
+             ),
+             # Composite influence score
+             influence=lambda r: (
+                 0.5 * r["degree"] + 
+                 0.3 * r["norm_betweenness"] + 
+                 0.2 * (1 - r["clustering"])
+             )
+         )
+         .group_by("community")  # Assume community attribute exists
+         .summarize(
+             count="count()",
+             mean_influence="mean(influence)",
+             top_influencer="max(influence)"
+         )
+         .arrange("mean_influence", reverse=True)
+         .to_pandas()
+    )
+    
+    # Now result is a pandas DataFrame ready for plotting
+    print(result)
+
+**Expected output:**
+
+.. code-block:: text
+
+    community  count  mean_influence  top_influencer
+    0       5     23            0.72            0.89
+    1       2     31            0.68            0.85
+    2       8     19            0.61            0.79
+    3       1     28            0.58            0.74
+    ...
+
+**Why this matters:**
+
+1. **Single pipeline**: No need to export intermediate results to disk or juggle multiple DataFrames
+2. **Type safety**: Builder API + pipeline verbs catch errors at query construction time
+3. **Performance**: DSL computes centrality on the multilayer graph once, pipelines transform in-memory
+4. **Expressiveness**: Each interface does what it's best at (DSL for graph queries, pipelines for data transformations)
+
+**When to use each:**
+
+* **DSL alone**: Simple queries, need graph-specific operations (centrality, grouping, coverage)
+* **Pipelines alone**: Non-graph data, pure data transformations
+* **Combined (DSL → Pipeline)**: Complex analytical workflows, need both graph metrics and custom computations
+
+See :doc:`build_pipelines` for full pipeline API documentation and additional examples.
 
 Next Steps
 ----------
