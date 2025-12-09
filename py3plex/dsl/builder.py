@@ -255,9 +255,14 @@ class QueryBuilder:
     to construct the query.
     """
     
-    def __init__(self, target: Target):
-        """Initialize builder with target."""
-        self._select = SelectStmt(target=target)
+    def __init__(self, target: Target, autocompute: bool = True):
+        """Initialize builder with target.
+        
+        Args:
+            target: Query target (NODES or EDGES)
+            autocompute: Whether to automatically compute missing metrics (default: True)
+        """
+        self._select = SelectStmt(target=target, autocompute=autocompute)
     
     def from_layers(self, layer_expr: LayerExprBuilder) -> "QueryBuilder":
         """Filter by layers using layer algebra.
@@ -849,6 +854,58 @@ class QueryBuilder:
         )
         return self
     
+    def before(self, t: float) -> "QueryBuilder":
+        """Add temporal constraint for edges/nodes before a specific time.
+        
+        Convenience method equivalent to `.during(None, t)`.
+        Filters to only include edges/nodes active before (and at) time t.
+        
+        Args:
+            t: Upper bound timestamp (inclusive)
+            
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> # Get all edges before time 100
+            >>> Q.edges().before(100.0).execute(network)
+            
+            >>> # Nodes active before 2024-01-01
+            >>> Q.nodes().before(1704067200.0).execute(network)
+        """
+        self._select.temporal_context = TemporalContext(
+            kind="during",
+            t0=None,
+            t1=float(t)
+        )
+        return self
+    
+    def after(self, t: float) -> "QueryBuilder":
+        """Add temporal constraint for edges/nodes after a specific time.
+        
+        Convenience method equivalent to `.during(t, None)`.
+        Filters to only include edges/nodes active after (and at) time t.
+        
+        Args:
+            t: Lower bound timestamp (inclusive)
+            
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> # Get all edges after time 100
+            >>> Q.edges().after(100.0).execute(network)
+            
+            >>> # Nodes active after 2024-01-01
+            >>> Q.nodes().after(1704067200.0).execute(network)
+        """
+        self._select.temporal_context = TemporalContext(
+            kind="during",
+            t0=float(t),
+            t1=None
+        )
+        return self
+    
     def to(self, target: str) -> "QueryBuilder":
         """Set export target.
         
@@ -1012,17 +1069,32 @@ class Q:
     Example:
         >>> Q.nodes().where(layer="social").compute("degree")
         >>> Q.edges().where(intralayer=True)
+        >>> Q.nodes(autocompute=False).where(degree__gt=5)  # Disable autocompute
     """
     
     @staticmethod
-    def nodes() -> QueryBuilder:
-        """Create a query builder for nodes."""
-        return QueryBuilder(Target.NODES)
+    def nodes(autocompute: bool = True) -> QueryBuilder:
+        """Create a query builder for nodes.
+        
+        Args:
+            autocompute: Whether to automatically compute missing metrics (default: True)
+            
+        Returns:
+            QueryBuilder for nodes
+        """
+        return QueryBuilder(Target.NODES, autocompute=autocompute)
     
     @staticmethod
-    def edges() -> QueryBuilder:
-        """Create a query builder for edges."""
-        return QueryBuilder(Target.EDGES)
+    def edges(autocompute: bool = True) -> QueryBuilder:
+        """Create a query builder for edges.
+        
+        Args:
+            autocompute: Whether to automatically compute missing metrics (default: True)
+            
+        Returns:
+            QueryBuilder for edges
+        """
+        return QueryBuilder(Target.EDGES, autocompute=autocompute)
 
 
 # ==============================================================================

@@ -268,6 +268,7 @@ class SelectStmt:
         distinct_cols: Optional list of columns for distinct operation
         rank_specs: Optional list of (attr, method) tuples for rank_by()
         zscore_attrs: Optional list of attributes to compute z-scores for
+        autocompute: Whether to automatically compute missing metrics (default: True)
     """
     target: Target
     layer_expr: Optional[LayerExpr] = None
@@ -292,6 +293,7 @@ class SelectStmt:
     distinct_cols: Optional[List[str]] = None
     rank_specs: Optional[List[Tuple[str, str]]] = None
     zscore_attrs: Optional[List[str]] = None
+    autocompute: bool = True
 
 
 @dataclass

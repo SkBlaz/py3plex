@@ -18,11 +18,13 @@ class QueryResult:
         items: Sequence of node/edge identifiers
         attributes: Dictionary of computed attributes (column -> values or dict)
         meta: Metadata about the query execution
+        computed_metrics: Set of metrics that were computed during query execution
     """
     
     def __init__(self, target: str, items: List[Any],
                  attributes: Optional[Dict[str, Union[List[Any], Dict[Any, Any]]]] = None,
-                 meta: Optional[Dict[str, Any]] = None):
+                 meta: Optional[Dict[str, Any]] = None,
+                 computed_metrics: Optional[set] = None):
         """Initialize QueryResult.
         
         Args:
@@ -30,11 +32,13 @@ class QueryResult:
             items: List of node/edge identifiers
             attributes: Dictionary mapping attribute names to value lists
             meta: Optional metadata dictionary
+            computed_metrics: Optional set of metrics computed during execution
         """
         self.target = target
         self.items = items
         self.attributes = attributes or {}
         self.meta = meta or {}
+        self.computed_metrics = computed_metrics or set()
     
     @property
     def nodes(self) -> List[Any]:
