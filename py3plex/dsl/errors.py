@@ -203,3 +203,15 @@ class TypeMismatchError(DslError):
         message = f"Type mismatch for attribute '{attribute}': expected {expected_type}, got {actual_type}."
         
         super().__init__(message, query, line, column)
+
+
+class GroupingError(DslError):
+    """Exception raised when a grouping operation is used incorrectly.
+    
+    This error is raised when operations that require active grouping
+    (like coverage) are called without proper grouping context.
+    """
+    
+    def __init__(self, message: str, query: Optional[str] = None,
+                 line: Optional[int] = None, column: Optional[int] = None):
+        super().__init__(message, query, line, column)

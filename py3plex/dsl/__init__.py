@@ -118,6 +118,7 @@ from .errors import (
     UnknownLayerError,
     ParameterMissingError,
     TypeMismatchError,
+    GroupingError,
 )
 
 from .registry import measure_registry
@@ -230,6 +231,7 @@ __all__ = [
     "UnknownLayerError",
     "ParameterMissingError",
     "TypeMismatchError",
+    "GroupingError",
     # Registry
     "measure_registry",
     # Operator Registry

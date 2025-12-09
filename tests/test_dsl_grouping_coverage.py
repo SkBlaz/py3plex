@@ -229,7 +229,8 @@ class TestCoverage:
         """Test that coverage raises error without prior grouping."""
         net = sample_multilayer_network
         
-        with pytest.raises(ValueError, match="coverage.*requires grouping"):
+        from py3plex.dsl.errors import GroupingError
+        with pytest.raises(GroupingError, match="coverage.*requires.*active grouping"):
             Q.nodes().compute("degree").coverage(mode="all").execute(net)
     
     def test_coverage_mode_all(self, sample_multilayer_network):
