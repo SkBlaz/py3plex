@@ -180,9 +180,9 @@ For comprehensive LLM documentation with examples, see `llm.md` in the repositor
 
 ### Multi_layer_network API
 
-- Use `add_nodes()` and `add_edges()` (plural) - singular forms don't exist
+- The API uses `add_nodes()` and `add_edges()` (plural) - the `multi_layer_network` class doesn't expose singular forms
 - Use `add_edges([...])` with list of dicts, NOT individual edge additions
-- JSON output uses `'edges'` key, not `'links'`
+- When serializing to JSON format with `to_json()`, the output uses `'edges'` key, not `'links'`
 - The method signature is: `add_edges([{'source': ..., 'target': ..., 'source_type': ..., 'target_type': ...}])`
 
 ### DSL Architecture
