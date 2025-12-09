@@ -10,6 +10,34 @@ import networkx as nx
 from .errors import UnknownMeasureError
 
 
+def _convert_multigraph_to_simple(G: nx.Graph) -> nx.Graph:
+    """Convert a MultiGraph to a simple Graph for measures that don't support MultiGraphs.
+    
+    When a graph has parallel edges (MultiGraph), this function merges them into
+    a simple graph by keeping the edge with maximum weight.
+    
+    Args:
+        G: Input graph (may be MultiGraph or Graph)
+        
+    Returns:
+        Simple graph (Graph type). If input was already a simple graph, returns as-is.
+    """
+    if not isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
+        return G
+    
+    simple_G = nx.Graph()
+    for u, v, data in G.edges(data=True):
+        if simple_G.has_edge(u, v):
+            # If edge already exists, keep the one with maximum weight
+            existing_weight = simple_G[u][v].get('weight', 1)
+            new_weight = data.get('weight', 1)
+            simple_G[u][v]['weight'] = max(existing_weight, new_weight)
+        else:
+            simple_G.add_edge(u, v, weight=data.get('weight', 1))
+    
+    return simple_G
+
+
 class MeasureRegistry:
     """Registry for network measures.
     
@@ -194,7 +222,15 @@ def _compute_pagerank(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any, fl
 @measure_registry.register("clustering", aliases=["clustering_coefficient"],
                           description="Local clustering coefficient")
 def _compute_clustering(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any, float]:
-    """Compute clustering coefficient for nodes."""
+    """Compute clustering coefficient for nodes.
+    
+    Note: NetworkX clustering is not implemented for MultiGraphs.
+    If G is a MultiGraph, we convert it to a simple Graph by removing
+    parallel edges (keeping the edge with maximum weight if weights exist).
+    """
+    # Convert to simple graph if needed
+    G = _convert_multigraph_to_simple(G)
+    
     if nodes is not None:
         return nx.clustering(G, nodes)
     return nx.clustering(G)
@@ -209,18 +245,8 @@ def _compute_communities(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any,
     except ImportError:
         raise RuntimeError("Community detection requires python-louvain package")
     
-    # Convert to simple graph if needed
-    if isinstance(G, nx.MultiGraph):
-        simple_G = nx.Graph()
-        for u, v, data in G.edges(data=True):
-            if simple_G.has_edge(u, v):
-                existing_weight = simple_G[u][v].get('weight', 1)
-                new_weight = data.get('weight', 1)
-                simple_G[u][v]['weight'] = max(existing_weight, new_weight)
-            else:
-                simple_G.add_edge(u, v, weight=data.get('weight', 1))
-    else:
-        simple_G = G
+    # Convert to simple graph if needed (Louvain doesn't support MultiGraphs)
+    simple_G = _convert_multigraph_to_simple(G)
     
     if len(simple_G.nodes()) == 0:
         return {}
