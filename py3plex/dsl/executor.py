@@ -371,6 +371,18 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         if select.order_by:
             items = _apply_ordering(items, select.order_by, attributes)
     
+    # Step 5.5: Apply post-processing operations (summarize, rank, zscore, distinct, select, drop, rename)
+    if (select.summarize_aggs or select.rank_specs or select.zscore_attrs or 
+        select.distinct_cols is not None or select.select_cols or 
+        select.drop_cols or select.rename_map):
+        items, attributes = _apply_post_processing(
+            items=items,
+            attributes=attributes,
+            select=select,
+            network=network,
+            G=G,
+        )
+    
     # Step 6: Apply global LIMIT
     if select.limit is not None:
         items = items[:select.limit]
@@ -691,6 +703,24 @@ def _get_edge_key(edge: Any) -> Tuple[Any, Any]:
     return edge
 
 
+def _get_item_key(item: Any) -> Any:
+    """Extract a hashable key from an item (node or edge).
+    
+    For edges (tuples with 3+ elements), returns the edge key (source, target).
+    For nodes, returns the item itself.
+    
+    Args:
+        item: Node or edge item
+        
+    Returns:
+        Hashable key
+    """
+    if isinstance(item, tuple) and len(item) >= 3:
+        # This is an edge with data
+        return _get_edge_key(item)
+    return item
+
+
 def _apply_ordering(items: List[Any], order_by: List[OrderItem],
                     attributes: Dict[str, Dict]) -> List[Any]:
     """Apply ORDER BY to items.
@@ -709,7 +739,7 @@ def _apply_ordering(items: List[Any], order_by: List[OrderItem],
             # Get value from computed attributes first
             if key in attributes:
                 # For edges, use hashable key
-                item_key = _get_edge_key(item) if isinstance(item, tuple) and len(item) >= 3 else item
+                item_key = _get_item_key(item)
                 value = attributes[key].get(item_key, 0)
             else:
                 # For edges, try to get from edge data (e.g., weight)
@@ -806,6 +836,7 @@ def _apply_grouping_and_coverage(
         allowed_ids = set()
         mode = select.coverage_mode
         k = select.coverage_k
+        p = select.coverage_p
         
         for node_id, group_set in coverage_map.items():
             count = len(group_set)
@@ -821,6 +852,14 @@ def _apply_grouping_and_coverage(
             elif mode == "exact":
                 if k is not None and count == k:
                     allowed_ids.add(node_id)
+            elif mode == "fraction":
+                if p is not None and num_groups > 0:
+                    import math
+                    # Use ceiling to ensure we require at least p fraction of groups
+                    # E.g., 67% of 3 groups = ceil(2.01) = 3 groups
+                    threshold = math.ceil(p * num_groups)
+                    if count >= threshold:
+                        allowed_ids.add(node_id)
         
         # Filter groups to only include allowed identities
         for group_key in groups:
@@ -908,3 +947,443 @@ def _get_coverage_identity(item: Any, select: SelectStmt, network: Any, G: nx.Gr
         if id_field == "id":
             return _get_edge_key(item)
         return _get_attribute_value(item, id_field, network, G)
+
+
+def _parse_aggregation_expr(expr: str) -> Tuple[str, Optional[str]]:
+    """Parse an aggregation expression like 'mean(degree)' or 'n()'.
+    
+    Args:
+        expr: Aggregation expression string
+        
+    Returns:
+        Tuple of (agg_func, attr_name) where attr_name is None for n()
+        
+    Raises:
+        ValueError: If expression format is invalid
+    """
+    import re
+    
+    # Match pattern: func(attr) or func()
+    match = re.match(r'([a-z_]+)\(([^)]*)\)$', expr.strip())
+    if not match:
+        raise ValueError(f"Invalid aggregation expression: '{expr}'. Expected format: 'func(attr)' or 'n()'")
+    
+    func = match.group(1)
+    attr = match.group(2).strip() if match.group(2) else None
+    
+    return func, attr
+
+
+def _apply_aggregation(values: List[Any], func: str) -> Any:
+    """Apply an aggregation function to a list of values.
+    
+    Args:
+        values: List of numeric values
+        func: Aggregation function name
+        
+    Returns:
+        Aggregated result (float for numeric ops, int for count)
+        Returns NaN for empty lists on statistical functions
+        
+    Raises:
+        ValueError: If function is unknown
+    """
+    import numpy as np
+    
+    if func == "n":
+        return len(values)
+    
+    # Return NaN for empty lists on statistical operations
+    if not values:
+        return float('nan')
+    
+    if func == "mean":
+        return float(np.mean(values))
+    elif func == "sum":
+        return float(np.sum(values))
+    elif func == "min":
+        return float(np.min(values))
+    elif func == "max":
+        return float(np.max(values))
+    elif func == "std":
+        return float(np.std(values))
+    elif func == "var":
+        return float(np.var(values))
+    else:
+        raise ValueError(f"Unknown aggregation function: '{func}'")
+
+
+def _apply_post_processing(
+    items: List[Any],
+    attributes: Dict[str, Dict],
+    select: SelectStmt,
+    network: Any,
+    G: nx.Graph,
+) -> Tuple[List[Any], Dict[str, Dict]]:
+    """Apply post-processing operations to query results.
+    
+    Handles: summarize, rank_by, zscore, distinct, rename, select, drop.
+    
+    Operations are applied in this order:
+    1. summarize (create aggregated columns)
+    2. rank_by (add rank columns)
+    3. zscore (add z-score columns)
+    4. distinct (deduplicate rows)
+    5. rename (rename columns - must be before select/drop)
+    6. select (filter columns)
+    7. drop (remove columns)
+    
+    Args:
+        items: List of items (nodes or edges)
+        attributes: Computed attributes dict
+        select: SELECT statement with post-processing specs
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Tuple of (processed_items, processed_attributes)
+    """
+    # 1. Apply summarize (aggregation over groups)
+    if select.summarize_aggs:
+        items, attributes = _apply_summarize(items, attributes, select, network, G)
+    
+    # 2. Apply rank_by (add rank columns)
+    if select.rank_specs:
+        attributes = _apply_rank_by(items, attributes, select, network, G)
+    
+    # 3. Apply zscore (add z-score columns)
+    if select.zscore_attrs:
+        attributes = _apply_zscore(items, attributes, select, network, G)
+    
+    # 4. Apply distinct (deduplicate rows)
+    if select.distinct_cols is not None:
+        items = _apply_distinct(items, attributes, select)
+    
+    # 5. Apply rename (rename columns - must be before select/drop)
+    if select.rename_map:
+        attributes = _apply_rename(attributes, select.rename_map)
+    
+    # 6. Apply select (filter columns)
+    if select.select_cols:
+        attributes = _apply_select(attributes, select.select_cols)
+    
+    # 7. Apply drop (remove columns)
+    if select.drop_cols:
+        attributes = _apply_drop(attributes, select.drop_cols)
+    
+    return items, attributes
+
+
+def _apply_summarize(
+    items: List[Any],
+    attributes: Dict[str, Dict],
+    select: SelectStmt,
+    network: Any,
+    G: nx.Graph,
+) -> Tuple[List[Any], Dict[str, Dict]]:
+    """Apply summarize operation - aggregate over groups.
+    
+    Args:
+        items: List of items
+        attributes: Computed attributes
+        select: SELECT statement
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Tuple of (summary_items, summary_attributes)
+    """
+    # Build groups if grouping is active
+    if select.group_by:
+        groups: Dict[Any, List[Any]] = {}
+        for item in items:
+            group_key = _get_group_key(item, select, network, G)
+            if group_key not in groups:
+                groups[group_key] = []
+            groups[group_key].append(item)
+    else:
+        # No grouping - treat all items as one group
+        groups = {"__global__": items}
+    
+    # Compute aggregations per group
+    summary_items = []
+    summary_attrs: Dict[str, Dict] = {}
+    
+    for agg_name, agg_expr in select.summarize_aggs.items():
+        summary_attrs[agg_name] = {}
+    
+    for group_key, group_items in groups.items():
+        # Create a summary item representing this group
+        if select.group_by:
+            summary_item = group_key
+        else:
+            summary_item = "__global__"
+        
+        summary_items.append(summary_item)
+        
+        # Compute each aggregation for this group
+        for agg_name, agg_expr in select.summarize_aggs.items():
+            func, attr = _parse_aggregation_expr(agg_expr)
+            
+            if func == "n":
+                # Count of items in group
+                value = len(group_items)
+            else:
+                # Need to extract attribute values from group items
+                if attr not in attributes:
+                    raise DslExecutionError(f"Cannot aggregate on '{attr}' - attribute not computed")
+                
+                # Get values for items in this group
+                values = []
+                for item in group_items:
+                    item_key = _get_item_key(item)
+                    if item_key in attributes[attr]:
+                        values.append(attributes[attr][item_key])
+                
+                # Apply aggregation
+                value = _apply_aggregation(values, func)
+            
+            summary_attrs[agg_name][summary_item] = value
+    
+    return summary_items, summary_attrs
+
+
+def _apply_rank_by(
+    items: List[Any],
+    attributes: Dict[str, Dict],
+    select: SelectStmt,
+    network: Any,
+    G: nx.Graph,
+) -> Dict[str, Dict]:
+    """Apply rank_by operation - add rank columns.
+    
+    Args:
+        items: List of items
+        attributes: Computed attributes
+        select: SELECT statement
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Updated attributes dict with rank columns
+    """
+    import pandas as pd
+    
+    # Build groups if grouping is active
+    if select.group_by:
+        groups: Dict[Any, List[Any]] = {}
+        for item in items:
+            group_key = _get_group_key(item, select, network, G)
+            if group_key not in groups:
+                groups[group_key] = []
+            groups[group_key].append(item)
+    else:
+        # No grouping - treat all items as one group
+        groups = {"__global__": items}
+    
+    # Apply ranking for each specified attribute
+    for attr, method in select.rank_specs:
+        if attr not in attributes:
+            raise DslExecutionError(f"Cannot rank by '{attr}' - attribute not computed")
+        
+        rank_col_name = f"{attr}_rank"
+        attributes[rank_col_name] = {}
+        
+        # Rank within each group
+        for group_items in groups.values():
+            # Get values for this group
+            values = []
+            item_keys = []
+            for item in group_items:
+                item_key = _get_item_key(item)
+                item_keys.append(item_key)
+                values.append(attributes[attr].get(item_key, 0))
+            
+            # Use pandas for ranking
+            series = pd.Series(values, index=item_keys)
+            ranks = series.rank(method=method, ascending=False)
+            
+            # Store ranks
+            for item_key, rank in ranks.items():
+                attributes[rank_col_name][item_key] = int(rank)
+    
+    return attributes
+
+
+def _apply_zscore(
+    items: List[Any],
+    attributes: Dict[str, Dict],
+    select: SelectStmt,
+    network: Any,
+    G: nx.Graph,
+) -> Dict[str, Dict]:
+    """Apply zscore operation - compute z-scores within groups.
+    
+    Args:
+        items: List of items
+        attributes: Computed attributes
+        select: SELECT statement
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Updated attributes dict with z-score columns
+    """
+    import numpy as np
+    
+    # Build groups if grouping is active
+    if select.group_by:
+        groups: Dict[Any, List[Any]] = {}
+        for item in items:
+            group_key = _get_group_key(item, select, network, G)
+            if group_key not in groups:
+                groups[group_key] = []
+            groups[group_key].append(item)
+    else:
+        # No grouping - treat all items as one group
+        groups = {"__global__": items}
+    
+    # Compute z-scores for each specified attribute
+    for attr in select.zscore_attrs:
+        if attr not in attributes:
+            raise DslExecutionError(f"Cannot compute z-score for '{attr}' - attribute not computed")
+        
+        zscore_col_name = f"{attr}_zscore"
+        attributes[zscore_col_name] = {}
+        
+        # Compute z-score within each group
+        for group_items in groups.values():
+            # Get values for this group
+            values = []
+            item_keys = []
+            for item in group_items:
+                item_key = _get_item_key(item)
+                item_keys.append(item_key)
+                values.append(attributes[attr].get(item_key, 0))
+            
+            # Compute z-scores
+            values_array = np.array(values)
+            mean = np.mean(values_array)
+            std = np.std(values_array)
+            
+            if std > 0:
+                zscores = (values_array - mean) / std
+            else:
+                # Standard deviation is zero (constant values or single value) - all z-scores are 0
+                zscores = np.zeros_like(values_array)
+            
+            # Store z-scores
+            for item_key, zscore in zip(item_keys, zscores):
+                attributes[zscore_col_name][item_key] = float(zscore)
+    
+    return attributes
+
+
+def _apply_distinct(
+    items: List[Any],
+    attributes: Dict[str, Dict],
+    select: SelectStmt,
+) -> List[Any]:
+    """Apply distinct operation - deduplicate rows.
+    
+    Args:
+        items: List of items
+        attributes: Computed attributes
+        select: SELECT statement
+        
+    Returns:
+        Deduplicated list of items
+    """
+    if not select.distinct_cols:
+        # Deduplicate on all columns (items themselves)
+        seen = set()
+        unique_items = []
+        for item in items:
+            # Make hashable
+            item_key = _get_item_key(item)
+            if item_key not in seen:
+                seen.add(item_key)
+                unique_items.append(item)
+        return unique_items
+    else:
+        # Deduplicate on specific columns
+        seen = set()
+        unique_items = []
+        for item in items:
+            item_key = _get_item_key(item)
+            
+            # Build key from specified columns
+            key_parts = []
+            for col in select.distinct_cols:
+                if col in attributes and item_key in attributes[col]:
+                    key_parts.append(attributes[col][item_key])
+                else:
+                    key_parts.append(None)
+            
+            key = tuple(key_parts)
+            if key not in seen:
+                seen.add(key)
+                unique_items.append(item)
+        
+        return unique_items
+
+
+def _apply_select(
+    attributes: Dict[str, Dict],
+    columns: List[str],
+) -> Dict[str, Dict]:
+    """Apply select operation - keep only specified columns.
+    
+    Args:
+        attributes: Computed attributes
+        columns: Columns to keep
+        
+    Returns:
+        Filtered attributes dict
+    """
+    return {col: attributes[col] for col in columns if col in attributes}
+
+
+def _apply_drop(
+    attributes: Dict[str, Dict],
+    columns: List[str],
+) -> Dict[str, Dict]:
+    """Apply drop operation - remove specified columns.
+    
+    Args:
+        attributes: Computed attributes
+        columns: Columns to drop
+        
+    Returns:
+        Filtered attributes dict
+    """
+    return {col: vals for col, vals in attributes.items() if col not in columns}
+
+
+def _apply_rename(
+    attributes: Dict[str, Dict],
+    rename_map: Dict[str, str],
+) -> Dict[str, Dict]:
+    """Apply rename operation - rename columns.
+    
+    Args:
+        attributes: Computed attributes
+        rename_map: Mapping from new names to old names
+        
+    Returns:
+        Renamed attributes dict
+    """
+    result = {}
+    for col, vals in attributes.items():
+        # Check if this column should be renamed
+        new_name = None
+        for new, old in rename_map.items():
+            if col == old:
+                new_name = new
+                break
+        
+        # Use new name if found, otherwise keep original
+        result[new_name if new_name else col] = vals
+    
+    return result
+
