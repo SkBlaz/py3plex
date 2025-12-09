@@ -703,6 +703,24 @@ def _get_edge_key(edge: Any) -> Tuple[Any, Any]:
     return edge
 
 
+def _get_item_key(item: Any) -> Any:
+    """Extract a hashable key from an item (node or edge).
+    
+    For edges (tuples with 3+ elements), returns the edge key (source, target).
+    For nodes, returns the item itself.
+    
+    Args:
+        item: Node or edge item
+        
+    Returns:
+        Hashable key
+    """
+    if isinstance(item, tuple) and len(item) >= 3:
+        # This is an edge with data
+        return _get_edge_key(item)
+    return item
+
+
 def _apply_ordering(items: List[Any], order_by: List[OrderItem],
                     attributes: Dict[str, Dict]) -> List[Any]:
     """Apply ORDER BY to items.
@@ -721,7 +739,7 @@ def _apply_ordering(items: List[Any], order_by: List[OrderItem],
             # Get value from computed attributes first
             if key in attributes:
                 # For edges, use hashable key
-                item_key = _get_edge_key(item) if isinstance(item, tuple) and len(item) >= 3 else item
+                item_key = _get_item_key(item)
                 value = attributes[key].get(item_key, 0)
             else:
                 # For edges, try to get from edge data (e.g., weight)
@@ -836,7 +854,10 @@ def _apply_grouping_and_coverage(
                     allowed_ids.add(node_id)
             elif mode == "fraction":
                 if p is not None and num_groups > 0:
-                    threshold = int(p * num_groups)
+                    import math
+                    # Use ceiling to ensure we require at least p fraction of groups
+                    # E.g., 67% of 3 groups = ceil(2.01) = 3 groups
+                    threshold = math.ceil(p * num_groups)
                     if count >= threshold:
                         allowed_ids.add(node_id)
         
@@ -961,7 +982,8 @@ def _apply_aggregation(values: List[Any], func: str) -> Any:
         func: Aggregation function name
         
     Returns:
-        Aggregated result
+        Aggregated result (float for numeric ops, int for count)
+        Returns NaN for empty lists on statistical functions
         
     Raises:
         ValueError: If function is unknown
@@ -970,18 +992,23 @@ def _apply_aggregation(values: List[Any], func: str) -> Any:
     
     if func == "n":
         return len(values)
-    elif func == "mean":
-        return float(np.mean(values)) if values else 0.0
+    
+    # Return NaN for empty lists on statistical operations
+    if not values:
+        return float('nan')
+    
+    if func == "mean":
+        return float(np.mean(values))
     elif func == "sum":
-        return float(np.sum(values)) if values else 0.0
+        return float(np.sum(values))
     elif func == "min":
-        return float(np.min(values)) if values else 0.0
+        return float(np.min(values))
     elif func == "max":
-        return float(np.max(values)) if values else 0.0
+        return float(np.max(values))
     elif func == "std":
-        return float(np.std(values)) if values else 0.0
+        return float(np.std(values))
     elif func == "var":
-        return float(np.var(values)) if values else 0.0
+        return float(np.var(values))
     else:
         raise ValueError(f"Unknown aggregation function: '{func}'")
 
@@ -1109,7 +1136,7 @@ def _apply_summarize(
                 # Get values for items in this group
                 values = []
                 for item in group_items:
-                    item_key = _get_edge_key(item) if isinstance(item, tuple) and len(item) >= 3 else item
+                    item_key = _get_item_key(item)
                     if item_key in attributes[attr]:
                         values.append(attributes[attr][item_key])
                 
@@ -1168,7 +1195,7 @@ def _apply_rank_by(
             values = []
             item_keys = []
             for item in group_items:
-                item_key = _get_edge_key(item) if isinstance(item, tuple) and len(item) >= 3 else item
+                item_key = _get_item_key(item)
                 item_keys.append(item_key)
                 values.append(attributes[attr].get(item_key, 0))
             
@@ -1230,7 +1257,7 @@ def _apply_zscore(
             values = []
             item_keys = []
             for item in group_items:
-                item_key = _get_edge_key(item) if isinstance(item, tuple) and len(item) >= 3 else item
+                item_key = _get_item_key(item)
                 item_keys.append(item_key)
                 values.append(attributes[attr].get(item_key, 0))
             
@@ -1242,7 +1269,7 @@ def _apply_zscore(
             if std > 0:
                 zscores = (values_array - mean) / std
             else:
-                # All values are the same - z-score is 0
+                # Standard deviation is zero (constant values or single value) - all z-scores are 0
                 zscores = np.zeros_like(values_array)
             
             # Store z-scores
@@ -1273,7 +1300,7 @@ def _apply_distinct(
         unique_items = []
         for item in items:
             # Make hashable
-            item_key = _get_edge_key(item) if isinstance(item, tuple) and len(item) >= 3 else item
+            item_key = _get_item_key(item)
             if item_key not in seen:
                 seen.add(item_key)
                 unique_items.append(item)
@@ -1283,7 +1310,7 @@ def _apply_distinct(
         seen = set()
         unique_items = []
         for item in items:
-            item_key = _get_edge_key(item) if isinstance(item, tuple) and len(item) >= 3 else item
+            item_key = _get_item_key(item)
             
             # Build key from specified columns
             key_parts = []

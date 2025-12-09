@@ -454,9 +454,9 @@ class QueryBuilder:
                 - "any": Keep items that appear in AT LEAST ONE group
                 - "at_least": Keep items that appear in at least k groups (requires k parameter)
                 - "exact": Keep items that appear in exactly k groups (requires k parameter)
-                - "fraction": Keep items that appear in at least fraction p of groups (requires p parameter)
+                - "fraction": Keep items that appear in at least p fraction (0-1) of groups (requires p parameter)
             k: Threshold for "at_least" or "exact" modes
-            p: Fraction threshold (0-1) for "fraction" mode
+            p: Fraction threshold (0.0-1.0) for "fraction" mode. E.g., p=0.67 means at least 67% of groups
             group: Group attribute for coverage (defaults to primary grouping context)
             id_field: Field to use for identity matching (default: "id" for nodes)
             
@@ -474,7 +474,7 @@ class QueryBuilder:
             >>> # Nodes that are top-5 in at least 2 layers
             >>> Q.nodes().per_layer().top_k(5, "degree").coverage(mode="at_least", k=2)
             
-            >>> # Nodes in top-10 in ≥ 70% of layers
+            >>> # Nodes in top-10 in at least 70% of layers (0.7 fraction)
             >>> Q.nodes().per_layer().top_k(10, "degree").coverage(mode="fraction", p=0.7)
         """
         allowed_modes = {"all", "any", "at_least", "exact", "fraction"}

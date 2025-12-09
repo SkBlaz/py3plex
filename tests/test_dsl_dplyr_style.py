@@ -10,6 +10,7 @@ This test suite validates the new dplyr-inspired DSL features:
 - Enhanced coverage() with fraction mode
 """
 
+import numpy as np
 import pytest
 from py3plex.core import multinet
 from py3plex.dsl import Q, L
@@ -414,7 +415,6 @@ class TestCentralityMethods:
         assert "degree_zscore" in df.columns
         
         # Z-scores should have mean ~0 and std ~1
-        import numpy as np
         zscores = df["degree_zscore"].values
         assert abs(np.mean(zscores)) < 0.1
         assert abs(np.std(zscores) - 1.0) < 0.1
