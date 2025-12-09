@@ -478,6 +478,10 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         if select.order_by:
             # Smart defaults: Ensure attributes exist before ordering
             for order_item in select.order_by:
+                # Skip validation for attributes that will be created by summarize
+                if select.summarize_aggs and order_item.key in select.summarize_aggs:
+                    continue
+                
                 _ensure_attribute(
                     attr_name=order_item.key,
                     attributes=attributes,
@@ -927,6 +931,10 @@ def _apply_grouping_and_coverage(
     # Smart defaults: Ensure attributes exist before ordering
     if select.order_by:
         for order_item in select.order_by:
+            # Skip validation for attributes that will be created by summarize
+            if select.summarize_aggs and order_item.key in select.summarize_aggs:
+                continue
+            
             _ensure_attribute(
                 attr_name=order_item.key,
                 attributes=attributes,
