@@ -197,13 +197,13 @@ For comprehensive LLM documentation with examples, see `llm.md` in the repositor
 
 ```python
 # Use domain-specific exceptions
-from py3plex.exceptions import Py3plexIOError, Py3plexError
+from py3plex.exceptions import Py3plexIOError, Py3plexException
 
 # For I/O errors
 raise Py3plexIOError(f"Failed to read file: {path}")
 
 # For general errors
-raise Py3plexError("Invalid network configuration")
+raise Py3plexException("Invalid network configuration")
 ```
 
 ## Common Pitfalls
@@ -215,7 +215,7 @@ raise Py3plexError("Invalid network configuration")
    def dynamics(self) -> "DynamicsBuilder":  # String, not direct reference
    ```
 
-3. **Test Dependencies:** Tests require `pytest-benchmark` and `sympy`. These are in `dev` dependencies.
+3. **Test Dependencies:** Tests require `pytest-benchmark` (listed in `dev` dependencies). Some examples may use additional packages like `sympy`.
 
 4. **Type Checking:** mypy requires Python 3.9+ (see `pyproject.toml`). The project supports 3.8+ for runtime.
 
