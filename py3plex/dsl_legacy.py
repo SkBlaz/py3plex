@@ -1114,45 +1114,94 @@ def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[s
             columns.append(tokens[idx])
             idx += 1
     
-    # Check for FROM keyword
-    if idx < len(tokens) and tokens[idx].upper() == 'FROM':
+    # Parse target (nodes or edges) - comes BEFORE FROM in SQL-style queries
+    target = None
+    if idx < len(tokens) and tokens[idx].lower() in ['nodes', 'edges']:
+        target = tokens[idx].lower()
         idx += 1
     
-    # Parse target (nodes or edges)
-    if idx >= len(tokens):
+    # Check for FROM keyword with layer expression
+    layer_from_clause = None
+    if idx < len(tokens) and tokens[idx].upper() == 'FROM':
+        idx += 1
+        
+        if idx >= len(tokens):
+            raise DSLSyntaxError("FROM requires a layer expression or target")
+        
+        # Check if FROM is followed by layer expression
+        next_token = tokens[idx]
+        
+        if next_token.lower() == 'layer' and idx + 1 < len(tokens) and tokens[idx + 1] == '=':
+            # FROM layer="social" - canonical way for layer selection
+            if idx + 2 >= len(tokens):
+                raise DSLSyntaxError("FROM layer= requires a value")
+            layer_name = tokens[idx + 2].strip('"\'')
+            layer_from_clause = [layer_name]
+            idx += 3  # Skip layer, =, and value
+        elif next_token.upper() == 'LAYER' and idx + 1 < len(tokens) and tokens[idx + 1] == '(':
+            # FROM LAYER("social") - DSL v2 style
+            idx += 2  # Skip LAYER and (
+            if idx >= len(tokens):
+                raise DSLSyntaxError("FROM LAYER( requires a layer name")
+            layer_name = tokens[idx].strip('"\'')
+            layer_from_clause = [layer_name]
+            idx += 2  # Skip layer name and )
+        elif next_token.lower() in ['nodes', 'edges'] and target is None:
+            # FROM nodes/edges (SQL-style without target before FROM)
+            target = next_token.lower()
+            idx += 1
+        # else: FROM nodes is just redundant after SELECT nodes, ignore
+    
+    # If target still not found, this is an error
+    if target is None:
         raise DSLSyntaxError("SELECT requires a target (nodes or edges)")
     
-    target = tokens[idx].lower()
-    if target not in ['nodes', 'edges']:
-        raise DSLSyntaxError(f"Invalid SELECT target: {target}. Must be 'nodes' or 'edges'")
-    idx += 1
     
-    # Parse optional layer clause
-    layers = None
+    # Parse optional layer clause (IN LAYER / IN LAYERS syntax)
+    layers = layer_from_clause  # Use FROM layer if specified
     if idx < len(tokens) and tokens[idx].upper() == 'IN':
-        layers, idx = _parse_layer_clause(tokens, idx)
+        in_layers, idx = _parse_layer_clause(tokens, idx)
+        # Merge with FROM layers if both specified (intersection)
+        if layers and in_layers:
+            layers = list(set(layers) & set(in_layers))
+        else:
+            layers = in_layers or layers
     
     # Find WHERE and COMPUTE clauses
     where_idx = None
-    compute_idx = None
+    compute_indices = []  # Track all COMPUTE positions
     
     for i in range(idx, len(tokens)):
         if tokens[i].upper() == 'WHERE':
             where_idx = i
         elif tokens[i].upper() == 'COMPUTE':
-            compute_idx = i
+            compute_indices.append(i)
     
     # Parse WHERE conditions
     conditions = []
     if where_idx is not None:
         conditions = _parse_where_clause(tokens, where_idx)
     
-    # Parse COMPUTE measures
+    # Parse COMPUTE measures (support both repeated and comma-separated)
     measures = []
-    if compute_idx is not None:
-        measures = tokens[compute_idx + 1:]
-        # Filter out semicolons
-        measures = [m for m in measures if m != ';']
+    if compute_indices:
+        # Collect all tokens after each COMPUTE keyword
+        for i, compute_idx in enumerate(compute_indices):
+            start = compute_idx + 1
+            # Find end: next COMPUTE, WHERE, or end of tokens
+            end = len(tokens)
+            
+            # Check for next COMPUTE
+            if i + 1 < len(compute_indices):
+                end = compute_indices[i + 1]
+            
+            # Extract measures between this COMPUTE and the next marker
+            measure_tokens = tokens[start:end]
+            
+            # Filter out commas and semicolons, add valid measure names
+            for token in measure_tokens:
+                if token not in [',', ';', 'WHERE']:
+                    measures.append(token)
     
     # Execute query
     result = {

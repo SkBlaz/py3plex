@@ -105,6 +105,13 @@ from .builder import (
     PathBuilder,
 )
 
+from .expressions import (
+    F,
+    FieldExpression,
+    BooleanExpression,
+    FieldProxy,
+)
+
 from .result import QueryResult
 
 from .executor import execute_ast
@@ -218,6 +225,11 @@ __all__ = [
     "NullModelBuilder",
     "P",
     "PathBuilder",
+    # Expression Builder
+    "F",
+    "FieldExpression",
+    "BooleanExpression",
+    "FieldProxy",
     # Result
     "QueryResult",
     # Executor

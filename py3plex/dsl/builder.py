@@ -271,21 +271,54 @@ class QueryBuilder:
         self._select.layer_expr = layer_expr._to_ast()
         return self
     
-    def where(self, **kwargs) -> "QueryBuilder":
+    def where(self, *args, **kwargs) -> "QueryBuilder":
         """Add WHERE conditions.
         
-        Supports:
+        Supports two styles:
+        
+        1. Keyword arguments:
             - layer="social" → equality
             - degree__gt=5 → comparison (gt, ge, lt, le, eq, ne)
             - intralayer=True → intralayer predicate
             - interlayer=("social","work") → interlayer predicate
         
+        2. Expression objects (using F):
+            - where(F.degree > 5)
+            - where((F.degree > 5) & (F.layer == "social"))
+            - where((F.degree > 10) | (F.clustering < 0.5))
+        
+        Can mix both styles:
+            - where(F.degree > 5, layer="social")
+        
         Args:
+            *args: BooleanExpression objects from F
             **kwargs: Conditions as keyword arguments
             
         Returns:
             Self for chaining
         """
+        # Import here to avoid circular dependency
+        from .expressions import BooleanExpression
+        
+        # Process expression arguments
+        for arg in args:
+            if isinstance(arg, BooleanExpression):
+                condition = arg.to_condition_expr()
+                if self._select.where is None:
+                    self._select.where = condition
+                else:
+                    # Merge conditions with AND
+                    self._select.where.atoms.extend(condition.atoms)
+                    if condition.atoms:  # Only add AND if there are atoms to add
+                        self._select.where.ops.append("AND")
+                    self._select.where.ops.extend(condition.ops)
+            else:
+                raise TypeError(
+                    f"Positional arguments to where() must be BooleanExpression objects (from F), "
+                    f"got {type(arg)}"
+                )
+        
+        # Process keyword arguments
         if kwargs:
             condition = build_condition_from_kwargs(kwargs)
             if self._select.where is None:
@@ -293,8 +326,10 @@ class QueryBuilder:
             else:
                 # Merge conditions with AND
                 self._select.where.atoms.extend(condition.atoms)
-                self._select.where.ops.append("AND")
+                if condition.atoms:
+                    self._select.where.ops.append("AND")
                 self._select.where.ops.extend(condition.ops)
+        
         return self
     
     def compute(self, *measures: str, alias: Optional[str] = None,
