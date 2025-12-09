@@ -18,7 +18,7 @@
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
 **Key Features:**
-* SQL-like DSL for intuitive network queries
+* SQL-like DSL for intuitive network queries with smart defaults
 * Multilayer network visualization and analysis
 * Community detection and centrality measures
 * Network decomposition and embeddings
@@ -39,9 +39,8 @@ multi_hubs = (
     Q.nodes()
      .from_layers(L["*"])                   # wildcard: all layers
      .where(degree__gt=1)
-     .compute("degree", "betweenness_centrality")
      .per_layer()                           # group by layer
-        .top_k(5, "betweenness_centrality") # top 5 per layer
+        .top_k(5, "betweenness_centrality") # auto-computes betweenness
      .end_grouping()
      .coverage(mode="all")                  # nodes in top-5 in ALL layers
      .execute(net)
@@ -49,6 +48,8 @@ multi_hubs = (
 
 print("Nodes that are betweenness hubs in *all* layers:", set(multi_hubs.to_pandas()["id"]))
 ```
+
+*Note: The DSL includes smart defaults that auto-compute centrality metrics when needed. You can also explicitly compute metrics with `.compute("degree", "betweenness_centrality")` for full control.*
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 

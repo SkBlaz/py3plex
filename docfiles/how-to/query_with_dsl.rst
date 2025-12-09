@@ -739,6 +739,220 @@ For edge queries, the DataFrame includes:
     Mean edge weight: 0.723
     Mean edge betweenness: 0.028
 
+Smart Defaults and Error Messages
+----------------------------------
+
+The DSL includes **smart defaults** that automatically compute commonly used centrality metrics when referenced but not explicitly computed. This feature makes queries more ergonomic while maintaining predictable behavior.
+
+Auto-Computing Centrality Metrics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you reference a centrality metric in operations like ``top_k()``, ``order_by()``, or other ranking operations, the DSL will automatically compute it if not already present:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # The DSL auto-computes betweenness_centrality when needed
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .per_layer()
+            .top_k(5, "betweenness_centrality")  # Auto-computed here
+         .end_grouping()
+         .execute(network)
+    )
+    
+    df = result.to_pandas()
+    # betweenness_centrality column is available even though
+    # we didn't explicitly call .compute("betweenness_centrality")
+
+**Supported centrality aliases:**
+
+* ``degree``, ``degree_centrality``
+* ``betweenness``, ``betweenness_centrality``
+* ``closeness``, ``closeness_centrality``
+* ``eigenvector``, ``eigenvector_centrality``
+* ``pagerank``
+
+**When auto-compute happens:**
+
+* When the attribute is referenced in ``top_k()``
+* When the attribute is used in ``order_by()``
+* For both per-group (with grouping) and global operations
+
+**Example with multiple auto-computed metrics:**
+
+.. code-block:: python
+
+    # Auto-compute degree for filtering and betweenness for ranking
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .where(degree__gt=2)  # degree auto-computed here
+         .order_by("betweenness_centrality", desc=True)  # betweenness auto-computed here
+         .limit(10)
+         .execute(network)
+    )
+
+**Expected output:**
+
+.. code-block:: text
+
+        node layer  degree  betweenness_centrality
+    0  alice social      8                0.143000
+    1    bob social      7                0.098000
+    2  carol social      6                0.067000
+    ...
+
+Helpful Error Messages with Suggestions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you reference an unknown attribute, the DSL provides **did you mean?** suggestions using fuzzy string matching:
+
+.. code-block:: python
+
+    # Typo in attribute name
+    try:
+        result = (
+            Q.nodes()
+             .from_layers(L["*"])
+             .per_layer()
+                .top_k(5, "betweness_centrality")  # Typo: "betweness" instead of "betweenness"
+             .end_grouping()
+             .execute(network)
+        )
+    except UnknownAttributeError as e:
+        print(e)
+
+**Output:**
+
+.. code-block:: text
+
+    Unknown attribute 'betweness_centrality'. Did you mean 'betweenness_centrality'?
+    Known attributes: betweenness, betweenness_centrality, closeness, closeness_centrality, 
+                      degree, degree_centrality, eigenvector, eigenvector_centrality, pagerank
+
+**The error includes:**
+
+* The incorrect attribute name
+* A suggestion for the most similar correct name (using Levenshtein distance)
+* A list of all available attributes
+
+Grouping Requirements and Clear Errors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some operations require **active grouping** (via ``per_layer()`` or ``group_by()``). The DSL raises ``GroupingError`` with clear guidance when these operations are used incorrectly:
+
+.. code-block:: python
+
+    from py3plex.dsl.errors import GroupingError
+    
+    # This will raise GroupingError
+    try:
+        result = (
+            Q.nodes()
+             .from_layers(L["*"])
+             .coverage(mode="all")  # Error: no grouping active
+             .execute(network)
+        )
+    except GroupingError as e:
+        print(e)
+
+**Output:**
+
+.. code-block:: text
+
+    coverage() requires an active grouping (e.g. per_layer(), group_by('layer')). 
+    No grouping is currently active.
+    Example:
+        Q.nodes().from_layers(L["*"])
+            .per_layer().top_k(5, "degree").end_grouping()
+            .coverage(mode="all")
+
+**Correct usage:**
+
+.. code-block:: python
+
+    # With proper grouping
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .per_layer()  # Add grouping here
+            .top_k(5, "degree")
+         .end_grouping()
+         .coverage(mode="all")  # Now works correctly
+         .execute(network)
+    )
+
+When Smart Defaults DON'T Apply
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Smart defaults are **predictable and conservative**. They only apply in specific scenarios:
+
+1. **Only for centrality metrics**: Smart defaults work for recognized centrality metrics (degree, betweenness, etc.), not arbitrary attributes.
+
+2. **Explicit compute takes precedence**: If you explicitly compute a metric, the DSL uses your computation and doesn't auto-compute:
+
+   .. code-block:: python
+   
+       # Explicit compute - no auto-compute happens
+       result = (
+           Q.nodes()
+            .from_layers(L["*"])
+            .compute("betweenness_centrality")  # Explicit
+            .per_layer()
+               .top_k(5, "betweenness_centrality")  # Uses explicit computation
+            .end_grouping()
+            .execute(network)
+       )
+
+3. **Edge attributes are not auto-computed**: For edge queries, attributes like ``weight`` are read from edge data, not auto-computed:
+
+   .. code-block:: python
+   
+       # Edge weight is read from edge data, not computed
+       result = (
+           Q.edges()
+            .from_layers(L["*"])
+            .per_layer()
+               .top_k(5, "weight")  # Uses edge data['weight']
+            .end_grouping()
+            .execute(network)
+       )
+
+Benefits of Smart Defaults
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Ergonomics**: Write less boilerplate for common patterns:
+
+.. code-block:: python
+
+    # Before smart defaults (verbose)
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree", "betweenness_centrality", "closeness_centrality")
+         .per_layer()
+            .top_k(5, "betweenness_centrality")
+         .end_grouping()
+         .execute(network)
+    )
+    
+    # With smart defaults (concise)
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .per_layer()
+            .top_k(5, "betweenness_centrality")  # Auto-computes what's needed
+         .end_grouping()
+         .execute(network)
+    )
+
+**Teaching errors**: When something goes wrong, you get actionable guidance instead of cryptic messages.
+
+**Predictability**: Smart defaults only activate for well-known patterns. Your explicit operations always take precedence.
+
 Temporal Queries
 ----------------
 
