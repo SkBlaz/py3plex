@@ -10,6 +10,7 @@ from unittest.mock import patch
 import numpy as np
 import pytest
 
+from py3plex.exceptions import Py3plexIOError
 from py3plex.utils import (
     ICONTRACT_AVAILABLE,
     deprecated,
@@ -136,16 +137,16 @@ class TestGetDataPath:
     """Tests for get_data_path function."""
 
     def test_get_data_path_raises_when_file_not_found(self):
-        """Test that FileNotFoundError is raised when file doesn't exist."""
-        with pytest.raises(FileNotFoundError, match="Could not find"):
+        """Test that Py3plexIOError is raised when file doesn't exist."""
+        with pytest.raises(Py3plexIOError, match="Could not find"):
             get_data_path("nonexistent/file/path.txt")
 
     def test_get_data_path_error_message_includes_search_paths(self):
         """Test that error message includes searched paths."""
         try:
             get_data_path("nonexistent.txt")
-            pytest.fail("Expected FileNotFoundError")
-        except FileNotFoundError as e:
+            pytest.fail("Expected Py3plexIOError")
+        except Py3plexIOError as e:
             error_msg = str(e)
             assert "Searched paths:" in error_msg
             assert "nonexistent.txt" in error_msg
@@ -154,8 +155,8 @@ class TestGetDataPath:
         """Test that error message includes helpful instructions."""
         try:
             get_data_path("missing.txt")
-            pytest.fail("Expected FileNotFoundError")
-        except FileNotFoundError as e:
+            pytest.fail("Expected Py3plexIOError")
+        except Py3plexIOError as e:
             error_msg = str(e)
             assert "Clone the repository" in error_msg or "git clone" in error_msg
 
