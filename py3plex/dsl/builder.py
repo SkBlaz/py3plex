@@ -439,6 +439,8 @@ class QueryBuilder:
         self,
         mode: str = "all",
         k: Optional[int] = None,
+        p: Optional[float] = None,
+        group: Optional[str] = None,
         id_field: str = "id",
     ) -> "QueryBuilder":
         """Configure coverage filtering across groups.
@@ -452,14 +454,17 @@ class QueryBuilder:
                 - "any": Keep items that appear in AT LEAST ONE group
                 - "at_least": Keep items that appear in at least k groups (requires k parameter)
                 - "exact": Keep items that appear in exactly k groups (requires k parameter)
+                - "fraction": Keep items that appear in at least fraction p of groups (requires p parameter)
             k: Threshold for "at_least" or "exact" modes
+            p: Fraction threshold (0-1) for "fraction" mode
+            group: Group attribute for coverage (defaults to primary grouping context)
             id_field: Field to use for identity matching (default: "id" for nodes)
             
         Returns:
             Self for chaining
             
         Raises:
-            ValueError: If mode is invalid or k is missing for at_least/exact modes
+            ValueError: If mode is invalid or required parameters are missing
             ValueError: If called without prior grouping
             
         Example:
@@ -468,8 +473,11 @@ class QueryBuilder:
             
             >>> # Nodes that are top-5 in at least 2 layers
             >>> Q.nodes().per_layer().top_k(5, "degree").coverage(mode="at_least", k=2)
+            
+            >>> # Nodes in top-10 in ≥ 70% of layers
+            >>> Q.nodes().per_layer().top_k(10, "degree").coverage(mode="fraction", p=0.7)
         """
-        allowed_modes = {"all", "any", "at_least", "exact"}
+        allowed_modes = {"all", "any", "at_least", "exact", "fraction"}
         if mode not in allowed_modes:
             raise ValueError(
                 f"Unknown coverage mode: {mode}. "
@@ -479,6 +487,12 @@ class QueryBuilder:
         if mode in {"at_least", "exact"} and k is None:
             raise ValueError(f"coverage(mode='{mode}') requires k parameter")
         
+        if mode == "fraction" and p is None:
+            raise ValueError(f"coverage(mode='fraction') requires p parameter")
+        
+        if p is not None and (p < 0 or p > 1):
+            raise ValueError(f"coverage fraction p must be in range [0, 1], got {p}")
+        
         # Validate that grouping is set up
         if not self._select.group_by:
             raise ValueError(
@@ -487,7 +501,254 @@ class QueryBuilder:
         
         self._select.coverage_mode = mode
         self._select.coverage_k = k
+        self._select.coverage_p = p
+        self._select.coverage_group = group
         self._select.coverage_id_field = id_field
+        return self
+    
+    def per_community(self) -> "QueryBuilder":
+        """Group results by community (sugar for group_by("community")).
+        
+        Similar to per_layer(), but groups by community attribute.
+        Useful after community detection has been run and community
+        assignments are stored in node attributes.
+        
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Find top nodes per community
+            >>> Q.nodes().per_community().top_k(5, "betweenness_centrality")
+        """
+        return self.group_by("community")
+    
+    def select(self, *columns: str) -> "QueryBuilder":
+        """Keep only specified columns in the result.
+        
+        This operation filters the output columns, keeping only the ones specified.
+        Useful for reducing result size and focusing on specific attributes.
+        
+        Args:
+            *columns: Column names to keep in the result
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().compute("degree", "betweenness_centrality").select("id", "degree")
+        """
+        self._select.select_cols = list(columns)
+        return self
+    
+    def drop(self, *columns: str) -> "QueryBuilder":
+        """Remove specified columns from the result.
+        
+        This operation filters out the specified columns from the output.
+        Complementary to select() - use drop() when it's easier to specify
+        what to remove rather than what to keep.
+        
+        Args:
+            *columns: Column names to remove from the result
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().compute("degree", "betweenness", "closeness").drop("closeness")
+        """
+        self._select.drop_cols = list(columns)
+        return self
+    
+    def rename(self, **mapping: str) -> "QueryBuilder":
+        """Rename columns in the result.
+        
+        Provide keyword arguments where the key is the new name and the
+        value is the old name to rename.
+        
+        Args:
+            **mapping: Mapping from new names to old names (new=old)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().compute("degree", "betweenness_centrality").rename(
+            ...     deg="degree", bc="betweenness_centrality"
+            ... )
+        """
+        if self._select.rename_map is None:
+            self._select.rename_map = {}
+        self._select.rename_map.update(mapping)
+        return self
+    
+    def summarize(self, **aggregations: str) -> "QueryBuilder":
+        """Aggregate over the current grouping context.
+        
+        Computes summary statistics per group when grouping is active,
+        or globally if no grouping is set. Aggregation expressions are
+        strings like "mean(degree)", "max(degree)", "n()".
+        
+        Supported aggregations:
+            - n() : count of items
+            - mean(attr) : mean value
+            - sum(attr) : sum of values
+            - min(attr) : minimum value
+            - max(attr) : maximum value
+            - std(attr) : standard deviation
+            - var(attr) : variance
+        
+        Args:
+            **aggregations: Named aggregations (name=expression)
+            
+        Returns:
+            Self for chaining
+            
+        Raises:
+            ValueError: If aggregation expression is invalid
+            
+        Example:
+            >>> Q.nodes().from_layers(L["*"]).compute("degree").per_layer().summarize(
+            ...     mean_degree="mean(degree)",
+            ...     max_degree="max(degree)",
+            ...     n="n()"
+            ... )
+        """
+        if self._select.summarize_aggs is None:
+            self._select.summarize_aggs = {}
+        self._select.summarize_aggs.update(aggregations)
+        return self
+    
+    def arrange(self, *columns: str, desc: bool = False) -> "QueryBuilder":
+        """Sort results by specified columns (dplyr-style alias for order_by).
+        
+        This is a convenience method that provides dplyr-style syntax.
+        Columns can be prefixed with "-" to indicate descending order.
+        
+        Args:
+            *columns: Column names to sort by (prefix with "-" for descending)
+            desc: Default sort direction (only used if column has no prefix)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().compute("degree").arrange("degree")  # ascending
+            >>> Q.nodes().compute("degree").arrange("-degree")  # descending
+            >>> Q.nodes().compute("degree", "betweenness").arrange("degree", "-betweenness")
+        """
+        return self.order_by(*columns, desc=desc)
+    
+    def distinct(self, *columns: str) -> "QueryBuilder":
+        """Return unique rows based on specified columns.
+        
+        If columns are specified, deduplicates based on those columns only.
+        If no columns are specified, deduplicates based on all columns.
+        
+        Args:
+            *columns: Optional column names to use for uniqueness check
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Unique (node, layer) pairs
+            >>> Q.nodes().distinct()
+            
+            >>> # Unique communities per layer
+            >>> Q.nodes().distinct("community", "layer")
+        """
+        self._select.distinct_cols = list(columns) if columns else []
+        return self
+    
+    def centrality(self, *metrics: str, **aliases: str) -> "QueryBuilder":
+        """Compute centrality metrics (convenience wrapper for compute).
+        
+        This is a domain-specific convenience method for computing
+        common centrality measures. It's equivalent to calling compute()
+        with the metric names.
+        
+        Supported metrics:
+            - degree
+            - betweenness (or betweenness_centrality)
+            - closeness (or closeness_centrality)
+            - eigenvector (or eigenvector_centrality)
+            - pagerank
+            - clustering (or clustering_coefficient)
+        
+        Args:
+            *metrics: Centrality metric names
+            **aliases: Optional aliases for metrics (alias=metric_name)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().centrality("degree", "betweenness", "pagerank")
+            >>> Q.nodes().centrality("degree", bc="betweenness_centrality")
+        """
+        # First add metrics without aliases
+        for metric in metrics:
+            self._select.compute.append(ComputeItem(name=metric))
+        
+        # Then add metrics with aliases
+        for alias, metric in aliases.items():
+            self._select.compute.append(ComputeItem(name=metric, alias=alias))
+        
+        return self
+    
+    def rank_by(self, attr: str, method: str = "dense") -> "QueryBuilder":
+        """Add rank column based on specified attribute.
+        
+        Computes ranks within the current grouping context. If grouping
+        is active, ranks are computed per group. Otherwise, ranks are global.
+        
+        The rank column will be named "{attr}_rank".
+        
+        Args:
+            attr: Attribute to rank by
+            method: Ranking method - "dense", "min", "max", "average", "first"
+                   (follows pandas.Series.rank semantics)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Global ranking
+            >>> Q.nodes().compute("degree").rank_by("degree")
+            
+            >>> # Per-layer ranking
+            >>> Q.nodes().compute("degree").per_layer().rank_by("degree", "dense")
+        """
+        if self._select.rank_specs is None:
+            self._select.rank_specs = []
+        self._select.rank_specs.append((attr, method))
+        return self
+    
+    def zscore(self, *attrs: str) -> "QueryBuilder":
+        """Compute z-scores for specified attributes.
+        
+        For each attribute, computes the z-score (standardized value)
+        within the current grouping context. If grouping is active,
+        z-scores are computed per group. Otherwise, they are global.
+        
+        Creates new columns named "{attr}_zscore".
+        
+        Args:
+            *attrs: Attribute names to compute z-scores for
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Global z-scores
+            >>> Q.nodes().compute("degree", "betweenness").zscore("degree", "betweenness")
+            
+            >>> # Per-layer z-scores
+            >>> Q.nodes().compute("degree").per_layer().zscore("degree")
+        """
+        if self._select.zscore_attrs is None:
+            self._select.zscore_attrs = []
+        self._select.zscore_attrs.extend(attrs)
         return self
     
     def at(self, t: float) -> "QueryBuilder":

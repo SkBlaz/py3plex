@@ -7,7 +7,7 @@ AST nodes, which are then executed by the same engine.
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 class Target(Enum):
@@ -256,9 +256,18 @@ class SelectStmt:
         temporal_context: Optional temporal context for time-based queries
         group_by: List of attribute names to group by (e.g., ["layer"])
         limit_per_group: Optional per-group limit for top-k filtering
-        coverage_mode: Coverage filtering mode ("all", "any", "at_least", "exact")
+        coverage_mode: Coverage filtering mode ("all", "any", "at_least", "exact", "fraction")
         coverage_k: Threshold for "at_least" or "exact" coverage modes
+        coverage_p: Fraction threshold for "fraction" coverage mode
+        coverage_group: Group attribute for coverage (defaults to primary grouping)
         coverage_id_field: Field to use for coverage identity (default: "id")
+        select_cols: Optional list of columns to keep (for select() operation)
+        drop_cols: Optional list of columns to drop (for drop() operation)
+        rename_map: Optional mapping of old column names to new names
+        summarize_aggs: Optional dict of name -> aggregation expression for summarize()
+        distinct_cols: Optional list of columns for distinct operation
+        rank_specs: Optional list of (attr, method) tuples for rank_by()
+        zscore_attrs: Optional list of attributes to compute z-scores for
     """
     target: Target
     layer_expr: Optional[LayerExpr] = None
@@ -273,7 +282,16 @@ class SelectStmt:
     limit_per_group: Optional[int] = None
     coverage_mode: Optional[str] = None
     coverage_k: Optional[int] = None
+    coverage_p: Optional[float] = None
+    coverage_group: Optional[str] = None
     coverage_id_field: str = "id"
+    select_cols: Optional[List[str]] = None
+    drop_cols: Optional[List[str]] = None
+    rename_map: Optional[Dict[str, str]] = None
+    summarize_aggs: Optional[Dict[str, str]] = None
+    distinct_cols: Optional[List[str]] = None
+    rank_specs: Optional[List[Tuple[str, str]]] = None
+    zscore_attrs: Optional[List[str]] = None
 
 
 @dataclass
