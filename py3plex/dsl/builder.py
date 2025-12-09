@@ -1070,6 +1070,8 @@ class Q:
         >>> Q.nodes().where(layer="social").compute("degree")
         >>> Q.edges().where(intralayer=True)
         >>> Q.nodes(autocompute=False).where(degree__gt=5)  # Disable autocompute
+        >>> Q.dynamics("SIS", beta=0.3).run(steps=100)  # Dynamics simulation
+        >>> Q.trajectories("sim_result").at(50)  # Query trajectories
     """
     
     @staticmethod
@@ -1095,6 +1097,48 @@ class Q:
             QueryBuilder for edges
         """
         return QueryBuilder(Target.EDGES, autocompute=autocompute)
+    
+    @staticmethod
+    def dynamics(process_name: str, **params) -> "DynamicsBuilder":
+        """Create a dynamics simulation builder.
+        
+        Args:
+            process_name: Name of the process (e.g., "SIS", "SIR", "RANDOM_WALK")
+            **params: Process parameters (e.g., beta=0.3, mu=0.1)
+            
+        Returns:
+            DynamicsBuilder for configuring and running simulations
+            
+        Example:
+            >>> sim = (
+            ...     Q.dynamics("SIS", beta=0.3, mu=0.1)
+            ...      .on_layers(L["contacts"])
+            ...      .seed(0.01)
+            ...      .run(steps=100, replicates=10, track="all")
+            ...      .execute(network)
+            ... )
+        """
+        return DynamicsBuilder(process_name, **params)
+    
+    @staticmethod
+    def trajectories(process_ref: str) -> "TrajectoriesBuilder":
+        """Create a trajectories query builder.
+        
+        Args:
+            process_ref: Reference to a simulation result or process name
+            
+        Returns:
+            TrajectoriesBuilder for querying simulation outputs
+            
+        Example:
+            >>> result = (
+            ...     Q.trajectories("sim_result")
+            ...      .at(50)
+            ...      .measure("peak_time", "final_state")
+            ...      .execute(context)
+            ... )
+        """
+        return TrajectoriesBuilder(process_ref)
 
 
 # ==============================================================================
@@ -1472,3 +1516,322 @@ class P:
     def flow(source: Any, target: Any) -> PathBuilder:
         """Create a flow analysis query builder."""
         return PathBuilder("flow", source, target)
+
+
+# ==============================================================================
+# Dynamics Builder (Part D: Dynamics Integration)
+# ==============================================================================
+
+
+class DynamicsBuilder:
+    """Builder for DYNAMICS statements.
+    
+    Example:
+        >>> from py3plex.dsl import Q, L
+        >>> 
+        >>> result = (
+        ...     Q.dynamics("SIS", beta=0.3, mu=0.1)
+        ...      .on_layers(L["contacts"] + L["travel"])
+        ...      .seed(Q.nodes().where(degree__gt=10))
+        ...      .parameters_per_layer({
+        ...          "contacts": {"beta": 0.4},
+        ...          "travel": {"beta": 0.2}
+        ...      })
+        ...      .run(steps=100, replicates=10)
+        ...      .execute(network)
+        ... )
+    """
+    
+    def __init__(self, process_name: str, **params):
+        """Initialize builder with process name and parameters."""
+        from .ast import DynamicsStmt
+        self._stmt = DynamicsStmt(
+            process_name=process_name,
+            params=params,
+        )
+    
+    def on_layers(self, layer_expr: LayerExprBuilder) -> "DynamicsBuilder":
+        """Filter by layers using layer algebra.
+        
+        Args:
+            layer_expr: Layer expression (e.g., L["social"] + L["work"])
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.layer_expr = layer_expr._to_ast()
+        return self
+    
+    def seed(self, query_or_fraction: Union[float, "QueryBuilder"]) -> "DynamicsBuilder":
+        """Set initial seeding for the dynamics.
+        
+        Args:
+            query_or_fraction: Either a fraction (e.g., 0.01 for 1%) or a QueryBuilder
+                              for selecting specific nodes to seed
+            
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> # Seed 1% randomly
+            >>> builder.seed(0.01)
+            
+            >>> # Seed high-degree nodes
+            >>> builder.seed(Q.nodes().where(degree__gt=10))
+        """
+        if isinstance(query_or_fraction, float):
+            self._stmt.seed_fraction = query_or_fraction
+        elif hasattr(query_or_fraction, '_select'):
+            # It's a QueryBuilder
+            self._stmt.seed_query = query_or_fraction._select
+        else:
+            raise TypeError("seed() requires a float fraction or QueryBuilder")
+        return self
+    
+    def with_states(self, **state_mapping) -> "DynamicsBuilder":
+        """Explicitly define state labels (optional).
+        
+        Args:
+            **state_mapping: State labels (e.g., S="susceptible", I="infected")
+            
+        Returns:
+            Self for chaining
+            
+        Note:
+            This is optional metadata and doesn't affect execution, but helps
+            with documentation and trajectory queries.
+        """
+        # Store in params for now (could be separate field in future)
+        if "state_labels" not in self._stmt.params:
+            self._stmt.params["state_labels"] = {}
+        self._stmt.params["state_labels"].update(state_mapping)
+        return self
+    
+    def parameters_per_layer(self, layer_params: Dict[str, Dict[str, Any]]) -> "DynamicsBuilder":
+        """Set per-layer parameter overrides.
+        
+        Args:
+            layer_params: Dictionary mapping layer names to parameter dictionaries
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> builder.parameters_per_layer({
+            ...     "contacts": {"beta": 0.3},
+            ...     "travel": {"beta": 0.1}
+            ... })
+        """
+        self._stmt.layer_params = layer_params
+        return self
+    
+    def run(
+        self,
+        steps: int = 100,
+        replicates: int = 1,
+        track: Optional[Union[str, List[str]]] = None
+    ) -> "DynamicsBuilder":
+        """Set execution parameters.
+        
+        Args:
+            steps: Number of time steps to simulate
+            replicates: Number of independent runs
+            track: Measures to track ("all" or list of specific measures)
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.steps = steps
+        self._stmt.replicates = replicates
+        
+        if track is not None:
+            if isinstance(track, str):
+                if track == "all":
+                    # Will be expanded by executor based on process type
+                    self._stmt.track = ["all"]
+                else:
+                    self._stmt.track = [track]
+            else:
+                self._stmt.track = list(track)
+        
+        return self
+    
+    def random_seed(self, seed: int) -> "DynamicsBuilder":
+        """Set random seed for reproducibility.
+        
+        Args:
+            seed: Random seed
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.seed = seed
+        return self
+    
+    def to(self, target: str) -> "DynamicsBuilder":
+        """Set export target.
+        
+        Args:
+            target: Export format
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.export_target = target
+        return self
+    
+    def execute(self, network: Any) -> Any:
+        """Execute dynamics simulation.
+        
+        Args:
+            network: Multilayer network
+            
+        Returns:
+            DynamicsResult with simulation outputs
+        """
+        from py3plex.dsl.executor import execute_dynamics_stmt
+        return execute_dynamics_stmt(network, self._stmt)
+    
+    def to_ast(self) -> "DynamicsStmt":
+        """Export as AST DynamicsStmt object."""
+        return self._stmt
+    
+    def __repr__(self) -> str:
+        return f"DynamicsBuilder({self._stmt.process_name}, steps={self._stmt.steps})"
+
+
+class TrajectoriesBuilder:
+    """Builder for TRAJECTORIES statements.
+    
+    Example:
+        >>> from py3plex.dsl import Q
+        >>> 
+        >>> result = (
+        ...     Q.trajectories("sim_result")
+        ...      .where(replicate=5)
+        ...      .at(50)
+        ...      .measure("peak_time", "final_state")
+        ...      .order_by("node_id")
+        ...      .limit(100)
+        ...      .execute()
+        ... )
+    """
+    
+    def __init__(self, process_ref: str):
+        """Initialize builder with process reference."""
+        from .ast import TrajectoriesStmt
+        self._stmt = TrajectoriesStmt(process_ref=process_ref)
+    
+    def where(self, **kwargs) -> "TrajectoriesBuilder":
+        """Add WHERE conditions on trajectories.
+        
+        Args:
+            **kwargs: Conditions (e.g., replicate=5, node="Alice")
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.where = build_condition_from_kwargs(kwargs)
+        return self
+    
+    def at(self, t: float) -> "TrajectoriesBuilder":
+        """Filter to specific time point.
+        
+        Args:
+            t: Timestamp
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.temporal_context = TemporalContext(
+            kind="at",
+            t0=float(t),
+            t1=float(t)
+        )
+        return self
+    
+    def during(self, t0: float, t1: float) -> "TrajectoriesBuilder":
+        """Filter to time range.
+        
+        Args:
+            t0: Start time
+            t1: End time
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.temporal_context = TemporalContext(
+            kind="during",
+            t0=float(t0),
+            t1=float(t1)
+        )
+        return self
+    
+    def measure(self, *measures: str) -> "TrajectoriesBuilder":
+        """Add trajectory measures to compute.
+        
+        Args:
+            *measures: Measure names
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.measures.extend(measures)
+        return self
+    
+    def order_by(self, key: str, desc: bool = False) -> "TrajectoriesBuilder":
+        """Add ordering specification.
+        
+        Args:
+            key: Attribute to order by
+            desc: If True, descending order
+            
+        Returns:
+            Self for chaining
+        """
+        from .ast import OrderItem
+        self._stmt.order_by.append(OrderItem(key=key, desc=desc))
+        return self
+    
+    def limit(self, n: int) -> "TrajectoriesBuilder":
+        """Limit number of results.
+        
+        Args:
+            n: Maximum number of results
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.limit = n
+        return self
+    
+    def to(self, target: str) -> "TrajectoriesBuilder":
+        """Set export target.
+        
+        Args:
+            target: Export format
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.export_target = target
+        return self
+    
+    def execute(self, context: Optional[Any] = None) -> Any:
+        """Execute trajectory query.
+        
+        Args:
+            context: Optional context containing simulation results
+            
+        Returns:
+            QueryResult with trajectory data
+        """
+        from py3plex.dsl.executor import execute_trajectories_stmt
+        return execute_trajectories_stmt(self._stmt, context)
+    
+    def to_ast(self) -> "TrajectoriesStmt":
+        """Export as AST TrajectoriesStmt object."""
+        return self._stmt
+    
+    def __repr__(self) -> str:
+        return f"TrajectoriesBuilder({self._stmt.process_ref})"

@@ -438,20 +438,95 @@ class PathStmt:
 # ==============================================================================
 
 
+# ==============================================================================
+# DSL Extensions: Dynamics & Trajectories (Part D)
+# ==============================================================================
+
+
+@dataclass
+class DynamicsStmt:
+    """DYNAMICS statement for declarative process simulation.
+    
+    DSL Example:
+        DYNAMICS SIS WITH beta=0.3, mu=0.1
+        ON LAYER("contacts") + LAYER("travel")
+        SEED FROM nodes WHERE degree > 10
+        PARAMETERS PER LAYER contacts: {beta=0.4}, travel: {beta=0.2}
+        RUN FOR 100 STEPS, 10 REPLICATES
+        TRACK prevalence, incidence
+    
+    Attributes:
+        process_name: Name of the process (e.g., "SIS", "SIR", "RANDOM_WALK")
+        params: Global process parameters (e.g., {"beta": 0.3, "mu": 0.1})
+        layer_expr: Optional layer expression for filtering
+        seed_query: Optional SELECT query for seeding initial conditions
+        seed_fraction: Optional fraction for random seeding (e.g., 0.01 for 1%)
+        layer_params: Optional per-layer parameter overrides
+        steps: Number of simulation steps
+        replicates: Number of independent runs
+        track: List of measures to track (e.g., ["prevalence", "incidence"])
+        seed: Optional random seed for reproducibility
+        export_target: Optional export format
+    """
+    process_name: str
+    params: Dict[str, Any] = field(default_factory=dict)
+    layer_expr: Optional[LayerExpr] = None
+    seed_query: Optional[SelectStmt] = None
+    seed_fraction: Optional[float] = None
+    layer_params: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    steps: int = 100
+    replicates: int = 1
+    track: List[str] = field(default_factory=list)
+    seed: Optional[int] = None
+    export_target: Optional[str] = None
+
+
+@dataclass
+class TrajectoriesStmt:
+    """TRAJECTORIES statement for querying simulation results.
+    
+    DSL Example:
+        TRAJECTORIES FROM process_result
+        WHERE replicate = 5
+        AT time = 50
+        MEASURE peak_time, final_state
+        ORDER BY node_id
+        LIMIT 100
+    
+    Attributes:
+        process_ref: Reference to a dynamics process or result
+        where: Optional WHERE conditions on trajectories
+        temporal_context: Optional temporal filtering (at specific time, during range)
+        measures: List of trajectory measures to compute
+        order_by: List of ordering specifications
+        limit: Optional limit on results
+        export_target: Optional export format
+    """
+    process_ref: str
+    where: Optional[ConditionExpr] = None
+    temporal_context: Optional[TemporalContext] = None
+    measures: List[str] = field(default_factory=list)
+    order_by: List[OrderItem] = field(default_factory=list)
+    limit: Optional[int] = None
+    export_target: Optional[str] = None
+
+
 @dataclass
 class ExtendedQuery:
     """Extended query supporting multiple statement types.
     
-    This extends the basic Query to support COMPARE, NULLMODEL, and PATH statements
-    in addition to SELECT statements.
+    This extends the basic Query to support COMPARE, NULLMODEL, PATH, DYNAMICS,
+    and TRAJECTORIES statements in addition to SELECT statements.
     
     Attributes:
-        kind: Query type ("select", "compare", "nullmodel", "path")
+        kind: Query type ("select", "compare", "nullmodel", "path", "dynamics", "trajectories")
         explain: If True, return execution plan instead of results
         select: SELECT statement (if kind == "select")
         compare: COMPARE statement (if kind == "compare")
         nullmodel: NULLMODEL statement (if kind == "nullmodel")
         path: PATH statement (if kind == "path")
+        dynamics: DYNAMICS statement (if kind == "dynamics")
+        trajectories: TRAJECTORIES statement (if kind == "trajectories")
         dsl_version: DSL version for compatibility
     """
     kind: str
@@ -460,4 +535,6 @@ class ExtendedQuery:
     compare: Optional[CompareStmt] = None
     nullmodel: Optional[NullModelStmt] = None
     path: Optional[PathStmt] = None
+    dynamics: Optional[DynamicsStmt] = None
+    trajectories: Optional[TrajectoriesStmt] = None
     dsl_version: str = "2.0"
