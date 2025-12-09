@@ -184,15 +184,37 @@ def _build_execution_plan(network: Any, query: Query) -> ExecutionPlan:
                     "Consider sampling or approximate methods."
                 )
     
-    # Step 5: Ordering
-    if select.order_by:
+    # Step 5: Grouping and coverage
+    if select.group_by:
+        steps.append(PlanStep(
+            f"Group results by: {', '.join(select.group_by)}",
+            "O(n)"
+        ))
+    
+    if select.limit_per_group is not None:
+        steps.append(PlanStep(
+            f"Apply top-{select.limit_per_group} per group",
+            "O(n log n)"
+        ))
+    
+    if select.coverage_mode:
+        mode_desc = select.coverage_mode
+        if select.coverage_k is not None:
+            mode_desc = f"{select.coverage_mode} (k={select.coverage_k})"
+        steps.append(PlanStep(
+            f"Apply coverage filter across groups (mode='{mode_desc}')",
+            "O(n)"
+        ))
+    
+    # Step 6: Ordering (when not using grouping)
+    if select.order_by and not select.group_by:
         keys = [f"{o.key} {'DESC' if o.desc else 'ASC'}" for o in select.order_by]
         steps.append(PlanStep(
             f"Order by: {', '.join(keys)}",
             "O(n log n)"
         ))
     
-    # Step 6: Limit
+    # Step 7: Limit
     if select.limit:
         steps.append(PlanStep(
             f"Limit to {select.limit} results",
@@ -334,11 +356,22 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     )
                     attributes[compute_item.result_name] = {}
     
-    # Step 5: Apply ORDER BY
-    if select.order_by:
-        items = _apply_ordering(items, select.order_by, attributes)
+    # Step 4.5: Apply grouping, per-group operations, and coverage filtering
+    if select.group_by or select.limit_per_group is not None or select.coverage_mode:
+        items = _apply_grouping_and_coverage(
+            items=items,
+            select=select,
+            network=network,
+            G=G,
+            attributes=attributes,
+        )
+        # Skip global ORDER BY when grouping is used (ordering is per-group)
+    else:
+        # Step 5: Apply global ORDER BY (only when not grouping)
+        if select.order_by:
+            items = _apply_ordering(items, select.order_by, attributes)
     
-    # Step 6: Apply LIMIT
+    # Step 6: Apply global LIMIT
     if select.limit is not None:
         items = items[:select.limit]
     
@@ -367,33 +400,53 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     return result
 
 
+def _expand_layer_term(name: str, network: Any) -> Set[str]:
+    """Expand a single layer term, handling wildcards.
+    
+    Args:
+        name: Layer name or "*" for all layers
+        network: Multilayer network object
+        
+    Returns:
+        Set of layer names
+    """
+    if name == "*":
+        # Expand wildcard to all layers in the network
+        if hasattr(network, "layers"):
+            return {str(l) for l in network.layers}
+        # Fallback: derive layers from nodes
+        if hasattr(network, "get_nodes"):
+            return {str(layer) for (_, layer) in network.get_nodes()}
+        return set()
+    return {name}
+
+
 def _evaluate_layer_expr(layer_expr: LayerExpr, network: Any) -> Set[str]:
     """Evaluate a layer expression to get the set of active layers.
     
     Supports:
+        - Wildcard: L["*"] → all layers in network
         - Union (+): L["a"] + L["b"] → {"a", "b"}
         - Difference (-): L["a"] - L["b"] → {"a"} - {"b"}
         - Intersection (&): L["a"] & L["b"] → {"a"} ∩ {"b"}
+        - Combined: L["*"] - L["foo"] → all layers except "foo"
     """
     if not layer_expr.terms:
         return set()
     
-    # Start with first term
-    result = {layer_expr.terms[0].name}
+    # Start with first term (expanded if wildcard)
+    result = _expand_layer_term(layer_expr.terms[0].name, network)
     
     # Apply operations
     for i, op in enumerate(layer_expr.ops):
-        next_term = layer_expr.terms[i + 1].name
+        other = _expand_layer_term(layer_expr.terms[i + 1].name, network)
         
         if op == "+":
-            result.add(next_term)
+            result |= other
         elif op == "-":
-            result.discard(next_term)
+            result -= other
         elif op == "&":
-            if next_term in result:
-                result = {next_term}
-            else:
-                result = set()
+            result &= other
     
     return result
 
@@ -665,3 +718,184 @@ def _apply_ordering(items: List[Any], order_by: List[OrderItem],
         return tuple(values)
     
     return sorted(items, key=sort_key)
+
+
+def _apply_grouping_and_coverage(
+    items: List[Any],
+    select: SelectStmt,
+    network: Any,
+    G: nx.Graph,
+    attributes: Dict[str, Dict],
+) -> List[Any]:
+    """Apply grouping, per-group operations, and coverage filtering.
+    
+    This handles:
+    1. Grouping items by specified fields (e.g., "layer")
+    2. Per-group ordering (if order_by is specified)
+    3. Per-group top-k limiting (if limit_per_group is specified)
+    4. Coverage filtering across groups (if coverage_mode is specified)
+    
+    Args:
+        items: List of items (nodes or edges)
+        select: SELECT statement with grouping/coverage configuration
+        network: Multilayer network
+        G: Core network graph
+        attributes: Computed attributes dict
+        
+    Returns:
+        Filtered and ordered list of items
+        
+    Raises:
+        DslExecutionError: If configuration is invalid
+    """
+    # Validate grouping is set up when needed
+    if not select.group_by and (select.limit_per_group is not None or select.coverage_mode):
+        raise DslExecutionError(
+            "Grouping must be configured (via .group_by() or .per_layer()) "
+            "before using .top_k() or .coverage()"
+        )
+    
+    # Build groups
+    groups: Dict[Any, List[Any]] = {}
+    for item in items:
+        group_key = _get_group_key(item, select, network, G)
+        if group_key not in groups:
+            groups[group_key] = []
+        groups[group_key].append(item)
+    
+    # Per-group ordering
+    if select.order_by:
+        for key in groups:
+            groups[key] = _apply_ordering(groups[key], select.order_by, attributes)
+    
+    # Per-group top-k
+    if select.limit_per_group is not None:
+        k = select.limit_per_group
+        for key in groups:
+            groups[key] = groups[key][:k]
+    
+    # Coverage filtering
+    if select.coverage_mode:
+        # Only support coverage for node queries initially
+        if select.target != Target.NODES:
+            raise DslExecutionError(
+                "Coverage filtering is currently supported only for node queries. "
+                "Edge coverage filtering will be added in a future release."
+            )
+        
+        # Build coverage map: identity -> set of groups it appears in
+        coverage_map: Dict[Any, Set[Any]] = {}
+        for group_key, group_items in groups.items():
+            for item in group_items:
+                identity = _get_coverage_identity(item, select, network, G)
+                if identity not in coverage_map:
+                    coverage_map[identity] = set()
+                coverage_map[identity].add(group_key)
+        
+        # Apply coverage mode to determine allowed identities
+        num_groups = len(groups)
+        allowed_ids = set()
+        mode = select.coverage_mode
+        k = select.coverage_k
+        
+        for node_id, group_set in coverage_map.items():
+            count = len(group_set)
+            if mode == "all":
+                if count == num_groups:
+                    allowed_ids.add(node_id)
+            elif mode == "any":
+                if count >= 1:
+                    allowed_ids.add(node_id)
+            elif mode == "at_least":
+                if k is not None and count >= k:
+                    allowed_ids.add(node_id)
+            elif mode == "exact":
+                if k is not None and count == k:
+                    allowed_ids.add(node_id)
+        
+        # Filter groups to only include allowed identities
+        for group_key in groups:
+            filtered_group = []
+            for item in groups[group_key]:
+                identity = _get_coverage_identity(item, select, network, G)
+                if identity in allowed_ids:
+                    filtered_group.append(item)
+            groups[group_key] = filtered_group
+    
+    # Flatten groups back to a single list (ordered by group key for determinism)
+    new_items = []
+    for key in sorted(groups.keys(), key=lambda x: str(x)):
+        new_items.extend(groups[key])
+    
+    return new_items
+
+
+def _get_group_key(item: Any, select: SelectStmt, network: Any, G: nx.Graph) -> Any:
+    """Get the grouping key for an item.
+    
+    Args:
+        item: Node or edge item
+        select: SELECT statement with group_by fields
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Grouping key (single value or tuple)
+    """
+    keys = []
+    for field in select.group_by:
+        if field == "layer":
+            # Special handling for layer field
+            if isinstance(item, tuple) and len(item) >= 2:
+                # Node: (node_id, layer)
+                if not isinstance(item[0], tuple):
+                    keys.append(str(item[1]))
+                    continue
+                # Edge: ((src_node, src_layer), (tgt_node, tgt_layer), {data}?)
+                src = item[0]
+                if isinstance(src, tuple) and len(src) >= 2:
+                    keys.append(str(src[1]))
+                    continue
+            # Fallback to attribute lookup
+            value = _get_attribute_value(item, "layer", network, G)
+            keys.append(str(value) if value is not None else "None")
+        else:
+            # Generic attribute lookup
+            value = _get_attribute_value(item, field, network, G)
+            keys.append(str(value) if value is not None else "None")
+    
+    return tuple(keys) if len(keys) > 1 else keys[0]
+
+
+def _get_coverage_identity(item: Any, select: SelectStmt, network: Any, G: nx.Graph) -> Any:
+    """Get the coverage identity for an item.
+    
+    For nodes, the identity is typically the node ID (item[0]).
+    This allows (node_id, layer1) and (node_id, layer2) to be treated
+    as the same entity for coverage counting.
+    
+    Args:
+        item: Node or edge item
+        select: SELECT statement with coverage_id_field
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Coverage identity (typically node ID for nodes)
+    """
+    id_field = select.coverage_id_field or "id"
+    
+    # Node queries
+    if select.target == Target.NODES:
+        if id_field == "id":
+            # Use logical node ID (first element of tuple)
+            if isinstance(item, tuple) and len(item) >= 1:
+                return item[0]
+            return item
+        # Future: other fields via _get_attribute_value
+        return _get_attribute_value(item, id_field, network, G)
+    else:
+        # Edge queries (if ever supported)
+        if id_field == "id":
+            return _get_edge_key(item)
+        return _get_attribute_value(item, id_field, network, G)
