@@ -22,7 +22,7 @@ Example:
     >>> q = Q.edges().during(100.0, 200.0).execute(network)  # Range [100, 200]
 """
 
-from typing import Any, Dict, List, Optional, Union, Union
+from typing import Any, Dict, List, Optional, Union
 
 from .ast import (
     Query,

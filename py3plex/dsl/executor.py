@@ -6,6 +6,12 @@ multilayer networks. It supports temporal queries via the TemporalMultinetView w
 
 import copy
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
+
+try:
+    from typing import TYPE_CHECKING
+except ImportError:
+    TYPE_CHECKING = False
+
 import networkx as nx
 
 from .ast import (
@@ -24,6 +30,8 @@ from .ast import (
     PlanStep,
     ExecutionPlan,
     TemporalContext,
+    DynamicsStmt,
+    TrajectoriesStmt,
 )
 from .result import QueryResult
 from .registry import measure_registry
@@ -1553,7 +1561,7 @@ def _apply_rename(
 # ==============================================================================
 
 
-def execute_dynamics_stmt(network: Any, stmt: Any) -> Any:
+def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
     """Execute a DYNAMICS statement on a multilayer network.
     
     This function bridges the DSL dynamics API (Q.dynamics) with the existing
@@ -1619,7 +1627,7 @@ def execute_dynamics_stmt(network: Any, stmt: Any) -> Any:
     return result
 
 
-def execute_trajectories_stmt(stmt: Any, context: Optional[Any] = None) -> QueryResult:
+def execute_trajectories_stmt(stmt: TrajectoriesStmt, context: Optional[Any] = None) -> QueryResult:
     """Execute a TRAJECTORIES statement to query simulation results.
     
     This function queries over trajectory data from simulation results,

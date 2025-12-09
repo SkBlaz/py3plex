@@ -23,6 +23,7 @@ from py3plex.dsl import (
     DynamicsBuilder,
     TrajectoriesBuilder,
 )
+from py3plex.dsl.errors import DslExecutionError
 
 
 @pytest.fixture
@@ -466,8 +467,6 @@ class TestErrorHandling:
     
     def test_trajectories_requires_context(self):
         """Test that trajectories require context."""
-        from py3plex.dsl.errors import DslExecutionError
-        
         builder = Q.trajectories("sim_result")
         
         with pytest.raises(DslExecutionError, match="context"):
