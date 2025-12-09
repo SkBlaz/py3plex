@@ -496,7 +496,7 @@ class TestNetworkConversion(unittest.TestCase):
         json_data = self.network.to_json()
         self.assertIsNotNone(json_data)
         self.assertIn('nodes', json_data)
-        self.assertIn('links', json_data)
+        self.assertIn('edges', json_data)
     
     def test_to_json_with_data(self):
         """Test converting network with data to JSON."""
