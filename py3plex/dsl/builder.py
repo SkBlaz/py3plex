@@ -338,26 +338,69 @@ class QueryBuilder:
         return self
     
     def compute(self, *measures: str, alias: Optional[str] = None,
-                aliases: Optional[Dict[str, str]] = None) -> "QueryBuilder":
-        """Add measures to compute.
+                aliases: Optional[Dict[str, str]] = None,
+                uncertainty: bool = False,
+                method: Optional[str] = None,
+                n_samples: Optional[int] = None,
+                ci: Optional[float] = None) -> "QueryBuilder":
+        """Add measures to compute with optional uncertainty estimation.
         
         Args:
             *measures: Measure names to compute
             alias: Alias for single measure
             aliases: Dictionary mapping measure names to aliases
+            uncertainty: Whether to compute uncertainty for these measures
+            method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed')
+            n_samples: Number of samples for uncertainty estimation (default: 50)
+            ci: Confidence interval level (default: 0.95 for 95% CI)
             
         Returns:
             Self for chaining
+            
+        Example:
+            >>> # Without uncertainty
+            >>> Q.nodes().compute("degree", "betweenness_centrality")
+            
+            >>> # With uncertainty
+            >>> Q.nodes().compute(
+            ...     "degree", "betweenness_centrality",
+            ...     uncertainty=True,
+            ...     method="bootstrap",
+            ...     n_samples=500,
+            ...     ci=0.95
+            ... )
         """
         items: List[ComputeItem] = []
         
         if aliases:
             for name, al in aliases.items():
-                items.append(ComputeItem(name=name, alias=al))
+                items.append(ComputeItem(
+                    name=name, 
+                    alias=al,
+                    uncertainty=uncertainty,
+                    method=method,
+                    n_samples=n_samples,
+                    ci=ci
+                ))
         elif alias and len(measures) == 1:
-            items.append(ComputeItem(name=measures[0], alias=alias))
+            items.append(ComputeItem(
+                name=measures[0], 
+                alias=alias,
+                uncertainty=uncertainty,
+                method=method,
+                n_samples=n_samples,
+                ci=ci
+            ))
         else:
-            items.extend(ComputeItem(name=m) for m in measures)
+            items.extend(
+                ComputeItem(
+                    name=m,
+                    uncertainty=uncertainty,
+                    method=method,
+                    n_samples=n_samples,
+                    ci=ci
+                ) for m in measures
+            )
         
         self._select.compute.extend(items)
         return self

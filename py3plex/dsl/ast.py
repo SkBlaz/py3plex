@@ -190,9 +190,17 @@ class ComputeItem:
     Attributes:
         name: Measure name (e.g., 'betweenness_centrality')
         alias: Optional alias for the result (e.g., 'bc')
+        uncertainty: Whether to compute uncertainty for this measure
+        method: Uncertainty estimation method (e.g., 'bootstrap', 'perturbation')
+        n_samples: Number of samples for uncertainty estimation
+        ci: Confidence interval level (e.g., 0.95 for 95% CI)
     """
     name: str
     alias: Optional[str] = None
+    uncertainty: bool = False
+    method: Optional[str] = None
+    n_samples: Optional[int] = None
+    ci: Optional[float] = None
     
     @property
     def result_name(self) -> str:
