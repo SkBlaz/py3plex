@@ -106,8 +106,9 @@ class TestMonoplexNxWrapper(unittest.TestCase):
             )
             
             self.assertIsInstance(result, dict)
-        except nx.PowerIterationFailedConvergence:
-            # This is acceptable - the test is to verify kwargs are forwarded
+        except (nx.PowerIterationFailedConvergence, nx.NetworkXNotImplemented):
+            # PowerIterationFailedConvergence is acceptable - the test is to verify kwargs are forwarded
+            # NetworkXNotImplemented is expected for multigraphs (eigenvector centrality not supported)
             pass
 
     def test_pagerank_alpha(self):

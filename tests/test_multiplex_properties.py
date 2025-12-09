@@ -287,8 +287,18 @@ class TestProjectionAndMergingProperties:
     )
     def test_projected_edge_count_at_least_max_layer(self, edges, layers):
         """The projected edge count is at least the maximum edge count of any individual layer."""
-        # Filter self-loops
-        edges = [(s, t) for s, t in edges if s != t]
+        # Filter self-loops and normalize edges for undirected network
+        normalized_edges = []
+        seen = set()
+        for s, t in edges:
+            if s != t:
+                # Normalize: smaller ID first
+                normalized = tuple(sorted([s, t]))
+                if normalized not in seen:
+                    normalized_edges.append(normalized)
+                    seen.add(normalized)
+        
+        edges = normalized_edges
         assume(len(edges) >= 2)
         assume(len(layers) >= 2)
         

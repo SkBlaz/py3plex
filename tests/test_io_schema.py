@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 
+from py3plex.exceptions import Py3plexIOError
 from py3plex.io import (
     Edge,
     FormatUnsupportedError,
@@ -419,7 +420,7 @@ class TestAPI(unittest.TestCase):
 
     def test_read_file_not_found(self):
         """Test reading non-existent file raises error."""
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(Py3plexIOError):
             read("/nonexistent/file.json")
 
 
