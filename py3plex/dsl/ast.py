@@ -191,9 +191,14 @@ class ComputeItem:
         name: Measure name (e.g., 'betweenness_centrality')
         alias: Optional alias for the result (e.g., 'bc')
         uncertainty: Whether to compute uncertainty for this measure
-        method: Uncertainty estimation method (e.g., 'bootstrap', 'perturbation')
+        method: Uncertainty estimation method (e.g., 'bootstrap', 'perturbation', 'null_model')
         n_samples: Number of samples for uncertainty estimation
         ci: Confidence interval level (e.g., 0.95 for 95% CI)
+        bootstrap_unit: What to resample for bootstrap: "edges", "nodes", or "layers"
+        bootstrap_mode: Resampling mode: "resample" or "permute"
+        n_null: Number of null model replicates
+        null_model: Null model type: "degree_preserving", "erdos_renyi", "configuration"
+        random_state: Random seed for reproducibility
     """
     name: str
     alias: Optional[str] = None
@@ -201,6 +206,11 @@ class ComputeItem:
     method: Optional[str] = None
     n_samples: Optional[int] = None
     ci: Optional[float] = None
+    bootstrap_unit: Optional[str] = None
+    bootstrap_mode: Optional[str] = None
+    n_null: Optional[int] = None
+    null_model: Optional[str] = None
+    random_state: Optional[int] = None
     
     @property
     def result_name(self) -> str:

@@ -342,7 +342,13 @@ class QueryBuilder:
                 uncertainty: bool = False,
                 method: Optional[str] = None,
                 n_samples: Optional[int] = None,
-                ci: Optional[float] = None) -> "QueryBuilder":
+                ci: Optional[float] = None,
+                bootstrap_unit: Optional[str] = None,
+                bootstrap_mode: Optional[str] = None,
+                n_boot: Optional[int] = None,
+                n_null: Optional[int] = None,
+                null_model: Optional[str] = None,
+                random_state: Optional[int] = None) -> "QueryBuilder":
         """Add measures to compute with optional uncertainty estimation.
         
         Args:
@@ -350,9 +356,15 @@ class QueryBuilder:
             alias: Alias for single measure
             aliases: Dictionary mapping measure names to aliases
             uncertainty: Whether to compute uncertainty for these measures
-            method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed')
-            n_samples: Number of samples for uncertainty estimation (default: 50)
-            ci: Confidence interval level (default: 0.95 for 95% CI)
+            method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
+            n_samples: Number of samples for uncertainty estimation (default: from Q.uncertainty.defaults)
+            ci: Confidence interval level (default: from Q.uncertainty.defaults)
+            bootstrap_unit: What to resample - "edges", "nodes", or "layers" (default: from Q.uncertainty.defaults)
+            bootstrap_mode: Resampling mode - "resample" or "permute" (default: from Q.uncertainty.defaults)
+            n_boot: Alias for n_samples (for bootstrap)
+            n_null: Number of null model replicates (default: from Q.uncertainty.defaults)
+            null_model: Null model type - "degree_preserving", "erdos_renyi", "configuration" (default: from Q.uncertainty.defaults)
+            random_state: Random seed for reproducibility (default: from Q.uncertainty.defaults)
             
         Returns:
             Self for chaining
@@ -361,7 +373,7 @@ class QueryBuilder:
             >>> # Without uncertainty
             >>> Q.nodes().compute("degree", "betweenness_centrality")
             
-            >>> # With uncertainty
+            >>> # With uncertainty using explicit parameters
             >>> Q.nodes().compute(
             ...     "degree", "betweenness_centrality",
             ...     uncertainty=True,
@@ -369,7 +381,33 @@ class QueryBuilder:
             ...     n_samples=500,
             ...     ci=0.95
             ... )
+            
+            >>> # With uncertainty using global defaults
+            >>> Q.uncertainty.defaults(n_boot=500, ci=0.95)
+            >>> Q.nodes().compute("degree", uncertainty=True)
         """
+        # Get defaults from Q.uncertainty if not specified
+        if uncertainty or Q.uncertainty.get("enabled"):
+            # Apply defaults for unspecified parameters
+            if method is None:
+                method = Q.uncertainty.get("method", "bootstrap")
+            if n_samples is None and n_boot is None:
+                n_samples = Q.uncertainty.get("n_boot", 50)
+            if n_boot is not None:
+                n_samples = n_boot  # n_boot takes precedence if specified
+            if ci is None:
+                ci = Q.uncertainty.get("ci", 0.95)
+            if bootstrap_unit is None:
+                bootstrap_unit = Q.uncertainty.get("bootstrap_unit", "edges")
+            if bootstrap_mode is None:
+                bootstrap_mode = Q.uncertainty.get("bootstrap_mode", "resample")
+            if n_null is None:
+                n_null = Q.uncertainty.get("n_null", 200)
+            if null_model is None:
+                null_model = Q.uncertainty.get("null_model", "degree_preserving")
+            if random_state is None:
+                random_state = Q.uncertainty.get("random_state")
+        
         items: List[ComputeItem] = []
         
         if aliases:
@@ -380,7 +418,12 @@ class QueryBuilder:
                     uncertainty=uncertainty,
                     method=method,
                     n_samples=n_samples,
-                    ci=ci
+                    ci=ci,
+                    bootstrap_unit=bootstrap_unit,
+                    bootstrap_mode=bootstrap_mode,
+                    n_null=n_null,
+                    null_model=null_model,
+                    random_state=random_state,
                 ))
         elif alias and len(measures) == 1:
             items.append(ComputeItem(
@@ -389,7 +432,12 @@ class QueryBuilder:
                 uncertainty=uncertainty,
                 method=method,
                 n_samples=n_samples,
-                ci=ci
+                ci=ci,
+                bootstrap_unit=bootstrap_unit,
+                bootstrap_mode=bootstrap_mode,
+                n_null=n_null,
+                null_model=null_model,
+                random_state=random_state,
             ))
         else:
             items.extend(
@@ -398,7 +446,12 @@ class QueryBuilder:
                     uncertainty=uncertainty,
                     method=method,
                     n_samples=n_samples,
-                    ci=ci
+                    ci=ci,
+                    bootstrap_unit=bootstrap_unit,
+                    bootstrap_mode=bootstrap_mode,
+                    n_null=n_null,
+                    null_model=null_model,
+                    random_state=random_state,
                 ) for m in measures
             )
         
@@ -1182,6 +1235,117 @@ class Q:
             ... )
         """
         return TrajectoriesBuilder(process_ref)
+    
+    # Nested class for uncertainty defaults
+    class uncertainty:
+        """Global defaults for uncertainty estimation.
+        
+        This class provides a way to configure default parameters for
+        uncertainty estimation that will be used when uncertainty=True
+        is passed to compute() but specific parameters are omitted.
+        
+        Example:
+            >>> from py3plex.dsl import Q
+            >>> 
+            >>> # Set global defaults
+            >>> Q.uncertainty.defaults(
+            ...     enabled=True,
+            ...     n_boot=200,
+            ...     ci=0.95,
+            ...     bootstrap_unit="edges",
+            ...     bootstrap_mode="resample",
+            ...     random_state=42
+            ... )
+            >>> 
+            >>> # Now compute() will use these defaults
+            >>> Q.nodes().compute("degree", uncertainty=True).execute(net)
+            
+            >>> # Reset to defaults
+            >>> Q.uncertainty.reset()
+        """
+        
+        _defaults: Dict[str, Any] = {
+            "enabled": False,
+            "n_boot": 50,
+            "n_samples": 50,
+            "ci": 0.95,
+            "bootstrap_unit": "edges",
+            "bootstrap_mode": "resample",
+            "method": "bootstrap",
+            "random_state": None,
+            "n_null": 200,
+            "null_model": "degree_preserving",
+        }
+        
+        @classmethod
+        def defaults(cls, **kwargs) -> None:
+            """Set global defaults for uncertainty estimation.
+            
+            Args:
+                enabled: Whether uncertainty is enabled by default (default: False)
+                n_boot: Number of bootstrap replicates (default: 50)
+                n_samples: Alias for n_boot (default: 50)
+                ci: Confidence interval level (default: 0.95)
+                bootstrap_unit: What to resample - "edges", "nodes", or "layers" (default: "edges")
+                bootstrap_mode: Resampling mode - "resample" or "permute" (default: "resample")
+                method: Uncertainty estimation method - "bootstrap", "perturbation", "seed" (default: "bootstrap")
+                random_state: Random seed for reproducibility (default: None)
+                n_null: Number of null model replicates (default: 200)
+                null_model: Null model type - "degree_preserving", "erdos_renyi", "configuration" (default: "degree_preserving")
+            
+            Example:
+                >>> Q.uncertainty.defaults(
+                ...     enabled=True,
+                ...     n_boot=500,
+                ...     ci=0.95,
+                ...     bootstrap_unit="edges"
+                ... )
+            """
+            for key, value in kwargs.items():
+                if key not in cls._defaults:
+                    raise ValueError(
+                        f"Unknown uncertainty parameter: {key}. "
+                        f"Valid parameters: {list(cls._defaults.keys())}"
+                    )
+                cls._defaults[key] = value
+        
+        @classmethod
+        def reset(cls) -> None:
+            """Reset all defaults to their initial values."""
+            cls._defaults = {
+                "enabled": False,
+                "n_boot": 50,
+                "n_samples": 50,
+                "ci": 0.95,
+                "bootstrap_unit": "edges",
+                "bootstrap_mode": "resample",
+                "method": "bootstrap",
+                "random_state": None,
+                "n_null": 200,
+                "null_model": "degree_preserving",
+            }
+        
+        @classmethod
+        def get(cls, key: str, default: Any = None) -> Any:
+            """Get a default value.
+            
+            Args:
+                key: Parameter name
+                default: Value to return if key not found
+                
+            Returns:
+                Default value for the parameter
+            """
+            return cls._defaults.get(key, default)
+        
+        @classmethod
+        def get_all(cls) -> Dict[str, Any]:
+            """Get all current defaults as a dictionary.
+            
+            Returns:
+                Dictionary of all default values
+            """
+            return cls._defaults.copy()
 
 
 # ==============================================================================
