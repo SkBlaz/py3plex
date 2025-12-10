@@ -1,0 +1,796 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How-To: Uncertainty-Aware Network Analysis &mdash; py3plex 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=292eb321"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_zoo.html">Query Zoo: DSL Gallery for Multilayer Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How-To: Uncertainty-Aware Network Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/how-to/uncertainty_analysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="how-to-uncertainty-aware-network-analysis">
+<h1>How-To: Uncertainty-Aware Network Analysis<a class="headerlink" href="#how-to-uncertainty-aware-network-analysis" title="Link to this heading"></a></h1>
+<p>This guide demonstrates how to compute network statistics with uncertainty estimates using py3plex’s uncertainty-aware DSL.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
+<li><p><a class="reference internal" href="#basic-usage" id="id2">Basic Usage</a></p>
+<ul>
+<li><p><a class="reference internal" href="#computing-metrics-with-uncertainty" id="id3">Computing Metrics with Uncertainty</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#uncertainty-estimation-methods" id="id4">Uncertainty Estimation Methods</a></p>
+<ul>
+<li><p><a class="reference internal" href="#bootstrap-method" id="id5">Bootstrap Method</a></p></li>
+<li><p><a class="reference internal" href="#null-model-method" id="id6">Null Model Method</a></p></li>
+<li><p><a class="reference internal" href="#legacy-methods" id="id7">Legacy Methods</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#global-defaults" id="id8">Global Defaults</a></p>
+<ul>
+<li><p><a class="reference internal" href="#setting-defaults" id="id9">Setting Defaults</a></p></li>
+<li><p><a class="reference internal" href="#querying-and-resetting-defaults" id="id10">Querying and Resetting Defaults</a></p></li>
+<li><p><a class="reference internal" href="#overriding-defaults" id="id11">Overriding Defaults</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#advanced-usage" id="id12">Advanced Usage</a></p>
+<ul>
+<li><p><a class="reference internal" href="#multiple-metrics-with-uncertainty" id="id13">Multiple Metrics with Uncertainty</a></p></li>
+<li><p><a class="reference internal" href="#chaining-with-other-dsl-operations" id="id14">Chaining with Other DSL Operations</a></p></li>
+<li><p><a class="reference internal" href="#layer-specific-bootstrap" id="id15">Layer-Specific Bootstrap</a></p></li>
+<li><p><a class="reference internal" href="#node-level-bootstrap" id="id16">Node-Level Bootstrap</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#practical-examples" id="id17">Practical Examples</a></p>
+<ul>
+<li><p><a class="reference internal" href="#example-1-robust-hub-detection" id="id18">Example 1: Robust Hub Detection</a></p></li>
+<li><p><a class="reference internal" href="#example-2-statistical-significance-testing" id="id19">Example 2: Statistical Significance Testing</a></p></li>
+<li><p><a class="reference internal" href="#example-3-comparing-layers" id="id20">Example 3: Comparing Layers</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#best-practices" id="id21">Best Practices</a></p>
+<ul>
+<li><p><a class="reference internal" href="#choosing-replication-counts" id="id22">Choosing Replication Counts</a></p></li>
+<li><p><a class="reference internal" href="#bootstrap-unit-selection" id="id23">Bootstrap Unit Selection</a></p></li>
+<li><p><a class="reference internal" href="#null-model-selection" id="id24">Null Model Selection</a></p></li>
+<li><p><a class="reference internal" href="#reproducibility" id="id25">Reproducibility</a></p></li>
+<li><p><a class="reference internal" href="#performance-tips" id="id26">Performance Tips</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#api-reference" id="id27">API Reference</a></p>
+<ul>
+<li><p><a class="reference internal" href="#compute-parameters" id="id28">compute() Parameters</a></p></li>
+<li><p><a class="reference internal" href="#q-uncertainty-methods" id="id29">Q.uncertainty Methods</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#see-also" id="id30">See Also</a></p></li>
+<li><p><a class="reference internal" href="#references" id="id31">References</a></p></li>
+</ul>
+</nav>
+<section id="overview">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>py3plex provides first-class support for uncertainty quantification in network analysis. Every graph statistic can optionally carry uncertainty information including:</p>
+<ul class="simple">
+<li><p><strong>Confidence intervals</strong> (via bootstrap or perturbation)</p></li>
+<li><p><strong>Standard errors</strong></p></li>
+<li><p><strong>Z-scores and p-values</strong> (via null models)</p></li>
+<li><p><strong>Replication metadata</strong></p></li>
+</ul>
+<p>This makes it easy to assess the robustness of your network findings and perform statistical hypothesis testing.</p>
+</section>
+<section id="basic-usage">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Basic Usage</a><a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<section id="computing-metrics-with-uncertainty">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Computing Metrics with Uncertainty</a><a class="headerlink" href="#computing-metrics-with-uncertainty" title="Link to this heading"></a></h3>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">uncertainty=True</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">compute()</span></code> to enable uncertainty estimation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Create a network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compute degree with uncertainty</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Access results</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">uncertainty=True</span></code>, metric values are dictionaries containing:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mean</span></code>: Point estimate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std</span></code>: Standard deviation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quantiles</span></code>: Confidence interval bounds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_boot</span></code> or <code class="docutils literal notranslate"><span class="pre">n_null</span></code>: Number of replicates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code>: Estimation method used</p></li>
+</ul>
+</section>
+</section>
+<section id="uncertainty-estimation-methods">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Uncertainty Estimation Methods</a><a class="headerlink" href="#uncertainty-estimation-methods" title="Link to this heading"></a></h2>
+<section id="bootstrap-method">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Bootstrap Method</a><a class="headerlink" href="#bootstrap-method" title="Link to this heading"></a></h3>
+<p>Bootstrap resampling provides confidence intervals by resampling network units (edges, nodes, or layers) with replacement.</p>
+<p><strong>Syntax:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
+        <span class="n">n_boot</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+        <span class="n">bootstrap_unit</span><span class="o">=</span><span class="s2">&quot;edges&quot;</span><span class="p">,</span>      <span class="c1"># or &quot;nodes&quot;, &quot;layers&quot;</span>
+        <span class="n">bootstrap_mode</span><span class="o">=</span><span class="s2">&quot;resample&quot;</span><span class="p">,</span>   <span class="c1"># or &quot;permute&quot;</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">method=&quot;bootstrap&quot;</span></code>: Use bootstrap resampling</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_boot</span></code>: Number of bootstrap replicates (default: 50)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ci</span></code>: Confidence interval level, e.g., 0.95 for 95% CI (default: 0.95)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootstrap_unit</span></code>: What to resample - <code class="docutils literal notranslate"><span class="pre">&quot;edges&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;nodes&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;layers&quot;</span></code> (default: <code class="docutils literal notranslate"><span class="pre">&quot;edges&quot;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootstrap_mode</span></code>: Resampling mode - <code class="docutils literal notranslate"><span class="pre">&quot;resample&quot;</span></code> (with replacement) or <code class="docutils literal notranslate"><span class="pre">&quot;permute&quot;</span></code> (shuffle) (default: <code class="docutils literal notranslate"><span class="pre">&quot;resample&quot;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">random_state</span></code>: Random seed for reproducibility (optional)</p></li>
+</ul>
+<p><strong>Example: Finding Robust Hubs</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find high-degree nodes with narrow confidence intervals</span>
+<span class="n">robust_hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
+        <span class="n">n_boot</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+        <span class="n">bootstrap_unit</span><span class="o">=</span><span class="s2">&quot;edges&quot;</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Display results with uncertainty</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">robust_hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">node_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+    <span class="n">bc</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">]</span>
+        <span class="n">ci_low</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;quantiles&#39;</span><span class="p">][</span><span class="mf">0.025</span><span class="p">]</span>
+        <span class="n">ci_high</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;quantiles&#39;</span><span class="p">][</span><span class="mf">0.975</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">mean</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">std</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, CI=[</span><span class="si">{</span><span class="n">ci_low</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ci_high</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="null-model-method">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Null Model Method</a><a class="headerlink" href="#null-model-method" title="Link to this heading"></a></h3>
+<p>Null models test statistical significance by comparing observed values to randomized networks that preserve certain properties.</p>
+<p><strong>Syntax:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;null_model&quot;</span><span class="p">,</span>
+        <span class="n">n_null</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">null_model</span><span class="o">=</span><span class="s2">&quot;degree_preserving&quot;</span><span class="p">,</span>  <span class="c1"># or &quot;erdos_renyi&quot;, &quot;configuration&quot;</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">method=&quot;null_model&quot;</span></code>: Use null model hypothesis testing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_null</span></code>: Number of null model replicates (default: 200)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">null_model</span></code>: Null model type (default: <code class="docutils literal notranslate"><span class="pre">&quot;degree_preserving&quot;</span></code>)</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;degree_preserving&quot;</span></code>: Rewire edges while preserving degree sequence</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;erdos_renyi&quot;</span></code>: Random graph with same density</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;configuration&quot;</span></code>: Configuration model matching degree distribution</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">random_state</span></code>: Random seed for reproducibility (optional)</p></li>
+</ul>
+<p><strong>Output Format:</strong></p>
+<p>When <code class="docutils literal notranslate"><span class="pre">method=&quot;null_model&quot;</span></code>, metric dictionaries contain:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mean</span></code>: Observed value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mean_null</span></code>: Mean value from null models</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std</span></code>: Standard deviation of null distribution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zscore</span></code>: Z-score: <code class="docutils literal notranslate"><span class="pre">(observed</span> <span class="pre">-</span> <span class="pre">mean_null)</span> <span class="pre">/</span> <span class="pre">std</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pvalue</span></code>: Two-tailed p-value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_null</span></code>: Number of null replicates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code>: Null model type used</p></li>
+</ul>
+<p><strong>Example: Detecting Significant Nodes</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find nodes with significantly high betweenness</span>
+<span class="n">significant_nodes</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;null_model&quot;</span><span class="p">,</span>
+        <span class="n">n_null</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">null_model</span><span class="o">=</span><span class="s2">&quot;degree_preserving&quot;</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">significant_nodes</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">node_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+    <span class="n">bc</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+        <span class="n">zscore</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;zscore&#39;</span><span class="p">]</span>
+        <span class="n">pvalue</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;pvalue&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">pvalue</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">:</span>  <span class="c1"># Significant at α = 0.05</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">: observed=</span><span class="si">{</span><span class="n">obs</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, z=</span><span class="si">{</span><span class="n">zscore</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, p=</span><span class="si">{</span><span class="n">pvalue</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="legacy-methods">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Legacy Methods</a><a class="headerlink" href="#legacy-methods" title="Link to this heading"></a></h3>
+<p>py3plex also supports legacy uncertainty methods for backward compatibility:</p>
+<p><strong>Perturbation:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;perturbation&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Seed (Monte Carlo):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="global-defaults">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Global Defaults</a><a class="headerlink" href="#global-defaults" title="Link to this heading"></a></h2>
+<p>Set global defaults for uncertainty parameters to avoid repeating them in every query.</p>
+<section id="setting-defaults">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Setting Defaults</a><a class="headerlink" href="#setting-defaults" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Configure global defaults</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">defaults</span><span class="p">(</span>
+    <span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>              <span class="c1"># Auto-enable uncertainty for all queries?</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>         <span class="c1"># Default method</span>
+    <span class="n">n_boot</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>                 <span class="c1"># Bootstrap replicates</span>
+    <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>                    <span class="c1"># Confidence level</span>
+    <span class="n">bootstrap_unit</span><span class="o">=</span><span class="s2">&quot;edges&quot;</span><span class="p">,</span>     <span class="c1"># What to resample</span>
+    <span class="n">bootstrap_mode</span><span class="o">=</span><span class="s2">&quot;resample&quot;</span><span class="p">,</span>  <span class="c1"># Resampling mode</span>
+    <span class="n">n_null</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>                 <span class="c1"># Null model replicates</span>
+    <span class="n">null_model</span><span class="o">=</span><span class="s2">&quot;degree_preserving&quot;</span><span class="p">,</span>  <span class="c1"># Null model type</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>             <span class="c1"># For reproducibility</span>
+<span class="p">)</span>
+
+<span class="c1"># Now queries use these defaults</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="querying-and-resetting-defaults">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Querying and Resetting Defaults</a><a class="headerlink" href="#querying-and-resetting-defaults" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a single default value</span>
+<span class="n">n_boot</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n_boot&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get all defaults</span>
+<span class="n">all_defaults</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">all_defaults</span><span class="p">)</span>
+
+<span class="c1"># Reset to initial values</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="overriding-defaults">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Overriding Defaults</a><a class="headerlink" href="#overriding-defaults" title="Link to this heading"></a></h3>
+<p>Explicit parameters in <code class="docutils literal notranslate"><span class="pre">compute()</span></code> override global defaults:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set defaults</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">defaults</span><span class="p">(</span><span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+
+<span class="c1"># Override with explicit parameters</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-usage">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Advanced Usage</a><a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h2>
+<section id="multiple-metrics-with-uncertainty">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Multiple Metrics with Uncertainty</a><a class="headerlink" href="#multiple-metrics-with-uncertainty" title="Link to this heading"></a></h3>
+<p>Compute uncertainty for multiple metrics simultaneously:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;clustering&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
+        <span class="n">n_boot</span><span class="o">=</span><span class="mi">200</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">]])</span>
+</pre></div>
+</div>
+</section>
+<section id="chaining-with-other-dsl-operations">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Chaining with Other DSL Operations</a><a class="headerlink" href="#chaining-with-other-dsl-operations" title="Link to this heading"></a></h3>
+<p>Uncertainty works seamlessly with other DSL operations:</p>
+<p><strong>Filtering:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute with uncertainty, then filter</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Ordering:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Order by mean betweenness</span>
+<span class="n">top_nodes</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Grouping:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Per-layer uncertainty</span>
+<span class="n">per_layer</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-bootstrap">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Layer-Specific Bootstrap</a><a class="headerlink" href="#layer-specific-bootstrap" title="Link to this heading"></a></h3>
+<p>Bootstrap by resampling layers to assess inter-layer robustness:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
+        <span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">bootstrap_unit</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span>  <span class="c1"># Resample layers</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="node-level-bootstrap">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Node-Level Bootstrap</a><a class="headerlink" href="#node-level-bootstrap" title="Link to this heading"></a></h3>
+<p>Bootstrap by resampling nodes (useful for induced subgraph analysis):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;clustering&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
+        <span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">bootstrap_unit</span><span class="o">=</span><span class="s2">&quot;nodes&quot;</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="practical-examples">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Practical Examples</a><a class="headerlink" href="#practical-examples" title="Link to this heading"></a></h2>
+<section id="example-1-robust-hub-detection">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Example 1: Robust Hub Detection</a><a class="headerlink" href="#example-1-robust-hub-detection" title="Link to this heading"></a></h3>
+<p>Find hub nodes whose high centrality is robust to network perturbations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute betweenness with bootstrap CIs</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
+        <span class="n">n_boot</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Filter for robust hubs (narrow CI)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">bc</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+        <span class="n">ci_low</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;quantiles&#39;</span><span class="p">][</span><span class="mf">0.025</span><span class="p">]</span>
+        <span class="n">ci_high</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;quantiles&#39;</span><span class="p">][</span><span class="mf">0.975</span><span class="p">]</span>
+        <span class="n">ci_width</span> <span class="o">=</span> <span class="n">ci_high</span> <span class="o">-</span> <span class="n">ci_low</span>
+        <span class="n">rel_width</span> <span class="o">=</span> <span class="n">ci_width</span> <span class="o">/</span> <span class="n">mean</span> <span class="k">if</span> <span class="n">mean</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Flag nodes with relative CI width &lt; 20%</span>
+        <span class="k">if</span> <span class="n">rel_width</span> <span class="o">&lt;</span> <span class="mf">0.2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Robust hub: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, BC=</span><span class="si">{</span><span class="n">mean</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, CI width=</span><span class="si">{</span><span class="n">ci_width</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2-statistical-significance-testing">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Example 2: Statistical Significance Testing</a><a class="headerlink" href="#example-2-statistical-significance-testing" title="Link to this heading"></a></h3>
+<p>Test whether observed centrality values are significantly different from random:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare against degree-preserving null model</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+        <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;null_model&quot;</span><span class="p">,</span>
+        <span class="n">n_null</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">null_model</span><span class="o">=</span><span class="s2">&quot;degree_preserving&quot;</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Extract significant nodes</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="n">significant</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">bc</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;pvalue&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>  <span class="c1"># Bonferroni-corrected threshold</span>
+            <span class="n">significant</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;observed&#39;</span><span class="p">:</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expected&#39;</span><span class="p">:</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;mean_null&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;zscore&#39;</span><span class="p">:</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;zscore&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;pvalue&#39;</span><span class="p">:</span> <span class="n">bc</span><span class="p">[</span><span class="s1">&#39;pvalue&#39;</span><span class="p">]</span>
+            <span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">significant</span><span class="p">)</span><span class="si">}</span><span class="s2"> statistically significant nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3-comparing-layers">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Example 3: Comparing Layers</a><a class="headerlink" href="#example-3-comparing-layers" title="Link to this heading"></a></h3>
+<p>Use uncertainty to compare metric distributions across layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute degree with uncertainty per layer</span>
+<span class="n">layer_results</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Compute summary statistics per layer</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">layer_results</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="n">layer_summaries</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+    <span class="n">layer_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">layer</span><span class="p">]</span>
+    <span class="n">degrees</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">layer_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">deg</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">deg</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">degrees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deg</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">])</span>
+
+    <span class="n">layer_summaries</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;mean_degree&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">degrees</span><span class="p">),</span>
+        <span class="s1">&#39;std_degree&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
+    <span class="p">}</span>
+
+<span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">stats</span> <span class="ow">in</span> <span class="n">layer_summaries</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: mean=</span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;mean_degree&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;std_degree&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="choosing-replication-counts">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Choosing Replication Counts</a><a class="headerlink" href="#choosing-replication-counts" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Quick exploration</strong>: 50-100 replicates</p></li>
+<li><p><strong>Publication quality</strong>: 500-1000 replicates</p></li>
+<li><p><strong>Critical decisions</strong>: 1000+ replicates</p></li>
+</ul>
+</section>
+<section id="bootstrap-unit-selection">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Bootstrap Unit Selection</a><a class="headerlink" href="#bootstrap-unit-selection" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">&quot;edges&quot;</span></code> for most centrality metrics (default)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">&quot;nodes&quot;</span></code> for community detection or clustering</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">&quot;layers&quot;</span></code> to assess inter-layer robustness</p></li>
+</ul>
+</section>
+<section id="null-model-selection">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Null Model Selection</a><a class="headerlink" href="#null-model-selection" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;degree_preserving&quot;</span></code>: Best for most centrality metrics (preserves local structure)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;erdos_renyi&quot;</span></code>: Tests against completely random baseline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;configuration&quot;</span></code>: Tests against random networks with same degree distribution</p></li>
+</ul>
+</section>
+<section id="reproducibility">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Reproducibility</a><a class="headerlink" href="#reproducibility" title="Link to this heading"></a></h3>
+<p>Always set <code class="docutils literal notranslate"><span class="pre">random_state</span></code> for reproducible results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+    <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+    <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">n_boot</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># For reproducibility</span>
+<span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-tips">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Performance Tips</a><a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Start with small replication counts during development</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">bootstrap_unit=&quot;layers&quot;</span></code> for faster computation on large networks</p></li>
+<li><p>Set global defaults to avoid repetition</p></li>
+<li><p>Consider using <code class="docutils literal notranslate"><span class="pre">method=&quot;perturbation&quot;</span></code> for very large networks (faster than bootstrap)</p></li>
+</ol>
+</section>
+</section>
+<section id="api-reference">
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">API Reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="compute-parameters">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">compute() Parameters</a><a class="headerlink" href="#compute-parameters" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">QueryBuilder</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">measures</span><span class="p">,</span>                      <span class="c1"># Metric names to compute</span>
+    <span class="n">alias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                     <span class="c1"># Alias for single metric</span>
+    <span class="n">aliases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                   <span class="c1"># Dict of metric aliases</span>
+    <span class="n">uncertainty</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>              <span class="c1"># Enable uncertainty estimation</span>
+    <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                    <span class="c1"># &quot;bootstrap&quot;, &quot;null_model&quot;, &quot;perturbation&quot;, &quot;seed&quot;</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                 <span class="c1"># Number of samples (default: 50)</span>
+    <span class="n">n_boot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                    <span class="c1"># Alias for n_samples (bootstrap)</span>
+    <span class="n">n_null</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                    <span class="c1"># Number of null replicates (default: 200)</span>
+    <span class="n">ci</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                        <span class="c1"># Confidence level (default: 0.95)</span>
+    <span class="n">bootstrap_unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>            <span class="c1"># &quot;edges&quot;, &quot;nodes&quot;, &quot;layers&quot; (default: &quot;edges&quot;)</span>
+    <span class="n">bootstrap_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>            <span class="c1"># &quot;resample&quot;, &quot;permute&quot; (default: &quot;resample&quot;)</span>
+    <span class="n">null_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># &quot;degree_preserving&quot;, &quot;erdos_renyi&quot;, &quot;configuration&quot;</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span>               <span class="c1"># Random seed for reproducibility</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="q-uncertainty-methods">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Q.uncertainty Methods</a><a class="headerlink" href="#q-uncertainty-methods" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set global defaults</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">defaults</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c1"># Get a default value</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Get all defaults</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+
+<span class="c1"># Reset to initial values</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="see-also">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">See Also</a><a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="compute_statistics.html"><span class="doc">How to Compute Network Statistics</span></a> - Computing network statistics</p></li>
+<li><p><a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> - DSL query guide</p></li>
+<li><p><a class="reference internal" href="build_pipelines.html"><span class="doc">How to Build Analysis Pipelines with Dplyr-style Operations</span></a> - Building analysis pipelines</p></li>
+</ul>
+</section>
+<section id="references">
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">References</a><a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Efron, B., &amp; Tibshirani, R. J. (1994). <em>An Introduction to the Bootstrap</em>. CRC press.</p></li>
+<li><p>Milo, R., et al. (2002). “Network motifs: simple building blocks of complex networks.” <em>Science</em>, 298(5594), 824-827.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
