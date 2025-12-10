@@ -4,6 +4,8 @@ Master Regulators Example - Complete Working Implementation
 This example demonstrates a complete multilayer network analysis workflow
 using py3plex 1.0.1's scikit-learn-style API, multilayer community detection,
 and the powerful DSL query system.
+
+SKIP_CI: slow - This comprehensive example takes >30s due to network generation and community detection
 """
 
 from py3plex.core import multinet, datasets
