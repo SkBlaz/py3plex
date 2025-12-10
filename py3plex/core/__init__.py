@@ -36,9 +36,12 @@ from py3plex.core.types import (
     Position,
     Weight,
 )
+# Import datasets module for convenience
+from py3plex import datasets
 
 __all__ = [
     "multi_layer_network",
+    "datasets",
     # Type aliases
     "Node",
     "LayerId",
