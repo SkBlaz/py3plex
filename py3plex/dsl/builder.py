@@ -522,6 +522,7 @@ class QueryBuilder:
         self,
         mode: str = "all",
         k: Optional[int] = None,
+        threshold: Optional[int] = None,
         p: Optional[float] = None,
         group: Optional[str] = None,
         id_field: str = "id",
@@ -535,10 +536,11 @@ class QueryBuilder:
             mode: Coverage mode:
                 - "all": Keep items that appear in ALL groups
                 - "any": Keep items that appear in AT LEAST ONE group
-                - "at_least": Keep items that appear in at least k groups (requires k parameter)
-                - "exact": Keep items that appear in exactly k groups (requires k parameter)
+                - "at_least": Keep items that appear in at least k groups (requires k/threshold parameter)
+                - "exact": Keep items that appear in exactly k groups (requires k/threshold parameter)
                 - "fraction": Keep items that appear in at least p fraction (0-1) of groups (requires p parameter)
             k: Threshold for "at_least" or "exact" modes
+            threshold: Alias for k parameter
             p: Fraction threshold (0.0-1.0) for "fraction" mode. E.g., p=0.67 means at least 67% of groups
             group: Group attribute for coverage (defaults to primary grouping context)
             id_field: Field to use for identity matching (default: "id" for nodes)
@@ -556,10 +558,18 @@ class QueryBuilder:
             
             >>> # Nodes that are top-5 in at least 2 layers
             >>> Q.nodes().per_layer().top_k(5, "degree").coverage(mode="at_least", k=2)
+            >>> # Or equivalently:
+            >>> Q.nodes().per_layer().top_k(5, "degree").coverage(mode="at_least", threshold=2)
             
             >>> # Nodes in top-10 in at least 70% of layers (0.7 fraction)
             >>> Q.nodes().per_layer().top_k(10, "degree").coverage(mode="fraction", p=0.7)
         """
+        # Handle threshold as alias for k
+        if threshold is not None and k is None:
+            k = threshold
+        elif threshold is not None and k is not None:
+            raise ValueError("Cannot specify both k and threshold parameters")
+        
         allowed_modes = {"all", "any", "at_least", "exact", "fraction"}
         if mode not in allowed_modes:
             raise ValueError(
@@ -568,7 +578,7 @@ class QueryBuilder:
             )
         
         if mode in {"at_least", "exact"} and k is None:
-            raise ValueError(f"coverage(mode='{mode}') requires k parameter")
+            raise ValueError(f"coverage(mode='{mode}') requires k or threshold parameter")
         
         if mode == "fraction" and p is None:
             raise ValueError(f"coverage(mode='fraction') requires p parameter")
@@ -1061,6 +1071,117 @@ class QueryBuilder:
         """
         options["orient"] = orient
         return self.export(path, fmt="json", columns=columns, **options)
+    
+    def node_type(self, node_type: str) -> "QueryBuilder":
+        """Filter nodes by node_type attribute.
+        
+        This is a convenience method that adds a WHERE condition filtering
+        by the "node_type" attribute. Equivalent to .where(node_type=node_type).
+        
+        Args:
+            node_type: Node type to filter by (e.g., "gene", "protein", "drug")
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().node_type("gene").compute("degree")
+        """
+        return self.where(node_type=node_type)
+    
+    def has_community(self, predicate) -> "QueryBuilder":
+        """Filter nodes based on a community-related predicate.
+        
+        This method filters nodes based on their community membership or
+        community-related attributes. The predicate can be:
+        - A callable: Called with each node tuple, should return bool
+        - A value: Direct equality check against "community" attribute
+        
+        Args:
+            predicate: Either a callable(node_tuple) -> bool or a value to match
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Filter by community ID
+            >>> Q.nodes().has_community(3)
+            
+            >>> # Filter by custom predicate
+            >>> Q.nodes().has_community(
+            ...     lambda n: network.get_node_attribute(n, "disease_enriched") is True
+            ... )
+        """
+        # Store the predicate for later execution
+        if self._select.post_filters is None:
+            self._select.post_filters = []
+        
+        self._select.post_filters.append({
+            "type": "community_predicate",
+            "predicate": predicate,
+        })
+        return self
+    
+    def aggregate(self, **aggregations) -> "QueryBuilder":
+        """Aggregate columns with support for lambdas and builtin functions.
+        
+        This method computes aggregations over the result set. It supports:
+        - Built-in aggregation functions: mean(), sum(), min(), max(), std(), count()
+        - Direct attribute references for last/first value
+        - Lambda functions for custom aggregations
+        
+        The aggregations are computed after grouping if active, otherwise globally.
+        
+        Args:
+            **aggregations: Named aggregations where:
+                - Key is the output column name
+                - Value is either:
+                    * A string like "mean(degree)" or "sum(weight)"
+                    * A string attribute name (gets the value directly)
+                    * A lambda function receiving each item
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().per_layer().aggregate(
+            ...     avg_degree="mean(degree)",
+            ...     max_bc="max(betweenness_centrality)",
+            ...     node_count="count()",
+            ...     layer_name="layer"  # Direct attribute
+            ... )
+            
+            >>> # With lambda
+            >>> Q.nodes().aggregate(
+            ...     community_size=lambda n: network.community_sizes[network.get_partition(n)]
+            ... )
+        """
+        if self._select.aggregate_specs is None:
+            self._select.aggregate_specs = {}
+        
+        self._select.aggregate_specs.update(aggregations)
+        return self
+    
+    def sort(self, by: str, descending: bool = False) -> "QueryBuilder":
+        """Sort results by a column (convenience alias for order_by).
+        
+        This provides a more intuitive API matching common data analysis
+        patterns (e.g., pandas DataFrame.sort_values).
+        
+        Args:
+            by: Column name to sort by
+            descending: If True, sort in descending order (default: False)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().compute("degree").sort(by="degree", descending=True)
+        """
+        if descending:
+            return self.order_by(f"-{by}")
+        else:
+            return self.order_by(by)
     
     def explain(self) -> ExplainQuery:
         """Create EXPLAIN query for execution plan.

@@ -276,6 +276,8 @@ class SelectStmt:
         distinct_cols: Optional list of columns for distinct operation
         rank_specs: Optional list of (attr, method) tuples for rank_by()
         zscore_attrs: Optional list of attributes to compute z-scores for
+        post_filters: Optional list of filter specifications to apply after computation
+        aggregate_specs: Optional dict of name -> aggregation spec for aggregate()
         autocompute: Whether to automatically compute missing metrics (default: True)
     """
     target: Target
@@ -301,6 +303,8 @@ class SelectStmt:
     distinct_cols: Optional[List[str]] = None
     rank_specs: Optional[List[Tuple[str, str]]] = None
     zscore_attrs: Optional[List[str]] = None
+    post_filters: Optional[List[Dict[str, Any]]] = None
+    aggregate_specs: Optional[Dict[str, Any]] = None
     autocompute: bool = True
 
 
