@@ -66,9 +66,6 @@ Found 287 communities, modularity = 0.649
 ...
 ```
 
-
-*Note: The DSL includes smart defaults that auto-compute centrality metrics when needed. You can also explicitly compute metrics with `.compute("degree", "betweenness_centrality")` for full control.*
-
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
 ## Getting Started
