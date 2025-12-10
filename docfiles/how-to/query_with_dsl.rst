@@ -72,13 +72,29 @@ Basic SELECT
 
 Select all nodes and inspect the result:
 
+.. note:: Where to find this data
+   
+   The examples in this guide use one of the following:
+   
+   * **Built-in data generators** like ``random_generators.random_multilayer_ER(...)`` (recommended for self-contained examples)
+   * **Example files** from the repository at ``datasets/multiedgelist.txt`` or similar
+   * The **built-in datasets module**: ``from py3plex.datasets import fetch_multilayer``
+   
+   For this example, we'll create a simple network programmatically:
+
 .. code-block:: python
 
     from py3plex.core import multinet
     from py3plex.dsl import execute_query
     
+    # Create a simple multilayer network
     network = multinet.multi_layer_network()
-    network.load_network("data.multiedgelist", input_type="multiedgelist")
+    network.add_edges([
+        ['alice', 'social', 'bob', 'social', 1],
+        ['bob', 'social', 'charlie', 'social', 1],
+        ['alice', 'work', 'charlie', 'work', 1],
+        ['bob', 'work', 'dave', 'work', 1],
+    ], input_type="list")
     
     # Get all nodes
     result = execute_query(network, 'SELECT nodes')
@@ -94,10 +110,26 @@ Select all nodes and inspect the result:
 
 .. code-block:: text
 
-    Found 100 nodes
-      ('alice', 'social'): {'degree': 7, 'layer': 'social', 'layer_count': 2}
-      ('bob', 'social'): {'degree': 5, 'layer': 'social', 'layer_count': 1}
-      ('charlie', 'work'): {'degree': 3, 'layer': 'work', 'layer_count': 2}
+    Found 6 nodes
+      ('alice', 'social'): {'degree': 1, 'layer': 'social', 'layer_count': 2}
+      ('bob', 'social'): {'degree': 2, 'layer': 'social', 'layer_count': 2}
+      ('charlie', 'social'): {'degree': 1, 'layer': 'social', 'layer_count': 2}
+      ('alice', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
+      ('bob', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
+
+.. tip:: Loading from files
+   
+   To load from a file in the repository:
+   
+   .. code-block:: python
+   
+       # Using a file from the datasets/ directory
+       network.load_network("datasets/multiedgelist.txt", input_type="multiedgelist")
+       
+       # Or using an absolute path
+       import os
+       path = os.path.join(os.path.dirname(__file__), "datasets", "multiedgelist.txt")
+       network.load_network(path, input_type="multiedgelist")
       ('diana', 'social'): {'degree': 9, 'layer': 'social', 'layer_count': 3}
       ('eve', 'work'): {'degree': 4, 'layer': 'work', 'layer_count': 1}
 
@@ -1781,9 +1813,13 @@ The recommended pattern for combining DSL queries with data transformations:
     from py3plex.dsl import Q, L
     from py3plex.core import multinet
     
-    # Load network
+    # Create a sample network
     network = multinet.multi_layer_network()
-    network.load_network("data.multiedgelist", input_type="multiedgelist")
+    network.add_edges([
+        ['A', 'layer1', 'B', 'layer1', 1],
+        ['B', 'layer1', 'C', 'layer1', 1],
+        ['A', 'layer2', 'C', 'layer2', 1],
+    ], input_type="list")
     
     # Start with DSL query
     result = (

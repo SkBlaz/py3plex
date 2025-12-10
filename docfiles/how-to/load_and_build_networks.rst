@@ -108,7 +108,7 @@ Load Edge Lists
 
 Most common format: one edge per line.
 
-**File format (example.txt):**
+**File format (stored as datasets/simple_multiplex.txt in the repository):**
 
 .. code-block:: text
 
@@ -123,10 +123,19 @@ Most common format: one edge per line.
     from py3plex.core import multinet
     
     network = multinet.multi_layer_network()
+    
+    # Option 1: Load from repository file
     network.load_network(
-        "example.txt",
+        "datasets/simple_multiplex.txt",
         input_type="multiedgelist"
     )
+    
+    # Option 2: Create from data directly (recommended for examples)
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1.0],
+        ['Bob', 'friends', 'Carol', 'friends', 1.0],
+        ['Alice', 'colleagues', 'Bob', 'colleagues', 1.0],
+    ], input_type="list")
     
     network.basic_stats()
 
