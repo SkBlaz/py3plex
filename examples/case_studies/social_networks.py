@@ -126,7 +126,7 @@ def compute_basic_stats(network):
     all_nodes = set()
     for platform in ['facebook', 'twitter', 'linkedin']:
         result = Q.nodes().from_layers(L[platform]).execute(network)
-        platform_users = {node[0] for node in result.items()}
+        platform_users = {node[0] for node in result.items}
         all_nodes.update(platform_users)
     
     unique_users = len(all_nodes)
@@ -189,12 +189,11 @@ def detect_communities(network):
     Detect and analyze social communities.
     """
     print("\n[3.3] Detecting communities...")
-    partition_dict, modularity = louvain_multilayer(network)
+    partition_dict = louvain_multilayer(network, random_state=42)
     
     num_communities = len(set(partition_dict.values()))
     print(f"\nCommunity detection results:")
     print(f"  Communities: {num_communities}")
-    print(f"  Modularity: {modularity:.3f}")
     
     # Analyze cross-platform communities
     print("\nCross-platform community composition:")
@@ -214,7 +213,7 @@ def detect_communities(network):
         for user, platforms in list(members.items())[:3]:
             print(f"    {user}: {', '.join(platforms)}")
     
-    return partition_dict, modularity
+    return partition_dict
 
 
 def visualize_and_interpret(network, influence_df, partition_dict):
@@ -319,7 +318,7 @@ def main():
     
     # Step 3: Analysis pipeline
     influence_df = identify_influencers(network)
-    partition_dict, modularity = detect_communities(network)
+    partition_dict = detect_communities(network)
     
     # Step 4: Visualization and interpretation
     visualize_and_interpret(network, influence_df, partition_dict)

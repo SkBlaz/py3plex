@@ -125,7 +125,7 @@ def compute_basic_stats(network):
     
     for mode in ['bus', 'metro', 'bike']:
         result = Q.nodes().from_layers(L[mode]).execute(network)
-        mode_locations = {node[0] for node in result.items()}
+        mode_locations = {node[0] for node in result.items}
         all_locations.update(mode_locations)
         for loc in mode_locations:
             if loc not in location_modes:
@@ -192,12 +192,11 @@ def detect_service_zones(network):
     Detect service zones (communities) in the transport network.
     """
     print("\n[3.3] Detecting service zones...")
-    partition_dict, modularity = louvain_multilayer(network)
+    partition_dict = louvain_multilayer(network, random_state=42)
     
     num_zones = len(set(partition_dict.values()))
     print(f"\nService zone detection:")
     print(f"  Zones identified: {num_zones}")
-    print(f"  Modularity: {modularity:.3f}")
     
     # Analyze zone composition
     zones = {}
@@ -216,7 +215,7 @@ def detect_service_zones(network):
         for loc, modes in list(locations.items())[:4]:
             print(f"    {loc}: {', '.join(modes)}")
     
-    return partition_dict, modularity
+    return partition_dict
 
 
 def visualize_and_interpret(network, accessibility_df, partition_dict):
@@ -333,7 +332,7 @@ def main():
     
     # Step 3: Analysis pipeline
     accessibility_df = analyze_accessibility(network)
-    partition_dict, modularity = detect_service_zones(network)
+    partition_dict = detect_service_zones(network)
     
     # Step 4: Visualization and interpretation
     visualize_and_interpret(network, accessibility_df, partition_dict)

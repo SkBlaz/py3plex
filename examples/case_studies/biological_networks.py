@@ -142,12 +142,11 @@ def run_analysis_pipeline(network):
     
     # 3.2 Community detection
     print("\n[3.2] Detecting communities...")
-    partition_dict, modularity = louvain_multilayer(network)
+    partition_dict = louvain_multilayer(network, random_state=42)
     
     num_communities = len(set(partition_dict.values()))
     print(f"\nCommunity detection results:")
     print(f"  Communities found: {num_communities}")
-    print(f"  Modularity: {modularity:.3f}")
     
     # Analyze community composition
     communities_by_layer = {}
@@ -175,7 +174,7 @@ def run_analysis_pipeline(network):
     for _, row in hubs.iterrows():
         print(f"  {row['id']}: degree={row['degree']}, betweenness={row['betweenness_centrality']:.3f}")
     
-    return partition_dict, modularity
+    return partition_dict
 
 
 def visualize_and_interpret(network, partition_dict):
@@ -266,7 +265,7 @@ def main():
     compute_basic_stats(network)
     
     # Step 3: Analysis pipeline
-    partition_dict, modularity = run_analysis_pipeline(network)
+    partition_dict = run_analysis_pipeline(network)
     
     # Step 4: Visualization and interpretation
     visualize_and_interpret(network, partition_dict)
