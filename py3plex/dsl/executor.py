@@ -5,6 +5,7 @@ multilayer networks. It supports temporal queries via the TemporalMultinetView w
 """
 
 import copy
+import logging
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
 
 try:
@@ -47,6 +48,21 @@ from .errors import (
     GroupingError,
 )
 
+# Import uncertainty support
+from py3plex.uncertainty import (
+    StatSeries,
+    estimate_uncertainty,
+    ResamplingStrategy,
+)
+
+
+# Resampling method mapping for uncertainty estimation
+_RESAMPLING_METHOD_MAP = {
+    "bootstrap": ResamplingStrategy.BOOTSTRAP,
+    "perturbation": ResamplingStrategy.PERTURBATION,
+    "seed": ResamplingStrategy.SEED,
+    "jackknife": ResamplingStrategy.JACKKNIFE,
+}
 
 # Centrality aliases mapping for smart defaults
 # Maps common attribute names to their canonical centrality metric names
@@ -332,7 +348,6 @@ def _ensure_attribute(
                 return
             except Exception as e:
                 # If auto-compute fails, fall through to error
-                import logging
                 logging.getLogger(__name__).debug(
                     f"Failed to auto-compute '{attr_name}': {e}"
                 )
@@ -357,6 +372,74 @@ def _ensure_attribute(
     
     # Raise error with helpful suggestions
     raise UnknownAttributeError(attr_name, available)
+
+
+def _compute_measure_with_uncertainty(
+    network: Any,
+    compute_item: ComputeItem,
+    measure_fn: Any,
+    subgraph: nx.Graph,
+    items: List[Any],
+) -> Dict[Any, Any]:
+    """Compute a measure with optional uncertainty estimation.
+    
+    Args:
+        network: Multilayer network
+        compute_item: ComputeItem with uncertainty configuration
+        measure_fn: Measure function to call
+        subgraph: Subgraph to compute on
+        items: List of items (nodes or edges)
+        
+    Returns:
+        Dictionary mapping items to values or StatSeries objects
+    """
+    if not compute_item.uncertainty:
+        # No uncertainty requested, compute normally
+        return measure_fn(subgraph, items)
+    
+    # Uncertainty requested - use estimate_uncertainty
+    # Determine resampling strategy
+    method = compute_item.method or "perturbation"
+    resampling = _RESAMPLING_METHOD_MAP.get(method.lower(), ResamplingStrategy.PERTURBATION)
+    
+    # Get number of samples
+    n_samples = compute_item.n_samples or 50
+    
+    # Create metric function that works with estimate_uncertainty
+    def metric_fn_wrapper(net):
+        """Wrapper that computes the measure on the network."""
+        # Get the subgraph for the current network state
+        if hasattr(net, 'core_network'):
+            g = net.core_network
+        else:
+            g = net
+        
+        # Only compute on nodes that exist in the graph
+        # Use generator to avoid creating full list in memory for large networks
+        valid_items = [item for item in items if item in g]
+        if not valid_items:
+            return {}
+        
+        sub = g.subgraph(valid_items).copy()
+        return measure_fn(sub, valid_items)
+    
+    # Estimate uncertainty
+    result = estimate_uncertainty(
+        network=network,
+        metric_fn=metric_fn_wrapper,
+        n_runs=n_samples,
+        resampling=resampling,
+        random_seed=None,  # Allow random variation
+    )
+    
+    # If result is a StatSeries, convert to dict format for attributes
+    if isinstance(result, StatSeries):
+        # Store as dict with mean values for backward compatibility
+        # The full StatSeries will be stored in metadata
+        return result.to_dict()
+    else:
+        # Scalar result - return as-is
+        return result
 
 
 def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None) -> QueryResult:
@@ -421,6 +504,12 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     # First, try to resolve from operator registry
                     operator = get_operator(compute_item.name)
                     if operator is not None:
+                        # Custom operators don't support uncertainty yet
+                        if compute_item.uncertainty:
+                            logging.getLogger(__name__).warning(
+                                f"Uncertainty not supported for custom operator '{compute_item.name}'"
+                            )
+                        
                         # Call custom operator with context
                         result = operator.func(context)
                         result_name = compute_item.result_name
@@ -434,15 +523,22 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     else:
                         # Fall back to measure registry (built-in measures)
                         measure_fn = measure_registry.get(compute_item.name)
-                        values = measure_fn(subgraph, items)
                         result_name = compute_item.result_name
+                        
+                        # Compute with or without uncertainty
+                        values = _compute_measure_with_uncertainty(
+                            network=network,
+                            compute_item=compute_item,
+                            measure_fn=measure_fn,
+                            subgraph=subgraph,
+                            items=items,
+                        )
                         attributes[result_name] = values
                 except UnknownMeasureError:
                     # Re-raise unknown measure errors (they have helpful suggestions)
                     raise
                 except Exception as e:
                     # Log specific error and continue with other measures
-                    import logging
                     logging.getLogger(__name__).warning(
                         f"Error computing measure '{compute_item.name}': {e}"
                     )
@@ -451,11 +547,18 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             # Edge measures - new implementation
             for compute_item in select.compute:
                 try:
+                    # Edge measures don't support uncertainty yet
+                    if compute_item.uncertainty:
+                        logging.getLogger(__name__).warning(
+                            f"Uncertainty not yet supported for edge measure '{compute_item.name}'. "
+                            "Computing deterministic value only."
+                        )
+                    
                     # Check if this is an edge-specific measure
                     measure_fn = measure_registry.get(compute_item.name, target="edges")
                     result_name = compute_item.result_name
                     
-                    # Compute the measure on edges
+                    # Compute the measure on edges (always deterministic for now)
                     values = measure_fn(G, items)
                     attributes[result_name] = values
                 except UnknownMeasureError:
@@ -466,7 +569,6 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     raise
                 except Exception as e:
                     # Log specific error and continue with other measures
-                    import logging
                     logging.getLogger(__name__).warning(
                         f"Error computing edge measure '{compute_item.name}': {e}"
                     )
@@ -876,6 +978,10 @@ def _apply_ordering(items: List[Any], order_by: List[OrderItem],
                 # For edges, use hashable key
                 item_key = _get_item_key(item)
                 value = attributes[key].get(item_key, 0)
+                
+                # Handle uncertainty dict format: extract 'mean' value
+                if isinstance(value, dict) and 'mean' in value:
+                    value = value['mean']
             else:
                 # For edges, try to get from edge data (e.g., weight)
                 if isinstance(item, tuple) and len(item) >= 3 and isinstance(item[2], dict):
