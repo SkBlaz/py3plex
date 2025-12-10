@@ -2020,8 +2020,27 @@ Now that you understand the DSL, explore these related resources:
 4. **Layer algebra is powerful**: ``L["a"] + L["b"]`` (union), ``L["a"] & L["b"]`` (intersection) enable sophisticated multilayer queries.
 5. **Temporal queries** require timestamped edges/nodes but unlock time-series network analysis.
 
-**Community and Support:**
+* **Community and Support:**
 
 * Report issues or request features: https://github.com/SkBlaz/py3plex/issues
 * Example notebooks: https://github.com/SkBlaz/py3plex/tree/main/examples
 * py3plex documentation: https://skblaz.github.io/py3plex/
+
+Further Reading: The Py3plex Book
+----------------------------------
+
+For a deeper theoretical and practical treatment of the DSL and multilayer network concepts, see the **Py3plex Book**:
+
+* **Chapter 8** — Introduction to the DSL: Motivations, design principles, and comparison with alternatives
+* **Chapter 9** — Builder API Deep Dive: Complete reference with advanced patterns
+* **Chapter 10** — Advanced Queries & Workflows: Complex real-world query examples
+
+The book is available as:
+* **PDF** in the repository: ``docs/py3plex_book.pdf``
+* **Online HTML** (if built): ``docs/book/``
+
+The book provides:
+* Formal definitions of multilayer network operations
+* Detailed algorithmic complexity analysis
+* Extensive case studies with real datasets
+* Performance benchmarking and optimization strategies
