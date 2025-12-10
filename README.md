@@ -36,8 +36,6 @@ network = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
 partition_vector, Q_modularity = multilayer_louvain(network, gamma=1.2, random_state=42)
 network.assign_partition(partition_vector)
 
-print(f"Found {len(set(partition_vector.values()))} communities, modularity = {Q_modularity:.3f}")
-
 # 3. Find master regulator candidates with complex DSL query
 master_regulators = (
     Q.nodes()
