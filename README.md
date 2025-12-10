@@ -23,12 +23,11 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * Community detection and centrality measures
 * Network decomposition and embeddings
 
-## 🚀 Flagship Example: Master Regulators Analysis
+## Flagship Example: Master Regulators Analysis
 
 This comprehensive example demonstrates py3plex's power in analyzing multilayer biological networks. It showcases:
-- 📊 **Scikit-learn-style dataset API** for loading built-in networks
-- 🧬 **Multilayer community detection** (Louvain on multiplex networks)
-- 🔍 **Advanced DSL queries** with per-layer operations, coverage filtering, and aggregation
+- **Multilayer community detection** (Louvain on multiplex networks)
+- **Advanced DSL queries** with per-layer operations, coverage filtering, and aggregation
 
 ```python
 from py3plex.core import datasets
