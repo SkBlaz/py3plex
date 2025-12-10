@@ -3,6 +3,17 @@
 
 Create a multilayer network, compute statistics, detect communities, and visualize—all in 10 minutes. This comprehensive tutorial takes you from basic network creation to advanced multilayer analysis.
 
+.. admonition:: 📓 Run this tutorial online
+   :class: tip
+
+   You can run this tutorial in your browser without any local installation:
+   
+   .. image:: https://colab.research.google.com/assets/colab-badge.svg
+      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/tutorial_10min.ipynb
+      :alt: Open in Google Colab
+   
+   Or download the full executable script: :download:`tutorial_10min.py <../../examples/getting_started/tutorial_10min.py>`
+
 **You will learn:**
 
 * Create multilayer networks from scratch and load from files
@@ -31,35 +42,26 @@ Let's create a simple multilayer network and explore its basic properties.
 
 Create from scratch:
 
-.. code-block:: python
+.. literalinclude:: ../../examples/getting_started/tutorial_10min.py
+   :language: python
+   :start-after: def example_1_create_network():
+   :end-before: return network
+   :dedent: 4
 
-    from py3plex.core import multinet
-
-    network = multinet.multi_layer_network()
-    
-    # Format: [source_node, source_layer, target_node, target_layer, weight]
-    network.add_edges([
-        ['Alice', 'friends', 'Bob', 'friends', 1],
-        ['Bob', 'friends', 'Carol', 'friends', 1],
-        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
-        ['Bob', 'colleagues', 'Dave', 'colleagues', 1]
-    ], input_type="list")
-    
-    network.basic_stats()
+The complete executable version is available at ``examples/getting_started/tutorial_10min.py``.
 
 **Output:**
 
 .. code-block:: text
 
-    Number of nodes: 6
+    Number of nodes: 8
     Number of edges: 4
-    Number of unique nodes (as node-layer tuples): 6
     Number of unique node IDs (across all layers): 4
     Nodes per layer:
-      Layer 'friends': 3 nodes
-      Layer 'colleagues': 3 nodes
+      Layer 'layer1': 3 nodes
+      Layer 'layer2': 3 nodes
 
-**Key concept:** The network has 6 node-layer pairs but only 4 unique people. Alice appears in both layers as ``('Alice', 'friends')`` and ``('Alice', 'colleagues')``.
+**Key concept:** The network has node-layer pairs representing the same node in different layers. For example, node 'A' appears as ``('A', 'layer1')`` and ``('A', 'layer2')``.
 
 Visualize your network:
 

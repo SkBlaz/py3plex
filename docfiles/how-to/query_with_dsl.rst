@@ -3,6 +3,17 @@ How to Query Multilayer Graphs with the SQL-like DSL
 
 **Goal:** Use py3plex's SQL-inspired Domain-Specific Language (DSL) to query, filter, and analyze multilayer networks. The DSL is a **first-class query language** specifically designed for multilayer graph structures, providing both string syntax for interactive exploration and a type-safe builder API for production code.
 
+.. admonition:: 📓 Run this guide online
+   :class: tip
+
+   You can run this tutorial in your browser without any local installation:
+   
+   .. image:: https://colab.research.google.com/assets/colab-badge.svg
+      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/query_with_dsl.ipynb
+      :alt: Open in Google Colab
+   
+   Or see the full executable example: :download:`example_dsl_builder_api.py <../../examples/network_analysis/example_dsl_builder_api.py>`
+
 **What Makes This DSL Special:**
 
 * **Graph-aware**: Unlike generic query languages, the DSL understands multilayer structures—layers, layer intersections, intralayer vs. interlayer edges, and (node, layer) tuple semantics.
