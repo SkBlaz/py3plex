@@ -267,20 +267,25 @@ def _load_human_ppi_gene_disease_drug(directed: bool = False) -> multi_layer_net
         n_nodes=500,  # Reduced from 3500 for performance
         n_layers=4,
         p=0.01,
-        layer_names=["protein_protein", "gene_coexpression", "gene_disease", "drug_target"],
-        seed=42,
-        directed=directed
+        directed=directed,
+        random_state=42
     )
     
     # Add node type attribute to simulate gene nodes
     # In a real implementation, this would come from actual data
     nodes = list(network.get_nodes())
+    
+    # Create a mapping of layer indices to names
+    layer_names = ["protein_protein", "gene_coexpression", "gene_disease", "drug_target"]
+    layer_indices = sorted(set(layer for _, layer in nodes))
+    layer_map = {idx: name for idx, name in zip(layer_indices, layer_names)}
+    
     for node, layer in nodes:
         # Add node_type attribute (simplified - in reality this would be based on actual node IDs)
-        network.graph.nodes[(node, layer)]["node_type"] = "gene"
+        network.core_network.nodes[(node, layer)]["node_type"] = "gene"
         # Add disease_enriched flag randomly for demo
         import random
         random.seed(hash(node) % 1000)  # Deterministic but varied
-        network.graph.nodes[(node, layer)]["disease_enriched"] = random.random() > 0.7
+        network.core_network.nodes[(node, layer)]["disease_enriched"] = random.random() > 0.7
     
     return network

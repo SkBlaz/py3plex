@@ -479,6 +479,10 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     if select.where:
         items = _filter_by_conditions(items, select.where, network, G, params)
     
+    # Step 3.5: Apply post-filters (e.g., has_community with lambdas)
+    if select.post_filters:
+        items = _apply_post_filters(items, select.post_filters, network, G)
+    
     # Step 4: Compute measures
     attributes: Dict[str, Dict] = {}
     if select.compute:
@@ -608,8 +612,8 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                 )
             items = _apply_ordering(items, select.order_by, attributes)
     
-    # Step 5.5: Apply post-processing operations (summarize, rank, zscore, distinct, select, drop, rename)
-    if (select.summarize_aggs or select.rank_specs or select.zscore_attrs or 
+    # Step 5.5: Apply post-processing operations (aggregate, summarize, rank, zscore, distinct, select, drop, rename)
+    if (select.aggregate_specs or select.summarize_aggs or select.rank_specs or select.zscore_attrs or 
         select.distinct_cols is not None or select.select_cols or 
         select.drop_cols or select.rename_map):
         items, attributes = _apply_post_processing(
@@ -1287,6 +1291,132 @@ def _apply_aggregation(values: List[Any], func: str) -> Any:
         raise ValueError(f"Unknown aggregation function: '{func}'")
 
 
+def _apply_post_filters(
+    items: List[Any],
+    post_filters: List[Dict[str, Any]],
+    network: Any,
+    G: nx.Graph,
+) -> List[Any]:
+    """Apply post-filters like has_community().
+    
+    Args:
+        items: List of items to filter
+        post_filters: List of filter specifications
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Filtered list of items
+    """
+    filtered_items = items
+    
+    for filter_spec in post_filters:
+        filter_type = filter_spec.get("type")
+        
+        if filter_type == "community_predicate":
+            predicate = filter_spec["predicate"]
+            
+            if callable(predicate):
+                # Lambda or function - call with each item
+                filtered_items = [item for item in filtered_items if predicate(item)]
+            else:
+                # Direct value - match against "community" attribute
+                filtered_items = [
+                    item for item in filtered_items
+                    if G.nodes.get(item, {}).get("community") == predicate
+                ]
+    
+    return filtered_items
+
+
+def _apply_aggregate(
+    items: List[Any],
+    attributes: Dict[str, Dict],
+    select: SelectStmt,
+    network: Any,
+    G: nx.Graph,
+) -> Tuple[List[Any], Dict[str, Dict]]:
+    """Apply aggregate operation with support for lambdas and direct attributes.
+    
+    Similar to summarize but more flexible:
+    - Supports lambda functions
+    - Supports direct attribute references
+    - Supports builtin aggregation functions
+    
+    Args:
+        items: List of items
+        attributes: Computed attributes
+        select: SELECT statement
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Tuple of (aggregated_items, aggregated_attributes)
+    """
+    # Build groups if grouping is active
+    if select.group_by:
+        groups: Dict[Any, List[Any]] = {}
+        for item in items:
+            group_key = _get_group_key(item, select, network, G)
+            if group_key not in groups:
+                groups[group_key] = []
+            groups[group_key].append(item)
+    else:
+        # No grouping - treat all items as one group
+        groups = {"__global__": items}
+    
+    # Compute aggregations per group
+    agg_items = []
+    agg_attrs: Dict[str, Dict] = {}
+    
+    for agg_name in select.aggregate_specs.keys():
+        agg_attrs[agg_name] = {}
+    
+    for group_key, group_items in groups.items():
+        # Create an aggregated item representing this group
+        if select.group_by:
+            agg_item = group_key
+        else:
+            agg_item = "__global__"
+        
+        agg_items.append(agg_item)
+        
+        # Compute each aggregation for this group
+        for agg_name, agg_spec in select.aggregate_specs.items():
+            if callable(agg_spec):
+                # Lambda function - call with first item (representative)
+                # For more complex aggregations, the lambda should access network state
+                if group_items:
+                    result = agg_spec(group_items[0])
+                else:
+                    result = None
+            elif isinstance(agg_spec, str):
+                # Check if it's a function call like "mean(degree)"
+                if "(" in agg_spec and ")" in agg_spec:
+                    func, attr = _parse_aggregation_expr(agg_spec)
+                    values = _extract_values(group_items, attr, attributes, network, G)
+                    result = _compute_aggregation(func, values)
+                else:
+                    # Direct attribute reference - just get the value
+                    # For grouped results, get from first item
+                    if group_items:
+                        first_item = group_items[0]
+                        if agg_spec in attributes:
+                            result = attributes[agg_spec].get(first_item)
+                        else:
+                            # Try to get from node/edge attributes
+                            result = G.nodes.get(first_item, {}).get(agg_spec)
+                    else:
+                        result = None
+            else:
+                # Unknown aggregation type
+                result = None
+            
+            agg_attrs[agg_name][agg_item] = result
+    
+    return agg_items, agg_attrs
+
+
 def _apply_post_processing(
     items: List[Any],
     attributes: Dict[str, Dict],
@@ -1296,16 +1426,17 @@ def _apply_post_processing(
 ) -> Tuple[List[Any], Dict[str, Dict]]:
     """Apply post-processing operations to query results.
     
-    Handles: summarize, rank_by, zscore, distinct, rename, select, drop.
+    Handles: aggregate, summarize, rank_by, zscore, distinct, rename, select, drop.
     
     Operations are applied in this order:
-    1. summarize (create aggregated columns)
-    2. rank_by (add rank columns)
-    3. zscore (add z-score columns)
-    4. distinct (deduplicate rows)
-    5. rename (rename columns - must be before select/drop)
-    6. select (filter columns)
-    7. drop (remove columns)
+    1. aggregate (create aggregated columns with lambda support)
+    2. summarize (create aggregated columns)
+    3. rank_by (add rank columns)
+    4. zscore (add z-score columns)
+    5. distinct (deduplicate rows)
+    6. rename (rename columns - must be before select/drop)
+    7. select (filter columns)
+    8. drop (remove columns)
     
     Args:
         items: List of items (nodes or edges)
@@ -1317,6 +1448,10 @@ def _apply_post_processing(
     Returns:
         Tuple of (processed_items, processed_attributes)
     """
+    # 0. Apply aggregate (more flexible aggregation with lambda support)
+    if select.aggregate_specs:
+        items, attributes = _apply_aggregate(items, attributes, select, network, G)
+    
     # 1. Apply summarize (aggregation over groups)
     if select.summarize_aggs:
         items, attributes = _apply_summarize(items, attributes, select, network, G)
