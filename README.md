@@ -23,9 +23,6 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * Community detection and centrality measures
 * Network decomposition and embeddings
 
-This example demonstrates py3plex's power in analyzing multilayer biological networks. It showcases:
-- **Multilayer community detection** (Louvain on multiplex networks)
-- **Advanced DSL queries** with per-layer operations, coverage filtering, and aggregation
 
 ```python
 from py3plex.core import datasets
@@ -59,7 +56,7 @@ df = master_regulators.to_pandas()
 print(df.head(10))
 ```
 
-**Output:**
+Emits:
 ```
 Found 287 communities, modularity = 0.649
     id  layer  degree_centrality  betweenness_centrality
@@ -68,9 +65,6 @@ Found 287 communities, modularity = 0.649
 2  419      0           0.025070                0.024184
 ...
 ```
-
-*See [examples/master_regulators_example.py](examples/master_regulators_example.py) for the complete working example with additional features.*
----
 
 
 *Note: The DSL includes smart defaults that auto-compute centrality metrics when needed. You can also explicitly compute metrics with `.compute("degree", "betweenness_centrality")` for full control.*
