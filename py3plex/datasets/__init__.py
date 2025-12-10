@@ -34,6 +34,8 @@ from py3plex.datasets._loaders import (
     list_datasets,
     load_aarhus_cs,
     load_synthetic_multilayer,
+    fetch_multilayer,
+    list_multilayer,
 )
 from py3plex.datasets._generators import (
     make_clique_multiplex,
@@ -46,6 +48,8 @@ __all__ = [
     # Loaders for bundled datasets
     "load_aarhus_cs",
     "load_synthetic_multilayer",
+    "fetch_multilayer",
+    "list_multilayer",
     # Synthetic generators
     "make_random_multilayer",
     "make_random_multiplex",

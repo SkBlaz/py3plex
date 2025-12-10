@@ -3575,6 +3575,153 @@ class multi_layer_network:
 
         return multiplex
 
+    # ═════════════════════════════════════════════════════════════════════════
+    # Community/Partition Management Methods
+    # ═════════════════════════════════════════════════════════════════════════
+
+    def assign_partition(
+        self, partition: Dict[Tuple[Any, Any], int]
+    ) -> None:
+        """
+        Assign community partition to network nodes.
+
+        This method stores the community assignments as node attributes and
+        computes community-level statistics.
+
+        Parameters
+        ----------
+        partition : dict
+            Dictionary mapping (node, layer) tuples to community IDs.
+
+        Examples
+        --------
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network(directed=False)
+        >>> net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> partition = {('A', 'L1'): 0, ('B', 'L1'): 0}
+        >>> net.assign_partition(partition)
+        >>> print(net.community_sizes)
+        {0: 2}
+        """
+        # Store partition as node attribute
+        for (node, layer), community_id in partition.items():
+            if (node, layer) in self.core_network.nodes:
+                self.core_network.nodes[(node, layer)]["community"] = community_id
+
+        # Compute community sizes
+        community_counts: Dict[int, int] = {}
+        for community_id in partition.values():
+            community_counts[community_id] = community_counts.get(community_id, 0) + 1
+
+        self.community_sizes = community_counts
+
+    def get_partition(self, node: Any, layer: Any = None) -> Optional[int]:
+        """
+        Get the community/partition ID for a given node.
+
+        Parameters
+        ----------
+        node : Any
+            Node identifier.
+        layer : Any, optional
+            Layer identifier. If None and node is a tuple, assumes node is (node_id, layer).
+
+        Returns
+        -------
+        int or None
+            Community ID, or None if node doesn't have a partition assigned.
+
+        Examples
+        --------
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network(directed=False)
+        >>> net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> partition = {('A', 'L1'): 0, ('B', 'L1'): 1}
+        >>> net.assign_partition(partition)
+        >>> print(net.get_partition('A', 'L1'))
+        0
+        """
+        # Handle different input formats
+        if layer is None and isinstance(node, tuple) and len(node) == 2:
+            node, layer = node
+
+        node_tuple = (node, layer)
+        if node_tuple in self.core_network.nodes:
+            return self.core_network.nodes[node_tuple].get("community")
+        return None
+
+    def get_node_attribute(
+        self, node: Any, attribute: str, layer: Any = None
+    ) -> Any:
+        """
+        Get an attribute value for a given node.
+
+        Parameters
+        ----------
+        node : Any
+            Node identifier.
+        attribute : str
+            Name of the attribute to retrieve.
+        layer : Any, optional
+            Layer identifier. If None and node is a tuple, assumes node is (node_id, layer).
+
+        Returns
+        -------
+        Any
+            The attribute value, or None if not found.
+
+        Examples
+        --------
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network(directed=False)
+        >>> net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> net.set_node_attribute('A', 'score', 42.0, 'L1')
+        >>> print(net.get_node_attribute('A', 'score', 'L1'))
+        42.0
+        """
+        # Handle different input formats
+        if layer is None and isinstance(node, tuple) and len(node) == 2:
+            node, layer = node
+
+        node_tuple = (node, layer)
+        if node_tuple in self.core_network.nodes:
+            return self.core_network.nodes[node_tuple].get(attribute)
+        return None
+
+    def set_node_attribute(
+        self, node: Any, attribute: str, value: Any, layer: Any = None
+    ) -> None:
+        """
+        Set an attribute value for a given node.
+
+        Parameters
+        ----------
+        node : Any
+            Node identifier.
+        attribute : str
+            Name of the attribute to set.
+        value : Any
+            Value to assign to the attribute.
+        layer : Any, optional
+            Layer identifier. If None and node is a tuple, assumes node is (node_id, layer).
+
+        Examples
+        --------
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network(directed=False)
+        >>> net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> net.set_node_attribute('A', 'score', 42.0, 'L1')
+        >>> print(net.get_node_attribute('A', 'score', 'L1'))
+        42.0
+        """
+        # Handle different input formats
+        if layer is None and isinstance(node, tuple) and len(node) == 2:
+            node, layer = node
+
+        node_tuple = (node, layer)
+        if node_tuple in self.core_network.nodes:
+            self.core_network.nodes[node_tuple][attribute] = value
+
 
 if __name__ == "__main__":
 
