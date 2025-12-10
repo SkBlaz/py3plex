@@ -23,9 +23,7 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * Community detection and centrality measures
 * Network decomposition and embeddings
 
-## Flagship Example: Master Regulators Analysis
-
-This comprehensive example demonstrates py3plex's power in analyzing multilayer biological networks. It showcases:
+This example demonstrates py3plex's power in analyzing multilayer biological networks. It showcases:
 - **Multilayer community detection** (Louvain on multiplex networks)
 - **Advanced DSL queries** with per-layer operations, coverage filtering, and aggregation
 
@@ -72,34 +70,8 @@ Found 287 communities, modularity = 0.649
 ```
 
 *See [examples/master_regulators_example.py](examples/master_regulators_example.py) for the complete working example with additional features.*
-
 ---
 
-**Quick Example**
-
-Find nodes that are betweenness centrality hubs across *all* layers in a multilayer network:
-
-```python
-from py3plex.core import random_generators
-from py3plex.dsl import Q, L
-
-# Generate a random multilayer network
-net = random_generators.random_multilayer_ER(n=300, l=3, p=0.02, directed=False)
-
-# Find nodes that are top-5 betweenness hubs in ALL layers (single query!)
-multi_hubs = (
-    Q.nodes()
-     .from_layers(L["*"])                   # wildcard: all layers
-     .where(degree__gt=1)
-     .per_layer()                           # group by layer
-        .top_k(5, "betweenness_centrality") # auto-computes betweenness
-     .end_grouping()
-     .coverage(mode="all")                  # nodes in top-5 in ALL layers
-     .execute(net)
-)
-
-print("Nodes that are betweenness hubs in *all* layers:", set(multi_hubs.to_pandas()["id"]))
-```
 
 *Note: The DSL includes smart defaults that auto-compute centrality metrics when needed. You can also explicitly compute metrics with `.compute("degree", "betweenness_centrality")` for full control.*
 
