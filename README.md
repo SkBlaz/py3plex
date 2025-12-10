@@ -23,6 +23,59 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * Community detection and centrality measures
 * Network decomposition and embeddings
 
+## 🚀 Flagship Example: Master Regulators Analysis
+
+This comprehensive example demonstrates py3plex's power in analyzing multilayer biological networks. It showcases:
+- 📊 **Scikit-learn-style dataset API** for loading built-in networks
+- 🧬 **Multilayer community detection** (Louvain on multiplex networks)
+- 🔍 **Advanced DSL queries** with per-layer operations, coverage filtering, and aggregation
+
+```python
+from py3plex.core import datasets
+from py3plex.dsl import Q, L
+from py3plex.algorithms.community_detection import multilayer_louvain
+
+# 1. Load a built-in multilayer biological network (~500 nodes, 4 layers)
+network = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
+
+# 2. Run multilayer community detection
+partition_vector, Q_modularity = multilayer_louvain(network, gamma=1.2, random_state=42)
+network.assign_partition(partition_vector)
+
+print(f"Found {len(set(partition_vector.values()))} communities, modularity = {Q_modularity:.3f}")
+
+# 3. Find master regulator candidates with complex DSL query
+master_regulators = (
+    Q.nodes()
+     .node_type("gene")                        # Filter by node type
+     .where(degree__gt=3)                      # Remove peripheral genes
+     .per_layer()                              # Group by layer
+        .compute("degree_centrality", "betweenness_centrality")
+        .top_k(20, "betweenness_centrality")   # Top 20 per layer
+     .end_grouping()
+     .sort(by="betweenness_centrality", descending=True)
+     .limit(20)                                # Final top 20 candidates
+     .execute(network)
+)
+
+df = master_regulators.to_pandas()
+print(df.head(10))
+```
+
+**Output:**
+```
+Found 287 communities, modularity = 0.649
+    id  layer  degree_centrality  betweenness_centrality
+0  252      0           0.025070                0.025961
+1   91      0           0.027855                0.024918
+2  419      0           0.025070                0.024184
+...
+```
+
+*See [examples/master_regulators_example.py](examples/master_regulators_example.py) for the complete working example with additional features.*
+
+---
+
 **Quick Example**
 
 Find nodes that are betweenness centrality hubs across *all* layers in a multilayer network:
