@@ -397,25 +397,27 @@ def _compute_measure_with_uncertainty(
         # No uncertainty requested, compute normally
         return measure_fn(subgraph, items)
     
-    # Uncertainty requested - use estimate_uncertainty
-    # Determine resampling strategy
+    # Determine which uncertainty method to use
     method = compute_item.method or "perturbation"
-    resampling = _RESAMPLING_METHOD_MAP.get(method.lower(), ResamplingStrategy.PERTURBATION)
     
-    # Get number of samples
+    # Get uncertainty parameters with fallbacks
     n_samples = compute_item.n_samples or 50
+    ci = compute_item.ci or 0.95
+    random_state = compute_item.random_state
     
-    # Create metric function that works with estimate_uncertainty
+    # Import the new engines
+    from py3plex.uncertainty import bootstrap_metric, null_model_metric
+    
+    # Create metric function that works with uncertainty engines
     def metric_fn_wrapper(net):
         """Wrapper that computes the measure on the network."""
         # Get the subgraph for the current network state
-        if hasattr(net, 'core_network'):
+        if hasattr(net, 'core_network') and net.core_network is not None:
             g = net.core_network
         else:
             g = net
         
         # Only compute on nodes that exist in the graph
-        # Use generator to avoid creating full list in memory for large networks
         valid_items = [item for item in items if item in g]
         if not valid_items:
             return {}
@@ -423,23 +425,91 @@ def _compute_measure_with_uncertainty(
         sub = g.subgraph(valid_items).copy()
         return measure_fn(sub, valid_items)
     
-    # Estimate uncertainty
-    result = estimate_uncertainty(
-        network=network,
-        metric_fn=metric_fn_wrapper,
-        n_runs=n_samples,
-        resampling=resampling,
-        random_seed=None,  # Allow random variation
-    )
-    
-    # If result is a StatSeries, convert to dict format for attributes
-    if isinstance(result, StatSeries):
-        # Store as dict with mean values for backward compatibility
-        # The full StatSeries will be stored in metadata
-        return result.to_dict()
+    # Choose the appropriate uncertainty estimation method
+    if method.lower() in ["bootstrap"]:
+        # Use bootstrap engine
+        bootstrap_unit = compute_item.bootstrap_unit or "edges"
+        bootstrap_mode = compute_item.bootstrap_mode or "resample"
+        n_boot = compute_item.n_samples or 50
+        
+        result = bootstrap_metric(
+            graph=network,
+            metric_fn=metric_fn_wrapper,
+            n_boot=n_boot,
+            unit=bootstrap_unit,
+            mode=bootstrap_mode,
+            ci=ci,
+            random_state=random_state,
+        )
+        
+        # Convert bootstrap result to dict format
+        # For each item, create a dict with mean, std, ci_low, ci_high
+        uncertainty_dict = {}
+        for i, item in enumerate(result["index"]):
+            uncertainty_dict[item] = {
+                "mean": float(result["mean"][i]),
+                "std": float(result["std"][i]),
+                "quantiles": {
+                    (1 - ci) / 2: float(result["ci_low"][i]),
+                    1 - (1 - ci) / 2: float(result["ci_high"][i]),
+                },
+                "n_boot": result["n_boot"],
+                "method": result["method"],
+            }
+        return uncertainty_dict
+        
+    elif method.lower() in ["null_model"]:
+        # Use null model engine
+        n_null = compute_item.n_null or 200
+        null_model = compute_item.null_model or "degree_preserving"
+        
+        result = null_model_metric(
+            graph=network,
+            metric_fn=metric_fn_wrapper,
+            n_null=n_null,
+            model=null_model,
+            random_state=random_state,
+        )
+        
+        # Convert null model result to dict format
+        # For each item, create a dict with mean, zscore, pvalue
+        uncertainty_dict = {}
+        for i, item in enumerate(result["index"]):
+            uncertainty_dict[item] = {
+                "mean": float(result["observed"][i]),
+                "mean_null": float(result["mean_null"][i]),
+                "std": float(result["std_null"][i]),
+                "zscore": float(result["zscore"][i]),
+                "pvalue": float(result["pvalue"][i]),
+                "n_null": result["n_null"],
+                "method": result["model"],
+            }
+        return uncertainty_dict
+        
+    elif method.lower() in ["perturbation", "seed"]:
+        # Use existing estimate_uncertainty (legacy)
+        # Determine resampling strategy
+        resampling = _RESAMPLING_METHOD_MAP.get(method.lower(), ResamplingStrategy.PERTURBATION)
+        
+        # Estimate uncertainty
+        result = estimate_uncertainty(
+            network=network,
+            metric_fn=metric_fn_wrapper,
+            n_runs=n_samples,
+            resampling=resampling,
+            random_seed=random_state,
+        )
+        
+        # If result is a StatSeries, convert to dict format for attributes
+        if isinstance(result, StatSeries):
+            return result.to_dict()
+        else:
+            return result
     else:
-        # Scalar result - return as-is
-        return result
+        raise ValueError(
+            f"Unknown uncertainty method: {method}. "
+            "Valid methods: 'bootstrap', 'null_model', 'perturbation', 'seed'"
+        )
 
 
 def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None) -> QueryResult:
