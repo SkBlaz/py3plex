@@ -14,6 +14,8 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+
+# Set matplotlib backend before importing pyplot
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt

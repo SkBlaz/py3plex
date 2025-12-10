@@ -29,6 +29,21 @@ from examples.dsl_query_zoo.queries import (
 )
 
 
+def _extract_layer_names(network):
+    """Helper to extract layer names from network.
+    
+    Args:
+        network: A multi_layer_network instance
+        
+    Returns:
+        List of layer names
+    """
+    layers_data = network.get_layers()
+    if isinstance(layers_data, tuple):
+        return layers_data[0]
+    return list(layers_data)
+
+
 # Fixtures for networks
 @pytest.fixture
 def social_work_network():
@@ -56,7 +71,7 @@ class TestDatasets:
         """Test social-work network is created with expected properties."""
         net = create_social_work_network(seed=42)
         assert net is not None
-        layers = net.get_layers()[0] if isinstance(net.get_layers(), tuple) else list(net.get_layers())
+        layers = _extract_layer_names(net)
         assert len(layers) == 3
         assert 'social' in layers
         assert 'work' in layers
@@ -66,7 +81,7 @@ class TestDatasets:
         """Test communication network is created with expected properties."""
         net = create_communication_network(seed=42)
         assert net is not None
-        layers = net.get_layers()[0] if isinstance(net.get_layers(), tuple) else list(net.get_layers())
+        layers = _extract_layer_names(net)
         assert len(layers) == 3
         assert 'email' in layers
         assert 'chat' in layers
@@ -76,7 +91,7 @@ class TestDatasets:
         """Test transport network is created with expected properties."""
         net = create_transport_network(seed=42)
         assert net is not None
-        layers = net.get_layers()[0] if isinstance(net.get_layers(), tuple) else list(net.get_layers())
+        layers = _extract_layer_names(net)
         assert len(layers) == 3
         assert 'bus' in layers
         assert 'metro' in layers

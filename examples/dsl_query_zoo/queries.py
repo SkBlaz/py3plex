@@ -36,11 +36,24 @@ def _get_layer_names(network):
         
     Returns:
         List of layer names
+        
+    Raises:
+        ValueError: If network.get_layers() returns unexpected data
     """
     layers_data = network.get_layers()
+    
+    if layers_data is None:
+        return []
+    
     if isinstance(layers_data, tuple):
-        return layers_data[0]
-    return list(layers_data)
+        if len(layers_data) > 0 and isinstance(layers_data[0], list):
+            return layers_data[0]
+        raise ValueError(f"Unexpected tuple structure from get_layers(): {type(layers_data[0])}")
+    
+    if isinstance(layers_data, (list, set)):
+        return list(layers_data)
+    
+    raise ValueError(f"Unexpected return type from get_layers(): {type(layers_data)}")
 
 
 def query_basic_exploration(network):
