@@ -1394,15 +1394,32 @@ def _apply_aggregate(
                 # Check if it's a function call like "mean(degree)"
                 if "(" in agg_spec and ")" in agg_spec:
                     func, attr = _parse_aggregation_expr(agg_spec)
-                    values = _extract_values(group_items, attr, attributes, network, G)
-                    result = _compute_aggregation(func, values)
+                    
+                    if func == "n":
+                        # Count of items in group
+                        result = len(group_items)
+                    else:
+                        # Need to extract attribute values from group items
+                        if attr not in attributes:
+                            raise DslExecutionError(f"Cannot aggregate on '{attr}' - attribute not computed")
+                        
+                        # Get values for items in this group
+                        values = []
+                        for item in group_items:
+                            item_key = _get_item_key(item)
+                            if item_key in attributes[attr]:
+                                values.append(attributes[attr][item_key])
+                        
+                        # Apply aggregation
+                        result = _apply_aggregation(values, func)
                 else:
                     # Direct attribute reference - just get the value
                     # For grouped results, get from first item
                     if group_items:
                         first_item = group_items[0]
+                        item_key = _get_item_key(first_item)
                         if agg_spec in attributes:
-                            result = attributes[agg_spec].get(first_item)
+                            result = attributes[agg_spec].get(item_key)
                         else:
                             # Try to get from node/edge attributes
                             result = G.nodes.get(first_item, {}).get(agg_spec)

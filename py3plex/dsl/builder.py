@@ -182,9 +182,29 @@ class LayerExprBuilder:
 class LayerProxy:
     """Proxy for creating layer expressions via L["name"] syntax."""
     
-    def __getitem__(self, name: str) -> LayerExprBuilder:
-        """Create a layer expression builder for the given layer name."""
-        return LayerExprBuilder(name)
+    def __getitem__(self, name_or_names) -> LayerExprBuilder:
+        """Create a layer expression builder for the given layer name(s).
+        
+        Supports both single layer and multiple layers:
+        - L["social"] → single layer
+        - L["social", "work"] → union of layers (same as L["social"] + L["work"])
+        """
+        if isinstance(name_or_names, (tuple, list)):
+            # Multiple layers - create union
+            if not name_or_names:
+                raise ValueError("Cannot create layer expression with empty list")
+            
+            # Start with first layer
+            result = LayerExprBuilder(name_or_names[0])
+            
+            # Add remaining layers with union operator
+            for name in name_or_names[1:]:
+                result = result + LayerExprBuilder(name)
+            
+            return result
+        else:
+            # Single layer
+            return LayerExprBuilder(name_or_names)
 
 
 # Global layer proxy
