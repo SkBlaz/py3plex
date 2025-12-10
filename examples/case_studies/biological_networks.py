@@ -21,7 +21,6 @@ biological systems where proteins interact, genes regulate, and diseases manifes
 from py3plex.core import multinet
 from py3plex.dsl import Q, L
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
-from py3plex.visualization.multilayer import draw_multilayer_default
 import matplotlib.pyplot as plt
 from collections import Counter
 import pandas as pd
@@ -195,7 +194,7 @@ def visualize_and_interpret(network, partition_dict):
     
     # Plot 1: Network structure
     plt.sca(axes[0])
-    draw_multilayer_default([network], display=False)
+    network.visualize_network(show=False, axis=axes[0])
     axes[0].set_title("Biological Multilayer Network Structure")
     
     # Plot 2: Degree distribution by layer
