@@ -154,6 +154,7 @@ Task-oriented guides answering "How do I...?" questions.
 
    how-to/part_intro
    how-to/load_and_build_networks
+   how-to/query_zoo
    how-to/compute_statistics
    how-to/run_community_detection
    how-to/simulate_dynamics
