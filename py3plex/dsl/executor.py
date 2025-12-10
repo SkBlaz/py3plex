@@ -412,7 +412,7 @@ def _compute_measure_with_uncertainty(
     def metric_fn_wrapper(net):
         """Wrapper that computes the measure on the network."""
         # Get the subgraph for the current network state
-        if hasattr(net, 'core_network') and net.core_network is not None:
+        if hasattr(net, 'core_network'):
             g = net.core_network
         else:
             g = net

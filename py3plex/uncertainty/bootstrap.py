@@ -18,7 +18,7 @@ from py3plex.core import multinet
 def bootstrap_metric(
     graph: multinet.multi_layer_network,
     metric_fn: Callable[[multinet.multi_layer_network], Dict[Any, float]],
-    n_boot: int = 200,
+    n_boot: int = 50,  # Standardized to match DSL default
     unit: str = "edges",
     mode: str = "resample",
     ci: float = 0.95,

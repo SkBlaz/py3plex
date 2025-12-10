@@ -386,15 +386,17 @@ class QueryBuilder:
             >>> Q.uncertainty.defaults(n_boot=500, ci=0.95)
             >>> Q.nodes().compute("degree", uncertainty=True)
         """
-        # Get defaults from Q.uncertainty if not specified
-        if uncertainty or Q.uncertainty.get("enabled"):
+        # Get defaults from Q.uncertainty only if uncertainty is explicitly True
+        # (not when uncertainty=False is explicitly passed)
+        if uncertainty:
             # Apply defaults for unspecified parameters
             if method is None:
                 method = Q.uncertainty.get("method", "bootstrap")
             if n_samples is None and n_boot is None:
                 n_samples = Q.uncertainty.get("n_boot", 50)
+            # n_boot takes precedence over n_samples for clarity
             if n_boot is not None:
-                n_samples = n_boot  # n_boot takes precedence if specified
+                n_samples = n_boot
             if ci is None:
                 ci = Q.uncertainty.get("ci", 0.95)
             if bootstrap_unit is None:

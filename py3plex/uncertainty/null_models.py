@@ -86,7 +86,9 @@ def null_model_metric(
     -----
     - Z-scores indicate how many standard deviations the observed value is from
       the null distribution mean
-    - P-values are two-tailed: P(|Z| >= |Z_observed|) under the null
+    - P-values are two-tailed by default: P(|Z| >= |Z_observed|) under the null.
+      For one-tailed tests, users can compute p_one_sided = p_two_sided / 2 and
+      check the sign of z-score to determine the direction.
     - High |z-score| and low p-value indicate statistical significance
     """
     rng = np.random.default_rng(random_state)
@@ -236,6 +238,9 @@ def _generate_degree_preserving_null(
     # Number of swaps should be proportional to number of edges
     n_swaps = max(10, n_edges * 2)
     
+    # Build edge set once for efficient duplicate checking
+    edge_set = {(e[0], e[1], e[2], e[3]) for e in edge_list}
+    
     for _ in range(n_swaps):
         # Pick two random edges
         if len(edge_list) < 2:
@@ -259,12 +264,17 @@ def _generate_degree_preserving_null(
             new_edge2 = [s2, l2, t1, tl1, w2]
             
             # Check if these edges don't already exist (avoid duplicates)
-            edge_set = {(e[0], e[1], e[2], e[3]) for e in edge_list}
             if ((s1, l1, t2, tl2) not in edge_set and
                 (s2, l2, t1, tl1) not in edge_set):
-                # Perform swap
+                # Perform swap - update both list and set
                 edge_list[idx1] = new_edge1
                 edge_list[idx2] = new_edge2
+                
+                # Update edge set
+                edge_set.discard((s1, l1, t1, tl1))
+                edge_set.discard((s2, l2, t2, tl2))
+                edge_set.add((s1, l1, t2, tl2))
+                edge_set.add((s2, l2, t1, tl1))
     
     # Build null network from rewired edges
     if edge_list:
