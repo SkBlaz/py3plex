@@ -62,6 +62,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="part_intro.html">How-to Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_zoo.html">Query Zoo: DSL Gallery for Multilayer Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compute_statistics.html">How to Compute Network Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
@@ -81,6 +82,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#basic-queries">Basic Queries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filtering">Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#computing-metrics">Computing Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computing-metrics-with-uncertainty">Computing Metrics with Uncertainty</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sorting-and-limiting">Sorting and Limiting</a></li>
 </ul>
 </li>
@@ -532,6 +534,133 @@ Top 10 nodes by betweenness centrality:
 ...
 </pre></div>
 </div>
+</section>
+<section id="computing-metrics-with-uncertainty">
+<h3>Computing Metrics with Uncertainty<a class="headerlink" href="#computing-metrics-with-uncertainty" title="Link to this heading"></a></h3>
+<p><strong>New in py3plex 1.0:</strong> The DSL now supports <strong>first-class uncertainty</strong> for computed metrics. This allows you to estimate statistical uncertainty (confidence intervals, standard deviations) for network statistics via bootstrap, perturbation, or Monte Carlo methods.</p>
+<p><strong>Why uncertainty matters:</strong></p>
+<ul class="simple">
+<li><p>Networks are often noisy or sampled (e.g., social networks with missing edges)</p></li>
+<li><p>Centrality metrics can be sensitive to small perturbations</p></li>
+<li><p>Uncertainty quantification helps distinguish signal from noise</p></li>
+<li><p>Required for robust statistical inference and hypothesis testing</p></li>
+</ul>
+<p><strong>Basic usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute degree with uncertainty estimation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+         <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+         <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="n">method</span><span class="o">=</span><span class="s2">&quot;perturbation&quot;</span><span class="p">,</span>  <span class="c1"># or &quot;bootstrap&quot;, &quot;seed&quot;</span>
+         <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>          <span class="c1"># number of resamples</span>
+         <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span>                 <span class="c1"># confidence interval level</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Access uncertainty information</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="c1"># Results contain mean, std, and quantiles for each metric</span>
+<span class="c1"># The &#39;degree&#39; column now has dict values with uncertainty info</span>
+</pre></div>
+</div>
+<p><strong>Uncertainty methods:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;perturbation&quot;</span></code>: Drop a small fraction of edges/nodes randomly (default: 5%)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;bootstrap&quot;</span></code>: Resample nodes/edges with replacement</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;seed&quot;</span></code>: Run stochastic algorithms with different random seeds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;jackknife&quot;</span></code>: Leave-one-out resampling</p></li>
+</ul>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">uncertainty</span></code> (bool): Enable uncertainty estimation (default: False)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code> (str): Resampling strategy (default: “perturbation”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_samples</span></code> (int): Number of resamples (default: 50)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ci</span></code> (float): Confidence interval level, e.g., 0.95 for 95% CI (default: 0.95)</p></li>
+</ul>
+<p><strong>Example with confidence intervals:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find hubs with uncertainty bounds</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+         <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+         <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="n">method</span><span class="o">=</span><span class="s2">&quot;perturbation&quot;</span><span class="p">,</span>
+         <span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+         <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Extract uncertainty information</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># When uncertainty=True, values are dicts with mean, std, quantiles</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">node_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+    <span class="n">bc_info</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bc_info</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">bc_info</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">bc_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">ci_low</span> <span class="o">=</span> <span class="n">bc_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quantiles&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">mean</span><span class="p">)</span>
+        <span class="n">ci_high</span> <span class="o">=</span> <span class="n">bc_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quantiles&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mf">0.975</span><span class="p">,</span> <span class="n">mean</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Betweenness: </span><span class="si">{</span><span class="n">mean</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">std</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  95% CI: [</span><span class="si">{</span><span class="n">ci_low</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ci_high</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(&#39;eve&#39;, &#39;social&#39;):
+  Betweenness: 0.3010 ± 0.0234
+  95% CI: [0.2589, 0.3442]
+(&#39;alice&#39;, &#39;social&#39;):
+  Betweenness: 0.2450 ± 0.0198
+  95% CI: [0.2087, 0.2821]
+(&#39;grace&#39;, &#39;social&#39;):
+  Betweenness: 0.2210 ± 0.0176
+  95% CI: [0.1901, 0.2534]
+</pre></div>
+</div>
+<p><strong>Backward compatibility:</strong></p>
+<p>When <code class="docutils literal notranslate"><span class="pre">uncertainty=False</span></code> (the default), metrics return scalar values as before. Your existing queries work unchanged:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Traditional deterministic computation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="c1"># &#39;degree&#39; values are scalars (int/float)</span>
+
+<span class="c1"># With uncertainty</span>
+<span class="n">result_unc</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="c1"># &#39;degree&#39; values are dicts with mean, std, quantiles</span>
+</pre></div>
+</div>
+<p><strong>Use cases:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Comparing networks</strong>: Test if centrality differences between networks are statistically significant</p></li>
+<li><p><strong>Robust ranking</strong>: Identify nodes that consistently rank high across perturbations</p></li>
+<li><p><strong>Network inference</strong>: Quantify uncertainty when inferring networks from noisy data</p></li>
+<li><p><strong>Hypothesis testing</strong>: Generate null distributions for significance testing</p></li>
+</ol>
+<p><strong>Performance notes:</strong></p>
+<ul class="simple">
+<li><p>Uncertainty estimation is <strong>opt-in</strong> and only runs when explicitly requested</p></li>
+<li><p>Cost scales linearly with <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> (e.g., 100 samples ≈ 100× slower)</p></li>
+<li><p>Use smaller <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> (20-50) for exploration, larger (100-500) for publication</p></li>
+<li><p>Perturbation is fastest; bootstrap and jackknife are more expensive</p></li>
+</ul>
+<p><strong>Further reading:</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="compute_statistics.html"><span class="doc">How to Compute Network Statistics</span></a>: General guide to network statistics and uncertainty</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/uncertainty/example_first_class_uncertainty.py</span></code>: Complete examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">py3plex.uncertainty</span></code> module: Low-level API for custom uncertainty workflows</p></li>
+</ul>
 </section>
 <section id="sorting-and-limiting">
 <h3>Sorting and Limiting<a class="headerlink" href="#sorting-and-limiting" title="Link to this heading"></a></h3>

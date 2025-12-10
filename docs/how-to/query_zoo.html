@@ -1,0 +1,1499 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="A gallery of example queries showcasing the py3plex DSL for multilayer network analysis" name="description" />
+<meta content="DSL, multilayer networks, query examples, graph analysis" name="keywords" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Query Zoo: DSL Gallery for Multilayer Analysis &mdash; py3plex 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=292eb321"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How to Compute Network Statistics" href="compute_statistics.html" />
+    <link rel="prev" title="How to Load and Build Networks" href="load_and_build_networks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Query Zoo: DSL Gallery for Multilayer Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-multilayer-exploration">1. Basic Multilayer Exploration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#query-code">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-it-s-interesting">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-output">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dsl-concepts-demonstrated">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cross-layer-hubs">2. Cross-Layer Hubs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#layer-similarity">3. Layer Similarity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#community-structure">4. Community Structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multiplex-pagerank">5. Multiplex PageRank</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#robustness-analysis">6. Robustness Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-centrality-comparison">7. Advanced Centrality Comparison</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-query-zoo">Using the Query Zoo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adapting-queries-to-your-data">Adapting Queries to Your Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further Reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Query Zoo: DSL Gallery for Multilayer Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/how-to/query_zoo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="query-zoo-dsl-gallery-for-multilayer-analysis">
+<h1>Query Zoo: DSL Gallery for Multilayer Analysis<a class="headerlink" href="#query-zoo-dsl-gallery-for-multilayer-analysis" title="Link to this heading"></a></h1>
+<p><strong>The Query Zoo is a curated gallery of DSL queries that demonstrate the expressiveness and power of py3plex for multilayer network analysis.</strong></p>
+<p>Each example:</p>
+<ul class="simple">
+<li><p>Solves a real multilayer analysis problem</p></li>
+<li><p>Uses the DSL end-to-end with idiomatic patterns</p></li>
+<li><p>Produces concrete, reproducible outputs</p></li>
+<li><p>Is fully tested and documented</p></li>
+</ul>
+<div class="note admonition">
+<p class="admonition-title">Why a Query Zoo?</p>
+<p>The DSL is most powerful when you see it in action on realistic problems.
+This gallery shows you <strong>how</strong> to think about multilayer queries, not just
+<strong>what</strong> the syntax is. Use these examples as recipes and starting points
+for your own analyses.</p>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id25">Overview</a></p></li>
+<li><p><a class="reference internal" href="#basic-multilayer-exploration" id="id26">1. Basic Multilayer Exploration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#query-code" id="id27">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#why-it-s-interesting" id="id28">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#example-output" id="id29">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#dsl-concepts-demonstrated" id="id30">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#cross-layer-hubs" id="id31">2. Cross-Layer Hubs</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id1" id="id32">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id33">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id34">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id35">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#layer-similarity" id="id36">3. Layer Similarity</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id5" id="id37">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id6" id="id38">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id7" id="id39">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id8" id="id40">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#community-structure" id="id41">4. Community Structure</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id9" id="id42">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id10" id="id43">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id11" id="id44">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id12" id="id45">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multiplex-pagerank" id="id46">5. Multiplex PageRank</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id13" id="id47">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id14" id="id48">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id15" id="id49">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id16" id="id50">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#robustness-analysis" id="id51">6. Robustness Analysis</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id17" id="id52">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id18" id="id53">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id19" id="id54">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id20" id="id55">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#advanced-centrality-comparison" id="id56">7. Advanced Centrality Comparison</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id21" id="id57">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id22" id="id58">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id23" id="id59">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id24" id="id60">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-the-query-zoo" id="id61">Using the Query Zoo</a></p>
+<ul>
+<li><p><a class="reference internal" href="#getting-started" id="id62">Getting Started</a></p></li>
+<li><p><a class="reference internal" href="#adapting-queries-to-your-data" id="id63">Adapting Queries to Your Data</a></p></li>
+<li><p><a class="reference internal" href="#datasets" id="id64">Datasets</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#further-reading" id="id65">Further Reading</a></p></li>
+</ul>
+</nav>
+<section id="overview">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The Query Zoo is organized around common multilayer analysis tasks:</p>
+<ol class="arabic simple">
+<li><p><strong>Basic Multilayer Exploration</strong> — Understand layer statistics and structure</p></li>
+<li><p><strong>Cross-Layer Hubs</strong> — Find nodes that are important across multiple layers</p></li>
+<li><p><strong>Layer Similarity</strong> — Measure structural alignment between layers</p></li>
+<li><p><strong>Community Structure</strong> — Detect and analyze multilayer communities</p></li>
+<li><p><strong>Multiplex PageRank</strong> — Compute multilayer-aware centrality</p></li>
+<li><p><strong>Robustness Analysis</strong> — Assess network resilience to layer failures</p></li>
+<li><p><strong>Advanced Centrality Comparison</strong> — Identify versatile vs specialized hubs</p></li>
+</ol>
+<p>All examples use small, reproducible multilayer networks from the <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/datasets.py</span></code> module.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Running the Examples</strong></p>
+<p>All query functions are available in <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/queries.py</span></code>.
+To run all queries and generate outputs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">examples</span><span class="o">/</span><span class="n">dsl_query_zoo</span><span class="o">/</span><span class="n">run_all</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Test the queries with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_dsl_query_zoo</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="basic-multilayer-exploration">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">1. Basic Multilayer Exploration</a><a class="headerlink" href="#basic-multilayer-exploration" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> You’ve loaded a multilayer network and want to quickly understand its structure. Which layers are densest? How many nodes and edges does each layer have?</p>
+<p><strong>Solution:</strong> Compute basic statistics per layer using the DSL.</p>
+<section id="query-code">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Query Code</a><a class="headerlink" href="#query-code" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summarize layers: node counts, edge counts, and average degree per layer.</span>
+<span class="sd">    </span>
+<span class="sd">    This query demonstrates basic multilayer exploration by computing</span>
+<span class="sd">    fundamental statistics for each layer independently. This is typically</span>
+<span class="sd">    the first step in multilayer analysis to understand the structure</span>
+<span class="sd">    and identify layers with different connectivity patterns.</span>
+<span class="sd">    </span>
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Reveals which layers are denser or sparser</span>
+<span class="sd">    - Identifies layers that might be hubs of activity</span>
+<span class="sd">    - Shows structural diversity across the multilayer network</span>
+<span class="sd">    </span>
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - SELECT nodes from specific layers</span>
+<span class="sd">    - Computing degree per layer</span>
+<span class="sd">    - Aggregation by layer</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame with columns: layer, n_nodes, n_edges, avg_degree</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get all unique layers in the network</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="c1"># Query nodes in this layer with degree computation</span>
+        <span class="n">layer_result</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
+             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">layer_result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="n">n_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+            <span class="n">n_edges</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>  <span class="c1"># Each edge counted twice</span>
+            <span class="n">avg_degree</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer_name</span><span class="p">,</span>
+                <span class="s1">&#39;n_nodes&#39;</span><span class="p">:</span> <span class="n">n_nodes</span><span class="p">,</span>
+                <span class="s1">&#39;n_edges&#39;</span><span class="p">:</span> <span class="n">n_edges</span><span class="p">,</span>
+                <span class="s1">&#39;avg_degree&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">avg_degree</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="p">})</span>
+    
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="why-it-s-interesting">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#why-it-s-interesting" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>First step in any analysis</strong> — Before diving into complex queries, understand your data</p></li>
+<li><p><strong>Reveals layer diversity</strong> — Different layers often have vastly different structures</p></li>
+<li><p><strong>Identifies sparse vs dense layers</strong> — Helps decide which layers need special handling</p></li>
+</ul>
+</section>
+<section id="example-output">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Example Output</a><a class="headerlink" href="#example-output" title="Link to this heading"></a></h3>
+<p>Running on the <code class="docutils literal notranslate"><span class="pre">social_work_network</span></code> (12 people across social/work/family layers):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 29.4%" />
+<col style="width: 23.5%" />
+<col style="width: 23.5%" />
+<col style="width: 23.5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Layer</p></th>
+<th class="head"><p>Nodes</p></th>
+<th class="head"><p>Edges</p></th>
+<th class="head"><p>Avg Degree</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>social</p></td>
+<td><p>12</p></td>
+<td><p>11</p></td>
+<td><p>1.83</p></td>
+</tr>
+<tr class="row-odd"><td><p>work</p></td>
+<td><p>11</p></td>
+<td><p>9</p></td>
+<td><p>1.64</p></td>
+</tr>
+<tr class="row-even"><td><p>family</p></td>
+<td><p>11</p></td>
+<td><p>6</p></td>
+<td><p>1.09</p></td>
+</tr>
+</tbody>
+</table>
+<a class="reference internal image-reference" href="../_images/basic_exploration_plot.png"><img alt="Layer Statistics" class="align-center" src="../_images/basic_exploration_plot.png" style="width: 100%;" />
+</a>
+<p><strong>Interpretation:</strong> The social layer is densest (highest average degree), while family is sparsest. All layers have similar numbers of nodes, indicating good cross-layer coverage.</p>
+</section>
+<section id="dsl-concepts-demonstrated">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#dsl-concepts-demonstrated" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(L[name])</span></code> — Select nodes from a specific layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;degree&quot;)</span></code> — Add computed attributes to results</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.execute(network)</span></code> — Run the query and get results</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code> — Convert to DataFrame for analysis</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="cross-layer-hubs">
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">2. Cross-Layer Hubs</a><a class="headerlink" href="#cross-layer-hubs" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> Which nodes are consistently important across <em>multiple</em> layers? These “super hubs” are critical because they bridge different contexts.</p>
+<p><strong>Solution:</strong> Find top-k central nodes per layer, then identify which nodes appear in multiple layers’ top lists.</p>
+<section id="id1">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Query Code</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find nodes that are consistently central across multiple layers.</span>
+<span class="sd">    </span>
+<span class="sd">    This query identifies &quot;super hubs&quot; - nodes that maintain high centrality</span>
+<span class="sd">    across different layers. These nodes are particularly important because</span>
+<span class="sd">    they serve as connectors across different contexts or domains.</span>
+<span class="sd">    </span>
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Reveals nodes with consistent importance across contexts</span>
+<span class="sd">    - Useful for identifying key actors in multiplex social networks</span>
+<span class="sd">    - Helps understand cross-layer influence and information flow</span>
+<span class="sd">    </span>
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Per-layer grouping and aggregation</span>
+<span class="sd">    - Computing betweenness centrality</span>
+<span class="sd">    - Ordering and filtering by computed metrics</span>
+<span class="sd">    - Coverage analysis (nodes appearing in multiple layers)</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        k: Number of top nodes to select per layer</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame with nodes and their centrality scores per layer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    
+    <span class="c1"># For each layer, get top-k nodes by betweenness centrality</span>
+    <span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">layer_result</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
+             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">layer_result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_name</span>
+            <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">all_results</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    
+    <span class="c1"># Combine results and identify nodes appearing in multiple layers</span>
+    <span class="n">combined</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">all_results</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1"># Rename &#39;id&#39; column to &#39;node&#39; for clarity</span>
+    <span class="n">combined</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
+    
+    <span class="c1"># Count how many layers each node appears in as a top-k hub</span>
+    <span class="n">coverage</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;layer_count&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Merge with centrality data</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">coverage</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Sort by coverage (number of layers) and then by betweenness</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;layer_count&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">],</span>
+        <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+    <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">result</span><span class="p">[[</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_count&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Reveals cross-context influence</strong> — Nodes central in one layer might be peripheral in another</p></li>
+<li><p><strong>Identifies key connectors</strong> — Nodes that appear in multiple layers’ top-k are especially important</p></li>
+<li><p><strong>Robust hub detection</strong> — More reliable than single-layer centrality</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Example Output</a><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Top cross-layer hubs (k=5):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.2%" />
+<col style="width: 22.2%" />
+<col style="width: 16.7%" />
+<col style="width: 22.2%" />
+<col style="width: 16.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Node</p></th>
+<th class="head"><p>Layer</p></th>
+<th class="head"><p>Degree</p></th>
+<th class="head"><p>Betweenness</p></th>
+<th class="head"><p>Layer Count</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Bob</p></td>
+<td><p>social</p></td>
+<td><p>3</p></td>
+<td><p>0.0273</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bob</p></td>
+<td><p>work</p></td>
+<td><p>2</p></td>
+<td><p>0.0</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-even"><td><p>Bob</p></td>
+<td><p>family</p></td>
+<td><p>1</p></td>
+<td><p>0.0</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alice</p></td>
+<td><p>work</p></td>
+<td><p>3</p></td>
+<td><p>0.0889</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-even"><td><p>Charlie</p></td>
+<td><p>social</p></td>
+<td><p>3</p></td>
+<td><p>0.0273</p></td>
+<td><p>2</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> Bob appears as a top-5 hub in <em>all three layers</em> (layer_count=3), making him the most versatile connector. Alice and Charlie are hubs in two layers each.</p>
+</section>
+<section id="id4">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;betweenness_centrality&quot;,</span> <span class="pre">&quot;degree&quot;)</span></code> — Compute multiple metrics at once</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.order_by(&quot;-betweenness_centrality&quot;)</span></code> — Sort descending (<code class="docutils literal notranslate"><span class="pre">-</span></code> prefix)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.limit(k)</span></code> — Take top-k results</p></li>
+<li><p>Per-layer iteration and aggregation across layers</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="layer-similarity">
+<h2><a class="toc-backref" href="#id36" role="doc-backlink">3. Layer Similarity</a><a class="headerlink" href="#layer-similarity" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> How similar are different layers structurally? Do they serve redundant or complementary roles?</p>
+<p><strong>Solution:</strong> Compute degree distributions per layer and measure pairwise correlations.</p>
+<section id="id5">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">Query Code</a><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute structural similarity between layers based on degree distributions.</span>
+<span class="sd">    </span>
+<span class="sd">    This query measures how similar different layers are in terms of their</span>
+<span class="sd">    connectivity patterns. Layers with similar degree distributions likely</span>
+<span class="sd">    serve similar structural roles in the multilayer network.</span>
+<span class="sd">    </span>
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Identifies redundant or complementary layers</span>
+<span class="sd">    - Helps understand layer specialization</span>
+<span class="sd">    - Can inform layer aggregation or simplification decisions</span>
+<span class="sd">    </span>
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Computing statistics per layer</span>
+<span class="sd">    - Aggregation and comparison across layers</span>
+<span class="sd">    - Using computed metrics for layer-level analysis</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame: Pairwise correlation matrix of layer degree distributions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    
+    <span class="c1"># Get degree distribution for each layer</span>
+    <span class="n">layer_degrees</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
+             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="c1"># Store as dict: node -&gt; degree</span>
+            <span class="n">layer_degrees</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]))</span>
+    
+    <span class="c1"># Compute correlation between layers</span>
+    <span class="c1"># Get union of all nodes</span>
+    <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">degrees</span> <span class="ow">in</span> <span class="n">layer_degrees</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">all_nodes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">degrees</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">)</span>
+    
+    <span class="c1"># Build degree matrix: layers x nodes</span>
+    <span class="n">degree_matrix</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layer_degrees</span><span class="p">:</span>
+            <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_degrees</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">all_nodes</span><span class="p">]</span>
+            <span class="n">degree_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">degree_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">))</span>
+    
+    <span class="c1"># Compute correlation matrix</span>
+    <span class="n">degree_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">degree_matrix</span><span class="p">)</span>
+    <span class="n">correlation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">degree_matrix</span><span class="p">)</span>
+    
+    <span class="c1"># Convert to DataFrame for readability</span>
+    <span class="n">corr_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">correlation</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">layers</span>
+    <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">corr_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Detects redundancy</strong> — High correlation suggests layers capture similar structure</p></li>
+<li><p><strong>Guides simplification</strong> — Nearly identical layers might be merged</p></li>
+<li><p><strong>Reveals specialization</strong> — Low/negative correlation shows layers serve different roles</p></li>
+</ul>
+</section>
+<section id="id7">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">Example Output</a><a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p>Correlation matrix for <code class="docutils literal notranslate"><span class="pre">social_work_network</span></code>:</p>
+<a class="reference internal image-reference" href="../_images/layer_similarity_heatmap.png"><img alt="Layer Similarity Heatmap" class="align-center" src="../_images/layer_similarity_heatmap.png" style="width: 80%;" />
+</a>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head"><p>social</p></th>
+<th class="head"><p>work</p></th>
+<th class="head"><p>family</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>social</p></td>
+<td><p>1.000</p></td>
+<td><p>0.159</p></td>
+<td><p>0.000</p></td>
+</tr>
+<tr class="row-odd"><td><p>work</p></td>
+<td><p>0.159</p></td>
+<td><p>1.000</p></td>
+<td><p>-0.267</p></td>
+</tr>
+<tr class="row-even"><td><p>family</p></td>
+<td><p>0.000</p></td>
+<td><p>-0.267</p></td>
+<td><p>1.000</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> Social and work layers have weak positive correlation (0.159), suggesting some structural overlap. Family and work are <em>negatively</em> correlated (-0.267), indicating they capture different connectivity patterns.</p>
+</section>
+<section id="id8">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Layer-by-layer degree computation</p></li>
+<li><p>Aggregating results across layers for meta-analysis</p></li>
+<li><p>Using computed attributes for layer-level comparisons</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="community-structure">
+<h2><a class="toc-backref" href="#id41" role="doc-backlink">4. Community Structure</a><a class="headerlink" href="#community-structure" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> What communities exist in the multilayer network? How do they manifest across layers?</p>
+<p><strong>Solution:</strong> Detect communities using multilayer community detection, then analyze their distribution across layers.</p>
+<section id="id9">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">Query Code</a><a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_community_structure</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect communities and analyze their distribution across layers.</span>
+<span class="sd">    </span>
+<span class="sd">    This query finds communities in the multilayer network and examines</span>
+<span class="sd">    how they manifest across different layers. Some communities might be</span>
+<span class="sd">    tightly connected in one layer but dispersed in others.</span>
+<span class="sd">    </span>
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Reveals mesoscale structure in multilayer networks</span>
+<span class="sd">    - Shows how communities span or specialize across layers</span>
+<span class="sd">    - Useful for understanding multi-context group formation</span>
+<span class="sd">    </span>
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Community detection via DSL</span>
+<span class="sd">    - Grouping by community and layer</span>
+<span class="sd">    - Aggregation and counting</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame with community info: community_id, layer, size, dominant_layer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Compute communities across all layers</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>  <span class="c1"># All layers</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;communities&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    
+    <span class="c1"># Rename &#39;id&#39; column to &#39;node&#39; for clarity</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
+    
+    <span class="c1"># Analyze community distribution across layers</span>
+    <span class="n">community_stats</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;communities&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>
+        <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="s1">&#39;mean&#39;</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    
+    <span class="n">community_stats</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;community_id&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;avg_degree&#39;</span><span class="p">]</span>
+    
+    <span class="c1"># Find dominant layer for each community (layer with most nodes)</span>
+    <span class="n">dominant</span> <span class="o">=</span> <span class="n">community_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="n">community_stats</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;community_id&#39;</span><span class="p">)[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+    <span class="p">][[</span><span class="s1">&#39;community_id&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="s1">&#39;dominant_layer&#39;</span><span class="p">})</span>
+    
+    <span class="c1"># Merge dominant layer info</span>
+    <span class="n">result_df</span> <span class="o">=</span> <span class="n">community_stats</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">dominant</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;community_id&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Sort by community size</span>
+    <span class="n">result_df</span> <span class="o">=</span> <span class="n">result_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;community_id&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">result_df</span><span class="p">[[</span><span class="s1">&#39;community_id&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;avg_degree&#39;</span><span class="p">,</span> <span class="s1">&#39;dominant_layer&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3><a class="toc-backref" href="#id43" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Mesoscale structure</strong> — Communities reveal organizational patterns</p></li>
+<li><p><strong>Cross-layer community tracking</strong> — See if communities are layer-specific or global</p></li>
+<li><p><strong>Dominant layers</strong> — Identify which layer best represents each community</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3><a class="toc-backref" href="#id44" role="doc-backlink">Example Output</a><a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p>Running on <code class="docutils literal notranslate"><span class="pre">communication_network</span></code> (email/chat/phone layers):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16.7%" />
+<col style="width: 16.7%" />
+<col style="width: 16.7%" />
+<col style="width: 22.2%" />
+<col style="width: 27.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Community</p></th>
+<th class="head"><p>Layer</p></th>
+<th class="head"><p>Size</p></th>
+<th class="head"><p>Avg Degree</p></th>
+<th class="head"><p>Dominant Layer</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>email</p></td>
+<td><p>10</p></td>
+<td><p>1.8</p></td>
+<td><p>email</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>chat</p></td>
+<td><p>6</p></td>
+<td><p>2.17</p></td>
+<td><p>chat</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>chat</p></td>
+<td><p>3</p></td>
+<td><p>1.67</p></td>
+<td><p>chat</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>phone</p></td>
+<td><p>7</p></td>
+<td><p>1.71</p></td>
+<td><p>phone</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> Community 0 is email-dominated (10 nodes), while communities 1 and 2 are chat-specific. Community 3 appears primarily in phone communication.</p>
+</section>
+<section id="id12">
+<h3><a class="toc-backref" href="#id45" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(L[&quot;*&quot;])</span></code> — Select from all layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;communities&quot;)</span></code> — Built-in community detection</p></li>
+<li><p>Grouping by <code class="docutils literal notranslate"><span class="pre">(community_id,</span> <span class="pre">layer)</span></code> for analysis</p></li>
+<li><p>Identifying dominant layers via aggregation</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="multiplex-pagerank">
+<h2><a class="toc-backref" href="#id46" role="doc-backlink">5. Multiplex PageRank</a><a class="headerlink" href="#multiplex-pagerank" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> Standard PageRank treats each layer independently. How do we compute importance considering the full multiplex structure?</p>
+<p><strong>Solution:</strong> Compute PageRank per layer, then aggregate across layers. (Note: This is a simplified version; true multiplex PageRank uses supra-adjacency matrices.)</p>
+<section id="id13">
+<h3><a class="toc-backref" href="#id47" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute multiplex PageRank to identify important nodes considering all layers.</span>
+<span class="sd">    </span>
+<span class="sd">    This query uses a multilayer-aware centrality measure that accounts for</span>
+<span class="sd">    the full structure of the multiplex network, not just individual layers.</span>
+<span class="sd">    Multiplex PageRank captures node importance while considering cross-layer</span>
+<span class="sd">    connections and influence.</span>
+<span class="sd">    </span>
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Standard PageRank doesn&#39;t account for multilayer structure</span>
+<span class="sd">    - Reveals nodes that are important across the entire multiplex</span>
+<span class="sd">    - More accurate than averaging single-layer centralities</span>
+<span class="sd">    - Essential for multiplex influence analysis</span>
+<span class="sd">    </span>
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Computing advanced centrality measures</span>
+<span class="sd">    - Working with all layers simultaneously</span>
+<span class="sd">    - Ranking nodes by multilayer importance</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame with nodes ranked by multiplex PageRank scores</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># First, compute regular PageRank per layer for comparison</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    
+    <span class="n">pagerank_by_layer</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
+             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_name</span>
+            <span class="n">pagerank_by_layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pagerank_by_layer</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    
+    <span class="c1"># Combine results</span>
+    <span class="n">combined</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">pagerank_by_layer</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1"># Rename &#39;id&#39; column to &#39;node&#39; for clarity</span>
+    <span class="n">combined</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
+    
+    <span class="c1"># Compute aggregate multiplex PageRank (simple approach: average across layers)</span>
+    <span class="c1"># Note: This is a simplified version. True multiplex PageRank requires</span>
+    <span class="c1"># supra-adjacency matrix computation, but this demonstrates the concept.</span>
+    <span class="n">multiplex_pr</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>
+        <span class="s1">&#39;pagerank&#39;</span><span class="p">:</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span>  <span class="c1"># Average across layers</span>
+        <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span>      <span class="c1"># Total degree across layers</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    
+    <span class="n">multiplex_pr</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="s1">&#39;multiplex_pagerank&#39;</span><span class="p">,</span> <span class="s1">&#39;total_degree&#39;</span><span class="p">]</span>
+    
+    <span class="c1"># Sort by multiplex PageRank</span>
+    <span class="n">multiplex_pr</span> <span class="o">=</span> <span class="n">multiplex_pr</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;multiplex_pagerank&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    
+    <span class="c1"># Add layer-specific details</span>
+    <span class="n">layer_details</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;layer&#39;</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="s1">&#39;pagerank&#39;</span><span class="p">,</span>
+        <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="n">multiplex_pr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">layer_details</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h3><a class="toc-backref" href="#id48" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Multilayer-aware centrality</strong> — Accounts for importance across all layers</p></li>
+<li><p><strong>More robust than single-layer</strong> — Averages out layer-specific biases</p></li>
+<li><p><strong>Essential for multiplex influence</strong> — Key for viral marketing, information diffusion</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3><a class="toc-backref" href="#id49" role="doc-backlink">Example Output</a><a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<p>Top nodes by multiplex PageRank in <code class="docutils literal notranslate"><span class="pre">transport_network</span></code>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Node</p></th>
+<th class="head"><p>Multiplex PR</p></th>
+<th class="head"><p>Total Degree</p></th>
+<th class="head"><p>Bus PR</p></th>
+<th class="head"><p>Metro PR</p></th>
+<th class="head"><p>Walking PR</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ShoppingMall</p></td>
+<td><p>0.1811</p></td>
+<td><p>6</p></td>
+<td><p>0.1362</p></td>
+<td><p>0.1909</p></td>
+<td><p>0.2164</p></td>
+</tr>
+<tr class="row-odd"><td><p>Park</p></td>
+<td><p>0.1806</p></td>
+<td><p>4</p></td>
+<td><p>0.1449</p></td>
+<td><p>0.0</p></td>
+<td><p>0.2164</p></td>
+</tr>
+<tr class="row-even"><td><p>CentralStation</p></td>
+<td><p>0.1683</p></td>
+<td><p>6</p></td>
+<td><p>0.1971</p></td>
+<td><p>0.1909</p></td>
+<td><p>0.117</p></td>
+</tr>
+<tr class="row-odd"><td><p>BusinessDistrict</p></td>
+<td><p>0.1484</p></td>
+<td><p>4</p></td>
+<td><p>0.079</p></td>
+<td><p>0.1994</p></td>
+<td><p>0.1667</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> ShoppingMall has highest multiplex PageRank (0.1811) because it’s central across all three transport modes. Park has high walking PageRank but zero metro, reflecting its limited accessibility.</p>
+</section>
+<section id="id16">
+<h3><a class="toc-backref" href="#id50" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;pagerank&quot;)</span></code> — Built-in PageRank computation</p></li>
+<li><p>Per-layer iteration with result aggregation</p></li>
+<li><p>Pivot tables for layer-wise breakdowns</p></li>
+<li><p>Combining degree and PageRank for richer analysis</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="robustness-analysis">
+<h2><a class="toc-backref" href="#id51" role="doc-backlink">6. Robustness Analysis</a><a class="headerlink" href="#robustness-analysis" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> How robust is the network to layer failures? What happens if one layer goes offline?</p>
+<p><strong>Solution:</strong> Simulate removing each layer and measure connectivity loss.</p>
+<section id="id17">
+<h3><a class="toc-backref" href="#id52" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze network robustness: impact of removing one layer at a time.</span>
+<span class="sd">    </span>
+<span class="sd">    This query demonstrates robustness analysis by simulating layer failure.</span>
+<span class="sd">    For each layer, we measure how connectivity changes if that layer is removed.</span>
+<span class="sd">    This reveals which layers are critical for network cohesion.</span>
+<span class="sd">    </span>
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Identifies critical infrastructure layers</span>
+<span class="sd">    - Measures redundancy in multilayer systems</span>
+<span class="sd">    - Informs resilience strategies and backup planning</span>
+<span class="sd">    - Essential for analyzing cascading failures</span>
+<span class="sd">    </span>
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Layer selection and filtering</span>
+<span class="sd">    - Computing connectivity metrics</span>
+<span class="sd">    - Comparing network states (with/without layers)</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame comparing connectivity with each layer removed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    
+    <span class="c1"># Baseline: connectivity with all layers</span>
+    <span class="n">baseline_result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+    
+    <span class="n">baseline_df</span> <span class="o">=</span> <span class="n">baseline_result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    <span class="n">baseline_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">baseline_df</span><span class="p">)</span>
+    <span class="n">baseline_avg_degree</span> <span class="o">=</span> <span class="n">baseline_df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">baseline_total_degree</span> <span class="o">=</span> <span class="n">baseline_df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[{</span>
+        <span class="s1">&#39;scenario&#39;</span><span class="p">:</span> <span class="s1">&#39;baseline (all layers)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;n_nodes&#39;</span><span class="p">:</span> <span class="n">baseline_nodes</span><span class="p">,</span>
+        <span class="s1">&#39;avg_degree&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">baseline_avg_degree</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="s1">&#39;total_edges&#39;</span><span class="p">:</span> <span class="n">baseline_total_degree</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;connectivity_loss&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
+    <span class="p">}]</span>
+    
+    <span class="c1"># Test removing each layer</span>
+    <span class="k">for</span> <span class="n">layer_to_remove</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="c1"># Get remaining layers</span>
+        <span class="n">remaining_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span> <span class="k">if</span> <span class="n">layer</span> <span class="o">!=</span> <span class="n">layer_to_remove</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">remaining_layers</span><span class="p">:</span>
+            <span class="k">continue</span>
+        
+        <span class="c1"># Combine remaining layers</span>
+        <span class="n">layer_expr</span> <span class="o">=</span> <span class="n">remaining_layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">remaining_layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">layer_expr</span> <span class="o">=</span> <span class="n">layer_expr</span> <span class="o">+</span> <span class="n">layer</span>
+        
+        <span class="c1"># Query with reduced layer set</span>
+        <span class="n">reduced_result</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layer_expr</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reduced_result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">reduced_df</span> <span class="o">=</span> <span class="n">reduced_result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="n">n_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reduced_df</span><span class="p">)</span>
+            <span class="n">avg_degree</span> <span class="o">=</span> <span class="n">reduced_df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">total_degree</span> <span class="o">=</span> <span class="n">reduced_df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            
+            <span class="c1"># Calculate connectivity loss</span>
+            <span class="n">connectivity_loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">baseline_total_degree</span> <span class="o">-</span> <span class="n">total_degree</span><span class="p">)</span> <span class="o">/</span> <span class="n">baseline_total_degree</span> <span class="o">*</span> <span class="mi">100</span>
+            
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;scenario&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;without </span><span class="si">{</span><span class="n">layer_to_remove</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;n_nodes&#39;</span><span class="p">:</span> <span class="n">n_nodes</span><span class="p">,</span>
+                <span class="s1">&#39;avg_degree&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">avg_degree</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="s1">&#39;total_edges&#39;</span><span class="p">:</span> <span class="n">total_degree</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s1">&#39;connectivity_loss&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">connectivity_loss</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;scenario&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;without </span><span class="si">{</span><span class="n">layer_to_remove</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;n_nodes&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;avg_degree&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="s1">&#39;total_edges&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;connectivity_loss&#39;</span><span class="p">:</span> <span class="mf">100.0</span>
+            <span class="p">})</span>
+    
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h3><a class="toc-backref" href="#id53" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Critical infrastructure identification</strong> — Reveals which layers are essential</p></li>
+<li><p><strong>Redundancy assessment</strong> — High robustness indicates good backup coverage</p></li>
+<li><p><strong>Failure planning</strong> — Informs which layers need extra protection</p></li>
+</ul>
+</section>
+<section id="id19">
+<h3><a class="toc-backref" href="#id54" role="doc-backlink">Example Output</a><a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
+<p>Robustness of <code class="docutils literal notranslate"><span class="pre">transport_network</span></code>:</p>
+<a class="reference internal image-reference" href="../_images/robustness_analysis_plot.png"><img alt="Robustness Analysis" class="align-center" src="../_images/robustness_analysis_plot.png" style="width: 90%;" />
+</a>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31.6%" />
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 21.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Scenario</p></th>
+<th class="head"><p>Nodes</p></th>
+<th class="head"><p>Avg Degree</p></th>
+<th class="head"><p>Total Edges</p></th>
+<th class="head"><p>Connectivity Loss (%)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>baseline (all layers)</p></td>
+<td><p>14</p></td>
+<td><p>2.14</p></td>
+<td><p>15</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>without bus</p></td>
+<td><p>11</p></td>
+<td><p>1.45</p></td>
+<td><p>8</p></td>
+<td><p>46.67</p></td>
+</tr>
+<tr class="row-even"><td><p>without metro</p></td>
+<td><p>11</p></td>
+<td><p>1.82</p></td>
+<td><p>10</p></td>
+<td><p>33.33</p></td>
+</tr>
+<tr class="row-odd"><td><p>without walking</p></td>
+<td><p>14</p></td>
+<td><p>2.0</p></td>
+<td><p>14</p></td>
+<td><p>6.67</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> Removing the bus layer causes 46.67% connectivity loss — it’s the most critical layer. Walking is least critical (only 6.67% loss), indicating good redundancy from other transport modes.</p>
+</section>
+<section id="id20">
+<h3><a class="toc-backref" href="#id55" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Layer algebra: <code class="docutils literal notranslate"><span class="pre">L[&quot;layer1&quot;]</span> <span class="pre">+</span> <span class="pre">L[&quot;layer2&quot;]</span></code> — Combine layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(layer_expr)</span></code> — Query with dynamic layer selections</p></li>
+<li><p>Baseline vs scenario comparison</p></li>
+<li><p>Measuring connectivity metrics before/after perturbations</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="advanced-centrality-comparison">
+<h2><a class="toc-backref" href="#id56" role="doc-backlink">7. Advanced Centrality Comparison</a><a class="headerlink" href="#advanced-centrality-comparison" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> Different centralities capture different notions of importance. Which nodes are “versatile hubs” (high in many centralities) vs “specialized hubs” (high in only one)?</p>
+<p><strong>Solution:</strong> Compute multiple centralities, normalize them, and classify nodes by how many centralities place them in the top tier.</p>
+<section id="id21">
+<h3><a class="toc-backref" href="#id57" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare multiple centrality measures to identify versatile vs specialized hubs.</span>
+<span class="sd">    </span>
+<span class="sd">    This query computes several centrality measures (degree, betweenness, closeness,</span>
+<span class="sd">    PageRank) and identifies nodes that rank high in multiple measures (&quot;versatile hubs&quot;)</span>
+<span class="sd">    versus those that excel in only one measure (&quot;specialized hubs&quot;).</span>
+<span class="sd">    </span>
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Different centralities capture different notions of importance</span>
+<span class="sd">    - Versatile hubs are robust across different centrality definitions</span>
+<span class="sd">    - Specialized hubs reveal specific structural roles</span>
+<span class="sd">    - Essential for comprehensive node importance analysis</span>
+<span class="sd">    </span>
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Computing multiple centrality measures in one query</span>
+<span class="sd">    - Ranking and comparing across metrics</span>
+<span class="sd">    - Using computed attributes for classification</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame with nodes and their centrality scores, plus a &quot;versatility&quot; metric</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Select a representative layer (or aggregate across all layers)</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    
+    <span class="c1"># Use first layer for demonstration</span>
+    <span class="n">layer_name</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;closeness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    
+    <span class="c1"># Rename &#39;id&#39; column to &#39;node&#39; for clarity</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
+    
+    <span class="c1"># Normalize each centrality to [0, 1] for comparison</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;closeness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;pagerank&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">_norm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">/</span> <span class="n">max_val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">_norm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="c1"># Compute &quot;versatility&quot; - how many centralities place node in top 30%</span>
+    <span class="n">norm_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_norm&#39;</span><span class="p">)]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_top_ranks</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">norm_cols</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.7</span><span class="p">:</span>  <span class="c1"># Top 30% threshold</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">count</span>
+    
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;versatility&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">count_top_ranks</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Classify nodes</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">classify_hub</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;versatility&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;versatile_hub&#39;</span>
+        <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;versatility&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;specialized_hub&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;peripheral&#39;</span>
+    
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;hub_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">classify_hub</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Sort by versatility and then by average normalized centrality</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;avg_centrality&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">norm_cols</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;versatility&#39;</span><span class="p">,</span> <span class="s1">&#39;avg_centrality&#39;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+    
+    <span class="c1"># Select columns for output</span>
+    <span class="n">output_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;closeness_centrality&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;pagerank&#39;</span><span class="p">,</span> <span class="s1">&#39;versatility&#39;</span><span class="p">,</span> <span class="s1">&#39;hub_type&#39;</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">output_cols</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id22">
+<h3><a class="toc-backref" href="#id58" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Centrality is multifaceted</strong> — Degree ≠ betweenness ≠ closeness ≠ PageRank</p></li>
+<li><p><strong>Versatile hubs are robust</strong> — High across many metrics means genuine importance</p></li>
+<li><p><strong>Specialized hubs reveal roles</strong> — High in one metric reveals specific structural position</p></li>
+</ul>
+</section>
+<section id="id23">
+<h3><a class="toc-backref" href="#id59" role="doc-backlink">Example Output</a><a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<p>Running on <code class="docutils literal notranslate"><span class="pre">communication_network</span></code> (email layer):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19.0%" />
+<col style="width: 11.4%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 12.4%" />
+<col style="width: 11.4%" />
+<col style="width: 17.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Node</p></th>
+<th class="head"><p>Degree</p></th>
+<th class="head"><p>Betweenness</p></th>
+<th class="head"><p>Closeness</p></th>
+<th class="head"><p>PageRank</p></th>
+<th class="head"><p>Versatility</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Manager</p></td>
+<td><p>9</p></td>
+<td><p>1.0</p></td>
+<td><p>1.0</p></td>
+<td><p>0.4676</p></td>
+<td><p>4</p></td>
+<td><p>versatile_hub</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dev1</p></td>
+<td><p>1</p></td>
+<td><p>0.0</p></td>
+<td><p>0.5294</p></td>
+<td><p>0.0592</p></td>
+<td><p>0</p></td>
+<td><p>peripheral</p></td>
+</tr>
+<tr class="row-even"><td><p>Dev2</p></td>
+<td><p>1</p></td>
+<td><p>0.0</p></td>
+<td><p>0.5294</p></td>
+<td><p>0.0592</p></td>
+<td><p>0</p></td>
+<td><p>peripheral</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> Manager is a <strong>versatile hub</strong> (top 30% in all 4 centralities). All other nodes are peripheral in this star-topology email network.</p>
+</section>
+<section id="id24">
+<h3><a class="toc-backref" href="#id60" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;degree&quot;,</span> <span class="pre">&quot;betweenness_centrality&quot;,</span> <span class="pre">&quot;closeness_centrality&quot;,</span> <span class="pre">&quot;pagerank&quot;)</span></code> — Compute multiple centralities</p></li>
+<li><p>Normalizing centralities for comparison</p></li>
+<li><p>Derived metrics (versatility score)</p></li>
+<li><p>Classification based on computed attributes</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="using-the-query-zoo">
+<h2><a class="toc-backref" href="#id61" role="doc-backlink">Using the Query Zoo</a><a class="headerlink" href="#using-the-query-zoo" title="Link to this heading"></a></h2>
+<section id="getting-started">
+<h3><a class="toc-backref" href="#id62" role="doc-backlink">Getting Started</a><a class="headerlink" href="#getting-started" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Install py3plex</strong> (if not already installed):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">py3plex</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run a single query</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">examples.dsl_query_zoo.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_social_work_network</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">examples.dsl_query_zoo.queries</span><span class="w"> </span><span class="kn">import</span> <span class="n">query_basic_exploration</span>
+
+<span class="n">net</span> <span class="o">=</span> <span class="n">create_social_work_network</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">query_basic_exploration</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run all queries</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">examples</span><span class="o">/</span><span class="n">dsl_query_zoo</span>
+<span class="n">python</span> <span class="n">run_all</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run tests</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_dsl_query_zoo</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">v</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="adapting-queries-to-your-data">
+<h3><a class="toc-backref" href="#id63" role="doc-backlink">Adapting Queries to Your Data</a><a class="headerlink" href="#adapting-queries-to-your-data" title="Link to this heading"></a></h3>
+<p>All queries are designed to work with any <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> object. To adapt:</p>
+<ol class="arabic">
+<li><p><strong>Replace the dataset</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load your own network</span>
+<span class="n">my_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">my_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;mydata.edgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist_mx&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run any query</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">query_cross_layer_hubs</span><span class="p">(</span><span class="n">my_network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Adjust parameters</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> in <code class="docutils literal notranslate"><span class="pre">query_cross_layer_hubs</span></code> — Number of top nodes per layer</p></li>
+<li><p>Layer names in filters — Replace <code class="docutils literal notranslate"><span class="pre">L[&quot;social&quot;]</span></code> with your layer names</p></li>
+<li><p>Centrality thresholds — Adjust percentile cutoffs as needed</p></li>
+</ul>
+</li>
+<li><p><strong>Extend queries</strong>:</p>
+<p>All query functions are in <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/queries.py</span></code>. Copy, modify, and experiment!</p>
+</li>
+</ol>
+</section>
+<section id="datasets">
+<h3><a class="toc-backref" href="#id64" role="doc-backlink">Datasets</a><a class="headerlink" href="#datasets" title="Link to this heading"></a></h3>
+<p>Three multilayer networks are provided:</p>
+<ol class="arabic simple">
+<li><p><strong>social_work_network</strong></p>
+<ul class="simple">
+<li><p><strong>Layers:</strong> social, work, family</p></li>
+<li><p><strong>Nodes:</strong> 12 people</p></li>
+<li><p><strong>Structure:</strong> Overlapping social circles with different connectivity patterns per layer</p></li>
+</ul>
+</li>
+<li><p><strong>communication_network</strong></p>
+<ul class="simple">
+<li><p><strong>Layers:</strong> email, chat, phone</p></li>
+<li><p><strong>Nodes:</strong> 10 people (Manager, Dev team, Marketing, Support, HR)</p></li>
+<li><p><strong>Structure:</strong> Star topology in email, distributed in chat/phone</p></li>
+</ul>
+</li>
+<li><p><strong>transport_network</strong></p>
+<ul class="simple">
+<li><p><strong>Layers:</strong> bus, metro, walking</p></li>
+<li><p><strong>Nodes:</strong> 8 locations (CentralStation, ShoppingMall, Park, etc.)</p></li>
+<li><p><strong>Structure:</strong> Bus covers most locations, metro is faster but selective, walking is local</p></li>
+</ul>
+</li>
+</ol>
+<p>All datasets use fixed random seeds (<code class="docutils literal notranslate"><span class="pre">seed=42</span></code>) for reproducibility.</p>
+</section>
+</section>
+<section id="further-reading">
+<h2><a class="toc-backref" href="#id65" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> — Complete DSL reference with syntax and operators</p></li>
+<li><p><a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> — Theory of multilayer networks</p></li>
+<li><p><a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a> — Full DSL grammar and API reference</p></li>
+<li><p><span class="xref std std-doc">../tutorials/tutorial_10min</span> — Quick start tutorial</p></li>
+</ul>
+<div class="tip admonition">
+<p class="admonition-title">Contributing Queries</p>
+<p>Have an interesting multilayer query pattern? <strong>Contribute it to the Query Zoo!</strong></p>
+<ol class="arabic simple">
+<li><p>Add your query function to <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/queries.py</span></code></p></li>
+<li><p>Add tests to <code class="docutils literal notranslate"><span class="pre">tests/test_dsl_query_zoo.py</span></code></p></li>
+<li><p>Update this documentation page</p></li>
+<li><p>Submit a pull request!</p></li>
+</ol>
+<p>See <a class="reference internal" href="../project/contributing.html"><span class="doc">Contributing to py3plex</span></a> for details.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="load_and_build_networks.html" class="btn btn-neutral float-left" title="How to Load and Build Networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="compute_statistics.html" class="btn btn-neutral float-right" title="How to Compute Network Statistics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

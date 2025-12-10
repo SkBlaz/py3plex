@@ -1,7 +1,7 @@
 This is makeindex, version 2.17 [TeX Live 2023] (kpathsea + Thai support).
 Scanning style file ./python.ist.......done (7 attributes redefined, 0 ignored).
-Scanning input file py3plex.idx.....done (1384 entries accepted, 0 rejected).
-Sorting entries..............done (15738 comparisons).
-Generating output file py3plex.ind.....done (1990 lines written, 0 warnings).
+Scanning input file py3plex.idx.....done (1392 entries accepted, 0 rejected).
+Sorting entries..............done (16108 comparisons).
+Generating output file py3plex.ind.....done (1994 lines written, 0 warnings).
 Output written in py3plex.ind.
 Transcript written in py3plex.ilg.

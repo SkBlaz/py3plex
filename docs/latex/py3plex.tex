@@ -71,7 +71,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Dec 09, 2025}
+\date{Dec 10, 2025}
 \release{1.0.1}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -3924,6 +3924,2096 @@ Friends layer: 3 nodes
 \sphinxstylestrong{API reference:} {\hyperref[\detokenize{reference/api_index::doc}]{\sphinxcrossref{\DUrole{doc}{API Documentation}}}}
 
 \end{itemize}
+
+\sphinxstepscope
+
+
+\subsection{Query Zoo: DSL Gallery for Multilayer Analysis}
+\label{\detokenize{how-to/query_zoo:query-zoo-dsl-gallery-for-multilayer-analysis}}\label{\detokenize{how-to/query_zoo::doc}}
+\sphinxAtStartPar
+\sphinxstylestrong{The Query Zoo is a curated gallery of DSL queries that demonstrate the expressiveness and power of py3plex for multilayer network analysis.}
+
+\sphinxAtStartPar
+Each example:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Solves a real multilayer analysis problem
+
+\item {} 
+\sphinxAtStartPar
+Uses the DSL end\sphinxhyphen{}to\sphinxhyphen{}end with idiomatic patterns
+
+\item {} 
+\sphinxAtStartPar
+Produces concrete, reproducible outputs
+
+\item {} 
+\sphinxAtStartPar
+Is fully tested and documented
+
+\end{itemize}
+
+\begin{sphinxadmonition}{note}{Why a Query Zoo?}
+
+\sphinxAtStartPar
+The DSL is most powerful when you see it in action on realistic problems.
+This gallery shows you \sphinxstylestrong{how} to think about multilayer queries, not just
+\sphinxstylestrong{what} the syntax is. Use these examples as recipes and starting points
+for your own analyses.
+\end{sphinxadmonition}
+
+\begin{sphinxcontents}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id25}}{\hyperref[\detokenize{how-to/query_zoo:overview}]{\sphinxcrossref{Overview}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id26}}{\hyperref[\detokenize{how-to/query_zoo:basic-multilayer-exploration}]{\sphinxcrossref{1. Basic Multilayer Exploration}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id27}}{\hyperref[\detokenize{how-to/query_zoo:query-code}]{\sphinxcrossref{Query Code}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id28}}{\hyperref[\detokenize{how-to/query_zoo:why-it-s-interesting}]{\sphinxcrossref{Why It’s Interesting}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id29}}{\hyperref[\detokenize{how-to/query_zoo:example-output}]{\sphinxcrossref{Example Output}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id30}}{\hyperref[\detokenize{how-to/query_zoo:dsl-concepts-demonstrated}]{\sphinxcrossref{DSL Concepts Demonstrated}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id31}}{\hyperref[\detokenize{how-to/query_zoo:cross-layer-hubs}]{\sphinxcrossref{2. Cross\sphinxhyphen{}Layer Hubs}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id32}}{\hyperref[\detokenize{how-to/query_zoo:id1}]{\sphinxcrossref{Query Code}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id33}}{\hyperref[\detokenize{how-to/query_zoo:id2}]{\sphinxcrossref{Why It’s Interesting}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id34}}{\hyperref[\detokenize{how-to/query_zoo:id3}]{\sphinxcrossref{Example Output}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id35}}{\hyperref[\detokenize{how-to/query_zoo:id4}]{\sphinxcrossref{DSL Concepts Demonstrated}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id36}}{\hyperref[\detokenize{how-to/query_zoo:layer-similarity}]{\sphinxcrossref{3. Layer Similarity}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id37}}{\hyperref[\detokenize{how-to/query_zoo:id5}]{\sphinxcrossref{Query Code}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id38}}{\hyperref[\detokenize{how-to/query_zoo:id6}]{\sphinxcrossref{Why It’s Interesting}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id39}}{\hyperref[\detokenize{how-to/query_zoo:id7}]{\sphinxcrossref{Example Output}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id40}}{\hyperref[\detokenize{how-to/query_zoo:id8}]{\sphinxcrossref{DSL Concepts Demonstrated}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id41}}{\hyperref[\detokenize{how-to/query_zoo:community-structure}]{\sphinxcrossref{4. Community Structure}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id42}}{\hyperref[\detokenize{how-to/query_zoo:id9}]{\sphinxcrossref{Query Code}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id43}}{\hyperref[\detokenize{how-to/query_zoo:id10}]{\sphinxcrossref{Why It’s Interesting}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id44}}{\hyperref[\detokenize{how-to/query_zoo:id11}]{\sphinxcrossref{Example Output}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id45}}{\hyperref[\detokenize{how-to/query_zoo:id12}]{\sphinxcrossref{DSL Concepts Demonstrated}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id46}}{\hyperref[\detokenize{how-to/query_zoo:multiplex-pagerank}]{\sphinxcrossref{5. Multiplex PageRank}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id47}}{\hyperref[\detokenize{how-to/query_zoo:id13}]{\sphinxcrossref{Query Code}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id48}}{\hyperref[\detokenize{how-to/query_zoo:id14}]{\sphinxcrossref{Why It’s Interesting}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id49}}{\hyperref[\detokenize{how-to/query_zoo:id15}]{\sphinxcrossref{Example Output}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id50}}{\hyperref[\detokenize{how-to/query_zoo:id16}]{\sphinxcrossref{DSL Concepts Demonstrated}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id51}}{\hyperref[\detokenize{how-to/query_zoo:robustness-analysis}]{\sphinxcrossref{6. Robustness Analysis}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id52}}{\hyperref[\detokenize{how-to/query_zoo:id17}]{\sphinxcrossref{Query Code}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id53}}{\hyperref[\detokenize{how-to/query_zoo:id18}]{\sphinxcrossref{Why It’s Interesting}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id54}}{\hyperref[\detokenize{how-to/query_zoo:id19}]{\sphinxcrossref{Example Output}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id55}}{\hyperref[\detokenize{how-to/query_zoo:id20}]{\sphinxcrossref{DSL Concepts Demonstrated}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id56}}{\hyperref[\detokenize{how-to/query_zoo:advanced-centrality-comparison}]{\sphinxcrossref{7. Advanced Centrality Comparison}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id57}}{\hyperref[\detokenize{how-to/query_zoo:id21}]{\sphinxcrossref{Query Code}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id58}}{\hyperref[\detokenize{how-to/query_zoo:id22}]{\sphinxcrossref{Why It’s Interesting}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id59}}{\hyperref[\detokenize{how-to/query_zoo:id23}]{\sphinxcrossref{Example Output}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id60}}{\hyperref[\detokenize{how-to/query_zoo:id24}]{\sphinxcrossref{DSL Concepts Demonstrated}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id61}}{\hyperref[\detokenize{how-to/query_zoo:using-the-query-zoo}]{\sphinxcrossref{Using the Query Zoo}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id62}}{\hyperref[\detokenize{how-to/query_zoo:getting-started}]{\sphinxcrossref{Getting Started}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id63}}{\hyperref[\detokenize{how-to/query_zoo:adapting-queries-to-your-data}]{\sphinxcrossref{Adapting Queries to Your Data}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id64}}{\hyperref[\detokenize{how-to/query_zoo:datasets}]{\sphinxcrossref{Datasets}}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{how-to/query_zoo:id65}}{\hyperref[\detokenize{how-to/query_zoo:further-reading}]{\sphinxcrossref{Further Reading}}}
+
+\end{itemize}
+\end{sphinxcontents}
+
+
+\subsubsection{Overview}
+\label{\detokenize{how-to/query_zoo:overview}}
+\sphinxAtStartPar
+The Query Zoo is organized around common multilayer analysis tasks:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Basic Multilayer Exploration} — Understand layer statistics and structure
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Cross\sphinxhyphen{}Layer Hubs} — Find nodes that are important across multiple layers
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layer Similarity} — Measure structural alignment between layers
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Community Structure} — Detect and analyze multilayer communities
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Multiplex PageRank} — Compute multilayer\sphinxhyphen{}aware centrality
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Robustness Analysis} — Assess network resilience to layer failures
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Advanced Centrality Comparison} — Identify versatile vs specialized hubs
+
+\end{enumerate}
+
+\sphinxAtStartPar
+All examples use small, reproducible multilayer networks from the \sphinxcode{\sphinxupquote{examples/dsl\_query\_zoo/datasets.py}} module.
+
+\begin{sphinxadmonition}{tip}{Tip:}
+\sphinxAtStartPar
+\sphinxstylestrong{Running the Examples}
+
+\sphinxAtStartPar
+All query functions are available in \sphinxcode{\sphinxupquote{examples/dsl\_query\_zoo/queries.py}}.
+To run all queries and generate outputs:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{python} \PYG{n}{examples}\PYG{o}{/}\PYG{n}{dsl\PYGZus{}query\PYGZus{}zoo}\PYG{o}{/}\PYG{n}{run\PYGZus{}all}\PYG{o}{.}\PYG{n}{py}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Test the queries with:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{pytest} \PYG{n}{tests}\PYG{o}{/}\PYG{n}{test\PYGZus{}dsl\PYGZus{}query\PYGZus{}zoo}\PYG{o}{.}\PYG{n}{py}
+\end{sphinxVerbatim}
+\end{sphinxadmonition}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{1. Basic Multilayer Exploration}
+\label{\detokenize{how-to/query_zoo:basic-multilayer-exploration}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} You’ve loaded a multilayer network and want to quickly understand its structure. Which layers are densest? How many nodes and edges does each layer have?
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Compute basic statistics per layer using the DSL.
+
+
+\paragraph{Query Code}
+\label{\detokenize{how-to/query_zoo:query-code}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}basic\PYGZus{}exploration}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Summarize layers: node counts, edge counts, and average degree per layer.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    This query demonstrates basic multilayer exploration by computing}
+\PYG{l+s+sd}{    fundamental statistics for each layer independently. This is typically}
+\PYG{l+s+sd}{    the first step in multilayer analysis to understand the structure}
+\PYG{l+s+sd}{    and identify layers with different connectivity patterns.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
+\PYG{l+s+sd}{    \PYGZhy{} Reveals which layers are denser or sparser}
+\PYG{l+s+sd}{    \PYGZhy{} Identifies layers that might be hubs of activity}
+\PYG{l+s+sd}{    \PYGZhy{} Shows structural diversity across the multilayer network}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    DSL concepts demonstrated:}
+\PYG{l+s+sd}{    \PYGZhy{} SELECT nodes from specific layers}
+\PYG{l+s+sd}{    \PYGZhy{} Computing degree per layer}
+\PYG{l+s+sd}{    \PYGZhy{} Aggregation by layer}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Args:}
+\PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
+\PYG{l+s+sd}{        }
+\PYG{l+s+sd}{    Returns:}
+\PYG{l+s+sd}{        pd.DataFrame with columns: layer, n\PYGZus{}nodes, n\PYGZus{}edges, avg\PYGZus{}degree}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{c+c1}{\PYGZsh{} Get all unique layers in the network}
+    \PYG{n}{layers} \PYG{o}{=} \PYG{n}{\PYGZus{}get\PYGZus{}layer\PYGZus{}names}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    
+    \PYG{n}{results} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{layer\PYGZus{}name} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
+        \PYG{c+c1}{\PYGZsh{} Query nodes in this layer with degree computation}
+        \PYG{n}{layer\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+            \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+        \PYG{p}{)}
+        
+        \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{layer\PYGZus{}result}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+            \PYG{n}{df} \PYG{o}{=} \PYG{n}{layer\PYGZus{}result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+            \PYG{n}{n\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{df}\PYG{p}{)}
+            \PYG{n}{n\PYGZus{}edges} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)} \PYG{o}{/}\PYG{o}{/} \PYG{l+m+mi}{2}  \PYG{c+c1}{\PYGZsh{} Each edge counted twice}
+            \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
+            
+            \PYG{n}{results}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{\PYGZob{}}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{layer\PYGZus{}name}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{n\PYGZus{}nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{n\PYGZus{}nodes}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{n\PYGZus{}edges}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{n\PYGZus{}edges}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n+nb}{round}\PYG{p}{(}\PYG{n}{avg\PYGZus{}degree}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}
+            \PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{results}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Why It’s Interesting}
+\label{\detokenize{how-to/query_zoo:why-it-s-interesting}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{First step in any analysis} — Before diving into complex queries, understand your data
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Reveals layer diversity} — Different layers often have vastly different structures
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Identifies sparse vs dense layers} — Helps decide which layers need special handling
+
+\end{itemize}
+
+
+\paragraph{Example Output}
+\label{\detokenize{how-to/query_zoo:example-output}}
+\sphinxAtStartPar
+Running on the \sphinxcode{\sphinxupquote{social\_work\_network}} (12 people across social/work/family layers):
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{25}{85}\X{20}{85}\X{20}{85}\X{20}{85}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Layer
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Nodes
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Edges
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Avg Degree
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+social
+&
+\sphinxAtStartPar
+12
+&
+\sphinxAtStartPar
+11
+&
+\sphinxAtStartPar
+1.83
+\\
+\sphinxhline
+\sphinxAtStartPar
+work
+&
+\sphinxAtStartPar
+11
+&
+\sphinxAtStartPar
+9
+&
+\sphinxAtStartPar
+1.64
+\\
+\sphinxhline
+\sphinxAtStartPar
+family
+&
+\sphinxAtStartPar
+11
+&
+\sphinxAtStartPar
+6
+&
+\sphinxAtStartPar
+1.09
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=1.000\linewidth]{{basic_exploration_plot}.png}\hspace*{\fill}}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Interpretation:} The social layer is densest (highest average degree), while family is sparsest. All layers have similar numbers of nodes, indicating good cross\sphinxhyphen{}layer coverage.
+
+
+\paragraph{DSL Concepts Demonstrated}
+\label{\detokenize{how-to/query_zoo:dsl-concepts-demonstrated}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Q.nodes().from\_layers(L{[}name{]})}} — Select nodes from a specific layer
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.compute("degree")}} — Add computed attributes to results
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.execute(network)}} — Run the query and get results
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.to\_pandas()}} — Convert to DataFrame for analysis
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{2. Cross\sphinxhyphen{}Layer Hubs}
+\label{\detokenize{how-to/query_zoo:cross-layer-hubs}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Which nodes are consistently important across \sphinxstyleemphasis{multiple} layers? These “super hubs” are critical because they bridge different contexts.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Find top\sphinxhyphen{}k central nodes per layer, then identify which nodes appear in multiple layers’ top lists.
+
+
+\paragraph{Query Code}
+\label{\detokenize{how-to/query_zoo:id1}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}cross\PYGZus{}layer\PYGZus{}hubs}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Find nodes that are consistently central across multiple layers.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    This query identifies \PYGZdq{}super hubs\PYGZdq{} \PYGZhy{} nodes that maintain high centrality}
+\PYG{l+s+sd}{    across different layers. These nodes are particularly important because}
+\PYG{l+s+sd}{    they serve as connectors across different contexts or domains.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
+\PYG{l+s+sd}{    \PYGZhy{} Reveals nodes with consistent importance across contexts}
+\PYG{l+s+sd}{    \PYGZhy{} Useful for identifying key actors in multiplex social networks}
+\PYG{l+s+sd}{    \PYGZhy{} Helps understand cross\PYGZhy{}layer influence and information flow}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    DSL concepts demonstrated:}
+\PYG{l+s+sd}{    \PYGZhy{} Per\PYGZhy{}layer grouping and aggregation}
+\PYG{l+s+sd}{    \PYGZhy{} Computing betweenness centrality}
+\PYG{l+s+sd}{    \PYGZhy{} Ordering and filtering by computed metrics}
+\PYG{l+s+sd}{    \PYGZhy{} Coverage analysis (nodes appearing in multiple layers)}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Args:}
+\PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
+\PYG{l+s+sd}{        k: Number of top nodes to select per layer}
+\PYG{l+s+sd}{        }
+\PYG{l+s+sd}{    Returns:}
+\PYG{l+s+sd}{        pd.DataFrame with nodes and their centrality scores per layer}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{layers} \PYG{o}{=} \PYG{n}{\PYGZus{}get\PYGZus{}layer\PYGZus{}names}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} For each layer, get top\PYGZhy{}k nodes by betweenness centrality}
+    \PYG{n}{all\PYGZus{}results} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    
+    \PYG{k}{for} \PYG{n}{layer\PYGZus{}name} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
+        \PYG{n}{layer\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+            \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{n}{k}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+        \PYG{p}{)}
+        
+        \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{layer\PYGZus{}result}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+            \PYG{n}{df} \PYG{o}{=} \PYG{n}{layer\PYGZus{}result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+            \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{layer\PYGZus{}name}
+            \PYG{n}{all\PYGZus{}results}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{df}\PYG{p}{)}
+    
+    \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{all\PYGZus{}results}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Combine results and identify nodes appearing in multiple layers}
+    \PYG{n}{combined} \PYG{o}{=} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{concat}\PYG{p}{(}\PYG{n}{all\PYGZus{}results}\PYG{p}{,} \PYG{n}{ignore\PYGZus{}index}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Rename \PYGZsq{}id\PYGZsq{} column to \PYGZsq{}node\PYGZsq{} for clarity}
+    \PYG{n}{combined} \PYG{o}{=} \PYG{n}{combined}\PYG{o}{.}\PYG{n}{rename}\PYG{p}{(}\PYG{n}{columns}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Count how many layers each node appears in as a top\PYGZhy{}k hub}
+    \PYG{n}{coverage} \PYG{o}{=} \PYG{n}{combined}\PYG{o}{.}\PYG{n}{groupby}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{size}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{reset\PYGZus{}index}\PYG{p}{(}\PYG{n}{name}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer\PYGZus{}count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Merge with centrality data}
+    \PYG{n}{result} \PYG{o}{=} \PYG{n}{combined}\PYG{o}{.}\PYG{n}{merge}\PYG{p}{(}\PYG{n}{coverage}\PYG{p}{,} \PYG{n}{on}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Sort by coverage (number of layers) and then by betweenness}
+    \PYG{n}{result} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{sort\PYGZus{}values}\PYG{p}{(}
+        \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer\PYGZus{}count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}
+        \PYG{n}{ascending}\PYG{o}{=}\PYG{p}{[}\PYG{k+kc}{False}\PYG{p}{,} \PYG{k+kc}{False}\PYG{p}{]}
+    \PYG{p}{)}
+    
+    \PYG{k}{return} \PYG{n}{result}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer\PYGZus{}count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{]}
+\end{sphinxVerbatim}
+
+
+\paragraph{Why It’s Interesting}
+\label{\detokenize{how-to/query_zoo:id2}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Reveals cross\sphinxhyphen{}context influence} — Nodes central in one layer might be peripheral in another
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Identifies key connectors} — Nodes that appear in multiple layers’ top\sphinxhyphen{}k are especially important
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Robust hub detection} — More reliable than single\sphinxhyphen{}layer centrality
+
+\end{itemize}
+
+
+\paragraph{Example Output}
+\label{\detokenize{how-to/query_zoo:id3}}
+\sphinxAtStartPar
+Top cross\sphinxhyphen{}layer hubs (k=5):
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{20}{90}\X{20}{90}\X{15}{90}\X{20}{90}\X{15}{90}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Node
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Layer
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Degree
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Betweenness
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Layer Count
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+Bob
+&
+\sphinxAtStartPar
+social
+&
+\sphinxAtStartPar
+3
+&
+\sphinxAtStartPar
+0.0273
+&
+\sphinxAtStartPar
+3
+\\
+\sphinxhline
+\sphinxAtStartPar
+Bob
+&
+\sphinxAtStartPar
+work
+&
+\sphinxAtStartPar
+2
+&
+\sphinxAtStartPar
+0.0
+&
+\sphinxAtStartPar
+3
+\\
+\sphinxhline
+\sphinxAtStartPar
+Bob
+&
+\sphinxAtStartPar
+family
+&
+\sphinxAtStartPar
+1
+&
+\sphinxAtStartPar
+0.0
+&
+\sphinxAtStartPar
+3
+\\
+\sphinxhline
+\sphinxAtStartPar
+Alice
+&
+\sphinxAtStartPar
+work
+&
+\sphinxAtStartPar
+3
+&
+\sphinxAtStartPar
+0.0889
+&
+\sphinxAtStartPar
+2
+\\
+\sphinxhline
+\sphinxAtStartPar
+Charlie
+&
+\sphinxAtStartPar
+social
+&
+\sphinxAtStartPar
+3
+&
+\sphinxAtStartPar
+0.0273
+&
+\sphinxAtStartPar
+2
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Interpretation:} Bob appears as a top\sphinxhyphen{}5 hub in \sphinxstyleemphasis{all three layers} (layer\_count=3), making him the most versatile connector. Alice and Charlie are hubs in two layers each.
+
+
+\paragraph{DSL Concepts Demonstrated}
+\label{\detokenize{how-to/query_zoo:id4}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.compute("betweenness\_centrality", "degree")}} — Compute multiple metrics at once
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.order\_by("\sphinxhyphen{}betweenness\_centrality")}} — Sort descending (\sphinxcode{\sphinxupquote{\sphinxhyphen{}}} prefix)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.limit(k)}} — Take top\sphinxhyphen{}k results
+
+\item {} 
+\sphinxAtStartPar
+Per\sphinxhyphen{}layer iteration and aggregation across layers
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{3. Layer Similarity}
+\label{\detokenize{how-to/query_zoo:layer-similarity}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} How similar are different layers structurally? Do they serve redundant or complementary roles?
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Compute degree distributions per layer and measure pairwise correlations.
+
+
+\paragraph{Query Code}
+\label{\detokenize{how-to/query_zoo:id5}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}layer\PYGZus{}similarity}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Compute structural similarity between layers based on degree distributions.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    This query measures how similar different layers are in terms of their}
+\PYG{l+s+sd}{    connectivity patterns. Layers with similar degree distributions likely}
+\PYG{l+s+sd}{    serve similar structural roles in the multilayer network.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
+\PYG{l+s+sd}{    \PYGZhy{} Identifies redundant or complementary layers}
+\PYG{l+s+sd}{    \PYGZhy{} Helps understand layer specialization}
+\PYG{l+s+sd}{    \PYGZhy{} Can inform layer aggregation or simplification decisions}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    DSL concepts demonstrated:}
+\PYG{l+s+sd}{    \PYGZhy{} Computing statistics per layer}
+\PYG{l+s+sd}{    \PYGZhy{} Aggregation and comparison across layers}
+\PYG{l+s+sd}{    \PYGZhy{} Using computed metrics for layer\PYGZhy{}level analysis}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Args:}
+\PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
+\PYG{l+s+sd}{        }
+\PYG{l+s+sd}{    Returns:}
+\PYG{l+s+sd}{        pd.DataFrame: Pairwise correlation matrix of layer degree distributions}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{layers} \PYG{o}{=} \PYG{n}{\PYGZus{}get\PYGZus{}layer\PYGZus{}names}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Get degree distribution for each layer}
+    \PYG{n}{layer\PYGZus{}degrees} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}
+    
+    \PYG{k}{for} \PYG{n}{layer\PYGZus{}name} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
+        \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+            \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+        \PYG{p}{)}
+        
+        \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+            \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+            \PYG{c+c1}{\PYGZsh{} Store as dict: node \PYGZhy{}\PYGZgt{} degree}
+            \PYG{n}{layer\PYGZus{}degrees}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]} \PYG{o}{=} \PYG{n+nb}{dict}\PYG{p}{(}\PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{)}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Compute correlation between layers}
+    \PYG{c+c1}{\PYGZsh{} Get union of all nodes}
+    \PYG{n}{all\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{degrees} \PYG{o+ow}{in} \PYG{n}{layer\PYGZus{}degrees}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{all\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{update}\PYG{p}{(}\PYG{n}{degrees}\PYG{o}{.}\PYG{n}{keys}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{all\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{all\PYGZus{}nodes}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Build degree matrix: layers x nodes}
+    \PYG{n}{degree\PYGZus{}matrix} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{layer\PYGZus{}name} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n}{layer\PYGZus{}name} \PYG{o+ow}{in} \PYG{n}{layer\PYGZus{}degrees}\PYG{p}{:}
+            \PYG{n}{degrees} \PYG{o}{=} \PYG{p}{[}\PYG{n}{layer\PYGZus{}degrees}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{all\PYGZus{}nodes}\PYG{p}{]}
+            \PYG{n}{degree\PYGZus{}matrix}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{degrees}\PYG{p}{)}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n}{degree\PYGZus{}matrix}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{*} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{all\PYGZus{}nodes}\PYG{p}{)}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Compute correlation matrix}
+    \PYG{n}{degree\PYGZus{}matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{degree\PYGZus{}matrix}\PYG{p}{)}
+    \PYG{n}{correlation} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{corrcoef}\PYG{p}{(}\PYG{n}{degree\PYGZus{}matrix}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Convert to DataFrame for readability}
+    \PYG{n}{corr\PYGZus{}df} \PYG{o}{=} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}
+        \PYG{n}{correlation}\PYG{p}{,}
+        \PYG{n}{index}\PYG{o}{=}\PYG{n}{layers}\PYG{p}{,}
+        \PYG{n}{columns}\PYG{o}{=}\PYG{n}{layers}
+    \PYG{p}{)}
+    
+    \PYG{k}{return} \PYG{n}{corr\PYGZus{}df}\PYG{o}{.}\PYG{n}{round}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Why It’s Interesting}
+\label{\detokenize{how-to/query_zoo:id6}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Detects redundancy} — High correlation suggests layers capture similar structure
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Guides simplification} — Nearly identical layers might be merged
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Reveals specialization} — Low/negative correlation shows layers serve different roles
+
+\end{itemize}
+
+
+\paragraph{Example Output}
+\label{\detokenize{how-to/query_zoo:id7}}
+\sphinxAtStartPar
+Correlation matrix for \sphinxcode{\sphinxupquote{social\_work\_network}}:
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=0.800\linewidth]{{layer_similarity_heatmap}.png}\hspace*{\fill}}
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{25}{100}\X{25}{100}\X{25}{100}\X{25}{100}}
+\sphinxtoprule
+\sphinxstyletheadfamily &\sphinxstyletheadfamily 
+\sphinxAtStartPar
+social
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+work
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+family
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+social
+&
+\sphinxAtStartPar
+1.000
+&
+\sphinxAtStartPar
+0.159
+&
+\sphinxAtStartPar
+0.000
+\\
+\sphinxhline
+\sphinxAtStartPar
+work
+&
+\sphinxAtStartPar
+0.159
+&
+\sphinxAtStartPar
+1.000
+&
+\sphinxAtStartPar
+\sphinxhyphen{}0.267
+\\
+\sphinxhline
+\sphinxAtStartPar
+family
+&
+\sphinxAtStartPar
+0.000
+&
+\sphinxAtStartPar
+\sphinxhyphen{}0.267
+&
+\sphinxAtStartPar
+1.000
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Interpretation:} Social and work layers have weak positive correlation (0.159), suggesting some structural overlap. Family and work are \sphinxstyleemphasis{negatively} correlated (\sphinxhyphen{}0.267), indicating they capture different connectivity patterns.
+
+
+\paragraph{DSL Concepts Demonstrated}
+\label{\detokenize{how-to/query_zoo:id8}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Layer\sphinxhyphen{}by\sphinxhyphen{}layer degree computation
+
+\item {} 
+\sphinxAtStartPar
+Aggregating results across layers for meta\sphinxhyphen{}analysis
+
+\item {} 
+\sphinxAtStartPar
+Using computed attributes for layer\sphinxhyphen{}level comparisons
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{4. Community Structure}
+\label{\detokenize{how-to/query_zoo:community-structure}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} What communities exist in the multilayer network? How do they manifest across layers?
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Detect communities using multilayer community detection, then analyze their distribution across layers.
+
+
+\paragraph{Query Code}
+\label{\detokenize{how-to/query_zoo:id9}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}community\PYGZus{}structure}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Detect communities and analyze their distribution across layers.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    This query finds communities in the multilayer network and examines}
+\PYG{l+s+sd}{    how they manifest across different layers. Some communities might be}
+\PYG{l+s+sd}{    tightly connected in one layer but dispersed in others.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
+\PYG{l+s+sd}{    \PYGZhy{} Reveals mesoscale structure in multilayer networks}
+\PYG{l+s+sd}{    \PYGZhy{} Shows how communities span or specialize across layers}
+\PYG{l+s+sd}{    \PYGZhy{} Useful for understanding multi\PYGZhy{}context group formation}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    DSL concepts demonstrated:}
+\PYG{l+s+sd}{    \PYGZhy{} Community detection via DSL}
+\PYG{l+s+sd}{    \PYGZhy{} Grouping by community and layer}
+\PYG{l+s+sd}{    \PYGZhy{} Aggregation and counting}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Args:}
+\PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
+\PYG{l+s+sd}{        }
+\PYG{l+s+sd}{    Returns:}
+\PYG{l+s+sd}{        pd.DataFrame with community info: community\PYGZus{}id, layer, size, dominant\PYGZus{}layer}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{c+c1}{\PYGZsh{} Compute communities across all layers}
+    \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{*}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} All layers}
+         \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{communities}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{p}{)}
+    
+    \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Rename \PYGZsq{}id\PYGZsq{} column to \PYGZsq{}node\PYGZsq{} for clarity}
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{rename}\PYG{p}{(}\PYG{n}{columns}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Analyze community distribution across layers}
+    \PYG{n}{community\PYGZus{}stats} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{groupby}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{communities}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{)}\PYG{o}{.}\PYG{n}{agg}\PYG{p}{(}\PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{mean}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{reset\PYGZus{}index}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{n}{community\PYGZus{}stats}\PYG{o}{.}\PYG{n}{columns} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{size}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+    
+    \PYG{c+c1}{\PYGZsh{} Find dominant layer for each community (layer with most nodes)}
+    \PYG{n}{dominant} \PYG{o}{=} \PYG{n}{community\PYGZus{}stats}\PYG{o}{.}\PYG{n}{loc}\PYG{p}{[}
+        \PYG{n}{community\PYGZus{}stats}\PYG{o}{.}\PYG{n}{groupby}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{size}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{idxmax}\PYG{p}{(}\PYG{p}{)}
+    \PYG{p}{]}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{]}\PYG{o}{.}\PYG{n}{rename}\PYG{p}{(}\PYG{n}{columns}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dominant\PYGZus{}layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Merge dominant layer info}
+    \PYG{n}{result\PYGZus{}df} \PYG{o}{=} \PYG{n}{community\PYGZus{}stats}\PYG{o}{.}\PYG{n}{merge}\PYG{p}{(}\PYG{n}{dominant}\PYG{p}{,} \PYG{n}{on}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Sort by community size}
+    \PYG{n}{result\PYGZus{}df} \PYG{o}{=} \PYG{n}{result\PYGZus{}df}\PYG{o}{.}\PYG{n}{sort\PYGZus{}values}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{size}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{ascending}\PYG{o}{=}\PYG{p}{[}\PYG{k+kc}{True}\PYG{p}{,} \PYG{k+kc}{False}\PYG{p}{]}\PYG{p}{)}
+    
+    \PYG{k}{return} \PYG{n}{result\PYGZus{}df}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{size}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dominant\PYGZus{}layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{]}
+\end{sphinxVerbatim}
+
+
+\paragraph{Why It’s Interesting}
+\label{\detokenize{how-to/query_zoo:id10}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Mesoscale structure} — Communities reveal organizational patterns
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Cross\sphinxhyphen{}layer community tracking} — See if communities are layer\sphinxhyphen{}specific or global
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Dominant layers} — Identify which layer best represents each community
+
+\end{itemize}
+
+
+\paragraph{Example Output}
+\label{\detokenize{how-to/query_zoo:id11}}
+\sphinxAtStartPar
+Running on \sphinxcode{\sphinxupquote{communication\_network}} (email/chat/phone layers):
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{15}{90}\X{15}{90}\X{15}{90}\X{20}{90}\X{25}{90}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Community
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Layer
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Size
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Avg Degree
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Dominant Layer
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+0
+&
+\sphinxAtStartPar
+email
+&
+\sphinxAtStartPar
+10
+&
+\sphinxAtStartPar
+1.8
+&
+\sphinxAtStartPar
+email
+\\
+\sphinxhline
+\sphinxAtStartPar
+1
+&
+\sphinxAtStartPar
+chat
+&
+\sphinxAtStartPar
+6
+&
+\sphinxAtStartPar
+2.17
+&
+\sphinxAtStartPar
+chat
+\\
+\sphinxhline
+\sphinxAtStartPar
+2
+&
+\sphinxAtStartPar
+chat
+&
+\sphinxAtStartPar
+3
+&
+\sphinxAtStartPar
+1.67
+&
+\sphinxAtStartPar
+chat
+\\
+\sphinxhline
+\sphinxAtStartPar
+3
+&
+\sphinxAtStartPar
+phone
+&
+\sphinxAtStartPar
+7
+&
+\sphinxAtStartPar
+1.71
+&
+\sphinxAtStartPar
+phone
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Interpretation:} Community 0 is email\sphinxhyphen{}dominated (10 nodes), while communities 1 and 2 are chat\sphinxhyphen{}specific. Community 3 appears primarily in phone communication.
+
+
+\paragraph{DSL Concepts Demonstrated}
+\label{\detokenize{how-to/query_zoo:id12}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Q.nodes().from\_layers(L{[}"*"{]})}} — Select from all layers
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.compute("communities")}} — Built\sphinxhyphen{}in community detection
+
+\item {} 
+\sphinxAtStartPar
+Grouping by \sphinxcode{\sphinxupquote{(community\_id, layer)}} for analysis
+
+\item {} 
+\sphinxAtStartPar
+Identifying dominant layers via aggregation
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{5. Multiplex PageRank}
+\label{\detokenize{how-to/query_zoo:multiplex-pagerank}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Standard PageRank treats each layer independently. How do we compute importance considering the full multiplex structure?
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Compute PageRank per layer, then aggregate across layers. (Note: This is a simplified version; true multiplex PageRank uses supra\sphinxhyphen{}adjacency matrices.)
+
+
+\paragraph{Query Code}
+\label{\detokenize{how-to/query_zoo:id13}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}multiplex\PYGZus{}pagerank}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Compute multiplex PageRank to identify important nodes considering all layers.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    This query uses a multilayer\PYGZhy{}aware centrality measure that accounts for}
+\PYG{l+s+sd}{    the full structure of the multiplex network, not just individual layers.}
+\PYG{l+s+sd}{    Multiplex PageRank captures node importance while considering cross\PYGZhy{}layer}
+\PYG{l+s+sd}{    connections and influence.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
+\PYG{l+s+sd}{    \PYGZhy{} Standard PageRank doesn\PYGZsq{}t account for multilayer structure}
+\PYG{l+s+sd}{    \PYGZhy{} Reveals nodes that are important across the entire multiplex}
+\PYG{l+s+sd}{    \PYGZhy{} More accurate than averaging single\PYGZhy{}layer centralities}
+\PYG{l+s+sd}{    \PYGZhy{} Essential for multiplex influence analysis}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    DSL concepts demonstrated:}
+\PYG{l+s+sd}{    \PYGZhy{} Computing advanced centrality measures}
+\PYG{l+s+sd}{    \PYGZhy{} Working with all layers simultaneously}
+\PYG{l+s+sd}{    \PYGZhy{} Ranking nodes by multilayer importance}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Args:}
+\PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
+\PYG{l+s+sd}{        }
+\PYG{l+s+sd}{    Returns:}
+\PYG{l+s+sd}{        pd.DataFrame with nodes ranked by multiplex PageRank scores}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{c+c1}{\PYGZsh{} First, compute regular PageRank per layer for comparison}
+    \PYG{n}{layers} \PYG{o}{=} \PYG{n}{\PYGZus{}get\PYGZus{}layer\PYGZus{}names}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    
+    \PYG{n}{pagerank\PYGZus{}by\PYGZus{}layer} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    
+    \PYG{k}{for} \PYG{n}{layer\PYGZus{}name} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
+        \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+            \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+        \PYG{p}{)}
+        
+        \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+            \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+            \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{layer\PYGZus{}name}
+            \PYG{n}{pagerank\PYGZus{}by\PYGZus{}layer}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{df}\PYG{p}{)}
+    
+    \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{pagerank\PYGZus{}by\PYGZus{}layer}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Combine results}
+    \PYG{n}{combined} \PYG{o}{=} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{concat}\PYG{p}{(}\PYG{n}{pagerank\PYGZus{}by\PYGZus{}layer}\PYG{p}{,} \PYG{n}{ignore\PYGZus{}index}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Rename \PYGZsq{}id\PYGZsq{} column to \PYGZsq{}node\PYGZsq{} for clarity}
+    \PYG{n}{combined} \PYG{o}{=} \PYG{n}{combined}\PYG{o}{.}\PYG{n}{rename}\PYG{p}{(}\PYG{n}{columns}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Compute aggregate multiplex PageRank (simple approach: average across layers)}
+    \PYG{c+c1}{\PYGZsh{} Note: This is a simplified version. True multiplex PageRank requires}
+    \PYG{c+c1}{\PYGZsh{} supra\PYGZhy{}adjacency matrix computation, but this demonstrates the concept.}
+    \PYG{n}{multiplex\PYGZus{}pr} \PYG{o}{=} \PYG{n}{combined}\PYG{o}{.}\PYG{n}{groupby}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{agg}\PYG{p}{(}\PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{pagerank}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{mean}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} Average across layers}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sum}\PYG{l+s+s1}{\PYGZsq{}}      \PYG{c+c1}{\PYGZsh{} Total degree across layers}
+    \PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{reset\PYGZus{}index}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{n}{multiplex\PYGZus{}pr}\PYG{o}{.}\PYG{n}{columns} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{multiplex\PYGZus{}pagerank}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{total\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+    
+    \PYG{c+c1}{\PYGZsh{} Sort by multiplex PageRank}
+    \PYG{n}{multiplex\PYGZus{}pr} \PYG{o}{=} \PYG{n}{multiplex\PYGZus{}pr}\PYG{o}{.}\PYG{n}{sort\PYGZus{}values}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{multiplex\PYGZus{}pagerank}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{ascending}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Add layer\PYGZhy{}specific details}
+    \PYG{n}{layer\PYGZus{}details} \PYG{o}{=} \PYG{n}{combined}\PYG{o}{.}\PYG{n}{pivot\PYGZus{}table}\PYG{p}{(}
+        \PYG{n}{index}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+        \PYG{n}{columns}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+        \PYG{n}{values}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{pagerank}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+        \PYG{n}{fill\PYGZus{}value}\PYG{o}{=}\PYG{l+m+mi}{0}
+    \PYG{p}{)}\PYG{o}{.}\PYG{n}{round}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{)}
+    
+    \PYG{n}{result} \PYG{o}{=} \PYG{n}{multiplex\PYGZus{}pr}\PYG{o}{.}\PYG{n}{merge}\PYG{p}{(}\PYG{n}{layer\PYGZus{}details}\PYG{p}{,} \PYG{n}{left\PYGZus{}on}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{right\PYGZus{}index}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{how}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{left}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+    
+    \PYG{k}{return} \PYG{n}{result}\PYG{o}{.}\PYG{n}{round}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Why It’s Interesting}
+\label{\detokenize{how-to/query_zoo:id14}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Multilayer\sphinxhyphen{}aware centrality} — Accounts for importance across all layers
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{More robust than single\sphinxhyphen{}layer} — Averages out layer\sphinxhyphen{}specific biases
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Essential for multiplex influence} — Key for viral marketing, information diffusion
+
+\end{itemize}
+
+
+\paragraph{Example Output}
+\label{\detokenize{how-to/query_zoo:id15}}
+\sphinxAtStartPar
+Top nodes by multiplex PageRank in \sphinxcode{\sphinxupquote{transport\_network}}:
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{25}{100}\X{15}{100}\X{15}{100}\X{15}{100}\X{15}{100}\X{15}{100}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Node
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Multiplex PR
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Total Degree
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Bus PR
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Metro PR
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Walking PR
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+ShoppingMall
+&
+\sphinxAtStartPar
+0.1811
+&
+\sphinxAtStartPar
+6
+&
+\sphinxAtStartPar
+0.1362
+&
+\sphinxAtStartPar
+0.1909
+&
+\sphinxAtStartPar
+0.2164
+\\
+\sphinxhline
+\sphinxAtStartPar
+Park
+&
+\sphinxAtStartPar
+0.1806
+&
+\sphinxAtStartPar
+4
+&
+\sphinxAtStartPar
+0.1449
+&
+\sphinxAtStartPar
+0.0
+&
+\sphinxAtStartPar
+0.2164
+\\
+\sphinxhline
+\sphinxAtStartPar
+CentralStation
+&
+\sphinxAtStartPar
+0.1683
+&
+\sphinxAtStartPar
+6
+&
+\sphinxAtStartPar
+0.1971
+&
+\sphinxAtStartPar
+0.1909
+&
+\sphinxAtStartPar
+0.117
+\\
+\sphinxhline
+\sphinxAtStartPar
+BusinessDistrict
+&
+\sphinxAtStartPar
+0.1484
+&
+\sphinxAtStartPar
+4
+&
+\sphinxAtStartPar
+0.079
+&
+\sphinxAtStartPar
+0.1994
+&
+\sphinxAtStartPar
+0.1667
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Interpretation:} ShoppingMall has highest multiplex PageRank (0.1811) because it’s central across all three transport modes. Park has high walking PageRank but zero metro, reflecting its limited accessibility.
+
+
+\paragraph{DSL Concepts Demonstrated}
+\label{\detokenize{how-to/query_zoo:id16}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.compute("pagerank")}} — Built\sphinxhyphen{}in PageRank computation
+
+\item {} 
+\sphinxAtStartPar
+Per\sphinxhyphen{}layer iteration with result aggregation
+
+\item {} 
+\sphinxAtStartPar
+Pivot tables for layer\sphinxhyphen{}wise breakdowns
+
+\item {} 
+\sphinxAtStartPar
+Combining degree and PageRank for richer analysis
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{6. Robustness Analysis}
+\label{\detokenize{how-to/query_zoo:robustness-analysis}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} How robust is the network to layer failures? What happens if one layer goes offline?
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Simulate removing each layer and measure connectivity loss.
+
+
+\paragraph{Query Code}
+\label{\detokenize{how-to/query_zoo:id17}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}robustness\PYGZus{}analysis}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Analyze network robustness: impact of removing one layer at a time.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    This query demonstrates robustness analysis by simulating layer failure.}
+\PYG{l+s+sd}{    For each layer, we measure how connectivity changes if that layer is removed.}
+\PYG{l+s+sd}{    This reveals which layers are critical for network cohesion.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
+\PYG{l+s+sd}{    \PYGZhy{} Identifies critical infrastructure layers}
+\PYG{l+s+sd}{    \PYGZhy{} Measures redundancy in multilayer systems}
+\PYG{l+s+sd}{    \PYGZhy{} Informs resilience strategies and backup planning}
+\PYG{l+s+sd}{    \PYGZhy{} Essential for analyzing cascading failures}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    DSL concepts demonstrated:}
+\PYG{l+s+sd}{    \PYGZhy{} Layer selection and filtering}
+\PYG{l+s+sd}{    \PYGZhy{} Computing connectivity metrics}
+\PYG{l+s+sd}{    \PYGZhy{} Comparing network states (with/without layers)}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Args:}
+\PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
+\PYG{l+s+sd}{        }
+\PYG{l+s+sd}{    Returns:}
+\PYG{l+s+sd}{        pd.DataFrame comparing connectivity with each layer removed}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{layers} \PYG{o}{=} \PYG{n}{\PYGZus{}get\PYGZus{}layer\PYGZus{}names}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Baseline: connectivity with all layers}
+    \PYG{n}{baseline\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{*}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{p}{)}
+    
+    \PYG{n}{baseline\PYGZus{}df} \PYG{o}{=} \PYG{n}{baseline\PYGZus{}result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{baseline\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{baseline\PYGZus{}df}\PYG{p}{)}
+    \PYG{n}{baseline\PYGZus{}avg\PYGZus{}degree} \PYG{o}{=} \PYG{n}{baseline\PYGZus{}df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{baseline\PYGZus{}total\PYGZus{}degree} \PYG{o}{=} \PYG{n}{baseline\PYGZus{}df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{n}{results} \PYG{o}{=} \PYG{p}{[}\PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{scenario}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{baseline (all layers)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{n\PYGZus{}nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{baseline\PYGZus{}nodes}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n+nb}{round}\PYG{p}{(}\PYG{n}{baseline\PYGZus{}avg\PYGZus{}degree}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{total\PYGZus{}edges}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{baseline\PYGZus{}total\PYGZus{}degree} \PYG{o}{/}\PYG{o}{/} \PYG{l+m+mi}{2}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{connectivity\PYGZus{}loss}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.0}
+    \PYG{p}{\PYGZcb{}}\PYG{p}{]}
+    
+    \PYG{c+c1}{\PYGZsh{} Test removing each layer}
+    \PYG{k}{for} \PYG{n}{layer\PYGZus{}to\PYGZus{}remove} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
+        \PYG{c+c1}{\PYGZsh{} Get remaining layers}
+        \PYG{n}{remaining\PYGZus{}layers} \PYG{o}{=} \PYG{p}{[}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer}\PYG{p}{]} \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{layers} \PYG{k}{if} \PYG{n}{layer} \PYG{o}{!=} \PYG{n}{layer\PYGZus{}to\PYGZus{}remove}\PYG{p}{]}
+        
+        \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{remaining\PYGZus{}layers}\PYG{p}{:}
+            \PYG{k}{continue}
+        
+        \PYG{c+c1}{\PYGZsh{} Combine remaining layers}
+        \PYG{n}{layer\PYGZus{}expr} \PYG{o}{=} \PYG{n}{remaining\PYGZus{}layers}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+        \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{remaining\PYGZus{}layers}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{p}{]}\PYG{p}{:}
+            \PYG{n}{layer\PYGZus{}expr} \PYG{o}{=} \PYG{n}{layer\PYGZus{}expr} \PYG{o}{+} \PYG{n}{layer}
+        
+        \PYG{c+c1}{\PYGZsh{} Query with reduced layer set}
+        \PYG{n}{reduced\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+            \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{layer\PYGZus{}expr}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+             \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+        \PYG{p}{)}
+        
+        \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{reduced\PYGZus{}result}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+            \PYG{n}{reduced\PYGZus{}df} \PYG{o}{=} \PYG{n}{reduced\PYGZus{}result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+            \PYG{n}{n\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{reduced\PYGZus{}df}\PYG{p}{)}
+            \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{n}{reduced\PYGZus{}df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
+            \PYG{n}{total\PYGZus{}degree} \PYG{o}{=} \PYG{n}{reduced\PYGZus{}df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
+            
+            \PYG{c+c1}{\PYGZsh{} Calculate connectivity loss}
+            \PYG{n}{connectivity\PYGZus{}loss} \PYG{o}{=} \PYG{p}{(}\PYG{n}{baseline\PYGZus{}total\PYGZus{}degree} \PYG{o}{\PYGZhy{}} \PYG{n}{total\PYGZus{}degree}\PYG{p}{)} \PYG{o}{/} \PYG{n}{baseline\PYGZus{}total\PYGZus{}degree} \PYG{o}{*} \PYG{l+m+mi}{100}
+            
+            \PYG{n}{results}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{\PYGZob{}}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{scenario}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{without }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}to\PYGZus{}remove}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{n\PYGZus{}nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{n\PYGZus{}nodes}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n+nb}{round}\PYG{p}{(}\PYG{n}{avg\PYGZus{}degree}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{total\PYGZus{}edges}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{total\PYGZus{}degree} \PYG{o}{/}\PYG{o}{/} \PYG{l+m+mi}{2}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{connectivity\PYGZus{}loss}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n+nb}{round}\PYG{p}{(}\PYG{n}{connectivity\PYGZus{}loss}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}
+            \PYG{p}{\PYGZcb{}}\PYG{p}{)}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n}{results}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{\PYGZob{}}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{scenario}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{without }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}to\PYGZus{}remove}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{n\PYGZus{}nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.0}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{total\PYGZus{}edges}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
+                \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{connectivity\PYGZus{}loss}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{100.0}
+            \PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{results}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Why It’s Interesting}
+\label{\detokenize{how-to/query_zoo:id18}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Critical infrastructure identification} — Reveals which layers are essential
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Redundancy assessment} — High robustness indicates good backup coverage
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Failure planning} — Informs which layers need extra protection
+
+\end{itemize}
+
+
+\paragraph{Example Output}
+\label{\detokenize{how-to/query_zoo:id19}}
+\sphinxAtStartPar
+Robustness of \sphinxcode{\sphinxupquote{transport\_network}}:
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=0.900\linewidth]{{robustness_analysis_plot}.png}\hspace*{\fill}}
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{30}{95}\X{15}{95}\X{15}{95}\X{15}{95}\X{20}{95}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Scenario
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Nodes
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Avg Degree
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Total Edges
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Connectivity Loss (\%)
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+baseline (all layers)
+&
+\sphinxAtStartPar
+14
+&
+\sphinxAtStartPar
+2.14
+&
+\sphinxAtStartPar
+15
+&
+\sphinxAtStartPar
+0.0
+\\
+\sphinxhline
+\sphinxAtStartPar
+without bus
+&
+\sphinxAtStartPar
+11
+&
+\sphinxAtStartPar
+1.45
+&
+\sphinxAtStartPar
+8
+&
+\sphinxAtStartPar
+46.67
+\\
+\sphinxhline
+\sphinxAtStartPar
+without metro
+&
+\sphinxAtStartPar
+11
+&
+\sphinxAtStartPar
+1.82
+&
+\sphinxAtStartPar
+10
+&
+\sphinxAtStartPar
+33.33
+\\
+\sphinxhline
+\sphinxAtStartPar
+without walking
+&
+\sphinxAtStartPar
+14
+&
+\sphinxAtStartPar
+2.0
+&
+\sphinxAtStartPar
+14
+&
+\sphinxAtStartPar
+6.67
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Interpretation:} Removing the bus layer causes 46.67\% connectivity loss — it’s the most critical layer. Walking is least critical (only 6.67\% loss), indicating good redundancy from other transport modes.
+
+
+\paragraph{DSL Concepts Demonstrated}
+\label{\detokenize{how-to/query_zoo:id20}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Layer algebra: \sphinxcode{\sphinxupquote{L{[}"layer1"{]} + L{[}"layer2"{]}}} — Combine layers
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Q.nodes().from\_layers(layer\_expr)}} — Query with dynamic layer selections
+
+\item {} 
+\sphinxAtStartPar
+Baseline vs scenario comparison
+
+\item {} 
+\sphinxAtStartPar
+Measuring connectivity metrics before/after perturbations
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{7. Advanced Centrality Comparison}
+\label{\detokenize{how-to/query_zoo:advanced-centrality-comparison}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Different centralities capture different notions of importance. Which nodes are “versatile hubs” (high in many centralities) vs “specialized hubs” (high in only one)?
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Compute multiple centralities, normalize them, and classify nodes by how many centralities place them in the top tier.
+
+
+\paragraph{Query Code}
+\label{\detokenize{how-to/query_zoo:id21}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}advanced\PYGZus{}centrality\PYGZus{}comparison}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Compare multiple centrality measures to identify versatile vs specialized hubs.}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    This query computes several centrality measures (degree, betweenness, closeness,}
+\PYG{l+s+sd}{    PageRank) and identifies nodes that rank high in multiple measures (\PYGZdq{}versatile hubs\PYGZdq{})}
+\PYG{l+s+sd}{    versus those that excel in only one measure (\PYGZdq{}specialized hubs\PYGZdq{}).}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
+\PYG{l+s+sd}{    \PYGZhy{} Different centralities capture different notions of importance}
+\PYG{l+s+sd}{    \PYGZhy{} Versatile hubs are robust across different centrality definitions}
+\PYG{l+s+sd}{    \PYGZhy{} Specialized hubs reveal specific structural roles}
+\PYG{l+s+sd}{    \PYGZhy{} Essential for comprehensive node importance analysis}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    DSL concepts demonstrated:}
+\PYG{l+s+sd}{    \PYGZhy{} Computing multiple centrality measures in one query}
+\PYG{l+s+sd}{    \PYGZhy{} Ranking and comparing across metrics}
+\PYG{l+s+sd}{    \PYGZhy{} Using computed attributes for classification}
+\PYG{l+s+sd}{    }
+\PYG{l+s+sd}{    Args:}
+\PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
+\PYG{l+s+sd}{        }
+\PYG{l+s+sd}{    Returns:}
+\PYG{l+s+sd}{        pd.DataFrame with nodes and their centrality scores, plus a \PYGZdq{}versatility\PYGZdq{} metric}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{c+c1}{\PYGZsh{} Select a representative layer (or aggregate across all layers)}
+    \PYG{n}{layers} \PYG{o}{=} \PYG{n}{\PYGZus{}get\PYGZus{}layer\PYGZus{}names}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{layers}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Use first layer for demonstration}
+    \PYG{n}{layer\PYGZus{}name} \PYG{o}{=} \PYG{n}{layers}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+    
+    \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{closeness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{p}{)}
+    
+    \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Rename \PYGZsq{}id\PYGZsq{} column to \PYGZsq{}node\PYGZsq{} for clarity}
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{rename}\PYG{p}{(}\PYG{n}{columns}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Normalize each centrality to [0, 1] for comparison}
+    \PYG{k}{for} \PYG{n}{col} \PYG{o+ow}{in} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{closeness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{pagerank}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n}{col} \PYG{o+ow}{in} \PYG{n}{df}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{:}
+            \PYG{n}{max\PYGZus{}val} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{n}{col}\PYG{p}{]}\PYG{o}{.}\PYG{n}{max}\PYG{p}{(}\PYG{p}{)}
+            \PYG{k}{if} \PYG{n}{max\PYGZus{}val} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+                \PYG{n}{df}\PYG{p}{[}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{col}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZus{}norm}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{n}{col}\PYG{p}{]} \PYG{o}{/} \PYG{n}{max\PYGZus{}val}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{df}\PYG{p}{[}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{col}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZus{}norm}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}
+    
+    \PYG{c+c1}{\PYGZsh{} Compute \PYGZdq{}versatility\PYGZdq{} \PYGZhy{} how many centralities place node in top 30\PYGZpc{}}
+    \PYG{n}{norm\PYGZus{}cols} \PYG{o}{=} \PYG{p}{[}\PYG{n}{c} \PYG{k}{for} \PYG{n}{c} \PYG{o+ow}{in} \PYG{n}{df}\PYG{o}{.}\PYG{n}{columns} \PYG{k}{if} \PYG{n}{c}\PYG{o}{.}\PYG{n}{endswith}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{\PYGZus{}norm}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{]}
+    
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{count\PYGZus{}top\PYGZus{}ranks}\PYG{p}{(}\PYG{n}{row}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{count} \PYG{o}{=} \PYG{l+m+mi}{0}
+        \PYG{k}{for} \PYG{n}{col} \PYG{o+ow}{in} \PYG{n}{norm\PYGZus{}cols}\PYG{p}{:}
+            \PYG{k}{if} \PYG{n}{row}\PYG{p}{[}\PYG{n}{col}\PYG{p}{]} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mf}{0.7}\PYG{p}{:}  \PYG{c+c1}{\PYGZsh{} Top 30\PYGZpc{} threshold}
+                \PYG{n}{count} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+        \PYG{k}{return} \PYG{n}{count}
+    
+    \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{apply}\PYG{p}{(}\PYG{n}{count\PYGZus{}top\PYGZus{}ranks}\PYG{p}{,} \PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Classify nodes}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{classify\PYGZus{}hub}\PYG{p}{(}\PYG{n}{row}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mi}{3}\PYG{p}{:}
+            \PYG{k}{return} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatile\PYGZus{}hub}\PYG{l+s+s1}{\PYGZsq{}}
+        \PYG{k}{elif} \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{:}
+            \PYG{k}{return} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{specialized\PYGZus{}hub}\PYG{l+s+s1}{\PYGZsq{}}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{k}{return} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{peripheral}\PYG{l+s+s1}{\PYGZsq{}}
+    
+    \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{hub\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{apply}\PYG{p}{(}\PYG{n}{classify\PYGZus{}hub}\PYG{p}{,} \PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Sort by versatility and then by average normalized centrality}
+    \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{n}{norm\PYGZus{}cols}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{sort\PYGZus{}values}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{ascending}\PYG{o}{=}\PYG{p}{[}\PYG{k+kc}{False}\PYG{p}{,} \PYG{k+kc}{False}\PYG{p}{]}\PYG{p}{)}
+    
+    \PYG{c+c1}{\PYGZsh{} Select columns for output}
+    \PYG{n}{output\PYGZus{}cols} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{closeness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} 
+                   \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{pagerank}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{hub\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+    
+    \PYG{k}{return} \PYG{n}{df}\PYG{p}{[}\PYG{n}{output\PYGZus{}cols}\PYG{p}{]}\PYG{o}{.}\PYG{n}{round}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Why It’s Interesting}
+\label{\detokenize{how-to/query_zoo:id22}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Centrality is multifaceted} — Degree ≠ betweenness ≠ closeness ≠ PageRank
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Versatile hubs are robust} — High across many metrics means genuine importance
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Specialized hubs reveal roles} — High in one metric reveals specific structural position
+
+\end{itemize}
+
+
+\paragraph{Example Output}
+\label{\detokenize{how-to/query_zoo:id23}}
+\sphinxAtStartPar
+Running on \sphinxcode{\sphinxupquote{communication\_network}} (email layer):
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{20}{105}\X{12}{105}\X{15}{105}\X{15}{105}\X{13}{105}\X{12}{105}\X{18}{105}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Node
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Degree
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Betweenness
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Closeness
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+PageRank
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Versatility
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Type
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+Manager
+&
+\sphinxAtStartPar
+9
+&
+\sphinxAtStartPar
+1.0
+&
+\sphinxAtStartPar
+1.0
+&
+\sphinxAtStartPar
+0.4676
+&
+\sphinxAtStartPar
+4
+&
+\sphinxAtStartPar
+versatile\_hub
+\\
+\sphinxhline
+\sphinxAtStartPar
+Dev1
+&
+\sphinxAtStartPar
+1
+&
+\sphinxAtStartPar
+0.0
+&
+\sphinxAtStartPar
+0.5294
+&
+\sphinxAtStartPar
+0.0592
+&
+\sphinxAtStartPar
+0
+&
+\sphinxAtStartPar
+peripheral
+\\
+\sphinxhline
+\sphinxAtStartPar
+Dev2
+&
+\sphinxAtStartPar
+1
+&
+\sphinxAtStartPar
+0.0
+&
+\sphinxAtStartPar
+0.5294
+&
+\sphinxAtStartPar
+0.0592
+&
+\sphinxAtStartPar
+0
+&
+\sphinxAtStartPar
+peripheral
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Interpretation:} Manager is a \sphinxstylestrong{versatile hub} (top 30\% in all 4 centralities). All other nodes are peripheral in this star\sphinxhyphen{}topology email network.
+
+
+\paragraph{DSL Concepts Demonstrated}
+\label{\detokenize{how-to/query_zoo:id24}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{.compute("degree", "betweenness\_centrality", "closeness\_centrality", "pagerank")}} — Compute multiple centralities
+
+\item {} 
+\sphinxAtStartPar
+Normalizing centralities for comparison
+
+\item {} 
+\sphinxAtStartPar
+Derived metrics (versatility score)
+
+\item {} 
+\sphinxAtStartPar
+Classification based on computed attributes
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Using the Query Zoo}
+\label{\detokenize{how-to/query_zoo:using-the-query-zoo}}
+
+\paragraph{Getting Started}
+\label{\detokenize{how-to/query_zoo:getting-started}}\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Install py3plex} (if not already installed):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{pip} \PYG{n}{install} \PYG{n}{py3plex}
+\end{sphinxVerbatim}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Run a single query}:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{examples}\PYG{n+nn}{.}\PYG{n+nn}{dsl\PYGZus{}query\PYGZus{}zoo}\PYG{n+nn}{.}\PYG{n+nn}{datasets}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{create\PYGZus{}social\PYGZus{}work\PYGZus{}network}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{examples}\PYG{n+nn}{.}\PYG{n+nn}{dsl\PYGZus{}query\PYGZus{}zoo}\PYG{n+nn}{.}\PYG{n+nn}{queries}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{query\PYGZus{}basic\PYGZus{}exploration}
+
+\PYG{n}{net} \PYG{o}{=} \PYG{n}{create\PYGZus{}social\PYGZus{}work\PYGZus{}network}\PYG{p}{(}\PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{query\PYGZus{}basic\PYGZus{}exploration}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Run all queries}:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{cd} \PYG{n}{examples}\PYG{o}{/}\PYG{n}{dsl\PYGZus{}query\PYGZus{}zoo}
+\PYG{n}{python} \PYG{n}{run\PYGZus{}all}\PYG{o}{.}\PYG{n}{py}
+\end{sphinxVerbatim}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Run tests}:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{pytest} \PYG{n}{tests}\PYG{o}{/}\PYG{n}{test\PYGZus{}dsl\PYGZus{}query\PYGZus{}zoo}\PYG{o}{.}\PYG{n}{py} \PYG{o}{\PYGZhy{}}\PYG{n}{v}
+\end{sphinxVerbatim}
+
+\end{enumerate}
+
+
+\paragraph{Adapting Queries to Your Data}
+\label{\detokenize{how-to/query_zoo:adapting-queries-to-your-data}}
+\sphinxAtStartPar
+All queries are designed to work with any \sphinxcode{\sphinxupquote{multi\_layer\_network}} object. To adapt:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Replace the dataset}:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+
+\PYG{c+c1}{\PYGZsh{} Load your own network}
+\PYG{n}{my\PYGZus{}network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{my\PYGZus{}network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mydata.edgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{edgelist\PYGZus{}mx}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Run any query}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{query\PYGZus{}cross\PYGZus{}layer\PYGZus{}hubs}\PYG{p}{(}\PYG{n}{my\PYGZus{}network}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Adjust parameters}:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{k}} in \sphinxcode{\sphinxupquote{query\_cross\_layer\_hubs}} — Number of top nodes per layer
+
+\item {} 
+\sphinxAtStartPar
+Layer names in filters — Replace \sphinxcode{\sphinxupquote{L{[}"social"{]}}} with your layer names
+
+\item {} 
+\sphinxAtStartPar
+Centrality thresholds — Adjust percentile cutoffs as needed
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Extend queries}:
+
+\sphinxAtStartPar
+All query functions are in \sphinxcode{\sphinxupquote{examples/dsl\_query\_zoo/queries.py}}. Copy, modify, and experiment!
+
+\end{enumerate}
+
+
+\paragraph{Datasets}
+\label{\detokenize{how-to/query_zoo:datasets}}
+\sphinxAtStartPar
+Three multilayer networks are provided:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{social\_work\_network}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layers:} social, work, family
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Nodes:} 12 people
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Structure:} Overlapping social circles with different connectivity patterns per layer
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{communication\_network}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layers:} email, chat, phone
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Nodes:} 10 people (Manager, Dev team, Marketing, Support, HR)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Structure:} Star topology in email, distributed in chat/phone
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{transport\_network}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layers:} bus, metro, walking
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Nodes:} 8 locations (CentralStation, ShoppingMall, Park, etc.)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Structure:} Bus covers most locations, metro is faster but selective, walking is local
+
+\end{itemize}
+
+\end{enumerate}
+
+\sphinxAtStartPar
+All datasets use fixed random seeds (\sphinxcode{\sphinxupquote{seed=42}}) for reproducibility.
+
+
+\subsubsection{Further Reading}
+\label{\detokenize{how-to/query_zoo:further-reading}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{how-to/query_with_dsl::doc}]{\sphinxcrossref{\DUrole{doc}{How to Query Multilayer Graphs with the SQL\sphinxhyphen{}like DSL}}}} — Complete DSL reference with syntax and operators
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{concepts/multilayer_networks_101::doc}]{\sphinxcrossref{\DUrole{doc}{Multilayer Networks 101}}}} — Theory of multilayer networks
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/dsl_reference::doc}]{\sphinxcrossref{\DUrole{doc}{DSL Reference}}}} — Full DSL grammar and API reference
+
+\item {} 
+\sphinxAtStartPar
+\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../tutorials/tutorial\_10min}}} — Quick start tutorial
+
+\end{itemize}
+
+\begin{sphinxadmonition}{note}{Contributing Queries}
+
+\sphinxAtStartPar
+Have an interesting multilayer query pattern? \sphinxstylestrong{Contribute it to the Query Zoo!}
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+Add your query function to \sphinxcode{\sphinxupquote{examples/dsl\_query\_zoo/queries.py}}
+
+\item {} 
+\sphinxAtStartPar
+Add tests to \sphinxcode{\sphinxupquote{tests/test\_dsl\_query\_zoo.py}}
+
+\item {} 
+\sphinxAtStartPar
+Update this documentation page
+
+\item {} 
+\sphinxAtStartPar
+Submit a pull request!
+
+\end{enumerate}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{project/contributing::doc}]{\sphinxcrossref{\DUrole{doc}{Contributing to py3plex}}}} for details.
+\end{sphinxadmonition}
 
 \sphinxstepscope
 
@@ -11387,6 +13477,231 @@ Top 10 nodes by betweenness centrality:
 1     (bob, social)                 0.189000       8
 ...
 \end{sphinxVerbatim}
+
+
+\paragraph{Computing Metrics with Uncertainty}
+\label{\detokenize{how-to/query_with_dsl:computing-metrics-with-uncertainty}}
+\sphinxAtStartPar
+\sphinxstylestrong{New in py3plex 1.0:} The DSL now supports \sphinxstylestrong{first\sphinxhyphen{}class uncertainty} for computed metrics. This allows you to estimate statistical uncertainty (confidence intervals, standard deviations) for network statistics via bootstrap, perturbation, or Monte Carlo methods.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Why uncertainty matters:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Networks are often noisy or sampled (e.g., social networks with missing edges)
+
+\item {} 
+\sphinxAtStartPar
+Centrality metrics can be sensitive to small perturbations
+
+\item {} 
+\sphinxAtStartPar
+Uncertainty quantification helps distinguish signal from noise
+
+\item {} 
+\sphinxAtStartPar
+Required for robust statistical inference and hypothesis testing
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Basic usage:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Compute degree with uncertainty estimation}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}
+         \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+         \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+         \PYG{n}{uncertainty}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,}
+         \PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{perturbation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} or \PYGZdq{}bootstrap\PYGZdq{}, \PYGZdq{}seed\PYGZdq{}}
+         \PYG{n}{n\PYGZus{}samples}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,}          \PYG{c+c1}{\PYGZsh{} number of resamples}
+         \PYG{n}{ci}\PYG{o}{=}\PYG{l+m+mf}{0.95}                 \PYG{c+c1}{\PYGZsh{} confidence interval level}
+     \PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Access uncertainty information}
+\PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{df}\PYG{o}{.}\PYG{n}{head}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Results contain mean, std, and quantiles for each metric}
+\PYG{c+c1}{\PYGZsh{} The \PYGZsq{}degree\PYGZsq{} column now has dict values with uncertainty info}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Uncertainty methods:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{"perturbation"}}: Drop a small fraction of edges/nodes randomly (default: 5\%)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{"bootstrap"}}: Resample nodes/edges with replacement
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{"seed"}}: Run stochastic algorithms with different random seeds
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{"jackknife"}}: Leave\sphinxhyphen{}one\sphinxhyphen{}out resampling
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Parameters:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{uncertainty}} (bool): Enable uncertainty estimation (default: False)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{method}} (str): Resampling strategy (default: “perturbation”)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{n\_samples}} (int): Number of resamples (default: 50)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{ci}} (float): Confidence interval level, e.g., 0.95 for 95\% CI (default: 0.95)
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example with confidence intervals:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Find hubs with uncertainty bounds}
+\PYG{n}{hubs} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}
+         \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+         \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+         \PYG{n}{uncertainty}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,}
+         \PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{perturbation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+         \PYG{n}{n\PYGZus{}samples}\PYG{o}{=}\PYG{l+m+mi}{200}\PYG{p}{,}
+         \PYG{n}{ci}\PYG{o}{=}\PYG{l+m+mf}{0.95}
+     \PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Extract uncertainty information}
+\PYG{n}{df} \PYG{o}{=} \PYG{n}{hubs}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} When uncertainty=True, values are dicts with mean, std, quantiles}
+\PYG{k}{for} \PYG{n}{idx}\PYG{p}{,} \PYG{n}{row} \PYG{o+ow}{in} \PYG{n}{df}\PYG{o}{.}\PYG{n}{head}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{iterrows}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{node\PYGZus{}id} \PYG{o}{=} \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+    \PYG{n}{bc\PYGZus{}info} \PYG{o}{=} \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+
+    \PYG{k}{if} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{bc\PYGZus{}info}\PYG{p}{,} \PYG{n+nb}{dict}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{mean} \PYG{o}{=} \PYG{n}{bc\PYGZus{}info}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{mean}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+        \PYG{n}{std} \PYG{o}{=} \PYG{n}{bc\PYGZus{}info}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{std}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{ci\PYGZus{}low} \PYG{o}{=} \PYG{n}{bc\PYGZus{}info}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{quantiles}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+m+mf}{0.025}\PYG{p}{,} \PYG{n}{mean}\PYG{p}{)}
+        \PYG{n}{ci\PYGZus{}high} \PYG{o}{=} \PYG{n}{bc\PYGZus{}info}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{quantiles}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+m+mf}{0.975}\PYG{p}{,} \PYG{n}{mean}\PYG{p}{)}
+
+        \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node\PYGZus{}id}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+        \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  Betweenness: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{mean}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ \(\pm\) }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{std}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+        \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  95\PYGZpc{} CI: [}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{ci\PYGZus{}low}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{, }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{ci\PYGZus{}high}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{]}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+(\PYGZsq{}eve\PYGZsq{}, \PYGZsq{}social\PYGZsq{}):
+  Betweenness: 0.3010 \(\pm\) 0.0234
+  95\PYGZpc{} CI: [0.2589, 0.3442]
+(\PYGZsq{}alice\PYGZsq{}, \PYGZsq{}social\PYGZsq{}):
+  Betweenness: 0.2450 \(\pm\) 0.0198
+  95\PYGZpc{} CI: [0.2087, 0.2821]
+(\PYGZsq{}grace\PYGZsq{}, \PYGZsq{}social\PYGZsq{}):
+  Betweenness: 0.2210 \(\pm\) 0.0176
+  95\PYGZpc{} CI: [0.1901, 0.2534]
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Backward compatibility:}
+
+\sphinxAtStartPar
+When \sphinxcode{\sphinxupquote{uncertainty=False}} (the default), metrics return scalar values as before. Your existing queries work unchanged:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Traditional deterministic computation}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} \PYGZsq{}degree\PYGZsq{} values are scalars (int/float)}
+
+\PYG{c+c1}{\PYGZsh{} With uncertainty}
+\PYG{n}{result\PYGZus{}unc} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{uncertainty}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} \PYGZsq{}degree\PYGZsq{} values are dicts with mean, std, quantiles}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Use cases:}
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Comparing networks}: Test if centrality differences between networks are statistically significant
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Robust ranking}: Identify nodes that consistently rank high across perturbations
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Network inference}: Quantify uncertainty when inferring networks from noisy data
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Hypothesis testing}: Generate null distributions for significance testing
+
+\end{enumerate}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Performance notes:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Uncertainty estimation is \sphinxstylestrong{opt\sphinxhyphen{}in} and only runs when explicitly requested
+
+\item {} 
+\sphinxAtStartPar
+Cost scales linearly with \sphinxcode{\sphinxupquote{n\_samples}} (e.g., 100 samples ≈ 100× slower)
+
+\item {} 
+\sphinxAtStartPar
+Use smaller \sphinxcode{\sphinxupquote{n\_samples}} (20\sphinxhyphen{}50) for exploration, larger (100\sphinxhyphen{}500) for publication
+
+\item {} 
+\sphinxAtStartPar
+Perturbation is fastest; bootstrap and jackknife are more expensive
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Further reading:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{how-to/compute_statistics::doc}]{\sphinxcrossref{\DUrole{doc}{How to Compute Network Statistics}}}}: General guide to network statistics and uncertainty
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/uncertainty/example\_first\_class\_uncertainty.py}}: Complete examples
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{py3plex.uncertainty}} module: Low\sphinxhyphen{}level API for custom uncertainty workflows
+
+\end{itemize}
 
 
 \paragraph{Sorting and Limiting}
@@ -28827,7 +31142,7 @@ str | float | int | {\hyperref[\detokenize{reference/api_index:py3plex.dsl.Param
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{ComputeItem}}}
-{\sphinxparam{\DUrole{n}{name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alias}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alias}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uncertainty}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ci}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -28873,6 +31188,82 @@ str | None
 
 \end{fulllineitems}\end{savenotes}
 
+\index{uncertainty (py3plex.dsl.ComputeItem attribute)@\spxentry{uncertainty}\spxextra{py3plex.dsl.ComputeItem attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ComputeItem.uncertainty}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{uncertainty}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Whether to compute uncertainty for this measure
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+bool
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{method (py3plex.dsl.ComputeItem attribute)@\spxentry{method}\spxextra{py3plex.dsl.ComputeItem attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ComputeItem.method}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{method}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Uncertainty estimation method (e.g., ‘bootstrap’, ‘perturbation’)
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+str | None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{n\_samples (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.ComputeItem attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ComputeItem.n_samples}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{n\_samples}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Number of samples for uncertainty estimation
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+int | None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{ci (py3plex.dsl.ComputeItem attribute)@\spxentry{ci}\spxextra{py3plex.dsl.ComputeItem attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ComputeItem.ci}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{ci}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Confidence interval level (e.g., 0.95 for 95\% CI)
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+float | None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{alias (py3plex.dsl.ComputeItem attribute)@\spxentry{alias}\spxextra{py3plex.dsl.ComputeItem attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -28883,10 +31274,40 @@ str | None
 \pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
-\index{name (py3plex.dsl.ComputeItem attribute)@\spxentry{name}\spxextra{py3plex.dsl.ComputeItem attribute}}
+\index{ci (py3plex.dsl.ComputeItem attribute)@\spxentry{ci}\spxextra{py3plex.dsl.ComputeItem attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:id24}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{ci}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{method (py3plex.dsl.ComputeItem attribute)@\spxentry{method}\spxextra{py3plex.dsl.ComputeItem attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id25}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{method}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{n\_samples (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.ComputeItem attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id26}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.dsl.ComputeItem attribute)@\spxentry{name}\spxextra{py3plex.dsl.ComputeItem attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id27}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -28904,6 +31325,16 @@ str | None
 \sphinxAtStartPar
 Get the name to use in results (alias or original name).
 
+\end{fulllineitems}\end{savenotes}
+
+\index{uncertainty (py3plex.dsl.ComputeItem attribute)@\spxentry{uncertainty}\spxextra{py3plex.dsl.ComputeItem attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id28}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{uncertainty}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }False}}}
+\pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
 
@@ -28987,7 +31418,7 @@ Special predicate (e.g., intralayer)
 \index{comparison (py3plex.dsl.ConditionAtom attribute)@\spxentry{comparison}\spxextra{py3plex.dsl.ConditionAtom attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id25}}
+\phantomsection\label{\detokenize{reference/api_index:id29}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{comparison}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Comparison}]{\sphinxcrossref{Comparison}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -28997,7 +31428,7 @@ Special predicate (e.g., intralayer)
 \index{function (py3plex.dsl.ConditionAtom attribute)@\spxentry{function}\spxextra{py3plex.dsl.ConditionAtom attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id26}}
+\phantomsection\label{\detokenize{reference/api_index:id30}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{function}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.FunctionCall}]{\sphinxcrossref{FunctionCall}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -29037,7 +31468,7 @@ Special predicate (e.g., intralayer)
 \index{special (py3plex.dsl.ConditionAtom attribute)@\spxentry{special}\spxextra{py3plex.dsl.ConditionAtom attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id27}}
+\phantomsection\label{\detokenize{reference/api_index:id31}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{special}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SpecialPredicate}]{\sphinxcrossref{SpecialPredicate}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -29106,7 +31537,7 @@ List{[}str{]}
 \index{atoms (py3plex.dsl.ConditionExpr attribute)@\spxentry{atoms}\spxextra{py3plex.dsl.ConditionExpr attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id28}}
+\phantomsection\label{\detokenize{reference/api_index:id32}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{atoms}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ConditionAtom}]{\sphinxcrossref{ConditionAtom}}}\DUrole{p}{{]}}}}}
@@ -29116,7 +31547,7 @@ List{[}str{]}
 \index{ops (py3plex.dsl.ConditionExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.ConditionExpr attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id29}}
+\phantomsection\label{\detokenize{reference/api_index:id33}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ops}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -29224,7 +31655,7 @@ Mapping{[}str, Any{]}
 \index{current\_layers (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{current\_layers}\spxextra{py3plex.dsl.DSLExecutionContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id30}}
+\phantomsection\label{\detokenize{reference/api_index:id34}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{current\_layers}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -29234,7 +31665,7 @@ Mapping{[}str, Any{]}
 \index{current\_nodes (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{current\_nodes}\spxextra{py3plex.dsl.DSLExecutionContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id31}}
+\phantomsection\label{\detokenize{reference/api_index:id35}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{current\_nodes}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -29244,7 +31675,7 @@ Mapping{[}str, Any{]}
 \index{graph (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{graph}\spxextra{py3plex.dsl.DSLExecutionContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id32}}
+\phantomsection\label{\detokenize{reference/api_index:id36}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{graph}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Any}}}
@@ -29254,7 +31685,7 @@ Mapping{[}str, Any{]}
 \index{params (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{params}\spxextra{py3plex.dsl.DSLExecutionContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id33}}
+\phantomsection\label{\detokenize{reference/api_index:id37}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Mapping\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -29374,7 +31805,7 @@ str | None
 \index{category (py3plex.dsl.DSLOperator attribute)@\spxentry{category}\spxextra{py3plex.dsl.DSLOperator attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id34}}
+\phantomsection\label{\detokenize{reference/api_index:id38}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{category}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -29384,7 +31815,7 @@ str | None
 \index{description (py3plex.dsl.DSLOperator attribute)@\spxentry{description}\spxextra{py3plex.dsl.DSLOperator attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id35}}
+\phantomsection\label{\detokenize{reference/api_index:id39}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{description}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -29394,7 +31825,7 @@ str | None
 \index{func (py3plex.dsl.DSLOperator attribute)@\spxentry{func}\spxextra{py3plex.dsl.DSLOperator attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id36}}
+\phantomsection\label{\detokenize{reference/api_index:id40}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{func}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Callable\DUrole{p}{{[}}\DUrole{p}{{[}}\DUrole{p}{...}\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -29404,7 +31835,7 @@ str | None
 \index{name (py3plex.dsl.DSLOperator attribute)@\spxentry{name}\spxextra{py3plex.dsl.DSLOperator attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id37}}
+\phantomsection\label{\detokenize{reference/api_index:id41}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -29543,7 +31974,7 @@ Optional suggested fix
 \index{code (py3plex.dsl.Diagnostic attribute)@\spxentry{code}\spxextra{py3plex.dsl.Diagnostic attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id38}}
+\phantomsection\label{\detokenize{reference/api_index:id42}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -29553,7 +31984,7 @@ Optional suggested fix
 \index{message (py3plex.dsl.Diagnostic attribute)@\spxentry{message}\spxextra{py3plex.dsl.Diagnostic attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id39}}
+\phantomsection\label{\detokenize{reference/api_index:id43}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{message}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -29563,7 +31994,7 @@ Optional suggested fix
 \index{severity (py3plex.dsl.Diagnostic attribute)@\spxentry{severity}\spxextra{py3plex.dsl.Diagnostic attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id40}}
+\phantomsection\label{\detokenize{reference/api_index:id44}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{severity}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}error\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}warning\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}info\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}hint\textquotesingle{}}\DUrole{p}{{]}}}}}
@@ -29573,7 +32004,7 @@ Optional suggested fix
 \index{span (py3plex.dsl.Diagnostic attribute)@\spxentry{span}\spxextra{py3plex.dsl.Diagnostic attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id41}}
+\phantomsection\label{\detokenize{reference/api_index:id45}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{span}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Tuple\DUrole{p}{{[}}int\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}}}}
@@ -29583,7 +32014,7 @@ Optional suggested fix
 \index{suggested\_fix (py3plex.dsl.Diagnostic attribute)@\spxentry{suggested\_fix}\spxextra{py3plex.dsl.Diagnostic attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id42}}
+\phantomsection\label{\detokenize{reference/api_index:id46}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{suggested\_fix}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SuggestedFix}]{\sphinxcrossref{SuggestedFix}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -30250,7 +32681,7 @@ str | None
 \index{export\_target (py3plex.dsl.DynamicsStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id43}}
+\phantomsection\label{\detokenize{reference/api_index:id47}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{export\_target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -30260,7 +32691,7 @@ str | None
 \index{layer\_expr (py3plex.dsl.DynamicsStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id44}}
+\phantomsection\label{\detokenize{reference/api_index:id48}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_expr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExpr}]{\sphinxcrossref{LayerExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -30270,7 +32701,7 @@ str | None
 \index{layer\_params (py3plex.dsl.DynamicsStmt attribute)@\spxentry{layer\_params}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id45}}
+\phantomsection\label{\detokenize{reference/api_index:id49}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}}
@@ -30280,7 +32711,7 @@ str | None
 \index{params (py3plex.dsl.DynamicsStmt attribute)@\spxentry{params}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id46}}
+\phantomsection\label{\detokenize{reference/api_index:id50}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -30290,7 +32721,7 @@ str | None
 \index{process\_name (py3plex.dsl.DynamicsStmt attribute)@\spxentry{process\_name}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id47}}
+\phantomsection\label{\detokenize{reference/api_index:id51}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{process\_name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -30300,7 +32731,7 @@ str | None
 \index{replicates (py3plex.dsl.DynamicsStmt attribute)@\spxentry{replicates}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id48}}
+\phantomsection\label{\detokenize{reference/api_index:id52}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{replicates}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }1}}}
@@ -30310,7 +32741,7 @@ str | None
 \index{seed (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id49}}
+\phantomsection\label{\detokenize{reference/api_index:id53}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -30320,7 +32751,7 @@ str | None
 \index{seed\_fraction (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_fraction}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id50}}
+\phantomsection\label{\detokenize{reference/api_index:id54}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{seed\_fraction}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -30330,7 +32761,7 @@ str | None
 \index{seed\_query (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_query}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id51}}
+\phantomsection\label{\detokenize{reference/api_index:id55}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{seed\_query}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SelectStmt}]{\sphinxcrossref{SelectStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -30340,7 +32771,7 @@ str | None
 \index{steps (py3plex.dsl.DynamicsStmt attribute)@\spxentry{steps}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id52}}
+\phantomsection\label{\detokenize{reference/api_index:id56}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{steps}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }100}}}
@@ -30350,7 +32781,7 @@ str | None
 \index{track (py3plex.dsl.DynamicsStmt attribute)@\spxentry{track}\spxextra{py3plex.dsl.DynamicsStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id53}}
+\phantomsection\label{\detokenize{reference/api_index:id57}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{track}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -30434,7 +32865,7 @@ List{[}str{]}
 \index{steps (py3plex.dsl.ExecutionPlan attribute)@\spxentry{steps}\spxextra{py3plex.dsl.ExecutionPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id54}}
+\phantomsection\label{\detokenize{reference/api_index:id58}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{steps}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.PlanStep}]{\sphinxcrossref{PlanStep}}}\DUrole{p}{{]}}}}}
@@ -30444,7 +32875,7 @@ List{[}str{]}
 \index{warnings (py3plex.dsl.ExecutionPlan attribute)@\spxentry{warnings}\spxextra{py3plex.dsl.ExecutionPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id55}}
+\phantomsection\label{\detokenize{reference/api_index:id59}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{warnings}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -30567,7 +32998,7 @@ List{[}str{]}
 \index{ast\_summary (py3plex.dsl.ExplainResult attribute)@\spxentry{ast\_summary}\spxextra{py3plex.dsl.ExplainResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id56}}
+\phantomsection\label{\detokenize{reference/api_index:id60}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ast\_summary}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -30577,7 +33008,7 @@ List{[}str{]}
 \index{cost\_estimate (py3plex.dsl.ExplainResult attribute)@\spxentry{cost\_estimate}\spxextra{py3plex.dsl.ExplainResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id57}}
+\phantomsection\label{\detokenize{reference/api_index:id61}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{cost\_estimate}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -30587,7 +33018,7 @@ List{[}str{]}
 \index{diagnostics (py3plex.dsl.ExplainResult attribute)@\spxentry{diagnostics}\spxextra{py3plex.dsl.ExplainResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id58}}
+\phantomsection\label{\detokenize{reference/api_index:id62}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{diagnostics}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{p}{{]}}}}}
@@ -30597,7 +33028,7 @@ List{[}str{]}
 \index{plan\_steps (py3plex.dsl.ExplainResult attribute)@\spxentry{plan\_steps}\spxextra{py3plex.dsl.ExplainResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id59}}
+\phantomsection\label{\detokenize{reference/api_index:id63}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{plan\_steps}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -30607,7 +33038,7 @@ List{[}str{]}
 \index{type\_info (py3plex.dsl.ExplainResult attribute)@\spxentry{type\_info}\spxextra{py3plex.dsl.ExplainResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id60}}
+\phantomsection\label{\detokenize{reference/api_index:id64}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{type\_info}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}}}}
@@ -30719,7 +33150,7 @@ ExportSpec(path=’output.json’, fmt=’json’, options=\{‘orient’: ‘re
 \index{columns (py3plex.dsl.ExportSpec attribute)@\spxentry{columns}\spxextra{py3plex.dsl.ExportSpec attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id61}}
+\phantomsection\label{\detokenize{reference/api_index:id65}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{columns}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -30729,7 +33160,7 @@ ExportSpec(path=’output.json’, fmt=’json’, options=\{‘orient’: ‘re
 \index{fmt (py3plex.dsl.ExportSpec attribute)@\spxentry{fmt}\spxextra{py3plex.dsl.ExportSpec attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id62}}
+\phantomsection\label{\detokenize{reference/api_index:id66}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{fmt}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}csv\textquotesingle{}}}}
@@ -30739,7 +33170,7 @@ ExportSpec(path=’output.json’, fmt=’json’, options=\{‘orient’: ‘re
 \index{options (py3plex.dsl.ExportSpec attribute)@\spxentry{options}\spxextra{py3plex.dsl.ExportSpec attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id63}}
+\phantomsection\label{\detokenize{reference/api_index:id67}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{options}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -30749,7 +33180,7 @@ ExportSpec(path=’output.json’, fmt=’json’, options=\{‘orient’: ‘re
 \index{path (py3plex.dsl.ExportSpec attribute)@\spxentry{path}\spxextra{py3plex.dsl.ExportSpec attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id64}}
+\phantomsection\label{\detokenize{reference/api_index:id68}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{path}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -31000,7 +33431,7 @@ str
 \index{compare (py3plex.dsl.ExtendedQuery attribute)@\spxentry{compare}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id65}}
+\phantomsection\label{\detokenize{reference/api_index:id69}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{compare}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.CompareStmt}]{\sphinxcrossref{CompareStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -31010,7 +33441,7 @@ str
 \index{dsl\_version (py3plex.dsl.ExtendedQuery attribute)@\spxentry{dsl\_version}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id66}}
+\phantomsection\label{\detokenize{reference/api_index:id70}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{dsl\_version}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}2.0\textquotesingle{}}}}
@@ -31020,7 +33451,7 @@ str
 \index{dynamics (py3plex.dsl.ExtendedQuery attribute)@\spxentry{dynamics}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id67}}
+\phantomsection\label{\detokenize{reference/api_index:id71}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{dynamics}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.DynamicsStmt}]{\sphinxcrossref{DynamicsStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -31030,7 +33461,7 @@ str
 \index{explain (py3plex.dsl.ExtendedQuery attribute)@\spxentry{explain}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id68}}
+\phantomsection\label{\detokenize{reference/api_index:id72}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{explain}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }False}}}
@@ -31040,7 +33471,7 @@ str
 \index{kind (py3plex.dsl.ExtendedQuery attribute)@\spxentry{kind}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id69}}
+\phantomsection\label{\detokenize{reference/api_index:id73}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{kind}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -31050,7 +33481,7 @@ str
 \index{nullmodel (py3plex.dsl.ExtendedQuery attribute)@\spxentry{nullmodel}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id70}}
+\phantomsection\label{\detokenize{reference/api_index:id74}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{nullmodel}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.NullModelStmt}]{\sphinxcrossref{NullModelStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -31060,7 +33491,7 @@ str
 \index{path (py3plex.dsl.ExtendedQuery attribute)@\spxentry{path}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id71}}
+\phantomsection\label{\detokenize{reference/api_index:id75}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{path}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.PathStmt}]{\sphinxcrossref{PathStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -31070,7 +33501,7 @@ str
 \index{select (py3plex.dsl.ExtendedQuery attribute)@\spxentry{select}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id72}}
+\phantomsection\label{\detokenize{reference/api_index:id76}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{select}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SelectStmt}]{\sphinxcrossref{SelectStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -31080,7 +33511,7 @@ str
 \index{trajectories (py3plex.dsl.ExtendedQuery attribute)@\spxentry{trajectories}\spxextra{py3plex.dsl.ExtendedQuery attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id73}}
+\phantomsection\label{\detokenize{reference/api_index:id77}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{trajectories}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.TrajectoriesStmt}]{\sphinxcrossref{TrajectoriesStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -31205,7 +33636,7 @@ List{[}str | float | int | {\hyperref[\detokenize{reference/api_index:py3plex.ds
 \index{args (py3plex.dsl.FunctionCall attribute)@\spxentry{args}\spxextra{py3plex.dsl.FunctionCall attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id74}}
+\phantomsection\label{\detokenize{reference/api_index:id78}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{args}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ParamRef}]{\sphinxcrossref{ParamRef}}}\DUrole{p}{{]}}}}}
@@ -31215,7 +33646,7 @@ List{[}str | float | int | {\hyperref[\detokenize{reference/api_index:py3plex.ds
 \index{name (py3plex.dsl.FunctionCall attribute)@\spxentry{name}\spxextra{py3plex.dsl.FunctionCall attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id75}}
+\phantomsection\label{\detokenize{reference/api_index:id79}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -31335,7 +33766,7 @@ Get all layer names referenced in this expression.
 \index{ops (py3plex.dsl.LayerExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.LayerExpr attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id76}}
+\phantomsection\label{\detokenize{reference/api_index:id80}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ops}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -31345,7 +33776,7 @@ Get all layer names referenced in this expression.
 \index{terms (py3plex.dsl.LayerExpr attribute)@\spxentry{terms}\spxextra{py3plex.dsl.LayerExpr attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id77}}
+\phantomsection\label{\detokenize{reference/api_index:id81}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{terms}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerTerm}]{\sphinxcrossref{LayerTerm}}}\DUrole{p}{{]}}}}}
@@ -31443,7 +33874,7 @@ str
 \index{name (py3plex.dsl.LayerTerm attribute)@\spxentry{name}\spxextra{py3plex.dsl.LayerTerm attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id78}}
+\phantomsection\label{\detokenize{reference/api_index:id82}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -31996,7 +34427,7 @@ str | None
 \index{export\_target (py3plex.dsl.NullModelStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.NullModelStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id79}}
+\phantomsection\label{\detokenize{reference/api_index:id83}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{export\_target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -32006,7 +34437,7 @@ str | None
 \index{layer\_expr (py3plex.dsl.NullModelStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.NullModelStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id80}}
+\phantomsection\label{\detokenize{reference/api_index:id84}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_expr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExpr}]{\sphinxcrossref{LayerExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -32016,7 +34447,7 @@ str | None
 \index{model\_type (py3plex.dsl.NullModelStmt attribute)@\spxentry{model\_type}\spxextra{py3plex.dsl.NullModelStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id81}}
+\phantomsection\label{\detokenize{reference/api_index:id85}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{model\_type}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -32026,7 +34457,7 @@ str | None
 \index{num\_samples (py3plex.dsl.NullModelStmt attribute)@\spxentry{num\_samples}\spxextra{py3plex.dsl.NullModelStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id82}}
+\phantomsection\label{\detokenize{reference/api_index:id86}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{num\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }1}}}
@@ -32036,7 +34467,7 @@ str | None
 \index{params (py3plex.dsl.NullModelStmt attribute)@\spxentry{params}\spxextra{py3plex.dsl.NullModelStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id83}}
+\phantomsection\label{\detokenize{reference/api_index:id87}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -32046,7 +34477,7 @@ str | None
 \index{seed (py3plex.dsl.NullModelStmt attribute)@\spxentry{seed}\spxextra{py3plex.dsl.NullModelStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id84}}
+\phantomsection\label{\detokenize{reference/api_index:id88}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -32112,7 +34543,7 @@ bool
 \index{desc (py3plex.dsl.OrderItem attribute)@\spxentry{desc}\spxextra{py3plex.dsl.OrderItem attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id85}}
+\phantomsection\label{\detokenize{reference/api_index:id89}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{desc}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }False}}}
@@ -32122,7 +34553,7 @@ bool
 \index{key (py3plex.dsl.OrderItem attribute)@\spxentry{key}\spxextra{py3plex.dsl.OrderItem attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id86}}
+\phantomsection\label{\detokenize{reference/api_index:id90}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{key}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -32358,7 +34789,7 @@ str | None
 \index{name (py3plex.dsl.ParamRef attribute)@\spxentry{name}\spxextra{py3plex.dsl.ParamRef attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id87}}
+\phantomsection\label{\detokenize{reference/api_index:id91}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -32368,7 +34799,7 @@ str | None
 \index{type\_hint (py3plex.dsl.ParamRef attribute)@\spxentry{type\_hint}\spxextra{py3plex.dsl.ParamRef attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id88}}
+\phantomsection\label{\detokenize{reference/api_index:id92}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{type\_hint}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -32796,7 +35227,7 @@ str | None
 \index{cross\_layer (py3plex.dsl.PathStmt attribute)@\spxentry{cross\_layer}\spxextra{py3plex.dsl.PathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id89}}
+\phantomsection\label{\detokenize{reference/api_index:id93}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{cross\_layer}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }False}}}
@@ -32806,7 +35237,7 @@ str | None
 \index{export\_target (py3plex.dsl.PathStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.PathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id90}}
+\phantomsection\label{\detokenize{reference/api_index:id94}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{export\_target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -32816,7 +35247,7 @@ str | None
 \index{layer\_expr (py3plex.dsl.PathStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.PathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id91}}
+\phantomsection\label{\detokenize{reference/api_index:id95}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_expr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExpr}]{\sphinxcrossref{LayerExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -32826,7 +35257,7 @@ str | None
 \index{limit (py3plex.dsl.PathStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.PathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id92}}
+\phantomsection\label{\detokenize{reference/api_index:id96}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{limit}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -32836,7 +35267,7 @@ str | None
 \index{params (py3plex.dsl.PathStmt attribute)@\spxentry{params}\spxextra{py3plex.dsl.PathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id93}}
+\phantomsection\label{\detokenize{reference/api_index:id97}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -32846,7 +35277,7 @@ str | None
 \index{path\_type (py3plex.dsl.PathStmt attribute)@\spxentry{path\_type}\spxextra{py3plex.dsl.PathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id94}}
+\phantomsection\label{\detokenize{reference/api_index:id98}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{path\_type}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -32856,7 +35287,7 @@ str | None
 \index{source (py3plex.dsl.PathStmt attribute)@\spxentry{source}\spxextra{py3plex.dsl.PathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id95}}
+\phantomsection\label{\detokenize{reference/api_index:id99}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{source}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ParamRef}]{\sphinxcrossref{ParamRef}}}}}}
@@ -32866,7 +35297,7 @@ str | None
 \index{target (py3plex.dsl.PathStmt attribute)@\spxentry{target}\spxextra{py3plex.dsl.PathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id96}}
+\phantomsection\label{\detokenize{reference/api_index:id100}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ParamRef}]{\sphinxcrossref{ParamRef}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -32932,7 +35363,7 @@ str | None
 \index{description (py3plex.dsl.PlanStep attribute)@\spxentry{description}\spxextra{py3plex.dsl.PlanStep attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id97}}
+\phantomsection\label{\detokenize{reference/api_index:id101}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{description}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -32942,7 +35373,7 @@ str | None
 \index{estimated\_complexity (py3plex.dsl.PlanStep attribute)@\spxentry{estimated\_complexity}\spxextra{py3plex.dsl.PlanStep attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id98}}
+\phantomsection\label{\detokenize{reference/api_index:id102}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{estimated\_complexity}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -33180,7 +35611,7 @@ str
 \index{dsl\_version (py3plex.dsl.Query attribute)@\spxentry{dsl\_version}\spxextra{py3plex.dsl.Query attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id99}}
+\phantomsection\label{\detokenize{reference/api_index:id103}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{dsl\_version}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}2.0\textquotesingle{}}}}
@@ -33190,7 +35621,7 @@ str
 \index{explain (py3plex.dsl.Query attribute)@\spxentry{explain}\spxextra{py3plex.dsl.Query attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id100}}
+\phantomsection\label{\detokenize{reference/api_index:id104}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{explain}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}}
@@ -33200,7 +35631,7 @@ str
 \index{select (py3plex.dsl.Query attribute)@\spxentry{select}\spxextra{py3plex.dsl.Query attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id101}}
+\phantomsection\label{\detokenize{reference/api_index:id105}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{select}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SelectStmt}]{\sphinxcrossref{SelectStmt}}}}}}
@@ -33467,11 +35898,11 @@ Self for chaining
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{compute}}}
-{\sphinxparam{\DUrole{o}{*}\DUrole{n}{measures}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alias}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{aliases}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{o}{*}\DUrole{n}{measures}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alias}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{aliases}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uncertainty}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ci}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Add measures to compute.
+Add measures to compute with optional uncertainty estimation.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
@@ -33486,6 +35917,22 @@ Add measures to compute.
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{aliases}} \textendash{} Dictionary mapping measure names to aliases
 
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{uncertainty}} \textendash{} Whether to compute uncertainty for these measures
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{method}} \textendash{} Uncertainty estimation method (‘bootstrap’, ‘perturbation’, ‘seed’)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{n\_samples}} \textendash{} Number of samples for uncertainty estimation (default: 50)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ci}} \textendash{} Confidence interval level (default: 0.95 for 95\% CI)
+
 \end{itemize}
 
 \sphinxlineitem{Returns}
@@ -33493,6 +35940,23 @@ Add measures to compute.
 Self for chaining
 
 \end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Without uncertainty}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} With uncertainty}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}
+\PYG{g+gp}{... }    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{n}{uncertainty}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bootstrap}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{n}{n\PYGZus{}samples}\PYG{o}{=}\PYG{l+m+mi}{500}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{n}{ci}\PYG{o}{=}\PYG{l+m+mf}{0.95}
+\PYG{g+gp}{... }\PYG{p}{)}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35392,7 +37856,7 @@ bool
 \index{autocompute (py3plex.dsl.SelectStmt attribute)@\spxentry{autocompute}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id102}}
+\phantomsection\label{\detokenize{reference/api_index:id106}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{autocompute}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }True}}}
@@ -35402,7 +37866,7 @@ bool
 \index{compute (py3plex.dsl.SelectStmt attribute)@\spxentry{compute}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id103}}
+\phantomsection\label{\detokenize{reference/api_index:id107}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{compute}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ComputeItem}]{\sphinxcrossref{ComputeItem}}}\DUrole{p}{{]}}}}}
@@ -35412,7 +37876,7 @@ bool
 \index{coverage\_group (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_group}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id104}}
+\phantomsection\label{\detokenize{reference/api_index:id108}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_group}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35422,7 +37886,7 @@ bool
 \index{coverage\_id\_field (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_id\_field}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id105}}
+\phantomsection\label{\detokenize{reference/api_index:id109}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_id\_field}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}id\textquotesingle{}}}}
@@ -35432,7 +37896,7 @@ bool
 \index{coverage\_k (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_k}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id106}}
+\phantomsection\label{\detokenize{reference/api_index:id110}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_k}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35442,7 +37906,7 @@ bool
 \index{coverage\_mode (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_mode}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id107}}
+\phantomsection\label{\detokenize{reference/api_index:id111}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35452,7 +37916,7 @@ bool
 \index{coverage\_p (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_p}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id108}}
+\phantomsection\label{\detokenize{reference/api_index:id112}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_p}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35462,7 +37926,7 @@ bool
 \index{distinct\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{distinct\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id109}}
+\phantomsection\label{\detokenize{reference/api_index:id113}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{distinct\_cols}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35472,7 +37936,7 @@ bool
 \index{drop\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{drop\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id110}}
+\phantomsection\label{\detokenize{reference/api_index:id114}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{drop\_cols}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35482,7 +37946,7 @@ bool
 \index{export (py3plex.dsl.SelectStmt attribute)@\spxentry{export}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id111}}
+\phantomsection\label{\detokenize{reference/api_index:id115}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{export}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ExportTarget}]{\sphinxcrossref{ExportTarget}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35492,7 +37956,7 @@ bool
 \index{file\_export (py3plex.dsl.SelectStmt attribute)@\spxentry{file\_export}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id112}}
+\phantomsection\label{\detokenize{reference/api_index:id116}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{file\_export}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ExportSpec}]{\sphinxcrossref{ExportSpec}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35502,7 +37966,7 @@ bool
 \index{group\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{group\_by}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id113}}
+\phantomsection\label{\detokenize{reference/api_index:id117}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{group\_by}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -35512,7 +37976,7 @@ bool
 \index{layer\_expr (py3plex.dsl.SelectStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id114}}
+\phantomsection\label{\detokenize{reference/api_index:id118}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_expr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExpr}]{\sphinxcrossref{LayerExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35522,7 +37986,7 @@ bool
 \index{limit (py3plex.dsl.SelectStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id115}}
+\phantomsection\label{\detokenize{reference/api_index:id119}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{limit}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35532,7 +37996,7 @@ bool
 \index{limit\_per\_group (py3plex.dsl.SelectStmt attribute)@\spxentry{limit\_per\_group}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id116}}
+\phantomsection\label{\detokenize{reference/api_index:id120}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{limit\_per\_group}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35542,7 +38006,7 @@ bool
 \index{order\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id117}}
+\phantomsection\label{\detokenize{reference/api_index:id121}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{order\_by}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.OrderItem}]{\sphinxcrossref{OrderItem}}}\DUrole{p}{{]}}}}}
@@ -35552,7 +38016,7 @@ bool
 \index{rank\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{rank\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id118}}
+\phantomsection\label{\detokenize{reference/api_index:id122}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_specs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Tuple\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35562,7 +38026,7 @@ bool
 \index{rename\_map (py3plex.dsl.SelectStmt attribute)@\spxentry{rename\_map}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id119}}
+\phantomsection\label{\detokenize{reference/api_index:id123}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rename\_map}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35572,7 +38036,7 @@ bool
 \index{select\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{select\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id120}}
+\phantomsection\label{\detokenize{reference/api_index:id124}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{select\_cols}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35582,7 +38046,7 @@ bool
 \index{summarize\_aggs (py3plex.dsl.SelectStmt attribute)@\spxentry{summarize\_aggs}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id121}}
+\phantomsection\label{\detokenize{reference/api_index:id125}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{summarize\_aggs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35592,7 +38056,7 @@ bool
 \index{target (py3plex.dsl.SelectStmt attribute)@\spxentry{target}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id122}}
+\phantomsection\label{\detokenize{reference/api_index:id126}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Target}]{\sphinxcrossref{Target}}}}}}
@@ -35602,7 +38066,7 @@ bool
 \index{temporal\_context (py3plex.dsl.SelectStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id123}}
+\phantomsection\label{\detokenize{reference/api_index:id127}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{temporal\_context}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.TemporalContext}]{\sphinxcrossref{TemporalContext}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35612,7 +38076,7 @@ bool
 \index{where (py3plex.dsl.SelectStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id124}}
+\phantomsection\label{\detokenize{reference/api_index:id128}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{where}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ConditionExpr}]{\sphinxcrossref{ConditionExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35622,7 +38086,7 @@ bool
 \index{zscore\_attrs (py3plex.dsl.SelectStmt attribute)@\spxentry{zscore\_attrs}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id125}}
+\phantomsection\label{\detokenize{reference/api_index:id129}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{zscore\_attrs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35709,7 +38173,7 @@ Dict{[}str, Any{]}
 \index{kind (py3plex.dsl.SpecialPredicate attribute)@\spxentry{kind}\spxextra{py3plex.dsl.SpecialPredicate attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id126}}
+\phantomsection\label{\detokenize{reference/api_index:id130}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{kind}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -35719,7 +38183,7 @@ Dict{[}str, Any{]}
 \index{params (py3plex.dsl.SpecialPredicate attribute)@\spxentry{params}\spxextra{py3plex.dsl.SpecialPredicate attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id127}}
+\phantomsection\label{\detokenize{reference/api_index:id131}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -35785,7 +38249,7 @@ Tuple{[}int, int{]}
 \index{replacement (py3plex.dsl.SuggestedFix attribute)@\spxentry{replacement}\spxextra{py3plex.dsl.SuggestedFix attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id128}}
+\phantomsection\label{\detokenize{reference/api_index:id132}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{replacement}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -35795,7 +38259,7 @@ Tuple{[}int, int{]}
 \index{span (py3plex.dsl.SuggestedFix attribute)@\spxentry{span}\spxextra{py3plex.dsl.SuggestedFix attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id129}}
+\phantomsection\label{\detokenize{reference/api_index:id133}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{span}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Tuple\DUrole{p}{{[}}int\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}}}}
@@ -35956,7 +38420,7 @@ str | None
 \index{kind (py3plex.dsl.TemporalContext attribute)@\spxentry{kind}\spxextra{py3plex.dsl.TemporalContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id130}}
+\phantomsection\label{\detokenize{reference/api_index:id134}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{kind}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -35966,7 +38430,7 @@ str | None
 \index{range\_name (py3plex.dsl.TemporalContext attribute)@\spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id131}}
+\phantomsection\label{\detokenize{reference/api_index:id135}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{range\_name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35976,7 +38440,7 @@ str | None
 \index{t0 (py3plex.dsl.TemporalContext attribute)@\spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id132}}
+\phantomsection\label{\detokenize{reference/api_index:id136}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{t0}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -35986,7 +38450,7 @@ str | None
 \index{t1 (py3plex.dsl.TemporalContext attribute)@\spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id133}}
+\phantomsection\label{\detokenize{reference/api_index:id137}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{t1}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -36420,7 +38884,7 @@ str | None
 \index{export\_target (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id134}}
+\phantomsection\label{\detokenize{reference/api_index:id138}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{export\_target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -36430,7 +38894,7 @@ str | None
 \index{limit (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id135}}
+\phantomsection\label{\detokenize{reference/api_index:id139}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{limit}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -36440,7 +38904,7 @@ str | None
 \index{measures (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id136}}
+\phantomsection\label{\detokenize{reference/api_index:id140}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{measures}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -36450,7 +38914,7 @@ str | None
 \index{order\_by (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id137}}
+\phantomsection\label{\detokenize{reference/api_index:id141}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{order\_by}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.OrderItem}]{\sphinxcrossref{OrderItem}}}\DUrole{p}{{]}}}}}
@@ -36460,7 +38924,7 @@ str | None
 \index{process\_ref (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{process\_ref}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id138}}
+\phantomsection\label{\detokenize{reference/api_index:id142}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{process\_ref}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -36470,7 +38934,7 @@ str | None
 \index{temporal\_context (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id139}}
+\phantomsection\label{\detokenize{reference/api_index:id143}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{temporal\_context}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.TemporalContext}]{\sphinxcrossref{TemporalContext}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -36480,7 +38944,7 @@ str | None
 \index{where (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id140}}
+\phantomsection\label{\detokenize{reference/api_index:id144}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{where}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ConditionExpr}]{\sphinxcrossref{ConditionExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -38050,7 +40514,7 @@ str
 \index{BOOTSTRAP (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id141}}
+\phantomsection\label{\detokenize{reference/api_index:id145}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{BOOTSTRAP}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}bootstrap\textquotesingle{}}}}
@@ -38060,7 +40524,7 @@ str
 \index{JACKKNIFE (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id142}}
+\phantomsection\label{\detokenize{reference/api_index:id146}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{JACKKNIFE}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}jackknife\textquotesingle{}}}}
@@ -38070,7 +40534,7 @@ str
 \index{PERTURBATION (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id143}}
+\phantomsection\label{\detokenize{reference/api_index:id147}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}perturbation\textquotesingle{}}}}
@@ -38080,7 +40544,7 @@ str
 \index{SEED (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id144}}
+\phantomsection\label{\detokenize{reference/api_index:id148}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{SEED}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -38498,7 +40962,7 @@ Default resampling strategy.
 \index{default\_n\_runs (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id145}}
+\phantomsection\label{\detokenize{reference/api_index:id149}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_n\_runs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }50}}}
@@ -38508,7 +40972,7 @@ Default resampling strategy.
 \index{default\_resampling (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id146}}
+\phantomsection\label{\detokenize{reference/api_index:id150}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_resampling}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.ResamplingStrategy}]{\sphinxcrossref{ResamplingStrategy}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -38518,7 +40982,7 @@ Default resampling strategy.
 \index{mode (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id147}}
+\phantomsection\label{\detokenize{reference/api_index:id151}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.UncertaintyMode}]{\sphinxcrossref{UncertaintyMode}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -38603,7 +41067,7 @@ str
 \index{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id148}}
+\phantomsection\label{\detokenize{reference/api_index:id152}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{AUTO}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}auto\textquotesingle{}}}}
@@ -38613,7 +41077,7 @@ str
 \index{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id149}}
+\phantomsection\label{\detokenize{reference/api_index:id153}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{OFF}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -38623,7 +41087,7 @@ str
 \index{ON (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id150}}
+\phantomsection\label{\detokenize{reference/api_index:id154}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ON}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}on\textquotesingle{}}}}
@@ -39147,7 +41611,7 @@ str
 \index{BOOTSTRAP (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id151}}
+\phantomsection\label{\detokenize{reference/api_index:id155}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{BOOTSTRAP}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}bootstrap\textquotesingle{}}}}
@@ -39157,7 +41621,7 @@ str
 \index{JACKKNIFE (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id152}}
+\phantomsection\label{\detokenize{reference/api_index:id156}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{JACKKNIFE}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}jackknife\textquotesingle{}}}}
@@ -39167,7 +41631,7 @@ str
 \index{PERTURBATION (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id153}}
+\phantomsection\label{\detokenize{reference/api_index:id157}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}perturbation\textquotesingle{}}}}
@@ -39177,7 +41641,7 @@ str
 \index{SEED (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id154}}
+\phantomsection\label{\detokenize{reference/api_index:id158}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{SEED}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -39595,7 +42059,7 @@ Default resampling strategy.
 \index{default\_n\_runs (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id155}}
+\phantomsection\label{\detokenize{reference/api_index:id159}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_n\_runs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }50}}}
@@ -39605,7 +42069,7 @@ Default resampling strategy.
 \index{default\_resampling (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id156}}
+\phantomsection\label{\detokenize{reference/api_index:id160}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_resampling}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.ResamplingStrategy}]{\sphinxcrossref{ResamplingStrategy}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -39615,7 +42079,7 @@ Default resampling strategy.
 \index{mode (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id157}}
+\phantomsection\label{\detokenize{reference/api_index:id161}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.UncertaintyMode}]{\sphinxcrossref{UncertaintyMode}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -39700,7 +42164,7 @@ str
 \index{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id158}}
+\phantomsection\label{\detokenize{reference/api_index:id162}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{AUTO}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}auto\textquotesingle{}}}}
@@ -39710,7 +42174,7 @@ str
 \index{OFF (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id159}}
+\phantomsection\label{\detokenize{reference/api_index:id163}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{OFF}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -39720,7 +42184,7 @@ str
 \index{ON (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id160}}
+\phantomsection\label{\detokenize{reference/api_index:id164}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ON}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}on\textquotesingle{}}}}
