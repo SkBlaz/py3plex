@@ -55,6 +55,12 @@ from .context import (
 from .estimation import (
     estimate_uncertainty,
 )
+from .bootstrap import (
+    bootstrap_metric,
+)
+from .null_models import (
+    null_model_metric,
+)
 
 __all__ = [
     # Core stat types
@@ -71,4 +77,8 @@ __all__ = [
     "uncertainty_enabled",
     # Estimation
     "estimate_uncertainty",
+    # Bootstrap
+    "bootstrap_metric",
+    # Null models
+    "null_model_metric",
 ]
