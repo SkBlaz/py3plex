@@ -544,3 +544,62 @@ def query_advanced_centrality_comparison(network):
                    'pagerank', 'versatility', 'hub_type']
     
     return df[output_cols].round(4)
+
+
+# ============================================================================
+# Note: True Multiplex PageRank Implementation
+# ============================================================================
+# 
+# To add a true multiplex PageRank query (using the dedicated algorithm from
+# py3plex.algorithms.multilayer_algorithms.multirank), implement a wrapper
+# function like this:
+#
+# def query_true_multiplex_pagerank(network, variant="additive", **kwargs):
+#     """True Multiplex PageRank via the dedicated algorithm.
+#     
+#     This is a thin wrapper around the standalone Multiplex PageRank
+#     implementation in py3plex.algorithms.multilayer_algorithms.multirank.
+#     
+#     Args:
+#         network: A multi_layer_network instance
+#         variant: 'neutral', 'additive', 'multiplicative', or 'combined'
+#         **kwargs: Additional parameters for multiplex_pagerank
+#         
+#     Returns:
+#         pd.DataFrame with node scores and per-layer breakdown
+#     """
+#     from py3plex.algorithms.multilayer_algorithms.multirank import multiplex_pagerank
+#     
+#     # Extract layer adjacency matrices from network
+#     layers = _get_layer_names(network)
+#     layer_adjacencies = []
+#     
+#     for layer_name in layers:
+#         # Get the NetworkX graph for this layer
+#         layer_graph = network.get_layer_graph(layer_name)
+#         # Convert to adjacency matrix
+#         adj_matrix = nx.to_numpy_array(layer_graph)
+#         layer_adjacencies.append(adj_matrix)
+#     
+#     # Run multiplex PageRank
+#     result = multiplex_pagerank(layer_adjacencies, variant=variant, **kwargs)
+#     
+#     # Convert to tidy DataFrame
+#     node_scores = result['node_scores']
+#     replica_scores = result['replica_scores']
+#     
+#     # Build DataFrame with node-level scores
+#     rows = []
+#     for i, node in enumerate(network.get_nodes()):
+#         row = {'node': node, 'multiplex_pagerank': node_scores[i]}
+#         for j, layer in enumerate(layers):
+#             row[f'{layer}_pr'] = replica_scores[i, j]
+#         rows.append(row)
+#     
+#     df = pd.DataFrame(rows)
+#     df = df.sort_values('multiplex_pagerank', ascending=False)
+#     
+#     return df.round(4)
+#
+# Note: This requires implementing get_layer_graph() or similar method to extract
+# per-layer adjacency matrices from the multi_layer_network object.
