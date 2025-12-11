@@ -59,6 +59,7 @@ def build_test_network(
 class TestProcessSpecProperties:
     """Property-based tests for ProcessSpec."""
 
+    @pytest.mark.property
     @given(st.floats(min_value=0.01, max_value=0.99, allow_nan=False))
     @settings(max_examples=20)
     def test_sis_call_overrides_beta(self, beta: float):
@@ -67,6 +68,7 @@ class TestProcessSpecProperties:
         assert spec.params["beta"] == beta
         assert spec.name == "SIS"
 
+    @pytest.mark.property
     @given(st.floats(min_value=0.01, max_value=0.99, allow_nan=False))
     @settings(max_examples=20)
     def test_sis_call_overrides_mu(self, mu: float):
@@ -74,6 +76,7 @@ class TestProcessSpecProperties:
         spec = SIS(mu=mu)
         assert spec.params["mu"] == mu
 
+    @pytest.mark.property
     @given(
         st.floats(min_value=0.01, max_value=0.99, allow_nan=False),
         st.floats(min_value=0.01, max_value=0.99, allow_nan=False),
@@ -85,6 +88,7 @@ class TestProcessSpecProperties:
         assert spec.params["beta"] == beta
         assert spec.params["gamma"] == gamma
 
+    @pytest.mark.property
     def test_process_call_creates_new_spec(self):
         """Calling a ProcessSpec should create a new instance."""
         original = SIS
@@ -92,6 +96,7 @@ class TestProcessSpecProperties:
         assert original is not modified
         assert original.params["beta"] != modified.params["beta"]
 
+    @pytest.mark.property
     def test_list_processes_returns_list(self):
         """list_processes() should return a list of process names."""
         processes = list_processes()
@@ -100,12 +105,14 @@ class TestProcessSpecProperties:
         assert "SIR" in processes
         assert "RANDOM_WALK" in processes
 
+    @pytest.mark.property
     def test_get_process_case_insensitive(self):
         """get_process should be case-insensitive."""
         assert get_process("sis").name == "SIS"
         assert get_process("SIS").name == "SIS"
         assert get_process("Sis").name == "SIS"
 
+    @pytest.mark.property
     def test_get_process_unknown_raises(self):
         """get_process with unknown name should raise UnknownProcessError."""
         with pytest.raises(UnknownProcessError):
@@ -120,6 +127,7 @@ class TestProcessSpecProperties:
 class TestSimulationBuilderProperties:
     """Property-based tests for SimulationBuilder."""
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=1000))
     @settings(max_examples=20)
     def test_builder_steps_sets_correctly(self, steps: int):
@@ -127,6 +135,7 @@ class TestSimulationBuilderProperties:
         builder = D.process(SIS()).steps(steps)
         assert builder._stmt.steps == steps
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=100))
     @settings(max_examples=20)
     def test_builder_replicates_sets_correctly(self, replicates: int):
@@ -134,6 +143,7 @@ class TestSimulationBuilderProperties:
         builder = D.process(SIS()).replicates(replicates)
         assert builder._stmt.replicates == replicates
 
+    @pytest.mark.property
     @given(st.integers(min_value=0, max_value=2**31 - 1))
     @settings(max_examples=20)
     def test_builder_seed_sets_correctly(self, seed: int):
@@ -141,18 +151,21 @@ class TestSimulationBuilderProperties:
         builder = D.process(SIS()).seed(seed)
         assert builder._stmt.seed == seed
 
+    @pytest.mark.property
     def test_builder_chaining_returns_self(self):
         """All builder methods should return self for chaining."""
         builder = D.process(SIS())
         result = builder.steps(10).replicates(5).seed(42)
         assert result is builder
 
+    @pytest.mark.property
     def test_builder_with_params_merges(self):
         """with_params() should merge with existing params."""
         builder = D.process(SIS(beta=0.3)).with_params(mu=0.2)
         assert builder._stmt.params["beta"] == 0.3
         assert builder._stmt.params["mu"] == 0.2
 
+    @pytest.mark.property
     @given(st.lists(st.sampled_from(["prevalence", "incidence"]), min_size=1, max_size=2))
     @settings(max_examples=10)
     def test_builder_measure_adds_measures(self, measures: list):
@@ -162,6 +175,7 @@ class TestSimulationBuilderProperties:
         for m in measures:
             assert m in builder._stmt.measures
 
+    @pytest.mark.property
     def test_builder_to_ast_returns_stmt(self):
         """to_ast() should return a SimulationStmt."""
         builder = D.process(SIS()).steps(10)
@@ -169,6 +183,7 @@ class TestSimulationBuilderProperties:
         assert isinstance(stmt, SimulationStmt)
         assert stmt.steps == 10
 
+    @pytest.mark.property
     def test_builder_to_dsl_returns_string(self):
         """to_dsl() should return a DSL string."""
         builder = D.process(SIS()).steps(10).replicates(5)
@@ -185,6 +200,7 @@ class TestSimulationBuilderProperties:
 class TestSimulationExecutionProperties:
     """Property-based tests for simulation execution."""
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=50))
     @settings(max_examples=10)
     def test_result_has_correct_steps(self, steps: int):
@@ -203,6 +219,7 @@ class TestSimulationExecutionProperties:
         # Result data should have shape (replicates, steps)
         assert result.data["prevalence"].shape == (1, steps)
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=10))
     @settings(max_examples=10)
     def test_result_has_correct_replicates(self, replicates: int):
@@ -221,6 +238,7 @@ class TestSimulationExecutionProperties:
         # Result data should have shape (replicates, steps)
         assert result.data["prevalence"].shape == (replicates, 5)
 
+    @pytest.mark.property
     @given(st.integers(min_value=0, max_value=1000))
     @settings(max_examples=10)
     def test_simulation_reproducibility(self, seed: int):
@@ -253,6 +271,7 @@ class TestSimulationExecutionProperties:
             result2.data["prevalence"],
         )
 
+    @pytest.mark.property
     def test_prevalence_bounded_zero_one(self):
         """Prevalence measure should be between 0 and 1."""
         net = build_test_network()
@@ -269,6 +288,7 @@ class TestSimulationExecutionProperties:
         assert np.all(result.data["prevalence"] >= 0)
         assert np.all(result.data["prevalence"] <= 1)
 
+    @pytest.mark.property
     def test_incidence_non_negative(self):
         """Incidence measure should be non-negative."""
         net = build_test_network()
@@ -293,16 +313,19 @@ class TestSimulationExecutionProperties:
 class TestSISProperties:
     """Property-based tests for SIS dynamics."""
 
+    @pytest.mark.property
     def test_sis_state_space_binary(self):
         """SIS process should have binary state space (S, I)."""
         assert len(SIS.state_space["node_state"]) == 2
         assert "S" in SIS.state_space["node_state"]
         assert "I" in SIS.state_space["node_state"]
 
+    @pytest.mark.property
     def test_sis_requires_infected_initial(self):
         """SIS should require 'infected' initial condition."""
         assert "infected" in SIS.required_initial
 
+    @pytest.mark.property
     @given(st.floats(min_value=0.01, max_value=0.5, allow_nan=False))
     @settings(max_examples=10)
     def test_sis_with_mu_one_converges_to_zero(self, initial_infected: float):
@@ -331,6 +354,7 @@ class TestSISProperties:
 class TestSIRProperties:
     """Property-based tests for SIR dynamics."""
 
+    @pytest.mark.property
     def test_sir_state_space_ternary(self):
         """SIR process should have ternary state space (S, I, R)."""
         assert len(SIR.state_space["node_state"]) == 3
@@ -338,10 +362,12 @@ class TestSIRProperties:
         assert "I" in SIR.state_space["node_state"]
         assert "R" in SIR.state_space["node_state"]
 
+    @pytest.mark.property
     def test_sir_requires_infected_initial(self):
         """SIR should require 'infected' initial condition."""
         assert "infected" in SIR.required_initial
 
+    @pytest.mark.property
     def test_sir_monotonically_decreasing_susceptible(self):
         """SIR susceptible count should never increase."""
         net = build_test_network()
@@ -367,10 +393,12 @@ class TestSIRProperties:
 class TestRandomWalkProperties:
     """Property-based tests for RandomWalk dynamics."""
 
+    @pytest.mark.property
     def test_random_walk_requires_start_node(self):
         """RandomWalk should require 'start_node' initial condition."""
         assert "start_node" in RandomWalk.required_initial
 
+    @pytest.mark.property
     def test_random_walk_state_space(self):
         """RandomWalk should have binary state space (absent, present)."""
         assert len(RandomWalk.state_space["node_state"]) == 2
@@ -384,6 +412,7 @@ class TestRandomWalkProperties:
 class TestDynamicsErrorProperties:
     """Property-based tests for dynamics error handling."""
 
+    @pytest.mark.property
     @given(st.integers(min_value=-100, max_value=0))
     def test_invalid_steps_raises(self, steps: int):
         """Invalid steps (<1) should raise SimulationConfigError."""
@@ -396,6 +425,7 @@ class TestDynamicsErrorProperties:
         with pytest.raises(SimulationConfigError):
             run_simulation(net, builder.to_ast())
 
+    @pytest.mark.property
     @given(st.integers(min_value=-100, max_value=0))
     def test_invalid_replicates_raises(self, replicates: int):
         """Invalid replicates (<1) should raise SimulationConfigError."""
@@ -407,6 +437,7 @@ class TestDynamicsErrorProperties:
         with pytest.raises(SimulationConfigError):
             run_simulation(net, builder.to_ast())
 
+    @pytest.mark.property
     def test_missing_initial_condition_raises(self):
         """Missing required initial condition should raise error."""
         net = build_test_network()
@@ -426,6 +457,7 @@ class TestDynamicsErrorProperties:
 class TestSimulationResultProperties:
     """Property-based tests for SimulationResult."""
 
+    @pytest.mark.property
     def test_result_to_pandas_returns_dataframe(self):
         """to_pandas() should return a DataFrame or dict of DataFrames."""
         net = build_test_network()
@@ -450,6 +482,7 @@ class TestSimulationResultProperties:
         assert "t" in df.columns
         assert "value" in df.columns
 
+    @pytest.mark.property
     def test_result_summary_returns_dict(self):
         """summary() should return a dictionary with stats."""
         net = build_test_network()
@@ -468,6 +501,7 @@ class TestSimulationResultProperties:
         assert "measures" in summary
         assert "prevalence" in summary["measures"]
 
+    @pytest.mark.property
     def test_result_data_access_returns_array(self):
         """data[measure] should return the measure array."""
         net = build_test_network()
