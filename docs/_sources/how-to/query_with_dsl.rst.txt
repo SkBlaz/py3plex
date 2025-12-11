@@ -3,6 +3,17 @@ How to Query Multilayer Graphs with the SQL-like DSL
 
 **Goal:** Use py3plex's SQL-inspired Domain-Specific Language (DSL) to query, filter, and analyze multilayer networks. The DSL is a **first-class query language** specifically designed for multilayer graph structures, providing both string syntax for interactive exploration and a type-safe builder API for production code.
 
+.. admonition:: 📓 Run this guide online
+   :class: tip
+
+   You can run this tutorial in your browser without any local installation:
+   
+   .. image:: https://colab.research.google.com/assets/colab-badge.svg
+      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/query_with_dsl.ipynb
+      :alt: Open in Google Colab
+   
+   Or see the full executable example: :download:`example_dsl_builder_api.py <../../examples/network_analysis/example_dsl_builder_api.py>`
+
 **What Makes This DSL Special:**
 
 * **Graph-aware**: Unlike generic query languages, the DSL understands multilayer structures—layers, layer intersections, intralayer vs. interlayer edges, and (node, layer) tuple semantics.
@@ -72,13 +83,29 @@ Basic SELECT
 
 Select all nodes and inspect the result:
 
+.. note:: Where to find this data
+   
+   The examples in this guide use one of the following:
+   
+   * **Built-in data generators** like ``random_generators.random_multilayer_ER(...)`` (recommended for self-contained examples)
+   * **Example files** from the repository at ``datasets/multiedgelist.txt`` or similar
+   * The **built-in datasets module**: ``from py3plex.datasets import fetch_multilayer``
+   
+   For this example, we'll create a simple network programmatically:
+
 .. code-block:: python
 
     from py3plex.core import multinet
     from py3plex.dsl import execute_query
     
+    # Create a simple multilayer network
     network = multinet.multi_layer_network()
-    network.load_network("data.multiedgelist", input_type="multiedgelist")
+    network.add_edges([
+        ['alice', 'social', 'bob', 'social', 1],
+        ['bob', 'social', 'charlie', 'social', 1],
+        ['alice', 'work', 'charlie', 'work', 1],
+        ['bob', 'work', 'dave', 'work', 1],
+    ], input_type="list")
     
     # Get all nodes
     result = execute_query(network, 'SELECT nodes')
@@ -94,10 +121,26 @@ Select all nodes and inspect the result:
 
 .. code-block:: text
 
-    Found 100 nodes
-      ('alice', 'social'): {'degree': 7, 'layer': 'social', 'layer_count': 2}
-      ('bob', 'social'): {'degree': 5, 'layer': 'social', 'layer_count': 1}
-      ('charlie', 'work'): {'degree': 3, 'layer': 'work', 'layer_count': 2}
+    Found 6 nodes
+      ('alice', 'social'): {'degree': 1, 'layer': 'social', 'layer_count': 2}
+      ('bob', 'social'): {'degree': 2, 'layer': 'social', 'layer_count': 2}
+      ('charlie', 'social'): {'degree': 1, 'layer': 'social', 'layer_count': 2}
+      ('alice', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
+      ('bob', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
+
+.. tip:: Loading from files
+   
+   To load from a file in the repository:
+   
+   .. code-block:: python
+   
+       # Using a file from the datasets/ directory
+       network.load_network("datasets/multiedgelist.txt", input_type="multiedgelist")
+       
+       # Or using an absolute path
+       import os
+       path = os.path.join(os.path.dirname(__file__), "datasets", "multiedgelist.txt")
+       network.load_network(path, input_type="multiedgelist")
       ('diana', 'social'): {'degree': 9, 'layer': 'social', 'layer_count': 3}
       ('eve', 'work'): {'degree': 4, 'layer': 'work', 'layer_count': 1}
 
@@ -1781,9 +1824,13 @@ The recommended pattern for combining DSL queries with data transformations:
     from py3plex.dsl import Q, L
     from py3plex.core import multinet
     
-    # Load network
+    # Create a sample network
     network = multinet.multi_layer_network()
-    network.load_network("data.multiedgelist", input_type="multiedgelist")
+    network.add_edges([
+        ['A', 'layer1', 'B', 'layer1', 1],
+        ['B', 'layer1', 'C', 'layer1', 1],
+        ['A', 'layer2', 'C', 'layer2', 1],
+    ], input_type="list")
     
     # Start with DSL query
     result = (
@@ -1973,8 +2020,27 @@ Now that you understand the DSL, explore these related resources:
 4. **Layer algebra is powerful**: ``L["a"] + L["b"]`` (union), ``L["a"] & L["b"]`` (intersection) enable sophisticated multilayer queries.
 5. **Temporal queries** require timestamped edges/nodes but unlock time-series network analysis.
 
-**Community and Support:**
+* **Community and Support:**
 
 * Report issues or request features: https://github.com/SkBlaz/py3plex/issues
 * Example notebooks: https://github.com/SkBlaz/py3plex/tree/main/examples
 * py3plex documentation: https://skblaz.github.io/py3plex/
+
+Further Reading: The Py3plex Book
+----------------------------------
+
+For a deeper theoretical and practical treatment of the DSL and multilayer network concepts, see the **Py3plex Book**:
+
+* **Chapter 8** — Introduction to the DSL: Motivations, design principles, and comparison with alternatives
+* **Chapter 9** — Builder API Deep Dive: Complete reference with advanced patterns
+* **Chapter 10** — Advanced Queries & Workflows: Complex real-world query examples
+
+The book is available as:
+* **PDF** in the repository: ``docs/py3plex_book.pdf``
+* **Online HTML** (if built): ``docs/book/``
+
+The book provides:
+* Formal definitions of multilayer network operations
+* Detailed algorithmic complexity analysis
+* Extensive case studies with real datasets
+* Performance benchmarking and optimization strategies

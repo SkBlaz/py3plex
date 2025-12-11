@@ -71,7 +71,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Dec 10, 2025}
+\date{Dec 11, 2025}
 \release{1.0.1}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -106,6 +106,22 @@
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml}
 %
 \end{footnote}
+
+\bigskip\hrule\bigskip
+
+
+\begin{sphinxadmonition}{note}{Documentation Versions}
+
+\sphinxAtStartPar
+\sphinxstylestrong{You are viewing the documentation for py3plex 1.x} (current stable version). These docs are actively maintained and updated.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Legacy documentation for py3plex 0.8x} is still available at \sphinxurl{https://py3plex.readthedocs.io} but is no longer updated. Most users should use the 1.x docs you’re reading now.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Which version should you use?} See {\hyperref[\detokenize{getting_started/installation:which-docs-to-use}]{\sphinxcrossref{\DUrole{std}{\DUrole{std-ref}{Which Docs Should I Use?}}}}} below for guidance.
+\end{sphinxadmonition}
+
 
 \bigskip\hrule\bigskip
 
@@ -1589,6 +1605,42 @@ This section teaches by \sphinxstylestrong{doing}. Other sections serve differen
 This guide covers all aspects of installing py3plex and setting up your environment.
 
 
+\subsubsection{Which Docs Should I Use?}
+\label{\detokenize{getting_started/installation:which-docs-should-i-use}}\label{\detokenize{getting_started/installation:which-docs-to-use}}
+\sphinxAtStartPar
+\sphinxstylestrong{Most users should use these docs (py3plex 1.x)}, which you’re reading now. They cover:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+The current stable version with modern features (DSL v2, pipelines, workflows)
+
+\item {} 
+\sphinxAtStartPar
+All new APIs, including the SQL\sphinxhyphen{}like query DSL and dplyr\sphinxhyphen{}style operations
+
+\item {} 
+\sphinxAtStartPar
+Actively maintained and updated with examples
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Use the legacy docs (py3plex 0.8x) only if:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+You’re maintaining old code that depends on py3plex 0.8x specifically
+
+\item {} 
+\sphinxAtStartPar
+You need features that were removed in the 1.x rewrite (very rare)
+
+\end{itemize}
+
+\sphinxAtStartPar
+The legacy docs are available at \sphinxurl{https://py3plex.readthedocs.io} but are \sphinxstylestrong{not updated} and may have broken examples. We strongly recommend upgrading to 1.x for new projects.
+
+
 \subsubsection{Installation Modes}
 \label{\detokenize{getting_started/installation:installation-modes}}
 \sphinxAtStartPar
@@ -2334,6 +2386,21 @@ For any errors, please open an issue at \sphinxurl{https://github.com/SkBlaz/py3
 \sphinxAtStartPar
 Create a multilayer network, compute statistics, detect communities, and visualize—all in 10 minutes. This comprehensive tutorial takes you from basic network creation to advanced multilayer analysis.
 
+\begin{sphinxadmonition}{note}{📓 Run this tutorial online}
+
+\sphinxAtStartPar
+You can run this tutorial in your browser without any local installation:
+
+\sphinxhref{https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/tutorial\_10min.ipynb}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e79852128a5f83c92496b9d734ca52d01e009a39/colab-badge}.svg}}
+%
+\begin{footnote}[5]\sphinxAtStartFootnote
+\sphinxnolinkurl{https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/tutorial\_10min.ipynb}
+%
+\end{footnote}
+\sphinxAtStartPar
+Or download the full executable script: \sphinxcode{\sphinxupquote{tutorial\_10min.py}}
+\end{sphinxadmonition}
+
 \sphinxAtStartPar
 \sphinxstylestrong{You will learn:}
 \begin{itemize}
@@ -2391,36 +2458,46 @@ Let’s create a simple multilayer network and explore its basic properties.
 Create from scratch:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Example 1: Creating Your First Multilayer Network\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{+} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{o}{*}\PYG{l+m+mi}{60}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Example 1: Creating a Multilayer Network}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{o}{*}\PYG{l+m+mi}{60}\PYG{p}{)}
 
+\PYG{c+c1}{\PYGZsh{} Create a new multilayer network}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
 
+\PYG{c+c1}{\PYGZsh{} Add edges within layers (this automatically creates nodes)}
 \PYG{c+c1}{\PYGZsh{} Format: [source\PYGZus{}node, source\PYGZus{}layer, target\PYGZus{}node, target\PYGZus{}layer, weight]}
 \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
-    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
-    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Carol}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
-    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
-    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Dave}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}
 \PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{list}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 
+\PYG{c+c1}{\PYGZsh{} Display basic statistics}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{Basic Statistics:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+
 \end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The complete executable version is available at \sphinxcode{\sphinxupquote{examples/getting\_started/tutorial\_10min.py}}.
 
 \sphinxAtStartPar
 \sphinxstylestrong{Output:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-Number of nodes: 6
+Number of nodes: 8
 Number of edges: 4
-Number of unique nodes (as node\PYGZhy{}layer tuples): 6
 Number of unique node IDs (across all layers): 4
 Nodes per layer:
-  Layer \PYGZsq{}friends\PYGZsq{}: 3 nodes
-  Layer \PYGZsq{}colleagues\PYGZsq{}: 3 nodes
+  Layer \PYGZsq{}layer1\PYGZsq{}: 3 nodes
+  Layer \PYGZsq{}layer2\PYGZsq{}: 3 nodes
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Key concept:} The network has 6 node\sphinxhyphen{}layer pairs but only 4 unique people. Alice appears in both layers as \sphinxcode{\sphinxupquote{(\textquotesingle{}Alice\textquotesingle{}, \textquotesingle{}friends\textquotesingle{})}} and \sphinxcode{\sphinxupquote{(\textquotesingle{}Alice\textquotesingle{}, \textquotesingle{}colleagues\textquotesingle{})}}.
+\sphinxstylestrong{Key concept:} The network has node\sphinxhyphen{}layer pairs representing the same node in different layers. For example, node ‘A’ appears as \sphinxcode{\sphinxupquote{(\textquotesingle{}A\textquotesingle{}, \textquotesingle{}layer1\textquotesingle{})}} and \sphinxcode{\sphinxupquote{(\textquotesingle{}A\textquotesingle{}, \textquotesingle{}layer2\textquotesingle{})}}.
 
 \sphinxAtStartPar
 Visualize your network:
@@ -3687,7 +3764,7 @@ For networks with edge attributes:
 Most common format: one edge per line.
 
 \sphinxAtStartPar
-\sphinxstylestrong{File format (example.txt):}
+\sphinxstylestrong{File format (stored as datasets/simple\_multiplex.txt in the repository):}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 Alice friends Bob friends 1.0
@@ -3702,10 +3779,19 @@ Alice colleagues Bob colleagues 1.0
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
 
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Option 1: Load from repository file}
 \PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}
-    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{example.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datasets/simple\PYGZus{}multiplex.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
     \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}
 \PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Option 2: Create from data directly (recommended for examples)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Carol}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{]}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{list}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 
 \PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
 \end{sphinxVerbatim}
@@ -6026,6 +6112,31 @@ See {\hyperref[\detokenize{project/contributing::doc}]{\sphinxcrossref{\DUrole{d
 \sphinxAtStartPar
 \sphinxstylestrong{Prerequisites:} A loaded network (see {\hyperref[\detokenize{how-to/load_and_build_networks::doc}]{\sphinxcrossref{\DUrole{doc}{How to Load and Build Networks}}}}).
 
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+Where to find this data
+
+\sphinxAtStartPar
+Examples in this guide use:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Programmatically created networks} (recommended for self\sphinxhyphen{}contained examples)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Built\sphinxhyphen{}in generators}: \sphinxcode{\sphinxupquote{from py3plex.algorithms import random\_generators}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Example files}: \sphinxcode{\sphinxupquote{datasets/multiedgelist.txt}} in the repository
+
+\end{itemize}
+
+\sphinxAtStartPar
+For reproducibility, we’ll create networks from scratch in most examples.
+\end{sphinxadmonition}
+
 
 \subsubsection{Quick Statistics}
 \label{\detokenize{how-to/compute_statistics:quick-statistics}}
@@ -6035,9 +6146,14 @@ Get an overview of your network:
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
 
-\PYG{c+c1}{\PYGZsh{} Load or create network}
+\PYG{c+c1}{\PYGZsh{} Create a multilayer network}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data.multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{list}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 
 \PYG{c+c1}{\PYGZsh{} Display comprehensive stats}
 \PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
@@ -6047,14 +6163,12 @@ Get an overview of your network:
 \sphinxstylestrong{Expected output:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-Number of nodes: 184
-Number of edges: 1691
-Number of unique node IDs (across all layers): 46
+Number of nodes: 7
+Number of edges: 4
+Number of unique node IDs (across all layers): 4
 Nodes per layer:
-  Layer \PYGZsq{}1\PYGZsq{}: 46 nodes
-  Layer \PYGZsq{}2\PYGZsq{}: 46 nodes
-  Layer \PYGZsq{}3\PYGZsq{}: 46 nodes
-  Layer \PYGZsq{}4\PYGZsq{}: 46 nodes
+  Layer \PYGZsq{}1\PYGZsq{}: 3 nodes
+  Layer \PYGZsq{}2\PYGZsq{}: 3 nodes
 \end{sphinxVerbatim}
 
 
@@ -6410,6 +6524,21 @@ Are high\sphinxhyphen{}degree nodes in layer 1 also high\sphinxhyphen{}degree in
 \label{\detokenize{how-to/run_community_detection:how-to-run-community-detection-on-multilayer-networks}}\label{\detokenize{how-to/run_community_detection::doc}}
 \sphinxAtStartPar
 \sphinxstylestrong{Goal:} This guide demonstrates how to apply community detection algorithms to multilayer networks and interpret their results. Community detection identifies \sphinxstyleemphasis{mesoscale structure}—groups of nodes that are more densely connected internally than to the rest of the network. In multilayer networks, communities can exist within single layers, span multiple layers, or emerge from inter\sphinxhyphen{}layer coupling patterns. This analysis is essential for understanding functional modules, organizational structure, and hierarchical clustering in complex systems.
+
+\begin{sphinxadmonition}{note}{📓 Run this guide online}
+
+\sphinxAtStartPar
+You can run this tutorial in your browser without any local installation:
+
+\sphinxhref{https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/community\_detection.ipynb}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e79852128a5f83c92496b9d734ca52d01e009a39/colab-badge}.svg}}
+%
+\begin{footnote}[6]\sphinxAtStartFootnote
+\sphinxnolinkurl{https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/community\_detection.ipynb}
+%
+\end{footnote}
+\sphinxAtStartPar
+Or see the full executable example: \sphinxcode{\sphinxupquote{example\_community\_detection.py}}
+\end{sphinxadmonition}
 
 \sphinxAtStartPar
 \sphinxstylestrong{Prerequisites:}
@@ -9435,6 +9564,21 @@ Raghavan, U. N., Albert, R., \& Kumara, S. (2007). Near linear time algorithm to
 \sphinxAtStartPar
 This guide presents py3plex as a comprehensive framework for simulating dynamical processes on multilayer networks. We cover epidemic models (SIR, SIS), diffusion processes (random walks), and custom dynamics implementations—all with full multilayer support.
 
+\begin{sphinxadmonition}{note}{📓 Run this guide online}
+
+\sphinxAtStartPar
+You can run this tutorial in your browser without any local installation:
+
+\sphinxhref{https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/simulate\_dynamics.ipynb}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e79852128a5f83c92496b9d734ca52d01e009a39/colab-badge}.svg}}
+%
+\begin{footnote}[7]\sphinxAtStartFootnote
+\sphinxnolinkurl{https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/simulate\_dynamics.ipynb}
+%
+\end{footnote}
+\sphinxAtStartPar
+Or see the full executable example: \sphinxcode{\sphinxupquote{sir\_epidemic.py}}
+\end{sphinxadmonition}
+
 \sphinxAtStartPar
 \sphinxstylestrong{Prerequisites:} A loaded multilayer network (see {\hyperref[\detokenize{how-to/load_and_build_networks::doc}]{\sphinxcrossref{\DUrole{doc}{How to Load and Build Networks}}}}).
 
@@ -11228,6 +11372,28 @@ For more complex simulations (time\sphinxhyphen{}varying parameters, multi\sphin
 \sphinxAtStartPar
 \sphinxstylestrong{Prerequisites:} A loaded network (see {\hyperref[\detokenize{how-to/load_and_build_networks::doc}]{\sphinxcrossref{\DUrole{doc}{How to Load and Build Networks}}}}).
 
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+Where to find this data
+
+\sphinxAtStartPar
+Examples in this guide create networks programmatically for clarity. You can also:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use built\sphinxhyphen{}in generators: \sphinxcode{\sphinxupquote{from py3plex.algorithms import random\_generators}}
+
+\item {} 
+\sphinxAtStartPar
+Load from repository files: \sphinxcode{\sphinxupquote{datasets/multiedgelist.txt}}
+
+\item {} 
+\sphinxAtStartPar
+Fetch real\sphinxhyphen{}world datasets: \sphinxcode{\sphinxupquote{from py3plex.datasets import fetch\_multilayer}}
+
+\end{itemize}
+\end{sphinxadmonition}
+
 
 \subsubsection{Node2Vec Embeddings}
 \label{\detokenize{how-to/run_random_walks:node2vec-embeddings}}
@@ -11238,9 +11404,13 @@ Node2Vec generates vector representations of nodes by simulating biased random w
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{wrappers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{train\PYGZus{}node2vec}
 
-\PYG{c+c1}{\PYGZsh{} Load network}
+\PYG{c+c1}{\PYGZsh{} Create a sample network}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data.multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Charlie}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Charlie}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{list}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 
 \PYG{c+c1}{\PYGZsh{} Train Node2Vec}
 \PYG{n}{embeddings} \PYG{o}{=} \PYG{n}{train\PYGZus{}node2vec}\PYG{p}{(}
@@ -12941,6 +13111,21 @@ Then open \sphinxtitleref{network.graphml} in Gephi or Cytoscape for advanced vi
 \sphinxAtStartPar
 \sphinxstylestrong{Goal:} Use py3plex’s SQL\sphinxhyphen{}inspired Domain\sphinxhyphen{}Specific Language (DSL) to query, filter, and analyze multilayer networks. The DSL is a \sphinxstylestrong{first\sphinxhyphen{}class query language} specifically designed for multilayer graph structures, providing both string syntax for interactive exploration and a type\sphinxhyphen{}safe builder API for production code.
 
+\begin{sphinxadmonition}{note}{📓 Run this guide online}
+
+\sphinxAtStartPar
+You can run this tutorial in your browser without any local installation:
+
+\sphinxhref{https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/query\_with\_dsl.ipynb}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e79852128a5f83c92496b9d734ca52d01e009a39/colab-badge}.svg}}
+%
+\begin{footnote}[8]\sphinxAtStartFootnote
+\sphinxnolinkurl{https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/query\_with\_dsl.ipynb}
+%
+\end{footnote}
+\sphinxAtStartPar
+Or see the full executable example: \sphinxcode{\sphinxupquote{example\_dsl\_builder\_api.py}}
+\end{sphinxadmonition}
+
 \sphinxAtStartPar
 \sphinxstylestrong{What Makes This DSL Special:}
 \begin{itemize}
@@ -13093,12 +13278,43 @@ The string syntax provides a concise, SQL\sphinxhyphen{}like way to express quer
 \sphinxAtStartPar
 Select all nodes and inspect the result:
 
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+Where to find this data
+
+\sphinxAtStartPar
+The examples in this guide use one of the following:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Built\sphinxhyphen{}in data generators} like \sphinxcode{\sphinxupquote{random\_generators.random\_multilayer\_ER(...)}} (recommended for self\sphinxhyphen{}contained examples)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Example files} from the repository at \sphinxcode{\sphinxupquote{datasets/multiedgelist.txt}} or similar
+
+\item {} 
+\sphinxAtStartPar
+The \sphinxstylestrong{built\sphinxhyphen{}in datasets module}: \sphinxcode{\sphinxupquote{from py3plex.datasets import fetch\_multilayer}}
+
+\end{itemize}
+
+\sphinxAtStartPar
+For this example, we’ll create a simple network programmatically:
+\end{sphinxadmonition}
+
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}
 
+\PYG{c+c1}{\PYGZsh{} Create a simple multilayer network}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data.multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{charlie}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{work}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{charlie}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{work}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{work}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dave}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{work}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{list}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 
 \PYG{c+c1}{\PYGZsh{} Get all nodes}
 \PYG{n}{result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
@@ -13115,13 +13331,33 @@ Select all nodes and inspect the result:
 \sphinxstylestrong{Expected output:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-Found 100 nodes
-  (\PYGZsq{}alice\PYGZsq{}, \PYGZsq{}social\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 7, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}social\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 2\PYGZcb{}
-  (\PYGZsq{}bob\PYGZsq{}, \PYGZsq{}social\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 5, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}social\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 1\PYGZcb{}
-  (\PYGZsq{}charlie\PYGZsq{}, \PYGZsq{}work\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 3, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}work\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 2\PYGZcb{}
-  (\PYGZsq{}diana\PYGZsq{}, \PYGZsq{}social\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 9, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}social\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 3\PYGZcb{}
-  (\PYGZsq{}eve\PYGZsq{}, \PYGZsq{}work\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 4, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}work\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 1\PYGZcb{}
+Found 6 nodes
+  (\PYGZsq{}alice\PYGZsq{}, \PYGZsq{}social\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 1, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}social\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 2\PYGZcb{}
+  (\PYGZsq{}bob\PYGZsq{}, \PYGZsq{}social\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 2, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}social\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 2\PYGZcb{}
+  (\PYGZsq{}charlie\PYGZsq{}, \PYGZsq{}social\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 1, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}social\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 2\PYGZcb{}
+  (\PYGZsq{}alice\PYGZsq{}, \PYGZsq{}work\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 1, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}work\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 2\PYGZcb{}
+  (\PYGZsq{}bob\PYGZsq{}, \PYGZsq{}work\PYGZsq{}): \PYGZob{}\PYGZsq{}degree\PYGZsq{}: 1, \PYGZsq{}layer\PYGZsq{}: \PYGZsq{}work\PYGZsq{}, \PYGZsq{}layer\PYGZus{}count\PYGZsq{}: 2\PYGZcb{}
 \end{sphinxVerbatim}
+
+\begin{sphinxadmonition}{tip}{Tip:}
+\sphinxAtStartPar
+Loading from files
+
+\sphinxAtStartPar
+To load from a file in the repository:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+ \PYG{c+c1}{\PYGZsh{} Using a file from the datasets/ directory}
+ \PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datasets/multiedgelist.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+ \PYG{c+c1}{\PYGZsh{} Or using an absolute path}
+ \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{os}
+ \PYG{n}{path} \PYG{o}{=} \PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}\PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{dirname}\PYG{p}{(}\PYG{n+nv+vm}{\PYGZus{}\PYGZus{}file\PYGZus{}\PYGZus{}}\PYG{p}{)}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datasets}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+ \PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{n}{path}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{diana}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{9}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer\PYGZus{}count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{3}\PYG{p}{\PYGZcb{}}
+\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{eve}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{work}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{4}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{work}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer\PYGZus{}count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}}
+\end{sphinxVerbatim}
+\end{sphinxadmonition}
 
 \sphinxAtStartPar
 \sphinxstylestrong{Note:} Keys are \sphinxcode{\sphinxupquote{(node, layer)}} tuples representing node\sphinxhyphen{}layer pairs. The \sphinxcode{\sphinxupquote{layer\_count}} attribute indicates how many layers the node appears in across the entire network.
@@ -15382,9 +15618,13 @@ The recommended pattern for combining DSL queries with data transformations:
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
 
-\PYG{c+c1}{\PYGZsh{} Load network}
+\PYG{c+c1}{\PYGZsh{} Create a sample network}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data.multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{list}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 
 \PYG{c+c1}{\PYGZsh{} Start with DSL query}
 \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
@@ -15760,10 +16000,11 @@ Now that you understand the DSL, explore these related resources:
 \sphinxstylestrong{Temporal queries} require timestamped edges/nodes but unlock time\sphinxhyphen{}series network analysis.
 
 \end{enumerate}
-
+\begin{itemize}
+\item {} 
 \sphinxAtStartPar
 \sphinxstylestrong{Community and Support:}
-\begin{itemize}
+
 \item {} 
 \sphinxAtStartPar
 Report issues or request features: \sphinxurl{https://github.com/SkBlaz/py3plex/issues}
@@ -15777,6 +16018,38 @@ Example notebooks: \sphinxurl{https://github.com/SkBlaz/py3plex/tree/main/exampl
 py3plex documentation: \sphinxurl{https://skblaz.github.io/py3plex/}
 
 \end{itemize}
+
+
+\subsubsection{Further Reading: The Py3plex Book}
+\label{\detokenize{how-to/query_with_dsl:further-reading-the-py3plex-book}}
+\sphinxAtStartPar
+For a deeper theoretical and practical treatment of the DSL and multilayer network concepts, see the \sphinxstylestrong{Py3plex Book}:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Chapter 8} — Introduction to the DSL: Motivations, design principles, and comparison with alternatives
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Chapter 9} — Builder API Deep Dive: Complete reference with advanced patterns
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Chapter 10} — Advanced Queries \& Workflows: Complex real\sphinxhyphen{}world query examples
+
+\end{itemize}
+
+\sphinxAtStartPar
+The book is available as:
+* \sphinxstylestrong{PDF} in the repository: \sphinxcode{\sphinxupquote{docs/py3plex\_book.pdf}}
+* \sphinxstylestrong{Online HTML} (if built): \sphinxcode{\sphinxupquote{docs/book/}}
+
+\sphinxAtStartPar
+The book provides:
+* Formal definitions of multilayer network operations
+* Detailed algorithmic complexity analysis
+* Extensive case studies with real datasets
+* Performance benchmarking and optimization strategies
 
 \sphinxstepscope
 
@@ -61125,7 +61398,7 @@ Complete working examples and analysis recipes.
 \label{\detokenize{examples/index:examples-recipes}}\label{\detokenize{examples/index::doc}}
 \sphinxAtStartPar
 Complete working examples demonstrating py3plex capabilities. All examples are available in the \sphinxhref{https://github.com/SkBlaz/py3plex/tree/master/examples}{examples/ directory}%
-\begin{footnote}[5]\sphinxAtStartFootnote
+\begin{footnote}[9]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
 %
 \end{footnote} of the repository.
@@ -61668,6 +61941,136 @@ See \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../user\_guide/dsl}}} for full D
 \sphinxcode{\sphinxupquote{example\_batch\_processing.py}} \sphinxhyphen{} Batch processing with CLI
 
 \end{itemize}
+
+
+\subsubsection{Case Studies: End\sphinxhyphen{}to\sphinxhyphen{}End Workflows}
+\label{\detokenize{examples/index:case-studies-end-to-end-workflows}}
+\sphinxAtStartPar
+\sphinxstylestrong{Complete domain\sphinxhyphen{}specific analysis pipelines} with interpretation. Each case study follows a standard workflow: Data Import \(\rightarrow\) Stats \(\rightarrow\) Analysis \(\rightarrow\) Visualization \(\rightarrow\) Interpretation.
+
+\sphinxAtStartPar
+All case studies are in the \sphinxcode{\sphinxupquote{examples/case\_studies/}} directory. See the \sphinxhref{https://github.com/SkBlaz/py3plex/tree/master/examples/case\_studies/README.md}{Case Studies README}%
+\begin{footnote}[10]\sphinxAtStartFootnote
+\sphinxnolinkurl{https://github.com/SkBlaz/py3plex/tree/master/examples/case\_studies/README.md}
+%
+\end{footnote} for complete documentation.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Biological Networks} — 🟡 Intermediate
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{biological\_networks.py}} \sphinxhyphen{} Protein\sphinxhyphen{}gene\sphinxhyphen{}disease multilayer network
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Analyzes how protein interactions, gene regulation, and diseases interconnect
+
+\item {} 
+\sphinxAtStartPar
+Identifies hub proteins (e.g., TP53) as potential drug targets
+
+\item {} 
+\sphinxAtStartPar
+Detects functional biological modules through community detection
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layers:} protein (PPI), gene (regulation), disease (associations)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Key techniques:} Multi\sphinxhyphen{}layer centrality, cross\sphinxhyphen{}layer communities
+
+\end{itemize}
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Social Networks} — 🟢 Beginner
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{social\_networks.py}} \sphinxhyphen{} Multi\sphinxhyphen{}platform social media analysis
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Identifies cross\sphinxhyphen{}platform influencers
+
+\item {} 
+\sphinxAtStartPar
+Compares behavior across Facebook, Twitter, LinkedIn
+
+\item {} 
+\sphinxAtStartPar
+Detects social communities spanning multiple platforms
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layers:} facebook (friends), twitter (followers), linkedin (professional)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Key techniques:} Influence metrics, platform comparison
+
+\end{itemize}
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Transportation Networks} — 🟡 Intermediate
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{transportation\_networks.py}} \sphinxhyphen{} Multi\sphinxhyphen{}modal urban transport
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Identifies critical transfer hubs
+
+\item {} 
+\sphinxAtStartPar
+Computes accessibility metrics for urban planning
+
+\item {} 
+\sphinxAtStartPar
+Detects service zones and coverage gaps
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layers:} bus (coverage), metro (backbone), bike (short trips)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Key techniques:} Accessibility analysis, hub identification
+
+\end{itemize}
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Using Case Studies:}
+
+\sphinxAtStartPar
+Each case study is:
+* \sphinxstylestrong{Self\sphinxhyphen{}contained} — Generates synthetic data, no external files needed
+* \sphinxstylestrong{Structured} — Follows 4\sphinxhyphen{}step pipeline (Import \(\rightarrow\) Stats \(\rightarrow\) Pipeline \(\rightarrow\) Viz)
+* \sphinxstylestrong{Interpretable} — Extensive domain\sphinxhyphen{}specific commentary on results
+* \sphinxstylestrong{Adaptable} — Designed as templates for your own data
+
+\sphinxAtStartPar
+Run a case study:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+python\PYG{+w}{ }examples/case\PYGZus{}studies/biological\PYGZus{}networks.py
+python\PYG{+w}{ }examples/case\PYGZus{}studies/social\PYGZus{}networks.py
+python\PYG{+w}{ }examples/case\PYGZus{}studies/transportation\PYGZus{}networks.py
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+See also:
+* \sphinxstylestrong{Book Chapter 12\sphinxhyphen{}14} — Extended case studies with theoretical background
+* \sphinxstylestrong{Notebooks} — Interactive versions (coming soon)
 
 
 \subsubsection{Real\sphinxhyphen{}World Datasets}
@@ -65146,7 +65549,7 @@ See {\hyperref[\detokenize{project/citing::doc}]{\sphinxcrossref{\DUrole{doc}{Ci
 \label{\detokenize{project/changelog:changelog}}\label{\detokenize{project/changelog::doc}}
 \sphinxAtStartPar
 This page documents the release history of py3plex. For the most up\sphinxhyphen{}to\sphinxhyphen{}date information, see \sphinxhref{https://github.com/SkBlaz/py3plex/releases}{GitHub Releases}%
-\begin{footnote}[6]\sphinxAtStartFootnote
+\begin{footnote}[11]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/releases}
 %
 \end{footnote}.
@@ -65754,11 +66157,11 @@ See {\hyperref[\detokenize{project/contributing::doc}]{\sphinxcrossref{\DUrole{d
 \label{\detokenize{project/roadmap:roadmap-vision}}\label{\detokenize{project/roadmap::doc}}
 \sphinxAtStartPar
 This page outlines the vision and planned development for py3plex. For the latest updates, see \sphinxhref{https://github.com/SkBlaz/py3plex/releases}{GitHub Releases}%
-\begin{footnote}[7]\sphinxAtStartFootnote
+\begin{footnote}[12]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/releases}
 %
 \end{footnote} and \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[8]\sphinxAtStartFootnote
+\begin{footnote}[13]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -65955,7 +66358,7 @@ Additional domain\sphinxhyphen{}specific toolkits (bioinformatics, social, trans
 
 \sphinxAtStartPar
 \sphinxstylestrong{Note:} Feature priorities may shift based on community feedback and research developments. Track specific feature requests and vote on priorities through \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[9]\sphinxAtStartFootnote
+\begin{footnote}[14]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -66020,7 +66423,7 @@ Citing your research in the codebase
 \label{\detokenize{project/roadmap:community-requests}}
 \sphinxAtStartPar
 The following features have been requested by the community. For the full list and to vote on priorities, see \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[10]\sphinxAtStartFootnote
+\begin{footnote}[15]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -67016,7 +67419,7 @@ See \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{architecture}}} for system archi
 \item {} 
 \sphinxAtStartPar
 Browse \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{existing issues}%
-\begin{footnote}[11]\sphinxAtStartFootnote
+\begin{footnote}[16]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}
@@ -67024,7 +67427,7 @@ Browse \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{existing issues}%
 \item {} 
 \sphinxAtStartPar
 Check \sphinxhref{https://github.com/SkBlaz/py3plex/issues?q=is\%3Aissue+is\%3Aopen+label\%3A\%22good+first+issue\%22}{good first issues}%
-\begin{footnote}[12]\sphinxAtStartFootnote
+\begin{footnote}[17]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues?q=is\%3Aissue+is\%3Aopen+label\%3A\%22good+first+issue\%22}
 %
 \end{footnote}
@@ -68408,7 +68811,7 @@ We maintain a list of publications using py3plex to showcase applications and bu
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex GitHub}%
-\begin{footnote}[13]\sphinxAtStartFootnote
+\begin{footnote}[18]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} \sphinxhyphen{} Source code and issues
@@ -68416,7 +68819,7 @@ We maintain a list of publications using py3plex to showcase applications and bu
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://doi.org/10.1007/s41109-019-0203-7}{Applied Network Science paper}%
-\begin{footnote}[14]\sphinxAtStartFootnote
+\begin{footnote}[19]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://doi.org/10.1007/s41109-019-0203-7}
 %
 \end{footnote} \sphinxhyphen{} Primary publication
@@ -69568,7 +69971,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://skblaz.github.io/py3plex/}{Py3plex Documentation}%
-\begin{footnote}[15]\sphinxAtStartFootnote
+\begin{footnote}[20]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://skblaz.github.io/py3plex/}
 %
 \end{footnote}
@@ -69580,7 +69983,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.docker.com/}{Docker Documentation}%
-\begin{footnote}[16]\sphinxAtStartFootnote
+\begin{footnote}[21]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.docker.com/}
 %
 \end{footnote}
@@ -69588,7 +69991,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.docker.com/compose/}{Docker Compose Documentation}%
-\begin{footnote}[17]\sphinxAtStartFootnote
+\begin{footnote}[22]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.docker.com/compose/}
 %
 \end{footnote}
@@ -69596,7 +69999,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md}{DOCKER.md}%
-\begin{footnote}[18]\sphinxAtStartFootnote
+\begin{footnote}[23]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md}
 %
 \end{footnote} \sphinxhyphen{} Main Docker guide in the repository
@@ -70717,7 +71120,7 @@ For networks \textgreater{}100k nodes, consider:
 
 \sphinxAtStartPar
 For performance issues, open an issue on \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[19]\sphinxAtStartFootnote
+\begin{footnote}[24]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -71514,7 +71917,7 @@ GUI tests run automatically on GitHub Actions for any changes to the \sphinxcode
 
 \sphinxhref{https://github.com/SkBlaz/py3plex/actions/workflows/gui-tests.yml}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e88da8a94cd277889f5a6d7d93e54df14ae68fa5/badge}.svg}}
 %
-\begin{footnote}[20]\sphinxAtStartFootnote
+\begin{footnote}[25]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/actions/workflows/gui-tests.yml}
 %
 \end{footnote}
@@ -71782,7 +72185,7 @@ curl\PYG{+w}{ }http://localhost:8080/api/graphs/\PYG{n+nv}{\PYGZdl{}GRAPH\PYGZus
 \label{\detokenize{gui/gui_user_guide:contributing}}
 \sphinxAtStartPar
 This GUI is part of the \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex}%
-\begin{footnote}[21]\sphinxAtStartFootnote
+\begin{footnote}[26]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} project.
@@ -71837,7 +72240,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex}%
-\begin{footnote}[22]\sphinxAtStartFootnote
+\begin{footnote}[27]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} \sphinxhyphen{} Multilayer network analysis
@@ -71845,7 +72248,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://fastapi.tiangolo.com/}{FastAPI}%
-\begin{footnote}[23]\sphinxAtStartFootnote
+\begin{footnote}[28]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://fastapi.tiangolo.com/}
 %
 \end{footnote} \sphinxhyphen{} Modern Python web framework
@@ -71853,7 +72256,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.celeryproject.org/}{Celery}%
-\begin{footnote}[24]\sphinxAtStartFootnote
+\begin{footnote}[29]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.celeryproject.org/}
 %
 \end{footnote} \sphinxhyphen{} Distributed task queue
@@ -71861,7 +72264,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://react.dev/}{React}%
-\begin{footnote}[25]\sphinxAtStartFootnote
+\begin{footnote}[30]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://react.dev/}
 %
 \end{footnote} \sphinxhyphen{} UI library
@@ -71869,7 +72272,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://vitejs.dev/}{Vite}%
-\begin{footnote}[26]\sphinxAtStartFootnote
+\begin{footnote}[31]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://vitejs.dev/}
 %
 \end{footnote} \sphinxhyphen{} Frontend build tool
@@ -71877,7 +72280,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://tailwindcss.com/}{Tailwind CSS}%
-\begin{footnote}[27]\sphinxAtStartFootnote
+\begin{footnote}[32]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://tailwindcss.com/}
 %
 \end{footnote} \sphinxhyphen{} Utility\sphinxhyphen{}first CSS
@@ -71898,7 +72301,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxstylestrong{py3plex Paper}: \sphinxhref{https://doi.org/10.1007/s41109-019-0203-7}{Applied Network Science 2019}%
-\begin{footnote}[28]\sphinxAtStartFootnote
+\begin{footnote}[33]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://doi.org/10.1007/s41109-019-0203-7}
 %
 \end{footnote}

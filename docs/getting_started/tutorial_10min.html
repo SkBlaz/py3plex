@@ -160,6 +160,13 @@
   <section id="minute-tutorial">
 <h1>10-Minute Tutorial<a class="headerlink" href="#minute-tutorial" title="Link to this heading"></a></h1>
 <p>Create a multilayer network, compute statistics, detect communities, and visualize—all in 10 minutes. This comprehensive tutorial takes you from basic network creation to advanced multilayer analysis.</p>
+<div class="tip admonition">
+<p class="admonition-title">📓 Run this tutorial online</p>
+<p>You can run this tutorial in your browser without any local installation:</p>
+<a class="reference external image-reference" href="https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/tutorial_10min.ipynb"><img alt="Open in Google Colab" src="https://colab.research.google.com/assets/colab-badge.svg" />
+</a>
+<p>Or download the full executable script: <a class="reference download internal" download="" href="../_downloads/896b3638d484addf6b5766d377915175/tutorial_10min.py"><code class="xref download docutils literal notranslate"><span class="pre">tutorial_10min.py</span></code></a></p>
+</div>
 <p><strong>You will learn:</strong></p>
 <ul class="simple">
 <li><p>Create multilayer networks from scratch and load from files</p></li>
@@ -182,32 +189,40 @@
 <h2>Part 1: Your First Network (2 min)<a class="headerlink" href="#part-1-your-first-network-2-min" title="Link to this heading"></a></h2>
 <p>Let’s create a simple multilayer network and explore its basic properties.</p>
 <p>Create from scratch:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Example 1: Creating Your First Multilayer Network&quot;&quot;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Example 1: Creating a Multilayer Network&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
 
+<span class="c1"># Create a new multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
+<span class="c1"># Add edges within layers (this automatically creates nodes)</span>
 <span class="c1"># Format: [source_node, source_layer, target_node, target_layer, weight]</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
+<span class="c1"># Display basic statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Basic Statistics:&quot;</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
 </pre></div>
 </div>
+<p>The complete executable version is available at <code class="docutils literal notranslate"><span class="pre">examples/getting_started/tutorial_10min.py</span></code>.</p>
 <p><strong>Output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 6
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 8
 Number of edges: 4
-Number of unique nodes (as node-layer tuples): 6
 Number of unique node IDs (across all layers): 4
 Nodes per layer:
-  Layer &#39;friends&#39;: 3 nodes
-  Layer &#39;colleagues&#39;: 3 nodes
+  Layer &#39;layer1&#39;: 3 nodes
+  Layer &#39;layer2&#39;: 3 nodes
 </pre></div>
 </div>
-<p><strong>Key concept:</strong> The network has 6 node-layer pairs but only 4 unique people. Alice appears in both layers as <code class="docutils literal notranslate"><span class="pre">('Alice',</span> <span class="pre">'friends')</span></code> and <code class="docutils literal notranslate"><span class="pre">('Alice',</span> <span class="pre">'colleagues')</span></code>.</p>
+<p><strong>Key concept:</strong> The network has node-layer pairs representing the same node in different layers. For example, node ‘A’ appears as <code class="docutils literal notranslate"><span class="pre">('A',</span> <span class="pre">'layer1')</span></code> and <code class="docutils literal notranslate"><span class="pre">('A',</span> <span class="pre">'layer2')</span></code>.</p>
 <p>Visualize your network:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
 

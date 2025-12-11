@@ -128,6 +128,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-reading-the-py3plex-book">Further Reading: The Py3plex Book</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
@@ -206,6 +207,13 @@
   <section id="how-to-query-multilayer-graphs-with-the-sql-like-dsl">
 <h1>How to Query Multilayer Graphs with the SQL-like DSL<a class="headerlink" href="#how-to-query-multilayer-graphs-with-the-sql-like-dsl" title="Link to this heading"></a></h1>
 <p><strong>Goal:</strong> Use py3plex’s SQL-inspired Domain-Specific Language (DSL) to query, filter, and analyze multilayer networks. The DSL is a <strong>first-class query language</strong> specifically designed for multilayer graph structures, providing both string syntax for interactive exploration and a type-safe builder API for production code.</p>
+<div class="tip admonition">
+<p class="admonition-title">📓 Run this guide online</p>
+<p>You can run this tutorial in your browser without any local installation:</p>
+<a class="reference external image-reference" href="https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/query_with_dsl.ipynb"><img alt="Open in Google Colab" src="https://colab.research.google.com/assets/colab-badge.svg" />
+</a>
+<p>Or see the full executable example: <a class="reference download internal" download="" href="../_downloads/16ed82c0e4ef3b71b84550a2e3c40481/example_dsl_builder_api.py"><code class="xref download docutils literal notranslate"><span class="pre">example_dsl_builder_api.py</span></code></a></p>
+</div>
 <p><strong>What Makes This DSL Special:</strong></p>
 <ul class="simple">
 <li><p><strong>Graph-aware</strong>: Unlike generic query languages, the DSL understands multilayer structures—layers, layer intersections, intralayer vs. interlayer edges, and (node, layer) tuple semantics.</p></li>
@@ -270,11 +278,28 @@
 <section id="basic-select">
 <h3>Basic SELECT<a class="headerlink" href="#basic-select" title="Link to this heading"></a></h3>
 <p>Select all nodes and inspect the result:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Where to find this data</p>
+<p>The examples in this guide use one of the following:</p>
+<ul class="simple">
+<li><p><strong>Built-in data generators</strong> like <code class="docutils literal notranslate"><span class="pre">random_generators.random_multilayer_ER(...)</span></code> (recommended for self-contained examples)</p></li>
+<li><p><strong>Example files</strong> from the repository at <code class="docutils literal notranslate"><span class="pre">datasets/multiedgelist.txt</span></code> or similar</p></li>
+<li><p>The <strong>built-in datasets module</strong>: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.datasets</span> <span class="pre">import</span> <span class="pre">fetch_multilayer</span></code></p></li>
+</ul>
+<p>For this example, we’ll create a simple network programmatically:</p>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
 
+<span class="c1"># Create a simple multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;dave&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
 <span class="c1"># Get all nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes&#39;</span><span class="p">)</span>
@@ -288,13 +313,29 @@
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 100 nodes
-  (&#39;alice&#39;, &#39;social&#39;): {&#39;degree&#39;: 7, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
-  (&#39;bob&#39;, &#39;social&#39;): {&#39;degree&#39;: 5, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 1}
-  (&#39;charlie&#39;, &#39;work&#39;): {&#39;degree&#39;: 3, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 2}
-  (&#39;diana&#39;, &#39;social&#39;): {&#39;degree&#39;: 9, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 3}
-  (&#39;eve&#39;, &#39;work&#39;): {&#39;degree&#39;: 4, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 1}
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 6 nodes
+  (&#39;alice&#39;, &#39;social&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
+  (&#39;bob&#39;, &#39;social&#39;): {&#39;degree&#39;: 2, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
+  (&#39;charlie&#39;, &#39;social&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
+  (&#39;alice&#39;, &#39;work&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 2}
+  (&#39;bob&#39;, &#39;work&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 2}
 </pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Loading from files</p>
+<p>To load from a file in the repository:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Using a file from the datasets/ directory</span>
+ <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+ <span class="c1"># Or using an absolute path</span>
+ <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+ <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;datasets&quot;</span><span class="p">,</span> <span class="s2">&quot;multiedgelist.txt&quot;</span><span class="p">)</span>
+ <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<span class="p">(</span><span class="s1">&#39;diana&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">):</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_count&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+<span class="p">(</span><span class="s1">&#39;eve&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">):</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_count&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <p><strong>Note:</strong> Keys are <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> tuples representing node-layer pairs. The <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> attribute indicates how many layers the node appears in across the entire network.</p>
 </section>
@@ -1817,9 +1858,13 @@ Layer specialists (exactly 1): 15
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
-<span class="c1"># Load network</span>
+<span class="c1"># Create a sample network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
 <span class="c1"># Start with DSL query</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
@@ -2016,12 +2061,29 @@ community
 <li><p><strong>Layer algebra is powerful</strong>: <code class="docutils literal notranslate"><span class="pre">L[&quot;a&quot;]</span> <span class="pre">+</span> <span class="pre">L[&quot;b&quot;]</span></code> (union), <code class="docutils literal notranslate"><span class="pre">L[&quot;a&quot;]</span> <span class="pre">&amp;</span> <span class="pre">L[&quot;b&quot;]</span></code> (intersection) enable sophisticated multilayer queries.</p></li>
 <li><p><strong>Temporal queries</strong> require timestamped edges/nodes but unlock time-series network analysis.</p></li>
 </ol>
-<p><strong>Community and Support:</strong></p>
 <ul class="simple">
+<li><p><strong>Community and Support:</strong></p></li>
 <li><p>Report issues or request features: <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p></li>
 <li><p>Example notebooks: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/main/examples">https://github.com/SkBlaz/py3plex/tree/main/examples</a></p></li>
 <li><p>py3plex documentation: <a class="reference external" href="https://skblaz.github.io/py3plex/">https://skblaz.github.io/py3plex/</a></p></li>
 </ul>
+</section>
+<section id="further-reading-the-py3plex-book">
+<h2>Further Reading: The Py3plex Book<a class="headerlink" href="#further-reading-the-py3plex-book" title="Link to this heading"></a></h2>
+<p>For a deeper theoretical and practical treatment of the DSL and multilayer network concepts, see the <strong>Py3plex Book</strong>:</p>
+<ul class="simple">
+<li><p><strong>Chapter 8</strong> — Introduction to the DSL: Motivations, design principles, and comparison with alternatives</p></li>
+<li><p><strong>Chapter 9</strong> — Builder API Deep Dive: Complete reference with advanced patterns</p></li>
+<li><p><strong>Chapter 10</strong> — Advanced Queries &amp; Workflows: Complex real-world query examples</p></li>
+</ul>
+<p>The book is available as:
+* <strong>PDF</strong> in the repository: <code class="docutils literal notranslate"><span class="pre">docs/py3plex_book.pdf</span></code>
+* <strong>Online HTML</strong> (if built): <code class="docutils literal notranslate"><span class="pre">docs/book/</span></code></p>
+<p>The book provides:
+* Formal definitions of multilayer network operations
+* Detailed algorithmic complexity analysis
+* Extensive case studies with real datasets
+* Performance benchmarking and optimization strategies</p>
 </section>
 </section>
 

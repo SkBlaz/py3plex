@@ -263,7 +263,7 @@ Nodes per layer:
 <section id="load-edge-lists">
 <h3>Load Edge Lists<a class="headerlink" href="#load-edge-lists" title="Link to this heading"></a></h3>
 <p>Most common format: one edge per line.</p>
-<p><strong>File format (example.txt):</strong></p>
+<p><strong>File format (stored as datasets/simple_multiplex.txt in the repository):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Alice friends Bob friends 1.0
 Bob friends Carol friends 1.0
 Alice colleagues Bob colleagues 1.0
@@ -273,10 +273,19 @@ Alice colleagues Bob colleagues 1.0
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Option 1: Load from repository file</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;example.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;datasets/simple_multiplex.txt&quot;</span><span class="p">,</span>
     <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
 <span class="p">)</span>
+
+<span class="c1"># Option 2: Create from data directly (recommended for examples)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>

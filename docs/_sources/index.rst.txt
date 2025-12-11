@@ -15,6 +15,17 @@ Py3plex: Multilayer Network Analysis
 
 ----
 
+.. admonition:: Documentation Versions
+   :class: note
+
+   **You are viewing the documentation for py3plex 1.x** (current stable version). These docs are actively maintained and updated.
+
+   **Legacy documentation for py3plex 0.8x** is still available at https://py3plex.readthedocs.io but is no longer updated. Most users should use the 1.x docs you're reading now.
+
+   **Which version should you use?** See :ref:`which-docs-to-use` below for guidance.
+
+----
+
 py3plex provides scalable analysis and visualization of multilayer and multiplex networks in Python.
 
 **Key Features:**

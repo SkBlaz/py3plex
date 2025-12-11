@@ -233,6 +233,63 @@ GUI and API
 * ``example_gui_integration.py`` - GUI integration examples
 * ``example_batch_processing.py`` - Batch processing with CLI
 
+Case Studies: End-to-End Workflows
+-----------------------------------
+
+**Complete domain-specific analysis pipelines** with interpretation. Each case study follows a standard workflow: Data Import → Stats → Analysis → Visualization → Interpretation.
+
+All case studies are in the ``examples/case_studies/`` directory. See the `Case Studies README <https://github.com/SkBlaz/py3plex/tree/master/examples/case_studies/README.md>`_ for complete documentation.
+
+**Biological Networks** — 🟡 Intermediate
+
+* ``biological_networks.py`` - Protein-gene-disease multilayer network
+
+  * Analyzes how protein interactions, gene regulation, and diseases interconnect
+  * Identifies hub proteins (e.g., TP53) as potential drug targets
+  * Detects functional biological modules through community detection
+  * **Layers:** protein (PPI), gene (regulation), disease (associations)
+  * **Key techniques:** Multi-layer centrality, cross-layer communities
+
+**Social Networks** — 🟢 Beginner
+
+* ``social_networks.py`` - Multi-platform social media analysis
+
+  * Identifies cross-platform influencers
+  * Compares behavior across Facebook, Twitter, LinkedIn
+  * Detects social communities spanning multiple platforms
+  * **Layers:** facebook (friends), twitter (followers), linkedin (professional)
+  * **Key techniques:** Influence metrics, platform comparison
+
+**Transportation Networks** — 🟡 Intermediate
+
+* ``transportation_networks.py`` - Multi-modal urban transport
+
+  * Identifies critical transfer hubs
+  * Computes accessibility metrics for urban planning
+  * Detects service zones and coverage gaps
+  * **Layers:** bus (coverage), metro (backbone), bike (short trips)
+  * **Key techniques:** Accessibility analysis, hub identification
+
+**Using Case Studies:**
+
+Each case study is:
+* **Self-contained** — Generates synthetic data, no external files needed
+* **Structured** — Follows 4-step pipeline (Import → Stats → Pipeline → Viz)
+* **Interpretable** — Extensive domain-specific commentary on results
+* **Adaptable** — Designed as templates for your own data
+
+Run a case study:
+
+.. code-block:: bash
+
+    python examples/case_studies/biological_networks.py
+    python examples/case_studies/social_networks.py
+    python examples/case_studies/transportation_networks.py
+
+See also:
+* **Book Chapter 12-14** — Extended case studies with theoretical background
+* **Notebooks** — Interactive versions (coming soon)
+
 Real-World Datasets
 -------------------
 

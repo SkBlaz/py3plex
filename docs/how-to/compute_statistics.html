@@ -184,28 +184,42 @@
 <h1>How to Compute Network Statistics<a class="headerlink" href="#how-to-compute-network-statistics" title="Link to this heading"></a></h1>
 <p><strong>Goal:</strong> Calculate metrics that describe the structure of your multilayer network.</p>
 <p><strong>Prerequisites:</strong> A loaded network (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Where to find this data</p>
+<p>Examples in this guide use:</p>
+<ul class="simple">
+<li><p><strong>Programmatically created networks</strong> (recommended for self-contained examples)</p></li>
+<li><p><strong>Built-in generators</strong>: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.algorithms</span> <span class="pre">import</span> <span class="pre">random_generators</span></code></p></li>
+<li><p><strong>Example files</strong>: <code class="docutils literal notranslate"><span class="pre">datasets/multiedgelist.txt</span></code> in the repository</p></li>
+</ul>
+<p>For reproducibility, we’ll create networks from scratch in most examples.</p>
+</div>
 <section id="quick-statistics">
 <h2>Quick Statistics<a class="headerlink" href="#quick-statistics" title="Link to this heading"></a></h2>
 <p>Get an overview of your network:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
-<span class="c1"># Load or create network</span>
+<span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
 <span class="c1"># Display comprehensive stats</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 184
-Number of edges: 1691
-Number of unique node IDs (across all layers): 46
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 7
+Number of edges: 4
+Number of unique node IDs (across all layers): 4
 Nodes per layer:
-  Layer &#39;1&#39;: 46 nodes
-  Layer &#39;2&#39;: 46 nodes
-  Layer &#39;3&#39;: 46 nodes
-  Layer &#39;4&#39;: 46 nodes
+  Layer &#39;1&#39;: 3 nodes
+  Layer &#39;2&#39;: 3 nodes
 </pre></div>
 </div>
 </section>

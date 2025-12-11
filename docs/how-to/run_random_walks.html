@@ -178,15 +178,29 @@
 <h1>How to Run Random Walk Algorithms<a class="headerlink" href="#how-to-run-random-walk-algorithms" title="Link to this heading"></a></h1>
 <p><strong>Goal:</strong> Generate network embeddings and node representations using random walk algorithms.</p>
 <p><strong>Prerequisites:</strong> A loaded network (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Where to find this data</p>
+<p>Examples in this guide create networks programmatically for clarity. You can also:</p>
+<ul class="simple">
+<li><p>Use built-in generators: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.algorithms</span> <span class="pre">import</span> <span class="pre">random_generators</span></code></p></li>
+<li><p>Load from repository files: <code class="docutils literal notranslate"><span class="pre">datasets/multiedgelist.txt</span></code></p></li>
+<li><p>Fetch real-world datasets: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.datasets</span> <span class="pre">import</span> <span class="pre">fetch_multilayer</span></code></p></li>
+</ul>
+</div>
 <section id="node2vec-embeddings">
 <h2>Node2Vec Embeddings<a class="headerlink" href="#node2vec-embeddings" title="Link to this heading"></a></h2>
 <p>Node2Vec generates vector representations of nodes by simulating biased random walks:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_node2vec</span>
 
-<span class="c1"># Load network</span>
+<span class="c1"># Create a sample network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
 <span class="c1"># Train Node2Vec</span>
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span>

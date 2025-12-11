@@ -105,6 +105,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#networkx-integration">NetworkX Integration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#benchmarking">Benchmarking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gui-and-api">GUI and API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#case-studies-end-to-end-workflows">Case Studies: End-to-End Workflows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#real-world-datasets">Real-World Datasets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-examples">Running Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#example-template">Example Template</a></li>
@@ -396,6 +397,62 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">example_gui_integration.py</span></code> - GUI integration examples</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">example_batch_processing.py</span></code> - Batch processing with CLI</p></li>
 </ul>
+</section>
+<section id="case-studies-end-to-end-workflows">
+<h2>Case Studies: End-to-End Workflows<a class="headerlink" href="#case-studies-end-to-end-workflows" title="Link to this heading"></a></h2>
+<p><strong>Complete domain-specific analysis pipelines</strong> with interpretation. Each case study follows a standard workflow: Data Import → Stats → Analysis → Visualization → Interpretation.</p>
+<p>All case studies are in the <code class="docutils literal notranslate"><span class="pre">examples/case_studies/</span></code> directory. See the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples/case_studies/README.md">Case Studies README</a> for complete documentation.</p>
+<p><strong>Biological Networks</strong> — 🟡 Intermediate</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">biological_networks.py</span></code> - Protein-gene-disease multilayer network</p>
+<ul>
+<li><p>Analyzes how protein interactions, gene regulation, and diseases interconnect</p></li>
+<li><p>Identifies hub proteins (e.g., TP53) as potential drug targets</p></li>
+<li><p>Detects functional biological modules through community detection</p></li>
+<li><p><strong>Layers:</strong> protein (PPI), gene (regulation), disease (associations)</p></li>
+<li><p><strong>Key techniques:</strong> Multi-layer centrality, cross-layer communities</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Social Networks</strong> — 🟢 Beginner</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">social_networks.py</span></code> - Multi-platform social media analysis</p>
+<ul>
+<li><p>Identifies cross-platform influencers</p></li>
+<li><p>Compares behavior across Facebook, Twitter, LinkedIn</p></li>
+<li><p>Detects social communities spanning multiple platforms</p></li>
+<li><p><strong>Layers:</strong> facebook (friends), twitter (followers), linkedin (professional)</p></li>
+<li><p><strong>Key techniques:</strong> Influence metrics, platform comparison</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Transportation Networks</strong> — 🟡 Intermediate</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">transportation_networks.py</span></code> - Multi-modal urban transport</p>
+<ul>
+<li><p>Identifies critical transfer hubs</p></li>
+<li><p>Computes accessibility metrics for urban planning</p></li>
+<li><p>Detects service zones and coverage gaps</p></li>
+<li><p><strong>Layers:</strong> bus (coverage), metro (backbone), bike (short trips)</p></li>
+<li><p><strong>Key techniques:</strong> Accessibility analysis, hub identification</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Using Case Studies:</strong></p>
+<p>Each case study is:
+* <strong>Self-contained</strong> — Generates synthetic data, no external files needed
+* <strong>Structured</strong> — Follows 4-step pipeline (Import → Stats → Pipeline → Viz)
+* <strong>Interpretable</strong> — Extensive domain-specific commentary on results
+* <strong>Adaptable</strong> — Designed as templates for your own data</p>
+<p>Run a case study:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/case_studies/biological_networks.py
+python<span class="w"> </span>examples/case_studies/social_networks.py
+python<span class="w"> </span>examples/case_studies/transportation_networks.py
+</pre></div>
+</div>
+<p>See also:
+* <strong>Book Chapter 12-14</strong> — Extended case studies with theoretical background
+* <strong>Notebooks</strong> — Interactive versions (coming soon)</p>
 </section>
 <section id="real-world-datasets">
 <h2>Real-World Datasets<a class="headerlink" href="#real-world-datasets" title="Link to this heading"></a></h2>

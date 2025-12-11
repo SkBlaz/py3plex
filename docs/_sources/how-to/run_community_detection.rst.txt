@@ -3,6 +3,17 @@ How to Run Community Detection on Multilayer Networks
 
 **Goal:** This guide demonstrates how to apply community detection algorithms to multilayer networks and interpret their results. Community detection identifies *mesoscale structure*—groups of nodes that are more densely connected internally than to the rest of the network. In multilayer networks, communities can exist within single layers, span multiple layers, or emerge from inter-layer coupling patterns. This analysis is essential for understanding functional modules, organizational structure, and hierarchical clustering in complex systems.
 
+.. admonition:: 📓 Run this guide online
+   :class: tip
+
+   You can run this tutorial in your browser without any local installation:
+   
+   .. image:: https://colab.research.google.com/assets/colab-badge.svg
+      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/community_detection.ipynb
+      :alt: Open in Google Colab
+   
+   Or see the full executable example: :download:`example_community_detection.py <../../examples/communities/example_community_detection.py>`
+
 **Prerequisites:** 
 
 * A loaded multilayer network (see :doc:`load_and_build_networks`)

@@ -3,6 +3,17 @@ How to Simulate Multilayer Dynamics
 
 This guide presents py3plex as a comprehensive framework for simulating dynamical processes on multilayer networks. We cover epidemic models (SIR, SIS), diffusion processes (random walks), and custom dynamics implementations—all with full multilayer support.
 
+.. admonition:: 📓 Run this guide online
+   :class: tip
+
+   You can run this tutorial in your browser without any local installation:
+   
+   .. image:: https://colab.research.google.com/assets/colab-badge.svg
+      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/simulate_dynamics.ipynb
+      :alt: Open in Google Colab
+   
+   Or see the full executable example: :download:`sir_epidemic.py <../../examples/dynamics/sir_epidemic.py>`
+
 **Prerequisites:** A loaded multilayer network (see :doc:`load_and_build_networks`).
 
 Overview

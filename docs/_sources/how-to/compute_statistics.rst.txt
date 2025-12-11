@@ -5,6 +5,16 @@ How to Compute Network Statistics
 
 **Prerequisites:** A loaded network (see :doc:`load_and_build_networks`).
 
+.. note:: Where to find this data
+   
+   Examples in this guide use:
+   
+   * **Programmatically created networks** (recommended for self-contained examples)
+   * **Built-in generators**: ``from py3plex.algorithms import random_generators``
+   * **Example files**: ``datasets/multiedgelist.txt`` in the repository
+   
+   For reproducibility, we'll create networks from scratch in most examples.
+
 Quick Statistics
 ----------------
 
@@ -14,9 +24,14 @@ Get an overview of your network:
 
     from py3plex.core import multinet
     
-    # Load or create network
+    # Create a multilayer network
     network = multinet.multi_layer_network()
-    network.load_network("data.multiedgelist", input_type="multiedgelist")
+    network.add_edges([
+        ['A', '1', 'B', '1', 1],
+        ['B', '1', 'C', '1', 1],
+        ['A', '2', 'C', '2', 1],
+        ['C', '2', 'D', '2', 1],
+    ], input_type="list")
     
     # Display comprehensive stats
     network.basic_stats()
@@ -25,14 +40,12 @@ Get an overview of your network:
 
 .. code-block:: text
 
-    Number of nodes: 184
-    Number of edges: 1691
-    Number of unique node IDs (across all layers): 46
+    Number of nodes: 7
+    Number of edges: 4
+    Number of unique node IDs (across all layers): 4
     Nodes per layer:
-      Layer '1': 46 nodes
-      Layer '2': 46 nodes
-      Layer '3': 46 nodes
-      Layer '4': 46 nodes
+      Layer '1': 3 nodes
+      Layer '2': 3 nodes
 
 Layer-Specific Statistics
 --------------------------
