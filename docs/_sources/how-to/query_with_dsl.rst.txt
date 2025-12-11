@@ -9,7 +9,7 @@ How to Query Multilayer Graphs with the SQL-like DSL
    You can run this tutorial in your browser without any local installation:
    
    .. image:: https://colab.research.google.com/assets/colab-badge.svg
-      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/query_with_dsl.ipynb
+      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/query_with_dsl.ipynb
       :alt: Open in Google Colab
    
    Or see the full executable example: :download:`example_dsl_builder_api.py <../../examples/network_analysis/example_dsl_builder_api.py>`

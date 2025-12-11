@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.11)  11 DEC 2025 14:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.11)  11 DEC 2025 18:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1996,7 +1996,7 @@ If that doesn't work, type  X <return>  to quit.
 
 Underfull \hbox (badness 10000) in paragraph at lines 6507--6510
 [][][][][]$\T1/lmr/m/n/9 https : / / colab . research . google . com / github /
- SkBlaz / py3plex / blob / main / notebooks / community _ detection .
+ SkBlaz / py3plex / blob / master / notebooks / community _ detection .
  []
 
 
@@ -3003,7 +3003,7 @@ If that doesn't work, type  X <return>  to quit.
 
 Underfull \hbox (badness 10000) in paragraph at lines 9546--9549
 [][][][][]$\T1/lmr/m/n/9 https : / / colab . research . google . com / github /
- SkBlaz / py3plex / blob / main / notebooks / simulate _ dynamics .
+ SkBlaz / py3plex / blob / master / notebooks / simulate _ dynamics .
  []
 
 
@@ -33360,7 +33360,7 @@ texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/
 lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on py3plex.pdf (786 pages, 3892361 bytes).
+Output written on py3plex.pdf (786 pages, 3892367 bytes).
 PDF statistics:
  13045 PDF objects out of 15390 (max. 8388607)
  12083 compressed objects within 121 object streams
