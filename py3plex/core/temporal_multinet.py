@@ -352,6 +352,8 @@ class TemporalMultiLayerNetwork:
     
     def number_of_nodes(self) -> int:
         """Return the total number of nodes in the base network."""
+        if self.base_network is None or self.base_network.core_network is None:
+            return 0
         return self.base_network.core_network.number_of_nodes()
     
     def time_range(self) -> Tuple[Optional[float], Optional[float]]:
