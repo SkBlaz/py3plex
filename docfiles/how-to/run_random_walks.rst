@@ -5,6 +5,14 @@ How to Run Random Walk Algorithms
 
 **Prerequisites:** A loaded network (see :doc:`load_and_build_networks`).
 
+.. note:: Where to find this data
+   
+   Examples in this guide create networks programmatically for clarity. You can also:
+   
+   * Use built-in generators: ``from py3plex.algorithms import random_generators``
+   * Load from repository files: ``datasets/multiedgelist.txt``
+   * Fetch real-world datasets: ``from py3plex.datasets import fetch_multilayer``
+
 Node2Vec Embeddings
 -------------------
 
@@ -15,9 +23,13 @@ Node2Vec generates vector representations of nodes by simulating biased random w
     from py3plex.core import multinet
     from py3plex.wrappers import train_node2vec
     
-    # Load network
+    # Create a sample network
     network = multinet.multi_layer_network()
-    network.load_network("data.multiedgelist", input_type="multiedgelist")
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1],
+        ['Bob', 'friends', 'Charlie', 'friends', 1],
+        ['Alice', 'colleagues', 'Charlie', 'colleagues', 1],
+    ], input_type="list")
     
     # Train Node2Vec
     embeddings = train_node2vec(
