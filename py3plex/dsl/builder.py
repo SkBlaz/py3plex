@@ -41,6 +41,7 @@ from .ast import (
     ParamRef,
     ExecutionPlan,
     TemporalContext,
+    WindowSpec,
 )
 from .result import QueryResult
 
@@ -1031,6 +1032,58 @@ class QueryBuilder:
             kind="during",
             t0=float(t),
             t1=None
+        )
+        return self
+    
+    def window(
+        self,
+        window_size: Union[float, str],
+        step: Optional[Union[float, str]] = None,
+        start: Optional[float] = None,
+        end: Optional[float] = None,
+        aggregation: str = "list",
+    ) -> "QueryBuilder":
+        """Add sliding window specification for temporal analysis.
+        
+        Enables queries that operate over sliding time windows, useful for
+        streaming algorithms and temporal pattern analysis.
+        
+        Args:
+            window_size: Size of each window. Can be:
+                        - Numeric: treated as timestamp units
+                        - String: duration like "7d", "1h", "30m"
+            step: Step size between windows (defaults to window_size for non-overlapping).
+                 Same format as window_size.
+            start: Optional start time for windowing (defaults to network's first timestamp)
+            end: Optional end time for windowing (defaults to network's last timestamp)
+            aggregation: How to aggregate results across windows:
+                        - "list": Return list of per-window results
+                        - "concat": Concatenate DataFrames
+                        - "avg": Average numeric columns
+                        
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> # Non-overlapping windows of size 100
+            >>> Q.nodes().compute("degree").window(100.0).execute(tnet)
+            
+            >>> # Overlapping windows: size 100, step 50
+            >>> Q.nodes().compute("degree").window(100.0, step=50.0).execute(tnet)
+            
+            >>> # Duration strings (for datetime timestamps)
+            >>> Q.edges().window("7d", step="1d").execute(tnet)
+            
+        Note:
+            Window queries require a TemporalMultiLayerNetwork instance.
+            For regular multi_layer_network, an error will be raised.
+        """
+        self._select.window_spec = WindowSpec(
+            window_size=window_size,
+            step=step,
+            start=start,
+            end=end,
+            aggregation=aggregation,
         )
         return self
     

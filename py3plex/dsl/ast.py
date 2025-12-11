@@ -259,6 +259,37 @@ class TemporalContext:
 
 
 @dataclass
+class WindowSpec:
+    """Specification for sliding window iteration over temporal networks.
+    
+    This enables queries that operate over time windows, useful for
+    streaming algorithms and temporal analysis.
+    
+    Attributes:
+        window_size: Size of each time window (numeric or duration string)
+        step: Step size between windows (defaults to window_size for non-overlapping)
+        start: Optional start time for windowing
+        end: Optional end time for windowing
+        aggregation: How to aggregate results across windows ("list", "concat", "avg", etc.)
+    
+    Examples:
+        >>> # Non-overlapping windows of size 100
+        >>> WindowSpec(window_size=100.0)
+        
+        >>> # Overlapping windows: size 100, step 50
+        >>> WindowSpec(window_size=100.0, step=50.0)
+        
+        >>> # Duration string (parsed later)
+        >>> WindowSpec(window_size="7d", step="1d")
+    """
+    window_size: Union[float, str]
+    step: Optional[Union[float, str]] = None
+    start: Optional[float] = None
+    end: Optional[float] = None
+    aggregation: str = "list"  # "list", "concat", "avg", "sum", etc.
+
+
+@dataclass
 class SelectStmt:
     """A SELECT statement.
     
@@ -272,6 +303,7 @@ class SelectStmt:
         export: Optional export target (for result format conversion)
         file_export: Optional file export specification (for writing to files)
         temporal_context: Optional temporal context for time-based queries
+        window_spec: Optional window specification for sliding window analysis
         group_by: List of attribute names to group by (e.g., ["layer"])
         limit_per_group: Optional per-group limit for top-k filtering
         coverage_mode: Coverage filtering mode ("all", "any", "at_least", "exact", "fraction")
@@ -299,6 +331,7 @@ class SelectStmt:
     export: Optional[ExportTarget] = None
     file_export: Optional['ExportSpec'] = None
     temporal_context: Optional['TemporalContext'] = None
+    window_spec: Optional['WindowSpec'] = None
     group_by: List[str] = field(default_factory=list)
     limit_per_group: Optional[int] = None
     coverage_mode: Optional[str] = None
