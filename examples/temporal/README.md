@@ -9,6 +9,8 @@ The temporal multilayer network engine provides:
 1. **TemporalMultiLayerNetwork**: A class for networks with time-stamped edges
 2. **Streaming Algorithms**: Incremental algorithms that process temporal data efficiently
 3. **DSL Extensions**: Query syntax for temporal filtering and windowing
+4. **Duration Parsing**: Support for human-readable duration strings ("7d", "24h", "30m")
+5. **Windowed Query Execution**: Execute queries over sliding time windows with result aggregation
 
 ## Examples
 
@@ -91,6 +93,50 @@ q = (
 )
 ```
 
+### 3. `example_windowed_queries.py` **[NEW]**
+
+Demonstration of windowed query execution with duration parsing:
+
+- Duration string parsing ("7d", "24h", "30m")
+- Windowed query execution with numeric and string durations
+- Result aggregation (list and concat modes)
+- Complex windowed queries with filtering
+- Practical use case: tracking network evolution
+
+**Run:**
+```bash
+python examples/temporal/example_windowed_queries.py
+```
+
+**Key Features Demonstrated:**
+```python
+from py3plex.dsl import Q
+from py3plex.temporal_utils_extended import parse_duration_string
+
+# Parse duration strings
+seconds = parse_duration_string("7d")  # 604800.0
+seconds = parse_duration_string("1.5h")  # 5400.0
+
+# Windowed query with duration string
+q = Q.nodes().compute("degree").window("3d", step="1d")
+result = q.execute(tnet)
+
+# Concatenated results across windows
+q = Q.nodes().compute("degree").window("2d", aggregation="concat")
+result = q.execute(tnet)
+df = result.to_pandas()  # Includes window_start, window_end columns
+
+# Complex windowed query
+q = (
+    Q.nodes()
+    .from_layers(L["social"])
+    .during(0, 7 * 86400.0)  # First week only
+    .compute("degree")
+    .window("2d")
+    .order_by("degree", desc=True)
+)
+```
+
 ## Core Components
 
 ### TemporalMultiLayerNetwork
@@ -139,6 +185,19 @@ Main class for temporal multilayer networks. Wraps a `multi_layer_network` and a
 
 **Location:** `py3plex/dsl/`
 
+#### Duration Parsing **[NEW]**
+
+**Location:** `py3plex/temporal_utils_extended.py`
+
+Parse human-readable duration strings into seconds:
+
+**`parse_duration_string(duration)`** - Convert duration strings to numeric values
+- Supports: weeks (w), days (d), hours (h), minutes (m), seconds (s)
+- Examples: "7d" → 604800.0, "1.5h" → 5400.0, "30m" → 1800.0
+
+**`format_duration(seconds, precision=2)`** - Convert seconds to human-readable string
+- Examples: 604800 → "1w", 90061 → "1d 1h", 3661 → "1h 1m"
+
 #### WindowSpec (AST)
 
 Specification for sliding window queries:
@@ -148,7 +207,7 @@ WindowSpec(
     step: Optional[Union[float, str]] = None,
     start: Optional[float] = None,
     end: Optional[float] = None,
-    aggregation: str = "list"  # "list", "concat", "avg"
+    aggregation: str = "list"  # "list", "concat"
 )
 ```
 
