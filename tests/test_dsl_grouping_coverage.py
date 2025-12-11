@@ -330,18 +330,15 @@ class TestCoverage:
             node_layers = set(df[df["id"] == node_id]["layer"])
             assert len(node_layers) == 2, f"Node {node_id} should appear in exactly 2 layers"
     
-    def test_coverage_edges_not_supported(self, sample_multilayer_network):
-        """Test that coverage on edges raises error."""
+    def test_per_layer_on_edges_raises_error(self, sample_multilayer_network):
+        """Test that per_layer() on edges raises clear error."""
         net = sample_multilayer_network
         
-        with pytest.raises(DslExecutionError, match="Coverage.*only.*node queries"):
+        with pytest.raises(DslExecutionError, match="per_layer.*only.*node queries"):
             (
                 Q.edges()
                  .from_layers(L["*"])
                  .per_layer()
-                    .top_k(5, "weight")
-                 .end_grouping()
-                 .coverage(mode="all")
                  .execute(net)
             )
 
@@ -552,7 +549,7 @@ class TestErrorHandling:
         """Test that coverage mode='at_least' requires k parameter."""
         net = sample_multilayer_network
         
-        with pytest.raises(ValueError, match="requires k parameter"):
+        with pytest.raises(ValueError, match="requires k or threshold parameter"):
             (
                 Q.nodes()
                  .per_layer()

@@ -67,12 +67,18 @@ class QueryResult:
         """Iterate over items."""
         return iter(self.items)
     
-    def to_pandas(self):
+    def to_pandas(self, multiindex: bool = False, include_grouping: bool = True):
         """Export results to pandas DataFrame.
         
         For node queries: Returns DataFrame with 'id' column plus computed attributes
         For edge queries: Returns DataFrame with 'source', 'target', 'source_layer', 
                          'target_layer', 'weight' columns plus computed attributes
+        
+        Args:
+            multiindex: If True and grouping metadata is present, set DataFrame index
+                       to the grouping keys (e.g., ["layer"] or ["src_layer", "dst_layer"])
+            include_grouping: If True and grouping metadata is present, ensure grouping
+                            key columns are included in the DataFrame
         
         Returns:
             pandas.DataFrame with items and computed attributes
@@ -134,7 +140,19 @@ class QueryResult:
                     
                     rows.append(row)
             
-            return pd.DataFrame(rows)
+            df = pd.DataFrame(rows)
+            
+            # Apply grouping metadata if present
+            if include_grouping and "grouping" in self.meta:
+                grouping_info = self.meta["grouping"]
+                if multiindex and grouping_info.get("keys"):
+                    # Set multiindex using grouping keys
+                    index_cols = grouping_info["keys"]
+                    # Only set index if all keys exist in the dataframe
+                    if all(col in df.columns for col in index_cols):
+                        df = df.set_index(index_cols)
+            
+            return df
         
         else:
             # Node dataframe
@@ -170,11 +188,23 @@ class QueryResult:
             
             # Create DataFrame with proper columns even if empty
             if rows:
-                return pd.DataFrame(rows)
+                df = pd.DataFrame(rows)
             else:
                 # Return empty DataFrame with expected columns
                 columns = ['id', 'layer'] + list(self.attributes.keys())
-                return pd.DataFrame(columns=columns)
+                df = pd.DataFrame(columns=columns)
+            
+            # Apply grouping metadata if present
+            if include_grouping and "grouping" in self.meta:
+                grouping_info = self.meta["grouping"]
+                if multiindex and grouping_info.get("keys"):
+                    # Set multiindex using grouping keys
+                    index_cols = grouping_info["keys"]
+                    # Only set index if all keys exist in the dataframe
+                    if all(col in df.columns for col in index_cols):
+                        df = df.set_index(index_cols)
+            
+            return df
     
     def to_networkx(self, network: Optional[Any] = None):
         """Export results to NetworkX graph.
@@ -324,6 +354,61 @@ class QueryResult:
             "computed": self.attributes,
             "meta": self.meta,
         }
+    
+    def group_summary(self):
+        """Return a summary DataFrame with one row per group.
+        
+        Returns a pandas DataFrame containing:
+        - Grouping key columns (e.g., "layer", "src_layer", "dst_layer")
+        - n_items: Number of items (nodes/edges) in each group
+        - Any group-level coverage metrics if available
+        
+        This method only uses information already present in the result and
+        does not recompute expensive measures.
+        
+        Returns:
+            pandas.DataFrame with one row per group
+            
+        Raises:
+            ImportError: If pandas is not available
+            ValueError: If result does not have grouping metadata
+        """
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ImportError("pandas is required for group_summary(). Install with: pip install pandas")
+        
+        # Check that grouping metadata exists
+        if "grouping" not in self.meta:
+            from .errors import GroupingError
+            raise GroupingError(
+                "group_summary() is only defined for grouped results. "
+                "Use .per_layer() or .per_layer_pair() to create a grouped query."
+            )
+        
+        grouping_info = self.meta["grouping"]
+        groups = grouping_info.get("groups", [])
+        
+        # Build rows from group metadata
+        rows = []
+        for group_meta in groups:
+            row = {}
+            
+            # Add grouping key columns
+            key_dict = group_meta.get("key", {})
+            row.update(key_dict)
+            
+            # Add n_items
+            row["n_items"] = group_meta.get("n_items", 0)
+            
+            # Add any additional metadata (e.g., coverage metrics)
+            for k, v in group_meta.items():
+                if k not in ("key", "n_items"):
+                    row[k] = v
+            
+            rows.append(row)
+        
+        return pd.DataFrame(rows)
     
     def __repr__(self) -> str:
         return f"QueryResult(target='{self.target}', count={len(self.items)}, attributes={list(self.attributes.keys())})"
