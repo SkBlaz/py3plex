@@ -167,6 +167,62 @@ class TestDSLWindowExecution:
         assert ast.select.window_spec is not None
 
 
+class TestDSLTemporalFilters:
+    """Test temporal filters in where() clause."""
+    
+    def test_where_t_between(self):
+        """Test t__between filter."""
+        q = Q.edges().where(t__between=(100.0, 200.0))
+        
+        # Check that temporal_range predicate is created
+        ast = q.to_ast()
+        assert ast.select.where is not None
+        # Should have a special predicate for temporal_range
+        assert any(atom.special and atom.special.kind == "temporal_range" 
+                  for atom in ast.select.where.atoms)
+    
+    def test_where_t_gte(self):
+        """Test t__gte filter."""
+        q = Q.edges().where(t__gte=100.0)
+        
+        ast = q.to_ast()
+        assert ast.select.where is not None
+        # Should have comparison for t >= 100
+        assert any(atom.comparison and atom.comparison.left == "t" 
+                  for atom in ast.select.where.atoms)
+    
+    def test_where_t_lte(self):
+        """Test t__lte filter."""
+        q = Q.edges().where(t__lte=200.0)
+        
+        ast = q.to_ast()
+        assert ast.select.where is not None
+    
+    def test_where_t_gt(self):
+        """Test t__gt filter."""
+        q = Q.edges().where(t__gt=100.0)
+        
+        ast = q.to_ast()
+        assert ast.select.where is not None
+    
+    def test_where_t_lt(self):
+        """Test t__lt filter."""
+        q = Q.edges().where(t__lt=200.0)
+        
+        ast = q.to_ast()
+        assert ast.select.where is not None
+    
+    def test_combining_temporal_filters(self):
+        """Test combining multiple temporal filters."""
+        q = Q.edges().where(t__gte=100.0, t__lte=200.0)
+        
+        ast = q.to_ast()
+        assert ast.select.where is not None
+        # Should have two comparison atoms
+        comparisons = [atom for atom in ast.select.where.atoms if atom.comparison]
+        assert len(comparisons) == 2
+
+
 class TestDSLTemporalErrors:
     """Test error handling for temporal queries."""
     
@@ -188,6 +244,11 @@ class TestDSLTemporalErrors:
         
         # For now, just verify the query builds
         assert q._select.window_spec is not None
+    
+    def test_t_between_invalid_value(self):
+        """Test that t__between with invalid value raises error."""
+        with pytest.raises(ValueError, match="t__between requires a tuple"):
+            Q.edges().where(t__between=100.0)  # Should be a tuple
     
     def test_temporal_context_with_regular_network_placeholder(self):
         """Placeholder test for temporal context on non-temporal network.
