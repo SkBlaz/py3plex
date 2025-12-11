@@ -44,6 +44,7 @@ def build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.5, seed=None)
 class TestDSLBootstrapProperties:
     """Property-based tests for DSL bootstrap integration."""
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30),
         st.sampled_from(["edges", "nodes", "layers"]),
@@ -72,6 +73,7 @@ class TestDSLBootstrapProperties:
         df = result.to_pandas()
         assert "degree" in df.columns
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30)
     )
@@ -95,6 +97,7 @@ class TestDSLBootstrapProperties:
         
         assert len(result) >= 0
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30),
         st.integers(min_value=1, max_value=5)
@@ -119,6 +122,7 @@ class TestDSLBootstrapProperties:
         
         assert len(result) <= limit
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30)
     )
@@ -164,6 +168,7 @@ class TestDSLBootstrapProperties:
 class TestDSLNullModelProperties:
     """Property-based tests for DSL null model integration."""
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=10, max_value=40),
         st.sampled_from(["degree_preserving", "erdos_renyi", "configuration"])
@@ -190,6 +195,7 @@ class TestDSLNullModelProperties:
         df = result.to_pandas()
         assert "degree" in df.columns
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=10, max_value=40)
     )
@@ -213,6 +219,7 @@ class TestDSLNullModelProperties:
         
         assert len(result) >= 0
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=10, max_value=40)
     )
@@ -266,6 +273,7 @@ class TestGlobalDefaultsProperties:
         """Reset defaults after each test."""
         Q.uncertainty.reset()
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=100),
         st.floats(min_value=0.50, max_value=0.99)
@@ -278,6 +286,7 @@ class TestGlobalDefaultsProperties:
         assert Q.uncertainty.get("n_boot") == n_boot
         assert Q.uncertainty.get("ci") == ci
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=100)
     )
@@ -292,6 +301,7 @@ class TestGlobalDefaultsProperties:
         Q.uncertainty.reset()
         assert Q.uncertainty.get("n_boot") == initial_n_boot
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=50)
     )
@@ -312,6 +322,7 @@ class TestGlobalDefaultsProperties:
         # Should complete successfully using defaults
         assert len(result) >= 0
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=50),
         st.integers(min_value=51, max_value=100)
@@ -343,6 +354,7 @@ class TestGlobalDefaultsProperties:
 class TestDSLMetamorphicProperties:
     """Metamorphic properties for DSL uncertainty integration."""
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30)
     )
@@ -380,6 +392,7 @@ class TestDSLMetamorphicProperties:
         assert len(bootstrap_result) >= 0
         assert len(null_result) >= 0
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30)
     )
@@ -420,6 +433,7 @@ class TestDSLMetamorphicProperties:
 class TestDSLUncertaintyEdgeCases:
     """Edge case tests for DSL uncertainty."""
     
+    @pytest.mark.property
     def test_empty_network_bootstrap(self):
         """Edge case: Empty network with bootstrap."""
         net = multinet.multi_layer_network(directed=False, verbose=False)
@@ -437,6 +451,7 @@ class TestDSLUncertaintyEdgeCases:
         
         assert len(result) == 0
     
+    @pytest.mark.property
     def test_empty_network_null_model(self):
         """Edge case: Empty network with null model."""
         net = multinet.multi_layer_network(directed=False, verbose=False)
@@ -454,6 +469,7 @@ class TestDSLUncertaintyEdgeCases:
         
         assert len(result) == 0
     
+    @pytest.mark.property
     @given(
         st.integers(min_value=2, max_value=8)
     )
