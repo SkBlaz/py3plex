@@ -9,7 +9,7 @@ Create a multilayer network, compute statistics, detect communities, and visuali
    You can run this tutorial in your browser without any local installation:
    
    .. image:: https://colab.research.google.com/assets/colab-badge.svg
-      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/tutorial_10min.ipynb
+      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/tutorial_10min.ipynb
       :alt: Open in Google Colab
    
    Or download the full executable script: :download:`tutorial_10min.py <../../examples/getting_started/tutorial_10min.py>`
