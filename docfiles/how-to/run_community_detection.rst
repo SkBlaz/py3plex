@@ -9,7 +9,7 @@ How to Run Community Detection on Multilayer Networks
    You can run this tutorial in your browser without any local installation:
    
    .. image:: https://colab.research.google.com/assets/colab-badge.svg
-      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/main/notebooks/community_detection.ipynb
+      :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/community_detection.ipynb
       :alt: Open in Google Colab
    
    Or see the full executable example: :download:`example_community_detection.py <../../examples/communities/example_community_detection.py>`
