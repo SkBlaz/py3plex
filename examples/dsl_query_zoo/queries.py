@@ -59,6 +59,9 @@ def _get_layer_names(network):
 def query_basic_exploration(network):
     """Summarize layers: node counts, edge counts, and average degree per layer.
     
+    Refactored: single DSL query over all layers + pandas groupby, no explicit
+    for-loop over layers.
+    
     This query demonstrates basic multilayer exploration by computing
     fundamental statistics for each layer independently. This is typically
     the first step in multilayer analysis to understand the structure
@@ -70,9 +73,9 @@ def query_basic_exploration(network):
     - Shows structural diversity across the multilayer network
     
     DSL concepts demonstrated:
-    - SELECT nodes from specific layers
+    - SELECT nodes from all layers in one shot
     - Computing degree per layer
-    - Aggregation by layer
+    - Vectorized aggregation by layer
     
     Args:
         network: A multi_layer_network instance
@@ -80,37 +83,40 @@ def query_basic_exploration(network):
     Returns:
         pd.DataFrame with columns: layer, n_nodes, n_edges, avg_degree
     """
-    # Get all unique layers in the network
-    layers = _get_layer_names(network)
-    
-    results = []
-    for layer_name in layers:
-        # Query nodes in this layer with degree computation
-        layer_result = (
-            Q.nodes()
-             .from_layers(L[layer_name])
-             .compute("degree")
-             .execute(network)
-        )
-        
-        if len(layer_result) > 0:
-            df = layer_result.to_pandas()
-            n_nodes = len(df)
-            n_edges = df['degree'].sum() // 2  # Each edge counted twice
-            avg_degree = df['degree'].mean()
-            
-            results.append({
-                'layer': layer_name,
-                'n_nodes': n_nodes,
-                'n_edges': n_edges,
-                'avg_degree': round(avg_degree, 2)
-            })
-    
-    return pd.DataFrame(results)
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])       # all layers in one shot
+         .compute("degree")
+         .execute(network)
+    )
+
+    if len(result) == 0:
+        return pd.DataFrame(columns=["layer", "n_nodes", "n_edges", "avg_degree"])
+
+    df = result.to_pandas()
+
+    # One row per (node, layer), so size() is node count
+    stats = (
+        df.groupby("layer")
+          .agg(
+              n_nodes=("id", "size"),
+              total_degree=("degree", "sum"),
+              avg_degree=("degree", "mean"),
+          )
+          .reset_index()
+    )
+
+    stats["n_edges"] = (stats["total_degree"] // 2).astype(int)
+    stats["avg_degree"] = stats["avg_degree"].round(2)
+
+    return stats[["layer", "n_nodes", "n_edges", "avg_degree"]]
 
 
 def query_cross_layer_hubs(network, k=5):
     """Find nodes that are consistently central across multiple layers.
+    
+    Refactored: one DSL query across all layers + pandas grouping, no explicit
+    per-layer for loop.
     
     This query identifies "super hubs" - nodes that maintain high centrality
     across different layers. These nodes are particularly important because
@@ -122,9 +128,9 @@ def query_cross_layer_hubs(network, k=5):
     - Helps understand cross-layer influence and information flow
     
     DSL concepts demonstrated:
-    - Per-layer grouping and aggregation
+    - Single query across all layers
     - Computing betweenness centrality
-    - Ordering and filtering by computed metrics
+    - Vectorized top-k selection per layer using groupby
     - Coverage analysis (nodes appearing in multiple layers)
     
     Args:
@@ -134,52 +140,44 @@ def query_cross_layer_hubs(network, k=5):
     Returns:
         pd.DataFrame with nodes and their centrality scores per layer
     """
-    layers = _get_layer_names(network)
-    
-    # For each layer, get top-k nodes by betweenness centrality
-    all_results = []
-    
-    for layer_name in layers:
-        layer_result = (
-            Q.nodes()
-             .from_layers(L[layer_name])
-             .compute("betweenness_centrality", "degree")
-             .order_by("-betweenness_centrality")
-             .limit(k)
-             .execute(network)
-        )
-        
-        if len(layer_result) > 0:
-            df = layer_result.to_pandas()
-            df['layer'] = layer_name
-            all_results.append(df)
-    
-    if not all_results:
-        return pd.DataFrame()
-    
-    # Combine results and identify nodes appearing in multiple layers
-    combined = pd.concat(all_results, ignore_index=True)
-    
-    # Rename 'id' column to 'node' for clarity
-    combined = combined.rename(columns={'id': 'node'})
-    
-    # Count how many layers each node appears in as a top-k hub
-    coverage = combined.groupby('node').size().reset_index(name='layer_count')
-    
-    # Merge with centrality data
-    result = combined.merge(coverage, on='node')
-    
-    # Sort by coverage (number of layers) and then by betweenness
-    result = result.sort_values(
-        ['layer_count', 'betweenness_centrality'],
-        ascending=[False, False]
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("betweenness_centrality", "degree")
+         .execute(network)
     )
-    
-    return result[['node', 'layer', 'degree', 'betweenness_centrality', 'layer_count']]
+
+    if len(result) == 0:
+        return pd.DataFrame()
+
+    df = result.to_pandas().rename(columns={"id": "node"})
+
+    # Top-k by betweenness within each layer (vectorized)
+    df_sorted = df.sort_values(["layer", "betweenness_centrality"],
+                               ascending=[True, False])
+    topk = df_sorted.groupby("layer").head(k)
+
+    # Count how many layers each node appears in as a top-k hub
+    coverage = (
+        topk.groupby("node")["layer"]
+            .nunique()
+            .reset_index(name="layer_count")
+    )
+
+    result_df = (
+        topk.merge(coverage, on="node")
+            .sort_values(["layer_count", "betweenness_centrality"],
+                         ascending=[False, False])
+    )
+
+    return result_df[["node", "layer", "degree",
+                      "betweenness_centrality", "layer_count"]]
 
 
 def query_layer_similarity(network):
     """Compute structural similarity between layers based on degree distributions.
+    
+    Refactored: single DSL query + pivot, no explicit loops over layers/nodes.
     
     This query measures how similar different layers are in terms of their
     connectivity patterns. Layers with similar degree distributions likely
@@ -191,9 +189,9 @@ def query_layer_similarity(network):
     - Can inform layer aggregation or simplification decisions
     
     DSL concepts demonstrated:
-    - Computing statistics per layer
-    - Aggregation and comparison across layers
-    - Using computed metrics for layer-level analysis
+    - Single query across all layers
+    - Pivot table to create node × layer matrix
+    - Correlation between layers via .corr()
     
     Args:
         network: A multi_layer_network instance
@@ -201,52 +199,34 @@ def query_layer_similarity(network):
     Returns:
         pd.DataFrame: Pairwise correlation matrix of layer degree distributions
     """
-    layers = _get_layer_names(network)
-    
-    # Get degree distribution for each layer
-    layer_degrees = {}
-    
-    for layer_name in layers:
-        result = (
-            Q.nodes()
-             .from_layers(L[layer_name])
-             .compute("degree")
-             .execute(network)
-        )
-        
-        if len(result) > 0:
-            df = result.to_pandas()
-            # Store as dict: node -> degree
-            layer_degrees[layer_name] = dict(zip(df['id'], df['degree']))
-    
-    # Compute correlation between layers
-    # Get union of all nodes
-    all_nodes = set()
-    for degrees in layer_degrees.values():
-        all_nodes.update(degrees.keys())
-    all_nodes = sorted(all_nodes)
-    
-    # Build degree matrix: layers x nodes
-    degree_matrix = []
-    for layer_name in layers:
-        if layer_name in layer_degrees:
-            degrees = [layer_degrees[layer_name].get(node, 0) for node in all_nodes]
-            degree_matrix.append(degrees)
-        else:
-            degree_matrix.append([0] * len(all_nodes))
-    
-    # Compute correlation matrix
-    degree_matrix = np.array(degree_matrix)
-    correlation = np.corrcoef(degree_matrix)
-    
-    # Convert to DataFrame for readability
-    corr_df = pd.DataFrame(
-        correlation,
-        index=layers,
-        columns=layers
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree")
+         .execute(network)
     )
-    
-    return corr_df.round(3)
+
+    if len(result) == 0:
+        return pd.DataFrame()
+
+    df = result.to_pandas()
+
+    # Build node × layer degree matrix: rows = nodes, cols = layers
+    degree_matrix = df.pivot_table(
+        index="id",
+        columns="layer",
+        values="degree",
+        fill_value=0,
+    )
+
+    # Correlation between columns = correlation between layers
+    corr_df = degree_matrix.corr().round(3)
+
+    # Optional: clean up index/column names for display
+    corr_df.index.name = None
+    corr_df.columns.name = None
+
+    return corr_df
 
 
 def query_community_structure(network):
@@ -311,22 +291,25 @@ def query_community_structure(network):
 
 
 def query_multiplex_pagerank(network):
-    """Compute multiplex PageRank to identify important nodes considering all layers.
+    """Approximate multiplex PageRank by aggregating layer-specific scores.
     
-    This query uses a multilayer-aware centrality measure that accounts for
-    the full structure of the multiplex network, not just individual layers.
-    Multiplex PageRank captures node importance while considering cross-layer
-    connections and influence.
+    NOTE: This is still a *simplified* multiplex PageRank approximation
+    (average of layer-specific PageRank). For true Multiplex PageRank, wrap
+    the dedicated algorithm from the algorithms module (see query_true_multiplex_pagerank).
+    
+    Refactored: single DSL query over all layers + vectorized pandas aggregation,
+    no explicit for-loop over layers.
     
     Why it's interesting:
-    - Standard PageRank doesn't account for multilayer structure
-    - Reveals nodes that are important across the entire multiplex
-    - More accurate than averaging single-layer centralities
-    - Essential for multiplex influence analysis
+    - Approximates node importance across the entire multiplex
+    - More informative than single-layer centralities
+    - Efficient computation via aggregation
+    - Good starting point before using full multiplex algorithms
     
     DSL concepts demonstrated:
-    - Computing advanced centrality measures
-    - Working with all layers simultaneously
+    - Single query across all layers
+    - Computing PageRank
+    - Vectorized aggregation and pivot tables
     - Ranking nodes by multilayer importance
     
     Args:
@@ -335,65 +318,59 @@ def query_multiplex_pagerank(network):
     Returns:
         pd.DataFrame with nodes ranked by multiplex PageRank scores
     """
-    # First, compute regular PageRank per layer for comparison
-    layers = _get_layer_names(network)
-    
-    pagerank_by_layer = []
-    
-    for layer_name in layers:
-        result = (
-            Q.nodes()
-             .from_layers(L[layer_name])
-             .compute("pagerank", "degree")
-             .execute(network)
-        )
-        
-        if len(result) > 0:
-            df = result.to_pandas()
-            df['layer'] = layer_name
-            pagerank_by_layer.append(df)
-    
-    if not pagerank_by_layer:
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("pagerank", "degree")
+         .execute(network)
+    )
+
+    if len(result) == 0:
         return pd.DataFrame()
-    
-    # Combine results
-    combined = pd.concat(pagerank_by_layer, ignore_index=True)
-    
-    # Rename 'id' column to 'node' for clarity
-    combined = combined.rename(columns={'id': 'node'})
-    
-    # Compute aggregate multiplex PageRank (simple approach: average across layers)
-    # Note: This is a simplified version. True multiplex PageRank requires
-    # supra-adjacency matrix computation, but this demonstrates the concept.
-    multiplex_pr = combined.groupby('node').agg({
-        'pagerank': 'mean',  # Average across layers
-        'degree': 'sum'      # Total degree across layers
-    }).reset_index()
-    
-    multiplex_pr.columns = ['node', 'multiplex_pagerank', 'total_degree']
-    
-    # Sort by multiplex PageRank
-    multiplex_pr = multiplex_pr.sort_values('multiplex_pagerank', ascending=False)
-    
-    # Add layer-specific details
-    layer_details = combined.pivot_table(
-        index='node',
-        columns='layer',
-        values='pagerank',
-        fill_value=0
-    ).round(4)
-    
-    result = multiplex_pr.merge(layer_details, left_on='node', right_index=True, how='left')
-    
-    return result.round(4)
+
+    df = result.to_pandas().rename(columns={"id": "node"})
+
+    # Aggregate across layers: average PR, total degree
+    multiplex_pr = (
+        df.groupby("node")
+          .agg(
+              multiplex_pagerank=("pagerank", "mean"),
+              total_degree=("degree", "sum"),
+          )
+          .reset_index()
+    )
+
+    multiplex_pr = multiplex_pr.sort_values("multiplex_pagerank", ascending=False)
+
+    # Layer-specific PR breakdown as wide table
+    layer_details = (
+        df.pivot_table(
+            index="node",
+            columns="layer",
+            values="pagerank",
+            fill_value=0,
+        )
+        .round(4)
+        .reset_index()
+    )
+
+    result_df = (
+        multiplex_pr.merge(layer_details, on="node", how="left")
+                    .round(4)
+    )
+
+    return result_df
 
 
 def query_robustness_analysis(network):
-    """Analyze network robustness: impact of removing one layer at a time.
+    """Evaluate network robustness by removing each layer and recomputing stats.
     
     This query demonstrates robustness analysis by simulating layer failure.
     For each layer, we measure how connectivity changes if that layer is removed.
     This reveals which layers are critical for network cohesion.
+    
+    Note: The loop over layers is semantically part of the experiment design
+    (each iteration is a different scenario), which is an acceptable use of loops.
     
     Why it's interesting:
     - Identifies critical infrastructure layers
@@ -405,6 +382,7 @@ def query_robustness_analysis(network):
     - Layer selection and filtering
     - Computing connectivity metrics
     - Comparing network states (with/without layers)
+    - Using functools.reduce for cleaner layer expressions
     
     Args:
         network: A multi_layer_network instance
@@ -412,6 +390,9 @@ def query_robustness_analysis(network):
     Returns:
         pd.DataFrame comparing connectivity with each layer removed
     """
+    from functools import reduce
+    import operator
+    
     layers = _get_layer_names(network)
     
     # Baseline: connectivity with all layers
@@ -435,23 +416,21 @@ def query_robustness_analysis(network):
         'connectivity_loss': 0.0
     }]
     
-    # Test removing each layer
+    # Test removing each layer (scenario loop - part of experiment design)
     for layer_to_remove in layers:
-        # Get remaining layers
-        remaining_layers = [L[layer] for layer in layers if layer != layer_to_remove]
+        # Build a layer expression that includes all layers except layer_to_remove
+        remaining_exprs = [L[layer] for layer in layers if layer != layer_to_remove]
         
-        if not remaining_layers:
+        if not remaining_exprs:
             continue
         
-        # Combine remaining layers
-        layer_expr = remaining_layers[0]
-        for layer in remaining_layers[1:]:
-            layer_expr = layer_expr + layer
+        # Combine remaining layers using reduce
+        remaining_expr = reduce(operator.add, remaining_exprs)
         
         # Query with reduced layer set
         reduced_result = (
             Q.nodes()
-             .from_layers(layer_expr)
+             .from_layers(remaining_expr)
              .compute("degree")
              .execute(network)
         )
@@ -485,7 +464,9 @@ def query_robustness_analysis(network):
 
 
 def query_advanced_centrality_comparison(network):
-    """Compare multiple centrality measures to identify versatile vs specialized hubs.
+    """Compare multiple centrality measures on the aggregated multilayer network.
+    
+    Refactored: multilayer-aware with L["*"], no loops.
     
     This query computes several centrality measures (degree, betweenness, closeness,
     PageRank) and identifies nodes that rank high in multiple measures ("versatile hubs")
@@ -499,6 +480,7 @@ def query_advanced_centrality_comparison(network):
     
     DSL concepts demonstrated:
     - Computing multiple centrality measures in one query
+    - Aggregating across all layers
     - Ranking and comparing across metrics
     - Using computed attributes for classification
     
@@ -508,28 +490,18 @@ def query_advanced_centrality_comparison(network):
     Returns:
         pd.DataFrame with nodes and their centrality scores, plus a "versatility" metric
     """
-    # Select a representative layer (or aggregate across all layers)
-    layers = _get_layer_names(network)
-    if not layers:
-        return pd.DataFrame()
-    
-    # Use first layer for demonstration
-    layer_name = layers[0]
-    
     result = (
         Q.nodes()
-         .from_layers(L[layer_name])
-         .compute("degree", "betweenness_centrality", "closeness_centrality", "pagerank")
+         .from_layers(L["*"])  # aggregate across layers
+         .compute("degree", "betweenness_centrality",
+                  "closeness_centrality", "pagerank")
          .execute(network)
     )
     
     if len(result) == 0:
         return pd.DataFrame()
     
-    df = result.to_pandas()
-    
-    # Rename 'id' column to 'node' for clarity
-    df = df.rename(columns={'id': 'node'})
+    df = result.to_pandas().rename(columns={'id': 'node'})
     
     # Normalize each centrality to [0, 1] for comparison
     for col in ['degree', 'betweenness_centrality', 'closeness_centrality', 'pagerank']:
