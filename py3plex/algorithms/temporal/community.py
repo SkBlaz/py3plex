@@ -252,11 +252,11 @@ def detect_community_events(
         step,
     ):
         # Classify event based on change score
+        # More sophisticated analysis could detect merges/splits based on
+        # community membership transitions, but for now we use a simple threshold
         if change_score < change_threshold:
             event_type = "stable"
         else:
-            # For now, just mark as high change
-            # More sophisticated analysis could detect merges/splits
             event_type = "high_change"
         
         yield (t_start, t_end, event_type, change_score)

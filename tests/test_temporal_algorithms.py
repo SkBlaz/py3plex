@@ -257,7 +257,9 @@ class TestCommunityEvents:
         assert len(results) > 0
         
         for t_start, t_end, event_type, change_score in results:
-            assert event_type in ["stable", "high_change", "merge", "split"]
+            # Current implementation returns "stable" or "high_change"
+            # Future enhancements may add "merge" and "split" detection
+            assert event_type in ["stable", "high_change"]
 
 
 if __name__ == "__main__":
