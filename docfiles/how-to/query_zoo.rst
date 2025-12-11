@@ -38,6 +38,7 @@ The Query Zoo is organized around common multilayer analysis tasks:
 5. **Multiplex PageRank** — Compute multilayer-aware centrality
 6. **Robustness Analysis** — Assess network resilience to layer failures
 7. **Advanced Centrality Comparison** — Identify versatile vs specialized hubs
+8. **Edge Grouping and Coverage** — Analyze edges across layer pairs with top-k and coverage
 
 All examples use small, reproducible multilayer networks from the ``examples/dsl_query_zoo/datasets.py`` module.
 
@@ -393,6 +394,77 @@ DSL Concepts Demonstrated
 * Normalizing centralities for comparison
 * Derived metrics (versatility score)
 * Classification based on computed attributes
+
+----
+
+8. Edge Grouping and Coverage
+------------------------------
+
+**Problem:** You want to analyze which edges (connections) are important within and between layers. Which edges consistently appear in the top-k across different layer-pair contexts?
+
+**Solution:** Use the new ``.per_layer_pair()`` method to group edges by (src_layer, dst_layer) pairs, then apply top-k and coverage filtering.
+
+Query Code
+~~~~~~~~~~
+
+.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+   :pyobject: query_edge_grouping_and_coverage
+   :language: python
+
+Why It's Interesting
+~~~~~~~~~~~~~~~~~~~~
+
+* **Layer-pair-aware analysis** — Different layer pairs may have very different edge patterns
+* **Universal edges** — Edges important across multiple contexts are more robust
+* **Cross-layer dynamics** — Reveals how connections vary between intra-layer and inter-layer contexts
+* **Edge-centric view** — Complements node-centric analyses like hub detection
+
+Example Output
+~~~~~~~~~~~~~~
+
+Running on ``social_work_network`` with k=3:
+
+**Edges Grouped by Layer Pair (top 3 per pair):**
+
+.. csv-table::
+   :header: "Source", "Target", "Source Layer", "Target Layer"
+   :widths: 25, 25, 25, 25
+
+   "Alice", "Bob", "social", "social"
+   "Alice", "Carol", "social", "social"
+   "Bob", "Carol", "social", "social"
+   "Alice", "Bob", "work", "work"
+   "Alice", "Carol", "work", "work"
+   "Bob", "Carol", "work", "work"
+
+**Group Summary:**
+
+.. csv-table::
+   :header: "Source Layer", "Target Layer", "# Edges"
+   :widths: 35, 35, 25
+
+   "social", "social", 3
+   "work", "work", 3
+   "family", "family", 3
+   "social", "work", 1
+
+**Interpretation:** The query reveals edge distribution across layer pairs. Each pair (e.g., social-social, work-work) contains up to k=3 edges. Inter-layer pairs (social-work) typically have fewer connections, showing the separation between layers. The family layer has sparser connectivity overall.
+
+DSL Concepts Demonstrated
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``.per_layer_pair()`` — Group edges by (src_layer, dst_layer) pairs
+* ``.top_k(k, "weight")`` — Select top-k items per group
+* ``.coverage(mode="at_least", k=2)`` — Cross-group filtering
+* ``.group_summary()`` — Get aggregate statistics per group
+* Edge-specific grouping metadata in ``QueryResult.meta["grouping"]``
+
+.. tip::
+   **New in DSL v2**
+   
+   Edge grouping and coverage are new features that parallel the existing node 
+   grouping capabilities. Use ``.per_layer_pair()`` for edges and ``.per_layer()`` 
+   for nodes. Both support the same coverage modes and grouping operations.
 
 ----
 

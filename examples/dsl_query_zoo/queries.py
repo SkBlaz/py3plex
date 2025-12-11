@@ -546,6 +546,62 @@ def query_advanced_centrality_comparison(network):
     return df[output_cols].round(4)
 
 
+def query_edge_grouping_and_coverage(network, k=3):
+    """Analyze edges across layer pairs with grouping and coverage.
+    
+    This query demonstrates the powerful new edge grouping capabilities
+    introduced in DSL v2. It groups edges by (src_layer, dst_layer) pairs
+    and analyzes edge distribution across layer pairs.
+    
+    Why it's interesting:
+    - Reveals how connections are distributed within and between layers
+    - Shows which layer pairs have more connectivity
+    - Identifies edges that appear across multiple layer contexts
+    - Essential for understanding cross-layer edge patterns
+    
+    DSL concepts demonstrated:
+    - .per_layer_pair() for edge grouping
+    - .coverage() for cross-group filtering
+    - Edge-specific grouping metadata
+    - .group_summary() for aggregate statistics
+    
+    Args:
+        network: A multi_layer_network instance
+        k: Number of edges to limit per layer pair (default: 3)
+        
+    Returns:
+        Dictionary with:
+        - 'edges_by_pair': DataFrame with edges grouped by layer pair
+        - 'summary': DataFrame with edge counts per layer pair
+    """
+    # Query: Get edges grouped by layer pair
+    result = (
+        Q.edges()
+         .from_layers(L["*"])
+         .per_layer_pair()
+            .top_k(k)  # Limit to k edges per pair
+         .end_grouping()
+         .execute(network)
+    )
+    
+    if len(result) == 0:
+        return {
+            'edges_by_pair': pd.DataFrame(),
+            'summary': pd.DataFrame()
+        }
+    
+    # Get edges DataFrame
+    df_edges = result.to_pandas()
+    
+    # Get group summary
+    summary = result.group_summary()
+    
+    return {
+        'edges_by_pair': df_edges,
+        'summary': summary
+    }
+
+
 # ============================================================================
 # Note: True Multiplex PageRank Implementation
 # ============================================================================

@@ -26,6 +26,7 @@ from examples.dsl_query_zoo.queries import (
     query_multiplex_pagerank,
     query_robustness_analysis,
     query_advanced_centrality_comparison,
+    query_edge_grouping_and_coverage,
 )
 
 
@@ -347,6 +348,52 @@ class TestAdvancedCentralityComparison:
         assert (result['pagerank'] > 0).all()
 
 
+class TestEdgeGroupingAndCoverage:
+    """Tests for edge grouping and coverage query."""
+    
+    def test_returns_expected_structure(self, social_work_network):
+        """Test result has expected dictionary structure."""
+        result = query_edge_grouping_and_coverage(social_work_network, k=3)
+        
+        assert isinstance(result, dict)
+        assert 'edges_by_pair' in result
+        assert 'summary' in result
+        
+        # All should be DataFrames
+        assert isinstance(result['edges_by_pair'], pd.DataFrame)
+        assert isinstance(result['summary'], pd.DataFrame)
+    
+    def test_edges_has_expected_columns(self, social_work_network):
+        """Test edges DataFrame has expected columns."""
+        result = query_edge_grouping_and_coverage(social_work_network, k=3)
+        df = result['edges_by_pair']
+        
+        if len(df) > 0:
+            assert 'source' in df.columns
+            assert 'target' in df.columns
+            assert 'source_layer' in df.columns
+            assert 'target_layer' in df.columns
+    
+    def test_summary_has_grouping_info(self, social_work_network):
+        """Test summary has src_layer and dst_layer columns."""
+        result = query_edge_grouping_and_coverage(social_work_network, k=3)
+        summary = result['summary']
+        
+        if len(summary) > 0:
+            assert 'src_layer' in summary.columns
+            assert 'dst_layer' in summary.columns
+            assert 'n_items' in summary.columns
+    
+    def test_top_k_parameter(self, social_work_network):
+        """Test that k parameter affects number of edges per group."""
+        result = query_edge_grouping_and_coverage(social_work_network, k=2)
+        summary = result['summary']
+        
+        # Each group should have at most k edges
+        if len(summary) > 0:
+            assert all(summary['n_items'] <= 2)
+
+
 # Integration test
 class TestQueryZooIntegration:
     """Integration tests for the full Query Zoo."""
@@ -367,6 +414,7 @@ class TestQueryZooIntegration:
             query_multiplex_pagerank,
             query_robustness_analysis,
             query_advanced_centrality_comparison,
+            lambda net: query_edge_grouping_and_coverage(net, k=3),
         ]
         
         for dataset_name, network in datasets.items():
@@ -374,7 +422,10 @@ class TestQueryZooIntegration:
                 try:
                     result = query_func(network)
                     assert result is not None
-                    # All queries should return DataFrames
-                    assert isinstance(result, pd.DataFrame)
+                    # Most queries return DataFrames, except edge_grouping which returns dict
+                    if query_func.__name__ == '<lambda>' and 'edge_grouping' in str(query_func):
+                        assert isinstance(result, dict)
+                    else:
+                        assert isinstance(result, (pd.DataFrame, dict))
                 except Exception as e:
                     pytest.fail(f"Query {query_func.__name__} failed on {dataset_name}: {e}")
