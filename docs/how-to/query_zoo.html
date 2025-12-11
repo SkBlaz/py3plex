@@ -327,6 +327,9 @@ To run all queries and generate outputs:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Summarize layers: node counts, edge counts, and average degree per layer.</span>
 <span class="sd">    </span>
+<span class="sd">    Refactored: single DSL query over all layers + pandas groupby, no explicit</span>
+<span class="sd">    for-loop over layers.</span>
+<span class="sd">    </span>
 <span class="sd">    This query demonstrates basic multilayer exploration by computing</span>
 <span class="sd">    fundamental statistics for each layer independently. This is typically</span>
 <span class="sd">    the first step in multilayer analysis to understand the structure</span>
@@ -338,9 +341,9 @@ To run all queries and generate outputs:</p>
 <span class="sd">    - Shows structural diversity across the multilayer network</span>
 <span class="sd">    </span>
 <span class="sd">    DSL concepts demonstrated:</span>
-<span class="sd">    - SELECT nodes from specific layers</span>
+<span class="sd">    - SELECT nodes from all layers in one shot</span>
 <span class="sd">    - Computing degree per layer</span>
-<span class="sd">    - Aggregation by layer</span>
+<span class="sd">    - Vectorized aggregation by layer</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
 <span class="sd">        network: A multi_layer_network instance</span>
@@ -348,33 +351,33 @@ To run all queries and generate outputs:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame with columns: layer, n_nodes, n_edges, avg_degree</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get all unique layers in the network</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    
-    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-        <span class="c1"># Query nodes in this layer with degree computation</span>
-        <span class="n">layer_result</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
-             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-        <span class="p">)</span>
-        
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">layer_result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-            <span class="n">n_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-            <span class="n">n_edges</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>  <span class="c1"># Each edge counted twice</span>
-            <span class="n">avg_degree</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-            
-            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-                <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer_name</span><span class="p">,</span>
-                <span class="s1">&#39;n_nodes&#39;</span><span class="p">:</span> <span class="n">n_nodes</span><span class="p">,</span>
-                <span class="s1">&#39;n_edges&#39;</span><span class="p">:</span> <span class="n">n_edges</span><span class="p">,</span>
-                <span class="s1">&#39;avg_degree&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">avg_degree</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="p">})</span>
-    
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>       <span class="c1"># all layers in one shot</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;n_nodes&quot;</span><span class="p">,</span> <span class="s2">&quot;n_edges&quot;</span><span class="p">,</span> <span class="s2">&quot;avg_degree&quot;</span><span class="p">])</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+    <span class="c1"># One row per (node, layer), so size() is node count</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+              <span class="n">n_nodes</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">),</span>
+              <span class="n">total_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">),</span>
+              <span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">),</span>
+          <span class="p">)</span>
+          <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;n_edges&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_degree&quot;</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_degree&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_degree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stats</span><span class="p">[[</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;n_nodes&quot;</span><span class="p">,</span> <span class="s2">&quot;n_edges&quot;</span><span class="p">,</span> <span class="s2">&quot;avg_degree&quot;</span><span class="p">]]</span>
 </pre></div>
 </div>
 </section>
@@ -445,6 +448,9 @@ To run all queries and generate outputs:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find nodes that are consistently central across multiple layers.</span>
 <span class="sd">    </span>
+<span class="sd">    Refactored: one DSL query across all layers + pandas grouping, no explicit</span>
+<span class="sd">    per-layer for loop.</span>
+<span class="sd">    </span>
 <span class="sd">    This query identifies &quot;super hubs&quot; - nodes that maintain high centrality</span>
 <span class="sd">    across different layers. These nodes are particularly important because</span>
 <span class="sd">    they serve as connectors across different contexts or domains.</span>
@@ -455,9 +461,9 @@ To run all queries and generate outputs:</p>
 <span class="sd">    - Helps understand cross-layer influence and information flow</span>
 <span class="sd">    </span>
 <span class="sd">    DSL concepts demonstrated:</span>
-<span class="sd">    - Per-layer grouping and aggregation</span>
+<span class="sd">    - Single query across all layers</span>
 <span class="sd">    - Computing betweenness centrality</span>
-<span class="sd">    - Ordering and filtering by computed metrics</span>
+<span class="sd">    - Vectorized top-k selection per layer using groupby</span>
 <span class="sd">    - Coverage analysis (nodes appearing in multiple layers)</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -467,48 +473,38 @@ To run all queries and generate outputs:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame with nodes and their centrality scores per layer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    
-    <span class="c1"># For each layer, get top-k nodes by betweenness centrality</span>
-    <span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
-    
-    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-        <span class="n">layer_result</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
-             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-             <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
-             <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-        <span class="p">)</span>
-        
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">layer_result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_name</span>
-            <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-    
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">all_results</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-    
-    <span class="c1"># Combine results and identify nodes appearing in multiple layers</span>
-    <span class="n">combined</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">all_results</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
-    <span class="c1"># Rename &#39;id&#39; column to &#39;node&#39; for clarity</span>
-    <span class="n">combined</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
-    
-    <span class="c1"># Count how many layers each node appears in as a top-k hub</span>
-    <span class="n">coverage</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;layer_count&#39;</span><span class="p">)</span>
-    
-    <span class="c1"># Merge with centrality data</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">coverage</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">)</span>
-    
-    <span class="c1"># Sort by coverage (number of layers) and then by betweenness</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
-        <span class="p">[</span><span class="s1">&#39;layer_count&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">],</span>
-        <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">result</span><span class="p">[[</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_count&#39;</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;node&quot;</span><span class="p">})</span>
+
+    <span class="c1"># Top-k by betweenness within each layer (vectorized)</span>
+    <span class="n">df_sorted</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">],</span>
+                               <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+    <span class="n">topk</span> <span class="o">=</span> <span class="n">df_sorted</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="c1"># Count how many layers each node appears in as a top-k hub</span>
+    <span class="n">coverage</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">topk</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">)[</span><span class="s2">&quot;layer&quot;</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;layer_count&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">result_df</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">topk</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">coverage</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;node&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;layer_count&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">],</span>
+                         <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_df</span><span class="p">[[</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;layer_count&quot;</span><span class="p">]]</span>
 </pre></div>
 </div>
 </section>
@@ -594,6 +590,8 @@ To run all queries and generate outputs:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute structural similarity between layers based on degree distributions.</span>
 <span class="sd">    </span>
+<span class="sd">    Refactored: single DSL query + pivot, no explicit loops over layers/nodes.</span>
+<span class="sd">    </span>
 <span class="sd">    This query measures how similar different layers are in terms of their</span>
 <span class="sd">    connectivity patterns. Layers with similar degree distributions likely</span>
 <span class="sd">    serve similar structural roles in the multilayer network.</span>
@@ -604,9 +602,9 @@ To run all queries and generate outputs:</p>
 <span class="sd">    - Can inform layer aggregation or simplification decisions</span>
 <span class="sd">    </span>
 <span class="sd">    DSL concepts demonstrated:</span>
-<span class="sd">    - Computing statistics per layer</span>
-<span class="sd">    - Aggregation and comparison across layers</span>
-<span class="sd">    - Using computed metrics for layer-level analysis</span>
+<span class="sd">    - Single query across all layers</span>
+<span class="sd">    - Pivot table to create node × layer matrix</span>
+<span class="sd">    - Correlation between layers via .corr()</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
 <span class="sd">        network: A multi_layer_network instance</span>
@@ -614,52 +612,34 @@ To run all queries and generate outputs:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame: Pairwise correlation matrix of layer degree distributions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    
-    <span class="c1"># Get degree distribution for each layer</span>
-    <span class="n">layer_degrees</span> <span class="o">=</span> <span class="p">{}</span>
-    
-    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
-             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-        <span class="p">)</span>
-        
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-            <span class="c1"># Store as dict: node -&gt; degree</span>
-            <span class="n">layer_degrees</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]))</span>
-    
-    <span class="c1"># Compute correlation between layers</span>
-    <span class="c1"># Get union of all nodes</span>
-    <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">degrees</span> <span class="ow">in</span> <span class="n">layer_degrees</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">all_nodes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">degrees</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">)</span>
-    
-    <span class="c1"># Build degree matrix: layers x nodes</span>
-    <span class="n">degree_matrix</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layer_degrees</span><span class="p">:</span>
-            <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_degrees</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">all_nodes</span><span class="p">]</span>
-            <span class="n">degree_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">degree_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">))</span>
-    
-    <span class="c1"># Compute correlation matrix</span>
-    <span class="n">degree_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">degree_matrix</span><span class="p">)</span>
-    <span class="n">correlation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">degree_matrix</span><span class="p">)</span>
-    
-    <span class="c1"># Convert to DataFrame for readability</span>
-    <span class="n">corr_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-        <span class="n">correlation</span><span class="p">,</span>
-        <span class="n">index</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
-        <span class="n">columns</span><span class="o">=</span><span class="n">layers</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">corr_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+    <span class="c1"># Build node × layer degree matrix: rows = nodes, cols = layers</span>
+    <span class="n">degree_matrix</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+        <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Correlation between columns = correlation between layers</span>
+    <span class="n">corr_df</span> <span class="o">=</span> <span class="n">degree_matrix</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># Optional: clean up index/column names for display</span>
+    <span class="n">corr_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">corr_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">corr_df</span>
 </pre></div>
 </div>
 </section>
@@ -862,22 +842,25 @@ To run all queries and generate outputs:</p>
 <section id="id13">
 <h3><a class="toc-backref" href="#id47" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute multiplex PageRank to identify important nodes considering all layers.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Approximate multiplex PageRank by aggregating layer-specific scores.</span>
 <span class="sd">    </span>
-<span class="sd">    This query uses a multilayer-aware centrality measure that accounts for</span>
-<span class="sd">    the full structure of the multiplex network, not just individual layers.</span>
-<span class="sd">    Multiplex PageRank captures node importance while considering cross-layer</span>
-<span class="sd">    connections and influence.</span>
+<span class="sd">    NOTE: This is still a *simplified* multiplex PageRank approximation</span>
+<span class="sd">    (average of layer-specific PageRank). For true Multiplex PageRank, wrap</span>
+<span class="sd">    the dedicated algorithm from the algorithms module (see query_true_multiplex_pagerank).</span>
+<span class="sd">    </span>
+<span class="sd">    Refactored: single DSL query over all layers + vectorized pandas aggregation,</span>
+<span class="sd">    no explicit for-loop over layers.</span>
 <span class="sd">    </span>
 <span class="sd">    Why it&#39;s interesting:</span>
-<span class="sd">    - Standard PageRank doesn&#39;t account for multilayer structure</span>
-<span class="sd">    - Reveals nodes that are important across the entire multiplex</span>
-<span class="sd">    - More accurate than averaging single-layer centralities</span>
-<span class="sd">    - Essential for multiplex influence analysis</span>
+<span class="sd">    - Approximates node importance across the entire multiplex</span>
+<span class="sd">    - More informative than single-layer centralities</span>
+<span class="sd">    - Efficient computation via aggregation</span>
+<span class="sd">    - Good starting point before using full multiplex algorithms</span>
 <span class="sd">    </span>
 <span class="sd">    DSL concepts demonstrated:</span>
-<span class="sd">    - Computing advanced centrality measures</span>
-<span class="sd">    - Working with all layers simultaneously</span>
+<span class="sd">    - Single query across all layers</span>
+<span class="sd">    - Computing PageRank</span>
+<span class="sd">    - Vectorized aggregation and pivot tables</span>
 <span class="sd">    - Ranking nodes by multilayer importance</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -886,57 +869,48 @@ To run all queries and generate outputs:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame with nodes ranked by multiplex PageRank scores</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># First, compute regular PageRank per layer for comparison</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    
-    <span class="n">pagerank_by_layer</span> <span class="o">=</span> <span class="p">[]</span>
-    
-    <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
-             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-        <span class="p">)</span>
-        
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_name</span>
-            <span class="n">pagerank_by_layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-    
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">pagerank_by_layer</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-    
-    <span class="c1"># Combine results</span>
-    <span class="n">combined</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">pagerank_by_layer</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
-    <span class="c1"># Rename &#39;id&#39; column to &#39;node&#39; for clarity</span>
-    <span class="n">combined</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
-    
-    <span class="c1"># Compute aggregate multiplex PageRank (simple approach: average across layers)</span>
-    <span class="c1"># Note: This is a simplified version. True multiplex PageRank requires</span>
-    <span class="c1"># supra-adjacency matrix computation, but this demonstrates the concept.</span>
-    <span class="n">multiplex_pr</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>
-        <span class="s1">&#39;pagerank&#39;</span><span class="p">:</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span>  <span class="c1"># Average across layers</span>
-        <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span>      <span class="c1"># Total degree across layers</span>
-    <span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-    
-    <span class="n">multiplex_pr</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="s1">&#39;multiplex_pagerank&#39;</span><span class="p">,</span> <span class="s1">&#39;total_degree&#39;</span><span class="p">]</span>
-    
-    <span class="c1"># Sort by multiplex PageRank</span>
-    <span class="n">multiplex_pr</span> <span class="o">=</span> <span class="n">multiplex_pr</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;multiplex_pagerank&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
-    <span class="c1"># Add layer-specific details</span>
-    <span class="n">layer_details</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
-        <span class="n">index</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">,</span>
-        <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;layer&#39;</span><span class="p">,</span>
-        <span class="n">values</span><span class="o">=</span><span class="s1">&#39;pagerank&#39;</span><span class="p">,</span>
-        <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-    
-    <span class="n">result</span> <span class="o">=</span> <span class="n">multiplex_pr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">layer_details</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;node&quot;</span><span class="p">})</span>
+
+    <span class="c1"># Aggregate across layers: average PR, total degree</span>
+    <span class="n">multiplex_pr</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+              <span class="n">multiplex_pagerank</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">),</span>
+              <span class="n">total_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">),</span>
+          <span class="p">)</span>
+          <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">multiplex_pr</span> <span class="o">=</span> <span class="n">multiplex_pr</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;multiplex_pagerank&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Layer-specific PR breakdown as wide table</span>
+    <span class="n">layer_details</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">=</span><span class="s2">&quot;node&quot;</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="s2">&quot;pagerank&quot;</span><span class="p">,</span>
+            <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">result_df</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">multiplex_pr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">layer_details</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_df</span>
 </pre></div>
 </div>
 </section>
@@ -1020,11 +994,14 @@ To run all queries and generate outputs:</p>
 <section id="id17">
 <h3><a class="toc-backref" href="#id52" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze network robustness: impact of removing one layer at a time.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate network robustness by removing each layer and recomputing stats.</span>
 <span class="sd">    </span>
 <span class="sd">    This query demonstrates robustness analysis by simulating layer failure.</span>
 <span class="sd">    For each layer, we measure how connectivity changes if that layer is removed.</span>
 <span class="sd">    This reveals which layers are critical for network cohesion.</span>
+<span class="sd">    </span>
+<span class="sd">    Note: The loop over layers is semantically part of the experiment design</span>
+<span class="sd">    (each iteration is a different scenario), which is an acceptable use of loops.</span>
 <span class="sd">    </span>
 <span class="sd">    Why it&#39;s interesting:</span>
 <span class="sd">    - Identifies critical infrastructure layers</span>
@@ -1036,6 +1013,7 @@ To run all queries and generate outputs:</p>
 <span class="sd">    - Layer selection and filtering</span>
 <span class="sd">    - Computing connectivity metrics</span>
 <span class="sd">    - Comparing network states (with/without layers)</span>
+<span class="sd">    - Using functools.reduce for cleaner layer expressions</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
 <span class="sd">        network: A multi_layer_network instance</span>
@@ -1043,6 +1021,9 @@ To run all queries and generate outputs:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame comparing connectivity with each layer removed</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+    
     <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     
     <span class="c1"># Baseline: connectivity with all layers</span>
@@ -1066,23 +1047,21 @@ To run all queries and generate outputs:</p>
         <span class="s1">&#39;connectivity_loss&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
     <span class="p">}]</span>
     
-    <span class="c1"># Test removing each layer</span>
+    <span class="c1"># Test removing each layer (scenario loop - part of experiment design)</span>
     <span class="k">for</span> <span class="n">layer_to_remove</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-        <span class="c1"># Get remaining layers</span>
-        <span class="n">remaining_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span> <span class="k">if</span> <span class="n">layer</span> <span class="o">!=</span> <span class="n">layer_to_remove</span><span class="p">]</span>
+        <span class="c1"># Build a layer expression that includes all layers except layer_to_remove</span>
+        <span class="n">remaining_exprs</span> <span class="o">=</span> <span class="p">[</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span> <span class="k">if</span> <span class="n">layer</span> <span class="o">!=</span> <span class="n">layer_to_remove</span><span class="p">]</span>
         
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">remaining_layers</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">remaining_exprs</span><span class="p">:</span>
             <span class="k">continue</span>
         
-        <span class="c1"># Combine remaining layers</span>
-        <span class="n">layer_expr</span> <span class="o">=</span> <span class="n">remaining_layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">remaining_layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="n">layer_expr</span> <span class="o">=</span> <span class="n">layer_expr</span> <span class="o">+</span> <span class="n">layer</span>
+        <span class="c1"># Combine remaining layers using reduce</span>
+        <span class="n">remaining_expr</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">remaining_exprs</span><span class="p">)</span>
         
         <span class="c1"># Query with reduced layer set</span>
         <span class="n">reduced_result</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layer_expr</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">remaining_expr</span><span class="p">)</span>
              <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
              <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
         <span class="p">)</span>
@@ -1192,7 +1171,9 @@ To run all queries and generate outputs:</p>
 <section id="id21">
 <h3><a class="toc-backref" href="#id57" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare multiple centrality measures to identify versatile vs specialized hubs.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare multiple centrality measures on the aggregated multilayer network.</span>
+<span class="sd">    </span>
+<span class="sd">    Refactored: multilayer-aware with L[&quot;*&quot;], no loops.</span>
 <span class="sd">    </span>
 <span class="sd">    This query computes several centrality measures (degree, betweenness, closeness,</span>
 <span class="sd">    PageRank) and identifies nodes that rank high in multiple measures (&quot;versatile hubs&quot;)</span>
@@ -1206,6 +1187,7 @@ To run all queries and generate outputs:</p>
 <span class="sd">    </span>
 <span class="sd">    DSL concepts demonstrated:</span>
 <span class="sd">    - Computing multiple centrality measures in one query</span>
+<span class="sd">    - Aggregating across all layers</span>
 <span class="sd">    - Ranking and comparing across metrics</span>
 <span class="sd">    - Using computed attributes for classification</span>
 <span class="sd">    </span>
@@ -1215,28 +1197,18 @@ To run all queries and generate outputs:</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame with nodes and their centrality scores, plus a &quot;versatility&quot; metric</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Select a representative layer (or aggregate across all layers)</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="n">_get_layer_names</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">layers</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-    
-    <span class="c1"># Use first layer for demonstration</span>
-    <span class="n">layer_name</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;closeness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>  <span class="c1"># aggregate across layers</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;closeness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
     
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     
-    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-    
-    <span class="c1"># Rename &#39;id&#39; column to &#39;node&#39; for clarity</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
     
     <span class="c1"># Normalize each centrality to [0, 1] for comparison</span>
     <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;closeness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;pagerank&#39;</span><span class="p">]:</span>
