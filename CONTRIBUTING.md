@@ -139,7 +139,7 @@ class TestMyFeature:
 - Write clear commit messages
 - Reference related issues
 - Add tests for new functionality
-- Update `llm.md` if adding significant features
+- Update `AGENTS.md` if adding significant features
 
 ## Project Structure
 
@@ -168,7 +168,7 @@ py3plex/
 | `py3plex/core/multinet.py` | Core `multi_layer_network` class |
 | `py3plex/dsl/__init__.py` | DSL implementation |
 | `py3plex/exceptions.py` | Exception hierarchy |
-| `llm.md` | Comprehensive LLM documentation |
+| `AGENTS.md` | Comprehensive AI agent documentation |
 
 ## Adding New Features
 
@@ -204,7 +204,7 @@ py3plex/
 
 If you're an AI assistant contributing to this project:
 
-1. **Read first**: Review `llm.md` for comprehensive documentation
+1. **Read first**: Review `AGENTS.md` for comprehensive documentation
 2. **Follow patterns**: Match existing code style and patterns
 3. **Test thoroughly**: Add tests for all new functionality
 4. **Minimal changes**: Make focused, minimal modifications
@@ -212,9 +212,8 @@ If you're an AI assistant contributing to this project:
 
 ### Key Context Files
 
-- `llm.md` - Full LLM-optimized documentation
-- `CLAUDE.md` - Claude-specific context
-- `.github/copilot-instructions.md` - Copilot instructions
+- `AGENTS.md` - Full AI agent documentation
+- `.github/copilot-instructions.md` - GitHub Copilot instructions
 
 ## Getting Help
 
