@@ -11,6 +11,30 @@ from pathlib import Path
 
 import pytest
 
+# Keep uncertainty context isolated between tests that touch it
+try:
+    from py3plex.uncertainty.context import _uncertainty_ctx
+    from py3plex.uncertainty.types import UncertaintyConfig
+except Exception:  # pragma: no cover - optional dependency guard
+    _uncertainty_ctx = None
+    UncertaintyConfig = None
+
+
+@pytest.fixture(autouse=True)
+def reset_uncertainty_context(request):
+    """Ensure uncertainty context starts from a clean slate for relevant tests."""
+    if _uncertainty_ctx is None or UncertaintyConfig is None:
+        yield
+        return
+    if "uncertainty" not in request.node.nodeid:
+        yield
+        return
+    token = _uncertainty_ctx.set(UncertaintyConfig())
+    try:
+        yield
+    finally:
+        _uncertainty_ctx.reset(token)
+
 # Configure Hypothesis profiles
 try:
     from hypothesis import settings, Verbosity

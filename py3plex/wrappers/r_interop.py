@@ -557,7 +557,10 @@ def get_layer_names(network: Union[multi_layer_network, Any]) -> List[str]:
     """
     # Handle new I/O system
     if NEW_IO_AVAILABLE and hasattr(network, "layers"):
-        return list(network.layers.keys())
+        try:
+            return list(network.layers.keys())
+        except AttributeError:
+            return list(network.layers)
 
     # Handle legacy network
     if isinstance(network, multi_layer_network):

@@ -11,9 +11,12 @@ import os
 
 import pytest
 
+import py3plex.datasets._loaders as loader_module
 from py3plex.datasets import (
+    fetch_multilayer,
     get_data_dir,
     list_datasets,
+    list_multilayer,
     load_aarhus_cs,
     load_synthetic_multilayer,
     make_clique_multiplex,
@@ -32,6 +35,13 @@ class TestDataLoaders:
         assert isinstance(data_dir, str)
         assert os.path.isdir(data_dir)
 
+    def test_get_data_dir_includes_bundled_edge_files(self):
+        """Bundled dataset edge files should exist in the data directory."""
+        data_dir = get_data_dir()
+        for filename in ("aarhus_cs.edges", "synthetic_multilayer.edges"):
+            path = os.path.join(data_dir, filename)
+            assert os.path.isfile(path), f"Expected bundled file missing: {path}"
+
     def test_list_datasets_returns_list(self):
         """list_datasets should return a list of tuples."""
         datasets = list_datasets()
@@ -42,6 +52,12 @@ class TestDataLoaders:
             assert isinstance(desc, str)
             assert len(name) > 0
             assert len(desc) > 0
+
+    def test_list_multilayer_includes_all_registered(self):
+        """list_multilayer should list all fetchable dataset names."""
+        available = dict(list_multilayer())
+        for required in ("aarhus_cs", "synthetic_multilayer", "human_ppi_gene_disease_drug"):
+            assert required in available
 
     def test_load_aarhus_cs_basic(self):
         """load_aarhus_cs should return a valid network."""
@@ -68,6 +84,14 @@ class TestDataLoaders:
         nodes = list(net.get_nodes())
         assert len(nodes) > 0
 
+    def test_load_aarhus_cs_missing_file_raises(self, monkeypatch):
+        """Missing bundled file should raise FileNotFoundError."""
+        monkeypatch.setattr(
+            "py3plex.datasets._loaders.os.path.exists", lambda path: False
+        )
+        with pytest.raises(FileNotFoundError):
+            load_aarhus_cs()
+
     def test_load_synthetic_multilayer_basic(self):
         """load_synthetic_multilayer should return a valid network."""
         net = load_synthetic_multilayer()
@@ -87,6 +111,37 @@ class TestDataLoaders:
         layer_names = layers[0] if isinstance(layers, tuple) else layers
         assert len(layer_names) == 3, f"Expected 3 layers, got {len(layer_names)}"
 
+    def test_load_synthetic_multilayer_missing_file_raises(self, monkeypatch):
+        """Missing synthetic file should raise FileNotFoundError."""
+        monkeypatch.setattr(
+            "py3plex.datasets._loaders.os.path.exists", lambda path: False
+        )
+        with pytest.raises(FileNotFoundError):
+            load_synthetic_multilayer()
+
+    def test_fetch_multilayer_unknown_dataset_raises(self):
+        """Unknown dataset names should raise ValueError with available names."""
+        with pytest.raises(ValueError) as err:
+            fetch_multilayer("missing_dataset")
+        assert "Unknown dataset" in str(err.value)
+        assert "synthetic_multilayer" in str(err.value)
+
+    def test_fetch_multilayer_uses_loader_and_forwards_directed(self, monkeypatch):
+        """fetch_multilayer should dispatch to loader with directed flag."""
+        sentinel = object()
+        recorded = {}
+
+        def fake_loader(*, directed):
+            recorded["directed"] = directed
+            return sentinel
+
+        monkeypatch.setattr(loader_module, "load_aarhus_cs", fake_loader)
+
+        result = fetch_multilayer("aarhus_cs", directed=True)
+
+        assert result is sentinel
+        assert recorded["directed"] is True
+
 
 class TestSyntheticGenerators:
     """Tests for synthetic network generators."""
@@ -96,6 +151,13 @@ class TestSyntheticGenerators:
         net = make_random_multilayer(n_nodes=30, n_layers=3, p=0.1)
         nodes = list(net.get_nodes())
         assert len(nodes) > 0
+
+    def test_make_random_multilayer_directed_graph(self):
+        """Directed multilayer generation should produce directed core_network."""
+        net = make_random_multilayer(
+            n_nodes=10, n_layers=2, p=0.2, directed=True, random_state=0
+        )
+        assert net.core_network.is_directed()
 
     def test_make_random_multilayer_reproducibility(self):
         """make_random_multilayer with random_state should be reproducible."""
@@ -136,6 +198,10 @@ class TestSyntheticGenerators:
         """make_random_multiplex should validate inputs."""
         with pytest.raises(ValueError):
             make_random_multiplex(n_nodes=-5, n_layers=3, p=0.1)
+        with pytest.raises(ValueError):
+            make_random_multiplex(n_nodes=5, n_layers=1, p=2)
+        with pytest.raises(ValueError):
+            make_random_multiplex(n_nodes=5, n_layers=1, p=-0.5)
 
     def test_make_clique_multiplex_basic(self):
         """make_clique_multiplex should generate a network with cliques."""

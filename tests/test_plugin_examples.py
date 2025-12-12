@@ -166,12 +166,12 @@ class TestExampleSimpleCommunity:
         assert plugin.name == "example_simple"
         assert "community detection" in plugin.description.lower()
         assert plugin.author == "Py3plex Development Team"
-        assert plugin.supports_multilayer is True
+        assert plugin.supports_overlapping is False
 
     def test_compute_basic(self, simple_network):
         """Test basic community detection."""
         plugin = ExampleSimpleCommunity()
-        communities = plugin.compute(simple_network)
+        communities = plugin.detect(simple_network)
         
         assert isinstance(communities, dict)
         assert len(communities) > 0
@@ -202,7 +202,7 @@ class TestExampleSimpleCommunity:
         ])
         
         plugin = ExampleSimpleCommunity()
-        communities = plugin.compute(network)
+        communities = plugin.detect(network)
         
         # Should detect 2 communities
         community_ids = set(communities.values())
@@ -212,7 +212,7 @@ class TestExampleSimpleCommunity:
         """Test with empty network."""
         network = multinet.multi_layer_network(directed=False, verbose=False)
         plugin = ExampleSimpleCommunity()
-        communities = plugin.compute(network)
+        communities = plugin.detect(network)
         
         assert communities == {}
 
@@ -230,7 +230,7 @@ class TestExampleSimpleCommunity:
             pass
         
         with pytest.raises(ValueError, match="multi_layer_network"):
-            plugin.compute(BadNetwork())
+            plugin.detect(BadNetwork())
 
 
 class TestPluginIntegration:
@@ -243,7 +243,7 @@ class TestPluginIntegration:
         
         # Compute both analyses
         centrality = centrality_plugin.compute(simple_network)
-        communities = community_plugin.compute(simple_network)
+        communities = community_plugin.detect(simple_network)
         
         # Both should return results
         assert len(centrality) > 0
