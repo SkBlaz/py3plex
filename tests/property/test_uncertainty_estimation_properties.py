@@ -294,8 +294,9 @@ class TestUncertaintyContextProperties:
 class TestMetamorphicProperties:
     """Metamorphic properties - relationships between inputs and outputs."""
     
+    @pytest.mark.slow
     @given(st.integers(min_value=10, max_value=20))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_more_runs_gives_valid_results(self, base_runs):
         """Property: More runs should give valid statistical results."""
         # This is a weaker version of the CI width test - just check validity

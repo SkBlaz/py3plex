@@ -102,6 +102,7 @@ def test_random_er_monotonicity_in_p(N, L):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=30)
 @given(
     N=st.integers(min_value=3, max_value=10),
@@ -129,6 +130,7 @@ def test_random_er_node_count(N, L):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=30)
 @given(
     N=st.integers(min_value=3, max_value=10),
@@ -154,6 +156,7 @@ def test_random_er_layer_count(N, L):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=30)
 @given(
     N=st.integers(min_value=3, max_value=10),
@@ -176,6 +179,7 @@ def test_random_er_nonnegative_counts(N, L, p):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=30)
 @given(
     N=st.integers(min_value=3, max_value=10),
@@ -280,6 +284,7 @@ def test_random_er_layers_independent(N, L, p):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=30)
 @given(
     N=st.integers(min_value=3, max_value=10),

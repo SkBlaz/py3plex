@@ -12,7 +12,6 @@ Tests cover:
 
 import json
 import pytest
-from pathlib import Path
 
 from py3plex.core import multinet
 from py3plex.dsl import (
@@ -25,6 +24,7 @@ from py3plex.dsl import (
     SelectStmt,
     Target,
     DslExecutionError,
+    export_result,
 )
 
 
@@ -421,3 +421,65 @@ class TestExportEmptyResults:
         with open(output_file) as f:
             data = json.load(f)
         assert data == []
+
+
+class TestExportNormalizationVariants:
+    """Test normalization paths that feed export_result()."""
+
+    def test_export_dict_with_tuple_keys(self, tmp_path):
+        """Dict with (node, layer) keys should expand to node/layer/score columns."""
+        tuple_dict = {("A", "social"): 0.5, ("B", "work"): 1.2}
+        output_file = tmp_path / "tuple_keys.csv"
+
+        export_result(tuple_dict, ExportSpec(path=str(output_file), fmt="csv"))
+
+        lines = output_file.read_text().strip().split("\n")
+        assert "node,layer,score" in lines[0]
+        assert any("A" in line and "social" in line for line in lines[1:])
+        assert any("B" in line and "work" in line for line in lines[1:])
+
+    def test_export_list_of_dicts_tsv_with_column_hint(self, tmp_path):
+        """List-of-dicts path should respect column hints and TSV delimiter."""
+        rows = [
+            {"name": "A", "score": 1, "extra": "x"},
+            {"name": "B", "score": 2, "extra": "y"},
+        ]
+        output_file = tmp_path / "rows.tsv"
+
+        export_result(
+            rows,
+            ExportSpec(path=str(output_file), fmt="tsv", columns=["name", "score"]),
+        )
+
+        content = output_file.read_text().strip().split("\n")
+        # Header only includes hinted columns and uses tab delimiter
+        assert content[0] == "name\tscore"
+        assert content[1].startswith("A\t1")
+
+    def test_export_dataframe_respects_columns_hint(self, tmp_path):
+        """DataFrame export path should drop non-hinted columns."""
+        pd = pytest.importorskip("pandas")
+        df = pd.DataFrame([{"id": "A", "degree": 2, "ignore": 99}])
+        output_file = tmp_path / "df.json"
+
+        export_result(df, ExportSpec(path=str(output_file), fmt="json", columns=["id"]))
+
+        with open(output_file) as f:
+            data = json.load(f)
+
+        # Only the hinted column should be present
+        assert data == [{"id": "A"}]
+
+    def test_export_unsupported_type_raises(self, tmp_path):
+        """Unsupported result types should raise DslExecutionError."""
+        output_file = tmp_path / "bad.csv"
+
+        with pytest.raises(DslExecutionError):
+            export_result({1, 2, 3}, ExportSpec(path=str(output_file), fmt="csv"))
+
+    def test_export_unsupported_format_raises(self, tmp_path):
+        """Unknown formats should be rejected with a clear DSL error."""
+        output_file = tmp_path / "data.unknown"
+
+        with pytest.raises(DslExecutionError):
+            export_result({"A": 1}, ExportSpec(path=str(output_file), fmt="parquet"))

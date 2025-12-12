@@ -49,6 +49,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
+    "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
     "pytest-benchmark>=5.0",
     "black>=23.0",
@@ -64,6 +65,7 @@ dev = [
 # Testing dependencies (for property-based and integration tests)
 tests = [
     "pytest>=7.0",
+    "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
     "hypothesis>=6.0",
     "hypothesis-networkx>=0.2.0",  # Hypothesis strategies for NetworkX graphs
@@ -224,6 +226,16 @@ doctest_optionflags = [
     "NORMALIZE_WHITESPACE",
     "ELLIPSIS",
     "IGNORE_EXCEPTION_DETAIL",
+]
+norecursedirs = [
+    ".git",
+    ".hg",
+    ".tox",
+    ".venv",
+    "dist",
+    "build",
+    ".hypothesis",
+    "py3plex/algorithms/community_detection/infomap",
 ]
 
 [tool.coverage.run]

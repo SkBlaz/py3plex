@@ -7,10 +7,11 @@ This test verifies that the FileNotFoundError issue is resolved.
 import os
 import sys
 import tempfile
-import shutil
 import pytest
 from subprocess import call
 
+@pytest.mark.integration
+@pytest.mark.slow
 def test_infomap_integration():
     """
     Test that verifies the fix for the FileNotFoundError in infomap community detection.
@@ -81,8 +82,7 @@ def test_infomap_integration():
                 else:
                     print(f"FAIL: Infomap execution failed with code: {result}")
             else:
-                print(f"WARNING:  Infomap binary not found at: {infomap_binary}")
-                print("   (This is expected in some test environments)")
+                pytest.skip(f"Infomap binary not found at: {infomap_binary}")
             
             print("\nSuccess: Integration test completed!")
             

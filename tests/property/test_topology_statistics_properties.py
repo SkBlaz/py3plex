@@ -63,6 +63,7 @@ def test_basic_pl_stats_returns_valid_sigma(n_nodes, seed):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=15, max_value=50),
@@ -84,6 +85,7 @@ def test_basic_pl_stats_deterministic(n_nodes, seed):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=15, max_value=50),
@@ -208,6 +210,7 @@ def test_basic_pl_stats_handles_zeros_in_sequence(n_nodes, seed):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=15, max_value=50),
@@ -228,6 +231,7 @@ def test_basic_pl_stats_sigma_reflects_fit_quality(n_nodes, seed):
 
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     seed=st.integers(min_value=0, max_value=10000)
