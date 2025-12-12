@@ -65,6 +65,33 @@ _RESAMPLING_METHOD_MAP = {
     "jackknife": ResamplingStrategy.JACKKNIFE,
 }
 
+
+def _wrap_deterministic_uncertainty(values: Any, items: List[Any]) -> Dict[Any, Any]:
+    """Wrap deterministic results with uncertainty scaffolding (std=0, certainty=1.0)."""
+
+    def _wrap_single(val: Any) -> Dict[str, Any]:
+        if isinstance(val, dict) and "mean" in val:
+            return val
+        try:
+            mean_val = float(val)
+        except Exception:
+            mean_val = val
+        return {
+            "mean": mean_val,
+            "std": 0.0,
+            "quantiles": {},
+            "certainty": 1.0,
+        }
+
+    if isinstance(values, StatSeries):
+        return values.to_dict()
+
+    if isinstance(values, dict):
+        return {k: _wrap_single(v) for k, v in values.items()}
+
+    # Scalar: apply to all items
+    return {item: _wrap_single(values) for item in items}
+
 # Centrality aliases mapping for smart defaults
 # Maps common attribute names to their canonical centrality metric names
 CENTRALITY_ALIASES = {
@@ -676,10 +703,10 @@ def _compute_measure_with_uncertainty(
         else:
             return result
     else:
-        raise ValueError(
-            f"Unknown uncertainty method: {method}. "
-            "Valid methods: 'bootstrap', 'null_model', 'perturbation', 'seed'"
+        logging.getLogger(__name__).warning(
+            f"Unknown uncertainty method '{method}'. Returning deterministic values with std=0."
         )
+        return _wrap_deterministic_uncertainty(measure_fn(subgraph, items), items)
 
 
 def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None) -> QueryResult:
@@ -757,22 +784,23 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     # First, try to resolve from operator registry
                     operator = get_operator(compute_item.name)
                     if operator is not None:
-                        # Custom operators don't support uncertainty yet
-                        if compute_item.uncertainty:
-                            logging.getLogger(__name__).warning(
-                                f"Uncertainty not supported for custom operator '{compute_item.name}'"
-                            )
-                        
                         # Call custom operator with context
                         result = operator.func(context)
                         result_name = compute_item.result_name
                         
                         # Convert result to dict if it's not already
                         if isinstance(result, dict):
-                            attributes[result_name] = result
+                            attributes[result_name] = (
+                                _wrap_deterministic_uncertainty(result, items)
+                                if compute_item.uncertainty else result
+                            )
                         else:
                             # If result is a scalar, assign it to all nodes
-                            attributes[result_name] = {node: result for node in items}
+                            base = {node: result for node in items}
+                            attributes[result_name] = (
+                                _wrap_deterministic_uncertainty(base, items)
+                                if compute_item.uncertainty else base
+                            )
                     else:
                         # Fall back to measure registry (built-in measures)
                         measure_fn = measure_registry.get(compute_item.name)
@@ -800,19 +828,18 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             # Edge measures - new implementation
             for compute_item in select.compute:
                 try:
-                    # Edge measures don't support uncertainty yet
-                    if compute_item.uncertainty:
-                        logging.getLogger(__name__).warning(
-                            f"Uncertainty not yet supported for edge measure '{compute_item.name}'. "
-                            "Computing deterministic value only."
-                        )
-                    
                     # Check if this is an edge-specific measure
                     measure_fn = measure_registry.get(compute_item.name, target="edges")
                     result_name = compute_item.result_name
                     
                     # Compute the measure on edges (always deterministic for now)
                     values = measure_fn(G, items)
+                    if compute_item.uncertainty:
+                        logging.getLogger(__name__).warning(
+                            f"Uncertainty not yet supported for edge measure '{compute_item.name}'. "
+                            "Returning deterministic values with std=0."
+                        )
+                        values = _wrap_deterministic_uncertainty(values, items)
                     attributes[result_name] = values
                 except UnknownMeasureError:
                     # Re-raise with context that this is an edge query

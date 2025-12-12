@@ -22,6 +22,7 @@ Example:
     >>> q = Q.edges().during(100.0, 200.0).execute(network)  # Range [100, 200]
 """
 
+import logging
 from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -48,6 +49,14 @@ from .ast import (
 )
 from .result import QueryResult
 
+from py3plex.uncertainty import (
+    get_uncertainty_config,
+    set_uncertainty_config,
+    UncertaintyConfig,
+    UncertaintyMode,
+    ResamplingStrategy,
+)
+
 
 # Comparator suffix mapping
 COMPARATOR_MAP = {
@@ -61,6 +70,15 @@ COMPARATOR_MAP = {
     "ne": "!=",
     "neq": "!=",
 }
+
+_RESAMPLING_TO_METHOD = {
+    ResamplingStrategy.BOOTSTRAP: "bootstrap",
+    ResamplingStrategy.PERTURBATION: "perturbation",
+    ResamplingStrategy.SEED: "seed",
+    # Jackknife currently maps to seed-style multi-run execution until dedicated support lands
+    ResamplingStrategy.JACKKNIFE: "seed",
+}
+_METHOD_TO_RESAMPLING = {v: k for k, v in _RESAMPLING_TO_METHOD.items()}
 
 
 def _wrap_value(v: Any) -> Union[str, float, int, ParamRef]:
@@ -527,7 +545,7 @@ class QueryBuilder:
     
     def compute(self, *measures: str, alias: Optional[str] = None,
                 aliases: Optional[Dict[str, str]] = None,
-                uncertainty: bool = False,
+                uncertainty: Optional[bool] = None,
                 method: Optional[str] = None,
                 n_samples: Optional[int] = None,
                 ci: Optional[float] = None,
@@ -543,7 +561,8 @@ class QueryBuilder:
             *measures: Measure names to compute
             alias: Alias for single measure
             aliases: Dictionary mapping measure names to aliases
-            uncertainty: Whether to compute uncertainty for these measures
+            uncertainty: Whether to compute uncertainty for these measures. If None,
+                uses Q.uncertainty defaults or the global uncertainty context.
             method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
             n_samples: Number of samples for uncertainty estimation (default: from Q.uncertainty.defaults)
             ci: Confidence interval level (default: from Q.uncertainty.defaults)
@@ -574,14 +593,28 @@ class QueryBuilder:
             >>> Q.uncertainty.defaults(n_boot=500, ci=0.95)
             >>> Q.nodes().compute("degree", uncertainty=True)
         """
-        # Get defaults from Q.uncertainty only if uncertainty is explicitly True
-        # (not when uncertainty=False is explicitly passed)
-        if uncertainty:
+        # Determine whether to compute uncertainty:
+        # 1) explicit argument wins
+        # 2) Q.uncertainty.enabled=True
+        # 3) global uncertainty context set to ON
+        cfg = get_uncertainty_config()
+        if uncertainty is None:
+            uncertainty_flag = bool(Q.uncertainty.get("enabled", False) or cfg.mode == UncertaintyMode.ON)
+        else:
+            uncertainty_flag = bool(uncertainty)
+
+        # Get defaults from Q.uncertainty or context only if uncertainty is requested
+        if uncertainty_flag:
             # Apply defaults for unspecified parameters
             if method is None:
-                method = Q.uncertainty.get("method", "bootstrap")
+                method = Q.uncertainty.get("method")
+            if method is None:
+                method = _RESAMPLING_TO_METHOD.get(cfg.default_resampling)
+            if method is None:
+                method = "bootstrap"
+
             if n_samples is None and n_boot is None:
-                n_samples = Q.uncertainty.get("n_boot", 50)
+                n_samples = Q.uncertainty.get("n_boot", cfg.default_n_runs)
             # n_boot takes precedence over n_samples for clarity
             if n_boot is not None:
                 n_samples = n_boot
@@ -605,7 +638,7 @@ class QueryBuilder:
                 items.append(ComputeItem(
                     name=name, 
                     alias=al,
-                    uncertainty=uncertainty,
+                    uncertainty=uncertainty_flag,
                     method=method,
                     n_samples=n_samples,
                     ci=ci,
@@ -619,7 +652,7 @@ class QueryBuilder:
             items.append(ComputeItem(
                 name=measures[0], 
                 alias=alias,
-                uncertainty=uncertainty,
+                uncertainty=uncertainty_flag,
                 method=method,
                 n_samples=n_samples,
                 ci=ci,
@@ -633,7 +666,7 @@ class QueryBuilder:
             items.extend(
                 ComputeItem(
                     name=m,
-                    uncertainty=uncertainty,
+                    uncertainty=uncertainty_flag,
                     method=method,
                     n_samples=n_samples,
                     ci=ci,
@@ -1687,7 +1720,7 @@ class Q:
         """
         
         _defaults: Dict[str, Any] = {
-            "enabled": False,
+            "enabled": True,
             "n_boot": 50,
             "n_samples": 50,
             "ci": 0.95,
@@ -1730,6 +1763,7 @@ class Q:
                         f"Valid parameters: {list(cls._defaults.keys())}"
                     )
                 cls._defaults[key] = value
+            cls._sync_context()
         
         @classmethod
         def reset(cls) -> None:
@@ -1746,6 +1780,7 @@ class Q:
                 "n_null": 200,
                 "null_model": "degree_preserving",
             }
+            cls._sync_context()
         
         @classmethod
         def get(cls, key: str, default: Any = None) -> Any:
@@ -1768,6 +1803,24 @@ class Q:
                 Dictionary of all default values
             """
             return cls._defaults.copy()
+
+        @classmethod
+        def _sync_context(cls) -> None:
+            """Push defaults into the shared uncertainty context."""
+            try:
+                cfg = get_uncertainty_config()
+                n_runs = cls._defaults.get("n_samples") or cls._defaults.get("n_boot") or cfg.default_n_runs
+                resampling = _METHOD_TO_RESAMPLING.get(cls._defaults.get("method"), cfg.default_resampling)
+                set_uncertainty_config(
+                    UncertaintyConfig(
+                        mode=UncertaintyMode.ON if cls._defaults.get("enabled") else UncertaintyMode.OFF,
+                        default_n_runs=int(n_runs),
+                        default_resampling=resampling,
+                    )
+                )
+            except Exception:
+                # Keep DSL usable even if uncertainty package is partially available
+                logging.getLogger(__name__).debug("Failed to sync uncertainty context", exc_info=True)
 
 
 # ==============================================================================
