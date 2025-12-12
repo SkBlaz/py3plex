@@ -41261,6 +41261,42 @@ ExplainResult with detailed query information
 
 \end{fulllineitems}\end{savenotes}
 
+\index{export\_result() (in module py3plex.dsl)@\spxentry{export\_result()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.export_result}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{export\_result}}}
+{\sphinxparam{\DUrole{n}{result}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{spec}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ExportSpec}]{\sphinxcrossref{ExportSpec}}}}}}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Export query result to a file according to the export specification.
+
+\sphinxAtStartPar
+This is the main entry point for file exports. It normalizes the result
+into a tabular format and dispatches to format\sphinxhyphen{}specific writers.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{result}} \textendash{} Query result (QueryResult, dict, or other supported type)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{spec}} \textendash{} Export specification with path, format, columns, and options
+
+\end{itemize}
+
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxstyleliteralstrong{\sphinxupquote{DslExecutionError}}}}} \textendash{} If export fails or result type is not supported
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{format\_result() (in module py3plex.dsl)@\spxentry{format\_result()}\spxextra{in module py3plex.dsl}}
 
 \begin{savenotes}\begin{fulllineitems}

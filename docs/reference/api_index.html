@@ -252,6 +252,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.execute_ast"><code class="docutils literal notranslate"><span class="pre">execute_ast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.execute_query"><code class="docutils literal notranslate"><span class="pre">execute_query()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.explain"><code class="docutils literal notranslate"><span class="pre">explain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.export_result"><code class="docutils literal notranslate"><span class="pre">export_result()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.format_result"><code class="docutils literal notranslate"><span class="pre">format_result()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_biggest_community"><code class="docutils literal notranslate"><span class="pre">get_biggest_community()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_community_partition"><code class="docutils literal notranslate"><span class="pre">get_community_partition()</span></code></a></li>
@@ -9635,6 +9636,25 @@ SELECT id, degree FROM nodes IN LAYERS (‘ppi’, ‘coexpr’) WHERE color = �
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">diag</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.export_result">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">export_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py3plex.dsl.ExportSpec" title="py3plex.dsl.ast.ExportSpec"><span class="pre">ExportSpec</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.dsl.export_result" title="Link to this definition"></a></dt>
+<dd><p>Export query result to a file according to the export specification.</p>
+<p>This is the main entry point for file exports. It normalizes the result
+into a tabular format and dispatches to format-specific writers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> – Query result (QueryResult, dict, or other supported type)</p></li>
+<li><p><strong>spec</strong> – Export specification with path, format, columns, and options</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#py3plex.dsl.DslExecutionError" title="py3plex.dsl.DslExecutionError"><strong>DslExecutionError</strong></a> – If export fails or result type is not supported</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

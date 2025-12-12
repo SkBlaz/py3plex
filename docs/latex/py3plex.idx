@@ -747,20 +747,21 @@
 \indexentry{execute\_ast() (in module py3plex.dsl)@\spxentry{execute\_ast()}\spxextra{in module py3plex.dsl}|hyperpage}{419}
 \indexentry{execute\_query() (in module py3plex.dsl)@\spxentry{execute\_query()}\spxextra{in module py3plex.dsl}|hyperpage}{419}
 \indexentry{explain() (in module py3plex.dsl)@\spxentry{explain()}\spxextra{in module py3plex.dsl}|hyperpage}{420}
+\indexentry{export\_result() (in module py3plex.dsl)@\spxentry{export\_result()}\spxextra{in module py3plex.dsl}|hyperpage}{421}
 \indexentry{format\_result() (in module py3plex.dsl)@\spxentry{format\_result()}\spxextra{in module py3plex.dsl}|hyperpage}{421}
 \indexentry{get\_biggest\_community() (in module py3plex.dsl)@\spxentry{get\_biggest\_community()}\spxextra{in module py3plex.dsl}|hyperpage}{421}
 \indexentry{get\_community\_partition() (in module py3plex.dsl)@\spxentry{get\_community\_partition()}\spxextra{in module py3plex.dsl}|hyperpage}{421}
-\indexentry{get\_community\_size\_distribution() (in module py3plex.dsl)@\spxentry{get\_community\_size\_distribution()}\spxextra{in module py3plex.dsl}|hyperpage}{421}
+\indexentry{get\_community\_size\_distribution() (in module py3plex.dsl)@\spxentry{get\_community\_size\_distribution()}\spxextra{in module py3plex.dsl}|hyperpage}{422}
 \indexentry{get\_community\_sizes() (in module py3plex.dsl)@\spxentry{get\_community\_sizes()}\spxextra{in module py3plex.dsl}|hyperpage}{422}
 \indexentry{get\_num\_communities() (in module py3plex.dsl)@\spxentry{get\_num\_communities()}\spxextra{in module py3plex.dsl}|hyperpage}{422}
-\indexentry{get\_operator() (in module py3plex.dsl)@\spxentry{get\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{422}
+\indexentry{get\_operator() (in module py3plex.dsl)@\spxentry{get\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{423}
 \indexentry{get\_smallest\_community() (in module py3plex.dsl)@\spxentry{get\_smallest\_community()}\spxextra{in module py3plex.dsl}|hyperpage}{423}
 \indexentry{lint() (in module py3plex.dsl)@\spxentry{lint()}\spxextra{in module py3plex.dsl}|hyperpage}{423}
-\indexentry{list\_operators() (in module py3plex.dsl)@\spxentry{list\_operators()}\spxextra{in module py3plex.dsl}|hyperpage}{423}
+\indexentry{list\_operators() (in module py3plex.dsl)@\spxentry{list\_operators()}\spxextra{in module py3plex.dsl}|hyperpage}{424}
 \indexentry{register\_operator() (in module py3plex.dsl)@\spxentry{register\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{424}
 \indexentry{select\_high\_degree\_nodes() (in module py3plex.dsl)@\spxentry{select\_high\_degree\_nodes()}\spxextra{in module py3plex.dsl}|hyperpage}{424}
 \indexentry{select\_nodes\_by\_layer() (in module py3plex.dsl)@\spxentry{select\_nodes\_by\_layer()}\spxextra{in module py3plex.dsl}|hyperpage}{424}
-\indexentry{unregister\_operator() (in module py3plex.dsl)@\spxentry{unregister\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{424}
+\indexentry{unregister\_operator() (in module py3plex.dsl)@\spxentry{unregister\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{425}
 \indexentry{module@\spxentry{module}!py3plex.uncertainty@\spxentry{py3plex.uncertainty}|hyperpage}{425}
 \indexentry{py3plex.uncertainty@\spxentry{py3plex.uncertainty}!module@\spxentry{module}|hyperpage}{425}
 \indexentry{CommunityStats (class in py3plex.uncertainty)@\spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty}|hyperpage}{425}
@@ -769,12 +770,12 @@
 \indexentry{is\_deterministic (py3plex.uncertainty.CommunityStats property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.CommunityStats property}|hyperpage}{426}
 \indexentry{labels (py3plex.uncertainty.CommunityStats attribute)@\spxentry{labels}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{426}
 \indexentry{meta (py3plex.uncertainty.CommunityStats attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{426}
-\indexentry{modularity (py3plex.uncertainty.CommunityStats attribute)@\spxentry{modularity}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{426}
-\indexentry{modularity\_std (py3plex.uncertainty.CommunityStats attribute)@\spxentry{modularity\_std}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{426}
-\indexentry{n\_communities (py3plex.uncertainty.CommunityStats attribute)@\spxentry{n\_communities}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{426}
-\indexentry{stability (py3plex.uncertainty.CommunityStats attribute)@\spxentry{stability}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{426}
-\indexentry{ResamplingStrategy (class in py3plex.uncertainty)@\spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty}|hyperpage}{426}
-\indexentry{SEED (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{426}
+\indexentry{modularity (py3plex.uncertainty.CommunityStats attribute)@\spxentry{modularity}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{427}
+\indexentry{modularity\_std (py3plex.uncertainty.CommunityStats attribute)@\spxentry{modularity\_std}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{427}
+\indexentry{n\_communities (py3plex.uncertainty.CommunityStats attribute)@\spxentry{n\_communities}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{427}
+\indexentry{stability (py3plex.uncertainty.CommunityStats attribute)@\spxentry{stability}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{427}
+\indexentry{ResamplingStrategy (class in py3plex.uncertainty)@\spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty}|hyperpage}{427}
+\indexentry{SEED (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{427}
 \indexentry{BOOTSTRAP (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{427}
 \indexentry{JACKKNIFE (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{427}
 \indexentry{PERTURBATION (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{427}
@@ -798,7 +799,7 @@
 \indexentry{meta (py3plex.uncertainty.StatSeries attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{429}
 \indexentry{quantiles (py3plex.uncertainty.StatSeries attribute)@\spxentry{quantiles}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{429}
 \indexentry{std (py3plex.uncertainty.StatSeries attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{429}
-\indexentry{to\_dict() (py3plex.uncertainty.StatSeries method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.StatSeries method}|hyperpage}{429}
+\indexentry{to\_dict() (py3plex.uncertainty.StatSeries method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.StatSeries method}|hyperpage}{430}
 \indexentry{UncertaintyConfig (class in py3plex.uncertainty)@\spxentry{UncertaintyConfig}\spxextra{class in py3plex.uncertainty}|hyperpage}{430}
 \indexentry{mode (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{430}
 \indexentry{default\_n\_runs (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{430}
@@ -810,15 +811,15 @@
 \indexentry{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{430}
 \indexentry{ON (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{430}
 \indexentry{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{430}
-\indexentry{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{430}
-\indexentry{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{430}
+\indexentry{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{431}
+\indexentry{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{431}
 \indexentry{ON (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{431}
 \indexentry{bootstrap\_metric() (in module py3plex.uncertainty)@\spxentry{bootstrap\_metric()}\spxextra{in module py3plex.uncertainty}|hyperpage}{431}
 \indexentry{estimate\_uncertainty() (in module py3plex.uncertainty)@\spxentry{estimate\_uncertainty()}\spxextra{in module py3plex.uncertainty}|hyperpage}{432}
-\indexentry{get\_uncertainty\_config() (in module py3plex.uncertainty)@\spxentry{get\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty}|hyperpage}{433}
+\indexentry{get\_uncertainty\_config() (in module py3plex.uncertainty)@\spxentry{get\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty}|hyperpage}{434}
 \indexentry{null\_model\_metric() (in module py3plex.uncertainty)@\spxentry{null\_model\_metric()}\spxextra{in module py3plex.uncertainty}|hyperpage}{434}
 \indexentry{set\_uncertainty\_config() (in module py3plex.uncertainty)@\spxentry{set\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty}|hyperpage}{435}
-\indexentry{uncertainty\_enabled() (in module py3plex.uncertainty)@\spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty}|hyperpage}{435}
+\indexentry{uncertainty\_enabled() (in module py3plex.uncertainty)@\spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty}|hyperpage}{436}
 \indexentry{module@\spxentry{module}!py3plex.uncertainty.types@\spxentry{py3plex.uncertainty.types}|hyperpage}{436}
 \indexentry{py3plex.uncertainty.types@\spxentry{py3plex.uncertainty.types}!module@\spxentry{module}|hyperpage}{436}
 \indexentry{CommunityStats (class in py3plex.uncertainty.types)@\spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{436}
@@ -826,13 +827,13 @@
 \indexentry{coassoc (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{coassoc}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{437}
 \indexentry{is\_deterministic (py3plex.uncertainty.types.CommunityStats property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.CommunityStats property}|hyperpage}{437}
 \indexentry{labels (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{labels}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{437}
-\indexentry{meta (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{437}
-\indexentry{modularity (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{modularity}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{437}
-\indexentry{modularity\_std (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{modularity\_std}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{437}
-\indexentry{n\_communities (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{n\_communities}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{437}
-\indexentry{stability (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{stability}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{437}
-\indexentry{ResamplingStrategy (class in py3plex.uncertainty.types)@\spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{437}
-\indexentry{SEED (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{437}
+\indexentry{meta (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{438}
+\indexentry{modularity (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{modularity}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{438}
+\indexentry{modularity\_std (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{modularity\_std}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{438}
+\indexentry{n\_communities (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{n\_communities}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{438}
+\indexentry{stability (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{stability}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{438}
+\indexentry{ResamplingStrategy (class in py3plex.uncertainty.types)@\spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{438}
+\indexentry{SEED (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{438}
 \indexentry{BOOTSTRAP (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{438}
 \indexentry{JACKKNIFE (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{438}
 \indexentry{PERTURBATION (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{438}
@@ -853,10 +854,10 @@
 \indexentry{index (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{index}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{440}
 \indexentry{is\_deterministic (py3plex.uncertainty.types.StatSeries property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.StatSeries property}|hyperpage}{440}
 \indexentry{mean (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{mean}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{440}
-\indexentry{meta (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{440}
-\indexentry{quantiles (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{quantiles}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{440}
-\indexentry{std (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{440}
-\indexentry{to\_dict() (py3plex.uncertainty.types.StatSeries method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.types.StatSeries method}|hyperpage}{440}
+\indexentry{meta (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{441}
+\indexentry{quantiles (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{quantiles}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{441}
+\indexentry{std (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{441}
+\indexentry{to\_dict() (py3plex.uncertainty.types.StatSeries method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.types.StatSeries method}|hyperpage}{441}
 \indexentry{UncertaintyConfig (class in py3plex.uncertainty.types)@\spxentry{UncertaintyConfig}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{441}
 \indexentry{mode (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}|hyperpage}{441}
 \indexentry{default\_n\_runs (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}|hyperpage}{441}
@@ -867,22 +868,22 @@
 \indexentry{UncertaintyMode (class in py3plex.uncertainty.types)@\spxentry{UncertaintyMode}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{441}
 \indexentry{OFF (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{441}
 \indexentry{ON (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{441}
-\indexentry{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{441}
-\indexentry{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{441}
+\indexentry{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{442}
+\indexentry{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{442}
 \indexentry{OFF (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{442}
 \indexentry{ON (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{442}
 \indexentry{module@\spxentry{module}!py3plex.uncertainty.context@\spxentry{py3plex.uncertainty.context}|hyperpage}{442}
 \indexentry{py3plex.uncertainty.context@\spxentry{py3plex.uncertainty.context}!module@\spxentry{module}|hyperpage}{442}
 \indexentry{get\_uncertainty\_config() (in module py3plex.uncertainty.context)@\spxentry{get\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{442}
 \indexentry{set\_uncertainty\_config() (in module py3plex.uncertainty.context)@\spxentry{set\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{442}
-\indexentry{uncertainty\_disabled() (in module py3plex.uncertainty.context)@\spxentry{uncertainty\_disabled()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{442}
+\indexentry{uncertainty\_disabled() (in module py3plex.uncertainty.context)@\spxentry{uncertainty\_disabled()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{443}
 \indexentry{uncertainty\_enabled() (in module py3plex.uncertainty.context)@\spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{443}
 \indexentry{module@\spxentry{module}!py3plex.uncertainty.estimation@\spxentry{py3plex.uncertainty.estimation}|hyperpage}{444}
 \indexentry{py3plex.uncertainty.estimation@\spxentry{py3plex.uncertainty.estimation}!module@\spxentry{module}|hyperpage}{444}
 \indexentry{estimate\_uncertainty() (in module py3plex.uncertainty.estimation)@\spxentry{estimate\_uncertainty()}\spxextra{in module py3plex.uncertainty.estimation}|hyperpage}{444}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.community\_detection.community\_wrapper@\spxentry{py3plex.algorithms.community\_detection.community\_wrapper}|hyperpage}{445}
-\indexentry{py3plex.algorithms.community\_detection.community\_wrapper@\spxentry{py3plex.algorithms.community\_detection.community\_wrapper}!module@\spxentry{module}|hyperpage}{445}
-\indexentry{NoRC\_communities() (in module py3plex.algorithms.community\_detection.community\_wrapper)@\spxentry{NoRC\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}|hyperpage}{445}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.community\_detection.community\_wrapper@\spxentry{py3plex.algorithms.community\_detection.community\_wrapper}|hyperpage}{446}
+\indexentry{py3plex.algorithms.community\_detection.community\_wrapper@\spxentry{py3plex.algorithms.community\_detection.community\_wrapper}!module@\spxentry{module}|hyperpage}{446}
+\indexentry{NoRC\_communities() (in module py3plex.algorithms.community\_detection.community\_wrapper)@\spxentry{NoRC\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}|hyperpage}{446}
 \indexentry{infomap\_communities() (in module py3plex.algorithms.community\_detection.community\_wrapper)@\spxentry{infomap\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}|hyperpage}{446}
 \indexentry{louvain\_communities() (in module py3plex.algorithms.community\_detection.community\_wrapper)@\spxentry{louvain\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}|hyperpage}{448}
 \indexentry{parse\_infomap() (in module py3plex.algorithms.community\_detection.community\_wrapper)@\spxentry{parse\_infomap()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}|hyperpage}{448}
