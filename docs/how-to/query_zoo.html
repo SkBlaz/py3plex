@@ -115,6 +115,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#id24">DSL Concepts Demonstrated</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#edge-grouping-and-coverage">8. Edge Grouping and Coverage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id25">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#using-the-query-zoo">Using the Query Zoo</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting Started</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adapting-queries-to-your-data">Adapting Queries to Your Data</a></li>
@@ -223,75 +230,83 @@ for your own analyses.</p>
 </div>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#overview" id="id25">Overview</a></p></li>
-<li><p><a class="reference internal" href="#basic-multilayer-exploration" id="id26">1. Basic Multilayer Exploration</a></p>
+<li><p><a class="reference internal" href="#overview" id="id29">Overview</a></p></li>
+<li><p><a class="reference internal" href="#basic-multilayer-exploration" id="id30">1. Basic Multilayer Exploration</a></p>
 <ul>
-<li><p><a class="reference internal" href="#query-code" id="id27">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#why-it-s-interesting" id="id28">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#example-output" id="id29">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#dsl-concepts-demonstrated" id="id30">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#query-code" id="id31">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#why-it-s-interesting" id="id32">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#example-output" id="id33">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#dsl-concepts-demonstrated" id="id34">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#cross-layer-hubs" id="id31">2. Cross-Layer Hubs</a></p>
+<li><p><a class="reference internal" href="#cross-layer-hubs" id="id35">2. Cross-Layer Hubs</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id1" id="id32">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id2" id="id33">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id3" id="id34">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id4" id="id35">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id36">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id37">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id38">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id39">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#layer-similarity" id="id36">3. Layer Similarity</a></p>
+<li><p><a class="reference internal" href="#layer-similarity" id="id40">3. Layer Similarity</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id5" id="id37">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id6" id="id38">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id7" id="id39">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id8" id="id40">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id5" id="id41">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id6" id="id42">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id7" id="id43">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id8" id="id44">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#community-structure" id="id41">4. Community Structure</a></p>
+<li><p><a class="reference internal" href="#community-structure" id="id45">4. Community Structure</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id9" id="id42">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id10" id="id43">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id11" id="id44">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id12" id="id45">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id9" id="id46">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id10" id="id47">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id11" id="id48">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id12" id="id49">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#multiplex-pagerank" id="id46">5. Multiplex PageRank</a></p>
+<li><p><a class="reference internal" href="#multiplex-pagerank" id="id50">5. Multiplex PageRank</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id13" id="id47">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id14" id="id48">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id15" id="id49">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id16" id="id50">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id13" id="id51">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id14" id="id52">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id15" id="id53">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id16" id="id54">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#robustness-analysis" id="id51">6. Robustness Analysis</a></p>
+<li><p><a class="reference internal" href="#robustness-analysis" id="id55">6. Robustness Analysis</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id17" id="id52">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id18" id="id53">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id19" id="id54">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id20" id="id55">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id17" id="id56">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id18" id="id57">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id19" id="id58">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id20" id="id59">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#advanced-centrality-comparison" id="id56">7. Advanced Centrality Comparison</a></p>
+<li><p><a class="reference internal" href="#advanced-centrality-comparison" id="id60">7. Advanced Centrality Comparison</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id21" id="id57">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id22" id="id58">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id23" id="id59">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id24" id="id60">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id21" id="id61">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id22" id="id62">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id23" id="id63">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id24" id="id64">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#using-the-query-zoo" id="id61">Using the Query Zoo</a></p>
+<li><p><a class="reference internal" href="#edge-grouping-and-coverage" id="id65">8. Edge Grouping and Coverage</a></p>
 <ul>
-<li><p><a class="reference internal" href="#getting-started" id="id62">Getting Started</a></p></li>
-<li><p><a class="reference internal" href="#adapting-queries-to-your-data" id="id63">Adapting Queries to Your Data</a></p></li>
-<li><p><a class="reference internal" href="#datasets" id="id64">Datasets</a></p></li>
+<li><p><a class="reference internal" href="#id25" id="id66">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id26" id="id67">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id27" id="id68">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id28" id="id69">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#further-reading" id="id65">Further Reading</a></p></li>
+<li><p><a class="reference internal" href="#using-the-query-zoo" id="id70">Using the Query Zoo</a></p>
+<ul>
+<li><p><a class="reference internal" href="#getting-started" id="id71">Getting Started</a></p></li>
+<li><p><a class="reference internal" href="#adapting-queries-to-your-data" id="id72">Adapting Queries to Your Data</a></p></li>
+<li><p><a class="reference internal" href="#datasets" id="id73">Datasets</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#further-reading" id="id74">Further Reading</a></p></li>
 </ul>
 </nav>
 <section id="overview">
-<h2><a class="toc-backref" href="#id25" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>The Query Zoo is organized around common multilayer analysis tasks:</p>
 <ol class="arabic simple">
 <li><p><strong>Basic Multilayer Exploration</strong> — Understand layer statistics and structure</p></li>
@@ -301,6 +316,7 @@ for your own analyses.</p>
 <li><p><strong>Multiplex PageRank</strong> — Compute multilayer-aware centrality</p></li>
 <li><p><strong>Robustness Analysis</strong> — Assess network resilience to layer failures</p></li>
 <li><p><strong>Advanced Centrality Comparison</strong> — Identify versatile vs specialized hubs</p></li>
+<li><p><strong>Edge Grouping and Coverage</strong> — Analyze edges across layer pairs with top-k and coverage</p></li>
 </ol>
 <p>All examples use small, reproducible multilayer networks from the <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/datasets.py</span></code> module.</p>
 <div class="admonition tip">
@@ -319,11 +335,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="basic-multilayer-exploration">
-<h2><a class="toc-backref" href="#id26" role="doc-backlink">1. Basic Multilayer Exploration</a><a class="headerlink" href="#basic-multilayer-exploration" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">1. Basic Multilayer Exploration</a><a class="headerlink" href="#basic-multilayer-exploration" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> You’ve loaded a multilayer network and want to quickly understand its structure. Which layers are densest? How many nodes and edges does each layer have?</p>
 <p><strong>Solution:</strong> Compute basic statistics per layer using the DSL.</p>
 <section id="query-code">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">Query Code</a><a class="headerlink" href="#query-code" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Query Code</a><a class="headerlink" href="#query-code" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Summarize layers: node counts, edge counts, and average degree per layer.</span>
 <span class="sd">    </span>
@@ -382,7 +398,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="why-it-s-interesting">
-<h3><a class="toc-backref" href="#id28" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#why-it-s-interesting" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#why-it-s-interesting" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>First step in any analysis</strong> — Before diving into complex queries, understand your data</p></li>
 <li><p><strong>Reveals layer diversity</strong> — Different layers often have vastly different structures</p></li>
@@ -390,7 +406,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="example-output">
-<h3><a class="toc-backref" href="#id29" role="doc-backlink">Example Output</a><a class="headerlink" href="#example-output" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Example Output</a><a class="headerlink" href="#example-output" title="Link to this heading"></a></h3>
 <p>Running on the <code class="docutils literal notranslate"><span class="pre">social_work_network</span></code> (12 people across social/work/family layers):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -429,7 +445,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Interpretation:</strong> The social layer is densest (highest average degree), while family is sparsest. All layers have similar numbers of nodes, indicating good cross-layer coverage.</p>
 </section>
 <section id="dsl-concepts-demonstrated">
-<h3><a class="toc-backref" href="#id30" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#dsl-concepts-demonstrated" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#dsl-concepts-demonstrated" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(L[name])</span></code> — Select nodes from a specific layer</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;degree&quot;)</span></code> — Add computed attributes to results</p></li>
@@ -440,11 +456,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="cross-layer-hubs">
-<h2><a class="toc-backref" href="#id31" role="doc-backlink">2. Cross-Layer Hubs</a><a class="headerlink" href="#cross-layer-hubs" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id35" role="doc-backlink">2. Cross-Layer Hubs</a><a class="headerlink" href="#cross-layer-hubs" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> Which nodes are consistently important across <em>multiple</em> layers? These “super hubs” are critical because they bridge different contexts.</p>
 <p><strong>Solution:</strong> Find top-k central nodes per layer, then identify which nodes appear in multiple layers’ top lists.</p>
 <section id="id1">
-<h3><a class="toc-backref" href="#id32" role="doc-backlink">Query Code</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Query Code</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find nodes that are consistently central across multiple layers.</span>
 <span class="sd">    </span>
@@ -509,7 +525,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="id2">
-<h3><a class="toc-backref" href="#id33" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Reveals cross-context influence</strong> — Nodes central in one layer might be peripheral in another</p></li>
 <li><p><strong>Identifies key connectors</strong> — Nodes that appear in multiple layers’ top-k are especially important</p></li>
@@ -517,7 +533,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="id3">
-<h3><a class="toc-backref" href="#id34" role="doc-backlink">Example Output</a><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">Example Output</a><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <p>Top cross-layer hubs (k=5):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -571,7 +587,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Interpretation:</strong> Bob appears as a top-5 hub in <em>all three layers</em> (layer_count=3), making him the most versatile connector. Alice and Charlie are hubs in two layers each.</p>
 </section>
 <section id="id4">
-<h3><a class="toc-backref" href="#id35" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;betweenness_centrality&quot;,</span> <span class="pre">&quot;degree&quot;)</span></code> — Compute multiple metrics at once</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.order_by(&quot;-betweenness_centrality&quot;)</span></code> — Sort descending (<code class="docutils literal notranslate"><span class="pre">-</span></code> prefix)</p></li>
@@ -582,11 +598,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="layer-similarity">
-<h2><a class="toc-backref" href="#id36" role="doc-backlink">3. Layer Similarity</a><a class="headerlink" href="#layer-similarity" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id40" role="doc-backlink">3. Layer Similarity</a><a class="headerlink" href="#layer-similarity" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> How similar are different layers structurally? Do they serve redundant or complementary roles?</p>
 <p><strong>Solution:</strong> Compute degree distributions per layer and measure pairwise correlations.</p>
 <section id="id5">
-<h3><a class="toc-backref" href="#id37" role="doc-backlink">Query Code</a><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">Query Code</a><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute structural similarity between layers based on degree distributions.</span>
 <span class="sd">    </span>
@@ -644,7 +660,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="id6">
-<h3><a class="toc-backref" href="#id38" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Detects redundancy</strong> — High correlation suggests layers capture similar structure</p></li>
 <li><p><strong>Guides simplification</strong> — Nearly identical layers might be merged</p></li>
@@ -652,7 +668,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="id7">
-<h3><a class="toc-backref" href="#id39" role="doc-backlink">Example Output</a><a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id43" role="doc-backlink">Example Output</a><a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <p>Correlation matrix for <code class="docutils literal notranslate"><span class="pre">social_work_network</span></code>:</p>
 <a class="reference internal image-reference" href="../_images/layer_similarity_heatmap.png"><img alt="Layer Similarity Heatmap" class="align-center" src="../_images/layer_similarity_heatmap.png" style="width: 80%;" />
 </a>
@@ -691,7 +707,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Interpretation:</strong> Social and work layers have weak positive correlation (0.159), suggesting some structural overlap. Family and work are <em>negatively</em> correlated (-0.267), indicating they capture different connectivity patterns.</p>
 </section>
 <section id="id8">
-<h3><a class="toc-backref" href="#id40" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id44" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Layer-by-layer degree computation</p></li>
 <li><p>Aggregating results across layers for meta-analysis</p></li>
@@ -701,11 +717,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="community-structure">
-<h2><a class="toc-backref" href="#id41" role="doc-backlink">4. Community Structure</a><a class="headerlink" href="#community-structure" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id45" role="doc-backlink">4. Community Structure</a><a class="headerlink" href="#community-structure" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> What communities exist in the multilayer network? How do they manifest across layers?</p>
 <p><strong>Solution:</strong> Detect communities using multilayer community detection, then analyze their distribution across layers.</p>
 <section id="id9">
-<h3><a class="toc-backref" href="#id42" role="doc-backlink">Query Code</a><a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id46" role="doc-backlink">Query Code</a><a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_community_structure</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect communities and analyze their distribution across layers.</span>
 <span class="sd">    </span>
@@ -769,7 +785,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="id10">
-<h3><a class="toc-backref" href="#id43" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id47" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Mesoscale structure</strong> — Communities reveal organizational patterns</p></li>
 <li><p><strong>Cross-layer community tracking</strong> — See if communities are layer-specific or global</p></li>
@@ -777,7 +793,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="id11">
-<h3><a class="toc-backref" href="#id44" role="doc-backlink">Example Output</a><a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id48" role="doc-backlink">Example Output</a><a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
 <p>Running on <code class="docutils literal notranslate"><span class="pre">communication_network</span></code> (email/chat/phone layers):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -825,7 +841,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Interpretation:</strong> Community 0 is email-dominated (10 nodes), while communities 1 and 2 are chat-specific. Community 3 appears primarily in phone communication.</p>
 </section>
 <section id="id12">
-<h3><a class="toc-backref" href="#id45" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id49" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(L[&quot;*&quot;])</span></code> — Select from all layers</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;communities&quot;)</span></code> — Built-in community detection</p></li>
@@ -836,11 +852,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="multiplex-pagerank">
-<h2><a class="toc-backref" href="#id46" role="doc-backlink">5. Multiplex PageRank</a><a class="headerlink" href="#multiplex-pagerank" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id50" role="doc-backlink">5. Multiplex PageRank</a><a class="headerlink" href="#multiplex-pagerank" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> Standard PageRank treats each layer independently. How do we compute importance considering the full multiplex structure?</p>
 <p><strong>Solution:</strong> Compute PageRank per layer, then aggregate across layers. (Note: This is a simplified version; true multiplex PageRank uses supra-adjacency matrices.)</p>
 <section id="id13">
-<h3><a class="toc-backref" href="#id47" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id51" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Approximate multiplex PageRank by aggregating layer-specific scores.</span>
 <span class="sd">    </span>
@@ -915,7 +931,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="id14">
-<h3><a class="toc-backref" href="#id48" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id52" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Multilayer-aware centrality</strong> — Accounts for importance across all layers</p></li>
 <li><p><strong>More robust than single-layer</strong> — Averages out layer-specific biases</p></li>
@@ -923,7 +939,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="id15">
-<h3><a class="toc-backref" href="#id49" role="doc-backlink">Example Output</a><a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id53" role="doc-backlink">Example Output</a><a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
 <p>Top nodes by multiplex PageRank in <code class="docutils literal notranslate"><span class="pre">transport_network</span></code>:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -977,7 +993,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Interpretation:</strong> ShoppingMall has highest multiplex PageRank (0.1811) because it’s central across all three transport modes. Park has high walking PageRank but zero metro, reflecting its limited accessibility.</p>
 </section>
 <section id="id16">
-<h3><a class="toc-backref" href="#id50" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id54" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;pagerank&quot;)</span></code> — Built-in PageRank computation</p></li>
 <li><p>Per-layer iteration with result aggregation</p></li>
@@ -988,11 +1004,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="robustness-analysis">
-<h2><a class="toc-backref" href="#id51" role="doc-backlink">6. Robustness Analysis</a><a class="headerlink" href="#robustness-analysis" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id55" role="doc-backlink">6. Robustness Analysis</a><a class="headerlink" href="#robustness-analysis" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> How robust is the network to layer failures? What happens if one layer goes offline?</p>
 <p><strong>Solution:</strong> Simulate removing each layer and measure connectivity loss.</p>
 <section id="id17">
-<h3><a class="toc-backref" href="#id52" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id56" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate network robustness by removing each layer and recomputing stats.</span>
 <span class="sd">    </span>
@@ -1096,7 +1112,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="id18">
-<h3><a class="toc-backref" href="#id53" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id57" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Critical infrastructure identification</strong> — Reveals which layers are essential</p></li>
 <li><p><strong>Redundancy assessment</strong> — High robustness indicates good backup coverage</p></li>
@@ -1104,7 +1120,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="id19">
-<h3><a class="toc-backref" href="#id54" role="doc-backlink">Example Output</a><a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id58" role="doc-backlink">Example Output</a><a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
 <p>Robustness of <code class="docutils literal notranslate"><span class="pre">transport_network</span></code>:</p>
 <a class="reference internal image-reference" href="../_images/robustness_analysis_plot.png"><img alt="Robustness Analysis" class="align-center" src="../_images/robustness_analysis_plot.png" style="width: 90%;" />
 </a>
@@ -1154,7 +1170,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Interpretation:</strong> Removing the bus layer causes 46.67% connectivity loss — it’s the most critical layer. Walking is least critical (only 6.67% loss), indicating good redundancy from other transport modes.</p>
 </section>
 <section id="id20">
-<h3><a class="toc-backref" href="#id55" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id59" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Layer algebra: <code class="docutils literal notranslate"><span class="pre">L[&quot;layer1&quot;]</span> <span class="pre">+</span> <span class="pre">L[&quot;layer2&quot;]</span></code> — Combine layers</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(layer_expr)</span></code> — Query with dynamic layer selections</p></li>
@@ -1165,11 +1181,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="advanced-centrality-comparison">
-<h2><a class="toc-backref" href="#id56" role="doc-backlink">7. Advanced Centrality Comparison</a><a class="headerlink" href="#advanced-centrality-comparison" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id60" role="doc-backlink">7. Advanced Centrality Comparison</a><a class="headerlink" href="#advanced-centrality-comparison" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> Different centralities capture different notions of importance. Which nodes are “versatile hubs” (high in many centralities) vs “specialized hubs” (high in only one)?</p>
 <p><strong>Solution:</strong> Compute multiple centralities, normalize them, and classify nodes by how many centralities place them in the top tier.</p>
 <section id="id21">
-<h3><a class="toc-backref" href="#id57" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id61" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare multiple centrality measures on the aggregated multilayer network.</span>
 <span class="sd">    </span>
@@ -1255,7 +1271,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="id22">
-<h3><a class="toc-backref" href="#id58" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id62" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Centrality is multifaceted</strong> — Degree ≠ betweenness ≠ closeness ≠ PageRank</p></li>
 <li><p><strong>Versatile hubs are robust</strong> — High across many metrics means genuine importance</p></li>
@@ -1263,7 +1279,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="id23">
-<h3><a class="toc-backref" href="#id59" role="doc-backlink">Example Output</a><a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id63" role="doc-backlink">Example Output</a><a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
 <p>Running on <code class="docutils literal notranslate"><span class="pre">communication_network</span></code> (email layer):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1315,7 +1331,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Interpretation:</strong> Manager is a <strong>versatile hub</strong> (top 30% in all 4 centralities). All other nodes are peripheral in this star-topology email network.</p>
 </section>
 <section id="id24">
-<h3><a class="toc-backref" href="#id60" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id64" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;degree&quot;,</span> <span class="pre">&quot;betweenness_centrality&quot;,</span> <span class="pre">&quot;closeness_centrality&quot;,</span> <span class="pre">&quot;pagerank&quot;)</span></code> — Compute multiple centralities</p></li>
 <li><p>Normalizing centralities for comparison</p></li>
@@ -1325,10 +1341,186 @@ To run all queries and generate outputs:</p>
 </section>
 </section>
 <hr class="docutils" />
+<section id="edge-grouping-and-coverage">
+<h2><a class="toc-backref" href="#id65" role="doc-backlink">8. Edge Grouping and Coverage</a><a class="headerlink" href="#edge-grouping-and-coverage" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> You want to analyze which edges (connections) are important within and between layers. Which edges consistently appear in the top-k across different layer-pair contexts?</p>
+<p><strong>Solution:</strong> Use the new <code class="docutils literal notranslate"><span class="pre">.per_layer_pair()</span></code> method to group edges by (src_layer, dst_layer) pairs, then apply top-k and coverage filtering.</p>
+<section id="id25">
+<h3><a class="toc-backref" href="#id66" role="doc-backlink">Query Code</a><a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_edge_grouping_and_coverage</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze edges across layer pairs with grouping and coverage.</span>
+<span class="sd">    </span>
+<span class="sd">    This query demonstrates the powerful new edge grouping capabilities</span>
+<span class="sd">    introduced in DSL v2. It groups edges by (src_layer, dst_layer) pairs</span>
+<span class="sd">    and analyzes edge distribution across layer pairs.</span>
+<span class="sd">    </span>
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Reveals how connections are distributed within and between layers</span>
+<span class="sd">    - Shows which layer pairs have more connectivity</span>
+<span class="sd">    - Identifies edges that appear across multiple layer contexts</span>
+<span class="sd">    - Essential for understanding cross-layer edge patterns</span>
+<span class="sd">    </span>
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - .per_layer_pair() for edge grouping</span>
+<span class="sd">    - .coverage() for cross-group filtering</span>
+<span class="sd">    - Edge-specific grouping metadata</span>
+<span class="sd">    - .group_summary() for aggregate statistics</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        k: Number of edges to limit per layer pair (default: 3)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary with:</span>
+<span class="sd">        - &#39;edges_by_pair&#39;: DataFrame with edges grouped by layer pair</span>
+<span class="sd">        - &#39;summary&#39;: DataFrame with edge counts per layer pair</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Query: Get edges grouped by layer pair</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">per_layer_pair</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>  <span class="c1"># Limit to k edges per pair</span>
+         <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;edges_by_pair&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span>
+            <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="p">}</span>
+    
+    <span class="c1"># Get edges DataFrame</span>
+    <span class="n">df_edges</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    
+    <span class="c1"># Get group summary</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">group_summary</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;edges_by_pair&#39;</span><span class="p">:</span> <span class="n">df_edges</span><span class="p">,</span>
+        <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="n">summary</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id26">
+<h3><a class="toc-backref" href="#id67" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Layer-pair-aware analysis</strong> — Different layer pairs may have very different edge patterns</p></li>
+<li><p><strong>Universal edges</strong> — Edges important across multiple contexts are more robust</p></li>
+<li><p><strong>Cross-layer dynamics</strong> — Reveals how connections vary between intra-layer and inter-layer contexts</p></li>
+<li><p><strong>Edge-centric view</strong> — Complements node-centric analyses like hub detection</p></li>
+</ul>
+</section>
+<section id="id27">
+<h3><a class="toc-backref" href="#id68" role="doc-backlink">Example Output</a><a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
+<p>Running on <code class="docutils literal notranslate"><span class="pre">social_work_network</span></code> with k=3:</p>
+<p><strong>Edges Grouped by Layer Pair (top 3 per pair):</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Source</p></th>
+<th class="head"><p>Target</p></th>
+<th class="head"><p>Source Layer</p></th>
+<th class="head"><p>Target Layer</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Alice</p></td>
+<td><p>Bob</p></td>
+<td><p>social</p></td>
+<td><p>social</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alice</p></td>
+<td><p>Carol</p></td>
+<td><p>social</p></td>
+<td><p>social</p></td>
+</tr>
+<tr class="row-even"><td><p>Bob</p></td>
+<td><p>Carol</p></td>
+<td><p>social</p></td>
+<td><p>social</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alice</p></td>
+<td><p>Bob</p></td>
+<td><p>work</p></td>
+<td><p>work</p></td>
+</tr>
+<tr class="row-even"><td><p>Alice</p></td>
+<td><p>Carol</p></td>
+<td><p>work</p></td>
+<td><p>work</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bob</p></td>
+<td><p>Carol</p></td>
+<td><p>work</p></td>
+<td><p>work</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Group Summary:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36.8%" />
+<col style="width: 36.8%" />
+<col style="width: 26.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Source Layer</p></th>
+<th class="head"><p>Target Layer</p></th>
+<th class="head"><p># Edges</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>social</p></td>
+<td><p>social</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>work</p></td>
+<td><p>work</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-even"><td><p>family</p></td>
+<td><p>family</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>social</p></td>
+<td><p>work</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> The query reveals edge distribution across layer pairs. Each pair (e.g., social-social, work-work) contains up to k=3 edges. Inter-layer pairs (social-work) typically have fewer connections, showing the separation between layers. The family layer has sparser connectivity overall.</p>
+</section>
+<section id="id28">
+<h3><a class="toc-backref" href="#id69" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id28" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.per_layer_pair()</span></code> — Group edges by (src_layer, dst_layer) pairs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.top_k(k,</span> <span class="pre">&quot;weight&quot;)</span></code> — Select top-k items per group</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.coverage(mode=&quot;at_least&quot;,</span> <span class="pre">k=2)</span></code> — Cross-group filtering</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.group_summary()</span></code> — Get aggregate statistics per group</p></li>
+<li><p>Edge-specific grouping metadata in <code class="docutils literal notranslate"><span class="pre">QueryResult.meta[&quot;grouping&quot;]</span></code></p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>New in DSL v2</strong></p>
+<p>Edge grouping and coverage are new features that parallel the existing node
+grouping capabilities. Use <code class="docutils literal notranslate"><span class="pre">.per_layer_pair()</span></code> for edges and <code class="docutils literal notranslate"><span class="pre">.per_layer()</span></code>
+for nodes. Both support the same coverage modes and grouping operations.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
 <section id="using-the-query-zoo">
-<h2><a class="toc-backref" href="#id61" role="doc-backlink">Using the Query Zoo</a><a class="headerlink" href="#using-the-query-zoo" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id70" role="doc-backlink">Using the Query Zoo</a><a class="headerlink" href="#using-the-query-zoo" title="Link to this heading"></a></h2>
 <section id="getting-started">
-<h3><a class="toc-backref" href="#id62" role="doc-backlink">Getting Started</a><a class="headerlink" href="#getting-started" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id71" role="doc-backlink">Getting Started</a><a class="headerlink" href="#getting-started" title="Link to this heading"></a></h3>
 <ol class="arabic">
 <li><p><strong>Install py3plex</strong> (if not already installed):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">py3plex</span>
@@ -1359,7 +1551,7 @@ To run all queries and generate outputs:</p>
 </ol>
 </section>
 <section id="adapting-queries-to-your-data">
-<h3><a class="toc-backref" href="#id63" role="doc-backlink">Adapting Queries to Your Data</a><a class="headerlink" href="#adapting-queries-to-your-data" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id72" role="doc-backlink">Adapting Queries to Your Data</a><a class="headerlink" href="#adapting-queries-to-your-data" title="Link to this heading"></a></h3>
 <p>All queries are designed to work with any <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> object. To adapt:</p>
 <ol class="arabic">
 <li><p><strong>Replace the dataset</strong>:</p>
@@ -1387,7 +1579,7 @@ To run all queries and generate outputs:</p>
 </ol>
 </section>
 <section id="datasets">
-<h3><a class="toc-backref" href="#id64" role="doc-backlink">Datasets</a><a class="headerlink" href="#datasets" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id73" role="doc-backlink">Datasets</a><a class="headerlink" href="#datasets" title="Link to this heading"></a></h3>
 <p>Three multilayer networks are provided:</p>
 <ol class="arabic simple">
 <li><p><strong>social_work_network</strong></p>
@@ -1416,7 +1608,7 @@ To run all queries and generate outputs:</p>
 </section>
 </section>
 <section id="further-reading">
-<h2><a class="toc-backref" href="#id65" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id74" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> — Complete DSL reference with syntax and operators</p></li>
 <li><p><a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> — Theory of multilayer networks</p></li>
