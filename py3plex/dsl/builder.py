@@ -547,13 +547,51 @@ class QueryBuilder:
         This is the most common grouping operation for multilayer queries.
         After calling this, you can apply per-layer operations like top_k().
         
+        Note: Only valid for node queries. For edge queries, use per_layer_pair().
+        
         Returns:
             Self for chaining
+            
+        Raises:
+            DslExecutionError: If called on an edge query
             
         Example:
             >>> Q.nodes().per_layer().top_k(5, "betweenness_centrality")
         """
+        # Check that we're working with nodes
+        if self._select.target == Target.EDGES:
+            from .errors import DslExecutionError
+            raise DslExecutionError(
+                "per_layer() is defined only for node queries. "
+                "For edge queries use per_layer_pair()."
+            )
         return self.group_by("layer")
+    
+    def per_layer_pair(self) -> "QueryBuilder":
+        """Group edge results by (src_layer, dst_layer) pair.
+        
+        This is the grouping operation for edge queries in multilayer networks.
+        After calling this, you can apply per-layer-pair operations like top_k().
+        
+        Note: Only valid for edge queries. For node queries, use per_layer().
+        
+        Returns:
+            Self for chaining
+            
+        Raises:
+            DslExecutionError: If called on a node query
+            
+        Example:
+            >>> Q.edges().per_layer_pair().top_k(5, "edge_betweenness_centrality")
+        """
+        # Check that we're working with edges
+        if self._select.target == Target.NODES:
+            from .errors import DslExecutionError
+            raise DslExecutionError(
+                "per_layer_pair() is defined only for edge queries. "
+                "For node queries use per_layer()."
+            )
+        return self.group_by("src_layer", "dst_layer")
     
     def top_k(self, k: int, key: Optional[str] = None) -> "QueryBuilder":
         """Keep the top-k items per group, ordered by the given key.

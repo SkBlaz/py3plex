@@ -811,8 +811,9 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     attributes[compute_item.result_name] = {}
     
     # Step 4.5: Apply grouping, per-group operations, and coverage filtering
+    grouping_metadata = None
     if select.group_by or select.limit_per_group is not None or select.coverage_mode:
-        items = _apply_grouping_and_coverage(
+        items, grouping_metadata = _apply_grouping_and_coverage(
             items=items,
             select=select,
             network=network,
@@ -861,11 +862,15 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         items = items[:select.limit]
     
     # Create result
+    meta_dict = {"dsl_version": "2.0"}
+    if grouping_metadata is not None:
+        meta_dict["grouping"] = grouping_metadata
+    
     result = QueryResult(
         target=select.target.value,
         items=items,
         attributes=attributes,
-        meta={"dsl_version": "2.0"}
+        meta=meta_dict
     )
     
     # Step 7: Apply file export if specified
@@ -1242,7 +1247,7 @@ def _apply_grouping_and_coverage(
     network: Any,
     G: nx.Graph,
     attributes: Dict[str, Dict],
-) -> List[Any]:
+) -> Tuple[List[Any], Optional[Dict[str, Any]]]:
     """Apply grouping, per-group operations, and coverage filtering.
     
     This handles:
@@ -1259,7 +1264,8 @@ def _apply_grouping_and_coverage(
         attributes: Computed attributes dict
         
     Returns:
-        Filtered and ordered list of items
+        Tuple of (filtered items, grouping_metadata)
+        grouping_metadata is a dict with grouping info, or None if no grouping
         
     Raises:
         DslExecutionError: If configuration is invalid
@@ -1325,13 +1331,6 @@ def _apply_grouping_and_coverage(
     
     # Coverage filtering
     if select.coverage_mode:
-        # Only support coverage for node queries initially
-        if select.target != Target.NODES:
-            raise DslExecutionError(
-                "Coverage filtering is currently supported only for node queries. "
-                "Edge coverage filtering will be added in a future release."
-            )
-        
         # Build coverage map: identity -> set of groups it appears in
         coverage_map: Dict[Any, Set[Any]] = {}
         for group_key, group_items in groups.items():
@@ -1348,20 +1347,20 @@ def _apply_grouping_and_coverage(
         k = select.coverage_k
         p = select.coverage_p
         
-        for node_id, group_set in coverage_map.items():
+        for item_id, group_set in coverage_map.items():
             count = len(group_set)
             if mode == "all":
                 if count == num_groups:
-                    allowed_ids.add(node_id)
+                    allowed_ids.add(item_id)
             elif mode == "any":
                 if count >= 1:
-                    allowed_ids.add(node_id)
+                    allowed_ids.add(item_id)
             elif mode == "at_least":
                 if k is not None and count >= k:
-                    allowed_ids.add(node_id)
+                    allowed_ids.add(item_id)
             elif mode == "exact":
                 if k is not None and count == k:
-                    allowed_ids.add(node_id)
+                    allowed_ids.add(item_id)
             elif mode == "fraction":
                 if p is not None and num_groups > 0:
                     import math
@@ -1369,7 +1368,7 @@ def _apply_grouping_and_coverage(
                     # E.g., 67% of 3 groups = ceil(2.01) = 3 groups
                     threshold = math.ceil(p * num_groups)
                     if count >= threshold:
-                        allowed_ids.add(node_id)
+                        allowed_ids.add(item_id)
         
         # Filter groups to only include allowed identities
         for group_key in groups:
@@ -1385,7 +1384,40 @@ def _apply_grouping_and_coverage(
     for key in sorted(groups.keys(), key=lambda x: str(x)):
         new_items.extend(groups[key])
     
-    return new_items
+    # Build grouping metadata
+    grouping_kind = "custom"
+    grouping_keys = list(select.group_by)
+    
+    # Detect common grouping patterns
+    if select.group_by == ["layer"]:
+        grouping_kind = "per_layer"
+    elif select.group_by == ["src_layer", "dst_layer"]:
+        grouping_kind = "per_layer_pair"
+    
+    # Build group metadata list
+    group_metadata_list = []
+    for group_key in sorted(groups.keys(), key=lambda x: str(x)):
+        group_items = groups[group_key]
+        
+        # Build key dict
+        if isinstance(group_key, tuple):
+            key_dict = {k: v for k, v in zip(grouping_keys, group_key)}
+        else:
+            key_dict = {grouping_keys[0]: group_key}
+        
+        group_metadata_list.append({
+            "key": key_dict,
+            "n_items": len(group_items),
+        })
+    
+    grouping_metadata = {
+        "kind": grouping_kind,
+        "target": select.target.value,
+        "keys": grouping_keys,
+        "groups": group_metadata_list,
+    }
+    
+    return new_items, grouping_metadata
 
 
 def _get_group_key(item: Any, select: SelectStmt, network: Any, G: nx.Graph) -> Any:
@@ -1416,6 +1448,28 @@ def _get_group_key(item: Any, select: SelectStmt, network: Any, G: nx.Graph) -> 
                     continue
             # Fallback to attribute lookup
             value = _get_attribute_value(item, "layer", network, G)
+            keys.append(str(value) if value is not None else "None")
+        elif field == "src_layer":
+            # Special handling for src_layer field (edges only)
+            if isinstance(item, tuple) and len(item) >= 2:
+                # Edge: ((src_node, src_layer), (tgt_node, tgt_layer), {data}?)
+                src = item[0]
+                if isinstance(src, tuple) and len(src) >= 2:
+                    keys.append(str(src[1]))
+                    continue
+            # Fallback to attribute lookup
+            value = _get_attribute_value(item, "src_layer", network, G)
+            keys.append(str(value) if value is not None else "None")
+        elif field == "dst_layer":
+            # Special handling for dst_layer field (edges only)
+            if isinstance(item, tuple) and len(item) >= 2:
+                # Edge: ((src_node, src_layer), (tgt_node, tgt_layer), {data}?)
+                tgt = item[1]
+                if isinstance(tgt, tuple) and len(tgt) >= 2:
+                    keys.append(str(tgt[1]))
+                    continue
+            # Fallback to attribute lookup
+            value = _get_attribute_value(item, "dst_layer", network, G)
             keys.append(str(value) if value is not None else "None")
         else:
             # Generic attribute lookup
