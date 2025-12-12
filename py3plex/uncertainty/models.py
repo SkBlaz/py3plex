@@ -85,12 +85,12 @@ class UncertainValue:
                 raise ValueError("bernoulli requires 'p' in params")
             p = self.params["p"]
             if not 0 <= p <= 1:
-                raise ValueError(f"bernoulli p must be in [0, 1], got {p}")
+                raise ValueError(f"bernoulli: p must be in [0, 1], got {p}")
         elif self.kind == "normal":
             if "mu" not in self.params or "sigma" not in self.params:
                 raise ValueError("normal requires 'mu' and 'sigma' in params")
             if self.params["sigma"] < 0:
-                raise ValueError(f"normal sigma must be >= 0, got {self.params['sigma']}")
+                raise ValueError(f"normal: sigma must be >= 0, got {self.params['sigma']}")
         elif self.kind == "empirical":
             if "samples" not in self.params:
                 raise ValueError("empirical requires 'samples' in params")
@@ -146,6 +146,9 @@ class UncertainValue:
         float
             The standard deviation.
         """
+        if self.kind == "normal":
+            # Optimization: for normal distribution, std is already stored
+            return float(self.params["sigma"])
         return float(np.sqrt(self.var()))
 
     def sample(self, rng: np.random.Generator, n: int = 1) -> np.ndarray:

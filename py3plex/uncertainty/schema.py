@@ -109,35 +109,35 @@ CONFIDENCE_LEVEL = "confidence_level"
 # =============================================================================
 
 # Attribute groups for validation and documentation
-EDGE_UNCERTAINTY_ATTRS = {
+EDGE_UNCERTAINTY_ATTRS = frozenset({
     WEIGHT_MEAN,
     WEIGHT_VAR,
     WEIGHT_STD,
     WEIGHT_DIST,
     P_EXIST,
     CERTAINTY,  # legacy
-}
-"""Set of all edge attributes related to uncertainty."""
+})
+"""Frozenset of all edge attributes related to uncertainty."""
 
-NODE_UNCERTAINTY_ATTRS = {
+NODE_UNCERTAINTY_ATTRS = frozenset({
     NODE_P_EXIST,
-}
-"""Set of all node attributes related to uncertainty."""
+})
+"""Frozenset of all node attributes related to uncertainty."""
 
-STAT_UNCERTAINTY_ATTRS = {
+STAT_UNCERTAINTY_ATTRS = frozenset({
     CENTRALITY_MEAN,
     CENTRALITY_STD,
     CENTRALITY_DIST,
     COMMUNITY_STABILITY,
-}
-"""Set of all computed statistic attributes related to uncertainty."""
+})
+"""Frozenset of all computed statistic attributes related to uncertainty."""
 
-METADATA_ATTRS = {
+METADATA_ATTRS = frozenset({
     UNCERTAINTY_SOURCE,
     N_SAMPLES,
     CONFIDENCE_LEVEL,
-}
-"""Set of metadata attributes for uncertainty tracking."""
+})
+"""Frozenset of metadata attributes for uncertainty tracking."""
 
 ALL_UNCERTAINTY_ATTRS = (
     EDGE_UNCERTAINTY_ATTRS
