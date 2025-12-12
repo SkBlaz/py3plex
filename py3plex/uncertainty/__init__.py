@@ -61,12 +61,17 @@ from .bootstrap import (
 from .null_models import (
     null_model_metric,
 )
+from .models import (
+    UncertainValue,
+)
+from . import schema
 
 __all__ = [
     # Core stat types
     "StatSeries",
     "StatMatrix",
     "CommunityStats",
+    "UncertainValue",
     # Enums
     "ResamplingStrategy",
     "UncertaintyMode",
@@ -81,4 +86,6 @@ __all__ = [
     "bootstrap_metric",
     # Null models
     "null_model_metric",
+    # Schema
+    "schema",
 ]
