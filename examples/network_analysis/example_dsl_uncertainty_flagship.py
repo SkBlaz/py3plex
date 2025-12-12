@@ -9,6 +9,7 @@ finding hub nodes with uncertainty bounds using the DSL.
 
 from py3plex.core import multinet
 from py3plex.dsl import Q
+from py3plex.uncertainty import uncertainty_enabled
 
 
 def main():
@@ -43,19 +44,20 @@ def main():
     print("Finding hubs with uncertainty bounds")
     print("-" * 70)
     
-    hubs = (
-        Q.nodes()
-        .compute(
-            "degree", "betweenness_centrality",
-            uncertainty=True,
-            method="perturbation",  # Use perturbation (edge/node drops)
-            n_samples=10,  # Use fewer samples for quick testing
-            ci=0.95
+    with uncertainty_enabled(n_runs=10):
+        hubs = (
+            Q.nodes()
+            .compute(
+                "degree", "betweenness_centrality",
+                uncertainty=True,
+                method="perturbation",  # Use perturbation (edge/node drops)
+                n_samples=10,  # Use fewer samples for quick testing
+                ci=0.95
+            )
+            .order_by("-betweenness_centrality")
+            .limit(5)
+            .execute(net)
         )
-        .order_by("-betweenness_centrality")
-        .limit(5)
-        .execute(net)
-    )
     
     print(f"\nFound {len(hubs)} hub nodes:")
     

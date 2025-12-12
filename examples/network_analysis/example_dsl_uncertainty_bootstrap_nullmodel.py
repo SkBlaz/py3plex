@@ -10,6 +10,7 @@ uncertainty quantification in network analysis with py3plex.
 import numpy as np
 from py3plex.core import multinet
 from py3plex.dsl import Q
+from py3plex.uncertainty import uncertainty_enabled
 
 
 def main():
@@ -43,26 +44,27 @@ def main():
     print(f"\nNetwork: {len(list(net.get_nodes()))} nodes, {len(edges)} edges")
     print("Structure: Star topology (L0) + Triangle+Chain (L1)")
     
-    # Example 1: Bootstrap with Edge Resampling
-    print("\n" + "-" * 70)
-    print("Example 1: Bootstrap Uncertainty (Edge Resampling)")
-    print("-" * 70)
-    
-    bootstrap_result = (
-        Q.nodes()
-        .compute(
-            "degree",
-            uncertainty=True,
-            method="bootstrap",
-            n_boot=100,
-            bootstrap_unit="edges",
-            ci=0.95,
-            random_state=42
+    with uncertainty_enabled(n_runs=100):
+        # Example 1: Bootstrap with Edge Resampling
+        print("\n" + "-" * 70)
+        print("Example 1: Bootstrap Uncertainty (Edge Resampling)")
+        print("-" * 70)
+        
+        bootstrap_result = (
+            Q.nodes()
+            .compute(
+                "degree",
+                uncertainty=True,
+                method="bootstrap",
+                n_boot=100,
+                bootstrap_unit="edges",
+                ci=0.95,
+                random_state=42
+            )
+            .order_by("-degree")
+            .limit(5)
+            .execute(net)
         )
-        .order_by("-degree")
-        .limit(5)
-        .execute(net)
-    )
     
     print("\nTop 5 nodes by degree (with 95% CI):")
     df = bootstrap_result.to_pandas()
@@ -93,20 +95,21 @@ def main():
     print("Example 2: Bootstrap Uncertainty (Node Resampling)")
     print("-" * 70)
     
-    bootstrap_nodes = (
-        Q.nodes()
-        .compute(
-            "clustering",
-            uncertainty=True,
-            method="bootstrap",
-            n_boot=50,
-            bootstrap_unit="nodes",
-            random_state=42
+    with uncertainty_enabled(n_runs=50):
+        bootstrap_nodes = (
+            Q.nodes()
+            .compute(
+                "clustering",
+                uncertainty=True,
+                method="bootstrap",
+                n_boot=50,
+                bootstrap_unit="nodes",
+                random_state=42
+            )
+            .order_by("-clustering")
+            .limit(5)
+            .execute(net)
         )
-        .order_by("-clustering")
-        .limit(5)
-        .execute(net)
-    )
     
     print("\nTop 5 nodes by clustering coefficient (with 95% CI):")
     df = bootstrap_nodes.to_pandas()
@@ -134,20 +137,21 @@ def main():
     print("Example 3: Null Model Analysis (Degree-Preserving)")
     print("-" * 70)
     
-    null_result = (
-        Q.nodes()
-        .compute(
-            "betweenness_centrality",
-            uncertainty=True,
-            method="null_model",
-            n_null=100,
-            null_model="degree_preserving",
-            random_state=42
+    with uncertainty_enabled(n_runs=100):
+        null_result = (
+            Q.nodes()
+            .compute(
+                "betweenness_centrality",
+                uncertainty=True,
+                method="null_model",
+                n_null=100,
+                null_model="degree_preserving",
+                random_state=42
+            )
+            .order_by("-betweenness_centrality")
+            .limit(5)
+            .execute(net)
         )
-        .order_by("-betweenness_centrality")
-        .limit(5)
-        .execute(net)
-    )
     
     print("\nTop 5 nodes by betweenness (with z-scores and p-values):")
     df = null_result.to_pandas()
@@ -173,21 +177,22 @@ def main():
     # Set defaults for comparison
     Q.uncertainty.defaults(random_state=42)
     
-    # Bootstrap approach
-    boot = (
-        Q.nodes()
-        .where(id="hub")
-        .compute("degree", uncertainty=True, method="bootstrap", n_boot=50)
-        .execute(net)
-    )
-    
-    # Null model approach
-    null = (
-        Q.nodes()
-        .where(id="hub")
-        .compute("degree", uncertainty=True, method="null_model", n_null=50)
-        .execute(net)
-    )
+    with uncertainty_enabled(n_runs=50):
+        # Bootstrap approach
+        boot = (
+            Q.nodes()
+            .where(id="hub")
+            .compute("degree", uncertainty=True, method="bootstrap", n_boot=50)
+            .execute(net)
+        )
+        
+        # Null model approach
+        null = (
+            Q.nodes()
+            .where(id="hub")
+            .compute("degree", uncertainty=True, method="null_model", n_null=50)
+            .execute(net)
+        )
     
     print("\nHub node degree - Bootstrap vs Null Model:")
     
