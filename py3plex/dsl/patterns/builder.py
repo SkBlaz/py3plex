@@ -49,6 +49,9 @@ class PatternNodeBuilder:
     
     This builder is returned by PatternQueryBuilder.node() and provides
     chainable methods for specifying node predicates and constraints.
+    
+    Methods that don't return self will return the parent QueryBuilder,
+    allowing for seamless chaining back to the main pattern builder.
     """
     
     def __init__(self, parent: "PatternQueryBuilder", var: str, labels: Optional[Union[str, List[str]]] = None):
@@ -69,6 +72,11 @@ class PatternNodeBuilder:
                 self._labels = set(labels)
         self._predicates: List[Predicate] = []
         self._layer_constraint: Optional[LayerConstraint] = None
+    
+    # Delegate to parent for chaining
+    def __getattr__(self, name):
+        """Delegate attribute access to parent PatternQueryBuilder."""
+        return getattr(self._parent, name)
     
     def where(self, **kwargs) -> "PatternQueryBuilder":
         """Add predicates to the node.
@@ -161,6 +169,9 @@ class PatternEdgeBuilder:
     
     This builder is returned by PatternQueryBuilder.edge() and provides
     chainable methods for specifying edge predicates and constraints.
+    
+    Methods that don't return self will return the parent QueryBuilder,
+    allowing for seamless chaining back to the main pattern builder.
     """
     
     def __init__(self, parent: "PatternQueryBuilder", src: str, dst: str, 
@@ -181,6 +192,11 @@ class PatternEdgeBuilder:
         self._etype = etype
         self._predicates: List[Predicate] = []
         self._layer_constraint: Optional[EdgeLayerConstraint] = None
+    
+    # Delegate to parent for chaining
+    def __getattr__(self, name):
+        """Delegate attribute access to parent PatternQueryBuilder."""
+        return getattr(self._parent, name)
     
     def where(self, **kwargs) -> "PatternQueryBuilder":
         """Add predicates to the edge.
@@ -207,16 +223,13 @@ class PatternEdgeBuilder:
                 # Direct equality: attr=value
                 self._predicates.append(Predicate(attr=key, op="=", value=value))
         
-        # Add edge to pattern graph
-        edge = PatternEdge(
-            src=self._src,
-            dst=self._dst,
-            directed=self._directed,
-            etype=self._etype,
-            predicates=self._predicates,
-            layer_constraint=self._layer_constraint,
-        )
-        self._parent._pattern.add_edge(edge)
+        # Update the last edge in the pattern with predicates
+        if self._parent._pattern.edges:
+            last_edge = self._parent._pattern.edges[-1]
+            if last_edge.src == self._src and last_edge.dst == self._dst:
+                # Update the existing edge with predicates
+                last_edge.predicates.extend(self._predicates)
+                last_edge.layer_constraint = self._layer_constraint
         
         return self._parent
     
@@ -231,16 +244,11 @@ class PatternEdgeBuilder:
         """
         self._layer_constraint = EdgeLayerConstraint.within(layer)
         
-        # Update edge in pattern graph
-        edge = PatternEdge(
-            src=self._src,
-            dst=self._dst,
-            directed=self._directed,
-            etype=self._etype,
-            predicates=self._predicates,
-            layer_constraint=self._layer_constraint,
-        )
-        self._parent._pattern.add_edge(edge)
+        # Update the last edge in the pattern
+        if self._parent._pattern.edges:
+            last_edge = self._parent._pattern.edges[-1]
+            if last_edge.src == self._src and last_edge.dst == self._dst:
+                last_edge.layer_constraint = self._layer_constraint
         
         return self._parent
     
@@ -256,16 +264,11 @@ class PatternEdgeBuilder:
         """
         self._layer_constraint = EdgeLayerConstraint.between(src_layer, dst_layer)
         
-        # Update edge in pattern graph
-        edge = PatternEdge(
-            src=self._src,
-            dst=self._dst,
-            directed=self._directed,
-            etype=self._etype,
-            predicates=self._predicates,
-            layer_constraint=self._layer_constraint,
-        )
-        self._parent._pattern.add_edge(edge)
+        # Update the last edge in the pattern
+        if self._parent._pattern.edges:
+            last_edge = self._parent._pattern.edges[-1]
+            if last_edge.src == self._src and last_edge.dst == self._dst:
+                last_edge.layer_constraint = self._layer_constraint
         
         return self._parent
     
@@ -277,16 +280,11 @@ class PatternEdgeBuilder:
         """
         self._layer_constraint = EdgeLayerConstraint.any_layer()
         
-        # Update edge in pattern graph
-        edge = PatternEdge(
-            src=self._src,
-            dst=self._dst,
-            directed=self._directed,
-            etype=self._etype,
-            predicates=self._predicates,
-            layer_constraint=self._layer_constraint,
-        )
-        self._parent._pattern.add_edge(edge)
+        # Update the last edge in the pattern
+        if self._parent._pattern.edges:
+            last_edge = self._parent._pattern.edges[-1]
+            if last_edge.src == self._src and last_edge.dst == self._dst:
+                last_edge.layer_constraint = self._layer_constraint
         
         return self._parent
 
@@ -325,7 +323,12 @@ class PatternQueryBuilder:
         Returns:
             PatternNodeBuilder for configuring the node
         """
-        return PatternNodeBuilder(self, var, labels)
+        # Auto-add node if no predicates specified
+        node_builder = PatternNodeBuilder(self, var, labels)
+        # Add empty node immediately so builder chain works
+        node = PatternNode(var=var, labels=node_builder._labels)
+        self._pattern.add_node(node)
+        return node_builder
     
     def edge(self, src: str, dst: str, directed: bool = False, 
              etype: Optional[str] = None) -> PatternEdgeBuilder:
@@ -340,7 +343,11 @@ class PatternQueryBuilder:
         Returns:
             PatternEdgeBuilder for configuring the edge
         """
-        return PatternEdgeBuilder(self, src, dst, directed, etype)
+        edge_builder = PatternEdgeBuilder(self, src, dst, directed, etype)
+        # Add empty edge immediately so builder chain works
+        edge = PatternEdge(src=src, dst=dst, directed=directed, etype=etype)
+        self._pattern.add_edge(edge)
+        return edge_builder
     
     def path(self, vars: Union[List[str], Tuple[str, ...]], directed: bool = False,
              etype: Optional[str] = None, length: Optional[int] = None) -> "PatternQueryBuilder":

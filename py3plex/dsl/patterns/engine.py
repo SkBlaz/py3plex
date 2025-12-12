@@ -176,7 +176,7 @@ def _generate_candidates(
         match: Current match state
         
     Returns:
-        List of candidate node IDs
+        List of candidate node IDs (tuples of (node_id, layer))
     """
     var = step.var
     node = pattern.nodes[var]
@@ -184,14 +184,21 @@ def _generate_candidates(
     if step.method == "initial_scan":
         # Initial scan: get all nodes matching predicates
         candidates = []
-        for node_id, layer in network.get_nodes():
+        for node_tuple in network.get_nodes():
+            # node_tuple is (node_id, layer)
+            if isinstance(node_tuple, tuple) and len(node_tuple) == 2:
+                node_id, layer = node_tuple
+            else:
+                # Fallback for different network formats
+                node_id, layer = node_tuple, 'default'
+            
             # Check layer constraint
             if node.layer_constraint and not node.layer_constraint.matches(layer):
                 continue
             
             # Check predicates
-            if _check_node_predicates(network, node_id, layer, node.predicates):
-                candidates.append(node_id)
+            if _check_node_predicates(network, (node_id, layer), layer, node.predicates):
+                candidates.append((node_id, layer))
         
         return candidates
     
@@ -201,53 +208,77 @@ def _generate_candidates(
         
         # Determine source variable
         if edge.src in match:
-            src_node = match[edge.src]
-            src_layer = _get_node_layer(network, src_node)
+            src_node_tuple = match[edge.src]
+            src_layer = src_node_tuple[1] if isinstance(src_node_tuple, tuple) else 'default'
             
             # Get neighbors
             candidates = []
-            for neighbor_id in _get_neighbors(network, src_node, src_layer, edge):
-                neighbor_layer = _get_node_layer(network, neighbor_id)
+            for neighbor_tuple in _get_neighbors(network, src_node_tuple, src_layer, edge):
+                neighbor_layer = neighbor_tuple[1] if isinstance(neighbor_tuple, tuple) else 'default'
                 
                 # Check layer constraint
                 if node.layer_constraint and not node.layer_constraint.matches(neighbor_layer):
                     continue
                 
-                # Check predicates
-                if _check_node_predicates(network, neighbor_id, neighbor_layer, node.predicates):
-                    candidates.append(neighbor_id)
+                # Check edge predicates
+                if edge.predicates:
+                    edge_data = _get_edge_data(network, src_node_tuple, neighbor_tuple)
+                    edge_satisfied = True
+                    for pred in edge.predicates:
+                        value = edge_data.get(pred.attr)
+                        if value is None or not _compare_values(value, pred.op, pred.value):
+                            edge_satisfied = False
+                            break
+                    if not edge_satisfied:
+                        continue
+                
+                # Check node predicates
+                if _check_node_predicates(network, neighbor_tuple, neighbor_layer, node.predicates):
+                    candidates.append(neighbor_tuple)
             
             return candidates
         
         elif edge.dst in match:
             # Expand backwards (for undirected edges)
-            dst_node = match[edge.dst]
-            dst_layer = _get_node_layer(network, dst_node)
+            dst_node_tuple = match[edge.dst]
+            dst_layer = dst_node_tuple[1] if isinstance(dst_node_tuple, tuple) else 'default'
             
             # Get neighbors
             candidates = []
-            for neighbor_id in _get_neighbors(network, dst_node, dst_layer, edge):
-                neighbor_layer = _get_node_layer(network, neighbor_id)
+            for neighbor_tuple in _get_neighbors(network, dst_node_tuple, dst_layer, edge):
+                neighbor_layer = neighbor_tuple[1] if isinstance(neighbor_tuple, tuple) else 'default'
                 
                 # Check layer constraint
                 if node.layer_constraint and not node.layer_constraint.matches(neighbor_layer):
                     continue
                 
-                # Check predicates
-                if _check_node_predicates(network, neighbor_id, neighbor_layer, node.predicates):
-                    candidates.append(neighbor_id)
+                # Check edge predicates
+                if edge.predicates:
+                    edge_data = _get_edge_data(network, dst_node_tuple, neighbor_tuple)
+                    edge_satisfied = True
+                    for pred in edge.predicates:
+                        value = edge_data.get(pred.attr)
+                        if value is None or not _compare_values(value, pred.op, pred.value):
+                            edge_satisfied = False
+                            break
+                    if not edge_satisfied:
+                        continue
+                
+                # Check node predicates
+                if _check_node_predicates(network, neighbor_tuple, neighbor_layer, node.predicates):
+                    candidates.append(neighbor_tuple)
             
             return candidates
     
     return []
 
 
-def _check_node_predicates(network: Any, node_id: Any, layer: str, predicates: List[Predicate]) -> bool:
+def _check_node_predicates(network: Any, node_tuple: Any, layer: str, predicates: List[Predicate]) -> bool:
     """Check if a node satisfies all predicates.
     
     Args:
         network: Network object
-        node_id: Node identifier
+        node_tuple: Node identifier (tuple of (node_id, layer))
         layer: Node layer
         predicates: List of predicates to check
         
@@ -259,7 +290,7 @@ def _check_node_predicates(network: Any, node_id: Any, layer: str, predicates: L
     
     for pred in predicates:
         # Get attribute value
-        value = _get_node_attribute(network, node_id, layer, pred.attr)
+        value = _get_node_attribute(network, node_tuple, layer, pred.attr)
         
         if value is None:
             return False
@@ -285,24 +316,24 @@ def _check_edge_constraint(network: Any, edge: PatternEdge, match: MatchRow) -> 
     if edge.src not in match or edge.dst not in match:
         return False
     
-    src_node = match[edge.src]
-    dst_node = match[edge.dst]
+    src_node_tuple = match[edge.src]
+    dst_node_tuple = match[edge.dst]
     
     # Check if edge exists
-    if not _has_edge(network, src_node, dst_node, edge.directed):
+    if not _has_edge(network, src_node_tuple, dst_node_tuple, edge.directed):
         return False
     
     # Check layer constraint
     if edge.layer_constraint:
-        src_layer = _get_node_layer(network, src_node)
-        dst_layer = _get_node_layer(network, dst_node)
+        src_layer = src_node_tuple[1] if isinstance(src_node_tuple, tuple) else 'default'
+        dst_layer = dst_node_tuple[1] if isinstance(dst_node_tuple, tuple) else 'default'
         
         if not edge.layer_constraint.matches(src_layer, dst_layer):
             return False
     
     # Check edge predicates
     if edge.predicates:
-        edge_data = _get_edge_data(network, src_node, dst_node)
+        edge_data = _get_edge_data(network, src_node_tuple, dst_node_tuple)
         for pred in edge.predicates:
             value = edge_data.get(pred.attr)
             if value is None or not _compare_values(value, pred.op, pred.value):
@@ -391,29 +422,12 @@ def _compare_values(value: Any, op: str, target: Any) -> bool:
 
 # Network access helpers
 
-def _get_node_layer(network: Any, node_id: Any) -> str:
-    """Get the layer of a node.
-    
-    Args:
-        network: Network object
-        node_id: Node identifier
-        
-    Returns:
-        Layer name
-    """
-    # Try to get layer from node data
-    if hasattr(network, 'core_network'):
-        node_data = network.core_network.nodes.get(node_id, {})
-        return node_data.get('layer', node_data.get('type', 'default'))
-    return 'default'
-
-
-def _get_node_attribute(network: Any, node_id: Any, layer: str, attr: str) -> Any:
+def _get_node_attribute(network: Any, node_tuple: Any, layer: str, attr: str) -> Any:
     """Get a node attribute value.
     
     Args:
         network: Network object
-        node_id: Node identifier
+        node_tuple: Node identifier (tuple of (node_id, layer))
         layer: Node layer
         attr: Attribute name
         
@@ -423,37 +437,37 @@ def _get_node_attribute(network: Any, node_id: Any, layer: str, attr: str) -> An
     if attr == "degree":
         # Special handling for degree
         if hasattr(network, 'core_network'):
-            return network.core_network.degree(node_id)
+            return network.core_network.degree(node_tuple)
         return 0
     
     # Get from node data
     if hasattr(network, 'core_network'):
-        node_data = network.core_network.nodes.get(node_id, {})
+        node_data = network.core_network.nodes.get(node_tuple, {})
         return node_data.get(attr)
     
     return None
 
 
-def _get_neighbors(network: Any, node_id: Any, layer: str, edge: PatternEdge) -> List[Any]:
+def _get_neighbors(network: Any, node_tuple: Any, layer: str, edge: PatternEdge) -> List[Any]:
     """Get neighbors of a node respecting edge constraints.
     
     Args:
         network: Network object
-        node_id: Node identifier
+        node_tuple: Node identifier (tuple of (node_id, layer))
         layer: Node layer
         edge: Pattern edge with constraints
         
     Returns:
-        List of neighbor node IDs
+        List of neighbor node tuples
     """
     neighbors = []
     
     if hasattr(network, 'core_network'):
         # Get all neighbors
         if edge.directed:
-            neighbor_iter = network.core_network.successors(node_id)
+            neighbor_iter = network.core_network.successors(node_tuple)
         else:
-            neighbor_iter = network.core_network.neighbors(node_id)
+            neighbor_iter = network.core_network.neighbors(node_tuple)
         
         for neighbor in neighbor_iter:
             neighbors.append(neighbor)
@@ -461,13 +475,13 @@ def _get_neighbors(network: Any, node_id: Any, layer: str, edge: PatternEdge) ->
     return neighbors
 
 
-def _has_edge(network: Any, src: Any, dst: Any, directed: bool) -> bool:
+def _has_edge(network: Any, src_tuple: Any, dst_tuple: Any, directed: bool) -> bool:
     """Check if an edge exists between two nodes.
     
     Args:
         network: Network object
-        src: Source node
-        dst: Destination node
+        src_tuple: Source node tuple
+        dst_tuple: Destination node tuple
         directed: Whether to check directed edge
         
     Returns:
@@ -475,26 +489,40 @@ def _has_edge(network: Any, src: Any, dst: Any, directed: bool) -> bool:
     """
     if hasattr(network, 'core_network'):
         if directed:
-            return network.core_network.has_edge(src, dst)
+            return network.core_network.has_edge(src_tuple, dst_tuple)
         else:
-            return network.core_network.has_edge(src, dst) or network.core_network.has_edge(dst, src)
+            return network.core_network.has_edge(src_tuple, dst_tuple) or network.core_network.has_edge(dst_tuple, src_tuple)
     return False
 
 
-def _get_edge_data(network: Any, src: Any, dst: Any) -> Dict[str, Any]:
+def _get_edge_data(network: Any, src_tuple: Any, dst_tuple: Any) -> Dict[str, Any]:
     """Get edge data/attributes.
     
     Args:
         network: Network object
-        src: Source node
-        dst: Destination node
+        src_tuple: Source node tuple
+        dst_tuple: Destination node tuple
         
     Returns:
         Dictionary of edge attributes
     """
     if hasattr(network, 'core_network'):
-        if network.core_network.has_edge(src, dst):
-            return network.core_network[src][dst]
-        elif network.core_network.has_edge(dst, src):
-            return network.core_network[dst][src]
+        # MultiGraph stores edges with integer keys (multi-edges)
+        # We need to extract data from the first edge
+        if network.core_network.has_edge(src_tuple, dst_tuple):
+            edge_dict = network.core_network[src_tuple][dst_tuple]
+            # Check if it looks like a multi-edge dict (dict-like with integer keys)
+            if hasattr(edge_dict, 'keys') and edge_dict.keys() and all(isinstance(k, int) for k in edge_dict.keys()):
+                # Get first edge's data
+                first_key = min(edge_dict.keys())
+                return dict(edge_dict[first_key])
+            return dict(edge_dict) if hasattr(edge_dict, 'items') else {}
+        elif network.core_network.has_edge(dst_tuple, src_tuple):
+            edge_dict = network.core_network[dst_tuple][src_tuple]
+            # Check if it looks like a multi-edge dict (dict-like with integer keys)
+            if hasattr(edge_dict, 'keys') and edge_dict.keys() and all(isinstance(k, int) for k in edge_dict.keys()):
+                # Get first edge's data
+                first_key = min(edge_dict.keys())
+                return dict(edge_dict[first_key])
+            return dict(edge_dict) if hasattr(edge_dict, 'items') else {}
     return {}

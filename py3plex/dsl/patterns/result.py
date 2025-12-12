@@ -4,7 +4,7 @@ This module provides the PatternQueryResult class that wraps pattern matching
 results and provides convenient projection methods.
 """
 
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from .ir import PatternGraph, MatchRow
 
