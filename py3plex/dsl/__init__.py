@@ -113,6 +113,8 @@ from .builder import (
 from .layers import (
     LayerSet,
     LayerExpr as LayerSetExpr,
+)
+
 # Import pattern matching components
 from .patterns import (
     PatternNode,
