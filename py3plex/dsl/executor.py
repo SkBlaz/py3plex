@@ -358,7 +358,15 @@ def _build_execution_plan(network: Any, query: Query) -> ExecutionPlan:
         ))
     
     # Step 2: Layer filtering
-    if select.layer_expr:
+    if select.layer_set is not None:
+        # New style: LayerSet
+        layer_desc = f"<LayerSet: {select.layer_set._repr_expr(select.layer_set.expr)}>"
+        steps.append(PlanStep(
+            f"Filter by layers: {layer_desc}",
+            "O(|V|)" if select.target == Target.NODES else "O(|E|)"
+        ))
+    elif select.layer_expr:
+        # Old style: LayerExprBuilder
         layer_names = [t.name for t in select.layer_expr.terms]
         steps.append(PlanStep(
             f"Filter by layers: {', '.join(layer_names)}",
@@ -703,7 +711,12 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         items = list(network.get_edges(data=True))
     
     # Step 2: Apply layer filter
-    if select.layer_expr:
+    if select.layer_set is not None:
+        # New style: LayerSet with algebra
+        active_layers = select.layer_set.resolve(network, strict=False, warn_empty=True)
+        items = _filter_by_layers(items, active_layers, select.target)
+    elif select.layer_expr:
+        # Old style: LayerExprBuilder compatibility
         active_layers = _evaluate_layer_expr(select.layer_expr, network)
         items = _filter_by_layers(items, active_layers, select.target)
     
@@ -725,7 +738,11 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             
             # Build execution context for operators
             active_layers = None
-            if select.layer_expr:
+            if select.layer_set is not None:
+                # New style: LayerSet
+                active_layers = list(select.layer_set.resolve(network, strict=False, warn_empty=False))
+            elif select.layer_expr:
+                # Old style: LayerExprBuilder
                 active_layers = list(_evaluate_layer_expr(select.layer_expr, network))
             
             context = DSLExecutionContext(

@@ -659,3 +659,157 @@ def query_edge_grouping_and_coverage(network, k=3):
 #
 # Note: This requires implementing get_layer_graph() or similar method to extract
 # per-layer adjacency matrices from the multi_layer_network object.
+
+
+def query_layer_algebra_filtering(network):
+    """Demonstrate layer set algebra for flexible layer selection.
+    
+    This query showcases the new LayerSet algebra feature that allows
+    expressive, composable layer filtering using set operations.
+    
+    Why it's interesting:
+    - Shows how to exclude specific layers (e.g., coupling layers)
+    - Demonstrates union, intersection, and difference operations
+    - Enables reusable layer group definitions
+    
+    DSL concepts demonstrated:
+    - Layer set algebra with |, &, - operators
+    - String expression parsing: L["* - coupling"]
+    - Named layer groups via L.define()
+    
+    Args:
+        network: A multi_layer_network instance
+        
+    Returns:
+        Dict with multiple DataFrames showing different layer selections
+    """
+    from py3plex.dsl import LayerSet
+    
+    # Example 1: All layers except coupling
+    # This is useful when you want to exclude infrastructure/meta layers
+    result_no_coupling = (
+        Q.nodes()
+         .from_layers(L["* - coupling"])
+         .compute("degree")
+         .execute(network)
+    ).to_pandas()
+    
+    # Example 2: Union of biological layers
+    # Define a named group for reuse
+    L.define("bio", LayerSet.parse("ppi | gene | disease"))
+    
+    result_bio = (
+        Q.nodes()
+         .from_layers(LayerSet("bio"))
+         .compute("betweenness_centrality")
+         .execute(network)
+    ).to_pandas()
+    
+    # Example 3: Complex expression - intersection of sets
+    # Find nodes in both social and work layers (for networks with these layers)
+    try:
+        result_intersection = (
+            Q.nodes()
+             .from_layers(L["social & work"])
+             .compute("degree")
+             .execute(network)
+        ).to_pandas()
+    except:
+        # If network doesn't have these layers, use a generic example
+        layers = list(set(result_no_coupling['layer'].unique()))
+        if len(layers) >= 2:
+            expr = f"{layers[0]} & {layers[1]}"
+            result_intersection = (
+                Q.nodes()
+                 .from_layers(L[expr])
+                 .compute("degree")
+                 .execute(network)
+            ).to_pandas()
+        else:
+            result_intersection = pd.DataFrame()
+    
+    # Example 4: Complement - everything except specific layers
+    result_complement = (
+        Q.nodes()
+         .from_layers(~LayerSet("coupling"))
+         .compute("clustering")
+         .execute(network)
+    ).to_pandas()
+    
+    return {
+        "no_coupling": result_no_coupling,
+        "bio_layers": result_bio,
+        "intersection": result_intersection,
+        "complement": result_complement,
+        "explanation": {
+            "no_coupling": "All layers except coupling - useful for excluding meta layers",
+            "bio_layers": "Named group 'bio' containing biological layers",
+            "intersection": "Nodes appearing in multiple specific layers",
+            "complement": "Complement of coupling layer (same as * - coupling)",
+        }
+    }
+
+
+def query_cross_layer_paths_with_algebra(network, source_node, target_node):
+    """Find shortest paths while excluding certain layers using layer algebra.
+    
+    This demonstrates using LayerSet algebra to control which layers
+    are considered when computing cross-layer paths.
+    
+    Why it's interesting:
+    - Shows practical use of layer filtering in path queries
+    - Demonstrates how to avoid "shortcuts" through coupling layers
+    - Illustrates the difference between path computation on different layer subsets
+    
+    DSL concepts demonstrated:
+    - Layer set algebra in path queries
+    - Comparing results with/without layer filtering
+    
+    Args:
+        network: A multi_layer_network instance
+        source_node: Source node ID
+        target_node: Target node ID
+        
+    Returns:
+        Dict with path lengths and layer usage statistics
+    """
+    # Path using all layers
+    try:
+        result_all = (
+            Q.nodes()
+             .from_layers(L["*"])
+             .where(id=source_node)
+             .execute(network)
+        ).to_pandas()
+        
+        # Path excluding coupling layers (more "natural" paths)
+        result_no_coupling = (
+            Q.nodes()
+             .from_layers(L["* - coupling"])
+             .where(id=source_node)
+             .execute(network)
+        ).to_pandas()
+        
+        # Get layer distribution
+        layer_dist_all = result_all.groupby('layer').size().to_dict()
+        layer_dist_filtered = result_no_coupling.groupby('layer').size().to_dict()
+        
+        return {
+            "all_layers": {
+                "node_count": len(result_all),
+                "layer_distribution": layer_dist_all,
+            },
+            "filtered_layers": {
+                "node_count": len(result_no_coupling),
+                "layer_distribution": layer_dist_filtered,
+            },
+            "explanation": (
+                "Excluding coupling layers often reveals more semantically "
+                "meaningful paths by avoiding artificial shortcuts"
+            )
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "explanation": "Path query requires nodes to exist in specified layers"
+        }

@@ -61,7 +61,7 @@ A typical DSL query follows this pipeline:
 **Key Concepts:**
 
 * **Nodes as (node, layer) tuples**: In multilayer networks, a node may appear in multiple layers. The DSL represents these as ``(node_id, layer_name)`` pairs.
-* **Layer algebra**: Combine layers with ``+`` (union), ``&`` (intersection), or ``-`` (difference).
+* **Layer set algebra**: Combine layers with set operations (``|`` union, ``&`` intersection, ``-`` difference, ``~`` complement). The new LayerSet algebra enables expressive layer selection like ``L["* - coupling"]`` or ``L["(ppi | gene) & disease"]``. See :doc:`../reference/layer_set_algebra` for complete documentation.
 * **Special predicates**: ``intralayer=True`` selects edges within a layer; ``interlayer=("layer1", "layer2")`` selects edges crossing specific layers.
 * **Lazy execution**: Queries are built incrementally and executed only when ``.execute(network)`` is called.
 

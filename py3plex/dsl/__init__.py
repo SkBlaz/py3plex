@@ -110,6 +110,11 @@ from .builder import (
     TrajectoriesBuilder,
 )
 
+from .layers import (
+    LayerSet,
+    LayerExpr as LayerSetExpr,
+)
+
 # Import pattern matching components
 from .patterns import (
     PatternNode,
@@ -244,6 +249,8 @@ __all__ = [
     "LayerExprBuilder",
     "LayerProxy",
     "L",
+    "LayerSet",
+    "LayerSetExpr",
     "Param",
     # DSL Extensions Builders
     "C",
