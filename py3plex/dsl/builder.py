@@ -22,7 +22,10 @@ Example:
     >>> q = Q.edges().during(100.0, 200.0).execute(network)  # Range [100, 200]
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .layers import LayerSet
 
 from .ast import (
     Query,
@@ -194,17 +197,36 @@ class LayerExprBuilder:
 
 
 class LayerProxy:
-    """Proxy for creating layer expressions via L["name"] syntax."""
+    """Proxy for creating layer expressions via L["name"] syntax.
     
-    def __getitem__(self, name_or_names) -> LayerExprBuilder:
+    Supports both simple layer names and advanced string expressions:
+        - L["social"] → single layer (backward compatible)
+        - L["social", "work"] → union of layers (backward compatible)
+        - L["* - coupling"] → string expression with algebra (NEW)
+        - L["(ppi | gene) & disease"] → complex expression (NEW)
+    
+    The proxy automatically detects whether to use the old LayerExprBuilder
+    (for simple names) or the new LayerSet (for expressions with operators).
+    """
+    
+    def __getitem__(self, name_or_names) -> Union[LayerExprBuilder, "LayerSet"]:
         """Create a layer expression builder for the given layer name(s).
         
-        Supports both single layer and multiple layers:
-        - L["social"] → single layer
-        - L["social", "work"] → union of layers (same as L["social"] + L["work"])
+        Supports:
+        - Single layer: L["social"]
+        - Multiple layers: L["social", "work"] (union)
+        - String expressions: L["* - coupling"]
+        - Complex expressions: L["(ppi | gene) & disease"]
+        
+        Returns:
+            LayerExprBuilder for simple cases (backward compatibility)
+            LayerSet for expressions with operators (new feature)
         """
+        # Import LayerSet here to avoid circular dependency
+        from .layers import LayerSet
+        
         if isinstance(name_or_names, (tuple, list)):
-            # Multiple layers - create union
+            # Multiple layers - create union (backward compatible)
             if not name_or_names:
                 raise ValueError("Cannot create layer expression with empty list")
             
@@ -216,9 +238,118 @@ class LayerProxy:
                 result = result + LayerExprBuilder(name)
             
             return result
+        
+        # Single name/expression
+        name = name_or_names
+        
+        # Check if this is an expression string (contains operators)
+        if isinstance(name, str) and self._is_expression(name):
+            # Use new LayerSet with parsing
+            return LayerSet.parse(name)
         else:
-            # Single layer
-            return LayerExprBuilder(name_or_names)
+            # Use old LayerExprBuilder (backward compatible)
+            return LayerExprBuilder(name)
+    
+    def _is_expression(self, text: str) -> bool:
+        """Check if text contains layer algebra operators.
+        
+        Returns True if the text is a complex expression that needs parsing,
+        False if it's a simple layer name.
+        """
+        # Check for operators (but not at start for complement)
+        operators = ["|", "&", "+"]
+        for op in operators:
+            if op in text:
+                return True
+        
+        # Check for difference operator (must not be part of identifier)
+        # E.g., "layer-name" is valid, but "layer - name" is an expression
+        if " - " in text or text.startswith("- ") or text.endswith(" -"):
+            return True
+        
+        # Check for parentheses
+        if "(" in text or ")" in text:
+            return True
+        
+        # Check for complement
+        if text.startswith("~"):
+            return True
+        
+        return False
+    
+    @staticmethod
+    def define(name: str, layer_expr: Union[LayerExprBuilder, "LayerSet"]) -> None:
+        """Define a named layer group for reuse.
+        
+        Args:
+            name: Group name
+            layer_expr: LayerExprBuilder or LayerSet to associate with the name
+            
+        Example:
+            >>> bio = L["ppi"] | L["gene"] | L["disease"]
+            >>> L.define("bio", bio)
+            >>> 
+            >>> # Later use the group
+            >>> result = Q.nodes().from_layers(L["bio"]).execute(net)
+        """
+        from .layers import LayerSet
+        
+        # Convert LayerExprBuilder to LayerSet if needed
+        if isinstance(layer_expr, LayerExprBuilder):
+            # Build a LayerSet from the LayerExprBuilder
+            # This requires converting the AST format
+            layer_set = _convert_expr_builder_to_layer_set(layer_expr)
+        else:
+            layer_set = layer_expr
+        
+        LayerSet.define_group(name, layer_set)
+    
+    @staticmethod
+    def list_groups() -> Dict[str, Any]:
+        """List all defined layer groups.
+        
+        Returns:
+            Dictionary mapping group names to layer expressions
+        """
+        from .layers import LayerSet
+        return LayerSet.list_groups()
+    
+    @staticmethod
+    def clear_groups() -> None:
+        """Clear all defined layer groups."""
+        from .layers import LayerSet
+        LayerSet.clear_groups()
+
+
+def _convert_expr_builder_to_layer_set(builder: LayerExprBuilder) -> "LayerSet":
+    """Convert LayerExprBuilder to LayerSet for group definition.
+    
+    Args:
+        builder: LayerExprBuilder instance
+        
+    Returns:
+        Equivalent LayerSet
+    """
+    from .layers import LayerSet
+    
+    # Start with first term
+    if not builder.terms:
+        raise ValueError("Empty LayerExprBuilder")
+    
+    result = LayerSet(builder.terms[0].name)
+    
+    # Apply operations
+    for i, op in enumerate(builder.ops):
+        next_term = LayerSet(builder.terms[i + 1].name)
+        
+        if op == "+":
+            result = result | next_term
+        elif op == "-":
+            result = result - next_term
+        elif op == "&":
+            result = result & next_term
+    
+    return result
 
 
 # Global layer proxy
@@ -298,16 +429,39 @@ class QueryBuilder:
         """
         self._select = SelectStmt(target=target, autocompute=autocompute)
     
-    def from_layers(self, layer_expr: LayerExprBuilder) -> "QueryBuilder":
+    def from_layers(self, layer_expr: Union[LayerExprBuilder, "LayerSet"]) -> "QueryBuilder":
         """Filter by layers using layer algebra.
         
+        Supports both LayerExprBuilder (backward compatible) and LayerSet (new).
+        
         Args:
-            layer_expr: Layer expression (e.g., L["social"] + L["work"])
+            layer_expr: Layer expression (e.g., L["social"] + L["work"] or L["* - coupling"])
             
         Returns:
             Self for chaining
+            
+        Example:
+            >>> # Old style (still works)
+            >>> Q.nodes().from_layers(L["social"] + L["work"])
+            >>> 
+            >>> # New style with string expressions
+            >>> Q.nodes().from_layers(L["* - coupling"])
+            >>> Q.nodes().from_layers(L["(ppi | gene) & disease"])
         """
-        self._select.layer_expr = layer_expr._to_ast()
+        from .layers import LayerSet
+        
+        if isinstance(layer_expr, LayerSet):
+            # Store LayerSet directly in a new field
+            self._select.layer_set = layer_expr
+            # Clear the old layer_expr to avoid conflicts
+            self._select.layer_expr = None
+        else:
+            # LayerExprBuilder - use old path
+            self._select.layer_expr = layer_expr._to_ast()
+            # Clear layer_set
+            if hasattr(self._select, 'layer_set'):
+                self._select.layer_set = None
+        
         return self
     
     def where(self, *args, **kwargs) -> "QueryBuilder":

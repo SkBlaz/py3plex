@@ -110,6 +110,11 @@ from .builder import (
     TrajectoriesBuilder,
 )
 
+from .layers import (
+    LayerSet,
+    LayerExpr as LayerSetExpr,
+)
+
 from .expressions import (
     F,
     FieldExpression,
@@ -226,6 +231,8 @@ __all__ = [
     "LayerExprBuilder",
     "LayerProxy",
     "L",
+    "LayerSet",
+    "LayerSetExpr",
     "Param",
     # DSL Extensions Builders
     "C",

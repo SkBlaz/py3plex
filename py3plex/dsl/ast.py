@@ -324,6 +324,7 @@ class SelectStmt:
     """
     target: Target
     layer_expr: Optional[LayerExpr] = None
+    layer_set: Optional[Any] = None  # LayerSet type (Any to avoid circular import)
     where: Optional[ConditionExpr] = None
     compute: List[ComputeItem] = field(default_factory=list)
     order_by: List[OrderItem] = field(default_factory=list)
