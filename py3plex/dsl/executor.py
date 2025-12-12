@@ -32,6 +32,7 @@ from .ast import (
     PlanStep,
     ExecutionPlan,
     TemporalContext,
+    WindowSpec,
     DynamicsStmt,
     TrajectoriesStmt,
 )
@@ -99,10 +100,15 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     if bound_query.explain:
         return _build_execution_plan(network, bound_query)
     
-    # Step 3: Wrap network in temporal view if needed
+    # Step 3: Check for windowed query
+    if bound_query.select.window_spec is not None:
+        # Execute windowed query
+        return _execute_windowed_query(network, bound_query, params)
+    
+    # Step 4: Wrap network in temporal view if needed
     actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
     
-    # Step 4: Execute SELECT statement (pass params for dynamic resolution)
+    # Step 5: Execute SELECT statement (pass params for dynamic resolution)
     return _execute_select(actual_network, bound_query.select, params)
 
 
@@ -141,6 +147,162 @@ def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalCon
         raise DslExecutionError(f"Unknown temporal context kind: {temporal_context.kind}")
     
     return view
+
+
+def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[str, Any]] = None) -> QueryResult:
+    """Execute a windowed query over a temporal network.
+    
+    Args:
+        network: Network (should be TemporalMultiLayerNetwork or convertible)
+        query: Query with window_spec
+        params: Parameter bindings
+        
+    Returns:
+        QueryResult with windowed results
+        
+    Raises:
+        DslExecutionError: If network doesn't support windowing or window spec is invalid
+    """
+    from py3plex.temporal_utils_extended import parse_duration_string
+    
+    window_spec = query.select.window_spec
+    
+    # Check if network supports windowing
+    if not hasattr(network, 'window_iter'):
+        # Try to convert to TemporalMultiLayerNetwork
+        try:
+            from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+            
+            if isinstance(network, TemporalMultiLayerNetwork):
+                # Already temporal
+                pass
+            else:
+                raise DslExecutionError(
+                    "Windowed queries require a TemporalMultiLayerNetwork. "
+                    "Use TemporalMultiLayerNetwork.from_multilayer_network() to convert."
+                )
+        except ImportError:
+            raise DslExecutionError(
+                "TemporalMultiLayerNetwork not available. "
+                "Windowed queries require py3plex.core.temporal_multinet module."
+            )
+    
+    # Parse window size and step (convert duration strings to numeric)
+    try:
+        window_size = parse_duration_string(window_spec.window_size)
+        step = parse_duration_string(window_spec.step) if window_spec.step else None
+    except ValueError as e:
+        raise DslExecutionError(f"Invalid window specification: {e}")
+    
+    # Collect results from each window
+    window_results = []
+    
+    # Iterate over windows
+    for t_start, t_end, window_net in network.window_iter(
+        window_size=window_size,
+        step=step,
+        start=window_spec.start,
+        end=window_spec.end,
+        return_type="snapshot",
+    ):
+        # Execute query on this window
+        # Create a copy of the select statement without the window spec
+        window_select = copy.deepcopy(query.select)
+        window_select.window_spec = None
+        
+        # Apply temporal context if specified
+        actual_window_net = _apply_temporal_context(window_net, window_select.temporal_context)
+        
+        # Execute on this window
+        window_result = _execute_select(actual_window_net, window_select, params)
+        
+        # Add window metadata
+        window_result.meta['window_start'] = t_start
+        window_result.meta['window_end'] = t_end
+        
+        window_results.append(window_result)
+    
+    # Aggregate results based on aggregation mode
+    aggregation = window_spec.aggregation
+    
+    if aggregation == "list":
+        # Return list of results (default)
+        # Wrap in a container QueryResult
+        return QueryResult(
+            target=query.select.target.value,
+            items=window_results,
+            attributes={},
+            meta={
+                "dsl_version": "2.0",
+                "windowed": True,
+                "window_count": len(window_results),
+                "aggregation": "list",
+            }
+        )
+    
+    elif aggregation == "concat":
+        # Concatenate all window results into a single result
+        try:
+            import pandas as pd
+            
+            # Convert each window result to DataFrame
+            dfs = []
+            for window_result in window_results:
+                df = window_result.to_pandas()
+                # Add window columns
+                df['window_start'] = window_result.meta.get('window_start')
+                df['window_end'] = window_result.meta.get('window_end')
+                dfs.append(df)
+            
+            # Concatenate all DataFrames
+            if dfs:
+                combined_df = pd.concat(dfs, ignore_index=True)
+                
+                # Convert back to QueryResult format
+                # Extract items (nodes or edges)
+                id_col = 'id' if 'id' in combined_df.columns else combined_df.columns[0]
+                items = combined_df[id_col].tolist()
+                
+                # Extract attributes (including window columns)
+                attributes = {}
+                for col in combined_df.columns:
+                    if col != id_col:
+                        attributes[col] = dict(zip(combined_df[id_col], combined_df[col]))
+                
+                return QueryResult(
+                    target=query.select.target.value,
+                    items=items,
+                    attributes=attributes,
+                    meta={
+                        "dsl_version": "2.0",
+                        "windowed": True,
+                        "window_count": len(window_results),
+                        "aggregation": "concat",
+                    }
+                )
+            else:
+                return QueryResult(
+                    target=query.select.target.value,
+                    items=[],
+                    attributes={},
+                    meta={
+                        "dsl_version": "2.0",
+                        "windowed": True,
+                        "window_count": 0,
+                        "aggregation": "concat",
+                    }
+                )
+        except ImportError:
+            raise DslExecutionError(
+                "Concatenation aggregation requires pandas. "
+                "Install pandas or use aggregation='list'."
+            )
+    
+    else:
+        raise DslExecutionError(
+            f"Unknown aggregation mode: '{aggregation}'. "
+            f"Supported modes: 'list', 'concat'"
+        )
 
 
 def _bind_parameters(query: Query, params: Dict[str, Any]) -> Query:

@@ -41,6 +41,7 @@ from .ast import (
     ParamRef,
     ExecutionPlan,
     TemporalContext,
+    WindowSpec,
 )
 from .result import QueryResult
 
@@ -76,6 +77,8 @@ def build_condition_from_kwargs(kwargs: Dict[str, Any]) -> ConditionExpr:
         - degree__gt=5 → Comparison("degree", ">", 5)
         - intralayer=True → SpecialPredicate("intralayer", {})
         - interlayer=("social","work") → SpecialPredicate("interlayer", {...})
+        - t__between=(100, 200) → SpecialPredicate("temporal_range", {...})
+        - t__gte=100 → Comparison("t", ">=", 100)
     
     Args:
         kwargs: Keyword arguments representing conditions
@@ -93,7 +96,18 @@ def build_condition_from_kwargs(kwargs: Dict[str, Any]) -> ConditionExpr:
             attr = parts[0]
             suffix = parts[1]
             
-            if suffix in COMPARATOR_MAP:
+            # Special handling for t__between
+            if attr == "t" and suffix == "between":
+                if isinstance(value, (tuple, list)) and len(value) == 2:
+                    atoms.append(ConditionAtom(
+                        special=SpecialPredicate(
+                            kind="temporal_range",
+                            params={"t_start": value[0], "t_end": value[1]}
+                        )
+                    ))
+                else:
+                    raise ValueError("t__between requires a tuple of (t_start, t_end)")
+            elif suffix in COMPARATOR_MAP:
                 cmp = Comparison(left=attr, op=COMPARATOR_MAP[suffix], right=_wrap_value(value))
                 atoms.append(ConditionAtom(comparison=cmp))
             else:
@@ -1031,6 +1045,58 @@ class QueryBuilder:
             kind="during",
             t0=float(t),
             t1=None
+        )
+        return self
+    
+    def window(
+        self,
+        window_size: Union[float, str],
+        step: Optional[Union[float, str]] = None,
+        start: Optional[float] = None,
+        end: Optional[float] = None,
+        aggregation: str = "list",
+    ) -> "QueryBuilder":
+        """Add sliding window specification for temporal analysis.
+        
+        Enables queries that operate over sliding time windows, useful for
+        streaming algorithms and temporal pattern analysis.
+        
+        Args:
+            window_size: Size of each window. Can be:
+                        - Numeric: treated as timestamp units
+                        - String: duration like "7d", "1h", "30m"
+            step: Step size between windows (defaults to window_size for non-overlapping).
+                 Same format as window_size.
+            start: Optional start time for windowing (defaults to network's first timestamp)
+            end: Optional end time for windowing (defaults to network's last timestamp)
+            aggregation: How to aggregate results across windows:
+                        - "list": Return list of per-window results
+                        - "concat": Concatenate DataFrames
+                        - "avg": Average numeric columns
+                        
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> # Non-overlapping windows of size 100
+            >>> Q.nodes().compute("degree").window(100.0).execute(tnet)
+            
+            >>> # Overlapping windows: size 100, step 50
+            >>> Q.nodes().compute("degree").window(100.0, step=50.0).execute(tnet)
+            
+            >>> # Duration strings (for datetime timestamps)
+            >>> Q.edges().window("7d", step="1d").execute(tnet)
+            
+        Note:
+            Window queries require a TemporalMultiLayerNetwork instance.
+            For regular multi_layer_network, an error will be raised.
+        """
+        self._select.window_spec = WindowSpec(
+            window_size=window_size,
+            step=step,
+            start=start,
+            end=end,
+            aggregation=aggregation,
         )
         return self
     
