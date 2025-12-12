@@ -1,6 +1,6 @@
-# py3plex LLM Documentation
+# py3plex AI Agent Documentation
 
-> This file provides comprehensive documentation about py3plex, optimized for LLM agents and AI assistants.
+> This file provides comprehensive documentation about py3plex, optimized for AI agents and assistants.
 
 ## Project Overview
 

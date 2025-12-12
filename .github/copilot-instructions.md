@@ -15,16 +15,21 @@ py3plex is a Python library for analyzing and visualizing multilayer and multipl
 ```
 py3plex/
 ├── py3plex/                 # Main package
-│   ├── core/               # Core network classes (multinet.py)
-│   ├── algorithms/         # Network algorithms
+│   ├── core/               # Core network classes (multinet.py, temporal_multinet.py)
+│   ├── algorithms/         # Network algorithms (including temporal/)
 │   ├── visualization/      # Visualization tools
 │   ├── dsl/               # SQL-like DSL for queries
 │   ├── io/                # I/O handlers
 │   ├── datasets/          # Built-in datasets
 │   ├── plugins/           # Plugin system
+│   ├── dynamics/          # Network dynamics simulations
+│   ├── uncertainty/       # Bootstrap and null model analysis
+│   ├── nullmodels/        # Null model implementations
+│   ├── multinet/          # Multilayer aggregation utilities
 │   ├── cli.py             # CLI entry point
 │   ├── graph_ops.py       # Dplyr-style API
 │   ├── pipeline.py        # Sklearn-style pipelines
+│   ├── temporal_utils.py  # Temporal network utilities
 │   └── workflows.py       # Config-driven workflows
 ├── tests/                  # Test suite
 ├── examples/               # Example scripts (50+)
@@ -78,6 +83,43 @@ df = (
     .arrange("degree", reverse=True)
     .to_pandas()
 )
+```
+
+### Temporal Networks
+
+```python
+from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+
+# Create temporal network
+tnet = TemporalMultiLayerNetwork()
+tnet.add_edge('A', 'B', layer='social', time=1.0)
+tnet.add_edge('B', 'C', layer='social', time=2.0)
+
+# Query temporal slices
+snapshot = tnet.get_snapshot(time_range=(0, 1.5))
+```
+
+### Dynamics Simulations
+
+```python
+from py3plex.dynamics import DynamicsSimulator, SIRModel
+
+# Define and run dynamics
+sim = DynamicsSimulator(network)
+results = sim.run(model=SIRModel(beta=0.3, gamma=0.1), steps=100)
+```
+
+### Uncertainty Analysis
+
+```python
+from py3plex.uncertainty import bootstrap_centrality
+from py3plex.nullmodels import configuration_model
+
+# Bootstrap confidence intervals
+ci = bootstrap_centrality(net, measure='betweenness', n_samples=100)
+
+# Null model comparison
+null_net = configuration_model(net)
 ```
 
 ## Coding Conventions
@@ -153,7 +195,7 @@ Core dependencies (from `pyproject.toml`):
 
 ## Documentation
 
-For comprehensive LLM documentation with examples, see `llm.md` in the repository root.
+For comprehensive AI agent documentation with examples, see `AGENTS.md` in the repository root.
 
 ## Behavioral Guidelines
 
@@ -192,6 +234,20 @@ For comprehensive LLM documentation with examples, see `llm.md` in the repositor
 - Use `Q.nodes()` for builder API, `execute_query()` for legacy string queries
 - DSL supports autocompute of centrality metrics - set `autocompute=False` to disable
 - Layer selection: `FROM layer="name"` (canonical) or `WHERE layer="name"` (backward compat)
+
+### DSL Edge Grouping and Coverage
+
+- Use `per_layer()` for node queries, `per_layer_pair()` for edge queries
+- Edge grouping groups by (src_layer, dst_layer) pairs
+- Coverage filtering works for both nodes and edges: coverage > threshold
+- QueryResult.meta["grouping"] contains structured grouping metadata
+- Use `result.group_summary()` to get DataFrame summary of groups
+
+### DSL Temporal Extensions
+
+- DSL supports temporal queries via `.window()` builder method
+- Temporal filters: `t__between`, `t__gte`, `t__lte`, `t__gt`, `t__lt` in `where()` clause
+- WindowSpec AST node represents temporal query specifications
 
 ### Error Handling
 
@@ -246,7 +302,7 @@ raise Py3plexException("Invalid network configuration")
 ## References
 
 - **README.md:** Quick start and flagship example
-- **llm.md:** Comprehensive LLM-optimized documentation
+- **AGENTS.md:** Comprehensive AI agent documentation
 - **docfiles/:** Detailed documentation source files
 - **examples/:** Comprehensive collection of working examples demonstrating features
 - **pyproject.toml:** All dependencies, build config, and tool settings
