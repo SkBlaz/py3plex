@@ -110,6 +110,24 @@ from .builder import (
     TrajectoriesBuilder,
 )
 
+# Import pattern matching components
+from .patterns import (
+    PatternNode,
+    PatternEdge,
+    PatternGraph,
+    MatchRow,
+    LayerConstraint,
+    EdgeLayerConstraint,
+    Predicate,
+    PatternQueryBuilder,
+    PatternNodeBuilder,
+    PatternEdgeBuilder,
+    PatternQueryResult,
+    PatternPlan,
+    compile_pattern,
+    match_pattern,
+)
+
 from .expressions import (
     F,
     FieldExpression,
@@ -236,6 +254,21 @@ __all__ = [
     # Dynamics Builders
     "DynamicsBuilder",
     "TrajectoriesBuilder",
+    # Pattern Matching
+    "PatternNode",
+    "PatternEdge",
+    "PatternGraph",
+    "MatchRow",
+    "LayerConstraint",
+    "EdgeLayerConstraint",
+    "Predicate",
+    "PatternQueryBuilder",
+    "PatternNodeBuilder",
+    "PatternEdgeBuilder",
+    "PatternQueryResult",
+    "PatternPlan",
+    "compile_pattern",
+    "match_pattern",
     # Expression Builder
     "F",
     "FieldExpression",
