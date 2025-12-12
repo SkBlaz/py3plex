@@ -1720,7 +1720,7 @@ class Q:
         """
         
         _defaults: Dict[str, Any] = {
-            "enabled": True,
+            "enabled": False,
             "n_boot": 50,
             "n_samples": 50,
             "ci": 0.95,
