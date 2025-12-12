@@ -70,6 +70,7 @@
 <li class="toctree-l1"><a class="reference internal" href="how-to/export_serialize.html">How to Export and Serialize Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/visualize_networks.html">How to Visualize Multilayer Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/query_with_patterns.html">How to Find Graph Patterns and Motifs with the Pattern Matching API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
 </ul>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="reference/part_intro.html">API &amp; DSL Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/layer_set_algebra.html">Layer Set Algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/configuration.html">Configuration &amp; Environment</a></li>
 </ul>
@@ -466,6 +468,23 @@ Number of edges: 3
 <li class="toctree-l2"><a class="reference internal" href="how-to/query_with_dsl.html#further-reading-the-py3plex-book">Further Reading: The Py3plex Book</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/query_with_patterns.html">How to Find Graph Patterns and Motifs with the Pattern Matching API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#why-pattern-matching">Why Pattern Matching?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#quick-start-your-first-pattern">Quick Start: Your First Pattern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#pattern-components">Pattern Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#multilayer-aware-patterns">Multilayer-Aware Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#practical-examples">Practical Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#working-with-results">Working with Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#query-execution-planning">Query Execution Planning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#performance-tips">Performance Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#advanced-features">Advanced Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#comparison-with-other-approaches">Comparison with Other Approaches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#limitations-and-future-work">Limitations and Future Work</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#related-documentation">Related Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/query_with_patterns.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#basic-pipeline">Basic Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#available-operations">Available Operations</a></li>
@@ -598,6 +617,21 @@ Number of edges: 3
 <li class="toctree-l2"><a class="reference internal" href="reference/dsl_reference.html#extensibility">Extensibility</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/dsl_reference.html#performance-considerations">Performance Considerations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/dsl_reference.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/layer_set_algebra.html">Layer Set Algebra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#why-layer-set-algebra">Why Layer Set Algebra?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#set-operations">Set Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#named-layer-groups">Named Layer Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#operator-precedence">Operator Precedence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#real-world-examples">Real-World Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#introspection-and-debugging">Introspection and Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#comparison-old-vs-new-syntax">Comparison: Old vs New Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#why-layer-set-algebra-matters">Why Layer Set Algebra Matters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/layer_set_algebra.html#see-also">See Also</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a><ul>

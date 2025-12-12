@@ -160,12 +160,36 @@ Layer Selection
 .. code-block:: python
 
     Q.nodes().from_layers(L["friends"] + L["work"])
+    
+    # Or use the new LayerSet algebra:
+    Q.nodes().from_layers(L["friends | work"])
 
 **Layer intersection:**
 
 .. code-block:: python
 
     Q.nodes().from_layers(L["friends"] & L["work"])
+
+**Advanced Layer Set Algebra:**
+
+.. code-block:: python
+
+    # All layers except coupling
+    Q.nodes().from_layers(L["* - coupling"])
+    
+    # Complex expressions with set operations
+    Q.nodes().from_layers(L["(social | work) & ~bots"])
+    
+    # Named groups for reuse
+    from py3plex.dsl import LayerSet
+    LayerSet.define_group("bio", LayerSet("ppi") | LayerSet("gene"))
+    Q.nodes().from_layers(LayerSet("bio"))
+
+.. seealso::
+   
+   For complete documentation on layer set algebra including all operators, 
+   string parsing, named groups, and real-world examples, see:
+   :doc:`layer_set_algebra`
 
 Filtering
 ~~~~~~~~~

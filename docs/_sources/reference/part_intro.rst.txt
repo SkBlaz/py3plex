@@ -15,6 +15,7 @@ DSL & Query Reference
 ---------------------
 
 * :doc:`dsl_reference` — Complete DSL syntax and operator reference
+* :doc:`layer_set_algebra` — Layer set algebra for composable layer selection
 * :doc:`configuration` — Configuration options and environment variables
 
 **Reading Paths:**

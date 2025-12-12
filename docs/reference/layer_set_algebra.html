@@ -1,0 +1,740 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layer Set Algebra &mdash; py3plex 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=292eb321"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Documentation" href="api_index.html" />
+    <link rel="prev" title="DSL Reference" href="dsl_reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_zoo.html">Query Zoo: DSL Gallery for Multilayer Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_patterns.html">How to Find Graph Patterns and Motifs with the Pattern Matching API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Layer Set Algebra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-layer-set-algebra">Why Layer Set Algebra?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-operations">Basic Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#string-expressions">String Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-with-queries">Integration with Queries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#set-operations">Set Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#union-a-b">Union: A | B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intersection-a-b">Intersection: A &amp; B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#difference-a-b">Difference: A - B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complement-a">Complement: ~A</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#named-layer-groups">Named Layer Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#operator-precedence">Operator Precedence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#real-world-examples">Real-World Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-1-biological-networks">Example 1: Biological Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-social-networks">Example 2: Social Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-3-transportation-networks">Example 3: Transportation Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#introspection-and-debugging">Introspection and Debugging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#resolution">Resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#explanation">Explanation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#with-network-resolution">With Network Resolution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-old-vs-new-syntax">Comparison: Old vs New Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-layer-set-algebra-matters">Why Layer Set Algebra Matters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-multilayer-networks">For Multilayer Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#algebraic-properties">Algebraic Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#layerset-class">LayerSet Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#l-proxy">L Proxy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Layer Set Algebra</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/layer_set_algebra.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="layer-set-algebra">
+<h1>Layer Set Algebra<a class="headerlink" href="#layer-set-algebra" title="Link to this heading"></a></h1>
+<p>The Layer Set Algebra feature provides a first-class, composable system for
+selecting and manipulating layer sets in multilayer networks. Instead of manually
+specifying lists of layers, you can use set-theoretic operations to express
+complex layer selections.</p>
+<section id="why-layer-set-algebra">
+<h2>Why Layer Set Algebra?<a class="headerlink" href="#why-layer-set-algebra" title="Link to this heading"></a></h2>
+<p>In multilayer network analysis, you often need to:</p>
+<ul class="simple">
+<li><p>Select “all layers except the coupling layer”</p></li>
+<li><p>Combine biological layers for aggregate analysis</p></li>
+<li><p>Find the intersection of layers where a node appears</p></li>
+<li><p>Reuse layer group definitions across multiple queries</p></li>
+</ul>
+<p>The Layer Set Algebra makes these operations expressive, composable, and safe.</p>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="basic-operations">
+<h3>Basic Operations<a class="headerlink" href="#basic-operations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayerSet</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">Q</span>
+
+<span class="c1"># Create layer sets</span>
+<span class="n">social</span> <span class="o">=</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+<span class="n">work</span> <span class="o">=</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;work&quot;</span><span class="p">)</span>
+
+<span class="c1"># Union: layers in either social OR work</span>
+<span class="n">both</span> <span class="o">=</span> <span class="n">social</span> <span class="o">|</span> <span class="n">work</span>
+
+<span class="c1"># Intersection: layers in both social AND work</span>
+<span class="n">shared</span> <span class="o">=</span> <span class="n">social</span> <span class="o">&amp;</span> <span class="n">work</span>
+
+<span class="c1"># Difference: layers in social but NOT in work</span>
+<span class="n">social_only</span> <span class="o">=</span> <span class="n">social</span> <span class="o">-</span> <span class="n">work</span>
+
+<span class="c1"># Complement: all layers EXCEPT social</span>
+<span class="n">not_social</span> <span class="o">=</span> <span class="o">~</span><span class="n">social</span>
+</pre></div>
+</div>
+</section>
+<section id="string-expressions">
+<h3>String Expressions<a class="headerlink" href="#string-expressions" title="Link to this heading"></a></h3>
+<p>For convenience, you can write layer expressions as strings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parse from string</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">LayerSet</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">)</span>
+
+<span class="c1"># Or use L[...] syntax (auto-detects expressions)</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">]</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;(ppi | gene) &amp; disease&quot;</span><span class="p">]</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social | work | hobby&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-with-queries">
+<h3>Integration with Queries<a class="headerlink" href="#integration-with-queries" title="Link to this heading"></a></h3>
+<p>Use layer sets in any DSL query:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query nodes from all layers except coupling</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Complex layer selection</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;(social | work) &amp; ~coupling&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="set-operations">
+<h2>Set Operations<a class="headerlink" href="#set-operations" title="Link to this heading"></a></h2>
+<section id="union-a-b">
+<h3>Union: A | B<a class="headerlink" href="#union-a-b" title="Link to this heading"></a></h3>
+<p>The union operation combines layers from multiple sets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select nodes from social OR work layers</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social | work&quot;</span><span class="p">]</span>
+<span class="c1"># Equivalent to:</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;work&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>ASCII Venn Diagram:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────┐     ┌─────────┐
+│ Social  │     │  Work   │
+│    ┌────┴─────┴────┐    │
+│    │   RESULT      │    │
+└────┴────────────────┴────┘
+   A | B = {social, work}
+</pre></div>
+</div>
+</section>
+<section id="intersection-a-b">
+<h3>Intersection: A &amp; B<a class="headerlink" href="#intersection-a-b" title="Link to this heading"></a></h3>
+<p>The intersection operation selects only layers present in both sets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes that appear in both layer A AND layer B</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;layerA &amp; layerB&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>ASCII Venn Diagram:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────┐     ┌─────────┐
+│    A    │     │    B    │
+│    ┌────┼─────┼────┐    │
+│    │    │ RES │    │    │
+└────┴────┼─────┼────┴────┘
+          A &amp; B
+</pre></div>
+</div>
+</section>
+<section id="difference-a-b">
+<h3>Difference: A - B<a class="headerlink" href="#difference-a-b" title="Link to this heading"></a></h3>
+<p>The difference operation removes layers in B from A.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All layers except coupling</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">]</span>
+
+<span class="c1"># Social layers but not bots</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social - bots&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>ASCII Venn Diagram:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────┐     ┌─────────┐
+│    A    │     │    B    │
+│  ┌──────┼─────┤         │
+│  │ RES  │     │         │
+└──┴──────┼─────┴─────────┘
+   A - B = A without B
+</pre></div>
+</div>
+</section>
+<section id="complement-a">
+<h3>Complement: ~A<a class="headerlink" href="#complement-a" title="Link to this heading"></a></h3>
+<p>The complement operation returns all layers except those in A.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Everything except social layer</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="o">~</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+
+<span class="c1"># Equivalent to:</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - social&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>ASCII Venn Diagram:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────┐
+│     All Layers (*)      │
+│                         │
+│  ┌───────┐              │
+│  │   A   │    RESULT    │
+│  └───────┘              │
+└─────────────────────────┘
+   ~A = * - A
+</pre></div>
+</div>
+</section>
+</section>
+<section id="named-layer-groups">
+<h2>Named Layer Groups<a class="headerlink" href="#named-layer-groups" title="Link to this heading"></a></h2>
+<p>Define reusable layer groups for cleaner queries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayerSet</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">Q</span>
+
+<span class="c1"># Define a named group</span>
+<span class="n">bio_layers</span> <span class="o">=</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;ppi&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;gene&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;disease&quot;</span><span class="p">)</span>
+<span class="n">LayerSet</span><span class="o">.</span><span class="n">define_group</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">,</span> <span class="n">bio_layers</span><span class="p">)</span>
+
+<span class="c1"># Or use the convenience method</span>
+<span class="n">L</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social | work | email&quot;</span><span class="p">])</span>
+
+<span class="c1"># Use the group in queries</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Groups can be combined with other operations</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;bio &amp; core&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># List all defined groups</span>
+<span class="n">groups</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">list_groups</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>  <span class="c1"># {&#39;bio&#39;: LayerSet(...), &#39;core&#39;: LayerSet(...)}</span>
+</pre></div>
+</div>
+</section>
+<section id="operator-precedence">
+<h2>Operator Precedence<a class="headerlink" href="#operator-precedence" title="Link to this heading"></a></h2>
+<p>Layer expressions follow standard set theory precedence:</p>
+<ol class="arabic simple">
+<li><p><strong>Complement</strong> (~) - highest precedence</p></li>
+<li><p><strong>Intersection</strong> (&amp;)</p></li>
+<li><p><strong>Difference</strong> (-)</p></li>
+<li><p><strong>Union</strong> (|) - lowest precedence</p></li>
+</ol>
+<p>Use parentheses for clarity or to override precedence:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Without parentheses: parsed as A &amp; (B | C)</span>
+<span class="n">expr1</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;A &amp; B | C&quot;</span><span class="p">]</span>
+
+<span class="c1"># With parentheses: explicit grouping</span>
+<span class="n">expr2</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;(A &amp; B) | C&quot;</span><span class="p">]</span>
+<span class="n">expr3</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;A &amp; (B | C)&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="real-world-examples">
+<h2>Real-World Examples<a class="headerlink" href="#real-world-examples" title="Link to this heading"></a></h2>
+<section id="example-1-biological-networks">
+<h3>Example 1: Biological Networks<a class="headerlink" href="#example-1-biological-networks" title="Link to this heading"></a></h3>
+<p>Analyze protein interactions while excluding coupling layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">LayerSet</span>
+
+<span class="c1"># Define biological layer groups</span>
+<span class="n">L</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;ppi | gene | disease&quot;</span><span class="p">])</span>
+
+<span class="c1"># Find high-degree nodes in biological layers only</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;coupling&quot;</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2-social-networks">
+<h3>Example 2: Social Networks<a class="headerlink" href="#example-2-social-networks" title="Link to this heading"></a></h3>
+<p>Compare centrality across different social contexts:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define layer groups for different social contexts</span>
+<span class="n">L</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;online&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;facebook | twitter | linkedin&quot;</span><span class="p">])</span>
+<span class="n">L</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;offline&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work | school | hobby&quot;</span><span class="p">])</span>
+
+<span class="c1"># Compute centrality in online layers</span>
+<span class="n">online_centrality</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;online&quot;</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># Compute centrality in offline layers</span>
+<span class="n">offline_centrality</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;offline&quot;</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># Find nodes with high centrality in both contexts</span>
+<span class="c1"># (merge and filter the DataFrames)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3-transportation-networks">
+<h3>Example 3: Transportation Networks<a class="headerlink" href="#example-3-transportation-networks" title="Link to this heading"></a></h3>
+<p>Analyze robustness by excluding specific infrastructure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simulate failure scenarios</span>
+<span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;full_network&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">&quot;no_air&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - air_travel&quot;</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">&quot;no_rail&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - rail&quot;</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">&quot;road_only&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;road&quot;</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">&quot;multi_modal&quot;</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;road | rail&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layers</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+    <span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;avg_betweenness&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s2">&quot;max_betweenness&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+        <span class="s2">&quot;node_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">),</span>
+    <span class="p">}</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">df_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_results</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="introspection-and-debugging">
+<h2>Introspection and Debugging<a class="headerlink" href="#introspection-and-debugging" title="Link to this heading"></a></h2>
+<p>Layer sets provide introspection tools to understand what they represent:</p>
+<section id="resolution">
+<h3>Resolution<a class="headerlink" href="#resolution" title="Link to this heading"></a></h3>
+<p>See which layers a LayerSet resolves to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">]</span>
+
+<span class="c1"># Resolve against a network</span>
+<span class="n">resolved</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resolved</span><span class="p">)</span>  <span class="c1"># {&#39;social&#39;, &#39;work&#39;, &#39;hobby&#39;}</span>
+</pre></div>
+</div>
+</section>
+<section id="explanation">
+<h3>Explanation<a class="headerlink" href="#explanation" title="Link to this heading"></a></h3>
+<p>Get a human-readable explanation of the layer expression:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;(ppi | gene) &amp; disease&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">explain</span><span class="p">())</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># LayerSet:</span>
+<span class="c1">#   intersection(</span>
+<span class="c1">#     union(</span>
+<span class="c1">#       layer(&quot;ppi&quot;),</span>
+<span class="c1">#       layer(&quot;gene&quot;)</span>
+<span class="c1">#     ),</span>
+<span class="c1">#     layer(&quot;disease&quot;)</span>
+<span class="c1">#   )</span>
+</pre></div>
+</div>
+</section>
+<section id="with-network-resolution">
+<h3>With Network Resolution<a class="headerlink" href="#with-network-resolution" title="Link to this heading"></a></h3>
+<p>Combine explanation with network resolution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">network</span><span class="p">))</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># LayerSet:</span>
+<span class="c1">#   difference(</span>
+<span class="c1">#     all_layers(&quot;*&quot;),</span>
+<span class="c1">#     layer(&quot;coupling&quot;)</span>
+<span class="c1">#   )</span>
+<span class="c1"># → resolved to: {&#39;hobby&#39;, &#39;social&#39;, &#39;work&#39;}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="comparison-old-vs-new-syntax">
+<h2>Comparison: Old vs New Syntax<a class="headerlink" href="#comparison-old-vs-new-syntax" title="Link to this heading"></a></h2>
+<p><strong>Old Style (Still Supported):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Manual layer list</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Multiple separate queries</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="s2">&quot;hobby&quot;</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">layer</span> <span class="o">!=</span> <span class="s2">&quot;coupling&quot;</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>New Style (Recommended):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Expressive layer algebra</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social | work&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Single query with filtering</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="why-layer-set-algebra-matters">
+<h2>Why Layer Set Algebra Matters<a class="headerlink" href="#why-layer-set-algebra-matters" title="Link to this heading"></a></h2>
+<section id="for-multilayer-networks">
+<h3>For Multilayer Networks<a class="headerlink" href="#for-multilayer-networks" title="Link to this heading"></a></h3>
+<p>Multilayer networks have a unique challenge: layer selection is a first-class
+operation, not an afterthought. Traditional graph analysis tools don’t provide
+built-in support for layer algebra, forcing users to write imperative code
+with loops and conditionals.</p>
+<p>Layer Set Algebra brings the following benefits:</p>
+<ol class="arabic simple">
+<li><p><strong>Expressiveness</strong>: Complex layer selections become one-liners</p></li>
+<li><p><strong>Composability</strong>: Combine layer expressions with set operations</p></li>
+<li><p><strong>Reusability</strong>: Define named groups once, use everywhere</p></li>
+<li><p><strong>Safety</strong>: Late evaluation with validation at execution time</p></li>
+<li><p><strong>Maintainability</strong>: Clear, declarative code is easier to understand</p></li>
+</ol>
+</section>
+<section id="algebraic-properties">
+<h3>Algebraic Properties<a class="headerlink" href="#algebraic-properties" title="Link to this heading"></a></h3>
+<p>Layer Set Algebra follows standard set theory laws:</p>
+<ul class="simple">
+<li><p><strong>Idempotence</strong>: A | A = A, A &amp; A = A</p></li>
+<li><p><strong>Commutativity</strong>: A | B = B | A, A &amp; B = B &amp; A</p></li>
+<li><p><strong>Associativity</strong>: (A | B) | C = A | (B | C)</p></li>
+<li><p><strong>Distributivity</strong>: A &amp; (B | C) = (A &amp; B) | (A &amp; C)</p></li>
+<li><p><strong>De Morgan’s Laws</strong>: ~(A | B) = ~A &amp; ~B, ~(A &amp; B) = ~A | ~B</p></li>
+<li><p><strong>Complement</strong>: A | ~A = <a href="#id1"><span class="problematic" id="id2">*</span></a>, A &amp; ~A = ∅</p></li>
+</ul>
+<p>These properties enable query optimization and reasoning about layer selections.</p>
+</section>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="layerset-class">
+<h3>LayerSet Class<a class="headerlink" href="#layerset-class" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LayerSet</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents an unevaluated layer expression.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name_or_expr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">LayerExpr</span><span class="p">])</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create from layer name or expression AST.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LayerSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Union: self | other.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LayerSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Intersection: self &amp; other.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LayerSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Difference: self - other.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Complement: ~self.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">warn_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve expression to actual layer names.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate human-readable explanation.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">expr_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse layer expression from string.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">define_group</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layer_set</span><span class="p">:</span> <span class="n">LayerSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define a named layer group.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_groups</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">LayerSet</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all defined groups.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_groups</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all defined groups.&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="l-proxy">
+<h3>L Proxy<a class="headerlink" href="#l-proxy" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">L</span></code> proxy provides convenient syntax for creating layer expressions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple layer name (backward compatible)</span>
+<span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span>  <span class="c1"># Returns LayerExprBuilder</span>
+
+<span class="c1"># Expression string (auto-detected)</span>
+<span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">]</span>  <span class="c1"># Returns LayerSet</span>
+<span class="n">L</span><span class="p">[</span><span class="s2">&quot;social | work&quot;</span><span class="p">]</span>  <span class="c1"># Returns LayerSet</span>
+
+<span class="c1"># Define named group</span>
+<span class="n">L</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">,</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;ppi&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;gene&quot;</span><span class="p">))</span>
+
+<span class="c1"># List groups</span>
+<span class="n">groups</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">list_groups</span><span class="p">()</span>
+
+<span class="c1"># Clear groups</span>
+<span class="n">L</span><span class="o">.</span><span class="n">clear_groups</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<p><strong>1. Empty Layer Set Warning</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;nonexistent&quot;</span><span class="p">]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="c1"># UserWarning: Layer expression resolved to empty set</span>
+</pre></div>
+</div>
+<p><strong>Solution</strong>: Check layer names, use <code class="docutils literal notranslate"><span class="pre">warn_empty=False</span></code> to suppress, or use <code class="docutils literal notranslate"><span class="pre">strict=True</span></code> to raise an error instead.</p>
+<p><strong>2. Unknown Layer Error</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;typo_layer&quot;</span><span class="p">]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># UnknownLayerError: Layer &#39;typo_layer&#39; not found</span>
+</pre></div>
+</div>
+<p><strong>Solution</strong>: Verify layer names with <code class="docutils literal notranslate"><span class="pre">network.layers</span></code> or <code class="docutils literal notranslate"><span class="pre">network.get_layers()</span></code>.</p>
+<p><strong>3. Syntax Error in Expression</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social &amp;&quot;</span><span class="p">]</span>  <span class="c1"># Missing right operand</span>
+<span class="c1"># DslSyntaxError: Unexpected end of expression</span>
+</pre></div>
+</div>
+<p><strong>Solution</strong>: Check expression syntax, ensure all operators have operands.</p>
+</section>
+<section id="best-practices">
+<h3>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Use Named Groups</strong> for complex layer sets you’ll reuse</p></li>
+<li><p><strong>Prefer String Expressions</strong> for readability: <code class="docutils literal notranslate"><span class="pre">L[&quot;*</span> <span class="pre">-</span> <span class="pre">coupling&quot;]</span></code></p></li>
+<li><p><strong>Use Complement</strong> instead of listing all other layers: <code class="docutils literal notranslate"><span class="pre">~LayerSet(&quot;exclude&quot;)</span></code></p></li>
+<li><p><strong>Document Layer Groups</strong> with comments explaining their purpose</p></li>
+<li><p><strong>Test Layer Resolution</strong> with <code class="docutils literal notranslate"><span class="pre">.explain(network)</span></code> before running expensive queries</p></li>
+</ol>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><span class="xref std std-doc">query_with_dsl</span> - DSL query basics</p></li>
+<li><p><span class="xref std std-doc">query_zoo</span> - Query examples and patterns</p></li>
+<li><p><span class="xref std std-doc">/api/dsl</span> - Complete DSL API reference</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Layer Set Algebra is available in py3plex DSL v2.1+. It’s fully backward
+compatible with existing layer expressions.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dsl_reference.html" class="btn btn-neutral float-left" title="DSL Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_index.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

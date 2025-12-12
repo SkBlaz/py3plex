@@ -28,6 +28,7 @@ Query and Transform
 -------------------
 
 * :doc:`query_with_dsl` — Use SQL-like syntax for network queries
+* :doc:`query_with_patterns` — Find graph motifs and subgraph patterns
 * :doc:`build_pipelines` — Chain operations with dplyr-style API
 
 Workflows
@@ -63,6 +64,7 @@ Quick Navigation
 * Find communities → :doc:`run_community_detection`
 * Create visualizations → :doc:`visualize_networks`
 * Query networks → :doc:`query_with_dsl`
+* Find patterns/motifs → :doc:`query_with_patterns`
 * Model processes → :doc:`simulate_dynamics`
 
 **I'm coming from...**

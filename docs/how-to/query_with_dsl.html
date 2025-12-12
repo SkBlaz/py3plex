@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="How to Build Analysis Pipelines with Dplyr-style Operations" href="build_pipelines.html" />
+    <link rel="next" title="How to Find Graph Patterns and Motifs with the Pattern Matching API" href="query_with_patterns.html" />
     <link rel="prev" title="How to Visualize Multilayer Networks" href="visualize_networks.html" /> 
 </head>
 
@@ -131,6 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#further-reading-the-py3plex-book">Further Reading: The Py3plex Book</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_patterns.html">How to Find Graph Patterns and Motifs with the Pattern Matching API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
 </ul>
@@ -147,6 +148,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/layer_set_algebra.html">Layer Set Algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
 </ul>
@@ -260,7 +262,7 @@
 <p><strong>Key Concepts:</strong></p>
 <ul class="simple">
 <li><p><strong>Nodes as (node, layer) tuples</strong>: In multilayer networks, a node may appear in multiple layers. The DSL represents these as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_name)</span></code> pairs.</p></li>
-<li><p><strong>Layer algebra</strong>: Combine layers with <code class="docutils literal notranslate"><span class="pre">+</span></code> (union), <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> (intersection), or <code class="docutils literal notranslate"><span class="pre">-</span></code> (difference).</p></li>
+<li><p><strong>Layer set algebra</strong>: Combine layers with set operations (<code class="docutils literal notranslate"><span class="pre">|</span></code> union, <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> intersection, <code class="docutils literal notranslate"><span class="pre">-</span></code> difference, <code class="docutils literal notranslate"><span class="pre">~</span></code> complement). The new LayerSet algebra enables expressive layer selection like <code class="docutils literal notranslate"><span class="pre">L[&quot;*</span> <span class="pre">-</span> <span class="pre">coupling&quot;]</span></code> or <code class="docutils literal notranslate"><span class="pre">L[&quot;(ppi</span> <span class="pre">|</span> <span class="pre">gene)</span> <span class="pre">&amp;</span> <span class="pre">disease&quot;]</span></code>. See <a class="reference internal" href="../reference/layer_set_algebra.html"><span class="doc">Layer Set Algebra</span></a> for complete documentation.</p></li>
 <li><p><strong>Special predicates</strong>: <code class="docutils literal notranslate"><span class="pre">intralayer=True</span></code> selects edges within a layer; <code class="docutils literal notranslate"><span class="pre">interlayer=(&quot;layer1&quot;,</span> <span class="pre">&quot;layer2&quot;)</span></code> selects edges crossing specific layers.</p></li>
 <li><p><strong>Lazy execution</strong>: Queries are built incrementally and executed only when <code class="docutils literal notranslate"><span class="pre">.execute(network)</span></code> is called.</p></li>
 </ul>
@@ -2092,7 +2094,7 @@ community
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="visualize_networks.html" class="btn btn-neutral float-left" title="How to Visualize Multilayer Networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="build_pipelines.html" class="btn btn-neutral float-right" title="How to Build Analysis Pipelines with Dplyr-style Operations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="query_with_patterns.html" class="btn btn-neutral float-right" title="How to Find Graph Patterns and Motifs with the Pattern Matching API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

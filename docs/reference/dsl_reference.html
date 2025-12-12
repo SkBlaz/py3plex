@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API Documentation" href="api_index.html" />
+    <link rel="next" title="Layer Set Algebra" href="layer_set_algebra.html" />
     <link rel="prev" title="Algorithm Roadmap" href="algorithm_reference.html" /> 
 </head>
 
@@ -70,6 +70,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../how-to/export_serialize.html">How to Export and Serialize Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/visualize_networks.html">How to Visualize Multilayer Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_patterns.html">How to Find Graph Patterns and Motifs with the Pattern Matching API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
 </ul>
@@ -138,6 +139,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="layer_set_algebra.html">Layer Set Algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration &amp; Environment</a></li>
 </ul>
@@ -337,11 +339,33 @@ LIMIT 100
 </div>
 <p><strong>Multiple layers (union):</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+
+<span class="c1"># Or use the new LayerSet algebra:</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends | work&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 <p><strong>Layer intersection:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
 </pre></div>
+</div>
+<p><strong>Advanced Layer Set Algebra:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All layers except coupling</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">])</span>
+
+<span class="c1"># Complex expressions with set operations</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;(social | work) &amp; ~bots&quot;</span><span class="p">])</span>
+
+<span class="c1"># Named groups for reuse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayerSet</span>
+<span class="n">LayerSet</span><span class="o">.</span><span class="n">define_group</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">,</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;ppi&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;gene&quot;</span><span class="p">))</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For complete documentation on layer set algebra including all operators,
+string parsing, named groups, and real-world examples, see:
+<a class="reference internal" href="layer_set_algebra.html"><span class="doc">Layer Set Algebra</span></a></p>
 </div>
 </section>
 <section id="filtering">
@@ -649,7 +673,7 @@ LIMIT 100
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="algorithm_reference.html" class="btn btn-neutral float-left" title="Algorithm Roadmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="api_index.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="layer_set_algebra.html" class="btn btn-neutral float-right" title="Layer Set Algebra" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
