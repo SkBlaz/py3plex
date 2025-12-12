@@ -1483,6 +1483,27 @@ class Q:
         """
         return TrajectoriesBuilder(process_ref)
     
+    @staticmethod
+    def pattern() -> "PatternQueryBuilder":
+        """Create a pattern matching query builder.
+        
+        Returns:
+            PatternQueryBuilder for constructing pattern queries
+            
+        Example:
+            >>> pq = (
+            ...     Q.pattern()
+            ...      .node("a").where(layer="social", degree__gt=3)
+            ...      .node("b").where(layer="social")
+            ...      .edge("a", "b", directed=False).where(weight__gt=0.2)
+            ...      .returning("a", "b")
+            ... )
+            >>> matches = pq.execute(network)
+            >>> df = matches.to_pandas()
+        """
+        from .patterns.builder import PatternQueryBuilder
+        return PatternQueryBuilder()
+    
     # Nested class for uncertainty defaults
     class uncertainty:
         """Global defaults for uncertainty estimation.
