@@ -127,14 +127,24 @@ class QueryResult:
                         if isinstance(values, dict):
                             # Use simplified key for lookup
                             if edge_key in values:
-                                row[attr_name] = values[edge_key]
+                                value = values[edge_key]
+                                # Extract mean from uncertainty dict if present
+                                if isinstance(value, dict) and 'mean' in value:
+                                    row[attr_name] = value['mean']
+                                else:
+                                    row[attr_name] = value
                             else:
                                 row[attr_name] = None
                         else:
                             # If values is a list, use index
                             idx = self.items.index(edge)
                             if idx < len(values):
-                                row[attr_name] = values[idx]
+                                value = values[idx]
+                                # Extract mean from uncertainty dict if present
+                                if isinstance(value, dict) and 'mean' in value:
+                                    row[attr_name] = value['mean']
+                                else:
+                                    row[attr_name] = value
                             else:
                                 row[attr_name] = None
                     
@@ -173,14 +183,24 @@ class QueryResult:
                     if isinstance(values, dict):
                         # Use node_item (full tuple) as key
                         if node_item in values:
-                            row[attr_name] = values[node_item]
+                            value = values[node_item]
+                            # Extract mean from uncertainty dict if present
+                            if isinstance(value, dict) and 'mean' in value:
+                                row[attr_name] = value['mean']
+                            else:
+                                row[attr_name] = value
                         else:
                             row[attr_name] = None
                     else:
                         # If values is a list, use index
                         idx = self.items.index(node_item)
                         if idx < len(values):
-                            row[attr_name] = values[idx]
+                            value = values[idx]
+                            # Extract mean from uncertainty dict if present
+                            if isinstance(value, dict) and 'mean' in value:
+                                row[attr_name] = value['mean']
+                            else:
+                                row[attr_name] = value
                         else:
                             row[attr_name] = None
                 
