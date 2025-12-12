@@ -1586,7 +1586,7 @@ def _apply_aggregation(values: List[Any], func: str) -> Any:
     """Apply an aggregation function to a list of values.
     
     Args:
-        values: List of numeric values
+        values: List of numeric values (or uncertainty dicts)
         func: Aggregation function name
         
     Returns:
@@ -1605,18 +1605,27 @@ def _apply_aggregation(values: List[Any], func: str) -> Any:
     if not values:
         return float('nan')
     
+    # Extract numeric values from uncertainty dicts if present
+    numeric_values = []
+    for v in values:
+        if isinstance(v, dict) and 'mean' in v:
+            # Extract mean value from uncertainty dict
+            numeric_values.append(v['mean'])
+        else:
+            numeric_values.append(v)
+    
     if func == "mean":
-        return float(np.mean(values))
+        return float(np.mean(numeric_values))
     elif func == "sum":
-        return float(np.sum(values))
+        return float(np.sum(numeric_values))
     elif func == "min":
-        return float(np.min(values))
+        return float(np.min(numeric_values))
     elif func == "max":
-        return float(np.max(values))
+        return float(np.max(numeric_values))
     elif func == "std":
-        return float(np.std(values))
+        return float(np.std(numeric_values))
     elif func == "var":
-        return float(np.var(values))
+        return float(np.var(numeric_values))
     else:
         raise ValueError(f"Unknown aggregation function: '{func}'")
 
@@ -2015,7 +2024,11 @@ def _apply_zscore(
             for item in group_items:
                 item_key = _get_item_key(item)
                 item_keys.append(item_key)
-                values.append(attributes[attr].get(item_key, 0))
+                value = attributes[attr].get(item_key, 0)
+                # Extract mean from uncertainty dict if present
+                if isinstance(value, dict) and 'mean' in value:
+                    value = value['mean']
+                values.append(value)
             
             # Compute z-scores
             values_array = np.array(values)
