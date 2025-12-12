@@ -227,6 +227,7 @@ def test_validate_file_exists_error_contains_filename(filename):
 # ============================================================================
 
 @pytest.mark.property
+@pytest.mark.slow
 @settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     file_content=st.text(min_size=1, max_size=100),

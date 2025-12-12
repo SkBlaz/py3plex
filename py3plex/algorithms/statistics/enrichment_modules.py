@@ -10,7 +10,11 @@ from typing import Any, Dict, List, Tuple
 
 import pandas as pd
 from scipy.stats import fisher_exact
-from statsmodels.sandbox.stats.multicomp import multipletests
+
+try:
+    from statsmodels.sandbox.stats.multicomp import multipletests  # type: ignore
+except ImportError:  # pragma: no cover - optional dependency
+    multipletests = None
 
 from py3plex.algorithms.term_parsers import read_topology_mappings, read_uniprot_GO
 
@@ -75,7 +79,7 @@ def multiple_test_correction(input_dataset: str) -> None:
         input_dataset: Path to input file with test results
     """
 
-    from statsmodels.sandbox.stats.multicomp import multipletests
+    _require_statsmodels()
 
     pvals = defaultdict(list)
     with open(input_dataset) as ods:
@@ -115,6 +119,15 @@ def parallel_enrichment(term):
     }
 
 
+def _require_statsmodels() -> None:
+    """Raise a helpful error if statsmodels is not installed."""
+    if multipletests is None:
+        raise ImportError(
+            "statsmodels is required for enrichment analysis. "
+            "Install with 'pip install statsmodels' or the 'algos' extra."
+        )
+
+
 def compute_enrichment(
     term_dataset,
     term_database,
@@ -129,6 +142,7 @@ def compute_enrichment(
     """
     The main method for computing the enrichment of a subnetwork. This work in parallel and also offers methods for multiple test correction.
     """
+    _require_statsmodels()
 
     if whole_term_list:
         tvals = set.union(*topology_map.values())

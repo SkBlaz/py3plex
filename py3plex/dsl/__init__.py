@@ -120,6 +120,7 @@ from .expressions import (
 from .result import QueryResult
 
 from .executor import execute_ast
+from .export import export_result
 
 from .errors import (
     DslError,
@@ -243,6 +244,7 @@ __all__ = [
     "FieldProxy",
     # Result
     "QueryResult",
+    "export_result",
     # Executor
     "execute_ast",
     # Errors (v2)
@@ -379,4 +381,3 @@ def describe_operator(name: str) -> Optional[Dict[str, Any]]:
         "category": op.category,
         "function": op.func.__name__,
     }
-

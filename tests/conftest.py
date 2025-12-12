@@ -104,3 +104,9 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "metamorphic: metamorphic tests that verify invariants under transformations"
     )
+
+
+# Skip doctest collection for optional, heavy, or example-only modules
+collect_ignore_glob = [
+    "py3plex/algorithms/community_detection/infomap/**/*.py",
+]
