@@ -173,6 +173,7 @@ Task-oriented guides answering "How do I...?" questions.
    how-to/export_serialize
    how-to/visualize_networks
    how-to/query_with_dsl
+   how-to/query_with_patterns
    how-to/build_pipelines
    how-to/reproduce_workflows
 
