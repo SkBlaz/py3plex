@@ -77,11 +77,10 @@ def test_custom_operator_deterministic_wrapped_when_uncertainty_requested():
         Q.uncertainty.defaults(enabled=False)
         op_name = "test_const_metric"
 
+        @register_operator(op_name)
         def _const_metric(context, value: float = 1.0):
             # Return deterministic values for all current nodes
             return {node: value for node in context.current_nodes}
-
-        register_operator(op_name, _const_metric, overwrite=True)
 
         net = _toy_net()
         try:
