@@ -1281,19 +1281,26 @@ def _resolve_selector(value: Any, selector: str) -> float:
     """Resolve a selector path on an uncertainty value.
     
     Supports selectors like:
-        - metric__mean
-        - metric__std
-        - metric__ci95__low
-        - metric__ci95__high
-        - metric__ci95__width
-        - metric (defaults to mean/point estimate)
+        - metric__mean - mean value
+        - metric__std - standard deviation
+        - metric__ci95__low - 95% confidence interval lower bound
+        - metric__ci95__high - 95% confidence interval upper bound
+        - metric__ci95__width - 95% confidence interval width
+        - metric (no selector) - defaults to mean/point estimate
     
     Args:
-        value: The value (may be dict with uncertainty info, StatValue, or scalar)
+        value: The value (may be dict with uncertainty info from uncertainty
+              estimation, or a scalar numeric value)
         selector: The selector suffix (e.g., "mean", "std", "ci95__low")
         
     Returns:
-        Resolved numeric value
+        Resolved numeric value (float)
+        
+    Note:
+        When uncertainty is computed, values are stored as dicts with keys:
+        'mean', 'std', 'quantiles', etc. This function extracts the requested
+        component. For deterministic values (no uncertainty), returns the
+        scalar value or 0.0 for missing selectors.
     """
     # If no selector or value is scalar, return as-is
     if not selector or not isinstance(value, dict):

@@ -8,6 +8,10 @@ from typing import Any, Dict, List, Optional, Union
 import math
 
 
+# Tolerance for matching quantile keys when finding CI bounds
+_QUANTILE_TOLERANCE = 0.01
+
+
 def _expand_uncertainty_value(attr_name: str, value: Any, ci_level: float = 0.95) -> Dict[str, Any]:
     """Expand an uncertainty value into multiple columns.
     
@@ -46,13 +50,13 @@ def _expand_uncertainty_value(attr_name: str, value: Any, ci_level: float = 0.95
             if ci_low is None or ci_high is None:
                 sorted_qs = sorted(quantiles.keys())
                 if sorted_qs:
-                    # Find closest lower quantile
-                    lower_candidates = [q for q in sorted_qs if q <= lower_q + 0.01]
+                    # Find closest lower quantile (within tolerance)
+                    lower_candidates = [q for q in sorted_qs if q <= lower_q + _QUANTILE_TOLERANCE]
                     if lower_candidates:
                         ci_low = quantiles[lower_candidates[-1]]
                     
-                    # Find closest upper quantile
-                    upper_candidates = [q for q in sorted_qs if q >= upper_q - 0.01]
+                    # Find closest upper quantile (within tolerance)
+                    upper_candidates = [q for q in sorted_qs if q >= upper_q - _QUANTILE_TOLERANCE]
                     if upper_candidates:
                         ci_high = quantiles[upper_candidates[0]]
             
