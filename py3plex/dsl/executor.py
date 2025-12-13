@@ -496,8 +496,13 @@ def _ensure_attribute(
     This implements smart defaults by auto-computing centrality metrics
     when they are referenced but not yet computed.
     
+    Supports selector syntax like:
+        - metric__mean
+        - metric__std
+        - metric__ci95__low
+    
     Args:
-        attr_name: The attribute name to ensure exists
+        attr_name: The attribute name to ensure exists (may include selector)
         attributes: The attributes dictionary (modified in place)
         items: List of items (nodes or edges)
         network: Multilayer network
@@ -508,8 +513,15 @@ def _ensure_attribute(
     Raises:
         UnknownAttributeError: If attribute is not found and cannot be auto-computed
     """
-    # Check if attribute already exists
-    if attr_name in attributes:
+    # Handle selector syntax (e.g., "degree__mean", "degree__ci95__low")
+    # Strip selector to get base metric name
+    if '__' in attr_name:
+        base_metric = attr_name.split('__', 1)[0]
+    else:
+        base_metric = attr_name
+    
+    # Check if base attribute already exists
+    if base_metric in attributes:
         return
     
     # For edges, check if this is an edge data attribute (like "weight")
@@ -518,14 +530,14 @@ def _ensure_attribute(
         # Check if attribute exists in edge data
         for item in items:
             if isinstance(item, tuple) and len(item) >= 3 and isinstance(item[2], dict):
-                if attr_name in item[2]:
+                if base_metric in item[2]:
                     # This is a valid edge attribute, don't auto-compute
                     return
     
     # Check if this is a known centrality that can be auto-computed
-    if auto_compute and attr_name in CENTRALITY_ALIASES:
+    if auto_compute and base_metric in CENTRALITY_ALIASES:
         # Get the canonical metric name
-        metric_name = CENTRALITY_ALIASES[attr_name]
+        metric_name = CENTRALITY_ALIASES[base_metric]
         
         # Auto-compute the centrality
         if select.target == Target.NODES:
@@ -559,8 +571,8 @@ def _ensure_attribute(
                     # Compute deterministically
                     values = measure_fn(subgraph, items)
                 
-                # Store with the requested attribute name
-                attributes[attr_name] = values
+                # Store with the base metric name (without selector)
+                attributes[base_metric] = values
                 
                 # Also mark that this was implicitly computed
                 # (for potential use in explain() in the future)
@@ -568,7 +580,7 @@ def _ensure_attribute(
             except Exception as e:
                 # If auto-compute fails, fall through to error
                 logging.getLogger(__name__).debug(
-                    f"Failed to auto-compute '{attr_name}': {e}"
+                    f"Failed to auto-compute '{base_metric}': {e}"
                 )
     
     # Attribute not found and cannot be auto-computed
