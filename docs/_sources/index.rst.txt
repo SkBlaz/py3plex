@@ -209,6 +209,7 @@ Complete reference documentation for APIs and DSL syntax.
    reference/algorithm_reference
    reference/dsl_reference
    reference/layer_set_algebra
+   reference/uncertainty_first_statistics
    reference/api_index
    reference/configuration
 

@@ -1,0 +1,691 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uncertainty-First Statistics &mdash; py3plex 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=292eb321"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Documentation" href="api_index.html" />
+    <link rel="prev" title="Layer Set Algebra" href="layer_set_algebra.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_zoo.html">Query Zoo: DSL Gallery for Multilayer Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/query_with_patterns.html">How to Find Graph Patterns and Motifs with the Pattern Matching API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layer_set_algebra.html">Layer Set Algebra</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Uncertainty-First Statistics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#key-principles">Key Principles</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#core-components">Core Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#statvalue">StatValue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#uncertainty-models">Uncertainty Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#provenance">Provenance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#statistics-registry">Statistics Registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#registration">Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#arithmetic-with-uncertainty">Arithmetic with Uncertainty</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-operations">Basic Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scalar-operations">Scalar Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#propagation-rules">Propagation Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#filtering-and-queries">Filtering and Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#selector-syntax">Selector Syntax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#serialization">Serialization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#statvalue-serialization">StatValue Serialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataframe-export">DataFrame Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">StatValue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Uncertainty Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Provenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#registry">Registry</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Uncertainty-First Statistics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/uncertainty_first_statistics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="uncertainty-first-statistics">
+<h1>Uncertainty-First Statistics<a class="headerlink" href="#uncertainty-first-statistics" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>py3plex implements an <strong>uncertainty-first statistics system</strong> where every statistic is represented as <code class="docutils literal notranslate"><span class="pre">(value</span> <span class="pre">+</span> <span class="pre">uncertainty</span> <span class="pre">+</span> <span class="pre">provenance)</span></code>. This design makes uncertainty a core part of statistics computation, not an afterthought.</p>
+<section id="key-principles">
+<h3>Key Principles<a class="headerlink" href="#key-principles" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Every statistic is a StatValue</strong>: No plain floats/ints escaping internal computation paths. Even deterministic values carry <code class="docutils literal notranslate"><span class="pre">Delta(0)</span></code> uncertainty.</p></li>
+<li><p><strong>Uncertainty is first-class</strong>: Uncertainty can be summarized, sampled, propagated through arithmetic, and used in queries.</p></li>
+<li><p><strong>Backward compatible</strong>: Existing code expecting floats works via <code class="docutils literal notranslate"><span class="pre">float(statvalue)</span></code>.</p></li>
+<li><p><strong>Registry discipline</strong>: Statistics must have an uncertainty model to be registered.</p></li>
+<li><p><strong>Reproducible</strong>: Random processes (bootstrap/MC) support explicit seeds tracked in provenance.</p></li>
+</ol>
+</section>
+</section>
+<section id="core-components">
+<h2>Core Components<a class="headerlink" href="#core-components" title="Link to this heading"></a></h2>
+<section id="statvalue">
+<h3>StatValue<a class="headerlink" href="#statvalue" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">StatValue</span></code> is the fundamental container for statistics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatValue</span><span class="p">,</span> <span class="n">Delta</span><span class="p">,</span> <span class="n">Provenance</span>
+
+<span class="c1"># Create a deterministic statistic</span>
+<span class="n">sv</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span>
+    <span class="n">value</span><span class="o">=</span><span class="mf">0.42</span><span class="p">,</span>
+    <span class="n">uncertainty</span><span class="o">=</span><span class="n">Delta</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span>
+    <span class="n">provenance</span><span class="o">=</span><span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="p">{})</span>
+<span class="p">)</span>
+
+<span class="c1"># Access value</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">sv</span><span class="p">))</span>  <span class="c1"># 0.42</span>
+
+<span class="c1"># Query uncertainty</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sv</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>  <span class="c1"># 0.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sv</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mf">0.95</span><span class="p">))</span>  <span class="c1"># (0.42, 0.42)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sv</span><span class="o">.</span><span class="n">robustness</span><span class="p">())</span>  <span class="c1"># 1.0</span>
+</pre></div>
+</div>
+<p><strong>Key Methods:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float(sv)</span></code>: Convert to point estimate (backward compatibility)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sv.mean()</span></code>: Alias for value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sv.std()</span></code>: Standard deviation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sv.ci(level=0.95)</span></code>: Confidence interval</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sv.robustness()</span></code>: Robustness score in [0, 1]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sv.to_json_dict()</span></code>: Serialize to JSON</p></li>
+</ul>
+</section>
+<section id="uncertainty-models">
+<h3>Uncertainty Models<a class="headerlink" href="#uncertainty-models" title="Link to this heading"></a></h3>
+<p>Five concrete uncertainty models are provided:</p>
+<section id="delta">
+<h4>Delta<a class="headerlink" href="#delta" title="Link to this heading"></a></h4>
+<p>Deterministic or known-precision uncertainty.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Delta</span>
+
+<span class="c1"># Perfect certainty</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Delta</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+<span class="c1"># Small known error</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Delta</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">std()</span></code>: Returns sigma</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ci(level)</span></code>: Returns symmetric interval based on sigma</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sample(n,</span> <span class="pre">seed)</span></code>: Returns constant samples</p></li>
+<li><p>Propagation: Analytic error propagation when both are Delta</p></li>
+</ul>
+</section>
+<section id="gaussian">
+<h4>Gaussian<a class="headerlink" href="#gaussian" title="Link to this heading"></a></h4>
+<p>Normal distribution uncertainty.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gaussian</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std_dev</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># Exact CI computation</span>
+<span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mf">0.95</span><span class="p">)</span>  <span class="c1"># ≈ (-0.196, 0.196)</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">std()</span></code>: Returns std_dev</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ci(level)</span></code>: Exact Gaussian CI using z-scores</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sample(n,</span> <span class="pre">seed)</span></code>: Generates Gaussian samples</p></li>
+<li><p>Propagation: Analytic for addition/subtraction, Monte Carlo for complex ops</p></li>
+</ul>
+</section>
+<section id="bootstrap">
+<h4>Bootstrap<a class="headerlink" href="#bootstrap" title="Link to this heading"></a></h4>
+<p>Empirical uncertainty from bootstrap resampling.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Bootstrap</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Store bootstrap samples (relative to point estimate)</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">Bootstrap</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+
+<span class="c1"># Compute CI from percentiles</span>
+<span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mf">0.95</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">std()</span></code>: Sample standard deviation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ci(level)</span></code>: Percentile-based CI</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sample(n,</span> <span class="pre">seed)</span></code>: Resample from stored samples</p></li>
+<li><p>Propagation: Always Monte Carlo</p></li>
+<li><p>Serialization: Stores summary (n, std, CI) not full samples</p></li>
+</ul>
+</section>
+<section id="empirical">
+<h4>Empirical<a class="headerlink" href="#empirical" title="Link to this heading"></a></h4>
+<p>Similar to Bootstrap but conceptually for any empirical distribution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Empirical</span>
+
+<span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">])</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">Empirical</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p>Same as Bootstrap</p></li>
+<li><p>Conceptually separate for clarity</p></li>
+</ul>
+</section>
+<section id="interval">
+<h4>Interval<a class="headerlink" href="#interval" title="Link to this heading"></a></h4>
+<p>Interval-based uncertainty without assuming distribution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Interval</span>
+
+<span class="n">i</span> <span class="o">=</span> <span class="n">Interval</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)</span>
+
+<span class="c1"># Uniform sampling by default</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">std()</span></code>: Estimates std assuming uniform distribution: <code class="docutils literal notranslate"><span class="pre">(high</span> <span class="pre">-</span> <span class="pre">low)</span> <span class="pre">/</span> <span class="pre">sqrt(12)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ci(level)</span></code>: Returns the interval bounds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sample(n,</span> <span class="pre">seed)</span></code>: Uniform sampling</p></li>
+<li><p>Propagation: Monte Carlo</p></li>
+</ul>
+</section>
+</section>
+<section id="provenance">
+<h3>Provenance<a class="headerlink" href="#provenance" title="Link to this heading"></a></h3>
+<p>Tracks how a statistic was computed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Provenance</span>
+
+<span class="n">prov</span> <span class="o">=</span> <span class="n">Provenance</span><span class="p">(</span>
+    <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;brandes&quot;</span><span class="p">,</span>
+    <span class="n">uncertainty_method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">timestamp</span><span class="o">=</span><span class="s2">&quot;2024-12-12T17:00:00&quot;</span><span class="p">,</span>
+    <span class="n">library_version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Serialize</span>
+<span class="n">json_dict</span> <span class="o">=</span> <span class="n">prov</span><span class="o">.</span><span class="n">to_json_dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code>: Algorithm name (e.g., “degree”, “betweenness”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uncertainty_method</span></code>: Uncertainty method (e.g., “delta”, “bootstrap”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parameters</span></code>: Dict of parameters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code>: Random seed (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code>: Computation time (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">library_version</span></code>: Version string (optional)</p></li>
+</ul>
+</section>
+</section>
+<section id="statistics-registry">
+<h2>Statistics Registry<a class="headerlink" href="#statistics-registry" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">StatisticsRegistry</span></code> enforces that every registered statistic has an uncertainty model.</p>
+<section id="registration">
+<h3>Registration<a class="headerlink" href="#registration" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatisticSpec</span><span class="p">,</span> <span class="n">register_statistic</span><span class="p">,</span> <span class="n">Delta</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_degree</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">degree_uncertainty</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Delta</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>  <span class="c1"># Deterministic</span>
+
+<span class="n">spec</span> <span class="o">=</span> <span class="n">StatisticSpec</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">compute_degree</span><span class="p">,</span>
+    <span class="n">uncertainty_model</span><span class="o">=</span><span class="n">degree_uncertainty</span><span class="p">,</span>
+    <span class="n">assumptions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;deterministic&quot;</span><span class="p">],</span>
+    <span class="n">supports</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;directed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;weighted&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">register_statistic</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> Registration fails if <code class="docutils literal notranslate"><span class="pre">uncertainty_model</span></code> is missing.</p>
+</section>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_statistic</span>
+
+<span class="c1"># Compute with uncertainty</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">compute_statistic</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">with_uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Returns StatValue</span>
+
+<span class="c1"># Compute without uncertainty (raw value)</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">compute_statistic</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">with_uncertainty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="arithmetic-with-uncertainty">
+<h2>Arithmetic with Uncertainty<a class="headerlink" href="#arithmetic-with-uncertainty" title="Link to this heading"></a></h2>
+<p>StatValue supports arithmetic operations with automatic uncertainty propagation.</p>
+<section id="basic-operations">
+<h3>Basic Operations<a class="headerlink" href="#basic-operations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatValue</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">Provenance</span>
+
+<span class="n">sv1</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+<span class="n">sv2</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+
+<span class="c1"># Addition</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sv1</span> <span class="o">+</span> <span class="n">sv2</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>  <span class="c1"># 3.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>  <span class="c1"># ~0.180 (sqrt(0.1² + 0.15²))</span>
+
+<span class="c1"># Subtraction</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sv1</span> <span class="o">-</span> <span class="n">sv2</span>
+
+<span class="c1"># Multiplication</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sv1</span> <span class="o">*</span> <span class="n">sv2</span>
+
+<span class="c1"># Division</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sv1</span> <span class="o">/</span> <span class="n">sv2</span>
+
+<span class="c1"># Power</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sv1</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="c1"># Negation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="n">sv1</span>
+</pre></div>
+</div>
+</section>
+<section id="scalar-operations">
+<h3>Scalar Operations<a class="headerlink" href="#scalar-operations" title="Link to this heading"></a></h3>
+<p>StatValue supports operations with scalars:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sv</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+
+<span class="c1"># Scalar addition</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sv</span> <span class="o">+</span> <span class="mi">3</span>  <span class="c1"># 5.0 (uncertainty unchanged)</span>
+
+<span class="c1"># Scalar multiplication</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sv</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># 4.0 (uncertainty scaled)</span>
+
+<span class="c1"># Scalar division</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sv</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># 1.0 (uncertainty scaled)</span>
+</pre></div>
+</div>
+</section>
+<section id="propagation-rules">
+<h3>Propagation Rules<a class="headerlink" href="#propagation-rules" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Delta + Delta</strong>: Analytic error propagation (<code class="docutils literal notranslate"><span class="pre">σ_sum</span> <span class="pre">=</span> <span class="pre">sqrt(σ1²</span> <span class="pre">+</span> <span class="pre">σ2²)</span></code>)</p></li>
+<li><p><strong>Gaussian + Gaussian</strong>: Exact propagation for addition/subtraction</p></li>
+<li><p><strong>Complex operations</strong>: Monte Carlo propagation (4096 samples by default)</p></li>
+<li><p><strong>Scalar operations</strong>: Direct computation, uncertainty scaled appropriately</p></li>
+</ol>
+</section>
+</section>
+<section id="filtering-and-queries">
+<h2>Filtering and Queries<a class="headerlink" href="#filtering-and-queries" title="Link to this heading"></a></h2>
+<p>Statistics with uncertainty can be filtered using selectors:</p>
+<section id="selector-syntax">
+<h3>Selector Syntax<a class="headerlink" href="#selector-syntax" title="Link to this heading"></a></h3>
+<p>Format: <code class="docutils literal notranslate"><span class="pre">attribute__component__operator=value</span></code></p>
+<p><strong>Components:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mean</span></code>: Point estimate (default if omitted)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std</span></code>: Standard deviation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ci95__width</span></code>: Width of 95% CI</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">robustness</span></code>: Robustness score</p></li>
+</ul>
+<p><strong>Operators:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gt</span></code>: Greater than</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gte</span></code>: Greater than or equal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lt</span></code>: Less than</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lte</span></code>: Less than or equal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">eq</span></code>: Equal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ne</span></code>: Not equal</p></li>
+</ul>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filter by mean value</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__mean__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Filter by uncertainty</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">betweenness__std__lt</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Filter by CI width</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__ci95__width__lt</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Filter by robustness</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">centrality__robustness__gt</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="serialization">
+<h2>Serialization<a class="headerlink" href="#serialization" title="Link to this heading"></a></h2>
+<p>StatValue and Uncertainty models support JSON serialization.</p>
+<section id="statvalue-serialization">
+<h3>StatValue Serialization<a class="headerlink" href="#statvalue-serialization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sv</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span>
+    <span class="n">value</span><span class="o">=</span><span class="mf">0.42</span><span class="p">,</span>
+    <span class="n">uncertainty</span><span class="o">=</span><span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
+    <span class="n">provenance</span><span class="o">=</span><span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;betweenness&quot;</span><span class="p">,</span> <span class="s2">&quot;analytic&quot;</span><span class="p">,</span> <span class="p">{})</span>
+<span class="p">)</span>
+
+<span class="n">json_dict</span> <span class="o">=</span> <span class="n">sv</span><span class="o">.</span><span class="n">to_json_dict</span><span class="p">()</span>
+<span class="c1"># {</span>
+<span class="c1">#   &quot;value&quot;: 0.42,</span>
+<span class="c1">#   &quot;uncertainty&quot;: {</span>
+<span class="c1">#     &quot;type&quot;: &quot;gaussian&quot;,</span>
+<span class="c1">#     &quot;mean&quot;: 0.0,</span>
+<span class="c1">#     &quot;std&quot;: 0.05</span>
+<span class="c1">#   },</span>
+<span class="c1">#   &quot;provenance&quot;: {</span>
+<span class="c1">#     &quot;algorithm&quot;: &quot;betweenness&quot;,</span>
+<span class="c1">#     &quot;uncertainty_method&quot;: &quot;analytic&quot;,</span>
+<span class="c1">#     &quot;params&quot;: {}</span>
+<span class="c1">#   }</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+</section>
+<section id="dataframe-export">
+<h3>DataFrame Export<a class="headerlink" href="#dataframe-export" title="Link to this heading"></a></h3>
+<p>QueryResult can export to pandas with uncertainty columns:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="c1"># Columns: id, betweenness.value, betweenness.std,</span>
+<span class="c1">#          betweenness.ci_low, betweenness.ci_high,</span>
+<span class="c1">#          betweenness.uncertainty_type</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Always use StatValue internally</strong>: Even for deterministic stats, use <code class="docutils literal notranslate"><span class="pre">Delta(0)</span></code></p></li>
+<li><p><strong>Provide uncertainty models</strong>: Every registered statistic must have one</p></li>
+<li><p><strong>Use seeds for reproducibility</strong>: Pass explicit seeds to bootstrap/MC operations</p></li>
+<li><p><strong>Choose appropriate models</strong>:</p>
+<ul class="simple">
+<li><p>Deterministic → <code class="docutils literal notranslate"><span class="pre">Delta(0)</span></code></p></li>
+<li><p>Known distribution → <code class="docutils literal notranslate"><span class="pre">Gaussian</span></code></p></li>
+<li><p>Empirical estimation → <code class="docutils literal notranslate"><span class="pre">Bootstrap</span></code> or <code class="docutils literal notranslate"><span class="pre">Empirical</span></code></p></li>
+<li><p>No distribution assumption → <code class="docutils literal notranslate"><span class="pre">Interval</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Check robustness</strong>: Use <code class="docutils literal notranslate"><span class="pre">sv.robustness()</span></code> to assess reliability</p></li>
+<li><p><strong>Export uncertainty</strong>: Include uncertainty columns in exports for downstream analysis</p></li>
+</ol>
+</section>
+<section id="id1">
+<h2>Examples<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>See:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/uncertainty/example_stats_degree_delta.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/uncertainty/example_stats_betweenness_bootstrap.py</span></code></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="id2">
+<h3>StatValue<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">StatValue</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Statistical value with uncertainty and provenance.&quot;&quot;&quot;</span>
+
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">ndarray</span>
+    <span class="n">uncertainty</span><span class="p">:</span> <span class="n">Uncertainty</span>
+    <span class="n">provenance</span><span class="p">:</span> <span class="n">Provenance</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__float__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ci</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">robustness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>Uncertainty Models<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Uncertainty</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ci</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">propagate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Uncertainty</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Uncertainty</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span> <span class="o">...</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Delta</span><span class="p">(</span><span class="n">Uncertainty</span><span class="p">):</span>
+    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Gaussian</span><span class="p">(</span><span class="n">Uncertainty</span><span class="p">):</span>
+    <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">std_dev</span><span class="p">:</span> <span class="nb">float</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Bootstrap</span><span class="p">(</span><span class="n">Uncertainty</span><span class="p">):</span>
+    <span class="n">samples</span><span class="p">:</span> <span class="n">ndarray</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Empirical</span><span class="p">(</span><span class="n">Uncertainty</span><span class="p">):</span>
+    <span class="n">samples</span><span class="p">:</span> <span class="n">ndarray</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Interval</span><span class="p">(</span><span class="n">Uncertainty</span><span class="p">):</span>
+    <span class="n">low</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">high</span><span class="p">:</span> <span class="nb">float</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>Provenance<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Provenance</span><span class="p">:</span>
+    <span class="n">algorithm</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">uncertainty_method</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">library_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span> <span class="o">...</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Provenance</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="registry">
+<h3>Registry<a class="headerlink" href="#registry" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StatisticSpec</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">estimator</span><span class="p">:</span> <span class="n">Callable</span>
+    <span class="n">uncertainty_model</span><span class="p">:</span> <span class="n">Callable</span>  <span class="c1"># Required</span>
+    <span class="n">assumptions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">supports</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register_statistic</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">StatisticSpec</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_statistic</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatisticSpec</span><span class="p">:</span> <span class="o">...</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_statistics</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span> <span class="o">...</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_statistic</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">with_uncertainty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="layer_set_algebra.html" class="btn btn-neutral float-left" title="Layer Set Algebra" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_index.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

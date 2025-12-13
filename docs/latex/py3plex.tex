@@ -71,7 +71,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Dec 12, 2025}
+\date{Dec 13, 2025}
 \release{1.0.1}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -25993,6 +25993,736 @@ compatible with existing layer expressions.
 \sphinxstepscope
 
 
+\subsection{Uncertainty\sphinxhyphen{}First Statistics}
+\label{\detokenize{reference/uncertainty_first_statistics:uncertainty-first-statistics}}\label{\detokenize{reference/uncertainty_first_statistics::doc}}
+
+\subsubsection{Overview}
+\label{\detokenize{reference/uncertainty_first_statistics:overview}}
+\sphinxAtStartPar
+py3plex implements an \sphinxstylestrong{uncertainty\sphinxhyphen{}first statistics system} where every statistic is represented as \sphinxcode{\sphinxupquote{(value + uncertainty + provenance)}}. This design makes uncertainty a core part of statistics computation, not an afterthought.
+
+
+\paragraph{Key Principles}
+\label{\detokenize{reference/uncertainty_first_statistics:key-principles}}\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Every statistic is a StatValue}: No plain floats/ints escaping internal computation paths. Even deterministic values carry \sphinxcode{\sphinxupquote{Delta(0)}} uncertainty.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Uncertainty is first\sphinxhyphen{}class}: Uncertainty can be summarized, sampled, propagated through arithmetic, and used in queries.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Backward compatible}: Existing code expecting floats works via \sphinxcode{\sphinxupquote{float(statvalue)}}.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Registry discipline}: Statistics must have an uncertainty model to be registered.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Reproducible}: Random processes (bootstrap/MC) support explicit seeds tracked in provenance.
+
+\end{enumerate}
+
+
+\subsubsection{Core Components}
+\label{\detokenize{reference/uncertainty_first_statistics:core-components}}
+
+\paragraph{StatValue}
+\label{\detokenize{reference/uncertainty_first_statistics:statvalue}}
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{StatValue}} is the fundamental container for statistics:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{StatValue}\PYG{p}{,} \PYG{n}{Delta}\PYG{p}{,} \PYG{n}{Provenance}
+
+\PYG{c+c1}{\PYGZsh{} Create a deterministic statistic}
+\PYG{n}{sv} \PYG{o}{=} \PYG{n}{StatValue}\PYG{p}{(}
+    \PYG{n}{value}\PYG{o}{=}\PYG{l+m+mf}{0.42}\PYG{p}{,}
+    \PYG{n}{uncertainty}\PYG{o}{=}\PYG{n}{Delta}\PYG{p}{(}\PYG{l+m+mf}{0.0}\PYG{p}{)}\PYG{p}{,}
+    \PYG{n}{provenance}\PYG{o}{=}\PYG{n}{Provenance}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{delta}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Access value}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{sv}\PYG{p}{)}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} 0.42}
+
+\PYG{c+c1}{\PYGZsh{} Query uncertainty}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{sv}\PYG{o}{.}\PYG{n}{std}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} 0.0}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{sv}\PYG{o}{.}\PYG{n}{ci}\PYG{p}{(}\PYG{l+m+mf}{0.95}\PYG{p}{)}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} (0.42, 0.42)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{sv}\PYG{o}{.}\PYG{n}{robustness}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} 1.0}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Key Methods:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{float(sv)}}: Convert to point estimate (backward compatibility)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sv.mean()}}: Alias for value
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sv.std()}}: Standard deviation
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sv.ci(level=0.95)}}: Confidence interval
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sv.robustness()}}: Robustness score in {[}0, 1{]}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sv.to\_json\_dict()}}: Serialize to JSON
+
+\end{itemize}
+
+
+\paragraph{Uncertainty Models}
+\label{\detokenize{reference/uncertainty_first_statistics:uncertainty-models}}
+\sphinxAtStartPar
+Five concrete uncertainty models are provided:
+
+
+\subparagraph{Delta}
+\label{\detokenize{reference/uncertainty_first_statistics:delta}}
+\sphinxAtStartPar
+Deterministic or known\sphinxhyphen{}precision uncertainty.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Delta}
+
+\PYG{c+c1}{\PYGZsh{} Perfect certainty}
+\PYG{n}{d} \PYG{o}{=} \PYG{n}{Delta}\PYG{p}{(}\PYG{l+m+mf}{0.0}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Small known error}
+\PYG{n}{d} \PYG{o}{=} \PYG{n}{Delta}\PYG{p}{(}\PYG{l+m+mf}{0.01}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Properties:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{std()}}: Returns sigma
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{ci(level)}}: Returns symmetric interval based on sigma
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sample(n, seed)}}: Returns constant samples
+
+\item {} 
+\sphinxAtStartPar
+Propagation: Analytic error propagation when both are Delta
+
+\end{itemize}
+
+
+\subparagraph{Gaussian}
+\label{\detokenize{reference/uncertainty_first_statistics:gaussian}}
+\sphinxAtStartPar
+Normal distribution uncertainty.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Gaussian}
+
+\PYG{n}{g} \PYG{o}{=} \PYG{n}{Gaussian}\PYG{p}{(}\PYG{n}{mean}\PYG{o}{=}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{n}{std\PYGZus{}dev}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Exact CI computation}
+\PYG{n}{low}\PYG{p}{,} \PYG{n}{high} \PYG{o}{=} \PYG{n}{g}\PYG{o}{.}\PYG{n}{ci}\PYG{p}{(}\PYG{l+m+mf}{0.95}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} ≈ (\PYGZhy{}0.196, 0.196)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Properties:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{std()}}: Returns std\_dev
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{ci(level)}}: Exact Gaussian CI using z\sphinxhyphen{}scores
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sample(n, seed)}}: Generates Gaussian samples
+
+\item {} 
+\sphinxAtStartPar
+Propagation: Analytic for addition/subtraction, Monte Carlo for complex ops
+
+\end{itemize}
+
+
+\subparagraph{Bootstrap}
+\label{\detokenize{reference/uncertainty_first_statistics:bootstrap}}
+\sphinxAtStartPar
+Empirical uncertainty from bootstrap resampling.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Bootstrap}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{c+c1}{\PYGZsh{} Store bootstrap samples (relative to point estimate)}
+\PYG{n}{samples} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{0.05}\PYG{p}{,} \PYG{l+m+mf}{0.15}\PYG{p}{,} \PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{l+m+mf}{0.08}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{b} \PYG{o}{=} \PYG{n}{Bootstrap}\PYG{p}{(}\PYG{n}{samples}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Compute CI from percentiles}
+\PYG{n}{low}\PYG{p}{,} \PYG{n}{high} \PYG{o}{=} \PYG{n}{b}\PYG{o}{.}\PYG{n}{ci}\PYG{p}{(}\PYG{l+m+mf}{0.95}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Properties:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{std()}}: Sample standard deviation
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{ci(level)}}: Percentile\sphinxhyphen{}based CI
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sample(n, seed)}}: Resample from stored samples
+
+\item {} 
+\sphinxAtStartPar
+Propagation: Always Monte Carlo
+
+\item {} 
+\sphinxAtStartPar
+Serialization: Stores summary (n, std, CI) not full samples
+
+\end{itemize}
+
+
+\subparagraph{Empirical}
+\label{\detokenize{reference/uncertainty_first_statistics:empirical}}
+\sphinxAtStartPar
+Similar to Bootstrap but conceptually for any empirical distribution.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Empirical}
+
+\PYG{n}{samples} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{l+m+mf}{0.15}\PYG{p}{,} \PYG{l+m+mf}{0.18}\PYG{p}{,} \PYG{l+m+mf}{0.12}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{e} \PYG{o}{=} \PYG{n}{Empirical}\PYG{p}{(}\PYG{n}{samples}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Properties:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Same as Bootstrap
+
+\item {} 
+\sphinxAtStartPar
+Conceptually separate for clarity
+
+\end{itemize}
+
+
+\subparagraph{Interval}
+\label{\detokenize{reference/uncertainty_first_statistics:interval}}
+\sphinxAtStartPar
+Interval\sphinxhyphen{}based uncertainty without assuming distribution.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Interval}
+
+\PYG{n}{i} \PYG{o}{=} \PYG{n}{Interval}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{l+m+mf}{0.15}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Uniform sampling by default}
+\PYG{n}{samples} \PYG{o}{=} \PYG{n}{i}\PYG{o}{.}\PYG{n}{sample}\PYG{p}{(}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Properties:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{std()}}: Estimates std assuming uniform distribution: \sphinxcode{\sphinxupquote{(high \sphinxhyphen{} low) / sqrt(12)}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{ci(level)}}: Returns the interval bounds
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sample(n, seed)}}: Uniform sampling
+
+\item {} 
+\sphinxAtStartPar
+Propagation: Monte Carlo
+
+\end{itemize}
+
+
+\paragraph{Provenance}
+\label{\detokenize{reference/uncertainty_first_statistics:provenance}}
+\sphinxAtStartPar
+Tracks how a statistic was computed:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Provenance}
+
+\PYG{n}{prov} \PYG{o}{=} \PYG{n}{Provenance}\PYG{p}{(}
+    \PYG{n}{algorithm}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{brandes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{uncertainty\PYGZus{}method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bootstrap}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{parameters}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}samples}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+m+mi}{100}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}
+    \PYG{n}{timestamp}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{2024\PYGZhy{}12\PYGZhy{}12T17:00:00}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{library\PYGZus{}version}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{1.0.0}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Serialize}
+\PYG{n}{json\PYGZus{}dict} \PYG{o}{=} \PYG{n}{prov}\PYG{o}{.}\PYG{n}{to\PYGZus{}json\PYGZus{}dict}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Fields:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{algorithm}}: Algorithm name (e.g., “degree”, “betweenness”)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{uncertainty\_method}}: Uncertainty method (e.g., “delta”, “bootstrap”)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{parameters}}: Dict of parameters
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{seed}}: Random seed (optional)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{timestamp}}: Computation time (optional)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{library\_version}}: Version string (optional)
+
+\end{itemize}
+
+
+\subsubsection{Statistics Registry}
+\label{\detokenize{reference/uncertainty_first_statistics:statistics-registry}}
+\sphinxAtStartPar
+The \sphinxcode{\sphinxupquote{StatisticsRegistry}} enforces that every registered statistic has an uncertainty model.
+
+
+\paragraph{Registration}
+\label{\detokenize{reference/uncertainty_first_statistics:registration}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{StatisticSpec}\PYG{p}{,} \PYG{n}{register\PYGZus{}statistic}\PYG{p}{,} \PYG{n}{Delta}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{compute\PYGZus{}degree}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{node}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{return} \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{degree\PYGZus{}uncertainty}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{node}\PYG{p}{,} \PYG{o}{*}\PYG{o}{*}\PYG{n}{kwargs}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{return} \PYG{n}{Delta}\PYG{p}{(}\PYG{l+m+mf}{0.0}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Deterministic}
+
+\PYG{n}{spec} \PYG{o}{=} \PYG{n}{StatisticSpec}\PYG{p}{(}
+    \PYG{n}{name}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{estimator}\PYG{o}{=}\PYG{n}{compute\PYGZus{}degree}\PYG{p}{,}
+    \PYG{n}{uncertainty\PYGZus{}model}\PYG{o}{=}\PYG{n}{degree\PYGZus{}uncertainty}\PYG{p}{,}
+    \PYG{n}{assumptions}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{deterministic}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
+    \PYG{n}{supports}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{directed}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{k+kc}{True}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weighted}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{k+kc}{True}\PYG{p}{\PYGZcb{}}
+\PYG{p}{)}
+
+\PYG{n}{register\PYGZus{}statistic}\PYG{p}{(}\PYG{n}{spec}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Note:} Registration fails if \sphinxcode{\sphinxupquote{uncertainty\_model}} is missing.
+
+
+\paragraph{Usage}
+\label{\detokenize{reference/uncertainty_first_statistics:usage}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{compute\PYGZus{}statistic}
+
+\PYG{c+c1}{\PYGZsh{} Compute with uncertainty}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{compute\PYGZus{}statistic}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{network}\PYG{p}{,} \PYG{n}{node}\PYG{p}{,} \PYG{n}{with\PYGZus{}uncertainty}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Returns StatValue}
+
+\PYG{c+c1}{\PYGZsh{} Compute without uncertainty (raw value)}
+\PYG{n}{value} \PYG{o}{=} \PYG{n}{compute\PYGZus{}statistic}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{network}\PYG{p}{,} \PYG{n}{node}\PYG{p}{,} \PYG{n}{with\PYGZus{}uncertainty}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Arithmetic with Uncertainty}
+\label{\detokenize{reference/uncertainty_first_statistics:arithmetic-with-uncertainty}}
+\sphinxAtStartPar
+StatValue supports arithmetic operations with automatic uncertainty propagation.
+
+
+\paragraph{Basic Operations}
+\label{\detokenize{reference/uncertainty_first_statistics:basic-operations}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{stats}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{StatValue}\PYG{p}{,} \PYG{n}{Gaussian}\PYG{p}{,} \PYG{n}{Provenance}
+
+\PYG{n}{sv1} \PYG{o}{=} \PYG{n}{StatValue}\PYG{p}{(}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{Gaussian}\PYG{p}{(}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{l+m+mf}{0.1}\PYG{p}{)}\PYG{p}{,} \PYG{n}{Provenance}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{a}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{gaussian}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{sv2} \PYG{o}{=} \PYG{n}{StatValue}\PYG{p}{(}\PYG{l+m+mf}{2.0}\PYG{p}{,} \PYG{n}{Gaussian}\PYG{p}{(}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{l+m+mf}{0.15}\PYG{p}{)}\PYG{p}{,} \PYG{n}{Provenance}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{b}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{gaussian}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Addition}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sv1} \PYG{o}{+} \PYG{n}{sv2}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} 3.0}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{result}\PYG{o}{.}\PYG{n}{std}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} \PYGZti{}0.180 (sqrt(0.1\(\sp{\text{2}}\) + 0.15\(\sp{\text{2}}\)))}
+
+\PYG{c+c1}{\PYGZsh{} Subtraction}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sv1} \PYG{o}{\PYGZhy{}} \PYG{n}{sv2}
+
+\PYG{c+c1}{\PYGZsh{} Multiplication}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sv1} \PYG{o}{*} \PYG{n}{sv2}
+
+\PYG{c+c1}{\PYGZsh{} Division}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sv1} \PYG{o}{/} \PYG{n}{sv2}
+
+\PYG{c+c1}{\PYGZsh{} Power}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sv1} \PYG{o}{*}\PYG{o}{*} \PYG{l+m+mi}{2}
+
+\PYG{c+c1}{\PYGZsh{} Negation}
+\PYG{n}{result} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{n}{sv1}
+\end{sphinxVerbatim}
+
+
+\paragraph{Scalar Operations}
+\label{\detokenize{reference/uncertainty_first_statistics:scalar-operations}}
+\sphinxAtStartPar
+StatValue supports operations with scalars:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{sv} \PYG{o}{=} \PYG{n}{StatValue}\PYG{p}{(}\PYG{l+m+mf}{2.0}\PYG{p}{,} \PYG{n}{Gaussian}\PYG{p}{(}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{l+m+mf}{0.1}\PYG{p}{)}\PYG{p}{,} \PYG{n}{Provenance}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{a}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{gaussian}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Scalar addition}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sv} \PYG{o}{+} \PYG{l+m+mi}{3}  \PYG{c+c1}{\PYGZsh{} 5.0 (uncertainty unchanged)}
+
+\PYG{c+c1}{\PYGZsh{} Scalar multiplication}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sv} \PYG{o}{*} \PYG{l+m+mi}{2}  \PYG{c+c1}{\PYGZsh{} 4.0 (uncertainty scaled)}
+
+\PYG{c+c1}{\PYGZsh{} Scalar division}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sv} \PYG{o}{/} \PYG{l+m+mi}{2}  \PYG{c+c1}{\PYGZsh{} 1.0 (uncertainty scaled)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Propagation Rules}
+\label{\detokenize{reference/uncertainty_first_statistics:propagation-rules}}\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Delta + Delta}: Analytic error propagation (\sphinxcode{\sphinxupquote{σ\_sum = sqrt(σ1\(\sp{\text{2}}\) + σ2\(\sp{\text{2}}\))}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Gaussian + Gaussian}: Exact propagation for addition/subtraction
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Complex operations}: Monte Carlo propagation (4096 samples by default)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Scalar operations}: Direct computation, uncertainty scaled appropriately
+
+\end{enumerate}
+
+
+\subsubsection{Filtering and Queries}
+\label{\detokenize{reference/uncertainty_first_statistics:filtering-and-queries}}
+\sphinxAtStartPar
+Statistics with uncertainty can be filtered using selectors:
+
+
+\paragraph{Selector Syntax}
+\label{\detokenize{reference/uncertainty_first_statistics:selector-syntax}}
+\sphinxAtStartPar
+Format: \sphinxcode{\sphinxupquote{attribute\_\_component\_\_operator=value}}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Components:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{mean}}: Point estimate (default if omitted)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{std}}: Standard deviation
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{ci95\_\_width}}: Width of 95\% CI
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{robustness}}: Robustness score
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Operators:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{gt}}: Greater than
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{gte}}: Greater than or equal
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{lt}}: Less than
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{lte}}: Less than or equal
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{eq}}: Equal
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{ne}}: Not equal
+
+\end{itemize}
+
+
+\paragraph{Examples}
+\label{\detokenize{reference/uncertainty_first_statistics:examples}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Filter by mean value}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}mean\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Filter by uncertainty}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{betweenness\PYGZus{}\PYGZus{}std\PYGZus{}\PYGZus{}lt}\PYG{o}{=}\PYG{l+m+mf}{0.05}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Filter by CI width}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}ci95\PYGZus{}\PYGZus{}width\PYGZus{}\PYGZus{}lt}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Filter by robustness}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{centrality\PYGZus{}\PYGZus{}robustness\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mf}{0.9}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Serialization}
+\label{\detokenize{reference/uncertainty_first_statistics:serialization}}
+\sphinxAtStartPar
+StatValue and Uncertainty models support JSON serialization.
+
+
+\paragraph{StatValue Serialization}
+\label{\detokenize{reference/uncertainty_first_statistics:statvalue-serialization}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{sv} \PYG{o}{=} \PYG{n}{StatValue}\PYG{p}{(}
+    \PYG{n}{value}\PYG{o}{=}\PYG{l+m+mf}{0.42}\PYG{p}{,}
+    \PYG{n}{uncertainty}\PYG{o}{=}\PYG{n}{Gaussian}\PYG{p}{(}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{l+m+mf}{0.05}\PYG{p}{)}\PYG{p}{,}
+    \PYG{n}{provenance}\PYG{o}{=}\PYG{n}{Provenance}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{analytic}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{n}{json\PYGZus{}dict} \PYG{o}{=} \PYG{n}{sv}\PYG{o}{.}\PYG{n}{to\PYGZus{}json\PYGZus{}dict}\PYG{p}{(}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} \PYGZob{}}
+\PYG{c+c1}{\PYGZsh{}   \PYGZdq{}value\PYGZdq{}: 0.42,}
+\PYG{c+c1}{\PYGZsh{}   \PYGZdq{}uncertainty\PYGZdq{}: \PYGZob{}}
+\PYG{c+c1}{\PYGZsh{}     \PYGZdq{}type\PYGZdq{}: \PYGZdq{}gaussian\PYGZdq{},}
+\PYG{c+c1}{\PYGZsh{}     \PYGZdq{}mean\PYGZdq{}: 0.0,}
+\PYG{c+c1}{\PYGZsh{}     \PYGZdq{}std\PYGZdq{}: 0.05}
+\PYG{c+c1}{\PYGZsh{}   \PYGZcb{},}
+\PYG{c+c1}{\PYGZsh{}   \PYGZdq{}provenance\PYGZdq{}: \PYGZob{}}
+\PYG{c+c1}{\PYGZsh{}     \PYGZdq{}algorithm\PYGZdq{}: \PYGZdq{}betweenness\PYGZdq{},}
+\PYG{c+c1}{\PYGZsh{}     \PYGZdq{}uncertainty\PYGZus{}method\PYGZdq{}: \PYGZdq{}analytic\PYGZdq{},}
+\PYG{c+c1}{\PYGZsh{}     \PYGZdq{}params\PYGZdq{}: \PYGZob{}\PYGZcb{}}
+\PYG{c+c1}{\PYGZsh{}   \PYGZcb{}}
+\PYG{c+c1}{\PYGZsh{} \PYGZcb{}}
+\end{sphinxVerbatim}
+
+
+\paragraph{DataFrame Export}
+\label{\detokenize{reference/uncertainty_first_statistics:dataframe-export}}
+\sphinxAtStartPar
+QueryResult can export to pandas with uncertainty columns:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Columns: id, betweenness.value, betweenness.std,}
+\PYG{c+c1}{\PYGZsh{}          betweenness.ci\PYGZus{}low, betweenness.ci\PYGZus{}high,}
+\PYG{c+c1}{\PYGZsh{}          betweenness.uncertainty\PYGZus{}type}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Best Practices}
+\label{\detokenize{reference/uncertainty_first_statistics:best-practices}}\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Always use StatValue internally}: Even for deterministic stats, use \sphinxcode{\sphinxupquote{Delta(0)}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Provide uncertainty models}: Every registered statistic must have one
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Use seeds for reproducibility}: Pass explicit seeds to bootstrap/MC operations
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Choose appropriate models}:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Deterministic \(\rightarrow\) \sphinxcode{\sphinxupquote{Delta(0)}}
+
+\item {} 
+\sphinxAtStartPar
+Known distribution \(\rightarrow\) \sphinxcode{\sphinxupquote{Gaussian}}
+
+\item {} 
+\sphinxAtStartPar
+Empirical estimation \(\rightarrow\) \sphinxcode{\sphinxupquote{Bootstrap}} or \sphinxcode{\sphinxupquote{Empirical}}
+
+\item {} 
+\sphinxAtStartPar
+No distribution assumption \(\rightarrow\) \sphinxcode{\sphinxupquote{Interval}}
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Check robustness}: Use \sphinxcode{\sphinxupquote{sv.robustness()}} to assess reliability
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Export uncertainty}: Include uncertainty columns in exports for downstream analysis
+
+\end{enumerate}
+
+
+\subsubsection{Examples}
+\label{\detokenize{reference/uncertainty_first_statistics:id1}}
+\sphinxAtStartPar
+See:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/uncertainty/example\_stats\_degree\_delta.py}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/uncertainty/example\_stats\_betweenness\_bootstrap.py}}
+
+\end{itemize}
+
+
+\subsubsection{API Reference}
+\label{\detokenize{reference/uncertainty_first_statistics:api-reference}}
+
+\paragraph{StatValue}
+\label{\detokenize{reference/uncertainty_first_statistics:id2}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{StatValue}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Statistical value with uncertainty and provenance.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+
+    \PYG{n}{value}\PYG{p}{:} \PYG{n+nb}{float} \PYG{o}{|} \PYG{n+nb}{int} \PYG{o}{|} \PYG{n}{ndarray}
+    \PYG{n}{uncertainty}\PYG{p}{:} \PYG{n}{Uncertainty}
+    \PYG{n}{provenance}\PYG{p}{:} \PYG{n}{Provenance}
+
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf+fm}{\PYGZus{}\PYGZus{}float\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{float}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{mean}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{float}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{std}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{float}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{ci}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{level}\PYG{p}{:} \PYG{n+nb}{float} \PYG{o}{=} \PYG{l+m+mf}{0.95}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{tuple}\PYG{p}{[}\PYG{n+nb}{float}\PYG{p}{,} \PYG{n+nb}{float}\PYG{p}{]}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{robustness}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{float}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{to\PYGZus{}json\PYGZus{}dict}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{dict}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+\end{sphinxVerbatim}
+
+
+\paragraph{Uncertainty Models}
+\label{\detokenize{reference/uncertainty_first_statistics:id3}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Uncertainty}\PYG{p}{(}\PYG{n}{ABC}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{summary}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{level}\PYG{p}{:} \PYG{n+nb}{float} \PYG{o}{=} \PYG{l+m+mf}{0.95}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{dict}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{sample}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{n}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{o}{*}\PYG{p}{,} \PYG{n}{seed}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{|} \PYG{k+kc}{None} \PYG{o}{=} \PYG{k+kc}{None}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{ndarray}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{ci}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{level}\PYG{p}{:} \PYG{n+nb}{float} \PYG{o}{=} \PYG{l+m+mf}{0.95}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{tuple}\PYG{p}{[}\PYG{n+nb}{float}\PYG{p}{,} \PYG{n+nb}{float}\PYG{p}{]}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{std}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{float} \PYG{o}{|} \PYG{k+kc}{None}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{propagate}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{op}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{other}\PYG{p}{:} \PYG{n}{Uncertainty} \PYG{o}{|} \PYG{k+kc}{None}\PYG{p}{,} \PYG{o}{*}\PYG{p}{,} \PYG{n}{seed}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{|} \PYG{k+kc}{None} \PYG{o}{=} \PYG{k+kc}{None}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{Uncertainty}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{to\PYGZus{}json\PYGZus{}dict}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{dict}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Delta}\PYG{p}{(}\PYG{n}{Uncertainty}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{sigma}\PYG{p}{:} \PYG{n+nb}{float} \PYG{o}{=} \PYG{l+m+mf}{0.0}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Gaussian}\PYG{p}{(}\PYG{n}{Uncertainty}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{mean}\PYG{p}{:} \PYG{n+nb}{float}
+    \PYG{n}{std\PYGZus{}dev}\PYG{p}{:} \PYG{n+nb}{float}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Bootstrap}\PYG{p}{(}\PYG{n}{Uncertainty}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{samples}\PYG{p}{:} \PYG{n}{ndarray}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Empirical}\PYG{p}{(}\PYG{n}{Uncertainty}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{samples}\PYG{p}{:} \PYG{n}{ndarray}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Interval}\PYG{p}{(}\PYG{n}{Uncertainty}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{low}\PYG{p}{:} \PYG{n+nb}{float}
+    \PYG{n}{high}\PYG{p}{:} \PYG{n+nb}{float}
+\end{sphinxVerbatim}
+
+
+\paragraph{Provenance}
+\label{\detokenize{reference/uncertainty_first_statistics:id4}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n+nd}{@dataclass}\PYG{p}{(}\PYG{n}{frozen}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Provenance}\PYG{p}{:}
+    \PYG{n}{algorithm}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{uncertainty\PYGZus{}method}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{parameters}\PYG{p}{:} \PYG{n+nb}{dict} \PYG{o}{=} \PYG{n}{field}\PYG{p}{(}\PYG{n}{default\PYGZus{}factory}\PYG{o}{=}\PYG{n+nb}{dict}\PYG{p}{)}
+    \PYG{n}{seed}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{|} \PYG{k+kc}{None} \PYG{o}{=} \PYG{k+kc}{None}
+    \PYG{n}{timestamp}\PYG{p}{:} \PYG{n+nb}{str} \PYG{o}{|} \PYG{k+kc}{None} \PYG{o}{=} \PYG{k+kc}{None}
+    \PYG{n}{library\PYGZus{}version}\PYG{p}{:} \PYG{n+nb}{str} \PYG{o}{|} \PYG{k+kc}{None} \PYG{o}{=} \PYG{k+kc}{None}
+
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{to\PYGZus{}json\PYGZus{}dict}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{dict}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+    \PYG{n+nd}{@classmethod}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{from\PYGZus{}json\PYGZus{}dict}\PYG{p}{(}\PYG{n+nb+bp}{cls}\PYG{p}{,} \PYG{n}{data}\PYG{p}{:} \PYG{n+nb}{dict}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{Provenance}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+\end{sphinxVerbatim}
+
+
+\paragraph{Registry}
+\label{\detokenize{reference/uncertainty_first_statistics:registry}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n+nd}{@dataclass}\PYG{p}{(}\PYG{n}{frozen}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{StatisticSpec}\PYG{p}{:}
+    \PYG{n}{name}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{estimator}\PYG{p}{:} \PYG{n}{Callable}
+    \PYG{n}{uncertainty\PYGZus{}model}\PYG{p}{:} \PYG{n}{Callable}  \PYG{c+c1}{\PYGZsh{} Required}
+    \PYG{n}{assumptions}\PYG{p}{:} \PYG{n+nb}{list}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{]} \PYG{o}{=} \PYG{n}{field}\PYG{p}{(}\PYG{n}{default\PYGZus{}factory}\PYG{o}{=}\PYG{n+nb}{list}\PYG{p}{)}
+    \PYG{n}{supports}\PYG{p}{:} \PYG{n+nb}{dict} \PYG{o}{=} \PYG{n}{field}\PYG{p}{(}\PYG{n}{default\PYGZus{}factory}\PYG{o}{=}\PYG{n+nb}{dict}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{register\PYGZus{}statistic}\PYG{p}{(}\PYG{n}{spec}\PYG{p}{:} \PYG{n}{StatisticSpec}\PYG{p}{,} \PYG{n}{force}\PYG{p}{:} \PYG{n+nb}{bool} \PYG{o}{=} \PYG{k+kc}{False}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{k+kc}{None}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}statistic}\PYG{p}{(}\PYG{n}{name}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{StatisticSpec}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{list\PYGZus{}statistics}\PYG{p}{(}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{list}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{]}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{compute\PYGZus{}statistic}\PYG{p}{(}\PYG{n}{name}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{,} \PYG{o}{*}\PYG{n}{args}\PYG{p}{,} \PYG{n}{with\PYGZus{}uncertainty}\PYG{p}{:} \PYG{n+nb}{bool} \PYG{o}{=} \PYG{k+kc}{True}\PYG{p}{,} \PYG{o}{*}\PYG{o}{*}\PYG{n}{kwargs}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{Any}\PYG{p}{:} \PYG{o}{.}\PYG{o}{.}\PYG{o}{.}
+\end{sphinxVerbatim}
+
+\sphinxstepscope
+
+
 \subsection{API Documentation}
 \label{\detokenize{reference/api_index:api-documentation}}\label{\detokenize{reference/api_index::doc}}
 \sphinxAtStartPar
@@ -41362,7 +42092,7 @@ Self for chaining
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{compute}}}
-{\sphinxparam{\DUrole{o}{*}\DUrole{n}{measures}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alias}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{aliases}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uncertainty}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ci}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{bootstrap\_unit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{bootstrap\_mode}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_boot}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_null}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{null\_model}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{random\_state}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{o}{*}\DUrole{n}{measures}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alias}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{aliases}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uncertainty}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ci}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{bootstrap\_unit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{bootstrap\_mode}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_boot}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_null}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{null\_model}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{random\_state}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -41383,7 +42113,8 @@ Add measures to compute with optional uncertainty estimation.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{uncertainty}} \textendash{} Whether to compute uncertainty for these measures
+\sphinxstyleliteralstrong{\sphinxupquote{uncertainty}} \textendash{} Whether to compute uncertainty for these measures. If None,
+uses Q.uncertainty defaults or the global uncertainty context.
 
 \item {} 
 \sphinxAtStartPar
