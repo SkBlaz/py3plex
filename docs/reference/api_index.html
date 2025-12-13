@@ -259,6 +259,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.TrajectoriesStmt"><code class="docutils literal notranslate"><span class="pre">TrajectoriesStmt</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.TypeEnvironment"><code class="docutils literal notranslate"><span class="pre">TypeEnvironment</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.TypeMismatchError"><code class="docutils literal notranslate"><span class="pre">TypeMismatchError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.UQ"><code class="docutils literal notranslate"><span class="pre">UQ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.UQConfig"><code class="docutils literal notranslate"><span class="pre">UQConfig</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.UnknownAttributeError"><code class="docutils literal notranslate"><span class="pre">UnknownAttributeError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.UnknownLayerError"><code class="docutils literal notranslate"><span class="pre">UnknownLayerError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.UnknownMeasureError"><code class="docutils literal notranslate"><span class="pre">UnknownMeasureError</span></code></a></li>
@@ -8217,7 +8219,7 @@ If False, return single subgraph with all matched nodes</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="py3plex.dsl.PlanStep.estimated_complexity">
 <span class="sig-name descname"><span class="pre">estimated_complexity</span></span><a class="headerlink" href="#py3plex.dsl.PlanStep.estimated_complexity" title="Link to this definition"></a></dt>
-<dd><p>Estimated time complexity (e.g., “O(<a href="#id211"><span class="problematic" id="id212">|V|</span></a>)”)</p>
+<dd><p>Estimated time complexity (e.g., “O(<a href="#id217"><span class="problematic" id="id218">|V|</span></a>)”)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str | None</p>
@@ -9426,6 +9428,57 @@ strings like “mean(degree)”, “max(degree)”, “n()”.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.QueryBuilder.uncertainty">
+<span class="sig-name descname"><span class="pre">uncertainty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'perturbation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.builder.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.uncertainty" title="Link to this definition"></a></dt>
+<dd><p>Alias for uq() - set query-scoped uncertainty configuration.</p>
+<p>See uq() for full documentation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.QueryBuilder.uq">
+<span class="sig-name descname"><span class="pre">uq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'perturbation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.builder.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.uq" title="Link to this definition"></a></dt>
+<dd><p>Set query-scoped uncertainty quantification configuration.</p>
+<p>This method establishes uncertainty defaults for all metrics computed
+in this query, unless overridden on a per-metric basis in compute().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> – Uncertainty estimation method (‘bootstrap’, ‘perturbation’, ‘seed’, ‘null_model’)
+Pass None to disable query-level uncertainty.</p></li>
+<li><p><strong>n_samples</strong> – Number of samples for uncertainty estimation (default: 50)</p></li>
+<li><p><strong>ci</strong> – Confidence interval level (default: 0.95 for 95% CI)</p></li>
+<li><p><strong>seed</strong> – Random seed for reproducibility (default: None)</p></li>
+<li><p><strong>**kwargs</strong> – Additional method-specific parameters (e.g., bootstrap_unit=’edges’,
+bootstrap_mode=’resample’, null_model=’configuration’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Self for chaining</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set uncertainty defaults for the query</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+<span class="gp">... </span>  <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;perturbation&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">... </span>  <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+<span class="gp">... </span>  <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">betweenness_centrality__mean__gt</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">... </span>  <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use UQ profile (see UQ class for presets)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+<span class="gp">... </span>  <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">fast</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">7</span><span class="p">))</span>
+<span class="gp">... </span>  <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+<span class="gp">... </span>  <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Disable query-level uncertainty</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py3plex.dsl.QueryBuilder.where">
 <span class="sig-name descname"><span class="pre">where</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.builder.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.where" title="Link to this definition"></a></dt>
 <dd><p>Add WHERE conditions.</p>
@@ -9669,7 +9722,7 @@ For edge queries: Returns subgraph containing the selected edges and their endpo
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.dsl.QueryResult.to_pandas">
-<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_grouping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.QueryResult.to_pandas" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_grouping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand_uncertainty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.QueryResult.to_pandas" title="Link to this definition"></a></dt>
 <dd><p>Export results to pandas DataFrame.</p>
 <p>For node queries: Returns DataFrame with ‘id’ column plus computed attributes
 For edge queries: Returns DataFrame with ‘source’, ‘target’, ‘source_layer’,</p>
@@ -9683,6 +9736,12 @@ For edge queries: Returns DataFrame with ‘source’, ‘target’, ‘source_l
 to the grouping keys (e.g., [“layer”] or [“src_layer”, “dst_layer”])</p></li>
 <li><p><strong>include_grouping</strong> – If True and grouping metadata is present, ensure grouping
 key columns are included in the DataFrame</p></li>
+<li><p><strong>expand_uncertainty</strong> – If True, expand uncertainty metrics into multiple columns:
+- metric (point estimate/mean)
+- metric_std (standard deviation)
+- metric_ci95_low (95% CI lower bound)
+- metric_ci95_high (95% CI upper bound)
+- metric_ci95_width (CI width)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -9692,6 +9751,12 @@ key columns are included in the DataFrame</p></li>
 <dd class="field-odd"><p><strong>ImportError</strong> – If pandas is not available</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">fast</span><span class="p">())</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># df now has columns: id, layer, degree, degree_std, degree_ci95_low, degree_ci95_high, degree_ci95_width</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -9754,7 +9819,7 @@ available layers, node/edge types, and attributes in a network.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="py3plex.dsl.SelectStmt">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">SelectStmt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target:</span> <span class="pre">~py3plex.dsl.ast.Target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_expr:</span> <span class="pre">~py3plex.dsl.ast.LayerExpr</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_set:</span> <span class="pre">~typing.Any</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where:</span> <span class="pre">~py3plex.dsl.ast.ConditionExpr</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute:</span> <span class="pre">~typing.List[~py3plex.dsl.ast.ComputeItem]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by:</span> <span class="pre">~typing.List[~py3plex.dsl.ast.OrderItem]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export:</span> <span class="pre">~py3plex.dsl.ast.ExportTarget</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_export:</span> <span class="pre">~py3plex.dsl.ast.ExportSpec</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporal_context:</span> <span class="pre">~py3plex.dsl.ast.TemporalContext</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_spec:</span> <span class="pre">~py3plex.dsl.ast.WindowSpec</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by:</span> <span class="pre">~typing.List[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_per_group:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_mode:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_k:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_p:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_group:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_id_field:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_cols:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_cols:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_map:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summarize_aggs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distinct_cols:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_specs:</span> <span class="pre">~typing.List[~typing.Tuple[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zscore_attrs:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_filters:</span> <span class="pre">~typing.List[~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregate_specs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocompute:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.SelectStmt" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">SelectStmt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target:</span> <span class="pre">~py3plex.dsl.ast.Target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_expr:</span> <span class="pre">~py3plex.dsl.ast.LayerExpr</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_set:</span> <span class="pre">~typing.Any</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where:</span> <span class="pre">~py3plex.dsl.ast.ConditionExpr</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute:</span> <span class="pre">~typing.List[~py3plex.dsl.ast.ComputeItem]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by:</span> <span class="pre">~typing.List[~py3plex.dsl.ast.OrderItem]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export:</span> <span class="pre">~py3plex.dsl.ast.ExportTarget</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_export:</span> <span class="pre">~py3plex.dsl.ast.ExportSpec</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporal_context:</span> <span class="pre">~py3plex.dsl.ast.TemporalContext</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_spec:</span> <span class="pre">~py3plex.dsl.ast.WindowSpec</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by:</span> <span class="pre">~typing.List[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_per_group:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_mode:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_k:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_p:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_group:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage_id_field:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_cols:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_cols:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_map:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summarize_aggs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distinct_cols:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_specs:</span> <span class="pre">~typing.List[~typing.Tuple[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zscore_attrs:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_filters:</span> <span class="pre">~typing.List[~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregate_specs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocompute:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uq_config:</span> <span class="pre">~py3plex.dsl.ast.UQConfig</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.SelectStmt" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A SELECT statement.</p>
 <dl class="py attribute">
@@ -10055,6 +10120,17 @@ available layers, node/edge types, and attributes in a network.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.dsl.SelectStmt.uq_config">
+<span class="sig-name descname"><span class="pre">uq_config</span></span><a class="headerlink" href="#py3plex.dsl.SelectStmt.uq_config" title="Link to this definition"></a></dt>
+<dd><p>Optional query-scoped uncertainty quantification configuration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#py3plex.dsl.UQConfig" title="py3plex.dsl.ast.UQConfig">py3plex.dsl.ast.UQConfig</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="id141">
 <span class="sig-name descname"><span class="pre">aggregate_specs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id141" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -10181,17 +10257,22 @@ available layers, node/edge types, and attributes in a network.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id165">
-<span class="sig-name descname"><span class="pre">where</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.ConditionExpr" title="py3plex.dsl.ast.ConditionExpr"><span class="pre">ConditionExpr</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id165" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">uq_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.UQConfig" title="py3plex.dsl.ast.UQConfig"><span class="pre">UQConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id165" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id166">
-<span class="sig-name descname"><span class="pre">window_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">WindowSpec</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id166" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">where</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.ConditionExpr" title="py3plex.dsl.ast.ConditionExpr"><span class="pre">ConditionExpr</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id166" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id167">
-<span class="sig-name descname"><span class="pre">zscore_attrs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id167" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">window_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">WindowSpec</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id167" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id168">
+<span class="sig-name descname"><span class="pre">zscore_attrs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id168" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -10233,13 +10314,13 @@ available layers, node/edge types, and attributes in a network.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id168">
-<span class="sig-name descname"><span class="pre">kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id168" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id169">
+<span class="sig-name descname"><span class="pre">kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id169" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id169">
-<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id169" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id170">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id170" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -10272,13 +10353,13 @@ available layers, node/edge types, and attributes in a network.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id170">
-<span class="sig-name descname"><span class="pre">replacement</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id170" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id171">
+<span class="sig-name descname"><span class="pre">replacement</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id171" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id171">
-<span class="sig-name descname"><span class="pre">span</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id171" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id172">
+<span class="sig-name descname"><span class="pre">span</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id172" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -10364,23 +10445,23 @@ available layers, node/edge types, and attributes in a network.</p>
 </pre></div>
 </div>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id172">
-<span class="sig-name descname"><span class="pre">kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id172" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="id173">
-<span class="sig-name descname"><span class="pre">range_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id173" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id173" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id174">
-<span class="sig-name descname"><span class="pre">t0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id174" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">range_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id174" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id175">
-<span class="sig-name descname"><span class="pre">t1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id175" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id175" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id176">
+<span class="sig-name descname"><span class="pre">t1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id176" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -10622,38 +10703,38 @@ LIMIT 100</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id176">
-<span class="sig-name descname"><span class="pre">export_target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id176" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="id177">
-<span class="sig-name descname"><span class="pre">limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id177" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">export_target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id177" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id178">
-<span class="sig-name descname"><span class="pre">measures</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id178" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id178" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id179">
-<span class="sig-name descname"><span class="pre">order_by</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#py3plex.dsl.OrderItem" title="py3plex.dsl.ast.OrderItem"><span class="pre">OrderItem</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id179" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">measures</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id179" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id180">
-<span class="sig-name descname"><span class="pre">process_ref</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id180" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">order_by</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#py3plex.dsl.OrderItem" title="py3plex.dsl.ast.OrderItem"><span class="pre">OrderItem</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id180" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id181">
-<span class="sig-name descname"><span class="pre">temporal_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.TemporalContext" title="py3plex.dsl.ast.TemporalContext"><span class="pre">TemporalContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id181" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">process_ref</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id181" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id182">
-<span class="sig-name descname"><span class="pre">where</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.ConditionExpr" title="py3plex.dsl.ast.ConditionExpr"><span class="pre">ConditionExpr</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id182" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">temporal_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.TemporalContext" title="py3plex.dsl.ast.TemporalContext"><span class="pre">TemporalContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id182" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id183">
+<span class="sig-name descname"><span class="pre">where</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.ConditionExpr" title="py3plex.dsl.ast.ConditionExpr"><span class="pre">ConditionExpr</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id183" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -10725,6 +10806,187 @@ in a query context.</p>
 <span class="sig-name descname"><span class="pre">actual_type</span></span><a class="headerlink" href="#py3plex.dsl.TypeMismatchError.actual_type" title="Link to this definition"></a></dt>
 <dd><p>Actual type received</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.dsl.UQ">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">UQ</span></span><a class="headerlink" href="#py3plex.dsl.UQ" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Uncertainty quantification profiles for ergonomic one-liners.</p>
+<p>This class provides convenient presets for common uncertainty estimation
+scenarios. Each profile returns a UQConfig that can be passed to .uq().</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">UQ</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fast exploratory analysis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">fast</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Default balanced settings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">default</span><span class="p">())</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Publication-quality with more samples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">paper</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">))</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;closeness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.UQ.default">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.UQConfig" title="py3plex.dsl.ast.UQConfig"><span class="pre">UQConfig</span></a></span></span><a class="headerlink" href="#py3plex.dsl.UQ.default" title="Link to this definition"></a></dt>
+<dd><p>Default balanced profile.</p>
+<p>Settings: perturbation, n=50, ci=0.95</p>
+<p>Use this for general-purpose uncertainty estimation with reasonable
+computational cost.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> – Random seed for reproducibility (default: None)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>UQConfig with default settings</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">default</span><span class="p">())</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.UQ.fast">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.UQConfig" title="py3plex.dsl.ast.UQConfig"><span class="pre">UQConfig</span></a></span></span><a class="headerlink" href="#py3plex.dsl.UQ.fast" title="Link to this definition"></a></dt>
+<dd><p>Fast exploratory profile with minimal samples.</p>
+<p>Settings: perturbation, n=25, ci=0.95</p>
+<p>Use this for quick exploratory analysis when speed matters more
+than precision.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> – Random seed for reproducibility (default: None)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>UQConfig with fast settings</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">fast</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.UQ.paper">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.UQConfig" title="py3plex.dsl.ast.UQConfig"><span class="pre">UQConfig</span></a></span></span><a class="headerlink" href="#py3plex.dsl.UQ.paper" title="Link to this definition"></a></dt>
+<dd><p>Publication-quality profile with thorough sampling.</p>
+<p>Settings: bootstrap, n=300, ci=0.95</p>
+<p>Use this for publication-quality results where precision is critical
+and computational cost is acceptable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> – Random seed for reproducibility (default: None)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>UQConfig with publication-quality settings</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">paper</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">))</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;closeness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.dsl.UQConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">UQConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ci:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.UQConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Query-scoped uncertainty quantification configuration.</p>
+<p>This dataclass stores uncertainty estimation settings at the query level,
+providing defaults for all metrics computed in the query unless explicitly
+overridden on a per-metric basis.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.dsl.UQConfig.method">
+<span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#py3plex.dsl.UQConfig.method" title="Link to this definition"></a></dt>
+<dd><p>Uncertainty estimation method (‘bootstrap’, ‘perturbation’, ‘seed’, ‘null_model’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.dsl.UQConfig.n_samples">
+<span class="sig-name descname"><span class="pre">n_samples</span></span><a class="headerlink" href="#py3plex.dsl.UQConfig.n_samples" title="Link to this definition"></a></dt>
+<dd><p>Number of samples for uncertainty estimation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.dsl.UQConfig.ci">
+<span class="sig-name descname"><span class="pre">ci</span></span><a class="headerlink" href="#py3plex.dsl.UQConfig.ci" title="Link to this definition"></a></dt>
+<dd><p>Confidence interval level (e.g., 0.95 for 95% CI)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.dsl.UQConfig.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><a class="headerlink" href="#py3plex.dsl.UQConfig.seed" title="Link to this definition"></a></dt>
+<dd><p>Random seed for reproducibility</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.dsl.UQConfig.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#py3plex.dsl.UQConfig.kwargs" title="Link to this definition"></a></dt>
+<dd><p>Additional method-specific parameters (e.g., bootstrap_unit, bootstrap_mode)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">uq</span> <span class="o">=</span> <span class="n">UQConfig</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;perturbation&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">uq</span> <span class="o">=</span> <span class="n">UQConfig</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;bootstrap_unit&quot;</span><span class="p">:</span> <span class="s2">&quot;edges&quot;</span><span class="p">,</span> <span class="s2">&quot;bootstrap_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;resample&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id184">
+<span class="sig-name descname"><span class="pre">ci</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id184" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id185">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id185" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id186">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id186" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id187">
+<span class="sig-name descname"><span class="pre">n_samples</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id187" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id188">
+<span class="sig-name descname"><span class="pre">seed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id188" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -11548,23 +11810,23 @@ indices computed from multiple runs.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id183">
-<span class="sig-name descname"><span class="pre">BOOTSTRAP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bootstrap'</span></em><a class="headerlink" href="#id183" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id189">
+<span class="sig-name descname"><span class="pre">BOOTSTRAP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bootstrap'</span></em><a class="headerlink" href="#id189" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id184">
-<span class="sig-name descname"><span class="pre">JACKKNIFE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'jackknife'</span></em><a class="headerlink" href="#id184" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id190">
+<span class="sig-name descname"><span class="pre">JACKKNIFE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'jackknife'</span></em><a class="headerlink" href="#id190" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id185">
-<span class="sig-name descname"><span class="pre">PERTURBATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'perturbation'</span></em><a class="headerlink" href="#id185" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id191">
+<span class="sig-name descname"><span class="pre">PERTURBATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'perturbation'</span></em><a class="headerlink" href="#id191" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id186">
-<span class="sig-name descname"><span class="pre">SEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seed'</span></em><a class="headerlink" href="#id186" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id192">
+<span class="sig-name descname"><span class="pre">SEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seed'</span></em><a class="headerlink" href="#id192" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -11789,18 +12051,18 @@ optionally ‘std’ and ‘quantiles’.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id187">
-<span class="sig-name descname"><span class="pre">default_n_runs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#id187" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id193">
+<span class="sig-name descname"><span class="pre">default_n_runs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#id193" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id188">
-<span class="sig-name descname"><span class="pre">default_resampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.uncertainty.types.ResamplingStrategy" title="py3plex.uncertainty.types.ResamplingStrategy"><span class="pre">ResamplingStrategy</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seed'</span></em><a class="headerlink" href="#id188" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id194">
+<span class="sig-name descname"><span class="pre">default_resampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.uncertainty.types.ResamplingStrategy" title="py3plex.uncertainty.types.ResamplingStrategy"><span class="pre">ResamplingStrategy</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seed'</span></em><a class="headerlink" href="#id194" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id189">
-<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.uncertainty.types.UncertaintyMode" title="py3plex.uncertainty.types.UncertaintyMode"><span class="pre">UncertaintyMode</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'off'</span></em><a class="headerlink" href="#id189" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id195">
+<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.uncertainty.types.UncertaintyMode" title="py3plex.uncertainty.types.UncertaintyMode"><span class="pre">UncertaintyMode</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'off'</span></em><a class="headerlink" href="#id195" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -11844,18 +12106,18 @@ optionally ‘std’ and ‘quantiles’.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id190">
-<span class="sig-name descname"><span class="pre">AUTO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'auto'</span></em><a class="headerlink" href="#id190" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id196">
+<span class="sig-name descname"><span class="pre">AUTO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'auto'</span></em><a class="headerlink" href="#id196" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id191">
-<span class="sig-name descname"><span class="pre">OFF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'off'</span></em><a class="headerlink" href="#id191" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id197">
+<span class="sig-name descname"><span class="pre">OFF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'off'</span></em><a class="headerlink" href="#id197" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id192">
-<span class="sig-name descname"><span class="pre">ON</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'on'</span></em><a class="headerlink" href="#id192" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id198">
+<span class="sig-name descname"><span class="pre">ON</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'on'</span></em><a class="headerlink" href="#id198" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -12085,10 +12347,10 @@ metric_fn(network) -&gt; Dict[item_id, float]</p></li>
 <ul class="simple">
 <li><p>Z-scores indicate how many standard deviations the observed value is from
 the null distribution mean</p></li>
-<li><p>P-values are two-tailed by default: P(<a href="#id213"><span class="problematic" id="id214">|Z|</span></a> &gt;= <a href="#id215"><span class="problematic" id="id216">|Z_observed|</span></a>) under the null.
+<li><p>P-values are two-tailed by default: P(<a href="#id219"><span class="problematic" id="id220">|Z|</span></a> &gt;= <a href="#id221"><span class="problematic" id="id222">|Z_observed|</span></a>) under the null.
 For one-tailed tests, users can compute p_one_sided = p_two_sided / 2 and
 check the sign of z-score to determine the direction.</p></li>
-<li><p>High <a href="#id217"><span class="problematic" id="id218">|z-score|</span></a> and low p-value indicate statistical significance</p></li>
+<li><p>High <a href="#id223"><span class="problematic" id="id224">|z-score|</span></a> and low p-value indicate statistical significance</p></li>
 </ul>
 </dd></dl>
 
@@ -12294,23 +12556,23 @@ indices computed from multiple runs.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id193">
-<span class="sig-name descname"><span class="pre">BOOTSTRAP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bootstrap'</span></em><a class="headerlink" href="#id193" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id199">
+<span class="sig-name descname"><span class="pre">BOOTSTRAP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bootstrap'</span></em><a class="headerlink" href="#id199" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id194">
-<span class="sig-name descname"><span class="pre">JACKKNIFE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'jackknife'</span></em><a class="headerlink" href="#id194" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id200">
+<span class="sig-name descname"><span class="pre">JACKKNIFE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'jackknife'</span></em><a class="headerlink" href="#id200" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id195">
-<span class="sig-name descname"><span class="pre">PERTURBATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'perturbation'</span></em><a class="headerlink" href="#id195" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id201">
+<span class="sig-name descname"><span class="pre">PERTURBATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'perturbation'</span></em><a class="headerlink" href="#id201" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id196">
-<span class="sig-name descname"><span class="pre">SEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seed'</span></em><a class="headerlink" href="#id196" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id202">
+<span class="sig-name descname"><span class="pre">SEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seed'</span></em><a class="headerlink" href="#id202" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -12535,18 +12797,18 @@ optionally ‘std’ and ‘quantiles’.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id197">
-<span class="sig-name descname"><span class="pre">default_n_runs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#id197" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id203">
+<span class="sig-name descname"><span class="pre">default_n_runs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#id203" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id198">
-<span class="sig-name descname"><span class="pre">default_resampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.uncertainty.types.ResamplingStrategy" title="py3plex.uncertainty.types.ResamplingStrategy"><span class="pre">ResamplingStrategy</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seed'</span></em><a class="headerlink" href="#id198" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id204">
+<span class="sig-name descname"><span class="pre">default_resampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.uncertainty.types.ResamplingStrategy" title="py3plex.uncertainty.types.ResamplingStrategy"><span class="pre">ResamplingStrategy</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seed'</span></em><a class="headerlink" href="#id204" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id199">
-<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.uncertainty.types.UncertaintyMode" title="py3plex.uncertainty.types.UncertaintyMode"><span class="pre">UncertaintyMode</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'off'</span></em><a class="headerlink" href="#id199" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id205">
+<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.uncertainty.types.UncertaintyMode" title="py3plex.uncertainty.types.UncertaintyMode"><span class="pre">UncertaintyMode</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'off'</span></em><a class="headerlink" href="#id205" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -12590,18 +12852,18 @@ optionally ‘std’ and ‘quantiles’.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id200">
-<span class="sig-name descname"><span class="pre">AUTO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'auto'</span></em><a class="headerlink" href="#id200" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id206">
+<span class="sig-name descname"><span class="pre">AUTO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'auto'</span></em><a class="headerlink" href="#id206" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id201">
-<span class="sig-name descname"><span class="pre">OFF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'off'</span></em><a class="headerlink" href="#id201" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id207">
+<span class="sig-name descname"><span class="pre">OFF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'off'</span></em><a class="headerlink" href="#id207" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id202">
-<span class="sig-name descname"><span class="pre">ON</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'on'</span></em><a class="headerlink" href="#id202" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id208">
+<span class="sig-name descname"><span class="pre">ON</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'on'</span></em><a class="headerlink" href="#id208" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -13776,12 +14038,12 @@ For undirected: kᵢᵅ = Σⱼ Aᵢⱼᵅ</p>
 <dt class="sig sig-object py" id="py3plex.algorithms.statistics.multilayer_statistics.edge_overlap">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.statistics.multilayer_statistics.</span></span><span class="sig-name descname"><span class="pre">edge_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#py3plex.algorithms.statistics.multilayer_statistics.edge_overlap" title="Link to this definition"></a></dt>
 <dd><p>Calculate edge overlap (ω^αβ).</p>
-<p>Formula: ω^αβ = <a href="#id219"><span class="problematic" id="id220">|Eₐ ∩ Eᵦ|</span></a> / <a href="#id221"><span class="problematic" id="id222">|Eₐ ∪ Eᵦ|</span></a></p>
+<p>Formula: ω^αβ = <a href="#id225"><span class="problematic" id="id226">|Eₐ ∩ Eᵦ|</span></a> / <a href="#id227"><span class="problematic" id="id228">|Eₐ ∪ Eᵦ|</span></a></p>
 <p>Jaccard similarity of edge sets between two layers; measures structural redundancy.</p>
 <dl class="simple">
 <dt>Variables:</dt><dd><p>Eₐ = set of edges in layer α
 Eᵦ = set of edges in layer β
-<a href="#id223"><span class="problematic" id="id224">|·|</span></a> = cardinality (number of elements)</p>
+<a href="#id229"><span class="problematic" id="id230">|·|</span></a> = cardinality (number of elements)</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -14217,7 +14479,7 @@ De Domenico et al. (2014), “Identifying modular flows”</p>
 <p>Measures the proportion of edges in one layer that are redundant
 (also present) in another layer. Values close to 1 indicate high
 redundancy, while values close to 0 indicate complementary layers.</p>
-<p>Formula: Rᵅᵝ = <a href="#id225"><span class="problematic" id="id226">|Eᵅ ∩ Eᵝ|</span></a> / <a href="#id227"><span class="problematic" id="id228">|Eᵅ|</span></a></p>
+<p>Formula: Rᵅᵝ = <a href="#id231"><span class="problematic" id="id232">|Eᵅ ∩ Eᵝ|</span></a> / <a href="#id233"><span class="problematic" id="id234">|Eᵅ|</span></a></p>
 <p>where Eᵅ and Eᵝ are edge sets of layers α and β.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -15319,7 +15581,7 @@ normalizing by the number of node pairs.</p>
 <p>Local efficiency measures how efficiently information is exchanged among
 a node’s neighbors when the node is removed. It quantifies the fault
 tolerance of the network.</p>
-<p>LE(u) = (1 / (<a href="#id229"><span class="problematic" id="id230">|N_u|*(|N_u|</span></a>-1))) * sum_{i≠j in N_u} [1 / d(i,j)]</p>
+<p>LE(u) = (1 / (<a href="#id235"><span class="problematic" id="id236">|N_u|*(|N_u|</span></a>-1))) * sum_{i≠j in N_u} [1 / d(i,j)]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>{(node, layer): local_efficiency}</p>
@@ -15339,7 +15601,7 @@ tolerance of the network.</p>
 <span class="sig-name descname"><span class="pre">lp_aggregated_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_centralities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.lp_aggregated_centrality" title="Link to this definition"></a></dt>
 <dd><p>Compute Lp-aggregated per-layer centrality.</p>
 <p>Aggregates per-layer centrality values using Lp norm.</p>
-<p>C_i = (sum_{ℓ in L_i} w_ℓ * <a href="#id231"><span class="problematic" id="id232">|c^ℓ[i]|^p)^{1/p}  for p &lt; ∞
+<p>C_i = (sum_{ℓ in L_i} w_ℓ * <a href="#id237"><span class="problematic" id="id238">|c^ℓ[i]|^p)^{1/p}  for p &lt; ∞
 C_i = max_{ℓ in L_i} (w_ℓ * |c^ℓ[i]|</span></a>)          for p = ∞</p>
 <p>where L_i is the set of layers where node i exists.</p>
 <dl class="field-list simple">
@@ -17854,7 +18116,7 @@ See <code class="xref py py-mod docutils literal notranslate"><span class="pre">
 compute node positions.</p></li>
 <li><p><strong>arrows</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – For directed graphs, if True draw arrowheads.
 Note: Arrows will be the same color as edges.</p></li>
-<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id203"><span class="problematic" id="id204">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrowsheads.
+<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id209"><span class="problematic" id="id210">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrowsheads.
 See :py:class: <cite>matplotlib.patches.ArrowStyle</cite> for more
 options.</p></li>
 <li><p><strong>arrowsize</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – For directed graphs, choose the size of the arrow head head’s length and
@@ -17986,7 +18248,7 @@ colors using the edge_cmap and edge_vmin,edge_vmax parameters.</p></li>
 <li><p><strong>ax</strong> (<em>Matplotlib Axes object</em><em>, </em><em>optional</em>) – Draw the graph in the specified Matplotlib axes.</p></li>
 <li><p><strong>arrows</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – For directed graphs, if True draw arrowheads.
 Note: Arrows will be the same color as edges.</p></li>
-<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id205"><span class="problematic" id="id206">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrow heads.
+<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id211"><span class="problematic" id="id212">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrow heads.
 See :py:class: <cite>matplotlib.patches.ArrowStyle</cite> for more
 options.</p></li>
 <li><p><strong>arrowsize</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – For directed graphs, choose the size of the arrow head head’s length and
@@ -19445,7 +19707,7 @@ format detection and a registry system for extensibility.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>format_name</strong> – Name of the format (e.g., ‘json’, ‘csv’, ‘graphml’)</p></li>
-<li><p><strong>reader_func</strong> – Function that takes (filepath, <a href="#id207"><span class="problematic" id="id208">**</span></a>kwargs) and returns MultiLayerGraph</p></li>
+<li><p><strong>reader_func</strong> – Function that takes (filepath, <a href="#id213"><span class="problematic" id="id214">**</span></a>kwargs) and returns MultiLayerGraph</p></li>
 </ul>
 </dd>
 </dl>
@@ -19474,7 +19736,7 @@ format detection and a registry system for extensibility.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>format_name</strong> – Name of the format (e.g., ‘json’, ‘csv’, ‘graphml’)</p></li>
-<li><p><strong>writer_func</strong> – Function that takes (graph, filepath, <a href="#id209"><span class="problematic" id="id210">**</span></a>kwargs) and writes to file</p></li>
+<li><p><strong>writer_func</strong> – Function that takes (graph, filepath, <a href="#id215"><span class="problematic" id="id216">**</span></a>kwargs) and writes to file</p></li>
 </ul>
 </dd>
 </dl>

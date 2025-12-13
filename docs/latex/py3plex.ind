@@ -12,10 +12,10 @@
   \indexspace
   \bigletter A
   \item \spxentry{accessibility\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{543}
-  \item \spxentry{actual\_type}\spxextra{py3plex.dsl.TypeMismatchError attribute}, \hyperpage{462}
+		\hyperpage{547}
+  \item \spxentry{actual\_type}\spxextra{py3plex.dsl.TypeMismatchError attribute}, \hyperpage{463}
   \item \spxentry{add\_bipartite\_block()}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank method}, 
-		\hyperpage{566}
+		\hyperpage{570}
   \item \spxentry{add\_constraint()}\spxextra{py3plex.dsl.PatternGraph method}, \hyperpage{424}
   \item \spxentry{add\_dummy\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{336}
@@ -23,58 +23,58 @@
   \item \spxentry{add\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{336}
   \item \spxentry{add\_label()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
-  \item \spxentry{add\_layer()}\spxextra{py3plex.dsl.TypeEnvironment method}, \hyperpage{461}
+		\hyperpage{653}
+  \item \spxentry{add\_layer()}\spxextra{py3plex.dsl.TypeEnvironment method}, \hyperpage{462}
   \item \spxentry{add\_mpx\_edges()}\spxextra{in module py3plex.core.supporting}, \hyperpage{375}
   \item \spxentry{add\_multiplex()}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank method}, 
-		\hyperpage{566}
+		\hyperpage{570}
   \item \spxentry{add\_node()}\spxextra{py3plex.dsl.PatternGraph method}, \hyperpage{424}
   \item \spxentry{add\_nodes()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{338}
   \item \spxentry{add\_sub\_class()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{ADJUST}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{adjustSpeedAndApplyForces()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{after()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{435}
   \item \spxentry{aggregate()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{436}
   \item \spxentry{aggregate\_centrality\_across\_layers()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
-		\hyperpage{560}
+		\hyperpage{564}
   \item \spxentry{aggregate\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{340}
   \item \spxentry{aggregate\_layers()}\spxextra{in module py3plex.multinet.aggregation}, 
-		\hyperpage{616}
+		\hyperpage{620}
   \item \spxentry{aggregate\_scores()}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank method}, 
-		\hyperpage{566}
+		\hyperpage{570}
   \item \spxentry{aggregate\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}, 
-		\hyperpage{455, 456}
+		\hyperpage{456, 457}
   \item \spxentry{aggregate\_sum()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{378}
   \item \spxentry{aggregate\_to\_node\_level()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{544}
+		\hyperpage{548}
   \item \spxentry{aggregate\_weighted\_sum()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{378}
   \item \spxentry{algebraic\_connectivity()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{514}
+		\hyperpage{518}
   \item \spxentry{AlgorithmError}, \hyperpage{386}
   \item \spxentry{alias}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{395, 396}
   \item \spxentry{all\_paths()}\spxextra{py3plex.dsl.P static method}, \hyperpage{418}
   \item \spxentry{ALPHA}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{any\_layer()}\spxextra{py3plex.dsl.EdgeLayerConstraint static method}, 
 		\hyperpage{405}
   \item \spxentry{any\_layer()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}, \hyperpage{423}
   \item \spxentry{apply\_attraction()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{apply\_gravity()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{apply\_repulsion()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{applyForce()}\spxextra{py3plex.visualization.fa2.fa2util.Region method}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{applyForceOnNodes()}\spxextra{py3plex.visualization.fa2.fa2util.Region method}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{args}\spxextra{py3plex.dsl.FunctionCall attribute}, \hyperpage{409, 410}
   \item \spxentry{arrange()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{436}
   \item \spxentry{ARROW}\spxextra{py3plex.dsl.ExportTarget attribute}, \hyperpage{407}
@@ -82,55 +82,55 @@
 		\hyperpage{340}
   \item \spxentry{ast\_summary}\spxextra{py3plex.dsl.ExplainResult attribute}, \hyperpage{406}
   \item \spxentry{at()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{437}
-  \item \spxentry{at()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{459}
+  \item \spxentry{at()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
   \item \spxentry{atoms}\spxextra{py3plex.dsl.ConditionExpr attribute}, \hyperpage{397, 398}
   \item \spxentry{attr}\spxextra{py3plex.dsl.Predicate attribute}, \hyperpage{431, 432}
-  \item \spxentry{attribute}\spxextra{py3plex.dsl.TypeMismatchError attribute}, \hyperpage{462}
-  \item \spxentry{attribute}\spxextra{py3plex.dsl.UnknownAttributeError attribute}, \hyperpage{462}
-  \item \spxentry{attributes}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{450}
+  \item \spxentry{attribute}\spxextra{py3plex.dsl.TypeMismatchError attribute}, \hyperpage{463}
+  \item \spxentry{attribute}\spxextra{py3plex.dsl.UnknownAttributeError attribute}, \hyperpage{465}
+  \item \spxentry{attributes}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{451}
   \item \spxentry{AttrType}\spxextra{class in py3plex.dsl}, \hyperpage{391}
   \item \spxentry{authority\_matrix()}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{638}
+		\hyperpage{642}
   \item \spxentry{authority\_matrix()}\spxextra{in module py3plex.algorithms.node\_ranking.node\_ranking}, 
-		\hyperpage{581}
+		\hyperpage{585}
   \item \spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}, 
-		\hyperpage{488}
-  \item \spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}, \hyperpage{477}
-  \item \spxentry{autocompute}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456}
+		\hyperpage{491}
+  \item \spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}, \hyperpage{480}
+  \item \spxentry{autocompute}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{457}
   \item \spxentry{autocompute\_enabled}\spxextra{py3plex.dsl.DslMissingMetricError attribute}, 
 		\hyperpage{400}
 
   \indexspace
   \bigletter B
   \item \spxentry{basic\_pl\_stats()}\spxextra{in module py3plex.algorithms.statistics.topology}, 
-		\hyperpage{541}
+		\hyperpage{545}
   \item \spxentry{basic\_random\_walk()}\spxextra{in module py3plex.algorithms.general.walkers}, 
-		\hyperpage{576}
+		\hyperpage{580}
   \item \spxentry{basic\_stats()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{340}
   \item \spxentry{BEAM\_SIZE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{before()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{437}
-  \item \spxentry{benchmark()}\spxextra{in module py3plex.profiling}, \hyperpage{619}
+  \item \spxentry{benchmark()}\spxextra{in module py3plex.profiling}, \hyperpage{623}
   \item \spxentry{benchmark\_classification()}\spxextra{in module py3plex.algorithms.network\_classification}, 
-		\hyperpage{643}
+		\hyperpage{647}
   \item \spxentry{benchmark\_node\_classification()}\spxextra{in module py3plex.wrappers.benchmark\_nodes}, 
-		\hyperpage{616}
+		\hyperpage{620}
   \item \spxentry{best\_partition()}\spxextra{in module py3plex.algorithms.community\_detection.community\_louvain}, 
-		\hyperpage{500}
+		\hyperpage{504}
   \item \spxentry{between()}\spxextra{py3plex.dsl.EdgeLayerConstraint static method}, 
 		\hyperpage{405}
   \item \spxentry{between\_layers()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}, 
 		\hyperpage{423}
   \item \spxentry{bezier\_calculate\_dfy()}\spxextra{in module py3plex.visualization.bezier}, 
-		\hyperpage{612}
+		\hyperpage{616}
   \item \spxentry{BinaryPredicate}\spxextra{class in py3plex.algorithms.hedwig.core.predicate}, 
-		\hyperpage{629}
+		\hyperpage{633}
   \item \spxentry{bindings}\spxextra{py3plex.dsl.MatchRow attribute}, \hyperpage{414, 415}
   \item \spxentry{bipartite\_blocks}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank attribute}, 
-		\hyperpage{565}
+		\hyperpage{569}
   \item \spxentry{bits\_to\_indices()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{block\_matrix}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}, 
 		\hyperpage{372}
   \item \spxentry{block\_memberships}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}, 
@@ -138,33 +138,33 @@
   \item \spxentry{BOOLEAN}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{391}
   \item \spxentry{BooleanExpression}\spxextra{class in py3plex.dsl}, \hyperpage{392}
   \item \spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}, 
-		\hyperpage{473}
+		\hyperpage{477}
   \item \spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}, 
-		\hyperpage{484, 485}
-  \item \spxentry{bootstrap\_metric()}\spxextra{in module py3plex.uncertainty}, \hyperpage{477}
+		\hyperpage{488}
+  \item \spxentry{bootstrap\_metric()}\spxextra{in module py3plex.uncertainty}, \hyperpage{481}
   \item \spxentry{bootstrap\_mode}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{396}
   \item \spxentry{bootstrap\_unit}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{396}
   \item \spxentry{bottom\_clause()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{BottomUpLearner}\spxextra{class in py3plex.algorithms.hedwig.learners.bottomup}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{bridging\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{544}
-  \item \spxentry{build\_graph()}\spxextra{in module py3plex.algorithms.hedwig}, \hyperpage{628}
+		\hyperpage{548}
+  \item \spxentry{build\_graph()}\spxextra{in module py3plex.algorithms.hedwig}, \hyperpage{632}
   \item \spxentry{build\_occurrence\_matrix()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.entanglement}, 
-		\hyperpage{570}
+		\hyperpage{574}
   \item \spxentry{build\_supra\_heterogeneous\_matrix()}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank method}, 
-		\hyperpage{567}
+		\hyperpage{571}
   \item \spxentry{build\_supra\_modularity\_matrix()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_modularity}, 
-		\hyperpage{495}
+		\hyperpage{499}
   \item \spxentry{buildSubRegions()}\spxextra{py3plex.visualization.fa2.fa2util.Region method}, 
-		\hyperpage{631}
+		\hyperpage{635}
 
   \indexspace
   \bigletter C
   \item \spxentry{C}\spxextra{class in py3plex.dsl}, \hyperpage{392}
   \item \spxentry{calculate\_decomposition\_candidates()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
+		\hyperpage{653}
   \item \spxentry{calculate\_importance\_chi()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{378}
   \item \spxentry{calculate\_importance\_delta()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
@@ -186,114 +186,115 @@
   \item \spxentry{calculate\_importances()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{379}
   \item \spxentry{calculate\_schema()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
+		\hyperpage{653}
   \item \spxentry{call\_node2vec\_binary()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}, 
-		\hyperpage{646}
+		\hyperpage{650}
   \item \spxentry{can\_specialize()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{CATEGORICAL}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{391}
   \item \spxentry{category}\spxextra{py3plex.dsl.DSLOperator attribute}, \hyperpage{399}
   \item \spxentry{centrality()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{437}
   \item \spxentry{CentralityComputationError}, \hyperpage{386}
-  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.CommunityStats property}, \hyperpage{473}
-  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.StatMatrix property}, \hyperpage{474}
-  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.StatSeries property}, \hyperpage{476}
+  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.CommunityStats property}, \hyperpage{476}
+  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.StatMatrix property}, \hyperpage{478}
+  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.StatSeries property}, \hyperpage{479}
   \item \spxentry{certainty}\spxextra{py3plex.uncertainty.types.CommunityStats property}, 
-		\hyperpage{484}
-  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.types.StatMatrix property}, 
-		\hyperpage{485}
-  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.types.StatSeries property}, 
 		\hyperpage{487}
+  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.types.StatMatrix property}, 
+		\hyperpage{489}
+  \item \spxentry{certainty}\spxextra{py3plex.uncertainty.types.StatSeries property}, 
+		\hyperpage{490}
   \item \spxentry{chi\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{379}
   \item \spxentry{chisq()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{ci}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{396}
-  \item \spxentry{Class}\spxextra{class in py3plex.core.HINMINE.dataStructures}, \hyperpage{648}
+  \item \spxentry{ci}\spxextra{py3plex.dsl.UQConfig attribute}, \hyperpage{465}
+  \item \spxentry{Class}\spxextra{class in py3plex.core.HINMINE.dataStructures}, \hyperpage{652}
   \item \spxentry{ClassLabeled}\spxextra{py3plex.algorithms.hedwig.core.example.Example attribute}, 
-		\hyperpage{629}
-  \item \spxentry{clear()}\spxextra{py3plex.profiling.PerformanceMonitor method}, \hyperpage{619}
+		\hyperpage{633}
+  \item \spxentry{clear()}\spxextra{py3plex.profiling.PerformanceMonitor method}, \hyperpage{623}
   \item \spxentry{clear\_groups()}\spxextra{py3plex.dsl.LayerProxy static method}, \hyperpage{411}
   \item \spxentry{clear\_groups()}\spxextra{py3plex.dsl.LayerSet static method}, \hyperpage{412}
   \item \spxentry{clone()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{629}
+		\hyperpage{633}
   \item \spxentry{clone\_append()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{629}
+		\hyperpage{633}
   \item \spxentry{clone\_negate()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{clone\_swap\_with\_subclass()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{630}
-  \item \spxentry{cmd\_aggregate()}\spxextra{in module py3plex.cli}, \hyperpage{649}
-  \item \spxentry{cmd\_centrality()}\spxextra{in module py3plex.cli}, \hyperpage{649}
-  \item \spxentry{cmd\_check()}\spxextra{in module py3plex.cli}, \hyperpage{649}
-  \item \spxentry{cmd\_community()}\spxextra{in module py3plex.cli}, \hyperpage{649}
-  \item \spxentry{cmd\_convert()}\spxextra{in module py3plex.cli}, \hyperpage{650}
-  \item \spxentry{cmd\_create()}\spxextra{in module py3plex.cli}, \hyperpage{650}
-  \item \spxentry{cmd\_dsl\_lint()}\spxextra{in module py3plex.cli}, \hyperpage{650}
-  \item \spxentry{cmd\_help()}\spxextra{in module py3plex.cli}, \hyperpage{650}
-  \item \spxentry{cmd\_load()}\spxextra{in module py3plex.cli}, \hyperpage{650}
-  \item \spxentry{cmd\_query()}\spxextra{in module py3plex.cli}, \hyperpage{650}
-  \item \spxentry{cmd\_quickstart()}\spxextra{in module py3plex.cli}, \hyperpage{650}
-  \item \spxentry{cmd\_run\_config()}\spxextra{in module py3plex.cli}, \hyperpage{651}
-  \item \spxentry{cmd\_selftest()}\spxextra{in module py3plex.cli}, \hyperpage{651}
-  \item \spxentry{cmd\_stats()}\spxextra{in module py3plex.cli}, \hyperpage{651}
-  \item \spxentry{cmd\_tutorial()}\spxextra{in module py3plex.cli}, \hyperpage{651}
-  \item \spxentry{cmd\_visualize()}\spxextra{in module py3plex.cli}, \hyperpage{651}
-  \item \spxentry{coassoc}\spxextra{py3plex.uncertainty.CommunityStats attribute}, \hyperpage{473}
+		\hyperpage{634}
+  \item \spxentry{cmd\_aggregate()}\spxextra{in module py3plex.cli}, \hyperpage{653}
+  \item \spxentry{cmd\_centrality()}\spxextra{in module py3plex.cli}, \hyperpage{653}
+  \item \spxentry{cmd\_check()}\spxextra{in module py3plex.cli}, \hyperpage{653}
+  \item \spxentry{cmd\_community()}\spxextra{in module py3plex.cli}, \hyperpage{653}
+  \item \spxentry{cmd\_convert()}\spxextra{in module py3plex.cli}, \hyperpage{654}
+  \item \spxentry{cmd\_create()}\spxextra{in module py3plex.cli}, \hyperpage{654}
+  \item \spxentry{cmd\_dsl\_lint()}\spxextra{in module py3plex.cli}, \hyperpage{654}
+  \item \spxentry{cmd\_help()}\spxextra{in module py3plex.cli}, \hyperpage{654}
+  \item \spxentry{cmd\_load()}\spxextra{in module py3plex.cli}, \hyperpage{654}
+  \item \spxentry{cmd\_query()}\spxextra{in module py3plex.cli}, \hyperpage{654}
+  \item \spxentry{cmd\_quickstart()}\spxextra{in module py3plex.cli}, \hyperpage{654}
+  \item \spxentry{cmd\_run\_config()}\spxextra{in module py3plex.cli}, \hyperpage{655}
+  \item \spxentry{cmd\_selftest()}\spxextra{in module py3plex.cli}, \hyperpage{655}
+  \item \spxentry{cmd\_stats()}\spxextra{in module py3plex.cli}, \hyperpage{655}
+  \item \spxentry{cmd\_tutorial()}\spxextra{in module py3plex.cli}, \hyperpage{655}
+  \item \spxentry{cmd\_visualize()}\spxextra{in module py3plex.cli}, \hyperpage{655}
+  \item \spxentry{coassoc}\spxextra{py3plex.uncertainty.CommunityStats attribute}, \hyperpage{476}
   \item \spxentry{coassoc}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}, 
-		\hyperpage{484}
+		\hyperpage{487}
   \item \spxentry{code}\spxextra{py3plex.dsl.Diagnostic attribute}, \hyperpage{399, 400}
   \item \spxentry{code}\spxextra{py3plex.exceptions.Py3plexException attribute}, \hyperpage{389}
   \item \spxentry{collective\_influence()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{544}
-  \item \spxentry{color\_dict()}\spxextra{in module py3plex.visualization.colors}, \hyperpage{609}
+		\hyperpage{548}
+  \item \spxentry{color\_dict()}\spxextra{in module py3plex.visualization.colors}, \hyperpage{613}
   \item \spxentry{column\_normalize()}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank method}, 
-		\hyperpage{567}
+		\hyperpage{571}
   \item \spxentry{columns}\spxextra{py3plex.dsl.ExportSpec attribute}, \hyperpage{407}
   \item \spxentry{communicability\_betweenness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{545}
+		\hyperpage{549}
   \item \spxentry{communicability\_centrality()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.centrality}, 
-		\hyperpage{556}
+		\hyperpage{560}
   \item \spxentry{communicability\_centrality()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.supra\_matrix\_function\_centrality}, 
-		\hyperpage{572}
+		\hyperpage{576}
   \item \spxentry{community\_participation\_coefficient()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{515}
+		\hyperpage{519}
   \item \spxentry{community\_participation\_entropy()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{516}
+		\hyperpage{520}
   \item \spxentry{CommunityDetectionError}, \hyperpage{386}
-  \item \spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty}, \hyperpage{472}
-  \item \spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{483}
+  \item \spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty}, \hyperpage{475}
+  \item \spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{486}
   \item \spxentry{compare}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{408, 409}
   \item \spxentry{compare()}\spxextra{py3plex.dsl.C static method}, \hyperpage{392}
   \item \spxentry{CompareBuilder}\spxextra{class in py3plex.dsl}, \hyperpage{392}
   \item \spxentry{CompareStmt}\spxextra{class in py3plex.dsl}, \hyperpage{393}
   \item \spxentry{Comparison}\spxextra{class in py3plex.dsl}, \hyperpage{394}
   \item \spxentry{comparison}\spxextra{py3plex.dsl.ConditionAtom attribute}, \hyperpage{397}
-  \item \spxentry{compile\_pattern()}\spxextra{in module py3plex.dsl}, \hyperpage{463}
-  \item \spxentry{compute}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{453}, 
-		\hyperpage{456}
+  \item \spxentry{compile\_pattern()}\spxextra{in module py3plex.dsl}, \hyperpage{466}
+  \item \spxentry{compute}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
+		\hyperpage{457}
   \item \spxentry{compute()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{438}
   \item \spxentry{compute\_all\_centralities()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.centrality}, 
-		\hyperpage{557}
+		\hyperpage{561}
   \item \spxentry{compute\_blocks()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.entanglement}, 
-		\hyperpage{570}
+		\hyperpage{574}
   \item \spxentry{compute\_centrality\_for\_layer()}\spxextra{in module py3plex.dsl}, 
-		\hyperpage{463}
+		\hyperpage{466}
   \item \spxentry{compute\_entanglement()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.entanglement}, 
-		\hyperpage{571}
+		\hyperpage{575}
   \item \spxentry{compute\_entanglement\_analysis()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.entanglement}, 
-		\hyperpage{571}
+		\hyperpage{575}
   \item \spxentry{compute\_force\_directed\_layout()}\spxextra{in module py3plex.visualization.layout\_algorithms}, 
-		\hyperpage{610}
+		\hyperpage{614}
   \item \spxentry{compute\_layout()}\spxextra{in module py3plex.core.converters}, \hyperpage{370}
   \item \spxentry{compute\_modularity\_score()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{517}
+		\hyperpage{521}
   \item \spxentry{compute\_ollivier\_ricci()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{340}
   \item \spxentry{compute\_ollivier\_ricci\_flow()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{342}
   \item \spxentry{compute\_random\_layout()}\spxextra{in module py3plex.visualization.layout\_algorithms}, 
-		\hyperpage{611}
+		\hyperpage{615}
   \item \spxentry{computed\_metrics}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{451}
   \item \spxentry{ComputeItem}\spxextra{class in py3plex.dsl}, \hyperpage{395}
   \item \spxentry{ConditionAtom}\spxextra{class in py3plex.dsl}, \hyperpage{397}
@@ -303,46 +304,45 @@
   \item \spxentry{constraints}\spxextra{py3plex.dsl.PatternGraph attribute}, \hyperpage{424}
   \item \spxentry{ConversionError}, \hyperpage{386}
   \item \spxentry{convert\_mapping\_to\_rdf()}\spxextra{in module py3plex.algorithms.hedwig.core.converters}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{copy()}\spxextra{py3plex.algorithms.community\_detection.community\_louvain.Status method}, 
-		\hyperpage{500}
+		\hyperpage{504}
   \item \spxentry{core\_network\_statistics()}\spxextra{in module py3plex.algorithms.statistics.basic\_statistics}, 
-		\hyperpage{542}
+		\hyperpage{546}
   \item \spxentry{correlated\_ttest()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{correlated\_ttest\_MC()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{632}
+		\hyperpage{636}
   \item \spxentry{cost\_estimate}\spxextra{py3plex.dsl.ExplainResult attribute}, \hyperpage{406}
   \item \spxentry{count}\spxextra{py3plex.dsl.PatternQueryResult property}, \hyperpage{430}
   \item \spxentry{count}\spxextra{py3plex.dsl.QueryResult property}, \hyperpage{451}
   \item \spxentry{coverage()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{439}
-  \item \spxentry{coverage\_group}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
+  \item \spxentry{coverage\_group}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456, 457}
   \item \spxentry{coverage\_id\_field}\spxextra{py3plex.dsl.SelectStmt attribute}, 
-		\hyperpage{455, 456}
-  \item \spxentry{coverage\_k}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
-  \item \spxentry{coverage\_mode}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
-  \item \spxentry{coverage\_p}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
+		\hyperpage{456, 457}
+  \item \spxentry{coverage\_k}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
+  \item \spxentry{coverage\_mode}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
+  \item \spxentry{coverage\_p}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
   \item \spxentry{COVERED}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{create\_label\_matrix()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
-  \item \spxentry{create\_parser()}\spxextra{in module py3plex.cli}, \hyperpage{651}
+		\hyperpage{653}
+  \item \spxentry{create\_parser()}\spxextra{in module py3plex.cli}, \hyperpage{655}
   \item \spxentry{create\_tree()}\spxextra{in module py3plex.algorithms.community\_detection.community\_ranking}, 
-		\hyperpage{637}
+		\hyperpage{641}
   \item \spxentry{cross\_layer}\spxextra{py3plex.dsl.PathStmt attribute}, \hyperpage{421, 422}
   \item \spxentry{cross\_layer\_mutual\_information()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{517}
+		\hyperpage{521}
   \item \spxentry{cross\_layer\_redundancy\_entropy()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{518}
+		\hyperpage{522}
   \item \spxentry{crossing\_layers()}\spxextra{py3plex.dsl.PathBuilder method}, \hyperpage{420}
   \item \spxentry{current\_flow\_betweenness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{545}
+		\hyperpage{549}
   \item \spxentry{current\_flow\_closeness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{545}
+		\hyperpage{549}
   \item \spxentry{current\_layers}\spxextra{py3plex.dsl.DSLExecutionContext attribute}, 
 		\hyperpage{398}
   \item \spxentry{current\_nodes}\spxextra{py3plex.dsl.DSLExecutionContext attribute}, 
@@ -351,15 +351,16 @@
   \indexspace
   \bigletter D
   \item \spxentry{damping\_hyper}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{638}
+		\hyperpage{642}
   \item \spxentry{DATETIME}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{391}
   \item \spxentry{decompose\_from\_iterator()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
+		\hyperpage{653}
   \item \spxentry{DecompositionError}, \hyperpage{386}
   \item \spxentry{Default}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{Default}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}, 
-		\hyperpage{654}
+		\hyperpage{658}
+  \item \spxentry{default()}\spxextra{py3plex.dsl.UQ static method}, \hyperpage{463}
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.AlgorithmError attribute}, 
 		\hyperpage{386}
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.CentralityComputationError attribute}, 
@@ -399,77 +400,77 @@
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.VisualizationError attribute}, 
 		\hyperpage{390}
   \item \spxentry{default\_correlation\_to\_network()}\spxextra{in module py3plex.algorithms.statistics.correlation\_networks}, 
-		\hyperpage{541}
+		\hyperpage{545}
   \item \spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}, 
-		\hyperpage{487, 488}
+		\hyperpage{491}
   \item \spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}, 
-		\hyperpage{476, 477}
+		\hyperpage{480}
   \item \spxentry{default\_resampling}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}, 
-		\hyperpage{488}
+		\hyperpage{491}
   \item \spxentry{default\_resampling}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}, 
-		\hyperpage{476, 477}
+		\hyperpage{480}
   \item \spxentry{Defaults}\spxextra{class in py3plex.algorithms.hedwig.core.settings}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{defaults()}\spxextra{py3plex.dsl.Q.uncertainty class method}, \hyperpage{434}
   \item \spxentry{define()}\spxextra{py3plex.dsl.LayerProxy static method}, \hyperpage{411}
   \item \spxentry{define\_group()}\spxextra{py3plex.dsl.LayerSet static method}, \hyperpage{412}
   \item \spxentry{degree\_vector()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{519}
+		\hyperpage{523}
   \item \spxentry{degrees}\spxextra{py3plex.algorithms.community\_detection.community\_louvain.Status attribute}, 
-		\hyperpage{500}
+		\hyperpage{504}
   \item \spxentry{deprecated()}\spxextra{in module py3plex.utils}, \hyperpage{381}
   \item \spxentry{DEPTH}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{desc}\spxextra{py3plex.dsl.OrderItem attribute}, \hyperpage{418}
-  \item \spxentry{describe\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{463}
+  \item \spxentry{describe\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{467}
   \item \spxentry{description}\spxextra{py3plex.dsl.DSLOperator attribute}, \hyperpage{399}
   \item \spxentry{description}\spxextra{py3plex.dsl.PlanStep attribute}, \hyperpage{431}
-  \item \spxentry{detect\_communities()}\spxextra{in module py3plex.dsl}, \hyperpage{463}
+  \item \spxentry{detect\_communities()}\spxextra{in module py3plex.dsl}, \hyperpage{467}
   \item \spxentry{Diagnostic}\spxextra{class in py3plex.dsl}, \hyperpage{399}
   \item \spxentry{diagnostics}\spxextra{py3plex.dsl.ExplainResult attribute}, \hyperpage{406, 407}
   \item \spxentry{did\_you\_mean}\spxextra{py3plex.exceptions.Py3plexException attribute}, 
 		\hyperpage{389}
   \item \spxentry{directed}\spxextra{py3plex.dsl.PatternEdge attribute}, \hyperpage{422, 423}
   \item \spxentry{display()}\spxextra{py3plex.visualization.fa2.forceatlas2.Timer method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{distinct()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{440}
-  \item \spxentry{distinct\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455, 456}
+  \item \spxentry{distinct\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456, 457}
   \item \spxentry{draw()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
-		\hyperpage{599}
-  \item \spxentry{draw\_bezier()}\spxextra{in module py3plex.visualization.bezier}, \hyperpage{612}
-  \item \spxentry{draw\_circular()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
-		\hyperpage{600}
-  \item \spxentry{draw\_kamada\_kawai()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
-		\hyperpage{601}
-  \item \spxentry{draw\_multiedges()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{587}
-  \item \spxentry{draw\_multilayer\_default()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{588}
-  \item \spxentry{draw\_multilayer\_flow()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{589}
-  \item \spxentry{draw\_multilayer\_sankey()}\spxextra{in module py3plex.visualization.sankey}, 
-		\hyperpage{658}
-  \item \spxentry{draw\_networkx()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
-		\hyperpage{601}
-  \item \spxentry{draw\_networkx\_edge\_labels()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
 		\hyperpage{603}
-  \item \spxentry{draw\_networkx\_edges()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
+  \item \spxentry{draw\_bezier()}\spxextra{in module py3plex.visualization.bezier}, \hyperpage{616}
+  \item \spxentry{draw\_circular()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
 		\hyperpage{604}
-  \item \spxentry{draw\_networkx\_labels()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
-		\hyperpage{606}
-  \item \spxentry{draw\_networkx\_nodes()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
+  \item \spxentry{draw\_kamada\_kawai()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
+		\hyperpage{605}
+  \item \spxentry{draw\_multiedges()}\spxextra{in module py3plex.visualization.multilayer}, 
+		\hyperpage{591}
+  \item \spxentry{draw\_multilayer\_default()}\spxextra{in module py3plex.visualization.multilayer}, 
+		\hyperpage{592}
+  \item \spxentry{draw\_multilayer\_flow()}\spxextra{in module py3plex.visualization.multilayer}, 
+		\hyperpage{593}
+  \item \spxentry{draw\_multilayer\_sankey()}\spxextra{in module py3plex.visualization.sankey}, 
+		\hyperpage{662}
+  \item \spxentry{draw\_networkx()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
+		\hyperpage{605}
+  \item \spxentry{draw\_networkx\_edge\_labels()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
 		\hyperpage{607}
-  \item \spxentry{draw\_random()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
+  \item \spxentry{draw\_networkx\_edges()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
 		\hyperpage{608}
+  \item \spxentry{draw\_networkx\_labels()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
+		\hyperpage{610}
+  \item \spxentry{draw\_networkx\_nodes()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
+		\hyperpage{611}
+  \item \spxentry{draw\_random()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
+		\hyperpage{612}
   \item \spxentry{draw\_shell()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
-		\hyperpage{609}
+		\hyperpage{613}
   \item \spxentry{draw\_spectral()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
-		\hyperpage{609}
+		\hyperpage{613}
   \item \spxentry{draw\_spring()}\spxextra{in module py3plex.visualization.drawing\_machinery}, 
-		\hyperpage{609}
+		\hyperpage{613}
   \item \spxentry{drop()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{440}
-  \item \spxentry{drop\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455, 456}
-  \item \spxentry{dsl\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{464}
+  \item \spxentry{drop\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456, 457}
+  \item \spxentry{dsl\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{468}
   \item \spxentry{dsl\_version}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{409}
   \item \spxentry{dsl\_version}\spxextra{py3plex.dsl.Query attribute}, \hyperpage{435}
   \item \spxentry{DslError}, \hyperpage{400}
@@ -483,7 +484,7 @@
   \item \spxentry{dst}\spxextra{py3plex.dsl.PatternEdge attribute}, \hyperpage{422, 423}
   \item \spxentry{dst\_layer}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}, \hyperpage{405}
   \item \spxentry{during()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{441}
-  \item \spxentry{during()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{459}
+  \item \spxentry{during()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
   \item \spxentry{dynamics}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{408, 409}
   \item \spxentry{dynamics()}\spxextra{py3plex.dsl.Q static method}, \hyperpage{432}
   \item \spxentry{DynamicsBuilder}\spxextra{class in py3plex.dsl}, \hyperpage{401}
@@ -491,140 +492,141 @@
 
   \indexspace
   \bigletter E
-  \item \spxentry{Edge}\spxextra{class in py3plex.visualization.fa2.fa2util}, \hyperpage{631}
+  \item \spxentry{Edge}\spxextra{class in py3plex.visualization.fa2.fa2util}, \hyperpage{635}
   \item \spxentry{edge()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{428}
   \item \spxentry{edge\_betweenness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{546}
+		\hyperpage{550}
   \item \spxentry{edge\_bindings}\spxextra{py3plex.dsl.MatchRow attribute}, \hyperpage{415}
   \item \spxentry{edge\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}, 
 		\hyperpage{343}
   \item \spxentry{edge\_overlap()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{519}
+		\hyperpage{523}
   \item \spxentry{EDGE\_REF}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{391}
   \item \spxentry{edge\_swap()}\spxextra{py3plex.dsl.N static method}, \hyperpage{415}
   \item \spxentry{EdgeLayerConstraint}\spxextra{class in py3plex.dsl}, \hyperpage{405}
   \item \spxentry{edges}\spxextra{py3plex.dsl.PatternGraph attribute}, \hyperpage{424}
   \item \spxentry{edges}\spxextra{py3plex.dsl.QueryResult property}, \hyperpage{451}
-  \item \spxentry{EDGES}\spxextra{py3plex.dsl.Target attribute}, \hyperpage{457}
+  \item \spxentry{EDGES}\spxextra{py3plex.dsl.Target attribute}, \hyperpage{459}
   \item \spxentry{edges()}\spxextra{py3plex.dsl.Q static method}, \hyperpage{432}
   \item \spxentry{edges\_from\_temporal\_table()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{343}
   \item \spxentry{EmbeddingError}, \hyperpage{387}
   \item \spxentry{enabled}\spxextra{py3plex.profiling.PerformanceMonitor attribute}, 
-		\hyperpage{618}
+		\hyperpage{622}
   \item \spxentry{end\_grouping()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{441}
   \item \spxentry{enrichment\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{655}
-  \item \spxentry{ensure()}\spxextra{in module py3plex.algorithms.multicentrality}, \hyperpage{574}
+		\hyperpage{659}
+  \item \spxentry{ensure()}\spxextra{in module py3plex.algorithms.multicentrality}, \hyperpage{578}
   \item \spxentry{ensure()}\spxextra{in module py3plex.algorithms.statistics.basic\_statistics}, 
-		\hyperpage{542}
+		\hyperpage{546}
   \item \spxentry{ensure()}\spxextra{in module py3plex.core.converters}, \hyperpage{370}
   \item \spxentry{ensure()}\spxextra{in module py3plex.core.multinet}, \hyperpage{335}
   \item \spxentry{ensure()}\spxextra{in module py3plex.core.nx\_compat}, \hyperpage{376}
   \item \spxentry{ensure()}\spxextra{in module py3plex.core.parsers}, \hyperpage{364}
   \item \spxentry{ensure()}\spxextra{in module py3plex.core.random\_generators}, \hyperpage{372}
   \item \spxentry{ensure()}\spxextra{in module py3plex.core.supporting}, \hyperpage{375}
-  \item \spxentry{ensure()}\spxextra{in module py3plex.io.api}, \hyperpage{626}
-  \item \spxentry{ensure()}\spxextra{in module py3plex.multinet.aggregation}, \hyperpage{618}
+  \item \spxentry{ensure()}\spxextra{in module py3plex.io.api}, \hyperpage{630}
+  \item \spxentry{ensure()}\spxextra{in module py3plex.multinet.aggregation}, \hyperpage{622}
   \item \spxentry{ensure()}\spxextra{in module py3plex.utils}, \hyperpage{381}
   \item \spxentry{ensure()}\spxextra{in module py3plex.visualization.layout\_algorithms}, 
-		\hyperpage{612}
+		\hyperpage{616}
   \item \spxentry{EntityRef}\spxextra{class in py3plex.dsl}, \hyperpage{405}
   \item \spxentry{entropy\_of\_multiplexity()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{520}
+		\hyperpage{524}
   \item \spxentry{epsilon}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank attribute}, 
-		\hyperpage{565}
+		\hyperpage{569}
   \item \spxentry{erdos\_renyi()}\spxextra{py3plex.dsl.N static method}, \hyperpage{415}
-  \item \spxentry{estimate\_uncertainty()}\spxextra{in module py3plex.uncertainty}, \hyperpage{478}
+  \item \spxentry{estimate\_uncertainty()}\spxextra{in module py3plex.uncertainty}, \hyperpage{482}
   \item \spxentry{estimate\_uncertainty()}\spxextra{in module py3plex.uncertainty.estimation}, 
-		\hyperpage{490}
+		\hyperpage{494}
   \item \spxentry{estimated\_complexity}\spxextra{py3plex.dsl.PatternPlan attribute}, 
 		\hyperpage{427}
   \item \spxentry{estimated\_complexity}\spxextra{py3plex.dsl.PlanStep attribute}, \hyperpage{431}
   \item \spxentry{etype}\spxextra{py3plex.dsl.PatternEdge attribute}, \hyperpage{422, 423}
   \item \spxentry{evaluate\_oracle\_F1()}\spxextra{in module py3plex.algorithms.general.benchmark\_classification}, 
-		\hyperpage{580}
+		\hyperpage{584}
   \item \spxentry{Example}\spxextra{class in py3plex.algorithms.hedwig.core.example}, 
-		\hyperpage{629}
+		\hyperpage{633}
   \item \spxentry{examples()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{execute()}\spxextra{py3plex.dsl.CompareBuilder method}, \hyperpage{393}
   \item \spxentry{execute()}\spxextra{py3plex.dsl.DynamicsBuilder method}, \hyperpage{401}
   \item \spxentry{execute()}\spxextra{py3plex.dsl.NullModelBuilder method}, \hyperpage{416}
   \item \spxentry{execute()}\spxextra{py3plex.dsl.PathBuilder method}, \hyperpage{420}
   \item \spxentry{execute()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{428}
   \item \spxentry{execute()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{441}
-  \item \spxentry{execute()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{459}
-  \item \spxentry{execute\_ast()}\spxextra{in module py3plex.dsl}, \hyperpage{465}
-  \item \spxentry{execute\_query()}\spxextra{in module py3plex.dsl}, \hyperpage{465}
+  \item \spxentry{execute()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
+  \item \spxentry{execute\_ast()}\spxextra{in module py3plex.dsl}, \hyperpage{468}
+  \item \spxentry{execute\_query()}\spxextra{in module py3plex.dsl}, \hyperpage{468}
   \item \spxentry{execute\_query()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{344}
   \item \spxentry{ExecutionPlan}\spxextra{class in py3plex.dsl}, \hyperpage{406}
   \item \spxentry{expected\_type}\spxextra{py3plex.dsl.TypeMismatchError attribute}, 
-		\hyperpage{462}
+		\hyperpage{463}
   \item \spxentry{ExperimentKB}\spxextra{class in py3plex.algorithms.hedwig.core.kb}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{explain}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{408, 409}
   \item \spxentry{explain}\spxextra{py3plex.dsl.Query attribute}, \hyperpage{435}
-  \item \spxentry{explain()}\spxextra{in module py3plex.dsl}, \hyperpage{466}
+  \item \spxentry{explain()}\spxextra{in module py3plex.dsl}, \hyperpage{470}
   \item \spxentry{explain()}\spxextra{py3plex.dsl.LayerSet method}, \hyperpage{413}
   \item \spxentry{explain()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{428}
   \item \spxentry{explain()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{442}
   \item \spxentry{ExplainResult}\spxextra{class in py3plex.dsl}, \hyperpage{406}
-  \item \spxentry{export}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
+  \item \spxentry{export}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
   \item \spxentry{export()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{442}
   \item \spxentry{export\_csv()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{442}
   \item \spxentry{export\_json()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{443}
-  \item \spxentry{export\_result()}\spxextra{in module py3plex.dsl}, \hyperpage{467}
+  \item \spxentry{export\_result()}\spxextra{in module py3plex.dsl}, \hyperpage{470}
   \item \spxentry{export\_target}\spxextra{py3plex.dsl.CompareStmt attribute}, \hyperpage{394}
   \item \spxentry{export\_target}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{404}
   \item \spxentry{export\_target}\spxextra{py3plex.dsl.NullModelStmt attribute}, 
 		\hyperpage{417, 418}
   \item \spxentry{export\_target}\spxextra{py3plex.dsl.PathStmt attribute}, \hyperpage{422}
-  \item \spxentry{export\_target}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{461}
+  \item \spxentry{export\_target}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{462}
   \item \spxentry{ExportSpec}\spxextra{class in py3plex.dsl}, \hyperpage{407}
   \item \spxentry{ExportTarget}\spxextra{class in py3plex.dsl}, \hyperpage{407}
   \item \spxentry{expr}\spxextra{py3plex.dsl.LayerSet attribute}, \hyperpage{412}
   \item \spxentry{extend()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{extend\_replace\_worst()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{extend\_with\_similarity()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{ExtendedQuery}\spxextra{class in py3plex.dsl}, \hyperpage{408}
   \item \spxentry{ExternalToolError}, \hyperpage{387}
 
   \indexspace
   \bigletter F
+  \item \spxentry{fast()}\spxextra{py3plex.dsl.UQ static method}, \hyperpage{464}
   \item \spxentry{FDR\_Q}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{FieldExpression}\spxextra{class in py3plex.dsl}, \hyperpage{409}
   \item \spxentry{FieldProxy}\spxextra{class in py3plex.dsl}, \hyperpage{409}
-  \item \spxentry{file\_export}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
+  \item \spxentry{file\_export}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
   \item \spxentry{fill\_tmp\_with\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{345}
   \item \spxentry{filter()}\spxextra{py3plex.dsl.PatternQueryResult method}, \hyperpage{430}
   \item \spxentry{float()}\spxextra{py3plex.dsl.Param static method}, \hyperpage{419}
   \item \spxentry{flow()}\spxextra{py3plex.dsl.P static method}, \hyperpage{418}
   \item \spxentry{flow\_betweenness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{546}
+		\hyperpage{550}
   \item \spxentry{fmt}\spxextra{py3plex.dsl.ExportSpec attribute}, \hyperpage{407}
   \item \spxentry{ForceAtlas2}\spxextra{class in py3plex.visualization.fa2.forceatlas2}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{forceatlas2()}\spxextra{py3plex.visualization.fa2.forceatlas2.ForceAtlas2 method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{forceatlas2\_igraph\_layout()}\spxextra{py3plex.visualization.fa2.forceatlas2.ForceAtlas2 method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{forceatlas2\_networkx\_layout()}\spxextra{py3plex.visualization.fa2.forceatlas2.ForceAtlas2 method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{FORMAT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{format\_message()}\spxextra{py3plex.dsl.DslError method}, \hyperpage{400}
   \item \spxentry{format\_message()}\spxextra{py3plex.exceptions.Py3plexException method}, 
 		\hyperpage{389}
-  \item \spxentry{format\_result()}\spxextra{in module py3plex.dsl}, \hyperpage{467}
+  \item \spxentry{format\_result()}\spxextra{in module py3plex.dsl}, \hyperpage{470}
   \item \spxentry{from\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network class method}, 
 		\hyperpage{346}
   \item \spxentry{from\_homogeneous\_hypergraph()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
@@ -639,27 +641,27 @@
   \indexspace
   \bigletter G
   \item \spxentry{gdegrees}\spxextra{py3plex.algorithms.community\_detection.community\_louvain.Status attribute}, 
-		\hyperpage{500}
+		\hyperpage{504}
   \item \spxentry{general\_random\_walk()}\spxextra{in module py3plex.algorithms.general.walkers}, 
-		\hyperpage{576}
+		\hyperpage{580}
   \item \spxentry{generate\_coupled\_er\_multilayer()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_benchmark}, 
-		\hyperpage{508}
-  \item \spxentry{generate\_dendrogram()}\spxextra{in module py3plex.algorithms.community\_detection.community\_louvain}, 
-		\hyperpage{502}
-  \item \spxentry{generate\_multilayer\_lfr()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_benchmark}, 
-		\hyperpage{509}
-  \item \spxentry{generate\_random\_multiedges()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{591}
-  \item \spxentry{generate\_random\_networks()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{591}
-  \item \spxentry{generate\_rules\_report()}\spxextra{in module py3plex.algorithms.hedwig}, 
-		\hyperpage{628}
-  \item \spxentry{generate\_sbm\_multilayer()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_benchmark}, 
 		\hyperpage{512}
+  \item \spxentry{generate\_dendrogram()}\spxextra{in module py3plex.algorithms.community\_detection.community\_louvain}, 
+		\hyperpage{506}
+  \item \spxentry{generate\_multilayer\_lfr()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_benchmark}, 
+		\hyperpage{513}
+  \item \spxentry{generate\_random\_multiedges()}\spxextra{in module py3plex.visualization.multilayer}, 
+		\hyperpage{595}
+  \item \spxentry{generate\_random\_networks()}\spxextra{in module py3plex.visualization.multilayer}, 
+		\hyperpage{595}
+  \item \spxentry{generate\_rules\_report()}\spxextra{in module py3plex.algorithms.hedwig}, 
+		\hyperpage{632}
+  \item \spxentry{generate\_sbm\_multilayer()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_benchmark}, 
+		\hyperpage{516}
   \item \spxentry{generate\_walks()}\spxextra{in module py3plex.algorithms.general.walkers}, 
-		\hyperpage{577}
+		\hyperpage{581}
   \item \spxentry{generic\_grouping()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{612}
+		\hyperpage{616}
   \item \spxentry{get()}\spxextra{py3plex.dsl.Q.uncertainty class method}, \hyperpage{434}
   \item \spxentry{get\_aggregation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{379}
@@ -667,23 +669,23 @@
   \item \spxentry{get\_attribute\_type()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}, 
 		\hyperpage{415}
   \item \spxentry{get\_attribute\_type()}\spxextra{py3plex.dsl.SchemaProvider method}, 
-		\hyperpage{452}
+		\hyperpage{453}
   \item \spxentry{get\_attribute\_type()}\spxextra{py3plex.dsl.TypeEnvironment method}, 
-		\hyperpage{461}
+		\hyperpage{462}
   \item \spxentry{get\_background\_knowledge\_dir()}\spxextra{in module py3plex.utils}, 
 		\hyperpage{381}
   \item \spxentry{get\_background\_knowledge\_path()}\spxextra{in module py3plex.utils}, 
 		\hyperpage{382}
-  \item \spxentry{get\_biggest\_community()}\spxextra{in module py3plex.dsl}, \hyperpage{467}
+  \item \spxentry{get\_biggest\_community()}\spxextra{in module py3plex.dsl}, \hyperpage{470}
   \item \spxentry{get\_calculation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{379}
   \item \spxentry{get\_color\_palette()}\spxextra{in module py3plex.config}, \hyperpage{380}
-  \item \spxentry{get\_community\_partition()}\spxextra{in module py3plex.dsl}, \hyperpage{467}
+  \item \spxentry{get\_community\_partition()}\spxextra{in module py3plex.dsl}, \hyperpage{471}
   \item \spxentry{get\_community\_size\_distribution()}\spxextra{in module py3plex.dsl}, 
-		\hyperpage{468}
-  \item \spxentry{get\_community\_sizes()}\spxextra{in module py3plex.dsl}, \hyperpage{468}
+		\hyperpage{471}
+  \item \spxentry{get\_community\_sizes()}\spxextra{in module py3plex.dsl}, \hyperpage{471}
   \item \spxentry{get\_computed\_type()}\spxextra{py3plex.dsl.TypeEnvironment method}, 
-		\hyperpage{461}
+		\hyperpage{463}
   \item \spxentry{get\_data\_path()}\spxextra{in module py3plex.utils}, \hyperpage{382}
   \item \spxentry{get\_dataset\_path()}\spxextra{in module py3plex.utils}, \hyperpage{383}
   \item \spxentry{get\_decomposition()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
@@ -693,28 +695,28 @@
   \item \spxentry{get\_degrees()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{348}
   \item \spxentry{get\_domains()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{get\_edge\_count()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}, 
 		\hyperpage{415}
-  \item \spxentry{get\_edge\_count()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{452}
+  \item \spxentry{get\_edge\_count()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{453}
   \item \spxentry{get\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{348}
   \item \spxentry{get\_empty\_domain()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{get\_example\_image\_path()}\spxextra{in module py3plex.utils}, \hyperpage{383}
   \item \spxentry{get\_examples()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{get\_full\_domain()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{get\_label\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{349}
   \item \spxentry{get\_layer\_names()}\spxextra{py3plex.dsl.LayerExpr method}, \hyperpage{411}
   \item \spxentry{get\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{349}
-  \item \spxentry{get\_logger()}\spxextra{in module py3plex.logging\_config}, \hyperpage{621}
+  \item \spxentry{get\_logger()}\spxextra{in module py3plex.logging\_config}, \hyperpage{625}
   \item \spxentry{get\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
-  \item \spxentry{get\_monitor()}\spxextra{in module py3plex.profiling}, \hyperpage{620}
+		\hyperpage{661}
+  \item \spxentry{get\_monitor()}\spxextra{in module py3plex.profiling}, \hyperpage{624}
   \item \spxentry{get\_multilayer\_dataset\_path()}\spxextra{in module py3plex.utils}, 
 		\hyperpage{383}
   \item \spxentry{get\_neighbors()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
@@ -723,148 +725,148 @@
 		\hyperpage{350}
   \item \spxentry{get\_node\_count()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}, 
 		\hyperpage{415}
-  \item \spxentry{get\_node\_count()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{452}
+  \item \spxentry{get\_node\_count()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{453}
   \item \spxentry{get\_nodes()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{350}
-  \item \spxentry{get\_num\_communities()}\spxextra{in module py3plex.dsl}, \hyperpage{468}
+  \item \spxentry{get\_num\_communities()}\spxextra{in module py3plex.dsl}, \hyperpage{472}
   \item \spxentry{get\_nx\_object()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{350}
-  \item \spxentry{get\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{469}
+  \item \spxentry{get\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{472}
   \item \spxentry{get\_partition()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{350}
   \item \spxentry{get\_report()}\spxextra{py3plex.profiling.PerformanceMonitor method}, 
-		\hyperpage{619}
+		\hyperpage{623}
   \item \spxentry{get\_return\_vars()}\spxextra{py3plex.dsl.PatternGraph method}, \hyperpage{424}
   \item \spxentry{get\_reverse\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{get\_rng()}\spxextra{in module py3plex.utils}, \hyperpage{384}
   \item \spxentry{get\_root()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{get\_score()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
-  \item \spxentry{get\_smallest\_community()}\spxextra{in module py3plex.dsl}, \hyperpage{469}
+		\hyperpage{661}
+  \item \spxentry{get\_smallest\_community()}\spxextra{in module py3plex.dsl}, \hyperpage{472}
   \item \spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{get\_superclasses()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{get\_superclasses()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{get\_supra\_adjacency\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{351}
   \item \spxentry{get\_tensor()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{351}
   \item \spxentry{get\_top\_ranked()}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank method}, 
-		\hyperpage{567}
+		\hyperpage{571}
   \item \spxentry{get\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty}, 
-		\hyperpage{480}
+		\hyperpage{483}
   \item \spxentry{get\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty.context}, 
-		\hyperpage{488}
+		\hyperpage{492}
   \item \spxentry{get\_unique\_entity\_counts()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{352}
   \item \spxentry{gr\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{379}
   \item \spxentry{graph}\spxextra{py3plex.dsl.DSLExecutionContext attribute}, \hyperpage{398}
-  \item \spxentry{group\_by}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
+  \item \spxentry{group\_by}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
   \item \spxentry{group\_by()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{443}
   \item \spxentry{group\_score()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
-  \item \spxentry{group\_summary()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{451}
+		\hyperpage{658}
+  \item \spxentry{group\_summary()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{452}
   \item \spxentry{GroupingError}, \hyperpage{410}
 
   \indexspace
   \bigletter H
   \item \spxentry{hairball\_plot()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{591}
+		\hyperpage{595}
   \item \spxentry{harmonic\_closeness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{546}
+		\hyperpage{550}
   \item \spxentry{has\_community()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{444}
-  \item \spxentry{has\_layer()}\spxextra{py3plex.dsl.TypeEnvironment method}, \hyperpage{461}
+  \item \spxentry{has\_layer()}\spxextra{py3plex.dsl.TypeEnvironment method}, \hyperpage{463}
   \item \spxentry{heaviside()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{632}
+		\hyperpage{636}
   \item \spxentry{HeterogeneousInformationNetwork}\spxextra{class in py3plex.core.HINMINE.dataStructures}, 
-		\hyperpage{648}
-  \item \spxentry{hex\_to\_RGB()}\spxextra{in module py3plex.visualization.colors}, \hyperpage{609}
+		\hyperpage{652}
+  \item \spxentry{hex\_to\_RGB()}\spxextra{in module py3plex.visualization.colors}, \hyperpage{613}
   \item \spxentry{hierarchical()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{632}
+		\hyperpage{636}
   \item \spxentry{hierarchical\_MC()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{633}
+		\hyperpage{637}
   \item \spxentry{hinmine\_decompose()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{380}
   \item \spxentry{hinmine\_get\_cycles()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{380}
   \item \spxentry{hits\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{547}
+		\hyperpage{551}
   \item \spxentry{hub\_matrix()}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{638}
+		\hyperpage{642}
   \item \spxentry{hub\_matrix()}\spxextra{in module py3plex.algorithms.node\_ranking.node\_ranking}, 
-		\hyperpage{581}
+		\hyperpage{585}
   \item \spxentry{hubs\_and\_authorities()}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{639}
+		\hyperpage{643}
   \item \spxentry{hubs\_and\_authorities()}\spxextra{in module py3plex.algorithms.node\_ranking.node\_ranking}, 
-		\hyperpage{581}
+		\hyperpage{585}
 
   \indexspace
   \bigletter I
   \item \spxentry{i}\spxextra{py3plex.algorithms.hedwig.core.predicate.Predicate attribute}, 
-		\hyperpage{629}
+		\hyperpage{633}
   \item \spxentry{identify\_n\_hubs()}\spxextra{in module py3plex.algorithms.statistics.basic\_statistics}, 
-		\hyperpage{542}
+		\hyperpage{546}
   \item \spxentry{ig\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{380}
   \item \spxentry{Improvement}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{Improvement}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{in\_layers()}\spxextra{py3plex.dsl.PatternNodeBuilder method}, \hyperpage{425}
   \item \spxentry{IncompatibleNetworkError}, \hyperpage{387}
-  \item \spxentry{index}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{474}
-  \item \spxentry{index}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{476}
-  \item \spxentry{index}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, \hyperpage{485}
-  \item \spxentry{index}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, \hyperpage{487}
+  \item \spxentry{index}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{478}
+  \item \spxentry{index}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{479}
+  \item \spxentry{index}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, \hyperpage{489}
+  \item \spxentry{index}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, \hyperpage{490}
   \item \spxentry{indices\_to\_bits()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.optimal.OptimalLearner method}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{induced\_graph()}\spxextra{in module py3plex.algorithms.community\_detection.community\_louvain}, 
-		\hyperpage{504}
+		\hyperpage{508}
   \item \spxentry{infomap\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}, 
-		\hyperpage{492}
+		\hyperpage{496}
   \item \spxentry{information\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{547}
+		\hyperpage{551}
   \item \spxentry{init()}\spxextra{py3plex.algorithms.community\_detection.community\_louvain.Status method}, 
-		\hyperpage{500}
+		\hyperpage{504}
   \item \spxentry{init()}\spxextra{py3plex.visualization.fa2.forceatlas2.ForceAtlas2 method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{int()}\spxextra{py3plex.dsl.Param static method}, \hyperpage{419}
   \item \spxentry{inter\_layer\_assortativity()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{521}
+		\hyperpage{525}
   \item \spxentry{inter\_layer\_coupling\_strength()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{521}
+		\hyperpage{525}
   \item \spxentry{inter\_layer\_degree\_correlation()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{522}
+		\hyperpage{526}
   \item \spxentry{inter\_layer\_dependence\_entropy()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{523}
+		\hyperpage{527}
   \item \spxentry{interactive\_diagonal\_plot()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{593}
+		\hyperpage{597}
   \item \spxentry{interactive\_hairball\_plot()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{594}
+		\hyperpage{598}
   \item \spxentry{interdependence()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{523}
+		\hyperpage{527}
   \item \spxentry{interesting()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{interlayer\_degree\_correlation\_matrix()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{524}
+		\hyperpage{528}
   \item \spxentry{internals}\spxextra{py3plex.algorithms.community\_detection.community\_louvain.Status attribute}, 
-		\hyperpage{500}
+		\hyperpage{504}
   \item \spxentry{InvalidEdgeError}, \hyperpage{387}
   \item \spxentry{InvalidLayerError}, \hyperpage{388}
   \item \spxentry{InvalidNodeError}, \hyperpage{388}
@@ -874,105 +876,106 @@
   \item \spxentry{is\_comparable()}\spxextra{py3plex.dsl.AttrType method}, \hyperpage{392}
   \item \spxentry{is\_comparison}\spxextra{py3plex.dsl.ConditionAtom property}, \hyperpage{397}
   \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.CommunityStats property}, 
-		\hyperpage{473}
-  \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.StatMatrix property}, 
-		\hyperpage{474}
-  \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.StatSeries property}, 
 		\hyperpage{476}
+  \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.StatMatrix property}, 
+		\hyperpage{478}
+  \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.StatSeries property}, 
+		\hyperpage{479}
   \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.CommunityStats property}, 
-		\hyperpage{484}
-  \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.StatMatrix property}, 
-		\hyperpage{485}
-  \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.StatSeries property}, 
 		\hyperpage{487}
+  \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.StatMatrix property}, 
+		\hyperpage{489}
+  \item \spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.StatSeries property}, 
+		\hyperpage{490}
   \item \spxentry{is\_discrete\_target()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{is\_empty}\spxextra{py3plex.core.multinet.multi\_layer\_network property}, 
 		\hyperpage{352}
   \item \spxentry{is\_function}\spxextra{py3plex.dsl.ConditionAtom property}, \hyperpage{397}
   \item \spxentry{is\_implicit\_root()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{is\_implicit\_root()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{is\_special}\spxextra{py3plex.dsl.ConditionAtom property}, \hyperpage{397}
   \item \spxentry{is\_string\_like()}\spxextra{in module py3plex.core.nx\_compat}, \hyperpage{376}
-  \item \spxentry{items}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{450}
+  \item \spxentry{items}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{451}
 
   \indexspace
   \bigletter J
   \item \spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}, 
-		\hyperpage{473, 474}
+		\hyperpage{477}
   \item \spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}, 
-		\hyperpage{484, 485}
+		\hyperpage{488}
   \item \spxentry{join\_order}\spxextra{py3plex.dsl.PatternPlan attribute}, \hyperpage{426, 427}
 
   \indexspace
   \bigletter K
   \item \spxentry{kaplan\_meier\_AUC()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{katz\_bonacich\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{548}
+		\hyperpage{552}
   \item \spxentry{katz\_centrality()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.centrality}, 
-		\hyperpage{559}
+		\hyperpage{563}
   \item \spxentry{katz\_centrality()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.supra\_matrix\_function\_centrality}, 
-		\hyperpage{573}
+		\hyperpage{577}
   \item \spxentry{key}\spxextra{py3plex.dsl.OrderItem attribute}, \hyperpage{418}
   \item \spxentry{kind}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}, \hyperpage{405}
   \item \spxentry{kind}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{408, 409}
   \item \spxentry{kind}\spxextra{py3plex.dsl.LayerConstraint attribute}, \hyperpage{410}
-  \item \spxentry{kind}\spxextra{py3plex.dsl.SpecialPredicate attribute}, \hyperpage{457}
-  \item \spxentry{kind}\spxextra{py3plex.dsl.TemporalContext attribute}, \hyperpage{458}
+  \item \spxentry{kind}\spxextra{py3plex.dsl.SpecialPredicate attribute}, \hyperpage{458}
+  \item \spxentry{kind}\spxextra{py3plex.dsl.TemporalContext attribute}, \hyperpage{459}
   \item \spxentry{known\_attributes}\spxextra{py3plex.dsl.UnknownAttributeError attribute}, 
-		\hyperpage{462}
-  \item \spxentry{known\_layers}\spxextra{py3plex.dsl.UnknownLayerError attribute}, \hyperpage{462}
+		\hyperpage{465}
+  \item \spxentry{known\_layers}\spxextra{py3plex.dsl.UnknownLayerError attribute}, \hyperpage{466}
   \item \spxentry{known\_measures}\spxextra{py3plex.dsl.UnknownMeasureError attribute}, 
-		\hyperpage{463}
+		\hyperpage{466}
+  \item \spxentry{kwargs}\spxextra{py3plex.dsl.UQConfig attribute}, \hyperpage{465}
 
   \indexspace
   \bigletter L
   \item \spxentry{label()}\spxextra{py3plex.dsl.PatternNodeBuilder method}, \hyperpage{426}
   \item \spxentry{label\_propagation()}\spxextra{in module py3plex.algorithms.network\_classification}, 
-		\hyperpage{644}
+		\hyperpage{648}
   \item \spxentry{label\_propagation\_normalization()}\spxextra{in module py3plex.algorithms.network\_classification}, 
-		\hyperpage{644}
+		\hyperpage{648}
   \item \spxentry{label\_propagation\_tf()}\spxextra{in module py3plex.algorithms.network\_classification}, 
-		\hyperpage{645}
+		\hyperpage{649}
   \item \spxentry{labels}\spxextra{py3plex.dsl.PatternNode attribute}, \hyperpage{425}
-  \item \spxentry{labels}\spxextra{py3plex.uncertainty.CommunityStats attribute}, \hyperpage{473}
+  \item \spxentry{labels}\spxextra{py3plex.uncertainty.CommunityStats attribute}, \hyperpage{476}
   \item \spxentry{labels}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}, 
-		\hyperpage{484}
+		\hyperpage{487}
   \item \spxentry{layer}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}, \hyperpage{405}
-  \item \spxentry{layer}\spxextra{py3plex.dsl.UnknownLayerError attribute}, \hyperpage{462}
+  \item \spxentry{layer}\spxextra{py3plex.dsl.UnknownLayerError attribute}, \hyperpage{466}
   \item \spxentry{layer\_connectivity\_entropy()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{525}
+		\hyperpage{529}
   \item \spxentry{layer\_constraint}\spxextra{py3plex.dsl.PatternEdge attribute}, \hyperpage{423}
   \item \spxentry{layer\_constraint}\spxextra{py3plex.dsl.PatternNode attribute}, \hyperpage{425}
   \item \spxentry{layer\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}, 
 		\hyperpage{352}
   \item \spxentry{layer\_degree\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{548}
+		\hyperpage{552}
   \item \spxentry{layer\_density()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{526}
+		\hyperpage{530}
   \item \spxentry{layer\_expr}\spxextra{py3plex.dsl.CompareStmt attribute}, \hyperpage{394}
   \item \spxentry{layer\_expr}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{403, 404}
   \item \spxentry{layer\_expr}\spxextra{py3plex.dsl.NullModelStmt attribute}, \hyperpage{417, 418}
   \item \spxentry{layer\_expr}\spxextra{py3plex.dsl.PathStmt attribute}, \hyperpage{421, 422}
-  \item \spxentry{layer\_expr}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{453}, 
-		\hyperpage{456}
+  \item \spxentry{layer\_expr}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
+		\hyperpage{457}
   \item \spxentry{layer\_influence\_centrality()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{526}
+		\hyperpage{530}
   \item \spxentry{layer\_names}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}, 
 		\hyperpage{372}
   \item \spxentry{layer\_params}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{404}
   \item \spxentry{layer\_redundancy\_coefficient()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{527}
+		\hyperpage{531}
   \item \spxentry{LAYER\_REF}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{391}
-  \item \spxentry{layer\_set}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456}
+  \item \spxentry{layer\_set}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{457}
   \item \spxentry{layer\_shuffle()}\spxextra{py3plex.dsl.N static method}, \hyperpage{415}
   \item \spxentry{layer\_similarity()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{528}
+		\hyperpage{532}
   \item \spxentry{layer\_specific\_random\_walk()}\spxextra{in module py3plex.algorithms.general.walkers}, 
-		\hyperpage{578}
+		\hyperpage{582}
   \item \spxentry{LayerConstraint}\spxextra{class in py3plex.dsl}, \hyperpage{410}
   \item \spxentry{LayerExpr}\spxextra{class in py3plex.dsl}, \hyperpage{410}
   \item \spxentry{LayerExprBuilder}\spxextra{class in py3plex.dsl}, \hyperpage{411}
@@ -983,56 +986,56 @@
   \item \spxentry{LayerSetExpr}\spxextra{in module py3plex.dsl}, \hyperpage{414}
   \item \spxentry{LayerTerm}\spxextra{class in py3plex.dsl}, \hyperpage{414}
   \item \spxentry{learn\_embedding()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}, 
-		\hyperpage{647}
+		\hyperpage{651}
   \item \spxentry{Learner}\spxextra{class in py3plex.algorithms.hedwig.learners.learner}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{LEARNER}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{LEAVES}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{left}\spxextra{py3plex.dsl.Comparison attribute}, \hyperpage{395}
   \item \spxentry{leverage()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{lift()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{limit}\spxextra{py3plex.dsl.PathStmt attribute}, \hyperpage{422}
-  \item \spxentry{limit}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
-  \item \spxentry{limit}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{461}
+  \item \spxentry{limit}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
+  \item \spxentry{limit}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{462}
   \item \spxentry{limit()}\spxextra{py3plex.dsl.PathBuilder method}, \hyperpage{420}
   \item \spxentry{limit()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{428}
   \item \spxentry{limit()}\spxextra{py3plex.dsl.PatternQueryResult method}, \hyperpage{430}
   \item \spxentry{limit()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{444}
-  \item \spxentry{limit()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{459}
-  \item \spxentry{limit\_per\_group}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
+  \item \spxentry{limit()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
+  \item \spxentry{limit\_per\_group}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
   \item \spxentry{linAttraction()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{linear\_gradient()}\spxextra{in module py3plex.visualization.colors}, 
-		\hyperpage{610}
+		\hyperpage{614}
   \item \spxentry{linGravity()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{linRepulsion()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{linRepulsion\_region()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
-  \item \spxentry{lint()}\spxextra{in module py3plex.dsl}, \hyperpage{469}
+		\hyperpage{635}
+  \item \spxentry{lint()}\spxextra{in module py3plex.dsl}, \hyperpage{473}
   \item \spxentry{list\_edge\_types()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}, 
 		\hyperpage{415}
-  \item \spxentry{list\_edge\_types()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{452}
+  \item \spxentry{list\_edge\_types()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{453}
   \item \spxentry{list\_groups()}\spxextra{py3plex.dsl.LayerProxy static method}, \hyperpage{412}
   \item \spxentry{list\_groups()}\spxextra{py3plex.dsl.LayerSet static method}, \hyperpage{413}
   \item \spxentry{list\_layers()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}, 
 		\hyperpage{415}
-  \item \spxentry{list\_layers()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{452}
+  \item \spxentry{list\_layers()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{453}
   \item \spxentry{list\_node\_types()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}, 
 		\hyperpage{415}
-  \item \spxentry{list\_node\_types()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{452}
-  \item \spxentry{list\_operators()}\spxextra{in module py3plex.dsl}, \hyperpage{470}
+  \item \spxentry{list\_node\_types()}\spxextra{py3plex.dsl.SchemaProvider method}, \hyperpage{453}
+  \item \spxentry{list\_operators()}\spxextra{in module py3plex.dsl}, \hyperpage{473}
   \item \spxentry{load\_binary()}\spxextra{in module py3plex.algorithms.community\_detection.community\_louvain}, 
-		\hyperpage{505}
+		\hyperpage{509}
   \item \spxentry{load\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{549}
+		\hyperpage{553}
   \item \spxentry{load\_edge\_activity\_file()}\spxextra{in module py3plex.core.parsers}, 
 		\hyperpage{364}
   \item \spxentry{load\_edge\_activity\_raw()}\spxextra{in module py3plex.core.parsers}, 
@@ -1052,117 +1055,117 @@
   \item \spxentry{load\_temporal\_edge\_information()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{354}
   \item \spxentry{local\_efficiency\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{549}
+		\hyperpage{553}
   \item \spxentry{louvain\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}, 
-		\hyperpage{494}
+		\hyperpage{498}
   \item \spxentry{louvain\_multilayer()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_modularity}, 
-		\hyperpage{496}
+		\hyperpage{500}
   \item \spxentry{lp\_aggregated\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{549}
+		\hyperpage{553}
 
   \indexspace
   \bigletter M
-  \item \spxentry{main()}\spxextra{in module py3plex.cli}, \hyperpage{651}
-  \item \spxentry{main()}\spxextra{in module py3plex.wrappers.benchmark\_nodes}, \hyperpage{616}
-  \item \spxentry{match\_pattern()}\spxextra{in module py3plex.dsl}, \hyperpage{470}
+  \item \spxentry{main()}\spxextra{in module py3plex.cli}, \hyperpage{655}
+  \item \spxentry{main()}\spxextra{in module py3plex.wrappers.benchmark\_nodes}, \hyperpage{620}
+  \item \spxentry{match\_pattern()}\spxextra{in module py3plex.dsl}, \hyperpage{473}
   \item \spxentry{matches}\spxextra{py3plex.dsl.PatternQueryResult attribute}, \hyperpage{430}
   \item \spxentry{matches()}\spxextra{py3plex.dsl.EdgeLayerConstraint method}, \hyperpage{405}
   \item \spxentry{matches()}\spxextra{py3plex.dsl.LayerConstraint method}, \hyperpage{410}
   \item \spxentry{MatchRow}\spxextra{class in py3plex.dsl}, \hyperpage{414}
   \item \spxentry{max\_iter}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank attribute}, 
-		\hyperpage{565}
-  \item \spxentry{mean}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{474}
-  \item \spxentry{mean}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{476}
-  \item \spxentry{mean}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, \hyperpage{485}
-  \item \spxentry{mean}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, \hyperpage{487}
-  \item \spxentry{measure}\spxextra{py3plex.dsl.UnknownMeasureError attribute}, \hyperpage{463}
+		\hyperpage{569}
+  \item \spxentry{mean}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{478}
+  \item \spxentry{mean}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{479}
+  \item \spxentry{mean}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, \hyperpage{489}
+  \item \spxentry{mean}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, \hyperpage{490}
+  \item \spxentry{measure}\spxextra{py3plex.dsl.UnknownMeasureError attribute}, \hyperpage{466}
   \item \spxentry{measure()}\spxextra{py3plex.dsl.CompareBuilder method}, \hyperpage{393}
-  \item \spxentry{measure()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{459}
+  \item \spxentry{measure()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
   \item \spxentry{measures}\spxextra{py3plex.dsl.CompareStmt attribute}, \hyperpage{394}
-  \item \spxentry{measures}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{461}
+  \item \spxentry{measures}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{462}
   \item \spxentry{merge\_with()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{354}
   \item \spxentry{message}\spxextra{py3plex.dsl.Diagnostic attribute}, \hyperpage{399, 400}
   \item \spxentry{meta}\spxextra{py3plex.dsl.PatternQueryResult attribute}, \hyperpage{430}
-  \item \spxentry{meta}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{450}
-  \item \spxentry{meta}\spxextra{py3plex.uncertainty.CommunityStats attribute}, \hyperpage{473}
-  \item \spxentry{meta}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{474}
-  \item \spxentry{meta}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{476}
+  \item \spxentry{meta}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{451}
+  \item \spxentry{meta}\spxextra{py3plex.uncertainty.CommunityStats attribute}, \hyperpage{476}
+  \item \spxentry{meta}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{478}
+  \item \spxentry{meta}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{479}
   \item \spxentry{meta}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}, 
-		\hyperpage{484}
-  \item \spxentry{meta}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, \hyperpage{485}
-  \item \spxentry{meta}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, \hyperpage{487}
+		\hyperpage{487}
+  \item \spxentry{meta}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, \hyperpage{489}
+  \item \spxentry{meta}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, \hyperpage{490}
   \item \spxentry{method}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{395, 396}
+  \item \spxentry{method}\spxextra{py3plex.dsl.UQConfig attribute}, \hyperpage{464, 465}
   \item \spxentry{metric}\spxextra{py3plex.dsl.DslMissingMetricError attribute}, \hyperpage{400}
   \item \spxentry{metric\_name}\spxextra{py3plex.dsl.CompareStmt attribute}, \hyperpage{394}
   \item \spxentry{midpoint\_generator()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
+		\hyperpage{653}
   \item \spxentry{MODE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{mode}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}, 
-		\hyperpage{487, 488}
-  \item \spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}, 
-		\hyperpage{476, 477}
+		\hyperpage{491}
+  \item \spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}, \hyperpage{480}
   \item \spxentry{model()}\spxextra{py3plex.dsl.N static method}, \hyperpage{415}
   \item \spxentry{model\_type}\spxextra{py3plex.dsl.NullModelStmt attribute}, \hyperpage{417, 418}
   \item \spxentry{modularity}\spxextra{py3plex.uncertainty.CommunityStats attribute}, 
-		\hyperpage{473}
+		\hyperpage{476}
   \item \spxentry{modularity}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}, 
-		\hyperpage{484}
+		\hyperpage{487}
   \item \spxentry{modularity()}\spxextra{in module py3plex.algorithms.community\_detection.community\_louvain}, 
-		\hyperpage{505}
+		\hyperpage{509}
   \item \spxentry{modularity()}\spxextra{in module py3plex.algorithms.community\_detection.community\_measures}, 
-		\hyperpage{506}
+		\hyperpage{510}
   \item \spxentry{modularity()}\spxextra{in module py3plex.algorithms.node\_ranking.node\_ranking}, 
-		\hyperpage{581}
+		\hyperpage{585}
   \item \spxentry{modularity\_std}\spxextra{py3plex.uncertainty.CommunityStats attribute}, 
-		\hyperpage{473}
+		\hyperpage{476}
   \item \spxentry{modularity\_std}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}, 
-		\hyperpage{484}
+		\hyperpage{487}
   \item \spxentry{module}
-    \subitem \spxentry{py3plex.algorithms.centrality\_toolkit}, \hyperpage{560}
-    \subitem \spxentry{py3plex.algorithms.community\_detection.community\_louvain}, \hyperpage{500}
+    \subitem \spxentry{py3plex.algorithms.centrality\_toolkit}, \hyperpage{564}
+    \subitem \spxentry{py3plex.algorithms.community\_detection.community\_louvain}, \hyperpage{504}
     \subitem \spxentry{py3plex.algorithms.community\_detection.community\_measures}, 
-		\hyperpage{506}
-    \subitem \spxentry{py3plex.algorithms.community\_detection.community\_ranking}, \hyperpage{637}
-    \subitem \spxentry{py3plex.algorithms.community\_detection.community\_wrapper}, \hyperpage{492}
+		\hyperpage{510}
+    \subitem \spxentry{py3plex.algorithms.community\_detection.community\_ranking}, \hyperpage{641}
+    \subitem \spxentry{py3plex.algorithms.community\_detection.community\_wrapper}, \hyperpage{495}
     \subitem \spxentry{py3plex.algorithms.community\_detection.multilayer\_benchmark}, 
-		\hyperpage{507}
+		\hyperpage{511}
     \subitem \spxentry{py3plex.algorithms.community\_detection.multilayer\_modularity}, 
-		\hyperpage{495}
-    \subitem \spxentry{py3plex.algorithms.community\_detection.NoRC}, \hyperpage{636}
-    \subitem \spxentry{py3plex.algorithms.general.benchmark\_classification}, \hyperpage{580}
-    \subitem \spxentry{py3plex.algorithms.general.walkers}, \hyperpage{575}
-    \subitem \spxentry{py3plex.algorithms.hedwig}, \hyperpage{628}
-    \subitem \spxentry{py3plex.algorithms.hedwig.core.converters}, \hyperpage{656}
-    \subitem \spxentry{py3plex.algorithms.hedwig.core.example}, \hyperpage{629}
-    \subitem \spxentry{py3plex.algorithms.hedwig.core.kb}, \hyperpage{656}
-    \subitem \spxentry{py3plex.algorithms.hedwig.core.predicate}, \hyperpage{629}
-    \subitem \spxentry{py3plex.algorithms.hedwig.core.rule}, \hyperpage{629}
-    \subitem \spxentry{py3plex.algorithms.hedwig.core.settings}, \hyperpage{657}
-    \subitem \spxentry{py3plex.algorithms.hedwig.learners.bottomup}, \hyperpage{654}
-    \subitem \spxentry{py3plex.algorithms.hedwig.learners.learner}, \hyperpage{654}
-    \subitem \spxentry{py3plex.algorithms.hedwig.learners.optimal}, \hyperpage{655}
-    \subitem \spxentry{py3plex.algorithms.hedwig.stats.scorefunctions}, \hyperpage{655}
-    \subitem \spxentry{py3plex.algorithms.hedwig.stats.validate}, \hyperpage{656}
-    \subitem \spxentry{py3plex.algorithms.multicentrality}, \hyperpage{574}
-    \subitem \spxentry{py3plex.algorithms.multilayer\_algorithms.centrality}, \hyperpage{543}
-    \subitem \spxentry{py3plex.algorithms.multilayer\_algorithms.entanglement}, \hyperpage{570}
-    \subitem \spxentry{py3plex.algorithms.multilayer\_algorithms.multixrank}, \hyperpage{564}
+		\hyperpage{499}
+    \subitem \spxentry{py3plex.algorithms.community\_detection.NoRC}, \hyperpage{640}
+    \subitem \spxentry{py3plex.algorithms.general.benchmark\_classification}, \hyperpage{584}
+    \subitem \spxentry{py3plex.algorithms.general.walkers}, \hyperpage{579}
+    \subitem \spxentry{py3plex.algorithms.hedwig}, \hyperpage{632}
+    \subitem \spxentry{py3plex.algorithms.hedwig.core.converters}, \hyperpage{660}
+    \subitem \spxentry{py3plex.algorithms.hedwig.core.example}, \hyperpage{633}
+    \subitem \spxentry{py3plex.algorithms.hedwig.core.kb}, \hyperpage{660}
+    \subitem \spxentry{py3plex.algorithms.hedwig.core.predicate}, \hyperpage{633}
+    \subitem \spxentry{py3plex.algorithms.hedwig.core.rule}, \hyperpage{633}
+    \subitem \spxentry{py3plex.algorithms.hedwig.core.settings}, \hyperpage{661}
+    \subitem \spxentry{py3plex.algorithms.hedwig.learners.bottomup}, \hyperpage{658}
+    \subitem \spxentry{py3plex.algorithms.hedwig.learners.learner}, \hyperpage{658}
+    \subitem \spxentry{py3plex.algorithms.hedwig.learners.optimal}, \hyperpage{659}
+    \subitem \spxentry{py3plex.algorithms.hedwig.stats.scorefunctions}, \hyperpage{659}
+    \subitem \spxentry{py3plex.algorithms.hedwig.stats.validate}, \hyperpage{660}
+    \subitem \spxentry{py3plex.algorithms.multicentrality}, \hyperpage{578}
+    \subitem \spxentry{py3plex.algorithms.multilayer\_algorithms.centrality}, \hyperpage{547}
+    \subitem \spxentry{py3plex.algorithms.multilayer\_algorithms.entanglement}, \hyperpage{574}
+    \subitem \spxentry{py3plex.algorithms.multilayer\_algorithms.multixrank}, \hyperpage{568}
     \subitem \spxentry{py3plex.algorithms.multilayer\_algorithms.supra\_matrix\_function\_centrality}, 
-		\hyperpage{571}
-    \subitem \spxentry{py3plex.algorithms.network\_classification}, \hyperpage{643}
-    \subitem \spxentry{py3plex.algorithms.node\_ranking}, \hyperpage{637}
-    \subitem \spxentry{py3plex.algorithms.node\_ranking.node\_ranking}, \hyperpage{581}
-    \subitem \spxentry{py3plex.algorithms.statistics.basic\_statistics}, \hyperpage{542}
-    \subitem \spxentry{py3plex.algorithms.statistics.bayesiantests}, \hyperpage{631}
-    \subitem \spxentry{py3plex.algorithms.statistics.correlation\_networks}, \hyperpage{541}
-    \subitem \spxentry{py3plex.algorithms.statistics.multilayer\_statistics}, \hyperpage{514}
-    \subitem \spxentry{py3plex.algorithms.statistics.topology}, \hyperpage{541}
-    \subitem \spxentry{py3plex.cli}, \hyperpage{649}
+		\hyperpage{575}
+    \subitem \spxentry{py3plex.algorithms.network\_classification}, \hyperpage{647}
+    \subitem \spxentry{py3plex.algorithms.node\_ranking}, \hyperpage{641}
+    \subitem \spxentry{py3plex.algorithms.node\_ranking.node\_ranking}, \hyperpage{585}
+    \subitem \spxentry{py3plex.algorithms.statistics.basic\_statistics}, \hyperpage{546}
+    \subitem \spxentry{py3plex.algorithms.statistics.bayesiantests}, \hyperpage{635}
+    \subitem \spxentry{py3plex.algorithms.statistics.correlation\_networks}, \hyperpage{545}
+    \subitem \spxentry{py3plex.algorithms.statistics.multilayer\_statistics}, \hyperpage{518}
+    \subitem \spxentry{py3plex.algorithms.statistics.topology}, \hyperpage{545}
+    \subitem \spxentry{py3plex.cli}, \hyperpage{653}
     \subitem \spxentry{py3plex.config}, \hyperpage{380}
     \subitem \spxentry{py3plex.core.converters}, \hyperpage{370}
-    \subitem \spxentry{py3plex.core.HINMINE.dataStructures}, \hyperpage{648}
+    \subitem \spxentry{py3plex.core.HINMINE.dataStructures}, \hyperpage{652}
     \subitem \spxentry{py3plex.core.HINMINE.decomposition}, \hyperpage{378}
     \subitem \spxentry{py3plex.core.HINMINE.IO}, \hyperpage{380}
     \subitem \spxentry{py3plex.core.multinet}, \hyperpage{335}
@@ -1172,155 +1175,156 @@
     \subitem \spxentry{py3plex.core.supporting}, \hyperpage{375}
     \subitem \spxentry{py3plex.dsl}, \hyperpage{390}
     \subitem \spxentry{py3plex.exceptions}, \hyperpage{385}
-    \subitem \spxentry{py3plex.io.api}, \hyperpage{626}
-    \subitem \spxentry{py3plex.logging\_config}, \hyperpage{621}
-    \subitem \spxentry{py3plex.multinet.aggregation}, \hyperpage{616}
-    \subitem \spxentry{py3plex.profiling}, \hyperpage{618}
-    \subitem \spxentry{py3plex.uncertainty}, \hyperpage{471}
-    \subitem \spxentry{py3plex.uncertainty.context}, \hyperpage{488}
-    \subitem \spxentry{py3plex.uncertainty.estimation}, \hyperpage{490}
-    \subitem \spxentry{py3plex.uncertainty.types}, \hyperpage{483}
+    \subitem \spxentry{py3plex.io.api}, \hyperpage{630}
+    \subitem \spxentry{py3plex.logging\_config}, \hyperpage{625}
+    \subitem \spxentry{py3plex.multinet.aggregation}, \hyperpage{620}
+    \subitem \spxentry{py3plex.profiling}, \hyperpage{622}
+    \subitem \spxentry{py3plex.uncertainty}, \hyperpage{475}
+    \subitem \spxentry{py3plex.uncertainty.context}, \hyperpage{492}
+    \subitem \spxentry{py3plex.uncertainty.estimation}, \hyperpage{494}
+    \subitem \spxentry{py3plex.uncertainty.types}, \hyperpage{486}
     \subitem \spxentry{py3plex.utils}, \hyperpage{381}
-    \subitem \spxentry{py3plex.validation}, \hyperpage{652}
-    \subitem \spxentry{py3plex.visualization.benchmark\_visualizations}, \hyperpage{612}
-    \subitem \spxentry{py3plex.visualization.bezier}, \hyperpage{612}
-    \subitem \spxentry{py3plex.visualization.colors}, \hyperpage{609}
-    \subitem \spxentry{py3plex.visualization.drawing\_machinery}, \hyperpage{599}
+    \subitem \spxentry{py3plex.validation}, \hyperpage{656}
+    \subitem \spxentry{py3plex.visualization.benchmark\_visualizations}, \hyperpage{616}
+    \subitem \spxentry{py3plex.visualization.bezier}, \hyperpage{616}
+    \subitem \spxentry{py3plex.visualization.colors}, \hyperpage{613}
+    \subitem \spxentry{py3plex.visualization.drawing\_machinery}, \hyperpage{603}
     \subitem \spxentry{py3plex.visualization.embedding\_visualization.embedding\_visualization}, 
-		\hyperpage{631}
-    \subitem \spxentry{py3plex.visualization.fa2.fa2util}, \hyperpage{631}
-    \subitem \spxentry{py3plex.visualization.fa2.forceatlas2}, \hyperpage{630}
-    \subitem \spxentry{py3plex.visualization.layout\_algorithms}, \hyperpage{610}
-    \subitem \spxentry{py3plex.visualization.multilayer}, \hyperpage{587}
-    \subitem \spxentry{py3plex.visualization.sankey}, \hyperpage{658}
-    \subitem \spxentry{py3plex.wrappers.benchmark\_nodes}, \hyperpage{614}
-    \subitem \spxentry{py3plex.wrappers.train\_node2vec\_embedding}, \hyperpage{646}
+		\hyperpage{635}
+    \subitem \spxentry{py3plex.visualization.fa2.fa2util}, \hyperpage{635}
+    \subitem \spxentry{py3plex.visualization.fa2.forceatlas2}, \hyperpage{634}
+    \subitem \spxentry{py3plex.visualization.layout\_algorithms}, \hyperpage{614}
+    \subitem \spxentry{py3plex.visualization.multilayer}, \hyperpage{591}
+    \subitem \spxentry{py3plex.visualization.sankey}, \hyperpage{662}
+    \subitem \spxentry{py3plex.wrappers.benchmark\_nodes}, \hyperpage{618}
+    \subitem \spxentry{py3plex.wrappers.train\_node2vec\_embedding}, \hyperpage{650}
   \item \spxentry{monitor()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{354}
   \item \spxentry{monoplex\_nx\_wrapper()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{354}
   \item \spxentry{multi\_layer\_network}\spxextra{class in py3plex.core.multinet}, \hyperpage{335}
   \item \spxentry{multilayer\_betweenness\_centrality()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
-		\hyperpage{561}
+		\hyperpage{565}
   \item \spxentry{multilayer\_betweenness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{550}
+		\hyperpage{554}
   \item \spxentry{multilayer\_betweenness\_surface()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{529}
-  \item \spxentry{multilayer\_closeness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{550}
-  \item \spxentry{multilayer\_clustering\_coefficient()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{530}
-  \item \spxentry{multilayer\_eigenvector\_centrality()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
-		\hyperpage{561}
-  \item \spxentry{multilayer\_modularity()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_modularity}, 
-		\hyperpage{498}
-  \item \spxentry{multilayer\_modularity()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{531}
-  \item \spxentry{multilayer\_motif\_frequency()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{532}
-  \item \spxentry{multilayer\_pagerank()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
-		\hyperpage{562}
-  \item \spxentry{MultilayerCentrality}\spxextra{class in py3plex.algorithms.multilayer\_algorithms.centrality}, 
-		\hyperpage{543}
-  \item \spxentry{multiplex\_betweenness\_centrality()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{532}
-  \item \spxentry{multiplex\_closeness\_centrality()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
 		\hyperpage{533}
-  \item \spxentry{multiplex\_coreness()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{552}
-  \item \spxentry{multiplex\_degree\_centrality()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
-		\hyperpage{563}
-  \item \spxentry{multiplex\_eigenvector\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{552}
-  \item \spxentry{multiplex\_eigenvector\_versatility()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{552}
-  \item \spxentry{multiplex\_k\_core()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{553}
-  \item \spxentry{multiplex\_participation\_coefficient()}\spxextra{in module py3plex.algorithms.multicentrality}, 
-		\hyperpage{574}
-  \item \spxentry{multiplex\_rich\_club\_coefficient()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
+  \item \spxentry{multilayer\_closeness\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
+		\hyperpage{554}
+  \item \spxentry{multilayer\_clustering\_coefficient()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
+		\hyperpage{534}
+  \item \spxentry{multilayer\_eigenvector\_centrality()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
+		\hyperpage{565}
+  \item \spxentry{multilayer\_modularity()}\spxextra{in module py3plex.algorithms.community\_detection.multilayer\_modularity}, 
+		\hyperpage{502}
+  \item \spxentry{multilayer\_modularity()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
 		\hyperpage{535}
+  \item \spxentry{multilayer\_motif\_frequency()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
+		\hyperpage{536}
+  \item \spxentry{multilayer\_pagerank()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
+		\hyperpage{566}
+  \item \spxentry{MultilayerCentrality}\spxextra{class in py3plex.algorithms.multilayer\_algorithms.centrality}, 
+		\hyperpage{547}
+  \item \spxentry{multiplex\_betweenness\_centrality()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
+		\hyperpage{536}
+  \item \spxentry{multiplex\_closeness\_centrality()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
+		\hyperpage{537}
+  \item \spxentry{multiplex\_coreness()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
+		\hyperpage{556}
+  \item \spxentry{multiplex\_degree\_centrality()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
+		\hyperpage{567}
+  \item \spxentry{multiplex\_eigenvector\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
+		\hyperpage{556}
+  \item \spxentry{multiplex\_eigenvector\_versatility()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
+		\hyperpage{556}
+  \item \spxentry{multiplex\_k\_core()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
+		\hyperpage{557}
+  \item \spxentry{multiplex\_participation\_coefficient()}\spxextra{in module py3plex.algorithms.multicentrality}, 
+		\hyperpage{578}
+  \item \spxentry{multiplex\_rich\_club\_coefficient()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
+		\hyperpage{539}
   \item \spxentry{multiplexes}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank attribute}, 
-		\hyperpage{565}
+		\hyperpage{569}
   \item \spxentry{MultiXRank}\spxextra{class in py3plex.algorithms.multilayer\_algorithms.multixrank}, 
-		\hyperpage{565}
+		\hyperpage{569}
   \item \spxentry{multixrank\_from\_py3plex\_networks()}\spxextra{in module py3plex.algorithms.multilayer\_algorithms.multixrank}, 
-		\hyperpage{568}
+		\hyperpage{572}
 
   \indexspace
   \bigletter N
   \item \spxentry{N}\spxextra{class in py3plex.dsl}, \hyperpage{415}
   \item \spxentry{n2v\_embedding()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}, 
-		\hyperpage{648}
+		\hyperpage{652}
   \item \spxentry{n\_communities}\spxextra{py3plex.uncertainty.CommunityStats attribute}, 
-		\hyperpage{473}
+		\hyperpage{476}
   \item \spxentry{n\_communities}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}, 
-		\hyperpage{484}
+		\hyperpage{487}
   \item \spxentry{n\_examples()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{n\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{n\_null}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{396}
   \item \spxentry{n\_samples}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{396}
+  \item \spxentry{n\_samples}\spxextra{py3plex.dsl.UQConfig attribute}, \hyperpage{465}
   \item \spxentry{name}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{395, 396}
   \item \spxentry{name}\spxextra{py3plex.dsl.DSLOperator attribute}, \hyperpage{398, 399}
   \item \spxentry{name}\spxextra{py3plex.dsl.FunctionCall attribute}, \hyperpage{409, 410}
   \item \spxentry{name}\spxextra{py3plex.dsl.LayerTerm attribute}, \hyperpage{414}
   \item \spxentry{name}\spxextra{py3plex.dsl.ParamRef attribute}, \hyperpage{419}
   \item \spxentry{NEGATIONS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
+		\hyperpage{662}
   \item \spxentry{network\_a}\spxextra{py3plex.dsl.CompareStmt attribute}, \hyperpage{394}
   \item \spxentry{network\_b}\spxextra{py3plex.dsl.CompareStmt attribute}, \hyperpage{394}
   \item \spxentry{NetworkConstructionError}, \hyperpage{388}
   \item \spxentry{NetworkSchemaProvider}\spxextra{class in py3plex.dsl}, \hyperpage{415}
   \item \spxentry{NETWORKX}\spxextra{py3plex.dsl.ExportTarget attribute}, \hyperpage{407}
   \item \spxentry{NO\_CACHE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
-  \item \spxentry{Node}\spxextra{class in py3plex.visualization.fa2.fa2util}, \hyperpage{631}
+		\hyperpage{662}
+  \item \spxentry{Node}\spxextra{class in py3plex.visualization.fa2.fa2util}, \hyperpage{635}
   \item \spxentry{node()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{428}
   \item \spxentry{node2com}\spxextra{py3plex.algorithms.community\_detection.community\_louvain.Status attribute}, 
-		\hyperpage{500}
+		\hyperpage{504}
   \item \spxentry{node2vec\_walk()}\spxextra{in module py3plex.algorithms.general.walkers}, 
-		\hyperpage{579}
+		\hyperpage{583}
   \item \spxentry{node\_activity()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{536}
+		\hyperpage{540}
   \item \spxentry{node\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}, 
 		\hyperpage{355}
   \item \spxentry{node\_ids}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}, 
 		\hyperpage{372}
   \item \spxentry{node\_order}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank attribute}, 
-		\hyperpage{566}
+		\hyperpage{570}
   \item \spxentry{NODE\_REF}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{392}
   \item \spxentry{node\_type()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{444}
   \item \spxentry{nodes}\spxextra{py3plex.dsl.PatternGraph attribute}, \hyperpage{424}
-  \item \spxentry{nodes}\spxextra{py3plex.dsl.QueryResult property}, \hyperpage{451}
-  \item \spxentry{NODES}\spxextra{py3plex.dsl.Target attribute}, \hyperpage{457}
+  \item \spxentry{nodes}\spxextra{py3plex.dsl.QueryResult property}, \hyperpage{452}
+  \item \spxentry{NODES}\spxextra{py3plex.dsl.Target attribute}, \hyperpage{459}
   \item \spxentry{nodes()}\spxextra{py3plex.dsl.Q static method}, \hyperpage{433}
   \item \spxentry{non\_redundant()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{NoRC\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}, 
-		\hyperpage{492}
+		\hyperpage{495}
   \item \spxentry{NoRC\_communities\_main()}\spxextra{in module py3plex.algorithms.community\_detection.NoRC}, 
-		\hyperpage{636}
+		\hyperpage{640}
   \item \spxentry{normalize\_amplify\_freq()}\spxextra{in module py3plex.algorithms.network\_classification}, 
-		\hyperpage{645}
+		\hyperpage{649}
   \item \spxentry{normalize\_exp()}\spxextra{in module py3plex.algorithms.network\_classification}, 
-		\hyperpage{645}
+		\hyperpage{649}
   \item \spxentry{normalize\_initial\_matrix\_freq()}\spxextra{in module py3plex.algorithms.network\_classification}, 
-		\hyperpage{645}
+		\hyperpage{649}
   \item \spxentry{notes}\spxextra{py3plex.exceptions.Py3plexException attribute}, \hyperpage{389}
   \item \spxentry{np\_calculate\_importance\_chi()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{380}
   \item \spxentry{np\_calculate\_importance\_tf()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{380}
   \item \spxentry{null\_model}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{396}
-  \item \spxentry{null\_model\_metric()}\spxextra{in module py3plex.uncertainty}, \hyperpage{480}
+  \item \spxentry{null\_model\_metric()}\spxextra{in module py3plex.uncertainty}, \hyperpage{484}
   \item \spxentry{nullmodel}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{408, 409}
   \item \spxentry{NullModelBuilder}\spxextra{class in py3plex.dsl}, \hyperpage{416}
   \item \spxentry{NullModelStmt}\spxextra{class in py3plex.dsl}, \hyperpage{417}
   \item \spxentry{num\_samples}\spxextra{py3plex.dsl.NullModelStmt attribute}, \hyperpage{417, 418}
   \item \spxentry{number\_of\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_measures}, 
-		\hyperpage{507}
+		\hyperpage{511}
   \item \spxentry{NUMERIC}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{392}
   \item \spxentry{nx\_from\_scipy\_sparse\_matrix()}\spxextra{in module py3plex.core.nx\_compat}, 
 		\hyperpage{376}
@@ -1334,54 +1338,55 @@
   \indexspace
   \bigletter O
   \item \spxentry{obo2n3()}\spxextra{in module py3plex.algorithms.hedwig.core.converters}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}, 
-		\hyperpage{488}
-  \item \spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}, \hyperpage{477}
+		\hyperpage{491, 492}
+  \item \spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}, \hyperpage{480}
   \item \spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}, 
-		\hyperpage{488}
-  \item \spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}, \hyperpage{477}
+		\hyperpage{491, 492}
+  \item \spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}, \hyperpage{480, 481}
   \item \spxentry{on\_layers()}\spxextra{py3plex.dsl.CompareBuilder method}, \hyperpage{393}
   \item \spxentry{on\_layers()}\spxextra{py3plex.dsl.DynamicsBuilder method}, \hyperpage{401}
   \item \spxentry{on\_layers()}\spxextra{py3plex.dsl.NullModelBuilder method}, \hyperpage{416}
   \item \spxentry{on\_layers()}\spxextra{py3plex.dsl.PathBuilder method}, \hyperpage{420}
-  \item \spxentry{onclick()}\spxextra{in module py3plex.visualization.multilayer}, \hyperpage{594}
+  \item \spxentry{onclick()}\spxextra{in module py3plex.visualization.multilayer}, \hyperpage{598}
   \item \spxentry{one()}\spxextra{py3plex.dsl.LayerConstraint static method}, \hyperpage{410}
   \item \spxentry{op}\spxextra{py3plex.dsl.Comparison attribute}, \hyperpage{395}
   \item \spxentry{op}\spxextra{py3plex.dsl.Predicate attribute}, \hyperpage{431, 432}
   \item \spxentry{ops}\spxextra{py3plex.dsl.ConditionExpr attribute}, \hyperpage{397, 398}
   \item \spxentry{ops}\spxextra{py3plex.dsl.LayerExpr attribute}, \hyperpage{411}
   \item \spxentry{OPTIMAL\_SUBCLASS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
+		\hyperpage{662}
   \item \spxentry{OptimalLearner}\spxextra{class in py3plex.algorithms.hedwig.learners.optimal}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{options}\spxextra{py3plex.dsl.ExportSpec attribute}, \hyperpage{407}
-  \item \spxentry{order\_by}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{453}, 
-		\hyperpage{456}
-  \item \spxentry{order\_by}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{461}
+  \item \spxentry{order\_by}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
+		\hyperpage{457}
+  \item \spxentry{order\_by}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{462}
   \item \spxentry{order\_by()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{428}
   \item \spxentry{order\_by()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{444}
-  \item \spxentry{order\_by()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
+  \item \spxentry{order\_by()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{461}
   \item \spxentry{OrderItem}\spxextra{class in py3plex.dsl}, \hyperpage{418}
   \item \spxentry{OUTPUT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
+		\hyperpage{662}
   \item \spxentry{overlapping\_degree\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{553}
+		\hyperpage{557}
 
   \indexspace
   \bigletter P
   \item \spxentry{P}\spxextra{class in py3plex.dsl}, \hyperpage{418}
   \item \spxentry{page\_rank\_kernel()}\spxextra{in module py3plex.algorithms.community\_detection.community\_ranking}, 
-		\hyperpage{637}
+		\hyperpage{641}
   \item \spxentry{page\_rank\_kernel()}\spxextra{in module py3plex.algorithms.community\_detection.NoRC}, 
-		\hyperpage{637}
+		\hyperpage{641}
   \item \spxentry{page\_rank\_kernel()}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{639}
+		\hyperpage{643}
   \item \spxentry{page\_rank\_kernel()}\spxextra{in module py3plex.algorithms.node\_ranking.node\_ranking}, 
-		\hyperpage{581}
+		\hyperpage{585}
   \item \spxentry{pagerank\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{553}
+		\hyperpage{557}
   \item \spxentry{PANDAS}\spxextra{py3plex.dsl.ExportTarget attribute}, \hyperpage{408}
+  \item \spxentry{paper()}\spxextra{py3plex.dsl.UQ static method}, \hyperpage{464}
   \item \spxentry{Param}\spxextra{class in py3plex.dsl}, \hyperpage{418}
   \item \spxentry{parameter}\spxextra{py3plex.dsl.ParameterMissingError attribute}, \hyperpage{419}
   \item \spxentry{ParameterMissingError}, \hyperpage{419}
@@ -1392,7 +1397,7 @@
   \item \spxentry{params}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{403, 404}
   \item \spxentry{params}\spxextra{py3plex.dsl.NullModelStmt attribute}, \hyperpage{417, 418}
   \item \spxentry{params}\spxextra{py3plex.dsl.PathStmt attribute}, \hyperpage{421, 422}
-  \item \spxentry{params}\spxextra{py3plex.dsl.SpecialPredicate attribute}, \hyperpage{457}
+  \item \spxentry{params}\spxextra{py3plex.dsl.SpecialPredicate attribute}, \hyperpage{458}
   \item \spxentry{parse()}\spxextra{py3plex.dsl.LayerSet static method}, \hyperpage{413}
   \item \spxentry{parse\_detangler\_json()}\spxextra{in module py3plex.core.parsers}, 
 		\hyperpage{364}
@@ -1406,7 +1411,7 @@
   \item \spxentry{parse\_gpickle\_biomine()}\spxextra{in module py3plex.core.parsers}, 
 		\hyperpage{366}
   \item \spxentry{parse\_infomap()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}, 
-		\hyperpage{494}
+		\hyperpage{498}
   \item \spxentry{parse\_matrix()}\spxextra{in module py3plex.core.parsers}, \hyperpage{366}
   \item \spxentry{parse\_matrix\_to\_nx()}\spxextra{in module py3plex.core.parsers}, 
 		\hyperpage{366}
@@ -1426,9 +1431,9 @@
 		\hyperpage{369}
   \item \spxentry{ParsingError}, \hyperpage{388}
   \item \spxentry{participation\_coefficient()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{554}
+		\hyperpage{558}
   \item \spxentry{partition\_at\_level()}\spxextra{in module py3plex.algorithms.community\_detection.community\_louvain}, 
-		\hyperpage{506}
+		\hyperpage{510}
   \item \spxentry{path}\spxextra{py3plex.dsl.ExportSpec attribute}, \hyperpage{407}
   \item \spxentry{path}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{408, 409}
   \item \spxentry{path()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{429}
@@ -1450,72 +1455,72 @@
   \item \spxentry{per\_layer()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{445}
   \item \spxentry{per\_layer\_pair()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{445}
   \item \spxentry{percolation\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{554}
+		\hyperpage{558}
   \item \spxentry{percolation\_threshold()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{536}
-  \item \spxentry{PerformanceMonitor}\spxextra{class in py3plex.profiling}, \hyperpage{618}
+		\hyperpage{540}
+  \item \spxentry{PerformanceMonitor}\spxextra{class in py3plex.profiling}, \hyperpage{622}
   \item \spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}, 
-		\hyperpage{473, 474}
+		\hyperpage{477}
   \item \spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}, 
-		\hyperpage{484, 485}
+		\hyperpage{488}
   \item \spxentry{pick\_threshold()}\spxextra{in module py3plex.algorithms.statistics.correlation\_networks}, 
-		\hyperpage{542}
+		\hyperpage{546}
   \item \spxentry{plan\_steps}\spxextra{py3plex.dsl.ExplainResult attribute}, \hyperpage{406, 407}
   \item \spxentry{PlanStep}\spxextra{class in py3plex.dsl}, \hyperpage{431}
   \item \spxentry{plot\_core\_macro()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_core\_macro\_box()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_core\_macro\_gg()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_core\_micro()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_core\_micro\_gg()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_core\_micro\_grid()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_core\_time()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_core\_time\_gg()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_core\_variability()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_critical\_distance()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_edge\_colored\_projection()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{594}
+		\hyperpage{598}
   \item \spxentry{plot\_ego\_multilayer()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{595}
+		\hyperpage{599}
   \item \spxentry{plot\_mean\_times()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_posterior()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{634}
+		\hyperpage{638}
   \item \spxentry{plot\_power\_law()}\spxextra{in module py3plex.algorithms.statistics.topology}, 
-		\hyperpage{541}
+		\hyperpage{545}
   \item \spxentry{plot\_radial\_layers()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{596}
+		\hyperpage{600}
   \item \spxentry{plot\_robustness()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
+		\hyperpage{617}
   \item \spxentry{plot\_simplex()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{635}
+		\hyperpage{639}
   \item \spxentry{plot\_small\_multiples()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{597}
+		\hyperpage{601}
   \item \spxentry{plot\_supra\_adjacency\_heatmap()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{597}
+		\hyperpage{601}
   \item \spxentry{positives}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule property}, 
-		\hyperpage{630}
-  \item \spxentry{post\_filters}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455, 456}
+		\hyperpage{634}
+  \item \spxentry{post\_filters}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456, 457}
   \item \spxentry{precision()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{precision()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{Predicate}\spxextra{class in py3plex.algorithms.hedwig.core.predicate}, 
-		\hyperpage{629}
+		\hyperpage{633}
   \item \spxentry{Predicate}\spxextra{class in py3plex.dsl}, \hyperpage{431}
   \item \spxentry{predicates}\spxextra{py3plex.dsl.PatternEdge attribute}, \hyperpage{422, 423}
   \item \spxentry{predicates}\spxextra{py3plex.dsl.PatternNode attribute}, \hyperpage{425}
   \item \spxentry{predict()}\spxextra{py3plex.wrappers.benchmark\_nodes.TopKRanker method}, 
-		\hyperpage{614}
+		\hyperpage{618}
   \item \spxentry{prepare\_for\_parsing()}\spxextra{in module py3plex.core.converters}, 
 		\hyperpage{370}
   \item \spxentry{prepare\_for\_visualization()}\spxextra{in module py3plex.core.converters}, 
@@ -1524,90 +1529,90 @@
 		\hyperpage{371}
   \item \spxentry{process\_name}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{403, 404}
   \item \spxentry{process\_network()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
+		\hyperpage{653}
   \item \spxentry{process\_ref}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, 
-		\hyperpage{460, 461}
-  \item \spxentry{profile\_performance()}\spxextra{in module py3plex.profiling}, \hyperpage{620}
+		\hyperpage{461, 462}
+  \item \spxentry{profile\_performance()}\spxextra{in module py3plex.profiling}, \hyperpage{624}
   \item \spxentry{provided\_params}\spxextra{py3plex.dsl.ParameterMissingError attribute}, 
 		\hyperpage{419}
   \item \spxentry{py3plex.algorithms.centrality\_toolkit}
-    \subitem \spxentry{module}, \hyperpage{560}
-  \item \spxentry{py3plex.algorithms.community\_detection.community\_louvain}
-    \subitem \spxentry{module}, \hyperpage{500}
-  \item \spxentry{py3plex.algorithms.community\_detection.community\_measures}
-    \subitem \spxentry{module}, \hyperpage{506}
-  \item \spxentry{py3plex.algorithms.community\_detection.community\_ranking}
-    \subitem \spxentry{module}, \hyperpage{637}
-  \item \spxentry{py3plex.algorithms.community\_detection.community\_wrapper}
-    \subitem \spxentry{module}, \hyperpage{492}
-  \item \spxentry{py3plex.algorithms.community\_detection.multilayer\_benchmark}
-    \subitem \spxentry{module}, \hyperpage{507}
-  \item \spxentry{py3plex.algorithms.community\_detection.multilayer\_modularity}
-    \subitem \spxentry{module}, \hyperpage{495}
-  \item \spxentry{py3plex.algorithms.community\_detection.NoRC}
-    \subitem \spxentry{module}, \hyperpage{636}
-  \item \spxentry{py3plex.algorithms.general.benchmark\_classification}
-    \subitem \spxentry{module}, \hyperpage{580}
-  \item \spxentry{py3plex.algorithms.general.walkers}
-    \subitem \spxentry{module}, \hyperpage{575}
-  \item \spxentry{py3plex.algorithms.hedwig}
-    \subitem \spxentry{module}, \hyperpage{628}
-  \item \spxentry{py3plex.algorithms.hedwig.core.converters}
-    \subitem \spxentry{module}, \hyperpage{656}
-  \item \spxentry{py3plex.algorithms.hedwig.core.example}
-    \subitem \spxentry{module}, \hyperpage{629}
-  \item \spxentry{py3plex.algorithms.hedwig.core.kb}
-    \subitem \spxentry{module}, \hyperpage{656}
-  \item \spxentry{py3plex.algorithms.hedwig.core.predicate}
-    \subitem \spxentry{module}, \hyperpage{629}
-  \item \spxentry{py3plex.algorithms.hedwig.core.rule}
-    \subitem \spxentry{module}, \hyperpage{629}
-  \item \spxentry{py3plex.algorithms.hedwig.core.settings}
-    \subitem \spxentry{module}, \hyperpage{657}
-  \item \spxentry{py3plex.algorithms.hedwig.learners.bottomup}
-    \subitem \spxentry{module}, \hyperpage{654}
-  \item \spxentry{py3plex.algorithms.hedwig.learners.learner}
-    \subitem \spxentry{module}, \hyperpage{654}
-  \item \spxentry{py3plex.algorithms.hedwig.learners.optimal}
-    \subitem \spxentry{module}, \hyperpage{655}
-  \item \spxentry{py3plex.algorithms.hedwig.stats.scorefunctions}
-    \subitem \spxentry{module}, \hyperpage{655}
-  \item \spxentry{py3plex.algorithms.hedwig.stats.validate}
-    \subitem \spxentry{module}, \hyperpage{656}
-  \item \spxentry{py3plex.algorithms.multicentrality}
-    \subitem \spxentry{module}, \hyperpage{574}
-  \item \spxentry{py3plex.algorithms.multilayer\_algorithms.centrality}
-    \subitem \spxentry{module}, \hyperpage{543}
-  \item \spxentry{py3plex.algorithms.multilayer\_algorithms.entanglement}
-    \subitem \spxentry{module}, \hyperpage{570}
-  \item \spxentry{py3plex.algorithms.multilayer\_algorithms.multixrank}
     \subitem \spxentry{module}, \hyperpage{564}
+  \item \spxentry{py3plex.algorithms.community\_detection.community\_louvain}
+    \subitem \spxentry{module}, \hyperpage{504}
+  \item \spxentry{py3plex.algorithms.community\_detection.community\_measures}
+    \subitem \spxentry{module}, \hyperpage{510}
+  \item \spxentry{py3plex.algorithms.community\_detection.community\_ranking}
+    \subitem \spxentry{module}, \hyperpage{641}
+  \item \spxentry{py3plex.algorithms.community\_detection.community\_wrapper}
+    \subitem \spxentry{module}, \hyperpage{495}
+  \item \spxentry{py3plex.algorithms.community\_detection.multilayer\_benchmark}
+    \subitem \spxentry{module}, \hyperpage{511}
+  \item \spxentry{py3plex.algorithms.community\_detection.multilayer\_modularity}
+    \subitem \spxentry{module}, \hyperpage{499}
+  \item \spxentry{py3plex.algorithms.community\_detection.NoRC}
+    \subitem \spxentry{module}, \hyperpage{640}
+  \item \spxentry{py3plex.algorithms.general.benchmark\_classification}
+    \subitem \spxentry{module}, \hyperpage{584}
+  \item \spxentry{py3plex.algorithms.general.walkers}
+    \subitem \spxentry{module}, \hyperpage{579}
+  \item \spxentry{py3plex.algorithms.hedwig}
+    \subitem \spxentry{module}, \hyperpage{632}
+  \item \spxentry{py3plex.algorithms.hedwig.core.converters}
+    \subitem \spxentry{module}, \hyperpage{660}
+  \item \spxentry{py3plex.algorithms.hedwig.core.example}
+    \subitem \spxentry{module}, \hyperpage{633}
+  \item \spxentry{py3plex.algorithms.hedwig.core.kb}
+    \subitem \spxentry{module}, \hyperpage{660}
+  \item \spxentry{py3plex.algorithms.hedwig.core.predicate}
+    \subitem \spxentry{module}, \hyperpage{633}
+  \item \spxentry{py3plex.algorithms.hedwig.core.rule}
+    \subitem \spxentry{module}, \hyperpage{633}
+  \item \spxentry{py3plex.algorithms.hedwig.core.settings}
+    \subitem \spxentry{module}, \hyperpage{661}
+  \item \spxentry{py3plex.algorithms.hedwig.learners.bottomup}
+    \subitem \spxentry{module}, \hyperpage{658}
+  \item \spxentry{py3plex.algorithms.hedwig.learners.learner}
+    \subitem \spxentry{module}, \hyperpage{658}
+  \item \spxentry{py3plex.algorithms.hedwig.learners.optimal}
+    \subitem \spxentry{module}, \hyperpage{659}
+  \item \spxentry{py3plex.algorithms.hedwig.stats.scorefunctions}
+    \subitem \spxentry{module}, \hyperpage{659}
+  \item \spxentry{py3plex.algorithms.hedwig.stats.validate}
+    \subitem \spxentry{module}, \hyperpage{660}
+  \item \spxentry{py3plex.algorithms.multicentrality}
+    \subitem \spxentry{module}, \hyperpage{578}
+  \item \spxentry{py3plex.algorithms.multilayer\_algorithms.centrality}
+    \subitem \spxentry{module}, \hyperpage{547}
+  \item \spxentry{py3plex.algorithms.multilayer\_algorithms.entanglement}
+    \subitem \spxentry{module}, \hyperpage{574}
+  \item \spxentry{py3plex.algorithms.multilayer\_algorithms.multixrank}
+    \subitem \spxentry{module}, \hyperpage{568}
   \item \spxentry{py3plex.algorithms.multilayer\_algorithms.supra\_matrix\_function\_centrality}
-    \subitem \spxentry{module}, \hyperpage{571}
+    \subitem \spxentry{module}, \hyperpage{575}
   \item \spxentry{py3plex.algorithms.network\_classification}
-    \subitem \spxentry{module}, \hyperpage{643}
+    \subitem \spxentry{module}, \hyperpage{647}
   \item \spxentry{py3plex.algorithms.node\_ranking}
-    \subitem \spxentry{module}, \hyperpage{637}
+    \subitem \spxentry{module}, \hyperpage{641}
   \item \spxentry{py3plex.algorithms.node\_ranking.node\_ranking}
-    \subitem \spxentry{module}, \hyperpage{581}
+    \subitem \spxentry{module}, \hyperpage{585}
   \item \spxentry{py3plex.algorithms.statistics.basic\_statistics}
-    \subitem \spxentry{module}, \hyperpage{542}
+    \subitem \spxentry{module}, \hyperpage{546}
   \item \spxentry{py3plex.algorithms.statistics.bayesiantests}
-    \subitem \spxentry{module}, \hyperpage{631}
+    \subitem \spxentry{module}, \hyperpage{635}
   \item \spxentry{py3plex.algorithms.statistics.correlation\_networks}
-    \subitem \spxentry{module}, \hyperpage{541}
+    \subitem \spxentry{module}, \hyperpage{545}
   \item \spxentry{py3plex.algorithms.statistics.multilayer\_statistics}
-    \subitem \spxentry{module}, \hyperpage{514}
+    \subitem \spxentry{module}, \hyperpage{518}
   \item \spxentry{py3plex.algorithms.statistics.topology}
-    \subitem \spxentry{module}, \hyperpage{541}
+    \subitem \spxentry{module}, \hyperpage{545}
   \item \spxentry{py3plex.cli}
-    \subitem \spxentry{module}, \hyperpage{649}
+    \subitem \spxentry{module}, \hyperpage{653}
   \item \spxentry{py3plex.config}
     \subitem \spxentry{module}, \hyperpage{380}
   \item \spxentry{py3plex.core.converters}
     \subitem \spxentry{module}, \hyperpage{370}
   \item \spxentry{py3plex.core.HINMINE.dataStructures}
-    \subitem \spxentry{module}, \hyperpage{648}
+    \subitem \spxentry{module}, \hyperpage{652}
   \item \spxentry{py3plex.core.HINMINE.decomposition}
     \subitem \spxentry{module}, \hyperpage{378}
   \item \spxentry{py3plex.core.HINMINE.IO}
@@ -1627,49 +1632,49 @@
   \item \spxentry{py3plex.exceptions}
     \subitem \spxentry{module}, \hyperpage{385}
   \item \spxentry{py3plex.io.api}
-    \subitem \spxentry{module}, \hyperpage{626}
+    \subitem \spxentry{module}, \hyperpage{630}
   \item \spxentry{py3plex.logging\_config}
-    \subitem \spxentry{module}, \hyperpage{621}
+    \subitem \spxentry{module}, \hyperpage{625}
   \item \spxentry{py3plex.multinet.aggregation}
-    \subitem \spxentry{module}, \hyperpage{616}
+    \subitem \spxentry{module}, \hyperpage{620}
   \item \spxentry{py3plex.profiling}
-    \subitem \spxentry{module}, \hyperpage{618}
+    \subitem \spxentry{module}, \hyperpage{622}
   \item \spxentry{py3plex.uncertainty}
-    \subitem \spxentry{module}, \hyperpage{471}
+    \subitem \spxentry{module}, \hyperpage{475}
   \item \spxentry{py3plex.uncertainty.context}
-    \subitem \spxentry{module}, \hyperpage{488}
+    \subitem \spxentry{module}, \hyperpage{492}
   \item \spxentry{py3plex.uncertainty.estimation}
-    \subitem \spxentry{module}, \hyperpage{490}
+    \subitem \spxentry{module}, \hyperpage{494}
   \item \spxentry{py3plex.uncertainty.types}
-    \subitem \spxentry{module}, \hyperpage{483}
+    \subitem \spxentry{module}, \hyperpage{486}
   \item \spxentry{py3plex.utils}
     \subitem \spxentry{module}, \hyperpage{381}
   \item \spxentry{py3plex.validation}
-    \subitem \spxentry{module}, \hyperpage{652}
+    \subitem \spxentry{module}, \hyperpage{656}
   \item \spxentry{py3plex.visualization.benchmark\_visualizations}
-    \subitem \spxentry{module}, \hyperpage{612}
+    \subitem \spxentry{module}, \hyperpage{616}
   \item \spxentry{py3plex.visualization.bezier}
-    \subitem \spxentry{module}, \hyperpage{612}
+    \subitem \spxentry{module}, \hyperpage{616}
   \item \spxentry{py3plex.visualization.colors}
-    \subitem \spxentry{module}, \hyperpage{609}
+    \subitem \spxentry{module}, \hyperpage{613}
   \item \spxentry{py3plex.visualization.drawing\_machinery}
-    \subitem \spxentry{module}, \hyperpage{599}
+    \subitem \spxentry{module}, \hyperpage{603}
   \item \spxentry{py3plex.visualization.embedding\_visualization.embedding\_visualization}
-    \subitem \spxentry{module}, \hyperpage{631}
+    \subitem \spxentry{module}, \hyperpage{635}
   \item \spxentry{py3plex.visualization.fa2.fa2util}
-    \subitem \spxentry{module}, \hyperpage{631}
+    \subitem \spxentry{module}, \hyperpage{635}
   \item \spxentry{py3plex.visualization.fa2.forceatlas2}
-    \subitem \spxentry{module}, \hyperpage{630}
+    \subitem \spxentry{module}, \hyperpage{634}
   \item \spxentry{py3plex.visualization.layout\_algorithms}
-    \subitem \spxentry{module}, \hyperpage{610}
-  \item \spxentry{py3plex.visualization.multilayer}
-    \subitem \spxentry{module}, \hyperpage{587}
-  \item \spxentry{py3plex.visualization.sankey}
-    \subitem \spxentry{module}, \hyperpage{658}
-  \item \spxentry{py3plex.wrappers.benchmark\_nodes}
     \subitem \spxentry{module}, \hyperpage{614}
+  \item \spxentry{py3plex.visualization.multilayer}
+    \subitem \spxentry{module}, \hyperpage{591}
+  \item \spxentry{py3plex.visualization.sankey}
+    \subitem \spxentry{module}, \hyperpage{662}
+  \item \spxentry{py3plex.wrappers.benchmark\_nodes}
+    \subitem \spxentry{module}, \hyperpage{618}
   \item \spxentry{py3plex.wrappers.train\_node2vec\_embedding}
-    \subitem \spxentry{module}, \hyperpage{646}
+    \subitem \spxentry{module}, \hyperpage{650}
   \item \spxentry{Py3plexException}, \hyperpage{389}
   \item \spxentry{Py3plexFormatError}, \hyperpage{389}
   \item \spxentry{Py3plexIOError}, \hyperpage{389}
@@ -1680,15 +1685,15 @@
   \bigletter Q
   \item \spxentry{Q}\spxextra{class in py3plex.dsl}, \hyperpage{432}
   \item \spxentry{Q.uncertainty}\spxextra{class in py3plex.dsl}, \hyperpage{433}
-  \item \spxentry{quantiles}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{474}
-  \item \spxentry{quantiles}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{476}
+  \item \spxentry{quantiles}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{478}
+  \item \spxentry{quantiles}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{479}
   \item \spxentry{quantiles}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, 
-		\hyperpage{486}
+		\hyperpage{489}
   \item \spxentry{quantiles}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, 
-		\hyperpage{487}
+		\hyperpage{490}
   \item \spxentry{Query}\spxextra{class in py3plex.dsl}, \hyperpage{435}
   \item \spxentry{QueryBuilder}\spxextra{class in py3plex.dsl}, \hyperpage{435}
-  \item \spxentry{QueryResult}\spxextra{class in py3plex.dsl}, \hyperpage{450}
+  \item \spxentry{QueryResult}\spxextra{class in py3plex.dsl}, \hyperpage{451}
 
   \indexspace
   \bigletter R
@@ -1704,21 +1709,21 @@
   \item \spxentry{random\_state}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{396}
   \item \spxentry{random\_walk()}\spxextra{py3plex.dsl.P static method}, \hyperpage{418}
   \item \spxentry{random\_walk\_with\_restart()}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank method}, 
-		\hyperpage{567}
-  \item \spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}, \hyperpage{458}
+		\hyperpage{571}
+  \item \spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}, \hyperpage{459}
   \item \spxentry{rank\_by()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{445}
-  \item \spxentry{rank\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455, 456}
+  \item \spxentry{rank\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456, 457}
   \item \spxentry{Ranked}\spxextra{py3plex.algorithms.hedwig.core.example.Example attribute}, 
-		\hyperpage{629}
-  \item \spxentry{read()}\spxextra{in module py3plex.io.api}, \hyperpage{626}
+		\hyperpage{633}
+  \item \spxentry{read()}\spxextra{in module py3plex.io.api}, \hyperpage{630}
   \item \spxentry{read\_ground\_truth\_communities()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{355}
-  \item \spxentry{record()}\spxextra{py3plex.profiling.PerformanceMonitor method}, \hyperpage{619}
+  \item \spxentry{record()}\spxextra{py3plex.profiling.PerformanceMonitor method}, \hyperpage{623}
   \item \spxentry{ref()}\spxextra{py3plex.dsl.Param static method}, \hyperpage{419}
-  \item \spxentry{Region}\spxextra{class in py3plex.visualization.fa2.fa2util}, \hyperpage{631}
-  \item \spxentry{register\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{470}
-  \item \spxentry{register\_reader()}\spxextra{in module py3plex.io.api}, \hyperpage{626}
-  \item \spxentry{register\_writer()}\spxextra{in module py3plex.io.api}, \hyperpage{627}
+  \item \spxentry{Region}\spxextra{class in py3plex.visualization.fa2.fa2util}, \hyperpage{635}
+  \item \spxentry{register\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{474}
+  \item \spxentry{register\_reader()}\spxextra{in module py3plex.io.api}, \hyperpage{630}
+  \item \spxentry{register\_writer()}\spxextra{in module py3plex.io.api}, \hyperpage{631}
   \item \spxentry{remove\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{355}
   \item \spxentry{remove\_layer\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
@@ -1726,60 +1731,60 @@
   \item \spxentry{remove\_nodes()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{356}
   \item \spxentry{rename()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{446}
-  \item \spxentry{rename\_map}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455, 456}
-  \item \spxentry{replacement}\spxextra{py3plex.dsl.SuggestedFix attribute}, \hyperpage{457}
+  \item \spxentry{rename\_map}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456, 457}
+  \item \spxentry{replacement}\spxextra{py3plex.dsl.SuggestedFix attribute}, \hyperpage{458}
   \item \spxentry{replicates}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{404}
   \item \spxentry{require()}\spxextra{in module py3plex.algorithms.multicentrality}, 
-		\hyperpage{575}
+		\hyperpage{579}
   \item \spxentry{require()}\spxextra{in module py3plex.algorithms.statistics.basic\_statistics}, 
-		\hyperpage{543}
+		\hyperpage{547}
   \item \spxentry{require()}\spxextra{in module py3plex.core.converters}, \hyperpage{371}
   \item \spxentry{require()}\spxextra{in module py3plex.core.multinet}, \hyperpage{364}
   \item \spxentry{require()}\spxextra{in module py3plex.core.nx\_compat}, \hyperpage{378}
   \item \spxentry{require()}\spxextra{in module py3plex.core.parsers}, \hyperpage{370}
   \item \spxentry{require()}\spxextra{in module py3plex.core.random\_generators}, \hyperpage{375}
   \item \spxentry{require()}\spxextra{in module py3plex.core.supporting}, \hyperpage{375}
-  \item \spxentry{require()}\spxextra{in module py3plex.io.api}, \hyperpage{627}
-  \item \spxentry{require()}\spxextra{in module py3plex.multinet.aggregation}, \hyperpage{618}
+  \item \spxentry{require()}\spxextra{in module py3plex.io.api}, \hyperpage{631}
+  \item \spxentry{require()}\spxextra{in module py3plex.multinet.aggregation}, \hyperpage{622}
   \item \spxentry{require()}\spxextra{in module py3plex.utils}, \hyperpage{385}
   \item \spxentry{require()}\spxextra{in module py3plex.visualization.layout\_algorithms}, 
-		\hyperpage{612}
+		\hyperpage{616}
   \item \spxentry{required\_by}\spxextra{py3plex.dsl.DslMissingMetricError attribute}, 
 		\hyperpage{400}
-  \item \spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty}, \hyperpage{473}
-  \item \spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{484}
+  \item \spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty}, \hyperpage{476}
+  \item \spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{487}
   \item \spxentry{reset()}\spxextra{py3plex.dsl.Q.uncertainty class method}, \hyperpage{435}
   \item \spxentry{reset\_to\_defaults()}\spxextra{in module py3plex.config}, \hyperpage{380}
   \item \spxentry{resilience()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{537}
+		\hyperpage{541}
   \item \spxentry{resolve()}\spxextra{py3plex.dsl.LayerSet method}, \hyperpage{414}
   \item \spxentry{restart\_prob}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank attribute}, 
-		\hyperpage{565}
+		\hyperpage{569}
   \item \spxentry{result\_name}\spxextra{py3plex.dsl.ComputeItem property}, \hyperpage{397}
   \item \spxentry{return\_infomap\_communities()}\spxextra{in module py3plex.algorithms.community\_detection.community\_ranking}, 
-		\hyperpage{637}
+		\hyperpage{641}
   \item \spxentry{return\_vars}\spxextra{py3plex.dsl.PatternGraph attribute}, \hyperpage{424, 425}
   \item \spxentry{returning()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{429}
   \item \spxentry{rf\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{380}
-  \item \spxentry{RGB\_to\_hex()}\spxextra{in module py3plex.visualization.colors}, \hyperpage{609}
+  \item \spxentry{RGB\_to\_hex()}\spxextra{in module py3plex.visualization.colors}, \hyperpage{613}
   \item \spxentry{right}\spxextra{py3plex.dsl.Comparison attribute}, \hyperpage{395}
   \item \spxentry{root\_var}\spxextra{py3plex.dsl.PatternPlan attribute}, \hyperpage{426, 427}
   \item \spxentry{rows}\spxextra{py3plex.dsl.PatternQueryResult property}, \hyperpage{430}
-  \item \spxentry{Rule}\spxextra{class in py3plex.algorithms.hedwig.core.rule}, \hyperpage{629}
-  \item \spxentry{rule\_kernel()}\spxextra{in module py3plex.algorithms.hedwig}, \hyperpage{628}
+  \item \spxentry{Rule}\spxextra{class in py3plex.algorithms.hedwig.core.rule}, \hyperpage{633}
+  \item \spxentry{rule\_kernel()}\spxextra{in module py3plex.algorithms.hedwig}, \hyperpage{632}
   \item \spxentry{rule\_report()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{ruleset\_examples\_json()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule static method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{ruleset\_report()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule static method}, 
-		\hyperpage{630}
-  \item \spxentry{run()}\spxextra{in module py3plex.algorithms.hedwig}, \hyperpage{628}
+		\hyperpage{634}
+  \item \spxentry{run()}\spxextra{in module py3plex.algorithms.hedwig}, \hyperpage{632}
   \item \spxentry{run()}\spxextra{py3plex.dsl.DynamicsBuilder method}, \hyperpage{402}
   \item \spxentry{run\_infomap()}\spxextra{in module py3plex.algorithms.community\_detection.community\_wrapper}, 
-		\hyperpage{494}
-  \item \spxentry{run\_learner()}\spxextra{in module py3plex.algorithms.hedwig}, \hyperpage{628}
-  \item \spxentry{run\_PPR()}\spxextra{in module py3plex.algorithms.node\_ranking}, \hyperpage{640}
+		\hyperpage{498}
+  \item \spxentry{run\_learner()}\spxextra{in module py3plex.algorithms.hedwig}, \hyperpage{632}
+  \item \spxentry{run\_PPR()}\spxextra{in module py3plex.algorithms.node\_ranking}, \hyperpage{644}
 
   \indexspace
   \bigletter S
@@ -1790,15 +1795,16 @@
   \item \spxentry{save\_network()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{356}
   \item \spxentry{SBMMetadata}\spxextra{class in py3plex.core.random\_generators}, \hyperpage{371}
-  \item \spxentry{SchemaProvider}\spxextra{class in py3plex.dsl}, \hyperpage{452}
+  \item \spxentry{SchemaProvider}\spxextra{class in py3plex.dsl}, \hyperpage{453}
   \item \spxentry{SCORE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
+		\hyperpage{662}
   \item \spxentry{seed}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{404}
   \item \spxentry{seed}\spxextra{py3plex.dsl.NullModelStmt attribute}, \hyperpage{417, 418}
+  \item \spxentry{seed}\spxextra{py3plex.dsl.UQConfig attribute}, \hyperpage{465}
   \item \spxentry{SEED}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}, 
-		\hyperpage{473, 474}
+		\hyperpage{476, 477}
   \item \spxentry{SEED}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}, 
-		\hyperpage{484, 485}
+		\hyperpage{487, 488}
   \item \spxentry{seed()}\spxextra{py3plex.dsl.DynamicsBuilder method}, \hyperpage{402}
   \item \spxentry{seed()}\spxextra{py3plex.dsl.NullModelBuilder method}, \hyperpage{416}
   \item \spxentry{seed\_fraction}\spxextra{py3plex.dsl.DynamicsStmt attribute}, 
@@ -1807,186 +1813,186 @@
   \item \spxentry{select}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{408, 409}
   \item \spxentry{select}\spxextra{py3plex.dsl.Query attribute}, \hyperpage{435}
   \item \spxentry{select()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{446}
-  \item \spxentry{select\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455, 456}
-  \item \spxentry{select\_high\_degree\_nodes()}\spxextra{in module py3plex.dsl}, \hyperpage{470}
-  \item \spxentry{select\_nodes\_by\_layer()}\spxextra{in module py3plex.dsl}, \hyperpage{471}
-  \item \spxentry{SelectStmt}\spxextra{class in py3plex.dsl}, \hyperpage{452}
+  \item \spxentry{select\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456, 457}
+  \item \spxentry{select\_high\_degree\_nodes()}\spxextra{in module py3plex.dsl}, \hyperpage{474}
+  \item \spxentry{select\_nodes\_by\_layer()}\spxextra{in module py3plex.dsl}, \hyperpage{474}
+  \item \spxentry{SelectStmt}\spxextra{class in py3plex.dsl}, \hyperpage{454}
   \item \spxentry{serialize\_to\_edgelist()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{357}
   \item \spxentry{set\_attribute\_type()}\spxextra{py3plex.dsl.TypeEnvironment method}, 
-		\hyperpage{462}
+		\hyperpage{463}
   \item \spxentry{set\_computed\_type()}\spxextra{py3plex.dsl.TypeEnvironment method}, 
-		\hyperpage{462}
+		\hyperpage{463}
   \item \spxentry{set\_node\_attribute()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{358}
   \item \spxentry{set\_of()}\spxextra{py3plex.dsl.LayerConstraint static method}, \hyperpage{410}
   \item \spxentry{set\_partial\_fit\_request()}\spxextra{py3plex.wrappers.benchmark\_nodes.TopKRanker method}, 
-		\hyperpage{614}
+		\hyperpage{618}
   \item \spxentry{set\_predict\_request()}\spxextra{py3plex.wrappers.benchmark\_nodes.TopKRanker method}, 
-		\hyperpage{614}
+		\hyperpage{618}
   \item \spxentry{set\_score\_request()}\spxextra{py3plex.wrappers.benchmark\_nodes.TopKRanker method}, 
-		\hyperpage{615}
+		\hyperpage{619}
   \item \spxentry{set\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty}, 
-		\hyperpage{482}
+		\hyperpage{485}
   \item \spxentry{set\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty.context}, 
-		\hyperpage{489}
-  \item \spxentry{setup\_logging()}\spxextra{in module py3plex.logging\_config}, \hyperpage{621}
+		\hyperpage{492}
+  \item \spxentry{setup\_logging()}\spxextra{in module py3plex.logging\_config}, \hyperpage{625}
   \item \spxentry{severity}\spxextra{py3plex.dsl.Diagnostic attribute}, \hyperpage{399, 400}
   \item \spxentry{shortest()}\spxextra{py3plex.dsl.P static method}, \hyperpage{418}
   \item \spxentry{signrank()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{635}
+		\hyperpage{639}
   \item \spxentry{signrank\_MC()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{635}
+		\hyperpage{639}
   \item \spxentry{signtest()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{635}
+		\hyperpage{639}
   \item \spxentry{signtest\_MC()}\spxextra{in module py3plex.algorithms.statistics.bayesiantests}, 
-		\hyperpage{636}
+		\hyperpage{640}
   \item \spxentry{Similarity}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}, 
-		\hyperpage{655}
+		\hyperpage{659}
   \item \spxentry{Similarity}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{similarity()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{size()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{size\_distribution()}\spxextra{in module py3plex.algorithms.community\_detection.community\_measures}, 
-		\hyperpage{507}
+		\hyperpage{511}
   \item \spxentry{sort()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{447}
   \item \spxentry{source}\spxextra{py3plex.dsl.PathStmt attribute}, \hyperpage{421, 422}
   \item \spxentry{span}\spxextra{py3plex.dsl.Diagnostic attribute}, \hyperpage{399, 400}
-  \item \spxentry{span}\spxextra{py3plex.dsl.SuggestedFix attribute}, \hyperpage{457}
+  \item \spxentry{span}\spxextra{py3plex.dsl.SuggestedFix attribute}, \hyperpage{458}
   \item \spxentry{sparse2graph()}\spxextra{in module py3plex.wrappers.benchmark\_nodes}, 
-		\hyperpage{616}
+		\hyperpage{620}
   \item \spxentry{sparse\_page\_rank()}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{641}
+		\hyperpage{645}
   \item \spxentry{sparse\_page\_rank()}\spxextra{in module py3plex.algorithms.node\_ranking.node\_ranking}, 
-		\hyperpage{582}
+		\hyperpage{586}
   \item \spxentry{sparse\_to\_px()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{358}
   \item \spxentry{special}\spxextra{py3plex.dsl.ConditionAtom attribute}, \hyperpage{397}
   \item \spxentry{specialize()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
+		\hyperpage{658}
   \item \spxentry{specialize\_add\_relation()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
-		\hyperpage{654}
-  \item \spxentry{SpecialPredicate}\spxextra{class in py3plex.dsl}, \hyperpage{457}
+		\hyperpage{658}
+  \item \spxentry{SpecialPredicate}\spxextra{class in py3plex.dsl}, \hyperpage{458}
   \item \spxentry{split\_to\_indices()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
+		\hyperpage{653}
   \item \spxentry{split\_to\_layers()}\spxextra{in module py3plex.core.supporting}, \hyperpage{375}
   \item \spxentry{split\_to\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{358}
   \item \spxentry{split\_to\_parts()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
-		\hyperpage{649}
+		\hyperpage{653}
   \item \spxentry{spread\_percent\_hyper}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{643}
+		\hyperpage{647}
   \item \spxentry{spread\_step\_hyper}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{643}
+		\hyperpage{647}
   \item \spxentry{spreading\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{554}
+		\hyperpage{558}
   \item \spxentry{src}\spxextra{py3plex.dsl.PatternEdge attribute}, \hyperpage{422, 423}
   \item \spxentry{src\_layer}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}, \hyperpage{405}
   \item \spxentry{stability}\spxextra{py3plex.uncertainty.CommunityStats attribute}, 
-		\hyperpage{473}
+		\hyperpage{476}
   \item \spxentry{stability}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}, 
-		\hyperpage{484}
+		\hyperpage{487}
   \item \spxentry{start()}\spxextra{py3plex.visualization.fa2.forceatlas2.Timer method}, 
-		\hyperpage{630}
-  \item \spxentry{StatMatrix}\spxextra{class in py3plex.uncertainty}, \hyperpage{474}
-  \item \spxentry{StatMatrix}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{485}
-  \item \spxentry{stats}\spxextra{py3plex.profiling.PerformanceMonitor attribute}, \hyperpage{618}
-  \item \spxentry{StatSeries}\spxextra{class in py3plex.uncertainty}, \hyperpage{475}
-  \item \spxentry{StatSeries}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{486}
+		\hyperpage{634}
+  \item \spxentry{StatMatrix}\spxextra{class in py3plex.uncertainty}, \hyperpage{477}
+  \item \spxentry{StatMatrix}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{488}
+  \item \spxentry{stats}\spxextra{py3plex.profiling.PerformanceMonitor attribute}, \hyperpage{622}
+  \item \spxentry{StatSeries}\spxextra{class in py3plex.uncertainty}, \hyperpage{478}
+  \item \spxentry{StatSeries}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{489}
   \item \spxentry{Status}\spxextra{class in py3plex.algorithms.community\_detection.community\_louvain}, 
-		\hyperpage{500}
-  \item \spxentry{std}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{474}
-  \item \spxentry{std}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{476}
-  \item \spxentry{std}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, \hyperpage{486}
-  \item \spxentry{std}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, \hyperpage{487}
+		\hyperpage{504}
+  \item \spxentry{std}\spxextra{py3plex.uncertainty.StatMatrix attribute}, \hyperpage{478}
+  \item \spxentry{std}\spxextra{py3plex.uncertainty.StatSeries attribute}, \hyperpage{479}
+  \item \spxentry{std}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}, \hyperpage{489}
+  \item \spxentry{std}\spxextra{py3plex.uncertainty.types.StatSeries attribute}, \hyperpage{490}
   \item \spxentry{steps}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{404}
   \item \spxentry{steps}\spxextra{py3plex.dsl.ExecutionPlan attribute}, \hyperpage{406}
   \item \spxentry{stochastic\_normalization()}\spxextra{in module py3plex.algorithms.node\_ranking}, 
-		\hyperpage{643}
+		\hyperpage{647}
   \item \spxentry{stochastic\_normalization()}\spxextra{in module py3plex.algorithms.node\_ranking.node\_ranking}, 
-		\hyperpage{582}
+		\hyperpage{586}
   \item \spxentry{stochastic\_normalization\_hin()}\spxextra{in module py3plex.algorithms.node\_ranking.node\_ranking}, 
-		\hyperpage{582}
+		\hyperpage{586}
   \item \spxentry{stop()}\spxextra{py3plex.visualization.fa2.forceatlas2.Timer method}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{str()}\spxextra{py3plex.dsl.Param static method}, \hyperpage{419}
   \item \spxentry{strongGravity()}\spxextra{in module py3plex.visualization.fa2.fa2util}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{subgraph\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{555}
+		\hyperpage{559}
   \item \spxentry{subnetwork()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{358}
   \item \spxentry{suggested\_fix}\spxextra{py3plex.dsl.Diagnostic attribute}, \hyperpage{400}
-  \item \spxentry{SuggestedFix}\spxextra{class in py3plex.dsl}, \hyperpage{457}
+  \item \spxentry{SuggestedFix}\spxextra{class in py3plex.dsl}, \hyperpage{458}
   \item \spxentry{suggestion}\spxextra{py3plex.dsl.UnknownAttributeError attribute}, 
-		\hyperpage{462}
-  \item \spxentry{suggestion}\spxextra{py3plex.dsl.UnknownLayerError attribute}, \hyperpage{462}
-  \item \spxentry{suggestion}\spxextra{py3plex.dsl.UnknownMeasureError attribute}, \hyperpage{463}
+		\hyperpage{466}
+  \item \spxentry{suggestion}\spxextra{py3plex.dsl.UnknownLayerError attribute}, \hyperpage{466}
+  \item \spxentry{suggestion}\spxextra{py3plex.dsl.UnknownMeasureError attribute}, \hyperpage{466}
   \item \spxentry{suggestions}\spxextra{py3plex.exceptions.Py3plexException attribute}, 
 		\hyperpage{389}
   \item \spxentry{summarize()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{447}
-  \item \spxentry{summarize\_aggs}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455, 456}
+  \item \spxentry{summarize\_aggs}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456, 457}
   \item \spxentry{summary()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{358}
   \item \spxentry{super\_classes()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}, 
-		\hyperpage{657}
+		\hyperpage{661}
   \item \spxentry{SUPPORT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
-  \item \spxentry{supported\_formats()}\spxextra{in module py3plex.io.api}, \hyperpage{627}
+		\hyperpage{662}
+  \item \spxentry{supported\_formats()}\spxextra{in module py3plex.io.api}, \hyperpage{631}
   \item \spxentry{supports\_operator()}\spxextra{py3plex.dsl.AttrType method}, \hyperpage{392}
   \item \spxentry{supra\_adjacency\_matrix\_plot()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{598}
+		\hyperpage{602}
   \item \spxentry{supra\_degree\_centrality()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{555}
+		\hyperpage{559}
   \item \spxentry{supra\_laplacian\_spectrum()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{538}
+		\hyperpage{542}
   \item \spxentry{supra\_matrix}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank attribute}, 
-		\hyperpage{566}
+		\hyperpage{570}
 
   \indexspace
   \bigletter T
-  \item \spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}, \hyperpage{458}
-  \item \spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}, \hyperpage{458}
+  \item \spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}, \hyperpage{459}
+  \item \spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}, \hyperpage{459}
   \item \spxentry{t\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{table\_to\_latex()}\spxextra{in module py3plex.visualization.benchmark\_visualizations}, 
-		\hyperpage{613}
-  \item \spxentry{Target}\spxextra{class in py3plex.dsl}, \hyperpage{457}
+		\hyperpage{617}
+  \item \spxentry{Target}\spxextra{class in py3plex.dsl}, \hyperpage{458}
   \item \spxentry{TARGET}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
+		\hyperpage{662}
   \item \spxentry{target}\spxextra{py3plex.dsl.PathStmt attribute}, \hyperpage{421, 422}
-  \item \spxentry{target}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{450}
-  \item \spxentry{target}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{453}, 
-		\hyperpage{456}
+  \item \spxentry{target}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{451}
+  \item \spxentry{target}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
+		\hyperpage{457}
   \item \spxentry{targeted\_layer\_removal()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{538}
-  \item \spxentry{temporal\_context}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
+		\hyperpage{542}
+  \item \spxentry{temporal\_context}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{457}
   \item \spxentry{temporal\_context}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, 
-		\hyperpage{461}
-  \item \spxentry{TemporalContext}\spxextra{class in py3plex.dsl}, \hyperpage{457}
+		\hyperpage{462}
+  \item \spxentry{TemporalContext}\spxextra{class in py3plex.dsl}, \hyperpage{459}
   \item \spxentry{terms}\spxextra{py3plex.dsl.LayerExpr attribute}, \hyperpage{411}
   \item \spxentry{test()}\spxextra{py3plex.algorithms.hedwig.stats.validate.Validate method}, 
-		\hyperpage{656}
+		\hyperpage{660}
   \item \spxentry{test\_scale\_free()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{359}
-  \item \spxentry{timed\_section()}\spxextra{in module py3plex.profiling}, \hyperpage{620}
-  \item \spxentry{Timer}\spxextra{class in py3plex.visualization.fa2.forceatlas2}, \hyperpage{630}
+  \item \spxentry{timed\_section()}\spxextra{in module py3plex.profiling}, \hyperpage{624}
+  \item \spxentry{Timer}\spxextra{class in py3plex.visualization.fa2.forceatlas2}, \hyperpage{634}
   \item \spxentry{to()}\spxextra{py3plex.dsl.CompareBuilder method}, \hyperpage{393}
   \item \spxentry{to()}\spxextra{py3plex.dsl.DynamicsBuilder method}, \hyperpage{402}
   \item \spxentry{to()}\spxextra{py3plex.dsl.NullModelBuilder method}, \hyperpage{416}
   \item \spxentry{to()}\spxextra{py3plex.dsl.PathBuilder method}, \hyperpage{420}
   \item \spxentry{to()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{448}
-  \item \spxentry{to()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
-  \item \spxentry{to\_arrow()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{451}
+  \item \spxentry{to()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{461}
+  \item \spxentry{to\_arrow()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{452}
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.CompareBuilder method}, \hyperpage{393}
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.DynamicsBuilder method}, \hyperpage{402}
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.NullModelBuilder method}, \hyperpage{417}
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.PathBuilder method}, \hyperpage{421}
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{448}
-  \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
+  \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{461}
   \item \spxentry{to\_condition\_expr()}\spxextra{py3plex.dsl.BooleanExpression method}, 
 		\hyperpage{392}
   \item \spxentry{to\_dict()}\spxextra{py3plex.dsl.EdgeLayerConstraint method}, \hyperpage{405}
@@ -1997,21 +2003,21 @@
   \item \spxentry{to\_dict()}\spxextra{py3plex.dsl.PatternNode method}, \hyperpage{425}
   \item \spxentry{to\_dict()}\spxextra{py3plex.dsl.PatternPlan method}, \hyperpage{427}
   \item \spxentry{to\_dict()}\spxextra{py3plex.dsl.Predicate method}, \hyperpage{432}
-  \item \spxentry{to\_dict()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{451}
-  \item \spxentry{to\_dict()}\spxextra{py3plex.uncertainty.StatSeries method}, \hyperpage{476}
+  \item \spxentry{to\_dict()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{452}
+  \item \spxentry{to\_dict()}\spxextra{py3plex.uncertainty.StatSeries method}, \hyperpage{479}
   \item \spxentry{to\_dict()}\spxextra{py3plex.uncertainty.types.StatSeries method}, 
-		\hyperpage{487}
+		\hyperpage{490}
   \item \spxentry{to\_dsl()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{448}
   \item \spxentry{to\_edges()}\spxextra{py3plex.dsl.PatternQueryResult method}, \hyperpage{430}
   \item \spxentry{to\_homogeneous\_hypergraph()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{359}
   \item \spxentry{to\_json()}\spxextra{py3plex.algorithms.hedwig.core.rule.Rule static method}, 
-		\hyperpage{630}
+		\hyperpage{634}
   \item \spxentry{to\_json()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{360}
   \item \spxentry{to\_networkx()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{360}
-  \item \spxentry{to\_networkx()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{451}
+  \item \spxentry{to\_networkx()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{452}
   \item \spxentry{to\_nodes()}\spxextra{py3plex.dsl.PatternQueryResult method}, \hyperpage{430}
   \item \spxentry{to\_pandas()}\spxextra{py3plex.dsl.PatternQueryResult method}, \hyperpage{430}
   \item \spxentry{to\_pandas()}\spxextra{py3plex.dsl.QueryResult method}, \hyperpage{452}
@@ -2019,85 +2025,90 @@
 		\hyperpage{360}
   \item \spxentry{to\_subgraph()}\spxextra{py3plex.dsl.PatternQueryResult method}, \hyperpage{431}
   \item \spxentry{top\_k()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{448}
-  \item \spxentry{TopKRanker}\spxextra{class in py3plex.wrappers.benchmark\_nodes}, \hyperpage{614}
+  \item \spxentry{TopKRanker}\spxextra{class in py3plex.wrappers.benchmark\_nodes}, \hyperpage{618}
   \item \spxentry{total\_communicability()}\spxextra{py3plex.algorithms.multilayer\_algorithms.centrality.MultilayerCentrality method}, 
-		\hyperpage{556}
+		\hyperpage{560}
   \item \spxentry{total\_weight}\spxextra{py3plex.algorithms.community\_detection.community\_louvain.Status attribute}, 
-		\hyperpage{500}
+		\hyperpage{504}
   \item \spxentry{track}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{404}
   \item \spxentry{trajectories}\spxextra{py3plex.dsl.ExtendedQuery attribute}, \hyperpage{408, 409}
   \item \spxentry{trajectories()}\spxextra{py3plex.dsl.Q static method}, \hyperpage{433}
-  \item \spxentry{TrajectoriesBuilder}\spxextra{class in py3plex.dsl}, \hyperpage{458}
-  \item \spxentry{TrajectoriesStmt}\spxextra{class in py3plex.dsl}, \hyperpage{460}
+  \item \spxentry{TrajectoriesBuilder}\spxextra{class in py3plex.dsl}, \hyperpage{460}
+  \item \spxentry{TrajectoriesStmt}\spxextra{class in py3plex.dsl}, \hyperpage{461}
   \item \spxentry{transition\_matrix}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank attribute}, 
-		\hyperpage{566}
+		\hyperpage{570}
   \item \spxentry{triangle()}\spxextra{py3plex.dsl.PatternQueryBuilder method}, \hyperpage{429}
   \item \spxentry{type\_hint}\spxextra{py3plex.dsl.ParamRef attribute}, \hyperpage{419}
   \item \spxentry{type\_info}\spxextra{py3plex.dsl.ExplainResult attribute}, \hyperpage{406, 407}
-  \item \spxentry{TypeEnvironment}\spxextra{class in py3plex.dsl}, \hyperpage{461}
-  \item \spxentry{TypeMismatchError}, \hyperpage{462}
+  \item \spxentry{TypeEnvironment}\spxextra{class in py3plex.dsl}, \hyperpage{462}
+  \item \spxentry{TypeMismatchError}, \hyperpage{463}
 
   \indexspace
   \bigletter U
   \item \spxentry{UnaryPredicate}\spxextra{class in py3plex.algorithms.hedwig.core.predicate}, 
-		\hyperpage{629}
+		\hyperpage{633}
   \item \spxentry{uncertainty}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{395}, 
 		\hyperpage{397}
+  \item \spxentry{uncertainty()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{448}
   \item \spxentry{uncertainty\_disabled()}\spxextra{in module py3plex.uncertainty.context}, 
-		\hyperpage{489}
-  \item \spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty}, \hyperpage{482}
+		\hyperpage{492}
+  \item \spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty}, \hyperpage{485}
   \item \spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty.context}, 
-		\hyperpage{489}
-  \item \spxentry{UncertaintyConfig}\spxextra{class in py3plex.uncertainty}, \hyperpage{476}
-  \item \spxentry{UncertaintyConfig}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{487}
-  \item \spxentry{UncertaintyMode}\spxextra{class in py3plex.uncertainty}, \hyperpage{477}
-  \item \spxentry{UncertaintyMode}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{488}
+		\hyperpage{493}
+  \item \spxentry{UncertaintyConfig}\spxextra{class in py3plex.uncertainty}, \hyperpage{480}
+  \item \spxentry{UncertaintyConfig}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{491}
+  \item \spxentry{UncertaintyMode}\spxextra{class in py3plex.uncertainty}, \hyperpage{480}
+  \item \spxentry{UncertaintyMode}\spxextra{class in py3plex.uncertainty.types}, \hyperpage{491}
   \item \spxentry{unique\_redundant\_edges()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{539}
+		\hyperpage{543}
   \item \spxentry{UNKNOWN}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{392}
-  \item \spxentry{UnknownAttributeError}, \hyperpage{462}
-  \item \spxentry{UnknownLayerError}, \hyperpage{462}
-  \item \spxentry{UnknownMeasureError}, \hyperpage{462}
-  \item \spxentry{unregister\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{471}
+  \item \spxentry{UnknownAttributeError}, \hyperpage{465}
+  \item \spxentry{UnknownLayerError}, \hyperpage{466}
+  \item \spxentry{UnknownMeasureError}, \hyperpage{466}
+  \item \spxentry{unregister\_operator()}\spxextra{in module py3plex.dsl}, \hyperpage{474}
   \item \spxentry{updateMassAndGeometry()}\spxextra{py3plex.visualization.fa2.fa2util.Region method}, 
-		\hyperpage{631}
+		\hyperpage{635}
+  \item \spxentry{UQ}\spxextra{class in py3plex.dsl}, \hyperpage{463}
+  \item \spxentry{uq()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{448}
+  \item \spxentry{uq\_config}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{457, 458}
+  \item \spxentry{UQConfig}\spxextra{class in py3plex.dsl}, \hyperpage{464}
   \item \spxentry{URIS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
+		\hyperpage{662}
   \item \spxentry{using()}\spxextra{py3plex.dsl.CompareBuilder method}, \hyperpage{393}
 
   \indexspace
   \bigletter V
   \item \spxentry{Validate}\spxextra{class in py3plex.algorithms.hedwig.stats.validate}, 
-		\hyperpage{656}
-  \item \spxentry{validate\_csv\_columns()}\spxextra{in module py3plex.validation}, \hyperpage{652}
+		\hyperpage{660}
+  \item \spxentry{validate\_csv\_columns()}\spxextra{in module py3plex.validation}, \hyperpage{656}
   \item \spxentry{validate\_edgelist\_format()}\spxextra{in module py3plex.validation}, 
-		\hyperpage{652}
-  \item \spxentry{validate\_file\_exists()}\spxextra{in module py3plex.validation}, \hyperpage{652}
-  \item \spxentry{validate\_input\_type()}\spxextra{in module py3plex.validation}, \hyperpage{653}
+		\hyperpage{656}
+  \item \spxentry{validate\_file\_exists()}\spxextra{in module py3plex.validation}, \hyperpage{656}
+  \item \spxentry{validate\_input\_type()}\spxextra{in module py3plex.validation}, \hyperpage{657}
   \item \spxentry{validate\_label\_propagation()}\spxextra{in module py3plex.algorithms.network\_classification}, 
-		\hyperpage{645}
+		\hyperpage{649}
   \item \spxentry{validate\_multiedgelist\_format()}\spxextra{in module py3plex.validation}, 
-		\hyperpage{653}
+		\hyperpage{657}
   \item \spxentry{validate\_multilayer\_input()}\spxextra{in module py3plex.utils}, \hyperpage{385}
   \item \spxentry{validate\_network\_data()}\spxextra{in module py3plex.validation}, 
-		\hyperpage{653}
+		\hyperpage{657}
   \item \spxentry{value}\spxextra{py3plex.dsl.LayerConstraint attribute}, \hyperpage{410}
   \item \spxentry{value}\spxextra{py3plex.dsl.Predicate attribute}, \hyperpage{431, 432}
   \item \spxentry{var}\spxextra{py3plex.dsl.PatternNode attribute}, \hyperpage{425}
   \item \spxentry{variable\_plans}\spxextra{py3plex.dsl.PatternPlan attribute}, \hyperpage{427}
   \item \spxentry{VERBOSE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}, 
-		\hyperpage{658}
+		\hyperpage{662}
   \item \spxentry{versatility\_centrality()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{540}
+		\hyperpage{544}
   \item \spxentry{versatility\_score()}\spxextra{in module py3plex.algorithms.centrality\_toolkit}, 
-		\hyperpage{564}
+		\hyperpage{568}
   \item \spxentry{VisualizationError}, \hyperpage{390}
   \item \spxentry{visualize\_embedding()}\spxextra{in module py3plex.visualization.embedding\_visualization.embedding\_visualization}, 
-		\hyperpage{631}
+		\hyperpage{635}
   \item \spxentry{visualize\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{361}
   \item \spxentry{visualize\_multilayer\_network()}\spxextra{in module py3plex.visualization.multilayer}, 
-		\hyperpage{598}
+		\hyperpage{602}
   \item \spxentry{visualize\_network()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{361}
   \item \spxentry{visualize\_ricci\_core()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
@@ -2111,17 +2122,17 @@
   \bigletter W
   \item \spxentry{warn\_if\_deprecated()}\spxextra{in module py3plex.utils}, \hyperpage{385}
   \item \spxentry{warnings}\spxextra{py3plex.dsl.ExecutionPlan attribute}, \hyperpage{406}
-  \item \spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{453}, 
-		\hyperpage{456}
-  \item \spxentry{where}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{460, 461}
+  \item \spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
+		\hyperpage{458}
+  \item \spxentry{where}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}, \hyperpage{462}
   \item \spxentry{where()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}, \hyperpage{423}
   \item \spxentry{where()}\spxextra{py3plex.dsl.PatternNodeBuilder method}, \hyperpage{426}
-  \item \spxentry{where()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{448}
-  \item \spxentry{where()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{460}
+  \item \spxentry{where()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{449}
+  \item \spxentry{where()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{461}
   \item \spxentry{wildcard()}\spxextra{py3plex.dsl.LayerConstraint static method}, \hyperpage{410}
-  \item \spxentry{window()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{449}
-  \item \spxentry{window\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{454}, 
-		\hyperpage{456}
+  \item \spxentry{window()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{450}
+  \item \spxentry{window\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455}, 
+		\hyperpage{458}
   \item \spxentry{with\_params()}\spxextra{py3plex.dsl.NullModelBuilder method}, \hyperpage{417}
   \item \spxentry{with\_params()}\spxextra{py3plex.dsl.PathBuilder method}, \hyperpage{421}
   \item \spxentry{with\_states()}\spxextra{py3plex.dsl.DynamicsBuilder method}, \hyperpage{402}
@@ -2129,14 +2140,15 @@
 		\hyperpage{405}
   \item \spxentry{within\_layer()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}, \hyperpage{424}
   \item \spxentry{wracc()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{656}
-  \item \spxentry{write()}\spxextra{in module py3plex.io.api}, \hyperpage{628}
+		\hyperpage{660}
+  \item \spxentry{write()}\spxextra{in module py3plex.io.api}, \hyperpage{632}
 
   \indexspace
   \bigletter Z
   \item \spxentry{z\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
-		\hyperpage{656}
-  \item \spxentry{zscore()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{450}
-  \item \spxentry{zscore\_attrs}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{455, 456}
+		\hyperpage{660}
+  \item \spxentry{zscore()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{451}
+  \item \spxentry{zscore\_attrs}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{456}, 
+		\hyperpage{458}
 
 \end{sphinxtheindex}
