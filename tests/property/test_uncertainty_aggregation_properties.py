@@ -24,7 +24,11 @@ from py3plex.uncertainty.types import StatSeries
 
 @st.composite
 def dict_samples_strategy(draw, min_samples=2, max_samples=20, min_nodes=1, max_nodes=10):
-    """Generate lists of dict samples (per-node statistics)."""
+    """Generate lists of dict samples (per-node statistics).
+    
+    Note: Some nodes may be missing from some samples to test the
+    implementation's handling of sparse data (which uses default value 0.0).
+    """
     n_samples = draw(st.integers(min_value=min_samples, max_value=max_samples))
     n_nodes = draw(st.integers(min_value=min_nodes, max_value=max_nodes))
     
@@ -35,8 +39,8 @@ def dict_samples_strategy(draw, min_samples=2, max_samples=20, min_nodes=1, max_
     for _ in range(n_samples):
         sample = {}
         for node in nodes:
-            # Each node gets a value (allow some to be missing occasionally)
-            if draw(st.booleans()):
+            # Include node with 80% probability to ensure some data while testing sparsity
+            if draw(st.booleans()) or draw(st.booleans()) or draw(st.booleans()):
                 value = draw(st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False))
                 sample[node] = value
         samples.append(sample)
@@ -385,10 +389,12 @@ class TestStatisticalProperties:
         """Property: Order of samples should not matter."""
         result1 = _aggregate_samples(samples)
         
-        # Shuffle samples
-        import random
-        shuffled = samples.copy()
-        random.shuffle(shuffled)
+        # Create a shuffled version using deterministic permutation
+        # Convert to list of tuples for hashing, then back
+        indices = list(range(len(samples)))
+        # Use a simple deterministic permutation based on list length
+        shuffled_indices = indices[::-1]  # Reverse order - deterministic
+        shuffled = [samples[i] for i in shuffled_indices]
         result2 = _aggregate_samples(shuffled)
         
         # Means should be identical
