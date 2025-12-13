@@ -64,6 +64,36 @@ Found 287 communities, modularity = 0.649
 ...
 ```
 
+### Uncertainty-First Analysis
+
+Quantify confidence with ergonomic one-liners:
+
+```python
+from py3plex.dsl import Q, UQ
+
+# Find hub nodes with uncertainty bounds
+hubs_with_uncertainty = (
+    Q.nodes()
+     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
+     .compute("betweenness_centrality")
+     .order_by("-betweenness_centrality__mean")
+     .limit(10)
+     .execute(network)
+     .to_pandas(expand_uncertainty=True)
+)
+
+print(hubs_with_uncertainty.head(5))
+```
+
+Emits (with additional uncertainty metrics):
+```
+    id  layer  betweenness_centrality  betweenness_centrality_std  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high
+0  252      0                0.025961                    0.002134                         0.021820                          0.030102
+1   91      0                0.024918                    0.002051                         0.020902                          0.028934
+2  419      0                0.024184                    0.001987                         0.020298                          0.028070
+...
+```
+
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
 ## Getting Started

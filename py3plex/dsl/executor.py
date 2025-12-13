@@ -496,8 +496,13 @@ def _ensure_attribute(
     This implements smart defaults by auto-computing centrality metrics
     when they are referenced but not yet computed.
     
+    Supports selector syntax like:
+        - metric__mean
+        - metric__std
+        - metric__ci95__low
+    
     Args:
-        attr_name: The attribute name to ensure exists
+        attr_name: The attribute name to ensure exists (may include selector)
         attributes: The attributes dictionary (modified in place)
         items: List of items (nodes or edges)
         network: Multilayer network
@@ -508,8 +513,15 @@ def _ensure_attribute(
     Raises:
         UnknownAttributeError: If attribute is not found and cannot be auto-computed
     """
-    # Check if attribute already exists
-    if attr_name in attributes:
+    # Handle selector syntax (e.g., "degree__mean", "degree__ci95__low")
+    # Strip selector to get base metric name
+    if '__' in attr_name:
+        base_metric = attr_name.split('__', 1)[0]
+    else:
+        base_metric = attr_name
+    
+    # Check if base attribute already exists
+    if base_metric in attributes:
         return
     
     # For edges, check if this is an edge data attribute (like "weight")
@@ -518,14 +530,14 @@ def _ensure_attribute(
         # Check if attribute exists in edge data
         for item in items:
             if isinstance(item, tuple) and len(item) >= 3 and isinstance(item[2], dict):
-                if attr_name in item[2]:
+                if base_metric in item[2]:
                     # This is a valid edge attribute, don't auto-compute
                     return
     
     # Check if this is a known centrality that can be auto-computed
-    if auto_compute and attr_name in CENTRALITY_ALIASES:
+    if auto_compute and base_metric in CENTRALITY_ALIASES:
         # Get the canonical metric name
-        metric_name = CENTRALITY_ALIASES[attr_name]
+        metric_name = CENTRALITY_ALIASES[base_metric]
         
         # Auto-compute the centrality
         if select.target == Target.NODES:
@@ -535,10 +547,32 @@ def _ensure_attribute(
                 
                 # Get measure function
                 measure_fn = measure_registry.get(metric_name)
-                values = measure_fn(subgraph, items)
                 
-                # Store with the requested attribute name
-                attributes[attr_name] = values
+                # Check if query has UQ config - if so, compute with uncertainty
+                if select.uq_config is not None:
+                    # Create a ComputeItem from the query-level UQ config
+                    compute_item = ComputeItem(
+                        name=metric_name,
+                        uncertainty=True,
+                        method=select.uq_config.method,
+                        n_samples=select.uq_config.n_samples,
+                        ci=select.uq_config.ci,
+                        random_state=select.uq_config.seed,
+                        # Extract kwargs for bootstrap and null model params
+                        bootstrap_unit=select.uq_config.kwargs.get("bootstrap_unit"),
+                        bootstrap_mode=select.uq_config.kwargs.get("bootstrap_mode"),
+                        n_null=select.uq_config.kwargs.get("n_null"),
+                        null_model=select.uq_config.kwargs.get("null_model"),
+                    )
+                    values = _compute_measure_with_uncertainty(
+                        network, compute_item, measure_fn, subgraph, items
+                    )
+                else:
+                    # Compute deterministically
+                    values = measure_fn(subgraph, items)
+                
+                # Store with the base metric name (without selector)
+                attributes[base_metric] = values
                 
                 # Also mark that this was implicitly computed
                 # (for potential use in explain() in the future)
@@ -546,7 +580,7 @@ def _ensure_attribute(
             except Exception as e:
                 # If auto-compute fails, fall through to error
                 logging.getLogger(__name__).debug(
-                    f"Failed to auto-compute '{attr_name}': {e}"
+                    f"Failed to auto-compute '{base_metric}': {e}"
                 )
     
     # Attribute not found and cannot be auto-computed
@@ -1243,12 +1277,99 @@ def _get_item_key(item: Any) -> Any:
     return item
 
 
+def _resolve_selector(value: Any, selector: str) -> float:
+    """Resolve a selector path on an uncertainty value.
+    
+    Supports selectors like:
+        - metric__mean - mean value
+        - metric__std - standard deviation
+        - metric__ci95__low - 95% confidence interval lower bound
+        - metric__ci95__high - 95% confidence interval upper bound
+        - metric__ci95__width - 95% confidence interval width
+        - metric (no selector) - defaults to mean/point estimate
+    
+    Args:
+        value: The value (may be dict with uncertainty info from uncertainty
+              estimation, or a scalar numeric value)
+        selector: The selector suffix (e.g., "mean", "std", "ci95__low")
+        
+    Returns:
+        Resolved numeric value (float)
+        
+    Note:
+        When uncertainty is computed, values are stored as dicts with keys:
+        'mean', 'std', 'quantiles', etc. This function extracts the requested
+        component. For deterministic values (no uncertainty), returns the
+        scalar value or 0.0 for missing selectors.
+    """
+    # If no selector or value is scalar, return as-is
+    if not selector or not isinstance(value, dict):
+        if isinstance(value, dict) and 'mean' in value:
+            return value['mean']
+        return float(value) if isinstance(value, (int, float)) else 0.0
+    
+    # Parse selector components
+    parts = selector.split('__')
+    
+    if not parts:
+        # No selector - default to mean
+        if isinstance(value, dict) and 'mean' in value:
+            return value['mean']
+        return float(value) if isinstance(value, (int, float)) else 0.0
+    
+    # Handle simple selectors
+    if parts[0] == 'mean':
+        return value.get('mean', 0.0)
+    elif parts[0] == 'std':
+        return value.get('std', 0.0)
+    
+    # Handle CI selectors like ci95__low, ci95__high, ci95__width
+    if parts[0].startswith('ci') and len(parts) >= 2:
+        # Extract CI level (e.g., "95" from "ci95")
+        ci_level_str = parts[0][2:]  # Remove "ci" prefix
+        try:
+            ci_level = float(ci_level_str) / 100.0  # Convert to fraction
+        except ValueError:
+            ci_level = 0.95  # Default
+        
+        # Get quantiles dict
+        quantiles = value.get('quantiles', {})
+        
+        if parts[1] == 'low':
+            # Lower bound of CI
+            lower_q = (1 - ci_level) / 2
+            return quantiles.get(lower_q, value.get('mean', 0.0))
+        elif parts[1] == 'high':
+            # Upper bound of CI
+            upper_q = 1 - (1 - ci_level) / 2
+            return quantiles.get(upper_q, value.get('mean', 0.0))
+        elif parts[1] == 'width':
+            # CI width
+            lower_q = (1 - ci_level) / 2
+            upper_q = 1 - (1 - ci_level) / 2
+            low = quantiles.get(lower_q, value.get('mean', 0.0))
+            high = quantiles.get(upper_q, value.get('mean', 0.0))
+            return high - low
+    
+    # Fallback to mean
+    if isinstance(value, dict) and 'mean' in value:
+        return value['mean']
+    return float(value) if isinstance(value, (int, float)) else 0.0
+
+
 def _apply_ordering(items: List[Any], order_by: List[OrderItem],
                     attributes: Dict[str, Dict]) -> List[Any]:
     """Apply ORDER BY to items.
     
     For nodes: Uses computed attributes
     For edges: Uses computed attributes or edge data attributes (e.g., weight)
+    
+    Supports uncertainty selectors:
+        - metric__mean (or just metric)
+        - metric__std
+        - metric__ci95__low
+        - metric__ci95__high
+        - metric__ci95__width
     """
     if not order_by:
         return items
@@ -1258,19 +1379,33 @@ def _apply_ordering(items: List[Any], order_by: List[OrderItem],
         for order_item in order_by:
             key = order_item.key
             
+            # Parse key for selector syntax (metric__selector)
+            if '__' in key:
+                # Split on __ to separate metric name from selector
+                parts = key.split('__', 1)
+                metric_name = parts[0]
+                selector = parts[1]
+            else:
+                metric_name = key
+                selector = None
+            
             # Get value from computed attributes first
-            if key in attributes:
+            if metric_name in attributes:
                 # For edges, use hashable key
                 item_key = _get_item_key(item)
-                value = attributes[key].get(item_key, 0)
+                value = attributes[metric_name].get(item_key, 0)
                 
-                # Handle uncertainty dict format: extract 'mean' value
-                if isinstance(value, dict) and 'mean' in value:
-                    value = value['mean']
+                # Resolve selector if present
+                if selector:
+                    value = _resolve_selector(value, selector)
+                else:
+                    # Handle uncertainty dict format: extract 'mean' value by default
+                    if isinstance(value, dict) and 'mean' in value:
+                        value = value['mean']
             else:
                 # For edges, try to get from edge data (e.g., weight)
                 if isinstance(item, tuple) and len(item) >= 3 and isinstance(item[2], dict):
-                    value = item[2].get(key, 0)
+                    value = item[2].get(metric_name, 0)
                 else:
                     value = 0
             

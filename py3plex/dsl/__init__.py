@@ -79,6 +79,7 @@ from .ast import (
     OrderItem,
     ParamRef,
     TemporalContext,
+    UQConfig,
     # Execution plan
     PlanStep,
     ExecutionPlan,
@@ -98,6 +99,7 @@ from .builder import (
     LayerProxy,
     L,
     Param,
+    UQ,
     # DSL Extensions builders
     C,
     CompareBuilder,
@@ -234,6 +236,7 @@ __all__ = [
     "OrderItem",
     "ParamRef",
     "TemporalContext",
+    "UQConfig",
     "PlanStep",
     "ExecutionPlan",
     # DSL Extensions AST
@@ -252,6 +255,7 @@ __all__ = [
     "LayerSet",
     "LayerSetExpr",
     "Param",
+    "UQ",
     # DSL Extensions Builders
     "C",
     "CompareBuilder",

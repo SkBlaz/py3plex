@@ -4,12 +4,12 @@ Example: DSL Uncertainty - Flagship Example
 =============================================
 
 This example demonstrates the flagship use case from the documentation:
-finding hub nodes with uncertainty bounds using the DSL.
+finding hub nodes with uncertainty bounds using the DSL with query-scoped
+uncertainty configuration (.uq() method).
 """
 
 from py3plex.core import multinet
-from py3plex.dsl import Q
-from py3plex.uncertainty import uncertainty_enabled
+from py3plex.dsl import Q, UQ
 
 
 def main():
@@ -39,70 +39,79 @@ def main():
     
     print(f"\nNetwork has {len(list(net.get_nodes()))} nodes")
     
-    # Flagship example from the issue
+    # Flagship example: one-liner uncertainty analysis
     print("\n" + "-" * 70)
-    print("Finding hubs with uncertainty bounds")
+    print("Finding hubs with uncertainty bounds (one-liner)")
     print("-" * 70)
     
-    with uncertainty_enabled(n_runs=10):
-        hubs = (
-            Q.nodes()
-            .compute(
-                "degree", "betweenness_centrality",
-                uncertainty=True,
-                method="perturbation",  # Use perturbation (edge/node drops)
-                n_samples=10,  # Use fewer samples for quick testing
-                ci=0.95
-            )
-            .order_by("-betweenness_centrality")
-            .limit(5)
-            .execute(net)
-        )
+    # New ergonomic API: query-scoped uncertainty with .uq()
+    df = (
+        Q.nodes()
+        .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
+        .compute("betweenness_centrality")
+        .order_by("-betweenness_centrality__mean")
+        .limit(10)
+        .execute(net)
+        .to_pandas(expand_uncertainty=True)
+    )
     
-    print(f"\nFound {len(hubs)} hub nodes:")
+    print(f"\nFound {len(df)} hub nodes:")
+    print("\nResults with expanded uncertainty columns:")
+    print(df[["id", "betweenness_centrality", "betweenness_centrality_std", 
+              "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high"]])
     
-    # Convert to pandas for easier display
-    df = hubs.to_pandas()
-    print("\nResults as DataFrame:")
-    print(df)
-    
-    # Extract and display uncertainty information
+    # Display detailed uncertainty information
     print("\n" + "-" * 70)
     print("Hub nodes with uncertainty bounds:")
     print("-" * 70)
     
-    # CI level from the query (0.95 -> quantiles at 0.025 and 0.975)
-    ci = 0.95
-    lower_q = (1 - ci) / 2  # 0.025 for 95% CI
-    upper_q = 1 - lower_q   # 0.975 for 95% CI
-    
-    for idx, row in df.iterrows():
+    for idx, row in df.head(5).iterrows():
         node_id = row['id']
-        bc_info = row.get('betweenness_centrality')
-        deg_info = row.get('degree')
+        bc_mean = row['betweenness_centrality']
+        bc_std = row['betweenness_centrality_std']
+        bc_low = row['betweenness_centrality_ci95_low']
+        bc_high = row['betweenness_centrality_ci95_high']
         
         print(f"\n{node_id}:")
-        
-        # Handle dict format (with uncertainty)
-        if isinstance(bc_info, dict) and 'mean' in bc_info:
-            bc_mean = bc_info['mean']
-            bc_std = bc_info.get('std', 0)
-            bc_quantiles = bc_info.get('quantiles', {})
-            bc_low = bc_quantiles.get(lower_q, bc_mean)
-            bc_high = bc_quantiles.get(upper_q, bc_mean)
-            
-            print(f"  Betweenness: {bc_mean:.4f} ± {bc_std:.4f}")
-            print(f"  {int(ci*100)}% CI: [{bc_low:.4f}, {bc_high:.4f}]")
-        else:
-            # Handle scalar format (without uncertainty)
-            print(f"  Betweenness: {bc_info}")
-        
-        if isinstance(deg_info, dict) and 'mean' in deg_info:
-            deg_mean = deg_info['mean']
-            deg_std = deg_info.get('std', 0)
-            print(f"  Degree: {deg_mean:.2f} ± {deg_std:.2f}")
-        else:
-            print(f"  Degree: {deg_info}")
+        print(f"  Betweenness: {bc_mean:.4f} ± {bc_std:.4f}")
+        print(f"  95% CI: [{bc_low:.4f}, {bc_high:.4f}]")
+        print(f"  CI width: {bc_high - bc_low:.4f}")
+    
+    # Example 2: Using UQ profiles for quick setup
+    print("\n" + "=" * 70)
+    print("Using UQ Profiles")
+    print("=" * 70)
+    
+    # Fast profile: 25 samples, good for exploration
+    print("\n--- Fast profile (25 samples) ---")
+    df_fast = (
+        Q.nodes()
+        .uq(UQ.fast(seed=42))
+        .compute("degree")
+        .order_by("-degree__mean")
+        .limit(5)
+        .execute(net)
+        .to_pandas(expand_uncertainty=True)
+    )
+    print(df_fast[["id", "degree", "degree_std", "degree_ci95_width"]])
+    
+    # Example 3: Filtering by CI width (precision)
+    print("\n" + "=" * 70)
+    print("Conservative Ranking (by CI lower bound)")
+    print("=" * 70)
+    
+    df_conservative = (
+        Q.nodes()
+        .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
+        .compute("betweenness_centrality")
+        .order_by("-betweenness_centrality__ci95__low")  # Most conservative
+        .limit(5)
+        .execute(net)
+        .to_pandas(expand_uncertainty=True)
+    )
+    print(df_conservative[["id", "betweenness_centrality", 
+                          "betweenness_centrality_ci95_low", 
+                          "betweenness_centrality_ci95_high"]])
     
     print("\n" + "=" * 70)
     print("Example completed successfully!")

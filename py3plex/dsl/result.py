@@ -5,6 +5,89 @@ and includes metadata about the query execution.
 """
 
 from typing import Any, Dict, List, Optional, Union
+import math
+
+
+# Tolerance for matching quantile keys when finding CI bounds
+_QUANTILE_TOLERANCE = 0.01
+
+
+def _expand_uncertainty_value(attr_name: str, value: Any, ci_level: float = 0.95) -> Dict[str, Any]:
+    """Expand an uncertainty value into multiple columns.
+    
+    Args:
+        attr_name: Base attribute name (e.g., "degree")
+        value: The value (may be dict with uncertainty info or scalar)
+        ci_level: Confidence interval level (default: 0.95)
+        
+    Returns:
+        Dictionary with expanded columns
+    """
+    result = {}
+    
+    # Always include the point estimate
+    if isinstance(value, dict) and 'mean' in value:
+        result[attr_name] = value['mean']
+        
+        # Add std if available
+        if 'std' in value:
+            result[f"{attr_name}_std"] = value['std']
+        else:
+            result[f"{attr_name}_std"] = None
+        
+        # Add CI bounds if quantiles are available
+        quantiles = value.get('quantiles', {})
+        if quantiles:
+            # Calculate quantile keys for the CI level
+            lower_q = (1 - ci_level) / 2
+            upper_q = 1 - (1 - ci_level) / 2
+            
+            # Find closest available quantiles
+            ci_low = quantiles.get(lower_q)
+            ci_high = quantiles.get(upper_q)
+            
+            # If exact quantiles not found, try to find closest
+            if ci_low is None or ci_high is None:
+                sorted_qs = sorted(quantiles.keys())
+                if sorted_qs:
+                    # Find closest lower quantile (within tolerance)
+                    lower_candidates = [q for q in sorted_qs if q <= lower_q + _QUANTILE_TOLERANCE]
+                    if lower_candidates:
+                        ci_low = quantiles[lower_candidates[-1]]
+                    
+                    # Find closest upper quantile (within tolerance)
+                    upper_candidates = [q for q in sorted_qs if q >= upper_q - _QUANTILE_TOLERANCE]
+                    if upper_candidates:
+                        ci_high = quantiles[upper_candidates[0]]
+            
+            # Convert CI level to percentage for column names (e.g., 0.95 -> ci95)
+            ci_pct = int(ci_level * 100)
+            
+            result[f"{attr_name}_ci{ci_pct}_low"] = ci_low
+            result[f"{attr_name}_ci{ci_pct}_high"] = ci_high
+            
+            # Calculate width if both bounds available
+            if ci_low is not None and ci_high is not None:
+                result[f"{attr_name}_ci{ci_pct}_width"] = ci_high - ci_low
+            else:
+                result[f"{attr_name}_ci{ci_pct}_width"] = None
+        else:
+            # No quantiles - set CI columns to None
+            ci_pct = int(ci_level * 100)
+            result[f"{attr_name}_ci{ci_pct}_low"] = None
+            result[f"{attr_name}_ci{ci_pct}_high"] = None
+            result[f"{attr_name}_ci{ci_pct}_width"] = None
+    else:
+        # Deterministic value - just use as-is
+        result[attr_name] = value
+        # Set uncertainty columns to None or 0
+        ci_pct = int(ci_level * 100)
+        result[f"{attr_name}_std"] = 0.0 if value is not None else None
+        result[f"{attr_name}_ci{ci_pct}_low"] = value
+        result[f"{attr_name}_ci{ci_pct}_high"] = value
+        result[f"{attr_name}_ci{ci_pct}_width"] = 0.0 if value is not None else None
+    
+    return result
 
 
 class QueryResult:
@@ -67,7 +150,8 @@ class QueryResult:
         """Iterate over items."""
         return iter(self.items)
     
-    def to_pandas(self, multiindex: bool = False, include_grouping: bool = True):
+    def to_pandas(self, multiindex: bool = False, include_grouping: bool = True,
+                  expand_uncertainty: bool = False):
         """Export results to pandas DataFrame.
         
         For node queries: Returns DataFrame with 'id' column plus computed attributes
@@ -79,12 +163,23 @@ class QueryResult:
                        to the grouping keys (e.g., ["layer"] or ["src_layer", "dst_layer"])
             include_grouping: If True and grouping metadata is present, ensure grouping
                             key columns are included in the DataFrame
+            expand_uncertainty: If True, expand uncertainty metrics into multiple columns:
+                              - metric (point estimate/mean)
+                              - metric_std (standard deviation)
+                              - metric_ci95_low (95% CI lower bound)
+                              - metric_ci95_high (95% CI upper bound)
+                              - metric_ci95_width (CI width)
         
         Returns:
             pandas.DataFrame with items and computed attributes
             
         Raises:
             ImportError: If pandas is not available
+            
+        Example:
+            >>> result = Q.nodes().uq(UQ.fast()).compute("degree").execute(net)
+            >>> df = result.to_pandas(expand_uncertainty=True)
+            >>> # df now has columns: id, layer, degree, degree_std, degree_ci95_low, degree_ci95_high, degree_ci95_width
         """
         try:
             import pandas as pd
@@ -128,25 +223,55 @@ class QueryResult:
                             # Use simplified key for lookup
                             if edge_key in values:
                                 value = values[edge_key]
-                                # Extract mean from uncertainty dict if present
-                                if isinstance(value, dict) and 'mean' in value:
-                                    row[attr_name] = value['mean']
+                                
+                                if expand_uncertainty:
+                                    # Expand uncertainty into multiple columns
+                                    expanded = _expand_uncertainty_value(attr_name, value)
+                                    row.update(expanded)
                                 else:
-                                    row[attr_name] = value
+                                    # Extract mean from uncertainty dict if present
+                                    if isinstance(value, dict) and 'mean' in value:
+                                        row[attr_name] = value['mean']
+                                    else:
+                                        row[attr_name] = value
                             else:
-                                row[attr_name] = None
+                                if expand_uncertainty:
+                                    # Add None for all expanded columns
+                                    ci_pct = 95  # Default CI level
+                                    row[attr_name] = None
+                                    row[f"{attr_name}_std"] = None
+                                    row[f"{attr_name}_ci{ci_pct}_low"] = None
+                                    row[f"{attr_name}_ci{ci_pct}_high"] = None
+                                    row[f"{attr_name}_ci{ci_pct}_width"] = None
+                                else:
+                                    row[attr_name] = None
                         else:
                             # If values is a list, use index
                             idx = self.items.index(edge)
                             if idx < len(values):
                                 value = values[idx]
-                                # Extract mean from uncertainty dict if present
-                                if isinstance(value, dict) and 'mean' in value:
-                                    row[attr_name] = value['mean']
+                                
+                                if expand_uncertainty:
+                                    # Expand uncertainty into multiple columns
+                                    expanded = _expand_uncertainty_value(attr_name, value)
+                                    row.update(expanded)
                                 else:
-                                    row[attr_name] = value
+                                    # Extract mean from uncertainty dict if present
+                                    if isinstance(value, dict) and 'mean' in value:
+                                        row[attr_name] = value['mean']
+                                    else:
+                                        row[attr_name] = value
                             else:
-                                row[attr_name] = None
+                                if expand_uncertainty:
+                                    # Add None for all expanded columns
+                                    ci_pct = 95  # Default CI level
+                                    row[attr_name] = None
+                                    row[f"{attr_name}_std"] = None
+                                    row[f"{attr_name}_ci{ci_pct}_low"] = None
+                                    row[f"{attr_name}_ci{ci_pct}_high"] = None
+                                    row[f"{attr_name}_ci{ci_pct}_width"] = None
+                                else:
+                                    row[attr_name] = None
                     
                     rows.append(row)
             
@@ -184,25 +309,55 @@ class QueryResult:
                         # Use node_item (full tuple) as key
                         if node_item in values:
                             value = values[node_item]
-                            # Extract mean from uncertainty dict if present
-                            if isinstance(value, dict) and 'mean' in value:
-                                row[attr_name] = value['mean']
+                            
+                            if expand_uncertainty:
+                                # Expand uncertainty into multiple columns
+                                expanded = _expand_uncertainty_value(attr_name, value)
+                                row.update(expanded)
                             else:
-                                row[attr_name] = value
+                                # Extract mean from uncertainty dict if present
+                                if isinstance(value, dict) and 'mean' in value:
+                                    row[attr_name] = value['mean']
+                                else:
+                                    row[attr_name] = value
                         else:
-                            row[attr_name] = None
+                            if expand_uncertainty:
+                                # Add None for all expanded columns
+                                ci_pct = 95  # Default CI level
+                                row[attr_name] = None
+                                row[f"{attr_name}_std"] = None
+                                row[f"{attr_name}_ci{ci_pct}_low"] = None
+                                row[f"{attr_name}_ci{ci_pct}_high"] = None
+                                row[f"{attr_name}_ci{ci_pct}_width"] = None
+                            else:
+                                row[attr_name] = None
                     else:
                         # If values is a list, use index
                         idx = self.items.index(node_item)
                         if idx < len(values):
                             value = values[idx]
-                            # Extract mean from uncertainty dict if present
-                            if isinstance(value, dict) and 'mean' in value:
-                                row[attr_name] = value['mean']
+                            
+                            if expand_uncertainty:
+                                # Expand uncertainty into multiple columns
+                                expanded = _expand_uncertainty_value(attr_name, value)
+                                row.update(expanded)
                             else:
-                                row[attr_name] = value
+                                # Extract mean from uncertainty dict if present
+                                if isinstance(value, dict) and 'mean' in value:
+                                    row[attr_name] = value['mean']
+                                else:
+                                    row[attr_name] = value
                         else:
-                            row[attr_name] = None
+                            if expand_uncertainty:
+                                # Add None for all expanded columns
+                                ci_pct = 95  # Default CI level
+                                row[attr_name] = None
+                                row[f"{attr_name}_std"] = None
+                                row[f"{attr_name}_ci{ci_pct}_low"] = None
+                                row[f"{attr_name}_ci{ci_pct}_high"] = None
+                                row[f"{attr_name}_ci{ci_pct}_width"] = None
+                            else:
+                                row[attr_name] = None
                 
                 rows.append(row)
             
