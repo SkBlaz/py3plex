@@ -26,7 +26,7 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 ```python
 from py3plex.core import datasets
-from py3plex.dsl import Q, L
+from py3plex.dsl import Q, UQ
 from py3plex.algorithms.community_detection import multilayer_louvain
 
 # 1. Load a built-in multilayer biological network (~500 nodes, 4 layers)
@@ -36,57 +36,29 @@ network = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
 partition_vector, Q_modularity = multilayer_louvain(network, gamma=1.2, random_state=42)
 network.assign_partition(partition_vector)
 
-# 3. Find master regulator candidates with complex DSL query
+# 3. Find master regulator candidates with uncertainty quantification
 master_regulators = (
     Q.nodes()
      .node_type("gene")                        # Filter by node type
      .where(degree__gt=3)                      # Remove peripheral genes
+     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)  # Quantify confidence
      .per_layer()                              # Group by layer
         .compute("degree_centrality", "betweenness_centrality")
-        .top_k(20, "betweenness_centrality")   # Top 20 per layer
+        .top_k(20, "betweenness_centrality__mean")  # Top 20 per layer by mean
      .end_grouping()
-     .sort(by="betweenness_centrality", descending=True)
+     .sort(by="betweenness_centrality__mean", descending=True)
      .limit(20)                                # Final top 20 candidates
      .execute(network)
 )
 
-df = master_regulators.to_pandas()
-print(df.head(10))
+df = master_regulators.to_pandas(expand_uncertainty=True)
+print(df[["id", "layer", "betweenness_centrality", "betweenness_centrality_std", 
+          "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high"]].head(10))
 ```
 
 Emits:
 ```
 Found 287 communities, modularity = 0.649
-    id  layer  degree_centrality  betweenness_centrality
-0  252      0           0.025070                0.025961
-1   91      0           0.027855                0.024918
-2  419      0           0.025070                0.024184
-...
-```
-
-### Uncertainty-First Analysis
-
-Quantify confidence with ergonomic one-liners:
-
-```python
-from py3plex.dsl import Q, UQ
-
-# Find hub nodes with uncertainty bounds
-hubs_with_uncertainty = (
-    Q.nodes()
-     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
-     .compute("betweenness_centrality")
-     .order_by("-betweenness_centrality__mean")
-     .limit(10)
-     .execute(network)
-     .to_pandas(expand_uncertainty=True)
-)
-
-print(hubs_with_uncertainty.head(5))
-```
-
-Emits (with additional uncertainty metrics):
-```
     id  layer  betweenness_centrality  betweenness_centrality_std  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high
 0  252      0                0.025961                    0.002134                         0.021820                          0.030102
 1   91      0                0.024918                    0.002051                         0.020902                          0.028934
