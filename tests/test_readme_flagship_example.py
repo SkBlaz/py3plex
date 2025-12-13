@@ -74,8 +74,8 @@ def test_flagship_dsl_query_structure_with_uq():
     assert (df["degree_centrality"] >= 0).all()
 
 
-def test_uq_profiles_from_flagship():
-    """Test that UQ profiles mentioned in flagship work correctly."""
+def test_uq_profiles_alternative():
+    """Test that UQ profiles work as an alternative to explicit .uq() params."""
     net = multinet.multi_layer_network(directed=False, verbose=False)
     
     edges = [
@@ -114,7 +114,7 @@ def test_selector_syntax_with_mean():
         Q.nodes()
          .uq(method="perturbation", n_samples=10, seed=42)
          .compute("degree")
-         .order_by("-degree__mean")  # Sort by mean
+         .sort(by="degree__mean", descending=True)  # Sort by mean
          .limit(3)
          .execute(net)
     )
