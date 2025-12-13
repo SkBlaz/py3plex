@@ -184,6 +184,33 @@ class ConditionExpr:
 
 
 @dataclass
+class UQConfig:
+    """Query-scoped uncertainty quantification configuration.
+    
+    This dataclass stores uncertainty estimation settings at the query level,
+    providing defaults for all metrics computed in the query unless explicitly
+    overridden on a per-metric basis.
+    
+    Attributes:
+        method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
+        n_samples: Number of samples for uncertainty estimation
+        ci: Confidence interval level (e.g., 0.95 for 95% CI)
+        seed: Random seed for reproducibility
+        kwargs: Additional method-specific parameters (e.g., bootstrap_unit, bootstrap_mode)
+    
+    Example:
+        >>> uq = UQConfig(method="perturbation", n_samples=100, ci=0.95, seed=42)
+        >>> uq = UQConfig(method="bootstrap", n_samples=200, ci=0.95, 
+        ...               kwargs={"bootstrap_unit": "edges", "bootstrap_mode": "resample"})
+    """
+    method: Optional[str] = None
+    n_samples: Optional[int] = None
+    ci: Optional[float] = None
+    seed: Optional[int] = None
+    kwargs: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
 class ComputeItem:
     """A measure to compute.
     
@@ -321,6 +348,7 @@ class SelectStmt:
         post_filters: Optional list of filter specifications to apply after computation
         aggregate_specs: Optional dict of name -> aggregation spec for aggregate()
         autocompute: Whether to automatically compute missing metrics (default: True)
+        uq_config: Optional query-scoped uncertainty quantification configuration
     """
     target: Target
     layer_expr: Optional[LayerExpr] = None
@@ -350,6 +378,7 @@ class SelectStmt:
     post_filters: Optional[List[Dict[str, Any]]] = None
     aggregate_specs: Optional[Dict[str, Any]] = None
     autocompute: bool = True
+    uq_config: Optional['UQConfig'] = None
 
 
 @dataclass

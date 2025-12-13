@@ -46,6 +46,7 @@ from .ast import (
     ExecutionPlan,
     TemporalContext,
     WindowSpec,
+    UQConfig,
 )
 from .result import QueryResult
 
@@ -594,42 +595,81 @@ class QueryBuilder:
             >>> Q.nodes().compute("degree", uncertainty=True)
         """
         # Determine whether to compute uncertainty:
-        # 1) explicit argument wins
-        # 2) Q.uncertainty.enabled=True
-        # 3) global uncertainty context set to ON
+        # Priority order:
+        # 1) explicit uncertainty argument wins
+        # 2) query-level uq_config (from .uq() method)
+        # 3) Q.uncertainty.enabled=True
+        # 4) global uncertainty context set to ON
         cfg = get_uncertainty_config()
         if uncertainty is None:
-            uncertainty_flag = bool(Q.uncertainty.get("enabled", False) or cfg.mode == UncertaintyMode.ON)
+            # Check for query-level UQ config first
+            if self._select.uq_config is not None:
+                uncertainty_flag = True
+            else:
+                uncertainty_flag = bool(Q.uncertainty.get("enabled", False) or cfg.mode == UncertaintyMode.ON)
         else:
             uncertainty_flag = bool(uncertainty)
 
-        # Get defaults from Q.uncertainty or context only if uncertainty is requested
+        # Get defaults from query-level uq_config, Q.uncertainty, or context
+        # Priority: explicit params > query uq_config > Q.uncertainty > global context
         if uncertainty_flag:
             # Apply defaults for unspecified parameters
             if method is None:
-                method = Q.uncertainty.get("method")
-            if method is None:
-                method = _RESAMPLING_TO_METHOD.get(cfg.default_resampling)
-            if method is None:
-                method = "bootstrap"
+                # Check query-level config first
+                if self._select.uq_config is not None and self._select.uq_config.method is not None:
+                    method = self._select.uq_config.method
+                else:
+                    method = Q.uncertainty.get("method")
+                if method is None:
+                    method = _RESAMPLING_TO_METHOD.get(cfg.default_resampling)
+                if method is None:
+                    method = "bootstrap"
 
             if n_samples is None and n_boot is None:
-                n_samples = Q.uncertainty.get("n_boot", cfg.default_n_runs)
+                # Check query-level config first
+                if self._select.uq_config is not None and self._select.uq_config.n_samples is not None:
+                    n_samples = self._select.uq_config.n_samples
+                else:
+                    n_samples = Q.uncertainty.get("n_boot", cfg.default_n_runs)
             # n_boot takes precedence over n_samples for clarity
             if n_boot is not None:
                 n_samples = n_boot
             if ci is None:
-                ci = Q.uncertainty.get("ci", 0.95)
+                # Check query-level config first
+                if self._select.uq_config is not None and self._select.uq_config.ci is not None:
+                    ci = self._select.uq_config.ci
+                else:
+                    ci = Q.uncertainty.get("ci", 0.95)
             if bootstrap_unit is None:
-                bootstrap_unit = Q.uncertainty.get("bootstrap_unit", "edges")
+                # Check query-level config kwargs first
+                if self._select.uq_config is not None:
+                    bootstrap_unit = self._select.uq_config.kwargs.get("bootstrap_unit")
+                if bootstrap_unit is None:
+                    bootstrap_unit = Q.uncertainty.get("bootstrap_unit", "edges")
             if bootstrap_mode is None:
-                bootstrap_mode = Q.uncertainty.get("bootstrap_mode", "resample")
+                # Check query-level config kwargs first
+                if self._select.uq_config is not None:
+                    bootstrap_mode = self._select.uq_config.kwargs.get("bootstrap_mode")
+                if bootstrap_mode is None:
+                    bootstrap_mode = Q.uncertainty.get("bootstrap_mode", "resample")
             if n_null is None:
-                n_null = Q.uncertainty.get("n_null", 200)
+                # Check query-level config kwargs first
+                if self._select.uq_config is not None:
+                    n_null = self._select.uq_config.kwargs.get("n_null")
+                if n_null is None:
+                    n_null = Q.uncertainty.get("n_null", 200)
             if null_model is None:
-                null_model = Q.uncertainty.get("null_model", "degree_preserving")
+                # Check query-level config kwargs first
+                if self._select.uq_config is not None:
+                    null_model = self._select.uq_config.kwargs.get("null_model")
+                if null_model is None:
+                    null_model = Q.uncertainty.get("null_model", "degree_preserving")
             if random_state is None:
-                random_state = Q.uncertainty.get("random_state")
+                # Check query-level config first (seed field)
+                if self._select.uq_config is not None and self._select.uq_config.seed is not None:
+                    random_state = self._select.uq_config.seed
+                else:
+                    random_state = Q.uncertainty.get("random_state")
         
         items: List[ComputeItem] = []
         
@@ -709,6 +749,74 @@ class QueryBuilder:
         """
         self._select.limit = n
         return self
+    
+    def uq(self, method: Optional[str] = "perturbation", 
+           n_samples: Optional[int] = 50, 
+           ci: Optional[float] = 0.95, 
+           seed: Optional[int] = None,
+           **kwargs) -> "QueryBuilder":
+        """Set query-scoped uncertainty quantification configuration.
+        
+        This method establishes uncertainty defaults for all metrics computed
+        in this query, unless overridden on a per-metric basis in compute().
+        
+        Args:
+            method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
+                   Pass None to disable query-level uncertainty.
+            n_samples: Number of samples for uncertainty estimation (default: 50)
+            ci: Confidence interval level (default: 0.95 for 95% CI)
+            seed: Random seed for reproducibility (default: None)
+            **kwargs: Additional method-specific parameters (e.g., bootstrap_unit='edges',
+                     bootstrap_mode='resample', null_model='configuration')
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Set uncertainty defaults for the query
+            >>> (Q.nodes()
+            ...   .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
+            ...   .compute("betweenness_centrality")
+            ...   .where(betweenness_centrality__mean__gt=0.1)
+            ...   .execute(net))
+            
+            >>> # Use UQ profile (see UQ class for presets)
+            >>> (Q.nodes()
+            ...   .uq(UQ.fast(seed=7))
+            ...   .compute("degree")
+            ...   .execute(net))
+            
+            >>> # Disable query-level uncertainty
+            >>> Q.nodes().uq(method=None).compute("degree").execute(net)
+        """
+        # Handle UQConfig instance passed directly
+        if isinstance(method, UQConfig):
+            self._select.uq_config = method
+            return self
+        
+        # Create UQConfig or clear it
+        if method is None:
+            self._select.uq_config = None
+        else:
+            self._select.uq_config = UQConfig(
+                method=method,
+                n_samples=n_samples,
+                ci=ci,
+                seed=seed,
+                kwargs=kwargs
+            )
+        return self
+    
+    def uncertainty(self, method: Optional[str] = "perturbation", 
+                    n_samples: Optional[int] = 50, 
+                    ci: Optional[float] = 0.95, 
+                    seed: Optional[int] = None,
+                    **kwargs) -> "QueryBuilder":
+        """Alias for uq() - set query-scoped uncertainty configuration.
+        
+        See uq() for full documentation.
+        """
+        return self.uq(method=method, n_samples=n_samples, ci=ci, seed=seed, **kwargs)
     
     def group_by(self, *fields: str) -> "QueryBuilder":
         """Group result items by given fields.
@@ -1821,6 +1929,91 @@ class Q:
             except Exception:
                 # Keep DSL usable even if uncertainty package is partially available
                 logging.getLogger(__name__).debug("Failed to sync uncertainty context", exc_info=True)
+
+
+# ==============================================================================
+# UQ Profiles for One-Liner Ergonomics
+# ==============================================================================
+
+
+class UQ:
+    """Uncertainty quantification profiles for ergonomic one-liners.
+    
+    This class provides convenient presets for common uncertainty estimation
+    scenarios. Each profile returns a UQConfig that can be passed to .uq().
+    
+    Example:
+        >>> from py3plex.dsl import Q, UQ
+        >>> 
+        >>> # Fast exploratory analysis
+        >>> Q.nodes().uq(UQ.fast(seed=42)).compute("degree").execute(net)
+        >>> 
+        >>> # Default balanced settings
+        >>> Q.nodes().uq(UQ.default()).compute("betweenness_centrality").execute(net)
+        >>> 
+        >>> # Publication-quality with more samples
+        >>> Q.nodes().uq(UQ.paper(seed=123)).compute("closeness").execute(net)
+    """
+    
+    @staticmethod
+    def fast(seed: Optional[int] = None) -> UQConfig:
+        """Fast exploratory profile with minimal samples.
+        
+        Settings: perturbation, n=25, ci=0.95
+        
+        Use this for quick exploratory analysis when speed matters more
+        than precision.
+        
+        Args:
+            seed: Random seed for reproducibility (default: None)
+            
+        Returns:
+            UQConfig with fast settings
+            
+        Example:
+            >>> Q.nodes().uq(UQ.fast(seed=0)).compute("degree").execute(net)
+        """
+        return UQConfig(method="perturbation", n_samples=25, ci=0.95, seed=seed)
+    
+    @staticmethod
+    def default(seed: Optional[int] = None) -> UQConfig:
+        """Default balanced profile.
+        
+        Settings: perturbation, n=50, ci=0.95
+        
+        Use this for general-purpose uncertainty estimation with reasonable
+        computational cost.
+        
+        Args:
+            seed: Random seed for reproducibility (default: None)
+            
+        Returns:
+            UQConfig with default settings
+            
+        Example:
+            >>> Q.nodes().uq(UQ.default()).compute("betweenness_centrality").execute(net)
+        """
+        return UQConfig(method="perturbation", n_samples=50, ci=0.95, seed=seed)
+    
+    @staticmethod
+    def paper(seed: Optional[int] = None) -> UQConfig:
+        """Publication-quality profile with thorough sampling.
+        
+        Settings: bootstrap, n=300, ci=0.95
+        
+        Use this for publication-quality results where precision is critical
+        and computational cost is acceptable.
+        
+        Args:
+            seed: Random seed for reproducibility (default: None)
+            
+        Returns:
+            UQConfig with publication-quality settings
+            
+        Example:
+            >>> Q.nodes().uq(UQ.paper(seed=123)).compute("closeness").execute(net)
+        """
+        return UQConfig(method="bootstrap", n_samples=300, ci=0.95, seed=seed)
 
 
 # ==============================================================================
