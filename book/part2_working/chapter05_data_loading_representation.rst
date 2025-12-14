@@ -1,3 +1,5 @@
+.. _data-loading-chapter:
+
 Data Loading and Representation
 ==========================================
 

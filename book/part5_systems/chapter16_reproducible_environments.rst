@@ -65,19 +65,53 @@ Dependency Pinning
 
 Lock exact package versions to ensure reproducibility:
 
+**Two-file approach (recommended):**
+
+1. ``requirements.in`` — High-level dependencies with version ranges
+
+   .. code-block:: text
+   
+       # requirements.in
+       py3plex>=1.0.0
+       numpy>=1.24.0
+       networkx>=3.0
+
+2. ``requirements.txt`` — Exact pinned versions (generated)
+
+   .. code-block:: bash
+   
+       # Generate exact pins from requirements.in
+       pip-compile requirements.in --output-file requirements.txt
+       
+       # This creates entries like:
+       # py3plex==1.0.1
+       # numpy==1.24.3
+       # networkx==3.1
+       # matplotlib==3.7.1
+       # ... (includes all transitive dependencies)
+   
+   **Install from pinned file:**
+   
+   .. code-block:: bash
+   
+       pip install -r requirements.txt
+
+**Single-file approach (simpler but less flexible):**
+
 .. code-block:: bash
 
     # Generate requirements file with exact versions
     pip freeze > requirements.txt
     
-    # This creates entries like:
-    # py3plex==1.0.1
-    # numpy==1.24.3
-    # networkx==3.1
-    # ...
-    
     # Reproduce environment on another machine
     pip install -r requirements.txt
+
+**Trade-offs:**
+
+- **Exact pins** (``==``) ensure reproducibility but may miss security patches
+- **Version ranges** (``>=``) allow updates but may introduce drift
+- **Recommended:** Use exact pins in ``requirements.txt`` for reproducible research, 
+  maintain ``requirements.in`` with ranges for development
 
 **Best practices:**
 

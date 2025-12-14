@@ -1,3 +1,5 @@
+.. _dsl-chapter:
+
 Introduction to the Py3plex DSL
 ==========================================
 

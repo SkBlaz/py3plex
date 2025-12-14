@@ -73,12 +73,72 @@ Scale and Performance
 Query Complexity
 ~~~~~~~~~~~~~~~~
 
-[Table showing O(n), O(n log n), O(n²) operations]
+DSL query operations have different time complexities:
+
+.. list-table:: Query Operation Complexity
+   :header-rows: 1
+   :widths: 40 30 30
+
+   * - Operation
+     - Time Complexity
+     - Notes
+   * - ``Q.nodes()`` (no filter)
+     - O(n)
+     - Linear scan of nodes
+   * - ``.where(degree__gt=k)``
+     - O(n + m)
+     - Degree computation
+   * - ``.compute("degree")``
+     - O(n + m)
+     - Linear in edges
+   * - ``.compute("betweenness")``
+     - O(nm)
+     - Expensive for large networks
+   * - ``.compute("pagerank")``
+     - O(k·m)
+     - k iterations, m edges
+   * - ``.order_by()``
+     - O(n log n)
+     - Sorting results
+   * - ``.limit(k)``
+     - O(k)
+     - Constant after ordering
+   * - ``.to_pandas()``
+     - O(n)
+     - Result materialization
+
+**Query optimization tips:**
+
+- Apply ``where()`` filters early to reduce working set size
+- Use ``limit()`` when you only need top-k results
+- Avoid betweenness centrality on networks > 10K nodes (use sampling or degree-based measures)
+- Cache results with ``.to_pandas()`` if reusing the same query output
 
 Memory Requirements
 ~~~~~~~~~~~~~~~~~~~
 
-[Guidelines for large networks]
+**Memory usage guidelines:**
+
+- **Small networks** (<10K nodes): Negligible overhead, all queries run in-memory
+- **Medium networks** (10K-100K nodes): 
+  
+  - Node queries: ~1-10 MB per query result
+  - Betweenness centrality: O(n²) memory, problematic > 20K nodes
+  - PageRank: O(n) memory, scales well
+  
+- **Large networks** (>100K nodes):
+  
+  - Use streaming or chunked queries where possible
+  - Disable ``autocompute`` if metrics are pre-computed: ``Q.nodes().compute(..., autocompute=False)``
+  - Export results incrementally with ``.to_json(stream=True)`` if available
+  - Consider using external graph databases (Neo4j) for very large networks
+
+**Best practices for large networks:**
+
+1. Filter aggressively with ``where()`` before computing expensive measures
+2. Use degree-based centrality instead of betweenness when possible
+3. Sample nodes if exact answers aren't required
+4. Leverage layer algebra to query subsets: ``Q.nodes().from_layers(L["layer1"])``
 
 When Not to Use the DSL
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +173,14 @@ Deprecated features are:
 Migration Guides
 ~~~~~~~~~~~~~~~~
 
-[Commit to providing migration guides for breaking changes]
+When breaking changes occur in major versions, py3plex provides:
+
+- **Migration guide documentation** in the CHANGELOG
+- **Deprecation warnings** for at least one minor version before removal
+- **Code examples** showing old vs. new API usage
+- **Automated migration scripts** where feasible (e.g., for simple renames)
+
+Migration guides are published in the ``docs/migration/`` directory and linked from the main documentation.
 
 Summary
 -------
@@ -131,8 +198,10 @@ Summary
 * Large network performance depends on query structure
 * Some features are planned but not yet implemented
 
-[Focus on transparency and user confidence]
+The DSL prioritizes transparency about feature status and limitations. Users should feel confident relying on stable APIs while being aware of experimental features and performance boundaries.
 
-*Source files:*
-- docfiles/user_guide/dsl.rst (limitations sections)
-- docfiles/algorithm_roadmap.rst (for planned features—keep brief)
+.. seealso::
+
+   - **Full DSL reference:** ``docfiles/user_guide/dsl.rst``
+   - **Algorithm roadmap:** ``docfiles/algorithm_roadmap.rst``
+   - **Performance benchmarks:** ``benchmarks/`` directory

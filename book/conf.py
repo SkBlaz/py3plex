@@ -78,6 +78,8 @@ latex_elements = {
         \usepackage{amssymb}
     ''',
     'figure_align': 'htbp',
+    # Set proper table of contents depth for PDF
+    'extraclassoptions': 'openany,oneside',
 }
 
 latex_documents = [
@@ -85,6 +87,14 @@ latex_documents = [
      'Practical Multilayer Network Analysis with Py3plex',
      'Blaž Škrlj', 'manual'),
 ]
+
+# Use chapter-level sectioning for PDF (makes ToC show chapters properly)
+latex_toplevel_sectioning = 'chapter'
+
+# Set ToC depth for better PDF navigation
+latex_domain_indices = True
+latex_show_pagerefs = True
+latex_show_urls = 'footnote'
 
 # -- Options for manual page output ------------------------------------------
 
