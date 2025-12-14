@@ -57,10 +57,3 @@ Practical Multilayer Network Analysis with Py3plex
 
    bibliography
    citation
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

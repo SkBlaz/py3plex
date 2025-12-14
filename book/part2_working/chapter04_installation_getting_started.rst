@@ -112,7 +112,7 @@ Visualize the Network
     from py3plex.visualization.multilayer import draw_multilayer_default
     
     # Simple visualization
-    draw_multilayer_default([network], display=True)
+    draw_multilayer_default(network.get_layers(), display=True)
 
 This creates a force-directed layout with nodes colored by layer.
 
@@ -361,6 +361,31 @@ Issue: Permission denied on Linux/macOS
 
     pip install --user py3plex
 
+License Considerations
+----------------------
+
+Py3plex core is released under the **MIT License**, which allows commercial and non-commercial use without restrictions.
+
+Optional AGPL Components
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Important:** Some optional features include code licensed under **AGPLv3** (a copyleft license):
+
+* **Infomap community detection** (``py3plex[infomap]``)
+
+If you install and use these features, your application may be subject to AGPLv3 requirements:
+
+* You must make your application's source code available if you distribute it
+* Modified versions must also be released under AGPLv3
+
+**How to avoid AGPLv3:**
+
+1. Don't install extras with AGPL components (don't use ``pip install py3plex[infomap]``)
+2. Use alternative algorithms (Louvain, Label Propagation) instead of Infomap
+3. Check the license of any extra before installing
+
+**Default installation** (``pip install py3plex``) includes only MIT-licensed code.
+
 Verifying Installation
 ----------------------
 
@@ -389,9 +414,9 @@ Next Steps
 
 Now that you have py3plex installed and understand the basics:
 
-* **Chapter 5** — Learn about data loading, supported formats, and best practices for representing multilayer networks
-* **Chapter 6** — Explore visualization techniques for multilayer networks
-* **Chapter 7** — Apply core algorithms: community detection, centrality measures, and dynamics
+* :ref:`data-loading-chapter` — Learn about data loading, supported formats, and best practices for representing multilayer networks
+* :ref:`visualization-chapter` — Explore visualization techniques for multilayer networks
+* :ref:`algorithms-chapter` — Apply core algorithms: community detection, centrality measures, and dynamics
 
 **For immediate exploration:**
 

@@ -47,9 +47,9 @@ Traditional network analysis requires writing explicit loops and conditionals:
                 high_degree_nodes.append(node)
     
     # Compute centrality for filtered nodes
-    centralities = {}
-    for node in high_degree_nodes:
-        centralities[node] = nx.betweenness_centrality(G)[node]
+    G = network.core_network  # NetworkX graph
+    centralities = nx.betweenness_centrality(G)
+    filtered_centralities = {node: centralities[node] for node in high_degree_nodes}
 
 The DSL provides a declarative alternative:
 

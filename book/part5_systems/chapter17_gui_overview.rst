@@ -1,3 +1,5 @@
+.. _gui-chapter:
+
 The Py3plex GUI (Overview)
 =======================================
 
@@ -70,25 +72,53 @@ Install py3plex with GUI dependencies:
     cd py3plex
     pip install -e '.[gui]'
 
-Quickstart
-~~~~~~~~~~~
+Quickstart with Docker Compose
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The recommended way to run the GUI locally is using Docker Compose:
 
 .. code-block:: bash
 
     # Navigate to GUI directory
     cd gui
     
-    # Start backend server
-    python api/app.py
+    # Start all services (API, frontend, Redis, worker)
+    docker-compose up -d
     
-    # In another terminal, start frontend (development mode)
-    cd frontend
+    # Access the GUI at http://localhost:8080
+    # API available at http://localhost:8000
+    # Flower (task monitor) at http://localhost:5555
+
+**Services started:**
+
+* **API:** FastAPI backend on port 8000 (uvicorn server) - internal
+* **Frontend:** SvelteKit dev server on port 5173 - internal
+* **Nginx:** Reverse proxy on port 8080 - **access GUI here**
+* **Redis:** Task queue backend on port 6379 - internal
+* **Worker:** Celery worker for background tasks - internal
+
+**Access the GUI at http://localhost:8080** - Nginx routes requests to the appropriate backend services.
+
+Manual Development Setup
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For development without Docker:
+
+.. code-block:: bash
+
+    # Terminal 1: Start backend
+    cd gui/api
+    pip install -r requirements.txt
+    uvicorn app.main:app --reload --port 8000
+    
+    # Terminal 2: Start frontend
+    cd gui/frontend
     npm install
     npm run dev
     
     # Open browser to http://localhost:5173
 
-The GUI will be available at the displayed URL (typically ``http://localhost:5173`` for dev mode).
+**Note:** Manual setup requires Redis running separately for background tasks.
 
 Configuration
 ~~~~~~~~~~~~~

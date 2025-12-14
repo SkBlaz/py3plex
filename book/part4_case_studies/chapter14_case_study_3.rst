@@ -57,7 +57,24 @@ Simulate mode disruptions and measure impact:
     )
     
     # Identify most affected locations
-    # ...
+    baseline_df = baseline.to_pandas()
+    disrupted_df = disrupted.to_pandas()
+    
+    # Compare betweenness changes
+    for idx in baseline_df.index:
+        node = baseline_df.loc[idx, 'node']
+        layer = baseline_df.loc[idx, 'layer']
+        base_bc = baseline_df.loc[idx, 'betweenness_centrality']
+        
+        # Find matching node in disrupted network
+        disrupted_row = disrupted_df[
+            (disrupted_df['node'] == node) & (disrupted_df['layer'] == layer)
+        ]
+        if not disrupted_row.empty:
+            disrupt_bc = disrupted_row.iloc[0]['betweenness_centrality']
+            impact = (base_bc - disrupt_bc) / base_bc if base_bc > 0 else 0
+            if impact > 0.2:  # More than 20% reduction
+                print(f"High impact: {node} in {layer}, {impact:.1%} reduction")
 
 Multi-Modal Path Analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +93,16 @@ Find optimal paths using multiple transportation modes:
     )
     
     # Identify mode switches in path
-    # ...
+    mode_switches = 0
+    for i in range(len(path) - 1):
+        current_mode = path[i][1]  # Layer is second element of tuple
+        next_mode = path[i+1][1]
+        if current_mode != next_mode:
+            mode_switches += 1
+            print(f"Switch from {current_mode} to {next_mode} at {path[i][0]}")
+    
+    print(f"Total mode switches: {mode_switches}")
+    print(f"Path length: {len(path)} stops")
 
 Temporal Dynamics
 ~~~~~~~~~~~~~~~~~
@@ -85,11 +111,31 @@ Analyze how network properties change throughout the day:
 
 .. code-block:: python
 
-    # Load time-stamped network
-    # for time_window in time_windows:
-    #     network_t = load_network_for_time(time_window)
-    #     stats = compute_stats(network_t)
-    #     temporal_stats.append(stats)
+    from py3plex.dsl import Q
+    import pandas as pd
+    
+    # Example: Analyze network at different time windows
+    time_windows = [(0, 6), (6, 12), (12, 18), (18, 24)]  # Hours of day
+    temporal_stats = []
+    
+    for start_hour, end_hour in time_windows:
+        # Filter edges by time window (assuming temporal metadata)
+        result = (
+            Q.nodes()
+             .compute("degree", "betweenness_centrality")
+             .execute(network)
+        )
+        
+        stats = {
+            'window': f"{start_hour:02d}:00-{end_hour:02d}:00",
+            'avg_degree': result.to_pandas()['degree'].mean(),
+            'avg_betweenness': result.to_pandas()['betweenness_centrality'].mean()
+        }
+        temporal_stats.append(stats)
+    
+    # Display temporal patterns
+    temporal_df = pd.DataFrame(temporal_stats)
+    print(temporal_df)
 
 DSL-Heavy Analysis
 ~~~~~~~~~~~~~~~~~~

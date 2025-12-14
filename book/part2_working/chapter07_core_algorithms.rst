@@ -1,3 +1,5 @@
+.. _algorithms-chapter:
+
 Core Algorithms: Communities, Centrality, Dynamics
 =============================================================
 
@@ -76,12 +78,20 @@ Where:
 
     from py3plex.algorithms.community_detection import community_louvain
     
-    # Detect communities using Louvain on multilayer network
+    # Detect communities using Louvain on the supra-graph representation
+    # Note: This applies standard Louvain to the flattened multilayer structure
     communities = community_louvain.best_partition(network.core_network)
     
     # Print community assignments
     for node, comm_id in communities.items():
         print(f"Node {node} -> Community {comm_id}")
+
+.. admonition:: Implementation Note
+   :class: note
+
+   The implementation shown applies standard Louvain modularity optimization to the **supra-graph representation** of the multilayer network (``network.core_network``), where all layers are combined into a single NetworkX MultiGraph. This is a practical approximation that works well for many use cases.
+   
+   **True multilayer modularity optimization** (Mucha et al. 2010) with explicit inter-layer coupling terms requires specialized solvers. For such optimization, consider using external tools like GenLouvain (MATLAB) or multilayer-specific implementations, then importing results back into py3plex.
 
 Algorithms Available
 ~~~~~~~~~~~~~~~~~~~~
@@ -89,9 +99,36 @@ Algorithms Available
 py3plex supports several community detection algorithms:
 
 - **Louvain** — Fast modularity optimization, O(n log n). Best for most use cases (100-100K nodes).
-- **Infomap** — Flow-based detection using random walk dynamics. Requires external binary.
+- **Infomap** — Flow-based detection using random walk dynamics. Optional dependency (see below).
 - **Label Propagation** — Semi-supervised approach with known seed communities. Linear time O(m + n).
-- **Multilayer Modularity** — True multilayer optimization (Mucha et al. 2010). Exact but slower for large networks.
+
+Infomap Integration
+~~~~~~~~~~~~~~~~~~~
+
+Infomap is an optional community detection algorithm based on information-theoretic compression of random walks. It is not included in the default py3plex installation due to licensing (AGPL).
+
+**Installation:**
+
+.. code-block:: bash
+
+    pip install py3plex[infomap]
+
+**Usage:**
+
+.. code-block:: python
+
+    from py3plex.algorithms.community_detection import infomap_communities
+    
+    # Run Infomap on network
+    communities = infomap_communities(network.core_network)
+    
+    # communities is a dict: {node: community_id}
+
+**Important notes:**
+
+* Infomap is licensed under AGPLv3 (copyleft license) - see :ref:`installation-chapter` for license implications
+* If you don't need Infomap specifically, use Louvain or Label Propagation instead
+* Infomap tends to find smaller, more fine-grained communities than Louvain
 
 **Time Complexity Summary:**
 
@@ -119,7 +156,24 @@ Choosing a Community Detection Method
 Centrality Measures
 -------------------
 
-Centrality measures identify important nodes in the network. py3plex provides 30+ centrality measures adapted for multilayer networks, including degree-based, path-based, eigenvector-based, and flow-based measures.
+Centrality measures identify important nodes in the network. py3plex provides direct DSL access to core centrality measures (degree, betweenness, closeness, eigenvector, PageRank, clustering) and seamless integration with NetworkX's 30+ additional centrality algorithms.
+
+**DSL-integrated measures (available via ``Q.nodes().compute()``)**:
+
+* ``degree`` — Node degree (number of edges)
+* ``degree_centrality`` — Normalized degree centrality
+* ``betweenness_centrality`` — Betweenness centrality (Brandes algorithm)
+* ``closeness_centrality`` — Closeness centrality
+* ``eigenvector_centrality`` — Eigenvector centrality
+* ``pagerank`` — PageRank centrality
+* ``clustering`` — Local clustering coefficient
+* ``communities`` — Community detection (Louvain)
+
+**Additional measures via NetworkX** (use ``network.core_network`` with any ``nx.*_centrality`` function):
+
+* Katz centrality, load centrality, harmonic centrality, current flow betweenness, percolation centrality, subgraph centrality, and many more
+
+See :ref:`appendix-e` for complete API reference.
 
 Multilayer PageRank
 ~~~~~~~~~~~~~~~~~~~

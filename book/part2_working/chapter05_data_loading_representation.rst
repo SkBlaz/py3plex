@@ -598,4 +598,4 @@ Further Reading
 
 * Arrow format specification: https://arrow.apache.org/docs/
 * NetworkX I/O reference: https://networkx.org/documentation/stable/reference/readwrite/
-* Chapter 7 (Core Algorithms) for analysis after loading
+* :ref:`algorithms-chapter` for analysis after loading

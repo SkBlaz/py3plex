@@ -1,7 +1,7 @@
 Appendix C: Detailed Validation Scripts
 ========================================
 
-This appendix provides detailed validation strategies and test scripts for ensuring correctness of multilayer network algorithms. These complement the high-level overview in Chapter 15.
+This appendix provides detailed validation strategies and test scripts for ensuring correctness of multilayer network algorithms. These complement the high-level overview in :ref:`testing-chapter`.
 
 Validation Philosophy
 ---------------------
@@ -373,4 +373,4 @@ This appendix detailed validation strategies:
 * ``tests/property/`` — Property-based tests
 * ``tests/test_centrality_correctness.py`` — Centrality validation
 
-[For high-level testing overview → Chapter 15]
+**See also:** :ref:`testing-chapter` for high-level testing overview

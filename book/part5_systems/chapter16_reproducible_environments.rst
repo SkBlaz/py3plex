@@ -88,7 +88,9 @@ Lock exact package versions to ensure reproducibility:
        # numpy==1.24.3
        # networkx==3.1
        # matplotlib==3.7.1
-       # ... (includes all transitive dependencies)
+       # scipy==1.10.1
+       # pandas==2.0.2
+       # (includes all transitive dependencies)
    
    **Install from pinned file:**
    

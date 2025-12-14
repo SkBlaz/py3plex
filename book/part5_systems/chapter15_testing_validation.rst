@@ -1,3 +1,5 @@
+.. _testing-chapter:
+
 Testing and Validation
 ===================================
 
@@ -149,7 +151,7 @@ The CI pipeline tests across:
 .. admonition:: CI Configuration
    :class: note
 
-   Detailed GitHub Actions workflows and CI configuration are covered in Appendix B.
+   The GitHub Actions workflow files are located in ``.github/workflows/`` in the repository. Key workflows include ``test.yml`` (main test suite), ``lint.yml`` (code quality checks), and ``docs.yml`` (documentation builds).
 
 Summary
 -------
