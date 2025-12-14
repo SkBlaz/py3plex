@@ -1,3 +1,5 @@
+.. _appendix-e:
+
 Appendix E: Extended API and DSL Reference
 ==========================================
 

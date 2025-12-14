@@ -113,6 +113,37 @@ The dynamics DSL uses a builder API similar to the query DSL:
 6. **.seed()** — Random seed for reproducibility
 7. **.run()** — Execute the simulation
 
+Initial Conditions
+~~~~~~~~~~~~~~~~~~
+
+The ``.initial()`` method accepts multiple formats for setting initial infected nodes:
+
+**Float (fraction of nodes):**
+
+.. code-block:: python
+
+    .initial(infected=0.05)  # 5% of nodes randomly infected
+
+**Integer (exact count):**
+
+.. code-block:: python
+
+    .initial(infected=5)  # Exactly 5 nodes randomly infected
+
+**List of node tuples:**
+
+.. code-block:: python
+
+    .initial(infected=[('Alice', 'social'), ('Bob', 'work')])
+
+**DSL query (dynamic selection):**
+
+.. code-block:: python
+
+    .initial(infected=Q.nodes().where(degree__gte=5))  # Infect high-degree hubs
+
+**Recommended:** Use float fractions (0.05) for reproducibility across different network sizes.
+
 Available Measures
 ~~~~~~~~~~~~~~~~~~
 
@@ -580,6 +611,84 @@ For very large networks or long simulations:
 * Use measure-specific exports rather than full result objects
 * Process results in batches for very long time series
 
+Alternative Workflow APIs
+-------------------------
+
+Beyond the main DSL, py3plex provides complementary APIs for different programming styles.
+
+Dplyr-Style Operations (graph_ops)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For users familiar with R's dplyr or Python's pandas, ``graph_ops`` provides chainable verb-based operations:
+
+.. code-block:: python
+
+    from py3plex.graph_ops import nodes
+    
+    # Dplyr-style pipeline
+    df = (
+        nodes(network)
+        .filter(lambda n: n["degree"] > 5)
+        .mutate(score=lambda n: n["degree"] * 2)
+        .arrange("score", reverse=True)
+        .head(10)
+        .to_pandas()
+    )
+
+**Key verbs:** ``filter()``, ``mutate()``, ``arrange()``, ``select()``, ``group_by()``, ``summarise()``
+
+**Use case:** Interactive exploration and data munging with familiar pandas-like syntax.
+
+Sklearn-Style Pipelines (pipeline)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For reproducible workflows, ``pipeline`` provides scikit-learn style composition:
+
+.. code-block:: python
+
+    from py3plex.pipeline import Pipeline, LoadStep, AggregateLayers
+    from py3plex.pipeline import LouvainCommunity, ComputeStats
+    
+    # Define analysis pipeline
+    pipe = Pipeline([
+        ("load", LoadStep(path="network.graphml")),
+        ("aggregate", AggregateLayers()),
+        ("community", LouvainCommunity(resolution=1.0)),
+        ("stats", ComputeStats()),
+    ])
+    
+    # Run pipeline
+    result = pipe.run()
+    
+    # Reuse pipeline on different network
+    result2 = pipe.set_params(load__path="network2.graphml").run()
+
+**Key steps:** ``LoadStep``, ``AggregateLayers``, ``LeidenMultilayer``, ``FilterNodes``, ``SaveNetwork``
+
+**Use case:** Production workflows, parameter sweeps, and reproducible analysis scripts.
+
+Config-Driven Workflows (workflows)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For declarative specification of complex analyses, ``workflows`` supports YAML/JSON configurations:
+
+.. code-block:: python
+
+    from py3plex.workflows import run_workflow
+    
+    config = {
+        'input': {'path': 'network.edgelist', 'type': 'edgelist'},
+        'steps': [
+            {'type': 'community_detection', 'algorithm': 'louvain'},
+            {'type': 'centrality', 'measures': ['degree', 'betweenness']},
+            {'type': 'export', 'format': 'csv', 'path': 'results.csv'}
+        ]
+    }
+    
+    results = run_workflow(config)
+
+**Use case:** Batch processing, configuration management, and non-programmer friendly analysis.
+
 Summary
 -------
 
@@ -591,6 +700,7 @@ This chapter covered:
 4. **Query integration** — Using Q.nodes() for targeted initial conditions
 5. **Parameter comparison** — Systematic exploration of parameter space
 6. **Result analysis** — Rich result objects with pandas export and plotting
+7. **Alternative APIs** — Dplyr-style, sklearn-style, and config-driven workflows
 
 **Key takeaways:**
 
@@ -598,6 +708,7 @@ This chapter covered:
 * Simulations are fully declarative and composable
 * Integration with query DSL enables sophisticated initial condition specification
 * Results are analysis-ready with pandas, xarray, and plotting support
+* Choose API style based on your workflow needs: DSL (query-focused), graph_ops (data munging), pipeline (reproducibility), workflows (configuration)
 
 Further Reading
 ---------------
