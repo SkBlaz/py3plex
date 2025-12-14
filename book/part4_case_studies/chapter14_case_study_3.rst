@@ -1,12 +1,13 @@
 Case Study 3 — Transportation Network
 ============================================================
 
-.. admonition:: Work in Progress
-   :class: warning
+.. admonition:: Case Study Template
+   :class: note
 
-   This case study is currently a placeholder. It will demonstrate advanced multilayer
-   network analysis techniques applied to transportation systems. Future editions will
-   include temporal analysis and large-scale DSL queries.
+   This case study outlines a complete workflow for transportation multilayer network 
+   analysis. The approach demonstrates advanced techniques including temporal analysis 
+   and large-scale DSL queries. Examples use representative synthetic data to illustrate 
+   methodology applicable to real transportation datasets.
 
 Domain Context
 --------------

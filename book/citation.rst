@@ -192,7 +192,7 @@ Bundled Code
 
 **Important:** Some bundled code (e.g., Infomap community detection in ``py3plex/algorithms/community_detection/infomap/``) is licensed under **AGPLv3**, which has copyleft requirements.
 
-If you use these features, your application may be subject to AGPLv3 requirements. See Chapter 4 for details on license considerations.
+If you use these features, your application may be subject to AGPLv3 requirements. See :ref:`installation-chapter` for details on license considerations.
 
 This Book
 ~~~~~~~~~

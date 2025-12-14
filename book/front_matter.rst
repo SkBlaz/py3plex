@@ -126,10 +126,6 @@ License
 
 The py3plex library is released under the MIT License. This book's content is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
 
-Version Information
--------------------
-
-* **Book version:** 1.0 (2025)
-* **py3plex version:** 1.x
-* **Python support:** 3.8+
+.. note::
+   **Version Information:** This is version 1.0 (2025) of the book, covering py3plex 1.x with Python 3.8+ support.
 

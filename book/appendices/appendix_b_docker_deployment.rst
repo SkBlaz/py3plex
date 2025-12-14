@@ -415,13 +415,37 @@ Check logs:
 
 **Issue: Permission denied on mounted volumes**
 
-Fix permissions:
+Fix permissions safely by matching container user to host user:
+
+**Method 1: Run container with your user ID (recommended)**
 
 .. code-block:: bash
 
-    chmod -R 777 ./data
+    docker run --user "$(id -u):$(id -g)" -v $(pwd)/data:/data py3plex-image
 
-Or run as correct user ID.
+**Method 2: Change ownership to match container user**
+
+.. code-block:: bash
+
+    # If container runs as user 1000:1000 (typical)
+    sudo chown -R 1000:1000 ./data
+
+**Method 3: Use docker-compose with user mapping**
+
+.. code-block:: yaml
+
+    services:
+      py3plex:
+        user: "${UID}:${GID}"
+        volumes:
+          - ./data:/data
+
+Then run: ``UID=$(id -u) GID=$(id -g) docker-compose up``
+
+.. warning::
+   
+   **Avoid** ``chmod -R 777 ./data`` as it grants world-writable permissions and 
+   creates a security risk. Use user/group mapping instead.
 
 **Issue: Out of memory**
 

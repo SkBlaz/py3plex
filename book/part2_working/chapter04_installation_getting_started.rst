@@ -1,3 +1,5 @@
+.. _installation-chapter:
+
 Installation and Getting Started
 ===========================================
 
@@ -319,7 +321,7 @@ Py3plex supports multiple edge input formats:
     network.load_network("data.edgelist", input_type="edgelist")
     
     # GraphML, JSON, Arrow, etc.
-    # See Chapter 5 for details
+    # See :ref:`data-loading-chapter` for details
 
 Common Issues
 -------------

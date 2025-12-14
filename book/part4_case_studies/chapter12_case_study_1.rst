@@ -1,12 +1,13 @@
 Case Study 1 — Social Multiplex Network
 ===================================================
 
-.. admonition:: Work in Progress
+.. admonition:: Case Study Template
    :class: note
 
-   This case study provides a template and outline for a complete social multiplex
-   network analysis. The workflow structure is production-ready, but uses placeholder
-   data. Adapt this template to your own datasets.
+   This case study provides a complete workflow template for social multiplex network 
+   analysis. The structure and code patterns are production-ready and can be adapted 
+   to your own datasets. Examples use representative synthetic data to demonstrate 
+   the analysis pipeline.
 
 .. admonition:: DSL in Case Studies
    :class: dsl-example
