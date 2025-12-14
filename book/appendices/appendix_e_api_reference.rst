@@ -339,11 +339,11 @@ Basic Visualization
     from py3plex.visualization.multilayer import draw_multilayer_default
     
     # Simple visualization
-    draw_multilayer_default([network], display=True)
+    draw_multilayer_default(network.get_layers(), display=True)
     
     # With layout options
     draw_multilayer_default(
-        [network],
+        network.get_layers(),
         display=True,
         layout='force_directed',
         node_size=300,

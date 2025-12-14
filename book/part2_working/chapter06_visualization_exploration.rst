@@ -38,12 +38,17 @@ Basic Multilayer Visualization
     
     # Visualize with defaults
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers(),  # Returns dict of layer graphs
         display=True,
         labels=True
     )
 
 This produces a circular layout with each layer shown in a different color.
+
+.. admonition:: API Note: Input Format
+   :class: note
+
+   ``draw_multilayer_default`` expects a dict or list of NetworkX graphs. Always use ``network.get_layers()`` to get the properly formatted dict of layer graphs. This method handles layout computation and layer separation automatically.
 
 Preset Visualization Modes
 ---------------------------
