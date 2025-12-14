@@ -91,11 +91,13 @@ The recommended way to run the GUI locally is using Docker Compose:
 
 **Services started:**
 
-* **API:** FastAPI backend on port 8000 (uvicorn server)
-* **Frontend:** SvelteKit dev server on port 5173
-* **Nginx:** Reverse proxy on port 8080 (main entry point)
-* **Redis:** Task queue backend on port 6379
-* **Worker:** Celery worker for background tasks
+* **API:** FastAPI backend on port 8000 (uvicorn server) - internal
+* **Frontend:** SvelteKit dev server on port 5173 - internal
+* **Nginx:** Reverse proxy on port 8080 - **access GUI here**
+* **Redis:** Task queue backend on port 6379 - internal
+* **Worker:** Celery worker for background tasks - internal
+
+**Access the GUI at http://localhost:8080** - Nginx routes requests to the appropriate backend services.
 
 Manual Development Setup
 ~~~~~~~~~~~~~~~~~~~~~~~~~

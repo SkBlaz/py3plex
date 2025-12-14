@@ -166,12 +166,14 @@ def test_dsl_centrality_measures():
         ['C', 'layer1', 'D', 'layer1', 1],
     ], input_type="list")
     
-    # Test each DSL-integrated measure
+    # Test each DSL-integrated measure (from Algorithms chapter)
+    # Note: 'communities' measure requires different API, tested separately
     measures = [
         "degree",
         "degree_centrality",
         "betweenness_centrality",
         "closeness_centrality",
+        "eigenvector_centrality",
         "pagerank",
         "clustering",
     ]
