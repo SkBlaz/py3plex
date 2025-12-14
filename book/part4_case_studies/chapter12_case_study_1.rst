@@ -277,18 +277,18 @@ Key Findings (Template)
 Community Structure
 ~~~~~~~~~~~~~~~~~~~
 
-**Observation:** [Describe community patterns found]
+**Observation:** Communities tend to form around shared topics or interests. Nodes with high inter-community connectivity (high betweenness) act as bridges between different social groups. The community structure often correlates with geographic or demographic factors in real social networks.
 
 * **Cross-platform communities:** X% of users in same community across all layers
 * **Platform-specific communities:** Y% of communities confined to single layer
 * **Community alignment:** Normalized Mutual Information = Z
 
-**Interpretation:** [What do these patterns mean for user behavior?]
+**Interpretation:** Cross-platform community alignment suggests that social structures persist across different communication channels, likely reflecting offline social relationships or shared interests. Platform-specific communities indicate specialized use cases (e.g., professional networking on LinkedIn vs. casual social interaction on Facebook).
 
 Cross-Layer Roles
 ~~~~~~~~~~~~~~~~~
 
-**Observation:** [Describe role variation across platforms]
+**Observation:** User roles vary significantly across platforms. A highly central user on one platform may be peripheral on another, reflecting different usage patterns, social contexts, or specialization. Cross-platform influencers (high centrality on multiple layers) are relatively rare but strategically important for information diffusion.
 
 * **Consistent influencers:** N users with high centrality on all platforms
 * **Platform specialists:** M users highly central on one platform only
@@ -349,7 +349,7 @@ Data Availability
 
 For real datasets, consider:
 
-* **Twitter + Facebook:** (pending data availability)
+* **Twitter + Facebook:** Similar methodology can be applied to real datasets (subject to API access and data use agreements)
 * **Academic multiplex:** DBLP + ArXiv coauthorship networks
 * **Contact datasets:** See ``multilayer_datasets/`` directory
 
