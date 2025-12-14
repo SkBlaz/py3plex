@@ -6,7 +6,10 @@ Practical Multilayer Network Analysis with Py3plex
 
    \frontmatter
 
-.. include:: front_matter.rst
+.. toctree::
+   :maxdepth: 1
+
+   front_matter
 
 .. raw:: latex
 
