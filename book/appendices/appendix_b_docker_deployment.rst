@@ -471,4 +471,4 @@ This appendix provided:
 5. Keep dependencies updated
 6. Follow security checklist
 
-[For high-level GUI overview → Chapter 17]
+**See also:** :ref:`gui-chapter` for high-level GUI overview

@@ -1,3 +1,5 @@
+.. _advanced-dsl-chapter:
+
 Advanced Queries and Workflows
 ==========================================
 
@@ -75,7 +77,11 @@ The dynamics DSL uses a builder API similar to the query DSL:
 
     # Create network
     network = multinet.multi_layer_network()
-    # ... add nodes and edges ...
+    network.add_edges([
+        ['Alice', 'social', 'Bob', 'social', 1],
+        ['Bob', 'social', 'Carol', 'social', 1],
+        ['Carol', 'social', 'Dave', 'social', 1],
+    ], input_type="list")
 
     # Define SIS simulation
     sim = (

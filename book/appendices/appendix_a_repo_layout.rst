@@ -67,9 +67,9 @@ The ``examples/`` directory contains 50+ working scripts organized by topic:
     examples/
     ├── getting_started/      # Introductory examples
     ├── network_analysis/     # Core analysis examples
-    │   ├── example_dsl_builder_api.py       # Chapter 8-10
+    │   ├── example_dsl_builder_api.py       # DSL chapters
     │   ├── example_dsl_queries.py
-    │   ├── example_community_detection.py   # Chapter 7
+    │   ├── example_community_detection.py   # Algorithms chapter
     │   └── example_centrality.py
     ├── dynamics/             # Epidemic and process models
     ├── visualization/        # Plotting examples
@@ -82,44 +82,44 @@ The ``examples/`` directory contains 50+ working scripts organized by topic:
 Mapping Book Chapters to Examples
 ----------------------------------
 
-Chapter 4 (Installation and Getting Started)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:ref:`installation-chapter` (Installation and Getting Started)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``examples/getting_started/quickstart.py``
 * ``examples/getting_started/first_network.py``
 
-Chapter 5 (Data Loading)
-~~~~~~~~~~~~~~~~~~~~~~~~~
+:ref:`data-loading-chapter` (Data Loading)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``examples/io_and_data/load_edgelist.py``
 * ``examples/io_and_data/arrow_parquet_io.py``
 * ``examples/io_and_data/csv_loading.py``
 
-Chapter 6 (Visualization)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+:ref:`visualization-chapter` (Visualization)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``examples/visualization/basic_plot.py``
 * ``examples/visualization/hairball_plot.py``
 * ``examples/visualization/matrix_visualization.py``
 
-Chapter 7 (Core Algorithms)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:ref:`algorithms-chapter` (Core Algorithms)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``examples/network_analysis/example_community_detection.py``
 * ``examples/network_analysis/example_centrality.py``
 * ``examples/network_analysis/example_explainable_centrality.py``
 * ``examples/dynamics/sir_epidemic.py``
 
-Chapters 8-10 (DSL)
-~~~~~~~~~~~~~~~~~~~
+:ref:`dsl-chapter` and :ref:`advanced-dsl-chapter` (DSL)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``examples/network_analysis/example_dsl_builder_api.py`` — **Primary reference**
 * ``examples/network_analysis/example_dsl_queries.py``
 * ``examples/network_analysis/example_dsl_advanced.py``
 * ``examples/network_analysis/example_dsl_community_detection.py``
 
-Chapter 17 (GUI)
-~~~~~~~~~~~~~~~~
+:ref:`gui-chapter` (GUI)
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``gui/app.py`` — Main application
 * ``gui/README.md`` — Setup instructions

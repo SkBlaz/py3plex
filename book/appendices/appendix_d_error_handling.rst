@@ -403,4 +403,4 @@ Summary
     except Py3plexException as e:
         print(f"py3plex error: {e}")
 
-[For error recovery strategies in workflows → Chapter 10]
+**See also:** :ref:`advanced-dsl-chapter` for error recovery strategies in workflows

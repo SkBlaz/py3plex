@@ -1,3 +1,5 @@
+.. _gui-chapter:
+
 The Py3plex GUI (Overview)
 =======================================
 

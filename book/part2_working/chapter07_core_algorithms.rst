@@ -1,3 +1,5 @@
+.. _algorithms-chapter:
+
 Core Algorithms: Communities, Centrality, Dynamics
 =============================================================
 

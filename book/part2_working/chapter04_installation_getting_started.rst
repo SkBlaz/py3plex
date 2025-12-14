@@ -389,9 +389,9 @@ Next Steps
 
 Now that you have py3plex installed and understand the basics:
 
-* **Chapter 5** — Learn about data loading, supported formats, and best practices for representing multilayer networks
-* **Chapter 6** — Explore visualization techniques for multilayer networks
-* **Chapter 7** — Apply core algorithms: community detection, centrality measures, and dynamics
+* :ref:`data-loading-chapter` — Learn about data loading, supported formats, and best practices for representing multilayer networks
+* :ref:`visualization-chapter` — Explore visualization techniques for multilayer networks
+* :ref:`algorithms-chapter` — Apply core algorithms: community detection, centrality measures, and dynamics
 
 **For immediate exploration:**
 

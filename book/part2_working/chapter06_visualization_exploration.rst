@@ -1,3 +1,5 @@
+.. _visualization-chapter:
+
 Visualization and Exploration
 ========================================
 
