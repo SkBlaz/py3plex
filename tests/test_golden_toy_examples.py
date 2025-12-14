@@ -52,8 +52,8 @@ def toy_multilayer_network():
     - A appears in both layers (activity = 1.0)
     - C appears only in layer1 (activity = 0.5)
     - D appears only in layer2 (activity = 0.5)
-    - Layer1 has 3 nodes, 2 edges -> density = 2/(3*2/2) = 2/3
-    - Layer2 has 3 nodes, 2 edges -> density = 2/(3*2/2) = 2/3
+    - Layer1 has 3 nodes, 2 edges -> density = 2*2/(3*2) = 4/6 = 2/3
+    - Layer2 has 3 nodes, 2 edges -> density = 2*2/(3*2) = 4/6 = 2/3
     """
     network = multinet.multi_layer_network(directed=False)
     
@@ -171,20 +171,27 @@ def test_golden_multiplex_coupling_edges(toy_multiplex_network):
     coupling_edges = []
     
     for e in all_edges:
-        if isinstance(e, tuple) and len(e) >= 3:
-            edge_data = e[2] if isinstance(e[2], dict) else {}
-            edge_type = edge_data.get("type", "default")
-            
-            # Check if it's a within-layer edge (source and target layers are same)
-            src_node, dst_node = e[0], e[1]
-            if len(src_node) >= 2 and len(dst_node) >= 2:
-                src_layer = src_node[1]
-                dst_layer = dst_node[1]
-                
-                if src_layer == dst_layer and edge_type not in ["coupling", "mpx"]:
-                    within_layer_edges.append(e)
-                elif src_layer != dst_layer and edge_type in ["coupling", "mpx"]:
-                    coupling_edges.append(e)
+        if not isinstance(e, tuple) or len(e) < 3:
+            continue
+        
+        edge_data = e[2] if isinstance(e[2], dict) else {}
+        edge_type = edge_data.get("type", "default")
+        
+        # Check if it's a within-layer edge (source and target layers are same)
+        src_node, dst_node = e[0], e[1]
+        
+        # Validate node format before accessing elements
+        if not (isinstance(src_node, tuple) and len(src_node) >= 2 and
+                isinstance(dst_node, tuple) and len(dst_node) >= 2):
+            continue
+        
+        src_layer = src_node[1]
+        dst_layer = dst_node[1]
+        
+        if src_layer == dst_layer and edge_type not in ["coupling", "mpx"]:
+            within_layer_edges.append(e)
+        elif src_layer != dst_layer and edge_type in ["coupling", "mpx"]:
+            coupling_edges.append(e)
     
     # Within-layer edges: 2 per layer * 2 layers = 4
     assert len(within_layer_edges) == 4, \
@@ -220,19 +227,18 @@ def test_golden_multiplex_aggregate_counts(toy_multiplex_network):
         # It's a NetworkX graph
         graph = agg
     
-    # Check edge weights for A-B and C-D (both should have count=2)
-    # Note: edge might be stored as (A,B) or (B,A) depending on ordering
-    ab_weight = None
-    if graph.has_edge('A', 'B'):
-        ab_weight = graph['A']['B'].get('weight', 1)
-    elif graph.has_edge('B', 'A'):
-        ab_weight = graph['B']['A'].get('weight', 1)
+    # Helper function to get edge weight regardless of direction
+    def get_edge_weight(g, node1, node2):
+        """Get edge weight between two nodes, trying both directions."""
+        if g.has_edge(node1, node2):
+            return g[node1][node2].get('weight', 1)
+        elif g.has_edge(node2, node1):
+            return g[node2][node1].get('weight', 1)
+        return None
     
-    cd_weight = None
-    if graph.has_edge('C', 'D'):
-        cd_weight = graph['C']['D'].get('weight', 1)
-    elif graph.has_edge('D', 'C'):
-        cd_weight = graph['D']['C'].get('weight', 1)
+    # Check edge weights for A-B and C-D (both should have count=2)
+    ab_weight = get_edge_weight(graph, 'A', 'B')
+    cd_weight = get_edge_weight(graph, 'C', 'D')
     
     # Both edges appear in 2 layers
     if ab_weight is not None:
@@ -455,7 +461,17 @@ def test_golden_io_roundtrip(toy_multilayer_network, tmp_path):
     # Save as multiedgelist format (node1 layer1 node2 layer2 weight)
     with open(output_file, 'w') as f:
         for edge in net.get_edges(data=True):
+            # Validate edge format before unpacking
+            if not isinstance(edge, tuple) or len(edge) < 2:
+                continue
+            
             src_node, dst_node = edge[0], edge[1]
+            
+            # Validate node format
+            if not (isinstance(src_node, tuple) and len(src_node) >= 2 and
+                    isinstance(dst_node, tuple) and len(dst_node) >= 2):
+                continue
+            
             src_id, src_layer = src_node[0], src_node[1]
             dst_id, dst_layer = dst_node[0], dst_node[1]
             
