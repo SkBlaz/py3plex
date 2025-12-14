@@ -19,7 +19,7 @@ cross-platform influencers.
 """
 
 from py3plex.core import multinet
-from py3plex.dsl import Q, L
+from py3plex.dsl import Q, L, UQ
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 import matplotlib.pyplot as plt
 from collections import Counter
@@ -91,34 +91,55 @@ def create_social_network():
 
 
 def compute_basic_stats(network):
-    """Compute cross-platform statistics."""
+    """Compute cross-platform statistics with detailed layer-level analysis."""
     print("\n" + "="*70)
     print("STEP 2: BASIC NETWORK STATS - Cross-Platform Analysis")
     print("="*70)
     
     network.basic_stats()
     
-    # Platform-specific statistics
+    # Comprehensive platform-specific statistics
     print("\nPlatform-specific metrics:")
+    print("\n{:<12} {:<10} {:<12} {:<12} {:<12} {:<12} {:<12}".format(
+        "Platform", "Users", "Edges", "Avg Degree", "Min Degree", "Max Degree", "Density"))
+    print("-" * 85)
+    
     stats = []
     for platform in ['facebook', 'twitter', 'linkedin']:
-        result = (
+        # Node stats
+        node_result = (
             Q.nodes()
              .from_layers(L[platform])
              .compute("degree")
              .execute(network)
         )
-        df = result.to_pandas()
+        node_df = node_result.to_pandas()
+        
+        # Edge stats
+        edge_result = Q.edges().from_layers(L[platform]).execute(network)
+        num_edges = len(edge_result)
+        
+        # Compute density
+        num_nodes = len(node_df)
+        max_edges = num_nodes * (num_nodes - 1) / 2
+        density = num_edges / max_edges if max_edges > 0 else 0
+        
+        print("{:<12} {:<10} {:<12} {:<12.2f} {:<12} {:<12} {:<12.4f}".format(
+            platform.capitalize(),
+            num_nodes,
+            num_edges,
+            node_df['degree'].mean(),
+            int(node_df['degree'].min()),
+            int(node_df['degree'].max()),
+            density
+        ))
+        
         stats.append({
             'Platform': platform.capitalize(),
-            'Users': len(df),
-            'Avg Degree': df['degree'].mean(),
-            'Max Degree': df['degree'].max(),
-            'Min Degree': df['degree'].min()
+            'Users': num_nodes,
+            'Edges': num_edges,
+            'Density': density
         })
-    
-    stats_df = pd.DataFrame(stats)
-    print("\n", stats_df.to_string(index=False))
     
     # Multi-platform users
     print("\nCross-platform presence:")
@@ -137,48 +158,56 @@ def compute_basic_stats(network):
 
 def identify_influencers(network):
     """
-    Identify influential users across platforms.
+    Identify influential users across platforms with confidence bounds.
     """
     print("\n" + "="*70)
     print("STEP 3: ANALYSIS PIPELINE - Identifying Influencers")
     print("="*70)
     
-    # 3.1 Compute influence metrics
-    print("\n[3.1] Computing influence metrics...")
+    # 3.1 Compute influence metrics with uncertainty quantification
+    print("\n[3.1] Computing influence metrics with confidence bounds...")
     result = (
         Q.nodes()
          .from_layers(L["*"])
+         .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
          .compute("degree", "betweenness_centrality", "pagerank")
-         .order_by("-pagerank")
+         .order_by("-pagerank__mean")
          .execute(network)
     )
     
-    df = result.to_pandas()
+    df = result.to_pandas(expand_uncertainty=True)
     
     # Find cross-platform influencers (users with high metrics)
-    print("\nTop 5 influencers by PageRank:")
+    print("\nTop 5 influencers by PageRank (with 95% confidence intervals):")
     top_influencers = df.head(5)
     for _, row in top_influencers.iterrows():
         user = row['id'][0] if isinstance(row['id'], tuple) else row['id']
         platform = row['layer']
-        print(f"  {user} ({platform}): PageRank={row['pagerank']:.4f}, Degree={row['degree']}")
+        pr = row['pagerank']
+        pr_low = row['pagerank_ci95_low']
+        pr_high = row['pagerank_ci95_high']
+        print(f"  {user} ({platform}): PageRank={pr:.4f} (95% CI: [{pr_low:.4f}, {pr_high:.4f}]), Degree={row['degree']}")
     
-    # 3.2 Platform-specific influence
-    print("\n[3.2] Platform-specific top influencers:")
+    # 3.2 Platform-specific influence with confidence bounds
+    print("\n[3.2] Platform-specific top influencers with confidence bounds:")
     for platform in ['facebook', 'twitter', 'linkedin']:
         platform_result = (
             Q.nodes()
              .from_layers(L[platform])
+             .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
              .compute("degree", "betweenness_centrality")
-             .order_by("-betweenness_centrality")
+             .order_by("-betweenness_centrality__mean")
              .limit(3)
              .execute(network)
         )
-        platform_df = platform_result.to_pandas()
+        platform_df = platform_result.to_pandas(expand_uncertainty=True)
         print(f"\n  {platform.upper()}:")
         for _, row in platform_df.iterrows():
             user = row['id'][0] if isinstance(row['id'], tuple) else row['id']
-            print(f"    {user}: degree={row['degree']}, betweenness={row['betweenness_centrality']:.3f}")
+            bc = row['betweenness_centrality']
+            bc_low = row['betweenness_centrality_ci95_low']
+            bc_high = row['betweenness_centrality_ci95_high']
+            print(f"    {user}: degree={row['degree']}, betweenness={bc:.4f} (95% CI: [{bc_low:.4f}, {bc_high:.4f}])")
     
     return df
 
@@ -326,11 +355,11 @@ def main():
     print("CASE STUDY COMPLETE")
     print("="*70)
     print("\nSummary:")
-    print("  ✓ Built multi-platform social network")
-    print("  ✓ Analyzed cross-platform metrics")
-    print("  ✓ Identified influencers")
-    print("  ✓ Detected social communities")
-    print("  ✓ Visualized platform differences")
+    print("  * Built multi-platform social network")
+    print("  * Analyzed cross-platform metrics with layer-level statistics")
+    print("  * Identified influencers with confidence intervals")
+    print("  * Detected social communities")
+    print("  * Visualized platform differences")
     print("\nNext steps:")
     print("  - Apply to real social media data (Twitter API, Facebook Graph API)")
     print("  - Add temporal analysis (how communities evolve)")

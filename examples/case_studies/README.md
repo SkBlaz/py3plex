@@ -14,7 +14,7 @@ This directory contains **complete, end-to-end workflows** demonstrating py3plex
 ### 1. Biological Networks
 **File:** `biological_networks.py`  
 **Domain:** Biology / Bioinformatics  
-**Difficulty:** 🟡 Intermediate
+**Difficulty:** Intermediate
 
 Analyzes a protein-gene-disease multilayer network demonstrating how:
 - Protein interactions connect to genetic regulation
@@ -42,7 +42,7 @@ python examples/case_studies/biological_networks.py
 ### 2. Social Networks
 **File:** `social_networks.py`  
 **Domain:** Social Networks / Communication  
-**Difficulty:** 🟢 Beginner
+**Difficulty:** Beginner
 
 Analyzes user behavior across multiple social media platforms:
 - Identifies cross-platform influencers
@@ -69,7 +69,7 @@ python examples/case_studies/social_networks.py
 ### 3. Transportation Networks
 **File:** `transportation_networks.py`  
 **Domain:** Transportation / Urban Planning  
-**Difficulty:** 🟡 Intermediate
+**Difficulty:** Intermediate
 
 Analyzes multi-modal urban transportation:
 - Identifies critical transfer hubs
