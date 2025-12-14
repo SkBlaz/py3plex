@@ -19,7 +19,7 @@ identifies critical transfer points.
 """
 
 from py3plex.core import multinet
-from py3plex.dsl import Q, L
+from py3plex.dsl import Q, L, UQ
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 import matplotlib.pyplot as plt
 from collections import Counter
@@ -89,33 +89,55 @@ def create_transport_network():
 
 
 def compute_basic_stats(network):
-    """Compute multi-modal transport statistics."""
+    """Compute multi-modal transport statistics with detailed layer-level analysis."""
     print("\n" + "="*70)
     print("STEP 2: BASIC NETWORK STATS - Modal Analysis")
     print("="*70)
     
     network.basic_stats()
     
-    # Mode-specific statistics
+    # Comprehensive mode-specific statistics
     print("\nTransport mode metrics:")
+    print("\n{:<10} {:<10} {:<12} {:<15} {:<15} {:<15} {:<12}".format(
+        "Mode", "Stations", "Connections", "Avg Degree", "Min Degree", "Max Degree", "Density"))
+    print("-" * 95)
+    
     stats = []
     for mode in ['bus', 'metro', 'bike']:
-        result = (
+        # Node stats
+        node_result = (
             Q.nodes()
              .from_layers(L[mode])
              .compute("degree")
              .execute(network)
         )
-        df = result.to_pandas()
+        node_df = node_result.to_pandas()
+        
+        # Edge stats
+        edge_result = Q.edges().from_layers(L[mode]).execute(network)
+        num_edges = len(edge_result)
+        
+        # Compute density
+        num_nodes = len(node_df)
+        max_edges = num_nodes * (num_nodes - 1) / 2
+        density = num_edges / max_edges if max_edges > 0 else 0
+        
+        print("{:<10} {:<10} {:<12} {:<15.2f} {:<15} {:<15} {:<12.4f}".format(
+            mode.capitalize(),
+            num_nodes,
+            num_edges,
+            node_df['degree'].mean(),
+            int(node_df['degree'].min()),
+            int(node_df['degree'].max()),
+            density
+        ))
+        
         stats.append({
             'Mode': mode.capitalize(),
-            'Stations': len(df),
-            'Avg Connectivity': df['degree'].mean(),
-            'Max Connectivity': df['degree'].max()
+            'Stations': num_nodes,
+            'Connections': num_edges,
+            'Density': density
         })
-    
-    stats_df = pd.DataFrame(stats)
-    print("\n", stats_df.to_string(index=False))
     
     # Identify transfer hubs (locations served by multiple modes)
     print("\nTransfer hub analysis:")
@@ -142,46 +164,54 @@ def compute_basic_stats(network):
 
 def analyze_accessibility(network):
     """
-    Analyze network accessibility and identify key nodes.
+    Analyze network accessibility and identify key nodes with confidence bounds.
     """
     print("\n" + "="*70)
     print("STEP 3: ANALYSIS PIPELINE - Accessibility Analysis")
     print("="*70)
     
-    # 3.1 Compute accessibility metrics
-    print("\n[3.1] Computing accessibility metrics...")
+    # 3.1 Compute accessibility metrics with uncertainty quantification
+    print("\n[3.1] Computing accessibility metrics with confidence bounds...")
     result = (
         Q.nodes()
          .from_layers(L["*"])
+         .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
          .compute("degree", "betweenness_centrality", "closeness_centrality")
-         .order_by("-betweenness_centrality")
+         .order_by("-betweenness_centrality__mean")
          .execute(network)
     )
     
-    df = result.to_pandas()
+    df = result.to_pandas(expand_uncertainty=True)
     
-    print("\nTop 5 most accessible locations (by betweenness):")
+    print("\nTop 5 most accessible locations (by betweenness with 95% confidence intervals):")
     for _, row in df.head(5).iterrows():
         location = row['id'][0] if isinstance(row['id'], tuple) else row['id']
         mode = row['layer']
-        print(f"  {location} ({mode}): betweenness={row['betweenness_centrality']:.3f}, degree={row['degree']}")
+        bc = row['betweenness_centrality']
+        bc_low = row['betweenness_centrality_ci95_low']
+        bc_high = row['betweenness_centrality_ci95_high']
+        print(f"  {location} ({mode}): betweenness={bc:.4f} (95% CI: [{bc_low:.4f}, {bc_high:.4f}]), degree={row['degree']}")
     
-    # 3.2 Mode-specific accessibility
-    print("\n[3.2] Mode-specific accessibility:")
+    # 3.2 Mode-specific accessibility with confidence bounds
+    print("\n[3.2] Mode-specific accessibility with confidence bounds:")
     for mode in ['bus', 'metro', 'bike']:
         mode_result = (
             Q.nodes()
              .from_layers(L[mode])
-             .compute("betweenness_centrality")
-             .order_by("-betweenness_centrality")
+             .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
+             .compute("betweenness_centrality", "closeness_centrality")
+             .order_by("-betweenness_centrality__mean")
              .limit(3)
              .execute(network)
         )
-        mode_df = mode_result.to_pandas()
+        mode_df = mode_result.to_pandas(expand_uncertainty=True)
         print(f"\n  {mode.upper()} - Most critical stations:")
         for _, row in mode_df.iterrows():
             location = row['id'][0] if isinstance(row['id'], tuple) else row['id']
-            print(f"    {location}: betweenness={row['betweenness_centrality']:.3f}")
+            bc = row['betweenness_centrality']
+            bc_low = row['betweenness_centrality_ci95_low']
+            bc_high = row['betweenness_centrality_ci95_high']
+            print(f"    {location}: betweenness={bc:.4f} (95% CI: [{bc_low:.4f}, {bc_high:.4f}])")
     
     return df
 
@@ -340,11 +370,11 @@ def main():
     print("CASE STUDY COMPLETE")
     print("="*70)
     print("\nSummary:")
-    print("  ✓ Built multi-modal transport network")
-    print("  ✓ Identified transfer hubs")
-    print("  ✓ Computed accessibility metrics")
-    print("  ✓ Detected service zones")
-    print("  ✓ Generated planning insights")
+    print("  * Built multi-modal transport network")
+    print("  * Identified transfer hubs with layer-level statistics")
+    print("  * Computed accessibility metrics with confidence intervals")
+    print("  * Detected service zones")
+    print("  * Generated planning insights")
     print("\nNext steps:")
     print("  - Add real GTFS (General Transit Feed Specification) data")
     print("  - Include temporal scheduling and frequencies")

@@ -19,7 +19,7 @@ biological systems where proteins interact, genes regulate, and diseases manifes
 """
 
 from py3plex.core import multinet
-from py3plex.dsl import Q, L
+from py3plex.dsl import Q, L, UQ
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 import matplotlib.pyplot as plt
 from collections import Counter
@@ -91,15 +91,47 @@ def create_biological_network():
 
 
 def compute_basic_stats(network):
-    """Display basic multilayer statistics."""
+    """Display basic multilayer statistics with layer-level analysis."""
     print("\n" + "="*70)
     print("STEP 2: BASIC NETWORK STATS")
     print("="*70)
     
     network.basic_stats()
     
-    # Use DSL to get layer-specific statistics
+    # Use DSL to get comprehensive layer-specific statistics
     print("\nLayer-specific statistics (using DSL):")
+    print("\n{:<15} {:<10} {:<12} {:<12} {:<12}".format(
+        "Layer", "Nodes", "Edges", "Avg Degree", "Density"))
+    print("-" * 70)
+    
+    for layer in ['protein', 'gene', 'disease']:
+        # Node stats
+        node_result = (
+            Q.nodes()
+             .from_layers(L[layer])
+             .compute("degree")
+             .execute(network)
+        )
+        node_df = node_result.to_pandas()
+        
+        # Edge stats
+        edge_result = Q.edges().from_layers(L[layer]).execute(network)
+        num_edges = len(edge_result)
+        
+        # Compute density
+        num_nodes = len(node_df)
+        max_edges = num_nodes * (num_nodes - 1) / 2  # undirected
+        density = num_edges / max_edges if max_edges > 0 else 0
+        
+        print("{:<15} {:<10} {:<12} {:<12.2f} {:<12.4f}".format(
+            layer.capitalize(), 
+            num_nodes,
+            num_edges,
+            node_df['degree'].mean(),
+            density
+        ))
+    
+    print("\nLayer-specific degree distributions:")
     for layer in ['protein', 'gene', 'disease']:
         result = (
             Q.nodes()
@@ -109,15 +141,16 @@ def compute_basic_stats(network):
         )
         df = result.to_pandas()
         print(f"\n  {layer.upper()} layer:")
-        print(f"    Nodes: {len(df)}")
-        print(f"    Avg degree: {df['degree'].mean():.2f}")
+        print(f"    Min degree: {df['degree'].min()}")
         print(f"    Max degree: {df['degree'].max()}")
+        print(f"    Median degree: {df['degree'].median():.1f}")
+        print(f"    Std degree: {df['degree'].std():.2f}")
 
 
 def run_analysis_pipeline(network):
     """
     Run the complete analysis pipeline:
-    1. Compute centrality measures
+    1. Compute centrality measures with confidence bounds
     2. Detect communities
     3. Identify hub nodes
     """
@@ -125,19 +158,42 @@ def run_analysis_pipeline(network):
     print("STEP 3: ANALYSIS PIPELINE")
     print("="*70)
     
-    # 3.1 Compute centrality measures
-    print("\n[3.1] Computing centrality measures...")
+    # 3.1 Compute centrality measures with uncertainty quantification
+    print("\n[3.1] Computing centrality measures with confidence bounds...")
     result = (
         Q.nodes()
          .from_layers(L["*"])
+         .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
          .compute("degree", "betweenness_centrality", "closeness_centrality")
-         .order_by("-betweenness_centrality")
+         .order_by("-betweenness_centrality__mean")
          .execute(network)
     )
     
-    df = result.to_pandas()
-    print("\nTop 5 nodes by betweenness centrality:")
-    print(df[['id', 'layer', 'degree', 'betweenness_centrality']].head())
+    df = result.to_pandas(expand_uncertainty=True)
+    print("\nTop 5 nodes by betweenness centrality (with 95% confidence intervals):")
+    print(df[['id', 'layer', 'degree', 'betweenness_centrality', 
+              'betweenness_centrality_ci95_low', 'betweenness_centrality_ci95_high']].head())
+    
+    # Compute layer-specific centralities with confidence bounds
+    print("\n[3.1b] Layer-specific centrality analysis with confidence bounds:")
+    for layer in ['protein', 'gene', 'disease']:
+        layer_result = (
+            Q.nodes()
+             .from_layers(L[layer])
+             .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
+             .compute("degree", "betweenness_centrality")
+             .order_by("-betweenness_centrality__mean")
+             .limit(3)
+             .execute(network)
+        )
+        layer_df = layer_result.to_pandas(expand_uncertainty=True)
+        print(f"\n  {layer.upper()} - Top 3 central nodes:")
+        for _, row in layer_df.iterrows():
+            node_id = row['id'][0] if isinstance(row['id'], tuple) else row['id']
+            bc = row['betweenness_centrality']
+            bc_low = row['betweenness_centrality_ci95_low']
+            bc_high = row['betweenness_centrality_ci95_high']
+            print(f"    {node_id}: {bc:.4f} (95% CI: [{bc_low:.4f}, {bc_high:.4f}])")
     
     # 3.2 Community detection
     print("\n[3.2] Detecting communities...")
@@ -273,11 +329,11 @@ def main():
     print("CASE STUDY COMPLETE")
     print("="*70)
     print("\nSummary:")
-    print("  ✓ Constructed protein-gene-disease network")
-    print("  ✓ Computed multilayer statistics")
-    print("  ✓ Identified hub nodes and communities")
-    print("  ✓ Generated visualizations")
-    print("  ✓ Interpreted biological significance")
+    print("  * Constructed protein-gene-disease network")
+    print("  * Computed multilayer statistics with layer-level analysis")
+    print("  * Identified hub nodes and communities with confidence intervals")
+    print("  * Generated visualizations")
+    print("  * Interpreted biological significance")
     print("\nNext steps:")
     print("  - Apply this workflow to real biological data")
     print("  - Integrate with pathway databases (KEGG, Reactome)")
