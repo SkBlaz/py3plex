@@ -98,3 +98,52 @@ def test_compute_metric_invalid_choice_raises():
 
     with pytest.raises(ValueError):
         _compute_metric(net, "not_a_metric", {}, rng)
+
+
+def test_avg_shortest_path_disconnected_nodes_has_zero_impact():
+    """When paths are infinite before and after removal, robustness should be 0 not NaN."""
+    net = multinet.multi_layer_network(directed=False, verbose=False)
+    net.add_nodes(
+        [
+            {"source": "x", "type": "L0"},
+            {"source": "y", "type": "L0"},
+        ]
+    )
+
+    scores = robustness_centrality(
+        net,
+        target="node",
+        metric="avg_shortest_path",
+        sample_nodes=list(net.get_nodes()),
+        seed=1,
+    )
+
+    assert all(score == 0.0 for score in scores.values())
+
+
+def test_avg_shortest_path_bridge_removal_yields_infinite_impact():
+    """Removing a bridge that disconnects the graph should give infinite impact."""
+    net = _chain_network()
+
+    scores = robustness_centrality(
+        net, target="node", metric="avg_shortest_path", seed=0
+    )
+
+    assert math.isinf(scores[("b", "L0")])
+    assert math.isfinite(scores[("a", "L0")])
+    assert math.isfinite(scores[("c", "L0")])
+
+
+def test_missing_layer_in_sample_yields_zero_impact():
+    """Sampling a non-existent layer should return zero impact without error."""
+    net = _chain_network()
+
+    scores = robustness_centrality(
+        net,
+        target="layer",
+        metric="giant_component",
+        sample_layers=["L0", "L_missing"],
+        seed=3,
+    )
+
+    assert scores["L_missing"] == 0.0

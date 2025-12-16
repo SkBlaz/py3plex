@@ -1,36 +1,81 @@
-"""
-Example: Config-Driven Workflows in py3plex
+"""Config-driven workflows with YAML/JSON definitions.
 
-This example demonstrates how to use YAML or JSON configuration files to define
-and execute reproducible network analysis workflows.
-
-Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
+Shows how to load, validate, and run workflows defined in the sibling YAML/JSON
+configs. Uses only local files—no network calls—and finishes quickly (<5s).
 """
+
+from __future__ import annotations
 
 from pathlib import Path
+from typing import Optional
 
 from py3plex.workflows import WorkflowConfig, WorkflowRunner
 
 
-def run_file_loading_workflow():
+def load_config(config_path: Path) -> Optional[WorkflowConfig]:
+    """Load a workflow config from disk with a helpful message on failure."""
+    if not config_path.exists():
+        print(f"✗ Missing config file: {config_path}")
+        return None
+
+    try:
+        config = WorkflowConfig.from_file(config_path)
+        return rebase_paths(config_path, config)
+    except Exception as exc:  # pragma: no cover - defensive logging
+        print(f"✗ Could not read {config_path.name}: {exc}")
+    return None
+
+
+def rebase_paths(config_path: Path, config: WorkflowConfig) -> WorkflowConfig:
+    """Resolve all relative paths in the config against the config file location."""
+    base = config_path.parent
+
+    for dataset in config.datasets:
+        path = dataset.get("path")
+        if path and not Path(path).is_absolute():
+            dataset["path"] = str(base / path)
+
+    for operation in config.operations:
+        params = operation.get("parameters", {})
+        output = params.get("output")
+        if isinstance(output, str) and not Path(output).is_absolute():
+            params["output"] = str(base / output)
+
+    if config.output:
+        directory = config.output.get("directory")
+        if isinstance(directory, str) and not Path(directory).is_absolute():
+            config.output["directory"] = str(base / directory)
+
+        summary = config.output.get("summary")
+        if isinstance(summary, str) and not Path(summary).is_absolute():
+            config.output["summary"] = str(base / summary)
+
+    return config
+
+
+def print_dataset_summary(config: WorkflowConfig) -> None:
+    """Print a compact overview of the datasets and operations in a config."""
+    print(f"\nWorkflow: {config.name}")
+    print(f"Description: {config.description}")
+    print(f"Datasets: {len(config.datasets)}")
+    for dataset in config.datasets:
+        path = dataset.get("path", "<generated>")
+        print(f"  - {dataset.get('name', dataset.get('type', 'dataset'))}: {path}")
+    print(f"Operations: {len(config.operations)}")
+
+
+def run_file_loading_workflow() -> None:
     """Run workflow that loads network from file."""
     print("=" * 70)
     print("Example 1: Loading Network from File (YAML)")
     print("=" * 70)
 
-    # Path to the file-loading YAML config
     config_path = Path(__file__).parent / "load_from_file.yaml"
 
-    # Load and validate configuration
-    config = WorkflowConfig.from_file(config_path)
+    config = load_config(config_path)
+    if config is None:
+        return
 
-    print(f"\nWorkflow: {config.name}")
-    print(f"Description: {config.description}")
-    print(f"Dataset type: {config.datasets[0]['type']}")
-    print(f"Loading from: {config.datasets[0]['path']}")
-    print(f"Operations: {len(config.operations)}")
-
-    # Validate configuration
     errors = config.validate()
     if errors:
         print("\nValidation errors:")
@@ -38,9 +83,9 @@ def run_file_loading_workflow():
             print(f"  - {error}")
         return
 
+    print_dataset_summary(config)
     print("\nConfiguration is valid!")
 
-    # Execute workflow
     print("\nExecuting workflow...")
     runner = WorkflowRunner(config)
     runner.run()
@@ -48,26 +93,19 @@ def run_file_loading_workflow():
     print("\nFile-loading workflow completed!")
 
 
-def run_file_comparison_workflow():
+def run_file_comparison_workflow() -> None:
     """Run workflow comparing file-loaded and generated networks."""
     print("\n" + "=" * 70)
     print("Example 2: File vs Generated Network Comparison (JSON)")
     print("=" * 70)
 
-    # Path to the comparison JSON config
     config_path = Path(__file__).parent / "load_and_compare.json"
 
-    # Load configuration
-    config = WorkflowConfig.from_file(config_path)
+    config = load_config(config_path)
+    if config is None:
+        return
 
-    print(f"\nWorkflow: {config.name}")
-    print(f"Description: {config.description}")
-    print(f"Datasets: {len(config.datasets)}")
-    print(f"  - {config.datasets[0]['name']}: loaded from {config.datasets[0]['path']}")
-    print(f"  - {config.datasets[1]['name']}: generated")
-    print(f"Operations: {len(config.operations)}")
-
-    # Execute workflow
+    print_dataset_summary(config)
     print("\nExecuting workflow...")
     runner = WorkflowRunner(config)
     runner.run()
@@ -75,23 +113,20 @@ def run_file_comparison_workflow():
     print("\nComparison workflow completed!")
 
 
-def run_generation_workflow():
+def run_generation_workflow() -> None:
     """Run workflow that generates networks (for completeness)."""
     print("\n" + "=" * 70)
     print("Example 3: Network Generation Workflow (YAML)")
     print("=" * 70)
 
-    # Path to the generation YAML config
     config_path = Path(__file__).parent / "example_config.yaml"
 
-    # Load configuration
-    config = WorkflowConfig.from_file(config_path)
+    config = load_config(config_path)
+    if config is None:
+        return
 
-    print(f"\nWorkflow: {config.name}")
-    print(f"Description: {config.description}")
-    print(f"Dataset type: {config.datasets[0]['type']} (for comparison)")
+    print_dataset_summary(config)
 
-    # Execute workflow
     print("\nExecuting workflow...")
     runner = WorkflowRunner(config)
     runner.run()
@@ -99,7 +134,7 @@ def run_generation_workflow():
     print("\nGeneration workflow completed!")
 
 
-def main():
+def main() -> int:
     """Run all example workflows."""
     print("\nConfig-Driven Workflows Examples")
     print("=" * 70)
@@ -134,12 +169,14 @@ def main():
         print("\nTo validate a config without running:")
         print("  py3plex run-config load_from_file.yaml --validate-only")
 
-    except Exception as e:
-        print(f"\nError: {e}")
-        import traceback
+    except Exception as exc:  # pragma: no cover - defensive logging
+        print(f"\nError: {exc}")
+        import traceback  # local import to avoid polluting top-level
 
         traceback.print_exc()
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

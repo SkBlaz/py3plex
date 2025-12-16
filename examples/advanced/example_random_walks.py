@@ -1,99 +1,80 @@
 """
-Random Walk Examples for Py3plex
+Random walk tour of py3plex.
 
-This example demonstrates the comprehensive random walk capabilities:
-1. Basic random walks with weighted edges
-2. Node2Vec biased random walks with p/q parameters
-3. Multiple walk generation
-4. Multilayer network walks
-5. Statistical validation of walk properties
+Shows: weighted walks, Node2Vec bias, batch generation, multilayer walks,
+and quick statistical checks. Requires the local dataset `datasets/test.edgelist`;
+prints a clear message if it is missing. Designed to be deterministic and quick.
 
-SKIP_CI: external_deps - Requires specific dataset files (test.edgelist)
+SKIP_CI: external_deps - depends on the bundled dataset.
 """
 
-import numpy as np
 from collections import Counter
+from pathlib import Path
 
-from py3plex.core import multinet
+import numpy as np
+
 from py3plex.algorithms.general.walkers import (
     basic_random_walk,
-    node2vec_walk,
     generate_walks,
     layer_specific_random_walk,
+    node2vec_walk,
 )
+from py3plex.core import multinet
+
+
+DATASET_PATH = Path(__file__).resolve().parents[2] / "datasets" / "test.edgelist"
+DEFAULT_SEED = 42
+SHORT_TRIALS = 300  # keep runtime small while showing statistical differences
+LONG_TRIALS = 1200
 
 
 def example_basic_random_walk():
     """Demonstrate basic random walk functionality."""
-    print("=" * 70)
-    print("EXAMPLE 1: Basic Random Walk")
-    print("=" * 70)
+    _print_header("EXAMPLE 1: Basic Random Walk")
 
-    # Load py3plex example network
-    network = multinet.multi_layer_network().load_network(
-        "datasets/test.edgelist",
-        directed=False,
-        input_type="edgelist"
-    )
-    G = network.core_network
+    G = _load_core_graph()
+    if G is None:
+        return
     print(f"Graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
 
-    # Get a starting node from the loaded network
-    start_node = list(G.nodes())[0]
+    # Choose deterministic starting node
+    start_node = sorted(G.nodes())[0]
 
     # Perform a random walk
-    walk = basic_random_walk(G, start_node=start_node, walk_length=10, seed=42)
+    walk = basic_random_walk(G, start_node=start_node, walk_length=10, seed=DEFAULT_SEED)
     print(f"\nRandom walk from node {start_node}:")
     print(f"  Path: {' -> '.join(str(n) for n in walk[:5])}...{' -> '.join(str(n) for n in walk[-3:])}")
     print(f"  Length: {len(walk)} nodes")
 
     # Verify reproducibility
-    walk2 = basic_random_walk(G, start_node=start_node, walk_length=10, seed=42)
+    walk2 = basic_random_walk(G, start_node=start_node, walk_length=10, seed=DEFAULT_SEED)
     print("\nReproducibility check:")
     print(f"  Walk 1 == Walk 2: {walk == walk2}")
 
 
 def example_weighted_random_walk():
     """Demonstrate weighted edge handling."""
-    print("\n" + "=" * 70)
-    print("EXAMPLE 2: Weighted Random Walk")
-    print("=" * 70)
+    _print_header("EXAMPLE 2: Weighted Random Walk")
 
-    # Load py3plex network and add weights
-    network = multinet.multi_layer_network().load_network(
-        "datasets/test.edgelist",
-        directed=False,
-        input_type="edgelist"
-    )
-    G = network.core_network
+    import networkx as nx
 
-    # Add weights to a subset of edges for demonstration
-    # Get first node with at least 2 neighbors
-    start_node = None
-    for node in G.nodes():
-        neighbors = list(G.neighbors(node))
-        if len(neighbors) >= 2:
-            start_node = node
-            neighbor1, neighbor2 = neighbors[0], neighbors[1]
-            break
-
-    if start_node is None:
-        print("Could not find suitable node for weighted walk demo")
-        return
-
-    # Set weights
-    G[start_node][neighbor1]['weight'] = 10.0
-    G[start_node][neighbor2]['weight'] = 1.0
+    # Minimal graph with a single weighted choice for clarity
+    G = nx.Graph()
+    start_node = "hub"
+    neighbor_high = "high_weight"
+    neighbor_low = "low_weight"
+    G.add_edge(start_node, neighbor_high, weight=10.0)
+    G.add_edge(start_node, neighbor_low, weight=1.0)
 
     print(f"Testing weighted walks from node {start_node}:")
-    print(f"  Edge to {neighbor1}: weight=10.0 (high)")
-    print(f"  Edge to {neighbor2}: weight=1.0 (low)")
+    print(f"  Edge to {neighbor_high}: weight=10.0 (high)")
+    print(f"  Edge to {neighbor_low}: weight=1.0 (low)")
 
     # Count visits to neighbors
     visits_weighted = Counter()
     visits_unweighted = Counter()
 
-    num_trials = 1000
+    num_trials = SHORT_TRIALS
     for i in range(num_trials):
         # Weighted walk
         walk_w = basic_random_walk(G, start_node, 1, weighted=True, seed=i)
@@ -106,18 +87,16 @@ def example_weighted_random_walk():
             visits_unweighted[walk_u[1]] += 1
 
     print(f"\nVisit frequency over {num_trials} walks from node {start_node}:")
-    print(f"  Weighted:   {neighbor1}: {visits_weighted[neighbor1]}, {neighbor2}: {visits_weighted[neighbor2]}")
-    print(f"  Unweighted: {neighbor1}: {visits_unweighted[neighbor1]}, {neighbor2}: {visits_unweighted[neighbor2]}")
-    if visits_weighted[neighbor2] > 0:
-        ratio = visits_weighted[neighbor1] / visits_weighted[neighbor2]
+    print(f"  Weighted:   {neighbor_high}: {visits_weighted[neighbor_high]}, {neighbor_low}: {visits_weighted[neighbor_low]}")
+    print(f"  Unweighted: {neighbor_high}: {visits_unweighted[neighbor_high]}, {neighbor_low}: {visits_unweighted[neighbor_low]}")
+    if visits_weighted[neighbor_low] > 0:
+        ratio = visits_weighted[neighbor_high] / visits_weighted[neighbor_low]
         print(f"  Weight ratio (10:1) vs visit ratio: {ratio:.1f}:1")
 
 
 def example_node2vec_biased_walk():
     """Demonstrate Node2Vec biased random walks."""
-    print("\n" + "=" * 70)
-    print("EXAMPLE 3: Node2Vec Biased Random Walk")
-    print("=" * 70)
+    _print_header("EXAMPLE 3: Node2Vec Biased Random Walk")
 
     # Create triangle graph for demonstrating bias
     import networkx as nx
@@ -134,7 +113,7 @@ def example_node2vec_biased_walk():
         (1.0, 10.0, "High q (local bias)"),
     ]
 
-    num_trials = 1000
+    num_trials = SHORT_TRIALS
     for p, q, desc in configs:
         backtracks = 0
 
@@ -142,7 +121,7 @@ def example_node2vec_biased_walk():
             walk = node2vec_walk(G, 0, 10, p=p, q=q, seed=i)
             # Count backtracking (returning to node 2 steps back)
             for j in range(2, len(walk)):
-                if walk[j] == walk[j-2]:
+                if walk[j] == walk[j - 2]:
                     backtracks += 1
 
         backtrack_rate = backtracks / (num_trials * 9)  # 9 possible backtracks per walk
@@ -152,23 +131,17 @@ def example_node2vec_biased_walk():
 
 def example_generate_multiple_walks():
     """Demonstrate multiple walk generation."""
-    print("\n" + "=" * 70)
-    print("EXAMPLE 4: Generate Multiple Walks")
-    print("=" * 70)
+    _print_header("EXAMPLE 4: Generate Multiple Walks")
 
-    # Load py3plex network
-    network = multinet.multi_layer_network().load_network(
-        "datasets/test.edgelist",
-        directed=False,
-        input_type="edgelist"
-    )
-    G = network.core_network
+    G = _load_core_graph()
+    if G is None:
+        return
 
     # Get first 10 nodes for demonstration (network is large)
-    demo_nodes = list(G.nodes())[:10]
+    demo_nodes = sorted(G.nodes())[:10]
 
     # Generate walks from subset of nodes
-    all_walks = generate_walks(G, num_walks=5, walk_length=5, start_nodes=demo_nodes, seed=42)
+    all_walks = generate_walks(G, num_walks=5, walk_length=5, start_nodes=demo_nodes, seed=DEFAULT_SEED)
     print(f"\nGenerated {len(all_walks)} walks from {len(demo_nodes)} nodes")
     print(f"Expected: {len(demo_nodes) * 5} walks")
 
@@ -178,7 +151,7 @@ def example_generate_multiple_walks():
         num_walks=3,
         walk_length=10,
         start_nodes=demo_nodes[:3],
-        seed=42
+        seed=DEFAULT_SEED
     )
     print(f"\nGenerated {len(subset_walks)} walks from first 3 nodes")
     print(f"First walk (first 5 nodes): {' -> '.join(str(n) for n in subset_walks[0][:5])}...")
@@ -190,7 +163,7 @@ def example_generate_multiple_walks():
         walk_length=5,
         start_nodes=[demo_nodes[0]],
         return_edges=True,
-        seed=42
+        seed=DEFAULT_SEED
     )
     print("\nEdge sequences (first walk, first 3 edges):")
     for edge in edge_walks[0][:3]:
@@ -199,9 +172,7 @@ def example_generate_multiple_walks():
 
 def example_multilayer_walks():
     """Demonstrate multilayer network walks."""
-    print("\n" + "=" * 70)
-    print("EXAMPLE 5: Multilayer Network Walks")
-    print("=" * 70)
+    _print_header("EXAMPLE 5: Multilayer Network Walks")
 
     # Create a simple graph with layer information in node names
     # This demonstrates the concept without requiring full multilayer setup
@@ -237,7 +208,7 @@ def example_multilayer_walks():
         walk_length=10,
         layer="social",
         cross_layer_prob=0.0,
-        seed=42
+        seed=DEFAULT_SEED
     )
     print("\nLayer-constrained walk (social only):")
     print(f"  {' -> '.join(walk_constrained)}")
@@ -250,7 +221,7 @@ def example_multilayer_walks():
         walk_length=10,
         layer="social",
         cross_layer_prob=0.3,
-        seed=42
+        seed=DEFAULT_SEED
     )
     print("\nWalk with 30% cross-layer probability:")
     print(f"  {' -> '.join(walk_cross)}")
@@ -264,9 +235,7 @@ def example_multilayer_walks():
 
 def example_statistical_validation():
     """Demonstrate statistical properties of walks."""
-    print("\n" + "=" * 70)
-    print("EXAMPLE 6: Statistical Validation")
-    print("=" * 70)
+    _print_header("EXAMPLE 6: Statistical Validation")
 
     # For statistical validation, we use simple constructed graphs
     # to verify mathematical properties
@@ -287,7 +256,7 @@ def example_statistical_validation():
     print("  Expected visit ratio: 1:2:3")
 
     visits = Counter()
-    num_trials = 10000
+    num_trials = LONG_TRIALS
 
     for i in range(num_trials):
         walk = basic_random_walk(G, 0, 1, weighted=True, seed=i)
@@ -332,11 +301,33 @@ def example_statistical_validation():
     print(f"Average deviation: {avg_deviation:.3f} (should be < 0.1)")
 
 
+def _print_header(title: str):
+    """Pretty-print a section header."""
+    print("\n" + "=" * 70)
+    print(title)
+    print("=" * 70)
+
+
+def _load_core_graph():
+    """Load the bundled test network, returning the NetworkX graph or None."""
+    if not DATASET_PATH.exists():
+        print(
+            f"Dataset missing at {DATASET_PATH}. "
+            "Ensure you run this example from the repository root where datasets/ lives."
+        )
+        return None
+
+    network = multinet.multi_layer_network().load_network(
+        str(DATASET_PATH),
+        directed=False,
+        input_type="multiedgelist",
+    )
+    return network.core_network
+
+
 def main():
     """Run all examples."""
-    print("\n" + "=" * 70)
-    print("RANDOM WALK EXAMPLES FOR PY3PLEX")
-    print("=" * 70)
+    _print_header("RANDOM WALK EXAMPLES FOR PY3PLEX")
 
     example_basic_random_walk()
     example_weighted_random_walk()

@@ -1490,8 +1490,15 @@ class multi_layer_network:
         elif self.network_type == "multiplex":
             if not multiplex_edges:
                 for edge in self.core_network.edges(data=data, keys=True):
-                    if edge[2] == "coupling":
+                    if data:
+                        _, _, key, attr = edge
+                    else:
+                        u, v, key = edge
+                        attr = self.core_network.get_edge_data(u, v, key=key)
+
+                    if attr.get("type") == "coupling":
                         continue
+
                     yield edge
             else:
                 for edge in self.core_network.edges(data=data):
@@ -1919,61 +1926,47 @@ class multi_layer_network:
         result = nx_function(self.core_network, **kwargs)
         return result
 
-    def _generic_edge_dict_manipulator(self, edge_dict_list, target_function):
+    def _generic_edge_dict_manipulator(self, edge_dict_list, target_function, raw: bool = False):
         """
         Generic manipulator of edge dicts
         """
 
-        if isinstance(edge_dict_list, dict):
+        def _apply(edge_dict):
             # Work with a copy to avoid mutating the original dictionary
-            edge_dict = edge_dict_list.copy()
+            edge_dict = edge_dict.copy()
+
             if "source_type" in edge_dict.keys() and "target_type" in edge_dict.keys():
-                edge_dict["u_for_edge"] = (
-                    edge_dict["source"],
-                    edge_dict["source_type"],
-                )
-                edge_dict["v_for_edge"] = (
-                    edge_dict["target"],
-                    edge_dict["target_type"],
-                )
+                u_for_edge = (edge_dict["source"], edge_dict["source_type"])
+                v_for_edge = (edge_dict["target"], edge_dict["target_type"])
             else:
-                edge_dict["u_for_edge"] = (edge_dict["source"], self.dummy_layer)
-                edge_dict["v_for_edge"] = (edge_dict["target"], self.dummy_layer)
+                u_for_edge = (edge_dict["source"], self.dummy_layer)
+                v_for_edge = (edge_dict["target"], self.dummy_layer)
 
             # Remove keys only if they exist
             edge_dict.pop("target", None)
             edge_dict.pop("source", None)
             edge_dict.pop("target_type", None)
             edge_dict.pop("source_type", None)
-            getattr(self.core_network, target_function)(**edge_dict)
 
+            func = getattr(self.core_network, target_function)
+            key = edge_dict.pop("key", None)
+
+            if raw:
+                if key is None:
+                    func(u_for_edge, v_for_edge)
+                else:
+                    func(u_for_edge, v_for_edge, key=key)
+            else:
+                if key is None:
+                    func(u_for_edge, v_for_edge, **edge_dict)
+                else:
+                    func(u_for_edge, v_for_edge, key=key, **edge_dict)
+
+        if isinstance(edge_dict_list, dict):
+            _apply(edge_dict_list)
         else:
             for edge_dict_item in edge_dict_list:
-                # Work with a copy to avoid mutating the original dictionary
-                edge_dict = edge_dict_item.copy()
-
-                if (
-                    "source_type" in edge_dict.keys()
-                    and "target_type" in edge_dict.keys()
-                ):
-                    edge_dict["u_for_edge"] = (
-                        edge_dict["source"],
-                        edge_dict["source_type"],
-                    )
-                    edge_dict["v_for_edge"] = (
-                        edge_dict["target"],
-                        edge_dict["target_type"],
-                    )
-                else:
-                    edge_dict["u_for_edge"] = (edge_dict["source"], self.dummy_layer)
-                    edge_dict["v_for_edge"] = (edge_dict["target"], self.dummy_layer)
-
-                # Remove keys only if they exist
-                edge_dict.pop("target", None)
-                edge_dict.pop("source", None)
-                edge_dict.pop("target_type", None)
-                edge_dict.pop("source_type", None)
-                getattr(self.core_network, target_function)(**edge_dict)
+                _apply(edge_dict_item)
 
     def _generic_edge_list_manipulator(self, edge_list, target_function, raw=False):
         """Generic manipulator of edge lists.

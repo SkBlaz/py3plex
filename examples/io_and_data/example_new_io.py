@@ -1,18 +1,20 @@
 """
-Example usage of the py3plex I/O system.
+Tour of the modern py3plex I/O system.
 
-This script demonstrates the new I/O API for multilayer graphs including:
-- Creating graphs with the schema API
-- Reading and writing various formats (JSON, JSONL, CSV)
-- Converting to core py3plex objects for analysis (centrality, etc.)
-- Converting between libraries (NetworkX, igraph)
-- Schema validation and error handling
+Covers graph construction, serialization (JSON, JSONL, CSV), conversion to core
+py3plex/NetworkX/igraph, and schema validation. Outputs are written to a
+temporary directory and cleaned up automatically. Optional dependencies:
+NetworkX (for conversion/centrality) and igraph (for conversion).
 
 Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
+from __future__ import annotations
+
 import sys
+import tempfile
 from pathlib import Path
+from typing import Optional
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -31,7 +33,7 @@ from py3plex.io import (
 )
 
 
-def example_basic_usage():
+def example_basic_usage() -> MultiLayerGraph:
     """Basic graph creation and manipulation."""
     print("=== Basic Usage ===")
 
@@ -84,61 +86,49 @@ def example_basic_usage():
     return graph
 
 
-def example_json_io(graph):
+def example_json_io(graph: MultiLayerGraph, tmpdir: Path) -> None:
     """JSON format I/O example."""
     print("\n=== JSON I/O ===")
 
-    # Write to JSON
-    write(graph, "/tmp/network.json", deterministic=True)
-    print("Wrote graph to /tmp/network.json")
+    json_path = tmpdir / "network.json"
+    json_gz_path = tmpdir / "network.json.gz"
+    write(graph, json_path, deterministic=True)
+    print(f"Wrote graph to {json_path}")
 
-    # Read back
-    graph2 = read("/tmp/network.json")
+    graph2 = read(json_path)
     print(f"Read graph: {len(graph2.nodes)} nodes, {len(graph2.edges)} edges")
 
-    # Write compressed
-    write(graph, "/tmp/network.json.gz")
-    print("Wrote compressed graph to /tmp/network.json.gz")
+    write(graph, json_gz_path)
+    print(f"Wrote compressed graph to {json_gz_path}")
 
 
-def example_jsonl_io(graph):
+def example_jsonl_io(graph: MultiLayerGraph, tmpdir: Path) -> None:
     """JSONL streaming format example."""
     print("\n=== JSONL Streaming I/O ===")
 
-    # Write to JSONL (efficient for large graphs)
-    write(graph, "/tmp/network.jsonl", format="jsonl", deterministic=True)
-    print("Wrote graph to /tmp/network.jsonl (streaming format)")
+    jsonl_path = tmpdir / "network.jsonl"
+    write(graph, jsonl_path, format="jsonl", deterministic=True)
+    print(f"Wrote graph to {jsonl_path} (streaming format)")
 
-    # Read back
-    graph2 = read("/tmp/network.jsonl", format="jsonl")
+    graph2 = read(jsonl_path, format="jsonl")
     print(f"Read graph: {len(graph2.nodes)} nodes, {len(graph2.edges)} edges")
 
 
-def example_csv_io(graph):
+def example_csv_io(graph: MultiLayerGraph, tmpdir: Path) -> None:
     """CSV format I/O with sidecar files."""
     print("\n=== CSV I/O ===")
 
-    # Write CSV with sidecar files for node/layer attributes
-    write(
-        graph,
-        "/tmp/edges.csv",
-        format="csv",
-        deterministic=True,
-        write_sidecars=True,
-    )
-    print("Wrote graph to /tmp/edges.csv (with nodes.csv and layers.csv)")
+    edge_path = tmpdir / "edges.csv"
+    node_path = tmpdir / "nodes.csv"
+    layer_path = tmpdir / "layers.csv"
+    write(graph, edge_path, format="csv", deterministic=True, write_sidecars=True)
+    print(f"Wrote graph to {edge_path} (with {node_path.name} and {layer_path.name})")
 
-    # Read back with sidecars
-    graph2 = read(
-        "/tmp/edges.csv",
-        format="csv",
-        nodes_file="/tmp/nodes.csv",
-        layers_file="/tmp/layers.csv",
-    )
+    graph2 = read(edge_path, format="csv", nodes_file=node_path, layers_file=layer_path)
     print(f"Read graph: {len(graph2.nodes)} nodes, {len(graph2.edges)} edges")
 
 
-def example_csv_to_py3plex_analysis():
+def example_csv_to_py3plex_analysis(tmpdir: Path) -> None:
     """Load CSV and use core py3plex for analysis."""
     print("\n=== CSV to py3plex Analysis ===")
 
@@ -167,11 +157,12 @@ def example_csv_to_py3plex_analysis():
             Edge(src="diana", dst="alice", src_layer="social", dst_layer="social")
         )
 
-        write(graph, "/tmp/network.csv", format="csv")
-        print("Saved network to /tmp/network.csv")
+        csv_path = tmpdir / "network.csv"
+        write(graph, csv_path, format="csv")
+        print(f"Saved network to {csv_path}")
 
         # Load into new I/O system
-        loaded_graph = read("/tmp/network.csv", format="csv")
+        loaded_graph = read(csv_path, format="csv")
 
         # Convert to NetworkX for py3plex compatibility
         G = to_networkx(loaded_graph, mode="union")
@@ -202,7 +193,7 @@ def example_csv_to_py3plex_analysis():
         print(f"Error in analysis: {e}")
 
 
-def example_networkx_conversion(graph):
+def example_networkx_conversion(graph: MultiLayerGraph) -> None:
     """NetworkX conversion examples."""
     print("\n=== NetworkX Conversion ===")
 
@@ -229,7 +220,7 @@ def example_networkx_conversion(graph):
         print("NetworkX not installed, skipping NetworkX examples")
 
 
-def example_igraph_conversion(graph):
+def example_igraph_conversion(graph: MultiLayerGraph) -> None:
     """igraph conversion examples."""
     print("\n=== igraph Conversion ===")
 
@@ -248,7 +239,7 @@ def example_igraph_conversion(graph):
         print("igraph not installed, skipping igraph examples")
 
 
-def example_validation():
+def example_validation() -> None:
     """Schema validation examples."""
     print("\n=== Schema Validation ===")
 
@@ -271,7 +262,7 @@ def example_validation():
     print("Schema validation working correctly!")
 
 
-def example_supported_formats():
+def example_supported_formats() -> None:
     """Check supported formats."""
     print("\n=== Supported Formats ===")
 
@@ -280,35 +271,29 @@ def example_supported_formats():
     print(f"Write formats: {formats['write']}")
 
 
-def main():
+def main() -> int:
     """Run all examples."""
     print("py3plex I/O System Examples")
     print("=" * 50)
 
-    # Create sample graph
     graph = example_basic_usage()
 
-    # File format examples
-    example_json_io(graph)
-    example_jsonl_io(graph)
-    example_csv_io(graph)
+    with tempfile.TemporaryDirectory() as tmpdir_str:
+        tmpdir = Path(tmpdir_str)
+        example_json_io(graph, tmpdir)
+        example_jsonl_io(graph, tmpdir)
+        example_csv_io(graph, tmpdir)
+        example_csv_to_py3plex_analysis(tmpdir)
 
-    # CSV to py3plex analysis (demonstrates integration with core py3plex)
-    example_csv_to_py3plex_analysis()
-
-    # Library conversion examples
     example_networkx_conversion(graph)
     example_igraph_conversion(graph)
-
-    # Validation examples
     example_validation()
-
-    # Format discovery
     example_supported_formats()
 
     print("\n" + "=" * 50)
     print("All examples completed successfully!")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

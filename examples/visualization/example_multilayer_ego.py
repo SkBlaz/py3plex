@@ -1,19 +1,25 @@
 """
 Example: Ego-Centric Multilayer Visualization
 
-This example demonstrates the ego-centric visualization mode, which focuses on
-a single node (the "ego") and shows its neighborhood across different layers.
+Demonstrates the ego-centric visualization mode, focusing on a single node
+across multiple layers. Saves static images using a non-interactive backend.
 """
 
-import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend for saving
+from __future__ import annotations
 
-from py3plex.core import multinet
-from py3plex.visualization.multilayer import visualize_multilayer_network
 import os
+from typing import Iterable
+
+import matplotlib
+
+matplotlib.use('Agg')  # Use non-interactive backend for saving
+import numpy as np
+from py3plex.core import multinet
+from py3plex.utils import get_example_image_path
+from py3plex.visualization.multilayer import visualize_multilayer_network
 
 
-def create_sample_multilayer_network():
+def create_sample_multilayer_network() -> multinet.multi_layer_network:
     """Create a small synthetic multilayer network for demonstration."""
     # Create multilayer network with node '3' as the ego
     network = multinet.multi_layer_network(directed=False)
@@ -54,7 +60,33 @@ def create_sample_multilayer_network():
     return network
 
 
-def main():
+def save_figure(fig, filename: str) -> str:
+    """Save a matplotlib figure to the example images directory."""
+    output_path = get_example_image_path(filename)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    fig.savefig(output_path, dpi=150, bbox_inches='tight')
+    return output_path
+
+
+def render_example(network: multinet.multi_layer_network, ego: str, max_depth: int, layout: str, filename: str, layers: Iterable[str] | None = None, dpi: int = 150) -> None:
+    """Render and persist a single ego visualization."""
+    fig = visualize_multilayer_network(
+        network,
+        visualization_type="ego_multilayer",
+        ego=ego,
+        layers=list(layers) if layers is not None else None,
+        max_depth=max_depth,
+        layout=layout,
+        node_size=100,
+        ego_node_size=400,
+        with_labels=True,
+    )
+    path = save_figure(fig, filename)
+    print(f"✓ Saved: {path}")
+
+
+def main() -> int:
+    np.random.seed(42)
     print("=" * 70)
     print("EGO-CENTRIC MULTILAYER VISUALIZATION EXAMPLE")
     print("=" * 70)
@@ -69,24 +101,7 @@ def main():
     print("Example 1: Ego-centric view for node '3' (1-hop)")
     print("-" * 70)
     
-    fig = visualize_multilayer_network(
-        network,
-        visualization_type="ego_multilayer",
-        ego='3',
-        max_depth=1,
-        layout="spring",
-        node_size=100,
-        ego_node_size=400,
-        with_labels=True
-    )
-    
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
-
-    
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "multilayer_ego_node3_1hop.png")
-    fig.savefig(output_path, dpi=150, bbox_inches='tight')
-    print(f"✓ Saved: {output_path}")
+    render_example(network, ego='3', max_depth=1, layout="spring", filename="multilayer_ego_node3_1hop.png")
     print("  Red node = ego (node '3')")
     print("  Blue nodes = 1-hop neighbors")
     
@@ -95,22 +110,7 @@ def main():
     print("Example 2: Ego-centric view for node '3' (2-hop)")
     print("-" * 70)
     
-    fig = visualize_multilayer_network(
-        network,
-        visualization_type="ego_multilayer",
-        ego='3',
-        max_depth=2,
-        layout="spring",
-        node_size=100,
-        ego_node_size=400,
-        with_labels=True
-    )
-    
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "multilayer_ego_node3_2hop.png")
-    fig.savefig(output_path, dpi=150, bbox_inches='tight')
-    print(f"✓ Saved: {output_path}")
+    render_example(network, ego='3', max_depth=2, layout="spring", filename="multilayer_ego_node3_2hop.png")
     print("  Shows extended 2-hop neighborhood")
     
     # Example 3: Ego-centric with circular layout
@@ -129,35 +129,22 @@ def main():
         with_labels=True,
         max_cols=2
     )
-    
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "multilayer_ego_circular.png")
-    fig.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"✓ Saved: {output_path}")
+    path = save_figure(fig, "multilayer_ego_circular.png")
+    print(f"✓ Saved: {path}")
     
     # Example 4: Ego-centric for specific layers only
     print("\n" + "-" * 70)
     print("Example 4: Ego-centric for specific layers (A and B only)")
     print("-" * 70)
     
-    fig = visualize_multilayer_network(
+    render_example(
         network,
-        visualization_type="ego_multilayer",
         ego='3',
         layers=['A', 'B'],
         max_depth=1,
         layout="spring",
-        node_size=100,
-        ego_node_size=400,
-        with_labels=True
+        filename="multilayer_ego_subset.png",
     )
-    
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "multilayer_ego_subset.png")
-    fig.savefig(output_path, dpi=150, bbox_inches='tight')
-    print(f"✓ Saved: {output_path}")
     print("  Shows only layers A and B")
     
     print("\n" + "=" * 70)
@@ -177,7 +164,8 @@ def main():
     print("  • Analyze how a specific node connects in different contexts")
     print("  • Compare local structure across layers")
     print("  • Identify layer-specific influential neighbors")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

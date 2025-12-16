@@ -1,19 +1,17 @@
 """
-Basic Example: Loading Networks from Different File Formats
+Load multilayer networks from assorted file formats and re-save them.
 
-This example demonstrates how to:
-1. Load multilayer networks from various file formats
-2. Work with both simple (monoplex) and multilayer network formats
-3. Save networks in different formats
+Shows how to load monoplex and multilayer networks (GML, gpickle, edgelist,
+MATLAB sparse matrix, multiedgelist, multiplex_edges) and then persist the last
+successful load to gpickle. Prerequisites: bundled datasets (see
+`py3plex/utils/get_dataset_path`) must be present locally.
 
-Supported formats include:
-- Monoplex: GML, gpickle, edgelist, sparse matrices (.mat)
-- Multilayer: multiedgelist (N L N L w), multiplex_edges (L N N w)
-
-SKIP_CI: external_deps - Requires specific dataset files that may not be available in CI
+SKIP_CI: external_deps - Requires optional datasets.
 """
 
-import os
+from __future__ import annotations
+
+from pathlib import Path
 
 from py3plex.core import multinet
 from py3plex.utils import get_dataset_path, get_data_path
@@ -26,8 +24,8 @@ def load_multiedgelist_example() -> None:
     print("=" * 70)
 
     # Check if file exists
-    multiedgelist_path = get_dataset_path("multiedgelist2.txt")
-    if not os.path.exists(multiedgelist_path):
+    multiedgelist_path = Path(get_dataset_path("multiedgelist2.txt"))
+    if not multiedgelist_path.exists():
         print(f"Warning: File '{multiedgelist_path}' not found.")
         print("Skipping this example. Please ensure the file exists.\n")
         return
@@ -35,7 +33,9 @@ def load_multiedgelist_example() -> None:
     # Load a multilayer network from multiedgelist format
     # Format: node1 layer1 node2 layer2 weight (one edge per line)
     multilayer_network = multinet.multi_layer_network().load_network(
-        multiedgelist_path, directed=False, input_type="multiedgelist"
+        str(multiedgelist_path),
+        directed=False,
+        input_type="multiedgelist",
     )
 
     print(f"Network loaded from: {multiedgelist_path}")
@@ -66,10 +66,12 @@ def load_monoplex_examples() -> multinet.multi_layer_network:
 
     # Example 1: Loading from GML format
     print("\n1. GML format (Graph Modeling Language):")
-    gml_path = get_dataset_path("ecommerce_0.gml")
-    if os.path.exists(gml_path):
+    gml_path = Path(get_dataset_path("ecommerce_0.gml"))
+    if gml_path.exists():
         last_network = multinet.multi_layer_network().load_network(
-            gml_path, directed=True, input_type="gml"
+            str(gml_path),
+            directed=True,
+            input_type="gml",
         )
         print(f"   [OK] Loaded: {gml_path}")
     else:
@@ -77,10 +79,12 @@ def load_monoplex_examples() -> multinet.multi_layer_network:
 
     # Example 2: Loading from gpickle_biomine format
     print("\n2. gpickle_biomine format (specialized biological networks):")
-    gpickle_path = get_dataset_path("epigenetics.gpickle")
-    if os.path.exists(gpickle_path):
+    gpickle_path = Path(get_dataset_path("epigenetics.gpickle"))
+    if gpickle_path.exists():
         last_network = multinet.multi_layer_network().load_network(
-            gpickle_path, directed=True, input_type="gpickle_biomine"
+            str(gpickle_path),
+            directed=True,
+            input_type="gpickle_biomine",
         )
         print(f"   [OK] Loaded: {gpickle_path}")
     else:
@@ -88,10 +92,12 @@ def load_monoplex_examples() -> multinet.multi_layer_network:
 
     # Example 3: Loading from sparse matrix format (.mat)
     print("\n3. Sparse matrix format (.mat - MATLAB format):")
-    mat_path = get_dataset_path("ions.mat")
-    if os.path.exists(mat_path):
+    mat_path = Path(get_dataset_path("ions.mat"))
+    if mat_path.exists():
         last_network = multinet.multi_layer_network().load_network(
-            mat_path, directed=False, input_type="sparse"
+            str(mat_path),
+            directed=False,
+            input_type="sparse",
         )
         print(f"   [OK] Loaded: {mat_path}")
     else:
@@ -99,10 +105,12 @@ def load_monoplex_examples() -> multinet.multi_layer_network:
 
     # Example 4: Loading from simple edgelist
     print("\n4. Simple edgelist format (node1 node2 per line):")
-    edgelist_path = get_dataset_path("test.edgelist")
-    if os.path.exists(edgelist_path):
+    edgelist_path = Path(get_dataset_path("test.edgelist"))
+    if edgelist_path.exists():
         last_network = multinet.multi_layer_network().load_network(
-            edgelist_path, directed=False, input_type="edgelist"
+            str(edgelist_path),
+            directed=False,
+            input_type="edgelist",
         )
         print(f"   [OK] Loaded: {edgelist_path}")
     else:
@@ -121,10 +129,12 @@ def load_multilayer_examples() -> multinet.multi_layer_network:
 
     # Example 5: Multiedgelist format (N L N L w)
     print("\n5. Multiedgelist format (node1 layer1 node2 layer2 weight):")
-    multiedge_path = get_dataset_path("multiedgelist.txt")
-    if os.path.exists(multiedge_path):
+    multiedge_path = Path(get_dataset_path("multiedgelist.txt"))
+    if multiedge_path.exists():
         last_network = multinet.multi_layer_network().load_network(
-            multiedge_path, directed=False, input_type="multiedgelist"
+            str(multiedge_path),
+            directed=False,
+            input_type="multiedgelist",
         )
         print(f"   [OK] Loaded: {multiedge_path}")
     else:
@@ -137,11 +147,15 @@ def load_multilayer_examples() -> multinet.multi_layer_network:
     # - Automatic coupling edges are added between node copies across layers
     # Use network_type="multilayer" when layers have different node sets
     print("\n6. Multiplex edges format (layer node1 node2 weight):")
-    multiplex_path = get_dataset_path("test13.edges")
-    if os.path.exists(multiplex_path):
+    multiplex_path = Path(get_dataset_path("test13.edges"))
+    if multiplex_path.exists():
         last_network = multinet.multi_layer_network(
             network_type="multiplex"
-        ).load_network(multiplex_path, directed=False, input_type="multiplex_edges")
+        ).load_network(
+            str(multiplex_path),
+            directed=False,
+            input_type="multiplex_edges",
+        )
         print(f"   [OK] Loaded: {multiplex_path}")
     else:
         print(f"   [X] Not found: {multiplex_path}")
@@ -159,16 +173,15 @@ def save_network_example(network: multinet.multi_layer_network) -> None:
         print("No network was successfully loaded, skipping save.")
         return
 
-    # Get the datasets directory and construct output path
-    datasets_dir = get_data_path("datasets")
-    output_path = os.path.join(datasets_dir, "stored_network.gpickle")
-    
-    network.save_network(output_file=output_path, output_type="gpickle")
+    datasets_dir = Path(get_data_path("datasets"))
+    output_path = datasets_dir / "stored_network.gpickle"
+
+    network.save_network(output_file=str(output_path), output_type="gpickle")
     print(f"[OK] Network saved to: {output_path}")
     print("\nNote: gpickle format is fastest for loading/saving complex networks")
 
 
-def main() -> None:
+def main() -> int:
     """Run all network loading examples."""
     load_multiedgelist_example()
 
@@ -184,7 +197,8 @@ def main() -> None:
         save_network_example(network_to_save)
 
     print("\n" + "=" * 70)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

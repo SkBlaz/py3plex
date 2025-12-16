@@ -1,15 +1,16 @@
 """
-Example: Saving and loading multilayer graphs with Apache Arrow format.
+Serialize multilayer graphs with Apache Arrow and Parquet.
 
-This example demonstrates:
-- Saving graphs to Apache Arrow (Feather) format for high-performance I/O
-- Saving graphs to Parquet format for compressed storage
-- Comparing Arrow with JSON format
-- Benefits of Arrow: speed, compression, interoperability
+Covers Feather/Arrow and Parquet saves, a JSON comparison, and a lightweight
+performance benchmark on a larger random graph. Prerequisites: py3plex installed;
+pyarrow required for Arrow/Parquet sections (skipped if missing).
 
 Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
+from __future__ import annotations
+
+import random
 import sys
 import tempfile
 import time
@@ -18,19 +19,22 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-try:
-    import pyarrow
-
-    PYARROW_AVAILABLE = True
-except ImportError:
-    PYARROW_AVAILABLE = False
-    print("Warning: pyarrow not installed. Install with: pip install 'py3plex[arrow]'")
-    sys.exit(0)
-
 from py3plex.io import Edge, Layer, MultiLayerGraph, Node, read, write
 
+DEFAULT_SEED = 42
 
-def create_sample_network():
+
+def _require_pyarrow() -> bool:
+    """Return True if pyarrow is available, printing a hint otherwise."""
+    try:
+        import pyarrow  # noqa: F401
+    except ImportError:
+        print("Warning: pyarrow not installed. Install with: pip install 'py3plex[arrow]'")
+        return False
+    return True
+
+
+def create_sample_network() -> MultiLayerGraph:
     """Create a sample multilayer social network."""
     graph = MultiLayerGraph(
         directed=True,
@@ -103,7 +107,7 @@ def create_sample_network():
     return graph
 
 
-def example_arrow_feather():
+def example_arrow_feather() -> None:
     """Example: Save and load with Arrow (Feather) format."""
     print("=== Arrow (Feather) Format ===")
 
@@ -139,7 +143,7 @@ def example_arrow_feather():
         print()
 
 
-def example_parquet():
+def example_parquet() -> None:
     """Example: Save and load with Parquet format."""
     print("=== Parquet Format ===")
 
@@ -175,7 +179,7 @@ def example_parquet():
         print()
 
 
-def example_format_comparison():
+def example_format_comparison() -> None:
     """Compare Arrow with JSON format."""
     print("=== Format Comparison ===")
 
@@ -261,7 +265,7 @@ def example_format_comparison():
         print("\n✓ All formats produce identical results")
 
 
-def example_large_graph_performance():
+def example_large_graph_performance() -> None:
     """Demonstrate performance on a larger graph."""
     print("\n=== Large Graph Performance ===")
 
@@ -278,9 +282,7 @@ def example_large_graph_performance():
         graph.add_node(Node(id=f"node_{i}", attributes={"index": i, "data": i * 2}))
 
     # Add edges
-    import random
-
-    random.seed(42)
+    random.seed(DEFAULT_SEED)
     edges_added = set()
     for i in range(5000):
         src = f"node_{random.randint(0, 999)}"
@@ -320,7 +322,9 @@ def example_large_graph_performance():
         read(arrow_path, format="arrow")
         arrow_read = time.time() - start
 
-        arrow_size = sum(p.stat().st_size for p in tmpdir_path.iterdir() if "arrow" in p.name)
+        arrow_size = sum(
+            p.stat().st_size for p in tmpdir_path.iterdir() if "arrow" in p.name
+        )
 
         # Benchmark JSON
         print("Benchmarking JSON...")
@@ -352,21 +356,24 @@ def example_large_graph_performance():
         print(f"Arrow size reduction: {json_size/arrow_size:.2f}x smaller")
 
 
-def main():
+def main() -> int:
     """Run all examples."""
     print("py3plex Apache Arrow Serialization Examples")
     print("=" * 60)
     print()
 
-    # Basic examples
-    example_arrow_feather()
-    example_parquet()
+    arrow_available = _require_pyarrow()
+    if not arrow_available:
+        print("Skipping Arrow/Parquet sections; install pyarrow to run them.\n")
+        return 0
 
-    # Comparison
-    example_format_comparison()
-
-    # Performance on larger graphs
-    example_large_graph_performance()
+    for step in (
+        example_arrow_feather,
+        example_parquet,
+        example_format_comparison,
+        example_large_graph_performance,
+    ):
+        step()
 
     print("\n" + "=" * 60)
     print("All examples completed successfully!")
@@ -376,7 +383,8 @@ def main():
     print("  • Interoperable: Works with pandas, polars, R, Julia, etc.")
     print("  • Type-safe: Schema preservation with strong typing")
     print("  • Standard: Industry-standard format for data interchange")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

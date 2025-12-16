@@ -1,22 +1,30 @@
 """
-10-Minute Tutorial - Executable Version
+10-minute executable tutorial for py3plex.
 
-This script contains all the code examples from the 10-minute tutorial.
-It demonstrates the core features of py3plex in a single executable file.
+Runs through network creation, loading, analysis, community detection, and
+visualization in one script. Prerequisites: py3plex installed with optional
+matplotlib for plots; uses bundled `datasets/synthetic_multilayer.txt`.
 
 SKIP_CI: slow - This tutorial takes more than 10 seconds to complete
 """
 
+from __future__ import annotations
+
 import sys
-import os
 from collections import Counter
+from pathlib import Path
 
 # Add parent directory to path if running as script
 if __name__ == "__main__":
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from py3plex.core import multinet
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATASET_PATH = REPO_ROOT / "datasets" / "synthetic_multilayer.txt"
+EXAMPLE_IMAGES_DIR = REPO_ROOT / "example_images"
+DEFAULT_SEED = 42
 
 
 def example_1_create_network():
@@ -50,19 +58,14 @@ def example_2_load_network():
     print("Example 2: Loading Network from File")
     print("="*60)
 
-    # Determine the correct path to datasets
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(os.path.dirname(script_dir))
-    dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
-
-    if not os.path.exists(dataset_path):
-        print(f"Warning: Dataset not found at {dataset_path}")
+    if not DATASET_PATH.exists():
+        print(f"Warning: Dataset not found at {DATASET_PATH}")
         print("Skipping this example...")
         return None
 
     # Load from a multiedgelist file
     network = multinet.multi_layer_network().load_network(
-        dataset_path,
+        str(DATASET_PATH),
         input_type="multiedgelist",
         directed=False
     )
@@ -234,13 +237,13 @@ def example_6_community_detection(network):
         return None
 
     print("\n" + "="*60)
-    print("Example 5: Multilayer Community Detection")
+    print("Example 6: Multilayer Community Detection")
     print("="*60)
 
     try:
         # Multilayer Louvain community detection
         print("Running multilayer Louvain algorithm...")
-        partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
+        partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=DEFAULT_SEED)
         num_communities = len(set(partition.values()))
         print(f"\nCommunities found: {num_communities}")
 
@@ -285,12 +288,10 @@ def example_7_visualization(network, partition=None):
         network_colors, graph = network.get_layers(style="hairball")
 
         # Create output directory
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        output_dir = os.path.join(os.path.dirname(os.path.dirname(script_dir)), "example_images")
-        os.makedirs(output_dir, exist_ok=True)
+        EXAMPLE_IMAGES_DIR.mkdir(exist_ok=True)
 
         # Simple visualization
-        output_file = os.path.join(output_dir, "tutorial_network.png")
+        output_file = EXAMPLE_IMAGES_DIR / "tutorial_network.png"
         plt.figure(figsize=(12, 12))
         hairball_plot(
             graph,
@@ -318,7 +319,7 @@ def example_7_visualization(network, partition=None):
                 for node in network.get_nodes()
             ]
 
-            output_file_comm = os.path.join(output_dir, "tutorial_network_communities.png")
+            output_file_comm = EXAMPLE_IMAGES_DIR / "tutorial_network_communities.png"
             plt.figure(figsize=(12, 12))
             hairball_plot(
                 graph,
@@ -347,13 +348,8 @@ def complete_example():
     print("Complete Example: Full Workflow")
     print("="*60)
 
-    # Determine the correct path to datasets
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(os.path.dirname(script_dir))
-    dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
-
-    if not os.path.exists(dataset_path):
-        print(f"Dataset not found at {dataset_path}")
+    if not DATASET_PATH.exists():
+        print(f"Dataset not found at {DATASET_PATH}")
         print("Using simple network instead...")
 
         # Create a simple network
@@ -367,9 +363,9 @@ def complete_example():
     else:
         # Load network
         network = multinet.multi_layer_network().load_network(
-            dataset_path,
+            str(DATASET_PATH),
             input_type="multiedgelist",
-            directed=False
+            directed=False,
         )
 
     # Analyze structure
@@ -392,7 +388,7 @@ def complete_example():
     # Detect communities with multilayer method
     try:
         print("\n=== Multilayer Community Detection ===")
-        partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
+        partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=DEFAULT_SEED)
         print(f"Number of communities: {len(set(partition.values()))}")
 
         # Try visualization
@@ -413,9 +409,8 @@ def complete_example():
                 for node in network.get_nodes()
             ]
 
-            output_dir = os.path.join(repo_root, "example_images")
-            os.makedirs(output_dir, exist_ok=True)
-            output_file = os.path.join(output_dir, "complete_analysis.png")
+            EXAMPLE_IMAGES_DIR.mkdir(exist_ok=True)
+            output_file = EXAMPLE_IMAGES_DIR / "complete_analysis.png"
 
             plt.figure(figsize=(12, 12))
             hairball_plot(
@@ -437,7 +432,7 @@ def complete_example():
         print(f"Could not complete full analysis: {e}")
 
 
-def main():
+def main() -> int:
     """Run all tutorial examples"""
     print("\n" + "="*60)
     print("Py3plex 10-Minute Tutorial - Executable Examples")
@@ -473,7 +468,8 @@ def main():
     print("\n" + "="*60)
     print("Tutorial completed successfully! [OK]")
     print("="*60)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

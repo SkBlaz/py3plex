@@ -1,30 +1,45 @@
 """
-Example: Random Walk Dynamics on Multilayer Networks
+Random walk dynamics on multilayer networks.
 
-This example demonstrates the RandomWalkDynamics class, showing how
-random walkers explore multilayer network structures and how to analyze
-their trajectories.
-
-Random walks are fundamental to:
-- PageRank and network centrality
-- Diffusion processes
-- Search and navigation
-- Community detection
+Teaches how to build a small multilayer network, run py3plex's
+`RandomWalkDynamics`, and analyze trajectories (visit counts, layer switching,
+lazy walks, hitting times). Prerequisites: py3plex installed with dynamics
+extras, plus numpy, networkx; matplotlib is optional for plots (Agg backend).
 """
 
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Dict, Hashable, Tuple
+
 import networkx as nx
-import matplotlib.pyplot as plt
 import numpy as np
 from py3plex.core import multinet
 from py3plex.dynamics import RandomWalkDynamics
 
+try:  # Matplotlib is optional; skip plots if missing.
+    import matplotlib
 
-def create_two_layer_network():
-    """Create a two-layer network with different structures.
-    
-    Returns:
-        py3plex multi_layer_network object
-    """
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ImportError as exc:  # pragma: no cover - surfaced to users running examples
+    plt = None
+    MATPLOTLIB_ERROR = exc
+else:
+    MATPLOTLIB_ERROR = None
+
+DEFAULT_SEED = 42
+OUTPUT_DIR = Path(__file__).parent / "outputs"
+
+
+def _ensure_output_dir() -> Path:
+    """Create output directory for plots if needed."""
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    return OUTPUT_DIR
+
+
+def create_two_layer_network() -> multinet.multi_layer_network:
+    """Create a two-layer network with ring vs star structures."""
     network = multinet.multi_layer_network(directed=False)
     
     # Add nodes to both layers
@@ -66,7 +81,7 @@ def create_two_layer_network():
     return network
 
 
-def run_random_walk_example():
+def run_random_walk_example() -> RandomWalkDynamics:
     """Run random walk simulation example."""
     print("=" * 70)
     print("Random Walk on Multilayer Network")
@@ -91,7 +106,7 @@ def run_random_walk_example():
     print(f"  Lazy probability: 0.1")
     
     # Set seed and run
-    walk.set_seed(42)
+    walk.set_seed(DEFAULT_SEED)
     print(f"\nRunning walk for 1000 steps...")
     results = walk.run(steps=1000)
     
@@ -120,13 +135,16 @@ def run_random_walk_example():
     return results
 
 
-def plot_visit_distribution(ring_visits, star_visits):
-    """Plot visit count distribution across layers.
-    
-    Args:
-        ring_visits: Dict of node -> count for ring layer
-        star_visits: Dict of node -> count for star layer
-    """
+def plot_visit_distribution(
+    ring_visits: Dict[Tuple[Hashable, str], int],
+    star_visits: Dict[Tuple[Hashable, str], int],
+) -> None:
+    """Plot visit count distribution across layers (if matplotlib available)."""
+    if plt is None:
+        print(f"⚠️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        return
+
+    output_dir = _ensure_output_dir()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
     
     # Ring layer
@@ -148,11 +166,12 @@ def plot_visit_distribution(ring_visits, star_visits):
     ax2.grid(axis='y', alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('/tmp/random_walk_visits.png', dpi=150, bbox_inches='tight')
-    print(f"✓ Plot saved to /tmp/random_walk_visits.png")
+    filepath = output_dir / "random_walk_visits.png"
+    plt.savefig(filepath, dpi=150, bbox_inches="tight")
+    print(f"✓ Plot saved to {filepath}")
 
 
-def analyze_layer_switching():
+def analyze_layer_switching() -> None:
     """Analyze how often random walk switches between layers."""
     print("\n" + "=" * 70)
     print("Layer Switching Analysis")
@@ -162,7 +181,7 @@ def analyze_layer_switching():
     
     # Run walk
     walk = RandomWalkDynamics(network, start_node=(0, 'ring'))
-    walk.set_seed(42)
+    walk.set_seed(DEFAULT_SEED)
     results = walk.run(steps=1000)
     trajectory = results.get_measure("trajectory")
     
@@ -190,7 +209,7 @@ def analyze_layer_switching():
     print(f"  Time in star layer: {star_time / len(trajectory):.2%}")
 
 
-def compare_lazy_probabilities():
+def compare_lazy_probabilities() -> None:
     """Compare random walks with different lazy probabilities."""
     print("\n" + "=" * 70)
     print("Lazy Probability Comparison")
@@ -201,11 +220,16 @@ def compare_lazy_probabilities():
     
     lazy_probs = [0.0, 0.2, 0.5, 0.8]
     
+    if plt is None:
+        print(f"⚠️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        return
+
+    _ensure_output_dir()
     plt.figure(figsize=(12, 8))
     
     for lazy_p in lazy_probs:
         walk = RandomWalkDynamics(G, start_node=10, lazy_probability=lazy_p)
-        walk.set_seed(42)
+        walk.set_seed(DEFAULT_SEED)
         results = walk.run(steps=100)
         trajectory = results.get_measure("trajectory")
         
@@ -219,11 +243,12 @@ def compare_lazy_probabilities():
     plt.grid(alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('/tmp/lazy_walk_comparison.png', dpi=150, bbox_inches='tight')
-    print(f"✓ Comparison plot saved to /tmp/lazy_walk_comparison.png")
+    filepath = OUTPUT_DIR / "lazy_walk_comparison.png"
+    plt.savefig(filepath, dpi=150, bbox_inches="tight")
+    print(f"✓ Comparison plot saved to {filepath}")
 
 
-def estimate_hitting_times():
+def estimate_hitting_times() -> None:
     """Estimate hitting times between nodes."""
     print("\n" + "=" * 70)
     print("Hitting Time Estimation")
@@ -257,6 +282,11 @@ def estimate_hitting_times():
     print(f"  Std: {np.std(hitting_times):.1f} steps")
     
     # Plot distribution
+    if plt is None:
+        print(f"⚠️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        return
+
+    _ensure_output_dir()
     plt.figure(figsize=(10, 6))
     plt.hist(hitting_times, bins=30, edgecolor='black', alpha=0.7)
     plt.axvline(np.mean(hitting_times), color='red', linestyle='--',
@@ -269,23 +299,23 @@ def estimate_hitting_times():
     plt.grid(alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('/tmp/hitting_time_distribution.png', dpi=150, bbox_inches='tight')
-    print(f"✓ Distribution plot saved to /tmp/hitting_time_distribution.png")
+    filepath = OUTPUT_DIR / "hitting_time_distribution.png"
+    plt.savefig(filepath, dpi=150, bbox_inches="tight")
+    print(f"✓ Distribution plot saved to {filepath}")
 
 
-if __name__ == "__main__":
-    # Run main example
-    results = run_random_walk_example()
-    
-    # Analyze layer switching
+def main() -> int:
+    """Execute all random walk demonstrations."""
+    run_random_walk_example()
     analyze_layer_switching()
-    
-    # Compare lazy probabilities
     compare_lazy_probabilities()
-    
-    # Estimate hitting times
     estimate_hitting_times()
-    
+
     print("\n" + "=" * 70)
     print("Example complete!")
     print("=" * 70)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

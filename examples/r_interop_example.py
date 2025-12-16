@@ -1,20 +1,26 @@
+"""R interoperability example for py3plex.
+
+What this shows (from Python, callable via reticulate):
+- Build a small multilayer social network
+- Convert to igraph for R-side analysis
+- Export edges/nodes/adjacency and compute stats for R
+
+Prerequisites: py3plex + python-igraph (no GUI/network). In R, use
+`reticulate::source_python("r_interop_example.py")`. Install python-igraph
+with `pip install python-igraph`.
 """
-Example R script demonstrating py3plex R interoperability.
 
-This Python script shows the expected usage patterns when called from R
-via the reticulate package. It serves as both documentation and a
-reference implementation.
+from __future__ import annotations
 
-Save this as r_interop_example.py and use from R as shown below.
-
-Note: This example requires python-igraph to be installed.
-Install with: pip install python-igraph
-"""
-
+import random
 import sys
 from pathlib import Path
 
-# Ensure py3plex is importable
+# Deterministic behavior (even though the example is static)
+SEED = 1337
+random.seed(SEED)
+
+# Ensure py3plex is importable when invoked directly
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import py3plex as p3
@@ -30,6 +36,19 @@ except ImportError:
 # Only import r_interop if we're going to use it
 if IGRAPH_AVAILABLE:
     from py3plex.wrappers import r_interop
+else:
+    r_interop = None  # type: ignore
+
+IGRAPH_INSTALL_HINT = "Install with: pip install python-igraph"
+
+
+def ensure_igraph_available() -> None:
+    """Raise a clear error when python-igraph (and r_interop) is missing."""
+    if not IGRAPH_AVAILABLE:
+        raise RuntimeError(
+            "python-igraph is required for this example. "
+            "Install with `pip install python-igraph`."
+        )
 
 
 def create_sample_multilayer_network():
@@ -39,6 +58,8 @@ def create_sample_multilayer_network():
     This creates a network with two layers (Facebook and Twitter)
     representing different social media platforms.
     """
+    ensure_igraph_available()
+
     # Create multilayer network
     net = p3.multi_layer_network()
 
@@ -328,8 +349,8 @@ def example_complete_workflow():
     return graph_data, g
 
 
-def main():
-    """Run all examples."""
+def main() -> int:
+    """Run all examples; exit 0 on success, 1 if prerequisites missing."""
     print("=" * 60)
     print("py3plex R Interoperability Examples")
     print("=" * 60)
@@ -337,8 +358,7 @@ def main():
     if not IGRAPH_AVAILABLE:
         print("\n[SKIPPED] python-igraph is not installed.")
         print("This example requires python-igraph for R interop functionality.")
-        print("\nTo install python-igraph, run:")
-        print("  pip install python-igraph")
+        print(f"\nTo install python-igraph, run:\n  {IGRAPH_INSTALL_HINT}")
         print("\nThis example is designed to demonstrate R integration via reticulate.")
         print("When python-igraph is installed, it will show:")
         print("  - Creating multilayer networks")
@@ -346,7 +366,7 @@ def main():
         print("  - Exporting data for R analysis")
         print("  - Computing network statistics")
         print("\n" + "=" * 60)
-        return
+        return 0
 
     example_basic_conversion()
     example_export_dataframes()
@@ -360,7 +380,8 @@ def main():
     print("\nTo use these from R, install reticulate and run:")
     print("  library(reticulate)")
     print("  source_python('r_interop_example.py')")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -1,7 +1,8 @@
 """Query Zoo: Gallery of DSL examples for multilayer network analysis.
 
-This module contains a collection of example queries that showcase the
-expressiveness and power of the py3plex DSL for multilayer analysis.
+Teaches how to express common multilayer analysis tasks with the py3plex DSL.
+Prerequisites: py3plex installed (brings pandas, numpy); matplotlib/seaborn
+are only needed for plotting in run_all.py, not for the core query functions.
 
 Each query function:
 - Has a clear docstring explaining what it does and why it's interesting
@@ -19,16 +20,26 @@ Query Categories:
 6. Robustness and resilience
 """
 
-import pandas as pd
-import numpy as np
-import networkx as nx
-from typing import Dict, List, Tuple, Any
+from __future__ import annotations
 
-from py3plex.dsl import Q, L
+from typing import Any, Dict, List, Tuple
+
+try:
+    import numpy as np
+    import pandas as pd
+except ImportError as exc:
+    raise ImportError(
+        "The DSL Query Zoo examples require pandas and numpy. "
+        "Install py3plex (or `pip install pandas numpy`) to run them."
+    ) from exc
+
 from py3plex.core import multinet
+from py3plex.dsl import L, Q
+
+Network = multinet.multi_layer_network
 
 
-def _get_layer_names(network):
+def _get_layer_names(network: Network) -> List[str]:
     """Helper function to extract layer names from network.
     
     Args:
@@ -56,7 +67,7 @@ def _get_layer_names(network):
     raise ValueError(f"Unexpected return type from get_layers(): {type(layers_data)}")
 
 
-def query_basic_exploration(network):
+def query_basic_exploration(network: Network) -> pd.DataFrame:
     """Summarize layers: node counts, edge counts, and average degree per layer.
     
     Refactored: single DSL query over all layers + pandas groupby, no explicit
@@ -112,7 +123,7 @@ def query_basic_exploration(network):
     return stats[["layer", "n_nodes", "n_edges", "avg_degree"]]
 
 
-def query_cross_layer_hubs(network, k=5):
+def query_cross_layer_hubs(network: Network, k: int = 5) -> pd.DataFrame:
     """Find nodes that are consistently central across multiple layers.
     
     Refactored: one DSL query across all layers + pandas grouping, no explicit
@@ -174,7 +185,7 @@ def query_cross_layer_hubs(network, k=5):
                       "betweenness_centrality", "layer_count"]]
 
 
-def query_layer_similarity(network):
+def query_layer_similarity(network: Network) -> pd.DataFrame:
     """Compute structural similarity between layers based on degree distributions.
     
     Refactored: single DSL query + pivot, no explicit loops over layers/nodes.
@@ -229,7 +240,7 @@ def query_layer_similarity(network):
     return corr_df
 
 
-def query_community_structure(network):
+def query_community_structure(network: Network) -> pd.DataFrame:
     """Detect communities and analyze their distribution across layers.
     
     This query finds communities in the multilayer network and examines
@@ -290,7 +301,7 @@ def query_community_structure(network):
     return result_df[['community_id', 'layer', 'size', 'avg_degree', 'dominant_layer']]
 
 
-def query_multiplex_pagerank(network):
+def query_multiplex_pagerank(network: Network) -> pd.DataFrame:
     """Approximate multiplex PageRank by aggregating layer-specific scores.
     
     NOTE: This is still a *simplified* multiplex PageRank approximation
@@ -362,7 +373,7 @@ def query_multiplex_pagerank(network):
     return result_df
 
 
-def query_robustness_analysis(network):
+def query_robustness_analysis(network: Network) -> pd.DataFrame:
     """Evaluate network robustness by removing each layer and recomputing stats.
     
     This query demonstrates robustness analysis by simulating layer failure.
@@ -463,7 +474,7 @@ def query_robustness_analysis(network):
     return pd.DataFrame(results)
 
 
-def query_advanced_centrality_comparison(network):
+def query_advanced_centrality_comparison(network: Network) -> pd.DataFrame:
     """Compare multiple centrality measures on the aggregated multilayer network.
     
     Refactored: multilayer-aware with L["*"], no loops.
@@ -546,7 +557,7 @@ def query_advanced_centrality_comparison(network):
     return df[output_cols].round(4)
 
 
-def query_edge_grouping_and_coverage(network, k=3):
+def query_edge_grouping_and_coverage(network: Network, k: int = 3) -> Dict[str, pd.DataFrame]:
     """Analyze edges across layer pairs with grouping and coverage.
     
     This query demonstrates the powerful new edge grouping capabilities
@@ -624,6 +635,7 @@ def query_edge_grouping_and_coverage(network, k=3):
 #     Returns:
 #         pd.DataFrame with node scores and per-layer breakdown
 #     """
+#     import networkx as nx
 #     from py3plex.algorithms.multilayer_algorithms.multirank import multiplex_pagerank
 #     
 #     # Extract layer adjacency matrices from network
@@ -661,7 +673,7 @@ def query_edge_grouping_and_coverage(network, k=3):
 # per-layer adjacency matrices from the multi_layer_network object.
 
 
-def query_layer_algebra_filtering(network):
+def query_layer_algebra_filtering(network: Network) -> Dict[str, Any]:
     """Demonstrate layer set algebra for flexible layer selection.
     
     This query showcases the new LayerSet algebra feature that allows
@@ -714,7 +726,7 @@ def query_layer_algebra_filtering(network):
              .compute("degree")
              .execute(network)
         ).to_pandas()
-    except:
+    except Exception:
         # If network doesn't have these layers, use a generic example
         layers = list(set(result_no_coupling['layer'].unique()))
         if len(layers) >= 2:
@@ -750,7 +762,9 @@ def query_layer_algebra_filtering(network):
     }
 
 
-def query_cross_layer_paths_with_algebra(network, source_node, target_node):
+def query_cross_layer_paths_with_algebra(
+    network: Network, source_node: Any, target_node: Any
+) -> Dict[str, Any]:
     """Find shortest paths while excluding certain layers using layer algebra.
     
     This demonstrates using LayerSet algebra to control which layers

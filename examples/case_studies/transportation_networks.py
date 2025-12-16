@@ -6,24 +6,31 @@ Domain: Transportation / Urban Planning
 Difficulty: Intermediate
 Dataset: Synthetic multi-modal transport network
 
-This case study demonstrates analyzing urban transportation networks with
-multiple modes of transit:
+What this shows:
+- Build bus/metro/bike layers and inspect connectivity
+- Compute accessibility metrics
+- Detect service zones and visualize modal differences
+- Save headless matplotlib plots to /tmp
 
-1. Data import - Building bus, metro, and bike-share layers
-2. Basic network stats - Modal connectivity, transfer points
-3. Analysis pipeline - Accessibility → centrality → route optimization
-4. Visualization - Multi-modal network with transfer hubs
-
-The analysis reveals how different transport modes complement each other and
-identifies critical transfer points.
+Prerequisites: matplotlib installed; the Agg backend is enabled for headless
+runs. Randomness is seeded for reproducibility.
 """
 
-from py3plex.core import multinet
-from py3plex.dsl import Q, L, UQ
+import numpy as np
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
-import matplotlib.pyplot as plt
-from collections import Counter
-import pandas as pd
+from py3plex.core import multinet
+from py3plex.dsl import L, Q
+
+try:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
+
+
+DEFAULT_SEED = 42
 
 
 def create_transport_network():
@@ -38,9 +45,7 @@ def create_transport_network():
     Returns:
         multi_layer_network: The constructed network
     """
-    print("="*70)
-    print("STEP 1: DATA IMPORT - Building Multi-Modal Transport Network")
-    print("="*70)
+    _print_header("STEP 1: DATA IMPORT - Building Multi-Modal Transport Network")
     
     network = multinet.multi_layer_network(directed=False)
     
@@ -90,9 +95,7 @@ def create_transport_network():
 
 def compute_basic_stats(network):
     """Compute multi-modal transport statistics with detailed layer-level analysis."""
-    print("\n" + "="*70)
-    print("STEP 2: BASIC NETWORK STATS - Modal Analysis")
-    print("="*70)
+    _print_header("STEP 2: BASIC NETWORK STATS - Modal Analysis")
     
     network.basic_stats()
     
@@ -112,6 +115,7 @@ def compute_basic_stats(network):
              .execute(network)
         )
         node_df = node_result.to_pandas()
+        node_df['degree'] = node_df['degree'].apply(_as_scalar)
         
         # Edge stats
         edge_result = Q.edges().from_layers(L[mode]).execute(network)
@@ -164,54 +168,52 @@ def compute_basic_stats(network):
 
 def analyze_accessibility(network):
     """
-    Analyze network accessibility and identify key nodes with confidence bounds.
+    Analyze network accessibility and identify key nodes.
     """
-    print("\n" + "="*70)
-    print("STEP 3: ANALYSIS PIPELINE - Accessibility Analysis")
-    print("="*70)
-    
-    # 3.1 Compute accessibility metrics with uncertainty quantification
-    print("\n[3.1] Computing accessibility metrics with confidence bounds...")
+    _print_header("STEP 3: ANALYSIS PIPELINE - Accessibility Analysis")
+
+    # 3.1 Compute accessibility metrics
+    print("\n[3.1] Computing accessibility metrics...")
     result = (
         Q.nodes()
          .from_layers(L["*"])
-         .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
          .compute("degree", "betweenness_centrality", "closeness_centrality")
-         .order_by("-betweenness_centrality__mean")
+         .order_by("-betweenness_centrality")
          .execute(network)
     )
-    
-    df = result.to_pandas(expand_uncertainty=True)
-    
-    print("\nTop 5 most accessible locations (by betweenness with 95% confidence intervals):")
+
+    df = result.to_pandas()
+    for col in ("degree", "betweenness_centrality", "closeness_centrality"):
+        if col in df:
+            df[col] = df[col].apply(_as_scalar)
+
+    print("\nTop 5 most accessible locations (by betweenness):")
     for _, row in df.head(5).iterrows():
         location = row['id'][0] if isinstance(row['id'], tuple) else row['id']
         mode = row['layer']
         bc = row['betweenness_centrality']
-        bc_low = row['betweenness_centrality_ci95_low']
-        bc_high = row['betweenness_centrality_ci95_high']
-        print(f"  {location} ({mode}): betweenness={bc:.4f} (95% CI: [{bc_low:.4f}, {bc_high:.4f}]), degree={row['degree']}")
-    
-    # 3.2 Mode-specific accessibility with confidence bounds
-    print("\n[3.2] Mode-specific accessibility with confidence bounds:")
+        print(f"  {location} ({mode}): betweenness={bc:.4f}, degree={row['degree']}")
+
+    # 3.2 Mode-specific accessibility
+    print("\n[3.2] Mode-specific accessibility:")
     for mode in ['bus', 'metro', 'bike']:
         mode_result = (
             Q.nodes()
              .from_layers(L[mode])
-             .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
              .compute("betweenness_centrality", "closeness_centrality")
-             .order_by("-betweenness_centrality__mean")
+             .order_by("-betweenness_centrality")
              .limit(3)
              .execute(network)
         )
-        mode_df = mode_result.to_pandas(expand_uncertainty=True)
+        mode_df = mode_result.to_pandas()
+        for col in ("betweenness_centrality", "closeness_centrality"):
+            if col in mode_df:
+                mode_df[col] = mode_df[col].apply(_as_scalar)
         print(f"\n  {mode.upper()} - Most critical stations:")
         for _, row in mode_df.iterrows():
             location = row['id'][0] if isinstance(row['id'], tuple) else row['id']
             bc = row['betweenness_centrality']
-            bc_low = row['betweenness_centrality_ci95_low']
-            bc_high = row['betweenness_centrality_ci95_high']
-            print(f"    {location}: betweenness={bc:.4f} (95% CI: [{bc_low:.4f}, {bc_high:.4f}])")
+            print(f"    {location}: betweenness={bc:.4f}")
     
     return df
 
@@ -251,9 +253,13 @@ def visualize_and_interpret(network, accessibility_df, partition_dict):
     """
     Create visualizations and interpret transport patterns.
     """
-    print("\n" + "="*70)
-    print("STEP 4: VISUALIZATION & INTERPRETATION")
-    print("="*70)
+    _print_header("STEP 4: VISUALIZATION & INTERPRETATION")
+
+    if plt is None:
+        print("matplotlib not available; skipping visualization. Install matplotlib to enable plots.")
+        return
+
+    np.random.seed(DEFAULT_SEED)
     
     network.assign_partition(partition_dict)
     
@@ -276,6 +282,7 @@ def visualize_and_interpret(network, accessibility_df, partition_dict):
              .execute(network)
         )
         df = result.to_pandas()
+        df['degree'] = df['degree'].apply(_as_scalar)
         axes[0, 1].hist(df['degree'], alpha=0.5, label=mode, bins=8)
     axes[0, 1].set_xlabel('Connections')
     axes[0, 1].set_ylabel('Frequency')
@@ -348,10 +355,10 @@ def visualize_and_interpret(network, accessibility_df, partition_dict):
 
 def main():
     """Run the complete transportation networks case study."""
-    print("\n" + "="*70)
-    print("CASE STUDY: TRANSPORTATION MULTILAYER NETWORK")
-    print("="*70)
+    _print_header("CASE STUDY: TRANSPORTATION MULTILAYER NETWORK")
     print("\nAnalyzing multi-modal urban transportation network.")
+
+    np.random.seed(DEFAULT_SEED)
     
     # Step 1: Create network
     network = create_transport_network()
@@ -372,7 +379,7 @@ def main():
     print("\nSummary:")
     print("  * Built multi-modal transport network")
     print("  * Identified transfer hubs with layer-level statistics")
-    print("  * Computed accessibility metrics with confidence intervals")
+    print("  * Computed accessibility metrics")
     print("  * Detected service zones")
     print("  * Generated planning insights")
     print("\nNext steps:")
@@ -380,6 +387,24 @@ def main():
     print("  - Include temporal scheduling and frequencies")
     print("  - Analyze disruption scenarios (what if a hub fails?)")
     print("  - Optimize routes based on centrality metrics")
+
+
+def _print_header(title: str):
+    """Pretty-print section headers consistently."""
+    print("\n" + "=" * 70)
+    print(title)
+    print("=" * 70)
+
+
+def _as_scalar(value):
+    """Normalize metrics that may be wrapped in dicts (e.g., mean/value)."""
+    if isinstance(value, dict):
+        for key in ("mean", "value"):
+            if key in value:
+                return value[key]
+        if len(value) == 1:
+            return next(iter(value.values()))
+    return value
 
 
 if __name__ == "__main__":

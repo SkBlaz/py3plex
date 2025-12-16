@@ -1,22 +1,41 @@
 """
-Example: SIS Epidemic Simulation using OOP-style Dynamics
+SIS epidemic simulation with py3plex dynamics.
 
-This example demonstrates the SISDynamics class from py3plex.dynamics,
-showing how Susceptible-Infected-Susceptible epidemics differ from SIR
-due to the lack of immunity (recovered state).
-
-SIS dynamics are commonly used to model:
-- Diseases without lasting immunity (common cold, influenza)
-- Computer virus infections
-- Information spread with forgetting
+Highlights the difference from SIR (no lasting immunity), explores endemic
+behavior, and compares parameter regimes. Prerequisites: py3plex installed
+with dynamics extras, plus networkx; matplotlib is optional for plots (Agg
+backend).
 """
 
+from __future__ import annotations
+
+from pathlib import Path
+
 import networkx as nx
-import matplotlib.pyplot as plt
 from py3plex.dynamics import SISDynamics
 
+try:  # Matplotlib is optional; skip plots if missing.
+    import matplotlib
 
-def run_sis_example():
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ImportError as exc:  # pragma: no cover - surfaced to users running examples
+    plt = None
+    MATPLOTLIB_ERROR = exc
+else:
+    MATPLOTLIB_ERROR = None
+
+DEFAULT_SEED = 42
+OUTPUT_DIR = Path(__file__).parent / "outputs"
+
+
+def _ensure_output_dir() -> Path:
+    """Create output directory for plots if needed."""
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    return OUTPUT_DIR
+
+
+def run_sis_example() -> SISDynamics:
     """Run SIS epidemic simulation example."""
     print("=" * 70)
     print("SIS Epidemic Simulation Example")
@@ -45,7 +64,7 @@ def run_sis_example():
     print(f"  R₀ estimate: β/γ * <k> = {0.3/0.1 * 6:.2f}")
     
     # Set seed and run
-    sis.set_seed(42)
+    sis.set_seed(DEFAULT_SEED)
     print(f"\nRunning simulation for 200 steps...")
     results = sis.run(steps=200)
     
@@ -63,13 +82,13 @@ def run_sis_example():
     return results
 
 
-def plot_sis_dynamics(prevalence, state_counts):
-    """Plot SIS epidemic dynamics.
-    
-    Args:
-        prevalence: Array of prevalence values over time
-        state_counts: Dictionary of state -> count arrays
-    """
+def plot_sis_dynamics(prevalence, state_counts) -> None:
+    """Plot SIS epidemic dynamics (if matplotlib available)."""
+    if plt is None:
+        print(f"⚠️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        return
+
+    output_dir = _ensure_output_dir()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
     
     # Plot state counts
@@ -96,11 +115,12 @@ def plot_sis_dynamics(prevalence, state_counts):
     ax2.grid(alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('/tmp/sis_dynamics_example.png', dpi=150, bbox_inches='tight')
-    print(f"✓ Plot saved to /tmp/sis_dynamics_example.png")
+    filepath = output_dir / "sis_dynamics_example.png"
+    plt.savefig(filepath, dpi=150, bbox_inches="tight")
+    print(f"✓ Plot saved to {filepath}")
 
 
-def compare_sis_vs_sir():
+def compare_sis_vs_sir() -> None:
     """Compare SIS and SIR dynamics on the same network."""
     print("\n" + "=" * 70)
     print("SIS vs SIR Comparison")
@@ -113,17 +133,22 @@ def compare_sis_vs_sir():
     
     # SIS dynamics
     sis = SISDynamics(G, beta=0.3, gamma=0.1, initial_infected=0.1)
-    sis.set_seed(42)
+    sis.set_seed(DEFAULT_SEED)
     sis_results = sis.run(steps=100)
     sis_prevalence = sis_results.get_measure("prevalence")
     
     # SIR dynamics
     sir = SIRDynamics(G, beta=0.3, gamma=0.1, initial_infected=0.1)
-    sir.set_seed(42)
+    sir.set_seed(DEFAULT_SEED)
     sir_results = sir.run(steps=100)
     sir_prevalence = sir_results.get_measure("prevalence")
     
     # Plot comparison
+    if plt is None:
+        print(f"⚠️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        return
+
+    _ensure_output_dir()
     plt.figure(figsize=(10, 6))
     plt.plot(sis_prevalence, label='SIS (no immunity)', color='red', linewidth=2)
     plt.plot(sir_prevalence, label='SIR (with immunity)', color='blue', linewidth=2)
@@ -134,15 +159,16 @@ def compare_sis_vs_sir():
     plt.grid(alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('/tmp/sis_vs_sir_comparison.png', dpi=150, bbox_inches='tight')
-    print(f"✓ Comparison plot saved to /tmp/sis_vs_sir_comparison.png")
+    filepath = OUTPUT_DIR / "sis_vs_sir_comparison.png"
+    plt.savefig(filepath, dpi=150, bbox_inches="tight")
+    print(f"✓ Comparison plot saved to {filepath}")
     
     print(f"\nKey differences:")
     print(f"  SIS reaches endemic equilibrium: {sis_prevalence[-1]:.2%}")
     print(f"  SIR dies out: {sir_prevalence[-1]:.2%}")
 
 
-def analyze_endemic_threshold():
+def analyze_endemic_threshold() -> None:
     """Analyze the epidemic threshold for SIS dynamics."""
     print("\n" + "=" * 70)
     print("Endemic Threshold Analysis")
@@ -161,7 +187,7 @@ def analyze_endemic_threshold():
     
     for beta in beta_values:
         sis = SISDynamics(G, beta=beta, gamma=gamma, initial_infected=0.1)
-        sis.set_seed(42)
+        sis.set_seed(DEFAULT_SEED)
         results = sis.run(steps=200)
         prevalence = results.get_measure("prevalence")
         # Take mean of last 50 steps as endemic level
@@ -171,6 +197,11 @@ def analyze_endemic_threshold():
     R0_values = [beta / gamma * avg_degree for beta in beta_values]
     
     # Plot
+    if plt is None:
+        print(f"⚠️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        return
+
+    _ensure_output_dir()
     plt.figure(figsize=(10, 6))
     plt.plot(R0_values, final_prevalence, 'o-', linewidth=2, markersize=8)
     plt.axvline(1.0, color='red', linestyle='--', linewidth=2, label='Epidemic threshold (R₀=1)')
@@ -182,8 +213,9 @@ def analyze_endemic_threshold():
     plt.grid(alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('/tmp/sis_threshold_analysis.png', dpi=150, bbox_inches='tight')
-    print(f"✓ Threshold plot saved to /tmp/sis_threshold_analysis.png")
+    filepath = OUTPUT_DIR / "sis_threshold_analysis.png"
+    plt.savefig(filepath, dpi=150, bbox_inches="tight")
+    print(f"✓ Threshold plot saved to {filepath}")
     
     print(f"\nResults:")
     for beta, R0, prev in zip(beta_values, R0_values, final_prevalence):
@@ -191,16 +223,17 @@ def analyze_endemic_threshold():
         print(f"  β={beta:.2f}, R₀={R0:.2f}: prevalence={prev:.2%} ({status})")
 
 
-if __name__ == "__main__":
-    # Run main example
-    results = run_sis_example()
-    
-    # Compare SIS vs SIR
+def main() -> int:
+    """Execute all SIS demonstrations."""
+    run_sis_example()
     compare_sis_vs_sir()
-    
-    # Analyze endemic threshold
     analyze_endemic_threshold()
-    
+
     print("\n" + "=" * 70)
     print("Example complete!")
     print("=" * 70)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
