@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced Multilayer Metrics &mdash; py3plex 1.0.1 documentation</title>
+  <title>Advanced Multilayer Metrics &mdash; py3plex 1.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c94df887" />
@@ -14,9 +14,10 @@
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=292eb321"></script>
+      <script src="_static/documentation_options.js?v=1ed6394b"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -636,6 +637,216 @@ Correlation matrix:
 - Layer influence guides intervention strategies
 - Betweenness surface reveals cross-layer bridge nodes</p>
 </section>
+<section id="multilayer-clustering-coefficients">
+<h2>Multilayer Clustering Coefficients<a class="headerlink" href="#multilayer-clustering-coefficients" title="Link to this heading"></a></h2>
+<p>Clustering coefficients quantify the tendency of nodes to form triangles (closed triplets) in networks. For multilayer networks, we extend this concept to account for edges across multiple layers.</p>
+<section id="id1">
+<h3>Overview<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>The traditional clustering coefficient measures local transitivity: if node <em>v</em> is connected to nodes <em>x</em> and <em>y</em>, what is the probability that <em>x</em> and <em>y</em> are also connected? In multilayer networks, edges may exist in different layers, leading to several possible definitions of “closure.”</p>
+<p>py3plex implements three variants of multilayer clustering coefficients:</p>
+<ol class="arabic simple">
+<li><p><strong>Intra-layer clustering</strong> - Classical clustering computed separately for each layer</p></li>
+<li><p><strong>Multiplex clustering</strong> - Aggregates neighbors across layers, counts triangles that close in any layer</p></li>
+<li><p><strong>Supra-adjacency clustering</strong> - Uses the full supra-adjacency matrix representation</p></li>
+</ol>
+</section>
+<section id="mathematical-definitions">
+<h3>Mathematical Definitions<a class="headerlink" href="#mathematical-definitions" title="Link to this heading"></a></h3>
+<p>Throughout, let <em>V</em> be the set of physical nodes and <em>L</em> the set of layers. Let <em>N</em><sub>v,ℓ</sub> be the neighbor set of node <em>v</em> within layer <em>ℓ</em>, and <em>k</em><sub>v,ℓ</sub> = <a href="#id12"><span class="problematic" id="id13">|*N*\ :sub:`v,ℓ`|</span></a>.</p>
+<p><strong>Variant A: Intra-layer Local Clustering</strong></p>
+<p>For each node-layer pair (<em>v</em>, <em>ℓ</em>), the intra-layer clustering coefficient is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}C^{\text{intra}}_{v,\ell} =
+\begin{cases}
+\frac{2 T_{v,\ell}}{k_{v,\ell}(k_{v,\ell}-1)} &amp; \text{if } k_{v,\ell} \geq 2 \\
+0 &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<p>where <em>T</em><sub>v,ℓ</sub> is the number of closed triangles:</p>
+<div class="math notranslate nohighlight">
+\[T_{v,\ell} = \big|\{\{x,y\} \subset N_{v,\ell} : E_\ell(x,y)=1\}\big|\]</div>
+<p>and <em>E</em><sub>ℓ</sub>(<em>x</em>, <em>y</em>) = 1 if nodes <em>x</em> and <em>y</em> are connected in layer <em>ℓ</em>.</p>
+<p><strong>Variant B: Aggregated Multiplex Clustering</strong></p>
+<p>For each node <em>v</em>, aggregate neighbors across selected layers <em>𝓛</em>:</p>
+<div class="math notranslate nohighlight">
+\[N_v^{(\mathcal{L})} = \bigcup_{\ell \in \mathcal{L}} N_{v,\ell}, \quad
+k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|\]</div>
+<p>Count triangles where edges to neighbors can be in different layers, but closure must exist in at least one layer:</p>
+<div class="math notranslate nohighlight">
+\[T_v^{(\mathcal{L})} = \big|\{\{x,y\} \subset N_v^{(\mathcal{L})} :
+\exists \alpha,\beta \in \mathcal{L} \text{ s.t. } E_\alpha(v,x)=1, E_\beta(v,y)=1,
+\exists \gamma \in \mathcal{L} \text{ s.t. } E_\gamma(x,y)=1\}\big|\]</div>
+<p>The multiplex clustering coefficient is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}C_v^{\text{multiplex}} =
+\begin{cases}
+\frac{2 T_v^{(\mathcal{L})}}{k_v^{(\mathcal{L})}(k_v^{(\mathcal{L})}-1)} &amp; \text{if } k_v^{(\mathcal{L})} \geq 2 \\
+0 &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<p><strong>Variant D: Supra-adjacency Clustering</strong></p>
+<p>Construct the supra-adjacency matrix <em>A</em> on state nodes <em>V</em><sub>M</sub> = {(<em>v</em>, <em>ℓ</em>) | <em>v</em> ∈ <em>V</em>, <em>ℓ</em> ∈ <em>L</em>}. For each state node <em>i</em>, the number of triangles is:</p>
+<div class="math notranslate nohighlight">
+\[t_i = \frac{(A^3)_{ii}}{2}\]</div>
+<p>The supra-adjacency clustering coefficient is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}C_i^{\text{supra}} =
+\begin{cases}
+\frac{2 t_i}{d_i(d_i-1)} &amp; \text{if } d_i \geq 2 \\
+0 &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<p>where <em>d</em><sub>i</sub> is the degree of state node <em>i</em> in the supra-adjacency matrix.</p>
+</section>
+<section id="coefficient-type-mapping">
+<h3>Coefficient Type Mapping<a class="headerlink" href="#coefficient-type-mapping" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Coefficient</p></th>
+<th class="head"><p>Returns</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;intra&quot;</span></code></p></td>
+<td><p>(node, layer)</p></td>
+<td><p>Classical clustering per layer</p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p><a href="#id2"><span class="problematic" id="id3">``</span></a>”multiplex”<a href="#id4"><span class="problematic" id="id5">``</span></a>| (node, None)</p></td>
+<td><p>Aggregated across layers</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;supra&quot;</span></code></p></td>
+<td><p>(node, layer)</p></td>
+<td><p>Full supra-adjacency representation</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="usage-examples">
+<h3>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h3>
+<p><strong>Basic Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_clustering</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_clustering</span>
+
+<span class="c1"># Create a multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Compute intra-layer clustering</span>
+<span class="n">cintra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;intra&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cintra</span><span class="p">)</span>  <span class="c1"># {(&#39;A&#39;, &#39;L1&#39;): 1.0, (&#39;B&#39;, &#39;L1&#39;): 1.0, (&#39;C&#39;, &#39;L1&#39;): 1.0}</span>
+
+<span class="c1"># Compute multiplex clustering</span>
+<span class="n">cmux</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cmux</span><span class="p">)</span>  <span class="c1"># {(&#39;A&#39;, None): 1.0, (&#39;B&#39;, None): 1.0, (&#39;C&#39;, None): 1.0}</span>
+
+<span class="c1"># Compute global (average) clustering</span>
+<span class="n">cg</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;global&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cg</span><span class="p">)</span>  <span class="c1"># 1.0</span>
+</pre></div>
+</div>
+<p><strong>Split Triangle Across Layers:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a triangle with edges in different layers</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Intra-layer: each node has insufficient neighbors in single layers</span>
+<span class="n">cintra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;intra&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+<span class="c1"># Returns 0 for nodes with degree &lt; 2 in any layer</span>
+
+<span class="c1"># Multiplex: aggregates neighbors across layers, triangle is complete</span>
+<span class="n">cmux</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cmux</span><span class="p">[(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])</span>  <span class="c1"># 1.0 (B and C are neighbors, and connected in L2)</span>
+</pre></div>
+</div>
+<p><strong>Layer Subset Analysis:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute clustering for specific layers only</span>
+<span class="n">cintra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;intra&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">]</span>  <span class="c1"># Only consider these layers</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Supra-adjacency with Inter-layer Edges:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a network with coupling edges</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">)</span>
+<span class="c1"># ... load network with inter-layer edges ...</span>
+
+<span class="c1"># Include inter-layer edges in triangle counting</span>
+<span class="n">csupra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;supra&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+    <span class="n">include_cross_layer</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="interpretation">
+<h3>Interpretation<a class="headerlink" href="#interpretation" title="Link to this heading"></a></h3>
+<p><strong>When to Use Each Variant:</strong></p>
+<ul class="simple">
+<li><p><strong>Intra-layer</strong>: Compare clustering patterns across layers independently. Useful when layers represent different types of relationships that should be analyzed separately.</p></li>
+<li><p><strong>Multiplex</strong>: Analyze clustering when nodes can form triangles using relationships from multiple layers. Best for understanding integrated network structure.</p></li>
+<li><p><strong>Supra-adjacency</strong>: Most general form, includes inter-layer edges in triangle counting. Use when coupling between layers is structurally significant.</p></li>
+</ul>
+<p><strong>Typical Values:</strong></p>
+<ul class="simple">
+<li><p><strong>C = 0</strong>: Node has no triangles (neighbors are not connected)</p></li>
+<li><p><strong>0 &lt; C &lt; 1</strong>: Partial clustering (some neighbor pairs are connected)</p></li>
+<li><p><strong>C = 1</strong>: Perfect local clustering (all neighbor pairs are connected)</p></li>
+</ul>
+<p><strong>Comparison with Single-Layer Clustering:</strong></p>
+<p>For a single-layer network, <code class="docutils literal notranslate"><span class="pre">coefficient=&quot;intra&quot;</span></code> matches NetworkX’s <code class="docutils literal notranslate"><span class="pre">clustering()</span></code> function when computed on that layer’s subgraph. Multiplex and supra variants provide additional information about cross-layer structure.</p>
+</section>
+<section id="complexity-and-performance">
+<h3>Complexity and Performance<a class="headerlink" href="#complexity-and-performance" title="Link to this heading"></a></h3>
+<p><strong>Computational Complexity:</strong></p>
+<ul class="simple">
+<li><p><strong>Intra-layer</strong>: <em>O*(Σ:sub:`v,ℓ` *k</em><sup>2</sup><sub>v,ℓ</sub>) - quadratic in local degree</p></li>
+<li><p><strong>Multiplex</strong>: <em>O*(Σ:sub:`v` (*k</em><sup>agg</sup><sub>v</sub>)<sup>2</sup> × <a href="#id14"><span class="problematic" id="id15">|*L*|</span></a>) - quadratic in aggregated degree</p></li>
+<li><p><strong>Supra-adjacency</strong>: <em>O*(*|V</em><sub>M`|:sup:`2.373</sub>) for sparse matrix multiplication (Coppersmith-Winograd)</p></li>
+</ul>
+<p><strong>Memory Usage:</strong></p>
+<ul class="simple">
+<li><p><strong>Intra-layer</strong>: <a href="#id6"><span class="problematic" id="id7">*</span></a>O*(<a href="#id16"><span class="problematic" id="id17">|*E*|</span></a>) - stores adjacency lists per layer</p></li>
+<li><p><strong>Multiplex</strong>: <a href="#id8"><span class="problematic" id="id9">*</span></a>O*(<a href="#id18"><span class="problematic" id="id19">|*V*|</span></a> × <a href="#id20"><span class="problematic" id="id21">|*L*|</span></a>) - stores aggregated neighbor sets</p></li>
+<li><p><strong>Supra-adjacency</strong>: <em>O*(|*V</em><sub>M`|:sup:`2</sub>) worst case, <em>O*(|*E</em>:sub:<a href="#id10"><span class="problematic" id="id11">`</span></a>total`|) for sparse representation</p></li>
+</ul>
+<p><strong>Performance Recommendations:</strong></p>
+<ul class="simple">
+<li><p>For large networks (&gt;10,000 state nodes), prefer <strong>intra</strong> or <strong>multiplex</strong> variants</p></li>
+<li><p>Use <strong>supra</strong> only when inter-layer edges are critical to analysis</p></li>
+<li><p>For very large networks, consider computing on layer subsets or node samples</p></li>
+<li><p>Multiplex is typically faster than supra for dense inter-layer connectivity</p></li>
+</ul>
+</section>
+<section id="limitations">
+<h3>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Directed Networks</strong>: Current implementation assumes undirected edges. For directed networks, triangle definitions become more complex (feed-forward, cyclic, etc.).</p></li>
+<li><p><strong>Weighted Networks</strong>: Clustering coefficients use unweighted triangle counts. Weighted variants (e.g., Barrat et al., 2004) are not yet implemented.</p></li>
+<li><p><strong>Hypergraphs</strong>: These definitions assume pairwise edges. Hyperedge clustering requires different formulations.</p></li>
+<li><p><strong>Temporal Networks</strong>: Static clustering ignores temporal ordering of edges. Use temporal motif analysis for time-respecting triangles.</p></li>
+<li><p><strong>Null Models</strong>: Clustering values should be compared against appropriate null models (e.g., configuration model) for statistical significance.</p></li>
+</ol>
+</section>
+<section id="related-metrics">
+<h3>Related Metrics<a class="headerlink" href="#related-metrics" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Global Clustering Coefficient</strong>: Average of local coefficients (set <code class="docutils literal notranslate"><span class="pre">mode=&quot;global&quot;</span></code>)</p></li>
+<li><p><strong>Transitivity</strong>: Ratio of closed triplets to total triplets (not yet implemented for multilayer)</p></li>
+<li><p><strong>Triangle Participation</strong>: Count of triangles each node participates in (available via supra-adjacency diagonal)</p></li>
+</ul>
+</section>
+</section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
@@ -646,6 +857,9 @@ Correlation matrix:
 <li><p>Bianconi, G. (2018). <em>Multilayer Networks: Structure and Function</em>. Oxford University Press.</p></li>
 <li><p>Kivelä, M., et al. (2014). “Multilayer networks.” <em>Journal of Complex Networks</em>, 2(3), 203-271.</p></li>
 <li><p>Cozzo, E., et al. (2013). “Mathematical formulation of multilayer networks.” <em>Physical Review E</em>, 88(5), 050801.</p></li>
+<li><p>Battiston, F., et al. (2014). “Structural measures for multiplex networks.” <em>Physical Review E</em>, 89(3), 032804.</p></li>
+<li><p>Cozzo, E., et al. (2015). “Clustering coefficients in multiplex networks.” <em>New Journal of Physics</em>, 17(7), 073029.</p></li>
+<li><p>Barrat, A., et al. (2004). “The architecture of complex weighted networks.” <em>Proceedings of the National Academy of Sciences</em>, 101(11), 3747-3752.</p></li>
 </ol>
 </section>
 <section id="examples">
@@ -655,6 +869,7 @@ Correlation matrix:
 <li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_advanced_multilayer_metrics.py</span></code> - Comprehensive demonstration of all new metrics</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_multilayer_statistics.py</span></code> - Basic multilayer statistics</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_new_multiplex_metrics.py</span></code> - Multiplex-specific metrics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/test_multilayer_clustering_coefficients.py</span></code> - Test suite with working examples of clustering coefficients</p></li>
 </ul>
 <p>Repository: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">https://github.com/SkBlaz/py3plex/tree/master/examples</a></p>
 </section>

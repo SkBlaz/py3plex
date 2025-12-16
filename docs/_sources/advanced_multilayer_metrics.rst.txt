@@ -566,6 +566,248 @@ Best Practices
 - Layer influence guides intervention strategies
 - Betweenness surface reveals cross-layer bridge nodes
 
+Multilayer Clustering Coefficients
+-----------------------------------
+
+Clustering coefficients quantify the tendency of nodes to form triangles (closed triplets) in networks. For multilayer networks, we extend this concept to account for edges across multiple layers.
+
+Overview
+~~~~~~~~
+
+The traditional clustering coefficient measures local transitivity: if node *v* is connected to nodes *x* and *y*, what is the probability that *x* and *y* are also connected? In multilayer networks, edges may exist in different layers, leading to several possible definitions of "closure."
+
+py3plex implements three variants of multilayer clustering coefficients:
+
+1. **Intra-layer clustering** - Classical clustering computed separately for each layer
+2. **Multiplex clustering** - Aggregates neighbors across layers, counts triangles that close in any layer
+3. **Supra-adjacency clustering** - Uses the full supra-adjacency matrix representation
+
+Mathematical Definitions
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Throughout, let *V* be the set of physical nodes and *L* the set of layers. Let *N*\ :sub:`v,ℓ` be the neighbor set of node *v* within layer *ℓ*, and *k*\ :sub:`v,ℓ` = |*N*\ :sub:`v,ℓ`|.
+
+**Variant A: Intra-layer Local Clustering**
+
+For each node-layer pair (*v*, *ℓ*), the intra-layer clustering coefficient is:
+
+.. math::
+
+    C^{\text{intra}}_{v,\ell} = 
+    \begin{cases}
+    \frac{2 T_{v,\ell}}{k_{v,\ell}(k_{v,\ell}-1)} & \text{if } k_{v,\ell} \geq 2 \\
+    0 & \text{otherwise}
+    \end{cases}
+
+where *T*\ :sub:`v,ℓ` is the number of closed triangles:
+
+.. math::
+
+    T_{v,\ell} = \big|\{\{x,y\} \subset N_{v,\ell} : E_\ell(x,y)=1\}\big|
+
+and *E*\ :sub:`ℓ`\ (*x*, *y*) = 1 if nodes *x* and *y* are connected in layer *ℓ*.
+
+**Variant B: Aggregated Multiplex Clustering**
+
+For each node *v*, aggregate neighbors across selected layers *𝓛*:
+
+.. math::
+
+    N_v^{(\mathcal{L})} = \bigcup_{\ell \in \mathcal{L}} N_{v,\ell}, \quad
+    k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|
+
+Count triangles where edges to neighbors can be in different layers, but closure must exist in at least one layer:
+
+.. math::
+
+    T_v^{(\mathcal{L})} = \big|\{\{x,y\} \subset N_v^{(\mathcal{L})} : 
+    \exists \alpha,\beta \in \mathcal{L} \text{ s.t. } E_\alpha(v,x)=1, E_\beta(v,y)=1, 
+    \exists \gamma \in \mathcal{L} \text{ s.t. } E_\gamma(x,y)=1\}\big|
+
+The multiplex clustering coefficient is:
+
+.. math::
+
+    C_v^{\text{multiplex}} = 
+    \begin{cases}
+    \frac{2 T_v^{(\mathcal{L})}}{k_v^{(\mathcal{L})}(k_v^{(\mathcal{L})}-1)} & \text{if } k_v^{(\mathcal{L})} \geq 2 \\
+    0 & \text{otherwise}
+    \end{cases}
+
+**Variant D: Supra-adjacency Clustering**
+
+Construct the supra-adjacency matrix *A* on state nodes *V*\ :sub:`M` = {(*v*, *ℓ*) | *v* ∈ *V*, *ℓ* ∈ *L*}. For each state node *i*, the number of triangles is:
+
+.. math::
+
+    t_i = \frac{(A^3)_{ii}}{2}
+
+The supra-adjacency clustering coefficient is:
+
+.. math::
+
+    C_i^{\text{supra}} = 
+    \begin{cases}
+    \frac{2 t_i}{d_i(d_i-1)} & \text{if } d_i \geq 2 \\
+    0 & \text{otherwise}
+    \end{cases}
+
+where *d*\ :sub:`i` is the degree of state node *i* in the supra-adjacency matrix.
+
+Coefficient Type Mapping
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
++---------------+------------------+----------------------------------------+
+| Coefficient   | Returns          | Description                            |
++===============+==================+========================================+
+| ``"intra"``   | (node, layer)    | Classical clustering per layer         |
++---------------+------------------+----------------------------------------+
+| ``"multiplex"``| (node, None)    | Aggregated across layers               |
++---------------+------------------+----------------------------------------+
+| ``"supra"``   | (node, layer)    | Full supra-adjacency representation    |
++---------------+------------------+----------------------------------------+
+
+Usage Examples
+~~~~~~~~~~~~~~
+
+**Basic Usage:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.multilayer_clustering import multilayer_clustering
+    
+    # Create a multilayer network
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        {'source': 'A', 'target': 'B', 'source_type': 'L1', 'target_type': 'L1'},
+        {'source': 'B', 'target': 'C', 'source_type': 'L1', 'target_type': 'L1'},
+        {'source': 'A', 'target': 'C', 'source_type': 'L1', 'target_type': 'L1'},
+    ])
+    
+    # Compute intra-layer clustering
+    cintra = multilayer_clustering(network, coefficient="intra", mode="local")
+    print(cintra)  # {('A', 'L1'): 1.0, ('B', 'L1'): 1.0, ('C', 'L1'): 1.0}
+    
+    # Compute multiplex clustering
+    cmux = multilayer_clustering(network, coefficient="multiplex", mode="local")
+    print(cmux)  # {('A', None): 1.0, ('B', None): 1.0, ('C', None): 1.0}
+    
+    # Compute global (average) clustering
+    cg = multilayer_clustering(network, coefficient="multiplex", mode="global")
+    print(cg)  # 1.0
+
+**Split Triangle Across Layers:**
+
+.. code-block:: python
+
+    # Create a triangle with edges in different layers
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        {'source': 'A', 'target': 'B', 'source_type': 'L1', 'target_type': 'L1'},
+        {'source': 'A', 'target': 'C', 'source_type': 'L1', 'target_type': 'L1'},
+        {'source': 'B', 'target': 'C', 'source_type': 'L2', 'target_type': 'L2'},
+    ])
+    
+    # Intra-layer: each node has insufficient neighbors in single layers
+    cintra = multilayer_clustering(network, coefficient="intra", mode="local")
+    # Returns 0 for nodes with degree < 2 in any layer
+    
+    # Multiplex: aggregates neighbors across layers, triangle is complete
+    cmux = multilayer_clustering(network, coefficient="multiplex", mode="local")
+    print(cmux[('A', None)])  # 1.0 (B and C are neighbors, and connected in L2)
+
+**Layer Subset Analysis:**
+
+.. code-block:: python
+
+    # Compute clustering for specific layers only
+    cintra = multilayer_clustering(
+        network, 
+        coefficient="intra", 
+        mode="local",
+        layers=['L1', 'L2']  # Only consider these layers
+    )
+
+**Supra-adjacency with Inter-layer Edges:**
+
+.. code-block:: python
+
+    # Create a network with coupling edges
+    network = multinet.multi_layer_network(network_type="multiplex")
+    # ... load network with inter-layer edges ...
+    
+    # Include inter-layer edges in triangle counting
+    csupra = multilayer_clustering(
+        network,
+        coefficient="supra",
+        mode="local",
+        include_cross_layer=True
+    )
+
+Interpretation
+~~~~~~~~~~~~~~
+
+**When to Use Each Variant:**
+
+- **Intra-layer**: Compare clustering patterns across layers independently. Useful when layers represent different types of relationships that should be analyzed separately.
+
+- **Multiplex**: Analyze clustering when nodes can form triangles using relationships from multiple layers. Best for understanding integrated network structure.
+
+- **Supra-adjacency**: Most general form, includes inter-layer edges in triangle counting. Use when coupling between layers is structurally significant.
+
+**Typical Values:**
+
+- **C = 0**: Node has no triangles (neighbors are not connected)
+- **0 < C < 1**: Partial clustering (some neighbor pairs are connected)
+- **C = 1**: Perfect local clustering (all neighbor pairs are connected)
+
+**Comparison with Single-Layer Clustering:**
+
+For a single-layer network, ``coefficient="intra"`` matches NetworkX's ``clustering()`` function when computed on that layer's subgraph. Multiplex and supra variants provide additional information about cross-layer structure.
+
+Complexity and Performance
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Computational Complexity:**
+
+- **Intra-layer**: *O*(Σ\ :sub:`v,ℓ` *k*\ :sup:`2`\ :sub:`v,ℓ`) - quadratic in local degree
+- **Multiplex**: *O*(Σ\ :sub:`v` (*k*\ :sup:`agg`\ :sub:`v`)\ :sup:`2` × |*L*|) - quadratic in aggregated degree
+- **Supra-adjacency**: *O*(*|V*\ :sub:`M`|\ :sup:`2.373`) for sparse matrix multiplication (Coppersmith-Winograd)
+
+**Memory Usage:**
+
+- **Intra-layer**: *O*(|*E*|) - stores adjacency lists per layer
+- **Multiplex**: *O*(|*V*| × |*L*|) - stores aggregated neighbor sets
+- **Supra-adjacency**: *O*(|*V*\ :sub:`M`|\ :sup:`2`) worst case, *O*(|*E*\ :sub:`total`|) for sparse representation
+
+**Performance Recommendations:**
+
+- For large networks (>10,000 state nodes), prefer **intra** or **multiplex** variants
+- Use **supra** only when inter-layer edges are critical to analysis
+- For very large networks, consider computing on layer subsets or node samples
+- Multiplex is typically faster than supra for dense inter-layer connectivity
+
+Limitations
+~~~~~~~~~~~
+
+1. **Directed Networks**: Current implementation assumes undirected edges. For directed networks, triangle definitions become more complex (feed-forward, cyclic, etc.).
+
+2. **Weighted Networks**: Clustering coefficients use unweighted triangle counts. Weighted variants (e.g., Barrat et al., 2004) are not yet implemented.
+
+3. **Hypergraphs**: These definitions assume pairwise edges. Hyperedge clustering requires different formulations.
+
+4. **Temporal Networks**: Static clustering ignores temporal ordering of edges. Use temporal motif analysis for time-respecting triangles.
+
+5. **Null Models**: Clustering values should be compared against appropriate null models (e.g., configuration model) for statistical significance.
+
+Related Metrics
+~~~~~~~~~~~~~~~
+
+- **Global Clustering Coefficient**: Average of local coefficients (set ``mode="global"``)
+- **Transitivity**: Ratio of closed triplets to total triplets (not yet implemented for multilayer)
+- **Triangle Participation**: Count of triangles each node participates in (available via supra-adjacency diagonal)
+
 References
 ----------
 
@@ -583,6 +825,12 @@ References
 
 7. Cozzo, E., et al. (2013). "Mathematical formulation of multilayer networks." *Physical Review E*, 88(5), 050801.
 
+8. Battiston, F., et al. (2014). "Structural measures for multiplex networks." *Physical Review E*, 89(3), 032804.
+
+9. Cozzo, E., et al. (2015). "Clustering coefficients in multiplex networks." *New Journal of Physics*, 17(7), 073029.
+
+10. Barrat, A., et al. (2004). "The architecture of complex weighted networks." *Proceedings of the National Academy of Sciences*, 101(11), 3747-3752.
+
 Examples
 --------
 
@@ -591,6 +839,7 @@ See the following example scripts in the repository:
 - ``examples/network_analysis/example_advanced_multilayer_metrics.py`` - Comprehensive demonstration of all new metrics
 - ``examples/network_analysis/example_multilayer_statistics.py`` - Basic multilayer statistics
 - ``examples/network_analysis/example_new_multiplex_metrics.py`` - Multiplex-specific metrics
+- ``tests/test_multilayer_clustering_coefficients.py`` - Test suite with working examples of clustering coefficients
 
 Repository: https://github.com/SkBlaz/py3plex/tree/master/examples
 
