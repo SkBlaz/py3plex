@@ -15,7 +15,7 @@ SKIP_CI: external_deps - Requires leidenalg package
 from __future__ import annotations
 
 import sys
-from typing import Dict, Tuple
+from typing import Dict
 
 import numpy as np
 
