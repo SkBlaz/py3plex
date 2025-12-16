@@ -1,16 +1,24 @@
 """Dataset utilities for the DSL Query Zoo.
 
-This module provides functions to create small, reproducible multilayer networks
-for testing and demonstrating DSL queries. All networks use fixed random seeds
-for reproducibility.
+Provides small, reproducible multilayer networks for testing and demonstrating
+DSL queries. Prerequisites: py3plex installed (brings numpy).
 """
 
+from __future__ import annotations
+
 import numpy as np
-import networkx as nx
+
 from py3plex.core import multinet
 
+DEFAULT_SEED = 42
 
-def create_social_work_network(seed=42):
+
+def _set_seed(seed: int) -> None:
+    """Ensure deterministic dataset generation."""
+    np.random.seed(seed)
+
+
+def create_social_work_network(seed: int = DEFAULT_SEED) -> multinet.multi_layer_network:
     """Create a small social-work multilayer network.
     
     This network represents people connected through:
@@ -29,8 +37,7 @@ def create_social_work_network(seed=42):
     Returns:
         multi_layer_network: The constructed network
     """
-    np.random.seed(seed)
-    
+    _set_seed(seed)
     network = multinet.multi_layer_network(directed=False)
     
     # Define nodes for each layer
@@ -81,7 +88,7 @@ def create_social_work_network(seed=42):
     return network
 
 
-def create_communication_network(seed=42):
+def create_communication_network(seed: int = DEFAULT_SEED) -> multinet.multi_layer_network:
     """Create a communication multilayer network.
     
     This network represents communication through different channels:
@@ -101,8 +108,7 @@ def create_communication_network(seed=42):
     Returns:
         multi_layer_network: The constructed network
     """
-    np.random.seed(seed)
-    
+    _set_seed(seed)
     network = multinet.multi_layer_network(directed=False)
     
     people = ['Manager', 'Dev1', 'Dev2', 'Dev3', 'Designer', 
@@ -142,7 +148,7 @@ def create_communication_network(seed=42):
     return network
 
 
-def create_transport_network(seed=42):
+def create_transport_network(seed: int = DEFAULT_SEED) -> multinet.multi_layer_network:
     """Create a transport multilayer network.
     
     This network represents a city's transport system with:
@@ -161,8 +167,7 @@ def create_transport_network(seed=42):
     Returns:
         multi_layer_network: The constructed network
     """
-    np.random.seed(seed)
-    
+    _set_seed(seed)
     network = multinet.multi_layer_network(directed=False)
     
     locations = ['CentralStation', 'ShoppingMall', 'Park', 'University',
@@ -201,7 +206,7 @@ def create_transport_network(seed=42):
     return network
 
 
-def get_dataset(name, seed=42):
+def get_dataset(name: str, seed: int = DEFAULT_SEED) -> multinet.multi_layer_network:
     """Get a dataset by name.
     
     Args:

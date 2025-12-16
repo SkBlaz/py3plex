@@ -1,19 +1,21 @@
 """
-Basic Example: Generating and Visualizing Random Multilayer Networks
+Generate and (optionally) visualize a random multilayer network.
 
-This example demonstrates how to:
-1. Generate a random multilayer Erdős-Rényi (ER) network
-2. Visualize the network structure
-
-The random_multilayer_ER function creates a multilayer network where each layer
-is an Erdős-Rényi random graph with the specified parameters.
-
-Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
+Creates a multilayer Erdős-Rényi network and explains key parameters.
+Prerequisites: py3plex installed; matplotlib is optional for visualization
+and skipped by default (backend set to Agg).
 """
 
-import os
+from __future__ import annotations
 
+import os
+import random
+from typing import Any
+
+import numpy as np
 from py3plex.core import random_generators
+
+DEFAULT_SEED = 42
 
 
 def generate_random_multilayer_network(
@@ -21,19 +23,11 @@ def generate_random_multilayer_network(
     num_layers: int = 6,
     edge_prob: float = 0.09,
     directed: bool = True,
-):
-    """
-    Generate a random multilayer Erdős-Rényi network.
+) -> Any:
+    """Generate a random multilayer Erdős-Rényi network."""
+    np.random.seed(DEFAULT_SEED)
+    random.seed(DEFAULT_SEED)
 
-    Args:
-        num_nodes: Number of nodes in the network
-        num_layers: Number of layers
-        edge_prob: Probability of edge creation between any two nodes
-        directed: Whether the network is directed
-
-    Returns:
-        Generated multilayer network
-    """
     print("Generating random multilayer Erdős-Rényi network...")
     print("Parameters:")
     print(f"  - Number of nodes: {num_nodes}")
@@ -41,9 +35,11 @@ def generate_random_multilayer_network(
     print(f"  - Edge probability: {edge_prob}")
     print(f"  - Directed: {directed}")
 
-    # Generate the multilayer network
     network = random_generators.random_multilayer_ER(
-        num_nodes, num_layers, edge_prob, directed=directed
+        num_nodes,
+        num_layers,
+        edge_prob,
+        directed=directed,
     )
 
     print("\nNetwork generated successfully!")
@@ -51,28 +47,28 @@ def generate_random_multilayer_network(
 
 
 def visualize_network_if_interactive(network) -> None:
-    """
-    Visualize the network if not in CI mode.
-
-    Args:
-        network: The multilayer network to visualize
-    """
-    # In CI mode, skip interactive visualization
+    """Visualize the network if a GUI backend is available."""
     if os.environ.get("MPLBACKEND") == "Agg":
-        print("Running in CI mode - skipping interactive visualization")
-    else:
-        print("Visualizing the network (close the window to exit)...")
-        # Visualize the network without node labels for clarity
-        network.visualize_network(show=True, no_labels=True)
+        print("Running in non-interactive mode - skipping visualization")
+        return
+
+    print("Visualizing the network (close the window to exit)...")
+    network.visualize_network(show=True, no_labels=True)
 
 
-def main() -> None:
-    """Generate and visualize a random multilayer network."""
+def main() -> int:
+    """Generate a network; visualization is skipped unless backend allows GUI."""
+    os.environ.setdefault("MPLBACKEND", "Agg")
+
     network = generate_random_multilayer_network(
-        num_nodes=200, num_layers=6, edge_prob=0.09, directed=True
+        num_nodes=200,
+        num_layers=6,
+        edge_prob=0.09,
+        directed=True,
     )
     visualize_network_if_interactive(network)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

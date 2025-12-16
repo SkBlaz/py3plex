@@ -1167,6 +1167,25 @@ def _evaluate_special(item: Any, special: SpecialPredicate,
                     return source[1] == src_layer and target[1] == dst_layer
         return False
     
+    elif special.kind == "temporal_range":
+        # For nodes or edges: check timestamp attribute lies within [t_start, t_end]
+        t_start = special.params.get("t_start")
+        t_end = special.params.get("t_end")
+        
+        t_value = _get_attribute_value(item, "t", network, G)
+        if t_value is None:
+            return False
+        
+        try:
+            if t_start is not None and t_value < t_start:
+                return False
+            if t_end is not None and t_value > t_end:
+                return False
+            return True
+        except TypeError:
+            # Non-comparable timestamp
+            return False
+    
     return True
 
 

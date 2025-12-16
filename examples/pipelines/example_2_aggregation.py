@@ -2,41 +2,66 @@
 """
 Example 2: Aggregation Pipeline - Load, Aggregate, and Analyze
 
-This example demonstrates aggregating multiple layers into a single
-network and then computing statistics.
-
-Runtime: FAST (< 5 seconds)
+Generate a deterministic multilayer network, collapse layers with the `sum`
+method, and compute basic statistics on the aggregated view. Safe for
+headless environments.
 """
 
+from __future__ import annotations
+
+from pathlib import Path
 import sys
-sys.path.insert(0, '../..')
 
-from py3plex.pipeline import Pipeline, LoadStep, AggregateLayers, ComputeStats
+import numpy as np
 
-print("=" * 70)
-print("Example 2: Layer Aggregation Pipeline")
-print("=" * 70)
+# Allow running the example without installing the package
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-# Pipeline: Generate random multilayer network -> Aggregate layers -> Stats
-pipe = Pipeline([
-    ("load", LoadStep(generator='random_er', n=40, l=4, p=0.12)),
-    ("aggregate", AggregateLayers(method='sum')),
-    ("stats", ComputeStats(include_layer_stats=False)),
-])
+from py3plex.pipeline import AggregateLayers, ComputeStats, LoadStep, Pipeline
 
-print("\nPipeline structure:")
-print(pipe)
+DEFAULT_SEED = 42
 
-print("\nRunning pipeline...")
-result = pipe.run()
 
-print("\n" + "=" * 70)
-print("Aggregated Network Statistics:")
-print("=" * 70)
-print(f"Nodes: {result['nodes']}")
-print(f"Edges: {result['edges']}")
-print(f"Density: {result['density']:.4f}")
+def build_pipeline() -> Pipeline:
+    """Create pipeline that aggregates layers before computing stats."""
+    return Pipeline(
+        [
+            ("load", LoadStep(generator="random_er", n=40, l=4, p=0.12)),
+            ("aggregate", AggregateLayers(method="sum")),
+            ("stats", ComputeStats(include_layer_stats=False)),
+        ]
+    )
 
-print("\n" + "=" * 70)
-print("Example completed!")
-print("=" * 70)
+
+def main() -> int:
+    """Run the aggregation example."""
+    np.random.seed(DEFAULT_SEED)
+
+    print("=" * 70)
+    print("Example 2: Layer Aggregation Pipeline")
+    print("=" * 70)
+
+    pipe = build_pipeline()
+    print("\nPipeline structure:")
+    print(pipe)
+
+    print("\nRunning pipeline...")
+    result = pipe.run()
+
+    print("\n" + "=" * 70)
+    print("Aggregated Network Statistics:")
+    print("=" * 70)
+    print(f"Nodes: {result['nodes']}")
+    print(f"Edges: {result['edges']}")
+    print(f"Density: {result['density']:.4f}")
+
+    print("\n" + "=" * 70)
+    print("Example completed!")
+    print("=" * 70)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

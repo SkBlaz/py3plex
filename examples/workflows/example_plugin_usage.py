@@ -1,12 +1,12 @@
-"""
-Example demonstrating how to use the py3plex plugin system.
+"""Plugin system walkthrough: define, register, and use py3plex plugins.
 
-This example shows:
-1. How to create custom plugins
-2. How to register and use plugins
-3. How to list available plugins
-4. How to get plugin information
+Prerequisites: built-in py3plex dependencies only (networkx included).
+Runtime: FAST (<5s)
 """
+
+from __future__ import annotations
+
+from typing import Any, Dict
 
 from py3plex import multi_layer_network
 from py3plex.plugins import (
@@ -19,42 +19,37 @@ from py3plex.plugins import (
 # Example 1: Create a custom centrality plugin
 @PluginRegistry.register("centrality", "closeness_simple")
 class SimpleClosenessCentrality(CentralityPlugin):
-    """
-    A simple closeness centrality implementation.
-    
-    This plugin demonstrates how to create a custom centrality measure.
+    """A simple closeness centrality implementation.
+
+    Demonstrates how to create a custom centrality measure.
     """
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "closeness_simple"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Simple closeness centrality based on shortest paths"
 
     @property
-    def author(self):
+    def author(self) -> str:
         return "Py3plex Example"
 
     @property
-    def version(self):
+    def version(self) -> str:
         return "1.0.0"
 
     @property
-    def supports_weighted(self):
+    def supports_weighted(self) -> bool:
         return False
 
     @property
-    def supports_directed(self):
+    def supports_directed(self) -> bool:
         return False
 
-    def compute(self, network, **kwargs):
-        """
-        Compute closeness centrality for all nodes.
-        
-        Closeness is the inverse of the average shortest path length to all other nodes.
-        """
+    def compute(self, network, **kwargs) -> Dict[Any, float]:
+        """Compute closeness centrality for all nodes."""
         import networkx as nx
 
         # Convert to NetworkX for easier computation
@@ -88,29 +83,25 @@ class SimpleClosenessCentrality(CentralityPlugin):
 # Example 2: Create a custom community detection plugin
 @PluginRegistry.register("community", "connected_components")
 class ConnectedComponentsCommunity(CommunityPlugin):
-    """
-    Community detection based on connected components.
-    
-    This plugin treats each connected component as a separate community.
-    """
+    """Community detection based on connected components."""
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "connected_components"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Detects communities as connected components"
 
     @property
-    def author(self):
+    def author(self) -> str:
         return "Py3plex Example"
 
     @property
-    def version(self):
+    def version(self) -> str:
         return "1.0.0"
 
-    def detect(self, network, **kwargs):
+    def detect(self, network, **kwargs) -> Dict[Any, int]:
         """
         Detect communities using connected components.
         """
@@ -133,57 +124,45 @@ class ConnectedComponentsCommunity(CommunityPlugin):
         return communities
 
 
-def main():
-    """Main function demonstrating plugin usage."""
-    print("=" * 70)
-    print("Py3plex Plugin System Example")
-    print("=" * 70)
-    print()
-
-    # Create a simple network
-    print("Creating a sample network...")
+def create_sample_network():
+    """Create a tiny two-component network for plugin demonstrations."""
     net = multi_layer_network()
+    net.add_nodes(
+        [
+            {"source": "A", "type": "layer1"},
+            {"source": "B", "type": "layer1"},
+            {"source": "C", "type": "layer1"},
+            {"source": "D", "type": "layer1"},
+            {"source": "E", "type": "layer1"},
+        ]
+    )
+    net.add_edges(
+        [
+            {
+                "source": "A",
+                "target": "B",
+                "source_type": "layer1",
+                "target_type": "layer1",
+            },
+            {
+                "source": "B",
+                "target": "C",
+                "source_type": "layer1",
+                "target_type": "layer1",
+            },
+            {
+                "source": "D",
+                "target": "E",
+                "source_type": "layer1",
+                "target_type": "layer1",
+            },
+        ]
+    )
+    return net
 
-    # Add nodes
-    nodes = [
-        {"source": "A", "type": "layer1"},
-        {"source": "B", "type": "layer1"},
-        {"source": "C", "type": "layer1"},
-        {"source": "D", "type": "layer1"},
-        {"source": "E", "type": "layer1"},
-    ]
-    net.add_nodes(nodes)
 
-    # Add edges to create two components
-    edges = [
-        {
-            "source": "A",
-            "target": "B",
-            "source_type": "layer1",
-            "target_type": "layer1",
-        },
-        {
-            "source": "B",
-            "target": "C",
-            "source_type": "layer1",
-            "target_type": "layer1",
-        },
-        {
-            "source": "D",
-            "target": "E",
-            "source_type": "layer1",
-            "target_type": "layer1",
-        },
-    ]
-    net.add_edges(edges)
-
-    print(f"Network created with {len(list(net.get_nodes()))} nodes and {len(list(net.get_edges()))} edges")
-    print()
-
-    # Get the registry
-    registry = PluginRegistry()
-
-    # Example 3: List all available plugins
+def list_available_plugins(registry: PluginRegistry) -> None:
+    """Print all registered plugins grouped by type."""
     print("-" * 70)
     print("Available Plugins:")
     print("-" * 70)
@@ -191,15 +170,17 @@ def main():
     for plugin_type, plugin_names in all_plugins.items():
         if plugin_names:
             print(f"  {plugin_type}:")
-            for name in plugin_names:
+            for name in sorted(plugin_names):
                 print(f"    - {name}")
     print()
 
-    # Example 4: Get plugin information
+
+def show_plugin_info(registry: PluginRegistry, plugin_type: str, name: str) -> None:
+    """Print metadata for a specific plugin."""
     print("-" * 70)
     print("Plugin Information:")
     print("-" * 70)
-    info = registry.get_plugin_info("centrality", "closeness_simple")
+    info = registry.get_plugin_info(plugin_type, name)
     print(f"  Name: {info['name']}")
     print(f"  Type: {info['type']}")
     print(f"  Version: {info['version']}")
@@ -207,7 +188,9 @@ def main():
     print(f"  Description: {info['description']}")
     print()
 
-    # Example 5: Use the closeness centrality plugin
+
+def run_custom_plugins(registry: PluginRegistry, net) -> None:
+    """Run the two custom plugins defined in this example."""
     print("-" * 70)
     print("Computing Closeness Centrality:")
     print("-" * 70)
@@ -217,7 +200,6 @@ def main():
         print(f"  Node {node}: {score:.4f}")
     print()
 
-    # Example 6: Use the community detection plugin
     print("-" * 70)
     print("Detecting Communities:")
     print("-" * 70)
@@ -227,15 +209,15 @@ def main():
         print(f"  Node {node}: Community {community_id}")
     print()
 
-    # Example 7: Use built-in example plugins
+
+def run_builtin_plugins(registry: PluginRegistry, net) -> None:
+    """Demonstrate using plugins shipped with py3plex."""
     print("-" * 70)
     print("Using Built-in Example Plugins:")
     print("-" * 70)
 
-    # Import example plugins
     import py3plex.plugins.examples  # noqa: F401
 
-    # Use example degree centrality
     example_degree = registry.get("centrality", "example_degree")
     degree_scores = example_degree.compute(net)
     print("  Degree Centrality:")
@@ -243,13 +225,30 @@ def main():
         print(f"    Node {node}: {score}")
     print()
 
-    # Use example circular layout
     example_layout = registry.get("layout", "example_circular")
     positions = example_layout.compute_layout(net)
     print("  Circular Layout Positions:")
     for node, pos in sorted(positions.items()):
         print(f"    Node {node}: ({pos[0]:.3f}, {pos[1]:.3f})")
     print()
+
+
+def main() -> int:
+    """Main function demonstrating plugin usage."""
+    print("=" * 70)
+    print("Py3plex Plugin System Example")
+    print("=" * 70)
+    print()
+
+    net = create_sample_network()
+    print(f"Network created with {len(list(net.get_nodes()))} nodes and {len(list(net.get_edges()))} edges")
+    print()
+
+    registry = PluginRegistry()
+    list_available_plugins(registry)
+    show_plugin_info(registry, "centrality", "closeness_simple")
+    run_custom_plugins(registry, net)
+    run_builtin_plugins(registry, net)
 
     print("=" * 70)
     print("Plugin System Example Complete!")
@@ -260,7 +259,8 @@ def main():
     print("  2. Check py3plex/plugins/examples.py for more examples")
     print("  3. Create plugins in ~/.py3plex/plugins/ for auto-discovery")
     print()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

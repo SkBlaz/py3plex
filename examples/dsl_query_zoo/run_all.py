@@ -1,49 +1,65 @@
 """Run all Query Zoo examples and generate outputs.
 
-This script executes all query functions and saves their outputs to the
-outputs/ directory. Outputs include:
-- CSV files with query results
-- Summary statistics
-- Small plots where appropriate
-
-All examples use fixed random seeds for reproducibility.
+Teaches how to orchestrate the DSL Query Zoo: loading datasets, running each
+query, and saving CSVs/plots for inspection. Prerequisites: py3plex installed
+with pandas, matplotlib (Agg backend), and seaborn available.
 """
 
-import os
+from __future__ import annotations
+
+import random
 import sys
 from pathlib import Path
+from typing import Callable, Optional
+import traceback
 
-import pandas as pd
+import numpy as np
 
-# Set matplotlib backend before importing pyplot
-import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend
-import matplotlib.pyplot as plt
-import seaborn as sns
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-# Add parent directory to path to import query zoo modules
-sys.path.insert(0, str(Path(__file__).parent))
+try:
+    import pandas as pd
 
-from datasets import get_dataset
-from queries import (
+    import matplotlib
+
+    matplotlib.use("Agg")  # Use non-interactive backend
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+except ImportError as exc:  # pragma: no cover - surfaced to user
+    IMPORT_ERROR = exc
+else:
+    IMPORT_ERROR = None
+
+from examples.dsl_query_zoo.datasets import get_dataset
+from examples.dsl_query_zoo.queries import (
+    query_advanced_centrality_comparison,
     query_basic_exploration,
+    query_community_structure,
     query_cross_layer_hubs,
     query_layer_similarity,
-    query_community_structure,
     query_multiplex_pagerank,
     query_robustness_analysis,
-    query_advanced_centrality_comparison,
 )
 
+DEFAULT_SEED = 42
 
-def setup_output_dir():
+
+def _set_seeds(seed: int = DEFAULT_SEED) -> None:
+    """Ensure deterministic behaviour for any random components."""
+    random.seed(seed)
+    np.random.seed(seed)
+
+
+def setup_output_dir() -> Path:
     """Create output directory if it doesn't exist."""
     output_dir = Path(__file__).parent / "outputs"
     output_dir.mkdir(exist_ok=True)
     return output_dir
 
 
-def save_dataframe(df, filename, output_dir):
+def save_dataframe(df: pd.DataFrame, filename: str, output_dir: Path) -> Path:
     """Save DataFrame to CSV."""
     filepath = output_dir / filename
     df.to_csv(filepath, index=False)
@@ -51,7 +67,7 @@ def save_dataframe(df, filename, output_dir):
     return filepath
 
 
-def plot_layer_stats(df, output_dir):
+def plot_layer_stats(df: pd.DataFrame, output_dir: Path) -> Path:
     """Create a bar plot of layer statistics."""
     fig, axes = plt.subplots(1, 3, figsize=(15, 4))
     
@@ -84,7 +100,7 @@ def plot_layer_stats(df, output_dir):
     return filepath
 
 
-def plot_layer_similarity(df, output_dir):
+def plot_layer_similarity(df: pd.DataFrame, output_dir: Path) -> Path:
     """Create a heatmap of layer similarity."""
     fig, ax = plt.subplots(figsize=(8, 6))
     sns.heatmap(df, annot=True, fmt='.2f', cmap='coolwarm', center=0,
@@ -99,7 +115,7 @@ def plot_layer_similarity(df, output_dir):
     return filepath
 
 
-def plot_robustness(df, output_dir):
+def plot_robustness(df: pd.DataFrame, output_dir: Path) -> Path:
     """Create a plot showing connectivity loss when layers are removed."""
     fig, ax = plt.subplots(figsize=(10, 6))
     
@@ -123,96 +139,154 @@ def plot_robustness(df, output_dir):
     return filepath
 
 
-def run_all_queries():
+def _preview_dataframe(
+    df: pd.DataFrame, rows: Optional[int] = 10, show_index: bool = False
+) -> str:
+    """Return a formatted preview string for console output."""
+    if rows is None:
+        return df.to_string(index=show_index)
+    return df.head(rows).to_string(index=show_index)
+
+
+def _execute_query(
+    label: str,
+    func: Callable[..., pd.DataFrame],
+    args: tuple,
+    output_name: str,
+    output_dir: Path,
+    *,
+    plotter: Optional[Callable[[pd.DataFrame, Path], Path]] = None,
+    preview_rows: Optional[int] = 10,
+    show_index: bool = False,
+) -> None:
+    """Run one query function with consistent logging and error handling."""
+    print(label)
+    try:
+        result = func(*args)
+    except Exception as exc:  # pragma: no cover - surfaced to user
+        print(f"  ERROR: {exc}")
+        traceback.print_exc()
+        print()
+        return
+
+    if not isinstance(result, pd.DataFrame):
+        print(f"  Unexpected result type: {type(result)}\n")
+        return
+
+    save_dataframe(result, output_name, output_dir)
+
+    if plotter:
+        plotter(result, output_dir)
+
+    preview = _preview_dataframe(result, rows=preview_rows, show_index=show_index)
+    print(f"  Result preview:\n{preview}\n")
+
+
+def _load_datasets(seed: int):
+    """Load all toy networks with a shared seed."""
+    print("Loading datasets...")
+    social_work_net = get_dataset("social_work", seed=seed)
+    communication_net = get_dataset("communication", seed=seed)
+    transport_net = get_dataset("transport", seed=seed)
+    print("  ✓ Datasets loaded\n")
+    return social_work_net, communication_net, transport_net
+
+
+def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     """Execute all queries and save outputs."""
+    if IMPORT_ERROR:
+        print(f"Missing dependency: {IMPORT_ERROR}")
+        print("Install py3plex with plotting extras to run the Query Zoo.")
+        return
+
+    _set_seeds(seed)
+
     print("=" * 80)
     print("DSL QUERY ZOO: Running All Examples")
     print("=" * 80)
-    
+
     output_dir = setup_output_dir()
     print(f"\nOutput directory: {output_dir}\n")
-    
-    # Load datasets
-    print("Loading datasets...")
-    social_work_net = get_dataset('social_work', seed=42)
-    communication_net = get_dataset('communication', seed=42)
-    transport_net = get_dataset('transport', seed=42)
-    print("  ✓ Datasets loaded\n")
-    
-    # Query 1: Basic Exploration
-    print("[1/7] Running: Basic Multilayer Exploration")
-    try:
-        result = query_basic_exploration(social_work_net)
-        save_dataframe(result, 'basic_exploration.csv', output_dir)
-        plot_layer_stats(result, output_dir)
-        print(f"  Result preview:\n{result.to_string(index=False)}\n")
-    except Exception as e:
-        print(f"  ERROR: {e}\n")
-    
-    # Query 2: Cross-Layer Hubs
-    print("[2/7] Running: Cross-Layer Hubs")
-    try:
-        result = query_cross_layer_hubs(social_work_net, k=5)
-        save_dataframe(result, 'cross_layer_hubs.csv', output_dir)
-        print(f"  Result preview (first 10 rows):\n{result.head(10).to_string(index=False)}\n")
-    except Exception as e:
-        print(f"  ERROR: {e}\n")
-    
-    # Query 3: Layer Similarity
-    print("[3/7] Running: Layer Similarity Analysis")
-    try:
-        result = query_layer_similarity(social_work_net)
-        save_dataframe(result, 'layer_similarity.csv', output_dir)
-        plot_layer_similarity(result, output_dir)
-        print(f"  Result:\n{result.to_string()}\n")
-    except Exception as e:
-        print(f"  ERROR: {e}\n")
-    
-    # Query 4: Community Structure
-    print("[4/7] Running: Community Structure Analysis")
-    try:
-        result = query_community_structure(communication_net)
-        save_dataframe(result, 'community_structure.csv', output_dir)
-        print(f"  Result preview (first 10 rows):\n{result.head(10).to_string(index=False)}\n")
-    except Exception as e:
-        print(f"  ERROR: {e}\n")
-    
-    # Query 5: Multiplex PageRank
-    print("[5/7] Running: Multiplex PageRank")
-    try:
-        result = query_multiplex_pagerank(transport_net)
-        save_dataframe(result, 'multiplex_pagerank.csv', output_dir)
-        print(f"  Result preview (top 10 nodes):\n{result.head(10).to_string(index=False)}\n")
-    except Exception as e:
-        print(f"  ERROR: {e}\n")
-    
-    # Query 6: Robustness Analysis
-    print("[6/7] Running: Robustness Analysis")
-    try:
-        result = query_robustness_analysis(transport_net)
-        save_dataframe(result, 'robustness_analysis.csv', output_dir)
-        plot_robustness(result, output_dir)
-        print(f"  Result:\n{result.to_string(index=False)}\n")
-    except Exception as e:
-        print(f"  ERROR: {e}\n")
-    
-    # Query 7: Advanced Centrality Comparison
-    print("[7/7] Running: Advanced Centrality Comparison")
-    try:
-        result = query_advanced_centrality_comparison(communication_net)
-        save_dataframe(result, 'centrality_comparison.csv', output_dir)
-        print(f"  Result preview (top 10 nodes):\n{result.head(10).to_string(index=False)}\n")
-    except Exception as e:
-        print(f"  ERROR: {e}\n")
-    
+
+    social_work_net, communication_net, transport_net = _load_datasets(seed)
+
+    _execute_query(
+        "[1/7] Running: Basic Multilayer Exploration",
+        query_basic_exploration,
+        (social_work_net,),
+        "basic_exploration.csv",
+        output_dir,
+        plotter=plot_layer_stats,
+        preview_rows=None,
+    )
+
+    _execute_query(
+        "[2/7] Running: Cross-Layer Hubs",
+        query_cross_layer_hubs,
+        (social_work_net, 5),
+        "cross_layer_hubs.csv",
+        output_dir,
+    )
+
+    _execute_query(
+        "[3/7] Running: Layer Similarity Analysis",
+        query_layer_similarity,
+        (social_work_net,),
+        "layer_similarity.csv",
+        output_dir,
+        plotter=plot_layer_similarity,
+        preview_rows=None,
+        show_index=True,
+    )
+
+    _execute_query(
+        "[4/7] Running: Community Structure Analysis",
+        query_community_structure,
+        (communication_net,),
+        "community_structure.csv",
+        output_dir,
+    )
+
+    _execute_query(
+        "[5/7] Running: Multiplex PageRank",
+        query_multiplex_pagerank,
+        (transport_net,),
+        "multiplex_pagerank.csv",
+        output_dir,
+    )
+
+    _execute_query(
+        "[6/7] Running: Robustness Analysis",
+        query_robustness_analysis,
+        (transport_net,),
+        "robustness_analysis.csv",
+        output_dir,
+        plotter=plot_robustness,
+        preview_rows=None,
+    )
+
+    _execute_query(
+        "[7/7] Running: Advanced Centrality Comparison",
+        query_advanced_centrality_comparison,
+        (communication_net,),
+        "centrality_comparison.csv",
+        output_dir,
+    )
+
     print("=" * 80)
     print("QUERY ZOO EXECUTION COMPLETE")
     print("=" * 80)
     print(f"\nAll outputs saved to: {output_dir}")
     print("\nGenerated files:")
-    for file in sorted(output_dir.glob('*')):
+    for file in sorted(output_dir.glob("*")):
         print(f"  - {file.name}")
 
 
-if __name__ == '__main__':
-    run_all_queries()
+def main() -> int:
+    """CLI entrypoint when running as a script."""
+    run_all_queries(seed=DEFAULT_SEED)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -150,10 +150,17 @@ def robustness_centrality(
         # For metrics where lower is better (avg_shortest_path), we need to invert
         if metric == "avg_shortest_path":
             # Lower path length is better, so impact is perturbed - baseline
-            robustness = perturbed_value - baseline
+            # Handle cases where both values are infinite to avoid NaN.
+            if not np.isfinite(perturbed_value) and not np.isfinite(baseline):
+                robustness = 0.0
+            else:
+                robustness = perturbed_value - baseline
         else:
             # Higher is better (giant_component, prevalence, final_size)
-            robustness = baseline - perturbed_value
+            if not np.isfinite(perturbed_value) and not np.isfinite(baseline):
+                robustness = 0.0
+            else:
+                robustness = baseline - perturbed_value
         
         results[tgt] = float(robustness)
     

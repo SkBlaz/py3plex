@@ -2,78 +2,93 @@
 """
 Example 7: Save and Load Pipeline - Persisting Results
 
-This example demonstrates saving network data during pipeline execution
-and loading it in a subsequent pipeline.
-
-Runtime: FAST (< 5 seconds)
+Generate and aggregate a multilayer network, save it to disk, then load it in a
+second pipeline to verify consistency. Uses a temporary directory and seeded
+randomness for reproducibility.
 """
 
-import sys
-import os
-import tempfile
-from pathlib import Path
+from __future__ import annotations
 
-sys.path.insert(0, '../..')
+from pathlib import Path
+import sys
+import tempfile
+
+import numpy as np
+
+# Allow running the example without installing the package
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from py3plex.pipeline import (
-    Pipeline,
-    LoadStep,
     AggregateLayers,
-    SaveNetwork,
     ComputeStats,
+    LoadStep,
+    Pipeline,
+    SaveNetwork,
 )
 
-print("=" * 70)
-print("Example 7: Save and Load Pipeline")
-print("=" * 70)
+DEFAULT_SEED = 42
 
-# Create a temporary directory for output
-temp_dir = tempfile.mkdtemp()
-network_path = os.path.join(temp_dir, 'aggregated_network.graphml')
 
-print(f"\nTemporary directory: {temp_dir}")
+def _run_and_report(pipe: Pipeline, title: str) -> dict:
+    """Execute a pipeline and print its basic stats."""
+    print(f"\n### {title} ###")
+    result = pipe.run()
+    print(f"  Nodes: {result['nodes']}")
+    print(f"  Edges: {result['edges']}")
+    return result
 
-# Pipeline 1: Generate, aggregate, save, and compute stats
-print("\n### Pipeline 1: Generate and Save ###")
-pipe1 = Pipeline([
-    ("load", LoadStep(generator='random_er', n=30, l=3, p=0.15)),
-    ("aggregate", AggregateLayers(method='sum')),
-    ("save", SaveNetwork(path=network_path, format='graphml')),
-    ("stats", ComputeStats(include_layer_stats=False)),
-])
 
-result1 = pipe1.run()
-print(f"\nGenerated network saved to: {network_path}")
-print(f"  Nodes: {result1['nodes']}")
-print(f"  Edges: {result1['edges']}")
+def build_pipelines(output_path: Path) -> tuple[Pipeline, Pipeline]:
+    """Create pipelines for saving then loading a network."""
+    pipe_generate = Pipeline(
+        [
+            ("load", LoadStep(generator="random_er", n=30, l=3, p=0.15)),
+            ("aggregate", AggregateLayers(method="sum")),
+            ("save", SaveNetwork(path=str(output_path), format="graphml")),
+            ("stats", ComputeStats(include_layer_stats=False)),
+        ]
+    )
+    pipe_load = Pipeline(
+        [
+            ("load", LoadStep(path=str(output_path), input_type="graphml")),
+            ("stats", ComputeStats(include_layer_stats=False)),
+        ]
+    )
+    return pipe_generate, pipe_load
 
-# Pipeline 2: Load the saved network and compute stats again
-print("\n### Pipeline 2: Load and Analyze ###")
-pipe2 = Pipeline([
-    ("load", LoadStep(path=network_path, input_type='graphml')),
-    ("stats", ComputeStats(include_layer_stats=False)),
-])
 
-result2 = pipe2.run()
-print(f"\nLoaded network from: {network_path}")
-print(f"  Nodes: {result2['nodes']}")
-print(f"  Edges: {result2['edges']}")
+def main() -> int:
+    """Run the save/load pipeline example."""
+    np.random.seed(DEFAULT_SEED)
 
-# Verify consistency
-print("\n### Verification ###")
-if result1['nodes'] == result2['nodes'] and result1['edges'] == result2['edges']:
-    print("✓ Network successfully saved and loaded!")
-else:
-    print("✗ Mismatch in saved/loaded network")
+    print("=" * 70)
+    print("Example 7: Save and Load Pipeline")
+    print("=" * 70)
 
-# Cleanup
-try:
-    Path(network_path).unlink()
-    os.rmdir(temp_dir)
-    print(f"\nCleaned up temporary files")
-except Exception as e:
-    print(f"\nNote: Could not clean up temporary files: {e}")
+    with tempfile.TemporaryDirectory() as temp_dir:
+        network_path = Path(temp_dir) / "aggregated_network.graphml"
+        print(f"\nTemporary directory: {temp_dir}")
 
-print("\n" + "=" * 70)
-print("Example completed!")
-print("=" * 70)
+        pipe_generate, pipe_load = build_pipelines(network_path)
+        result1 = _run_and_report(pipe_generate, "Pipeline 1: Generate and Save")
+        print(f"  Saved network to: {network_path}")
+
+        result2 = _run_and_report(pipe_load, "Pipeline 2: Load and Analyze")
+        print(f"  Loaded network from: {network_path}")
+
+        print("\n### Verification ###")
+        if result1["nodes"] == result2["nodes"] and result1["edges"] == result2["edges"]:
+            print("✓ Network successfully saved and loaded!")
+        else:
+            print("✗ Mismatch in saved/loaded network")
+
+    print("\n" + "=" * 70)
+    print("Example completed!")
+    print("=" * 70)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

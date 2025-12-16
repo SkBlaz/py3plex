@@ -8,6 +8,9 @@ in py3plex, including:
 - Detecting communities with the generalized Louvain algorithm
 - Generating synthetic multilayer networks with ground-truth communities
 
+Prerequisites:
+- numpy, scipy, and networkx must be installed (pulled in by py3plex)
+
 SKIP_CI: slow - Runs Louvain algorithm multiple times with synthetic network generation, takes more than 10 seconds
 """
 
@@ -32,6 +35,8 @@ except ImportError as e:
     print(f"Error importing dependencies: {e}")
     print("Please install required packages: numpy, scipy, networkx")
     sys.exit(1)
+
+DEFAULT_SEED = 42
 
 
 def example_basic_modularity():
@@ -134,7 +139,7 @@ def example_louvain_detection():
 
     for omega in [0.0, 1.0, 5.0]:
         communities = louvain_multilayer(
-            network, gamma=1.0, omega=omega, random_state=42, max_iter=20
+            network, gamma=1.0, omega=omega, random_state=DEFAULT_SEED, max_iter=20
         )
         Q = multilayer_modularity(network, communities, gamma=1.0, omega=omega)
         n_communities = len(set(communities.values()))
@@ -170,14 +175,16 @@ def example_synthetic_networks():
             avg_degree=8,
             min_community=10,
             community_persistence=0.8,
-            seed=42
+            seed=DEFAULT_SEED
         )
 
         print(f"    Generated network with {len(list(network.get_nodes()))} node-layer pairs")
         print(f"    Ground truth: {len(set().union(*ground_truth.values()))} communities")
 
         # Detect communities
-        detected = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42, max_iter=20)
+        detected = louvain_multilayer(
+            network, gamma=1.0, omega=1.0, random_state=DEFAULT_SEED, max_iter=20
+        )
         Q = multilayer_modularity(network, detected, gamma=1.0, omega=1.0)
 
         print(f"    Detected: {len(set(detected.values()))} communities")
@@ -197,14 +204,16 @@ def example_synthetic_networks():
             p=0.1,
             omega=1.0,
             coupling_probability=1.0,
-            seed=42
+            seed=DEFAULT_SEED
         )
 
         print(f"    Generated network with {len(list(network.get_nodes()))} node-layer pairs")
         print(f"    Total edges: {len(list(network.get_edges()))}")
 
         # Detect communities (should be few or none in random graph)
-        communities = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42, max_iter=20)
+        communities = louvain_multilayer(
+            network, gamma=1.0, omega=1.0, random_state=DEFAULT_SEED, max_iter=20
+        )
         Q = multilayer_modularity(network, communities, gamma=1.0, omega=1.0)
 
         print(f"    Detected: {len(set(communities.values()))} communities")
@@ -230,14 +239,16 @@ def example_synthetic_networks():
             p_in=0.6,
             p_out=0.05,
             community_persistence=0.9,
-            seed=42
+            seed=DEFAULT_SEED
         )
 
         print(f"    Generated network with {len(list(network.get_nodes()))} node-layer pairs")
         print(f"    Ground truth: {len(set(ground_truth.values()))} blocks")
 
         # Detect communities
-        detected = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42, max_iter=20)
+        detected = louvain_multilayer(
+            network, gamma=1.0, omega=1.0, random_state=DEFAULT_SEED, max_iter=20
+        )
         Q = multilayer_modularity(network, detected, gamma=1.0, omega=1.0)
 
         print(f"    Detected: {len(set(detected.values()))} communities")
@@ -280,7 +291,7 @@ def example_parameter_tuning():
         for omega in [0.1, 1.0, 5.0]:
             try:
                 communities = louvain_multilayer(
-                    network, gamma=gamma, omega=omega, random_state=42, max_iter=20
+                    network, gamma=gamma, omega=omega, random_state=DEFAULT_SEED, max_iter=20
                 )
                 Q = multilayer_modularity(network, communities, gamma=gamma, omega=omega)
                 n_com = len(set(communities.values()))

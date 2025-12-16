@@ -2,24 +2,33 @@
 """
 Example 8: Pipeline with Uncertainty-First Statistics
 
-This example demonstrates how to use the new py3plex.stats module
-(uncertainty-first statistics system) within a Pipeline workflow.
-
-The pipeline computes network statistics as StatValue objects that carry
-uncertainty information, allowing robust analysis and decision-making.
+Demonstrate the uncertainty-first statistics system (`py3plex.stats`) inside a
+pipeline: compute deterministic stats, bootstrap stats with empirical
+uncertainty, filter by robustness, and show arithmetic on `StatValue` objects.
+Dependencies: numpy, networkx.
 
 Runtime: FAST (< 10 seconds)
 """
 
-import sys
-sys.path.insert(0, '../..')
+from __future__ import annotations
 
-from py3plex.pipeline import Pipeline, LoadStep, PipelineStep
-from py3plex.stats import StatValue, Delta, Gaussian, Bootstrap, Provenance
-from py3plex.core import multinet
-import numpy as np
-import networkx as nx
+from pathlib import Path
+import sys
 from typing import Any, Dict
+
+import networkx as nx
+import numpy as np
+
+# Allow running the example without installing the package
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from py3plex.core import multinet
+from py3plex.pipeline import LoadStep, Pipeline, PipelineStep
+from py3plex.stats import Bootstrap, Delta, Gaussian, Provenance, StatValue
+
+DEFAULT_SEED = 42
 
 
 class ComputeUncertaintyStats(PipelineStep):
@@ -242,139 +251,152 @@ class AnalyzeRobustness(PipelineStep):
         return data
 
 
-def main():
-    """Run the uncertainty-aware pipeline example."""
-    print("=" * 70)
-    print("Example 8: Pipeline with Uncertainty-First Statistics")
-    print("=" * 70)
-    print()
-    
-    # ===================================================================
-    # Example 8a: Deterministic Statistics (Delta uncertainty)
-    # ===================================================================
+def _run_deterministic_pipeline() -> Dict[str, Any]:
+    """Run deterministic (delta uncertainty) pipeline and print highlights."""
     print("8a. Deterministic Statistics Pipeline (Delta uncertainty)")
     print("-" * 70)
-    
-    pipe_deterministic = Pipeline([
-        ("load", LoadStep(generator='random_er', n=40, l=2, p=0.12)),
-        ("stats", ComputeUncertaintyStats(
-            metrics=['degree', 'clustering'],
-            use_bootstrap=False
-        )),
-        ("analyze", AnalyzeRobustness(
-            metric='degree',
-            min_robustness=0.9  # High threshold - deterministic stats will pass
-        )),
-    ])
-    
+
+    pipe = Pipeline(
+        [
+            ("load", LoadStep(generator="random_er", n=40, l=2, p=0.12)),
+            (
+                "stats",
+                ComputeUncertaintyStats(
+                    metrics=["degree", "clustering"],
+                    use_bootstrap=False,
+                ),
+            ),
+            (
+                "analyze",
+                AnalyzeRobustness(
+                    metric="degree",
+                    min_robustness=0.9,  # High threshold - deterministic stats will pass
+                ),
+            ),
+        ]
+    )
+
     print("\nRunning deterministic pipeline...")
-    result_det = pipe_deterministic.run()
-    
+    result = pipe.run()
+
     print(f"\nResults:")
-    print(f"  Uncertainty method: {result_det['uncertainty_method']}")
-    print(f"  Robust nodes: {len(result_det['robust_nodes'])}")
-    print(f"  Uncertain nodes: {len(result_det['uncertain_nodes'])}")
-    
-    # Show sample statistics
-    if result_det['robust_nodes']:
-        sample = result_det['robust_nodes'][0]
+    print(f"  Uncertainty method: {result['uncertainty_method']}")
+    print(f"  Robust nodes: {len(result['robust_nodes'])}")
+    print(f"  Uncertain nodes: {len(result['uncertain_nodes'])}")
+
+    if result["robust_nodes"]:
+        sample = result["robust_nodes"][0]
         print(f"\n  Sample node: {sample['node']}")
         print(f"    Value: {sample['value']}")
         print(f"    Std: {sample['std']:.4f}")
         print(f"    Robustness: {sample['robustness']:.4f}")
         print(f"    CI: {sample['ci']}")
-    
     print()
-    
-    # ===================================================================
-    # Example 8b: Bootstrap Statistics (empirical uncertainty)
-    # ===================================================================
+    return result
+
+
+def _run_bootstrap_pipeline() -> Dict[str, Any]:
+    """Run bootstrap-based pipeline and print robustness summaries."""
     print("8b. Bootstrap Statistics Pipeline (empirical uncertainty)")
     print("-" * 70)
-    
-    pipe_bootstrap = Pipeline([
-        ("load", LoadStep(generator='random_er', n=40, l=2, p=0.12)),
-        ("stats", ComputeUncertaintyStats(
-            metrics=['degree'],
-            use_bootstrap=True,
-            n_boot=20,
-            seed=42
-        )),
-        ("analyze", AnalyzeRobustness(
-            metric='degree',
-            min_robustness=0.7,  # Lower threshold - some nodes may fail
-            max_std=2.0
-        )),
-    ])
-    
+
+    pipe = Pipeline(
+        [
+            ("load", LoadStep(generator="random_er", n=40, l=2, p=0.12)),
+            (
+                "stats",
+                ComputeUncertaintyStats(
+                    metrics=["degree"],
+                    use_bootstrap=True,
+                    n_boot=20,
+                    seed=DEFAULT_SEED,
+                ),
+            ),
+            (
+                "analyze",
+                AnalyzeRobustness(
+                    metric="degree",
+                    min_robustness=0.7,  # Lower threshold - some nodes may fail
+                    max_std=2.0,
+                ),
+            ),
+        ]
+    )
+
     print("\nRunning bootstrap pipeline...")
-    result_boot = pipe_bootstrap.run()
-    
+    result = pipe.run()
+
     print(f"\nResults:")
-    print(f"  Uncertainty method: {result_boot['uncertainty_method']}")
-    print(f"  Robust nodes: {len(result_boot['robust_nodes'])}")
-    print(f"  Uncertain nodes: {len(result_boot['uncertain_nodes'])}")
-    
-    # Show top 3 most robust nodes
+    print(f"  Uncertainty method: {result['uncertainty_method']}")
+    print(f"  Robust nodes: {len(result['robust_nodes'])}")
+    print(f"  Uncertain nodes: {len(result['uncertain_nodes'])}")
+
     robust_sorted = sorted(
-        result_boot['robust_nodes'],
-        key=lambda x: x['robustness'],
-        reverse=True
+        result["robust_nodes"], key=lambda x: x["robustness"], reverse=True
     )[:3]
-    
+
     print(f"\n  Top 3 most robust nodes:")
     for i, node_info in enumerate(robust_sorted, 1):
         print(f"    {i}. Node {node_info['node']}:")
         print(f"       Degree: {node_info['value']:.1f} ± {node_info['std']:.2f}")
         print(f"       Robustness: {node_info['robustness']:.3f}")
-        ci_low, ci_high = node_info['ci']
+        ci_low, ci_high = node_info["ci"]
         print(f"       95% CI: [{ci_low:.2f}, {ci_high:.2f}]")
-    
-    # Show top 3 most uncertain nodes
-    if result_boot['uncertain_nodes']:
+
+    if result["uncertain_nodes"]:
         uncertain_sorted = sorted(
-            result_boot['uncertain_nodes'],
-            key=lambda x: x['robustness']
+            result["uncertain_nodes"], key=lambda x: x["robustness"]
         )[:3]
-        
+
         print(f"\n  Top 3 most uncertain nodes:")
         for i, node_info in enumerate(uncertain_sorted, 1):
             print(f"    {i}. Node {node_info['node']}:")
             print(f"       Degree: {node_info['value']:.1f} ± {node_info['std']:.2f}")
             print(f"       Robustness: {node_info['robustness']:.3f}")
-    
     print()
-    
-    # ===================================================================
-    # Example 8c: Arithmetic with Uncertainty
-    # ===================================================================
+    return result
+
+
+def _demo_arithmetic_with_uncertainty(result_boot: Dict[str, Any]) -> None:
+    """Show how arithmetic on StatValue propagates uncertainty."""
     print("8c. Arithmetic with StatValue objects")
     print("-" * 70)
-    
-    # Get statistics from the bootstrap result
-    degree_stats = result_boot['stats']['degree']
-    
-    if len(degree_stats) >= 2:
-        nodes_list = list(degree_stats.keys())
-        stat_a = degree_stats[nodes_list[0]]
-        stat_b = degree_stats[nodes_list[1]]
-        
-        print(f"\nNode {nodes_list[0]}: degree = {float(stat_a):.2f} ± {stat_a.std():.2f}")
-        print(f"Node {nodes_list[1]}: degree = {float(stat_b):.2f} ± {stat_b.std():.2f}")
-        
-        # Arithmetic operations propagate uncertainty
-        stat_sum = stat_a + stat_b
-        print(f"\nSum: {float(stat_sum):.2f} ± {stat_sum.std():.2f}")
-        print(f"  (Uncertainty propagated via Monte Carlo)")
-        
-        stat_avg = (stat_a + stat_b) / 2
-        print(f"\nAverage: {float(stat_avg):.2f} ± {stat_avg.std():.2f}")
-    
+
+    degree_stats = result_boot["stats"]["degree"]
+    if len(degree_stats) < 2:
+        print("Not enough nodes to demonstrate arithmetic.")
+        print()
+        return
+
+    nodes_list = list(degree_stats.keys())
+    stat_a = degree_stats[nodes_list[0]]
+    stat_b = degree_stats[nodes_list[1]]
+
+    print(f"\nNode {nodes_list[0]}: degree = {float(stat_a):.2f} ± {stat_a.std():.2f}")
+    print(f"Node {nodes_list[1]}: degree = {float(stat_b):.2f} ± {stat_b.std():.2f}")
+
+    stat_sum = stat_a + stat_b
+    print(f"\nSum: {float(stat_sum):.2f} ± {stat_sum.std():.2f}")
+    print("  (Uncertainty propagated via Monte Carlo)")
+
+    stat_avg = (stat_a + stat_b) / 2
+    print(f"\nAverage: {float(stat_avg):.2f} ± {stat_avg.std():.2f}")
     print()
-    
-    # ===================================================================
-    # Summary
-    # ===================================================================
+
+
+def main() -> int:
+    """Run the uncertainty-aware pipeline example."""
+    np.random.seed(DEFAULT_SEED)
+
+    print("=" * 70)
+    print("Example 8: Pipeline with Uncertainty-First Statistics")
+    print("=" * 70)
+    print()
+
+    _run_deterministic_pipeline()
+    result_boot = _run_bootstrap_pipeline()
+    _demo_arithmetic_with_uncertainty(result_boot)
+
     print("=" * 70)
     print("Key Takeaways:")
     print("-" * 70)
@@ -385,7 +407,8 @@ def main():
     print("• StatValue objects support arithmetic with uncertainty propagation")
     print("• All uncertainty info is tracked in provenance for reproducibility")
     print("=" * 70)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

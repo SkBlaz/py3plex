@@ -1,56 +1,66 @@
-"""Example demonstrating DSL temporal query features.
+"""Temporal DSL query construction.
 
-This script shows how to use the DSL to query temporal networks:
-1. Temporal filters in where() clause
-2. Window specifications
-3. Combining temporal and spatial queries
+Demonstrates how to express temporal filters, window specifications, and
+combined temporal/layer queries using the DSL. These snippets build queries
+only; executor support for all windowed operations is still evolving.
+
+Dependencies: py3plex (installed editable or via sys.path tweak below).
 """
 
+from __future__ import annotations
+
+from pathlib import Path
+import sys
+
+# Allow running the example without installing the package
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
-from py3plex.dsl import Q, L
+from py3plex.dsl import L, Q
 
 
-def create_sample_network():
+def create_sample_network() -> TemporalMultiLayerNetwork:
     """Create a sample temporal multilayer network."""
     tnet = TemporalMultiLayerNetwork(directed=False)
-    
+
     # Add edges across multiple layers and time periods
     edges = [
         # Social layer - early period
         ('Alice', 'social', 'Bob', 'social', 100.0, 1.0),
         ('Bob', 'social', 'Charlie', 'social', 100.0, 1.0),
-        
+
         # Work layer - early period
         ('Alice', 'work', 'David', 'work', 120.0, 1.0),
         ('David', 'work', 'Eve', 'work', 120.0, 1.0),
-        
+
         # Social layer - middle period
         ('Charlie', 'social', 'David', 'social', 200.0, 1.0),
         ('Alice', 'social', 'Eve', 'social', 200.0, 1.0),
-        
+
         # Work layer - middle period
         ('Bob', 'work', 'Charlie', 'work', 220.0, 1.0),
         ('Eve', 'work', 'Alice', 'work', 220.0, 1.0),
-        
+
         # Social layer - late period
         ('David', 'social', 'Eve', 'social', 300.0, 1.0),
         ('Bob', 'social', 'David', 'social', 300.0, 1.0),
     ]
-    
+
     tnet.add_edges(edges, input_type="tuple")
-    
+
     return tnet
 
 
-def demonstrate_temporal_filters():
+def demonstrate_temporal_filters(tnet: TemporalMultiLayerNetwork) -> None:
     """Demonstrate temporal filters in where() clause."""
     print("=== DSL Temporal Filters ===\n")
-    
-    tnet = create_sample_network()
-    
+    print(f"Using sample network with {tnet.number_of_edges()} edges spanning {tnet.time_range()}")
+
     # Note: These examples show DSL query construction
     # Full executor support for windowed queries is a work in progress
-    
+
     # Query 1: Time range filter with t__between
     print("Query 1: Edges between t=100 and t=200")
     q1 = Q.edges().where(t__between=(100.0, 200.0))
@@ -79,12 +89,11 @@ def demonstrate_temporal_filters():
     print(f"  Has temporal filter: {q4._select.where is not None}")
 
 
-def demonstrate_window_queries():
+def demonstrate_window_queries(tnet: TemporalMultiLayerNetwork) -> None:
     """Demonstrate window specifications."""
     print("\n=== DSL Window Queries ===\n")
-    
-    tnet = create_sample_network()
-    
+    print(f"Windowing over time span {tnet.time_range()}")
+
     # Query 1: Non-overlapping windows
     print("Query 1: Compute degree in non-overlapping windows")
     q1 = (
@@ -115,12 +124,11 @@ def demonstrate_window_queries():
     print(f"  Step: {q3._select.window_spec.step}")
 
 
-def demonstrate_complex_queries():
+def demonstrate_complex_queries(tnet: TemporalMultiLayerNetwork) -> None:
     """Demonstrate complex temporal queries."""
     print("\n=== Complex Temporal Queries ===\n")
-    
-    tnet = create_sample_network()
-    
+    print(f"Available layers: {tnet.base_network.layers}")
+
     # Query 1: Multi-layer temporal analysis
     print("Query 1: Top nodes by centrality across layers and time")
     q1 = (
@@ -167,46 +175,49 @@ def demonstrate_complex_queries():
 def demonstrate_query_composition():
     """Demonstrate composing temporal queries."""
     print("\n=== Query Composition ===\n")
-    
+
     # Build query incrementally
     print("Building a temporal query step by step:")
-    
+
     q = Q.edges()
     print(f"1. Start with edges: {q}")
-    
+
     q = q.from_layers(L["social"])
     print(f"2. Filter to social layer: layer_expr={q._select.layer_expr is not None}")
-    
+
     q = q.where(t__between=(100.0, 200.0))
     print(f"3. Add temporal filter: where={q._select.where is not None}")
-    
+
     q = q.limit(10)
     print(f"4. Limit results: limit={q._select.limit}")
-    
+
     print(f"\nFinal query has:")
     print(f"  - Layer filter: {q._select.layer_expr is not None}")
     print(f"  - Temporal filter: {q._select.where is not None}")
     print(f"  - Limit: {q._select.limit}")
 
 
-def main():
+def main() -> int:
     """Run all demonstrations."""
+    tnet = create_sample_network()
+
     print("=" * 60)
     print("Temporal DSL Example")
     print("=" * 60)
     print()
-    
-    demonstrate_temporal_filters()
-    demonstrate_window_queries()
-    demonstrate_complex_queries()
+
+    demonstrate_temporal_filters(tnet)
+    demonstrate_window_queries(tnet)
+    demonstrate_complex_queries(tnet)
     demonstrate_query_composition()
-    
+
     print("\n" + "=" * 60)
     print("Note: Full executor support for windowed queries")
     print("is a work in progress. These examples demonstrate")
     print("the DSL query construction capabilities.")
     print("=" * 60)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

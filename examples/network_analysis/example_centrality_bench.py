@@ -1,28 +1,43 @@
 #!/usr/bin/env python3
 """
-Example: Centrality Benchmark - Comparing Multiple Centrality Algorithms
+Benchmark multiple centrality algorithms on synthetic multilayer networks.
 
-This example demonstrates:
-1. Generating 100 synthetic multilayer networks
-2. Computing all centrality measures on each network
-3. Comparing centrality rankings using Jaccard similarity at different top-k values
-4. Integrating similarity curves to get overall similarity scores
-5. Visualizing results as a heatmap showing similarity between different algorithms
+Generates a batch of random multilayer Erdős-Rényi networks, computes multiple
+centrality measures, compares their top-k rankings using Jaccard similarity,
+and visualizes the average similarity matrix. The script is deterministic
+(`DEFAULT_SEED`) and uses a non-interactive matplotlib backend so it is safe to
+run headless. Prerequisites: matplotlib, seaborn, tqdm.
 
-The benchmark helps understand how different centrality measures correlate
-with each other across various network topologies.
-
-SKIP_CI: slow - This benchmark takes several minutes to complete
+SKIP_CI: slow - Still a heavier benchmark, though defaults keep runtime modest.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+from __future__ import annotations
+
+import os
+
+# Ensure headless plotting before importing pyplot
+os.environ.setdefault("MPLBACKEND", "Agg")
+
+from pathlib import Path
 from collections import defaultdict
-from tqdm import tqdm
+
+try:
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from tqdm import tqdm
+except ImportError as exc:
+    missing = getattr(exc, "name", str(exc))
+    raise SystemExit(
+        f"Optional dependency '{missing}' is required for this benchmark. "
+        "Install matplotlib, seaborn, and tqdm to run it."
+    )
 
 from py3plex.core import random_generators
 from py3plex.algorithms.multilayer_algorithms.centrality import compute_all_centralities
+
+DEFAULT_SEED = 42
+DEFAULT_OUTPUT = Path("/tmp/centrality_similarity_heatmap.png")
 
 
 def jaccard_similarity(set1, set2):
@@ -174,8 +189,14 @@ def aggregate_node_layer_centrality(centrality_dict):
     return dict(aggregated)
 
 
-def run_centrality_benchmark(num_networks=100, num_nodes=30, num_layers=3, 
-                             edge_prob=0.2, max_k=20):
+def run_centrality_benchmark(
+    num_networks: int = 40,
+    num_nodes: int = 30,
+    num_layers: int = 3,
+    edge_prob: float = 0.2,
+    max_k: int = 20,
+    seed: int = DEFAULT_SEED,
+) -> tuple[dict, list[str]]:
     """
     Run the centrality benchmark on multiple synthetic networks.
     
@@ -185,19 +206,24 @@ def run_centrality_benchmark(num_networks=100, num_nodes=30, num_layers=3,
         num_layers: Number of layers per network
         edge_prob: Edge probability for ER networks
         max_k: Maximum k for top-k comparison
+        seed: Random seed for reproducibility
         
     Returns:
-        dict: Pairwise similarity matrix between centrality measures
+        Pairwise similarity matrix and ordered list of centrality names.
     """
     print(f"Running centrality benchmark on {num_networks} synthetic networks...")
-    print(f"Network parameters: {num_nodes} nodes, {num_layers} layers, p={edge_prob}")
+    print(
+        f"Network parameters: {num_nodes} nodes, {num_layers} layers, "
+        f"p={edge_prob}, seed={seed}"
+    )
+
+    np.random.seed(seed)
     
     # Store integrated similarities for each network
     all_integrated_sims = defaultdict(lambda: defaultdict(list))
     
     # Generate networks and compute centralities
     for i in tqdm(range(num_networks), desc="Processing networks"):
-        # Generate network
         network = generate_synthetic_network(num_nodes, num_layers, edge_prob)
         
         # Compute centralities
@@ -242,7 +268,7 @@ def run_centrality_benchmark(num_networks=100, num_nodes=30, num_layers=3,
     return avg_similarity_matrix, all_cent_names
 
 
-def plot_similarity_heatmap(similarity_matrix, cent_names, output_file=None):
+def plot_similarity_heatmap(similarity_matrix, cent_names, output_file=None, num_networks: int | None = None):
     """
     Plot similarity matrix as a heatmap.
     
@@ -276,8 +302,12 @@ def plot_similarity_heatmap(similarity_matrix, cent_names, output_file=None):
         square=True
     )
     
-    plt.title('Centrality Algorithm Similarity Matrix\n(Average Integrated Jaccard Similarity across 100 Networks)', 
-              fontsize=14, pad=20)
+    network_label = f"Average Integrated Jaccard Similarity across {num_networks} networks" if num_networks else "Average Integrated Jaccard Similarity"
+    plt.title(
+        f"Centrality Algorithm Similarity Matrix\n({network_label})",
+        fontsize=14,
+        pad=20,
+    )
     plt.xlabel('Centrality Measure', fontsize=12)
     plt.ylabel('Centrality Measure', fontsize=12)
     plt.xticks(rotation=45, ha='right')
@@ -340,16 +370,14 @@ def print_summary_statistics(similarity_matrix, cent_names):
         print(f"  {cent:35} : {avg_sim:.4f}")
 
 
-def main():
-    """
-    Main function to run the centrality benchmark.
-    """
+def main() -> int:
+    """Run the benchmark end-to-end."""
     print("="*70)
     print("CENTRALITY BENCHMARK - Comparing Multiple Algorithms")
     print("="*70)
     
-    # Set parameters
-    NUM_NETWORKS = 100
+    # Tunable parameters (keep modest to avoid long runtimes)
+    NUM_NETWORKS = 40
     NUM_NODES = 30
     NUM_LAYERS = 3
     EDGE_PROB = 0.2
@@ -361,6 +389,7 @@ def main():
     print(f"  Layers per network: {NUM_LAYERS}")
     print(f"  Edge probability: {EDGE_PROB}")
     print(f"  Top-k range: 1-{MAX_K}")
+    print(f"  Random seed: {DEFAULT_SEED}")
     
     # Run benchmark
     similarity_matrix, cent_names = run_centrality_benchmark(
@@ -368,7 +397,8 @@ def main():
         num_nodes=NUM_NODES,
         num_layers=NUM_LAYERS,
         edge_prob=EDGE_PROB,
-        max_k=MAX_K
+        max_k=MAX_K,
+        seed=DEFAULT_SEED,
     )
     
     print(f"\nComputed {len(cent_names)} centrality measures:")
@@ -379,13 +409,19 @@ def main():
     print_summary_statistics(similarity_matrix, cent_names)
     
     # Plot heatmap
-    output_file = "/tmp/centrality_similarity_heatmap.png"
-    plot_similarity_heatmap(similarity_matrix, cent_names, output_file)
+    plot_similarity_heatmap(
+        similarity_matrix,
+        cent_names,
+        output_file=DEFAULT_OUTPUT,
+        num_networks=NUM_NETWORKS,
+    )
     
     print("\n" + "="*70)
     print("Benchmark completed successfully!")
     print("="*70)
+    print(f"Heatmap written to: {DEFAULT_OUTPUT}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

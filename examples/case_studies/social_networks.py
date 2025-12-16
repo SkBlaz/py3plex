@@ -6,24 +6,31 @@ Domain: Social Networks / Communication
 Difficulty: Beginner
 Dataset: Synthetic multi-platform social network
 
-This case study demonstrates analyzing social interactions across multiple
-communication platforms:
+What this shows:
+- Build Facebook/Twitter/LinkedIn layers and compare platform structures
+- Compute influence metrics
+- Detect cross-platform communities and visualize results
+- Save headless matplotlib plots to /tmp
 
-1. Data import - Building a social network with Facebook, Twitter, LinkedIn layers
-2. Basic network stats - Cross-platform presence, layer-specific metrics
-3. Analysis pipeline - Influence metrics → community detection → layer comparison
-4. Visualization - Multi-platform visualization with interpretation
-
-The analysis reveals how users behave differently across platforms and identifies
-cross-platform influencers.
+Prerequisites: matplotlib installed; the Agg backend is activated for headless
+runs. Randomness is seeded for reproducibility.
 """
 
-from py3plex.core import multinet
-from py3plex.dsl import Q, L, UQ
+import numpy as np
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
-import matplotlib.pyplot as plt
-from collections import Counter
-import pandas as pd
+from py3plex.core import multinet
+from py3plex.dsl import L, Q
+
+try:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
+
+
+DEFAULT_SEED = 42
 
 
 def create_social_network():
@@ -38,9 +45,7 @@ def create_social_network():
     Returns:
         multi_layer_network: The constructed network
     """
-    print("="*70)
-    print("STEP 1: DATA IMPORT - Building Social Multiplex Network")
-    print("="*70)
+    _print_header("STEP 1: DATA IMPORT - Building Social Multiplex Network")
     
     network = multinet.multi_layer_network(directed=False)
     
@@ -92,9 +97,7 @@ def create_social_network():
 
 def compute_basic_stats(network):
     """Compute cross-platform statistics with detailed layer-level analysis."""
-    print("\n" + "="*70)
-    print("STEP 2: BASIC NETWORK STATS - Cross-Platform Analysis")
-    print("="*70)
+    _print_header("STEP 2: BASIC NETWORK STATS - Cross-Platform Analysis")
     
     network.basic_stats()
     
@@ -114,6 +117,7 @@ def compute_basic_stats(network):
              .execute(network)
         )
         node_df = node_result.to_pandas()
+        node_df['degree'] = node_df['degree'].apply(_as_scalar)
         
         # Edge stats
         edge_result = Q.edges().from_layers(L[platform]).execute(network)
@@ -158,56 +162,54 @@ def compute_basic_stats(network):
 
 def identify_influencers(network):
     """
-    Identify influential users across platforms with confidence bounds.
+    Identify influential users across platforms.
     """
-    print("\n" + "="*70)
-    print("STEP 3: ANALYSIS PIPELINE - Identifying Influencers")
-    print("="*70)
-    
-    # 3.1 Compute influence metrics with uncertainty quantification
-    print("\n[3.1] Computing influence metrics with confidence bounds...")
+    _print_header("STEP 3: ANALYSIS PIPELINE - Identifying Influencers")
+
+    # 3.1 Compute influence metrics
+    print("\n[3.1] Computing influence metrics...")
     result = (
         Q.nodes()
          .from_layers(L["*"])
-         .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
          .compute("degree", "betweenness_centrality", "pagerank")
-         .order_by("-pagerank__mean")
+         .order_by("-pagerank")
          .execute(network)
     )
-    
-    df = result.to_pandas(expand_uncertainty=True)
-    
+
+    df = result.to_pandas()
+    for col in ("degree", "betweenness_centrality", "pagerank"):
+        if col in df:
+            df[col] = df[col].apply(_as_scalar)
+
     # Find cross-platform influencers (users with high metrics)
-    print("\nTop 5 influencers by PageRank (with 95% confidence intervals):")
+    print("\nTop 5 influencers by PageRank:")
     top_influencers = df.head(5)
     for _, row in top_influencers.iterrows():
         user = row['id'][0] if isinstance(row['id'], tuple) else row['id']
         platform = row['layer']
         pr = row['pagerank']
-        pr_low = row['pagerank_ci95_low']
-        pr_high = row['pagerank_ci95_high']
-        print(f"  {user} ({platform}): PageRank={pr:.4f} (95% CI: [{pr_low:.4f}, {pr_high:.4f}]), Degree={row['degree']}")
-    
-    # 3.2 Platform-specific influence with confidence bounds
-    print("\n[3.2] Platform-specific top influencers with confidence bounds:")
+        print(f"  {user} ({platform}): PageRank={pr:.4f}, Degree={row['degree']}")
+
+    # 3.2 Platform-specific influence
+    print("\n[3.2] Platform-specific top influencers:")
     for platform in ['facebook', 'twitter', 'linkedin']:
         platform_result = (
             Q.nodes()
              .from_layers(L[platform])
-             .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
              .compute("degree", "betweenness_centrality")
-             .order_by("-betweenness_centrality__mean")
+             .order_by("-betweenness_centrality")
              .limit(3)
              .execute(network)
         )
-        platform_df = platform_result.to_pandas(expand_uncertainty=True)
+        platform_df = platform_result.to_pandas()
+        for col in ("degree", "betweenness_centrality"):
+            if col in platform_df:
+                platform_df[col] = platform_df[col].apply(_as_scalar)
         print(f"\n  {platform.upper()}:")
         for _, row in platform_df.iterrows():
             user = row['id'][0] if isinstance(row['id'], tuple) else row['id']
             bc = row['betweenness_centrality']
-            bc_low = row['betweenness_centrality_ci95_low']
-            bc_high = row['betweenness_centrality_ci95_high']
-            print(f"    {user}: degree={row['degree']}, betweenness={bc:.4f} (95% CI: [{bc_low:.4f}, {bc_high:.4f}])")
+            print(f"    {user}: degree={row['degree']}, betweenness={bc:.4f}")
     
     return df
 
@@ -248,9 +250,13 @@ def visualize_and_interpret(network, influence_df, partition_dict):
     """
     Create visualizations and interpret social patterns.
     """
-    print("\n" + "="*70)
-    print("STEP 4: VISUALIZATION & INTERPRETATION")
-    print("="*70)
+    _print_header("STEP 4: VISUALIZATION & INTERPRETATION")
+
+    if plt is None:
+        print("matplotlib not available; skipping visualization. Install matplotlib to enable plots.")
+        return
+
+    np.random.seed(DEFAULT_SEED)
     
     network.assign_partition(partition_dict)
     
@@ -273,6 +279,7 @@ def visualize_and_interpret(network, influence_df, partition_dict):
              .execute(network)
         )
         df = result.to_pandas()
+        df['degree'] = df['degree'].apply(_as_scalar)
         axes[0, 1].hist(df['degree'], alpha=0.5, label=platform, bins=10)
     axes[0, 1].set_xlabel('Degree')
     axes[0, 1].set_ylabel('Frequency')
@@ -333,10 +340,10 @@ def visualize_and_interpret(network, influence_df, partition_dict):
 
 def main():
     """Run the complete social networks case study."""
-    print("\n" + "="*70)
-    print("CASE STUDY: SOCIAL MULTIPLEX NETWORK ANALYSIS")
-    print("="*70)
+    _print_header("CASE STUDY: SOCIAL MULTIPLEX NETWORK ANALYSIS")
     print("\nAnalyzing user behavior across Facebook, Twitter, and LinkedIn.")
+
+    np.random.seed(DEFAULT_SEED)
     
     # Step 1: Create network
     network = create_social_network()
@@ -357,13 +364,31 @@ def main():
     print("\nSummary:")
     print("  * Built multi-platform social network")
     print("  * Analyzed cross-platform metrics with layer-level statistics")
-    print("  * Identified influencers with confidence intervals")
+    print("  * Identified influencers")
     print("  * Detected social communities")
     print("  * Visualized platform differences")
     print("\nNext steps:")
     print("  - Apply to real social media data (Twitter API, Facebook Graph API)")
     print("  - Add temporal analysis (how communities evolve)")
     print("  - Integrate sentiment analysis with network structure")
+
+
+def _print_header(title: str):
+    """Pretty-print section headers consistently."""
+    print("\n" + "=" * 70)
+    print(title)
+    print("=" * 70)
+
+
+def _as_scalar(value):
+    """Normalize metrics that may be wrapped in dicts (e.g., mean/value)."""
+    if isinstance(value, dict):
+        for key in ("mean", "value"):
+            if key in value:
+                return value[key]
+        if len(value) == 1:
+            return next(iter(value.values()))
+    return value
 
 
 if __name__ == "__main__":

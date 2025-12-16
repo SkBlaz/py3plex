@@ -1,6 +1,8 @@
 # Dynamics Examples
 
-This directory contains examples demonstrating the OOP-style dynamics API in py3plex, as described in the *Practical Multilayer Network Analysis with Py3plex* book.
+This directory contains examples demonstrating the OOP-style dynamics API in py3plex, as described in the *Practical Multilayer Network Analysis with Py3plex* book. Plots are written to an `outputs/` subdirectory next to each script; matplotlib uses the non-interactive Agg backend if available.
+
+**Prerequisites:** py3plex installed with dynamics extras, plus networkx and numpy. Matplotlib is optional for saving figures; if missing, the examples still run but skip plotting.
 
 ## Overview
 

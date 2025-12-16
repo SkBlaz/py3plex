@@ -129,6 +129,25 @@ def multiplex_jaccard(
     # Compute global Jaccard
     edges_a = _get_edges_set(G_a)
     edges_b = _get_edges_set(G_b)
+
+    if layers is not None:
+        allowed_layers = all_layers
+
+        def _in_allowed_layers(edge: Set[Any]) -> bool:
+            if len(edge) != 2:
+                return False
+            u, v = tuple(edge)
+            return (
+                isinstance(u, tuple)
+                and isinstance(v, tuple)
+                and len(u) >= 2
+                and len(v) >= 2
+                and u[1] in allowed_layers
+                and v[1] in allowed_layers
+            )
+
+        edges_a = {edge for edge in edges_a if _in_allowed_layers(edge)}
+        edges_b = {edge for edge in edges_b if _in_allowed_layers(edge)}
     
     intersection = len(edges_a & edges_b)
     union = len(edges_a | edges_b)

@@ -144,6 +144,11 @@ def make_random_multiplex(
     else:
         G = nx.MultiGraph()
 
+    # Ensure every node is present in every layer, even if no edges are sampled
+    for node in range(n_nodes):
+        for layer_idx in range(n_layers):
+            G.add_node((node, layer_idx), type="default")
+
     for layer_idx in range(n_layers):
         # Use multiplication to ensure good seed separation between layers
         layer_seed = (
