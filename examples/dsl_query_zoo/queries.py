@@ -25,7 +25,6 @@ from __future__ import annotations
 from typing import Any, Dict, List, Tuple
 
 try:
-    import numpy as np
     import pandas as pd
 except ImportError as exc:
     raise ImportError(
