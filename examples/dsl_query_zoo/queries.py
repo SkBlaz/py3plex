@@ -22,7 +22,7 @@ Query Categories:
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 try:
     import pandas as pd
