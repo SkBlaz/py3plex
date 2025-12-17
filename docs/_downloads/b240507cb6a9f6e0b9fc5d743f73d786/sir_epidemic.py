@@ -1,31 +1,44 @@
 """
-Example: SIR Epidemic Simulation using OOP-style Dynamics
+SIR epidemic simulation with py3plex dynamics.
 
-This example demonstrates the use of the SIRDynamics class from the
-py3plex.dynamics module, as described in the Practical Multilayer Network
-Analysis with Py3plex book.
-
-The example shows:
-- Creating a multilayer network
-- Setting up SIR dynamics with beta (infection) and gamma (recovery) parameters
-- Running the simulation with a specific seed for reproducibility
-- Extracting measures like prevalence and state counts
-- Plotting the epidemic curve
+Shows how to create a small multilayer network, configure `SIRDynamics`, run a
+reproducible simulation, and visualize prevalence curves. Prerequisites:
+py3plex installed with dynamics extras, plus numpy, networkx; matplotlib is
+optional for plots (Agg backend).
 """
 
-import numpy as np
+from __future__ import annotations
+
+from pathlib import Path
+
 import networkx as nx
-import matplotlib.pyplot as plt
+import numpy as np
 from py3plex.core import multinet
 from py3plex.dynamics import SIRDynamics
 
+try:  # Matplotlib is optional; skip plots if missing.
+    import matplotlib
 
-def create_simple_multilayer_network():
-    """Create a simple two-layer network for demonstration.
-    
-    Returns:
-        py3plex multi_layer_network object
-    """
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ImportError as exc:  # pragma: no cover - surfaced to users running examples
+    plt = None
+    MATPLOTLIB_ERROR = exc
+else:
+    MATPLOTLIB_ERROR = None
+
+DEFAULT_SEED = 42
+OUTPUT_DIR = Path(__file__).parent / "outputs"
+
+
+def _ensure_output_dir() -> Path:
+    """Create output directory for plots if needed."""
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    return OUTPUT_DIR
+
+
+def create_simple_multilayer_network() -> multinet.multi_layer_network:
+    """Create a simple two-layer network for demonstration."""
     network = multinet.multi_layer_network(directed=False)
     
     # Add nodes to both layers
@@ -46,7 +59,7 @@ def create_simple_multilayer_network():
         }])
     
     # Digital layer: random connections
-    rng = np.random.default_rng(42)
+    rng = np.random.default_rng(DEFAULT_SEED)
     for i in range(30):  # Add 30 random edges
         source = rng.integers(0, 20)
         target = rng.integers(0, 20)
@@ -61,7 +74,7 @@ def create_simple_multilayer_network():
     return network
 
 
-def run_sir_example():
+def run_sir_example() -> SIRDynamics:
     """Run SIR epidemic simulation example."""
     print("=" * 70)
     print("SIR Epidemic Simulation Example")
@@ -91,7 +104,7 @@ def run_sir_example():
     print(f"  Initial infected: 5%")
     
     # Set seed for reproducibility
-    sir.set_seed(42)
+    sir.set_seed(DEFAULT_SEED)
     
     # Run simulation
     print(f"\nRunning simulation for 100 steps...")
@@ -116,13 +129,13 @@ def run_sir_example():
     return results
 
 
-def plot_epidemic_curve(prevalence, state_counts):
-    """Plot the epidemic curve showing S, I, R over time.
-    
-    Args:
-        prevalence: Array of prevalence values over time
-        state_counts: Dictionary of state -> count arrays
-    """
+def plot_epidemic_curve(prevalence, state_counts) -> None:
+    """Plot the epidemic curve showing S, I, R over time (if matplotlib available)."""
+    if plt is None:
+        print(f"⚠️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        return
+
+    output_dir = _ensure_output_dir()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
     
     # Plot state counts
@@ -145,17 +158,12 @@ def plot_epidemic_curve(prevalence, state_counts):
     ax2.grid(alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('/tmp/sir_epidemic_example.png', dpi=150, bbox_inches='tight')
-    print(f"\n✓ Plot saved to /tmp/sir_epidemic_example.png")
-    
-    # Try to display if in interactive mode
-    try:
-        plt.show()
-    except:
-        pass
+    filepath = output_dir / "sir_epidemic_example.png"
+    plt.savefig(filepath, dpi=150, bbox_inches="tight")
+    print(f"\n✓ Plot saved to {filepath}")
 
 
-def run_comparison_with_different_parameters():
+def run_comparison_with_different_parameters() -> None:
     """Compare SIR dynamics with different parameter settings."""
     print("\n" + "=" * 70)
     print("Parameter Comparison")
@@ -172,11 +180,16 @@ def run_comparison_with_different_parameters():
         {'beta': 0.3, 'gamma': 0.2, 'label': 'Fast recovery'},
     ]
     
+    if plt is None:
+        print(f"⚠️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        return
+
+    _ensure_output_dir()
     plt.figure(figsize=(12, 8))
     
     for params in param_sets:
         sir = SIRDynamics(G, beta=params['beta'], gamma=params['gamma'], initial_infected=0.1)
-        sir.set_seed(42)
+        sir.set_seed(DEFAULT_SEED)
         results = sir.run(steps=50)
         
         prevalence = results.get_measure("prevalence")
@@ -189,17 +202,21 @@ def run_comparison_with_different_parameters():
     plt.grid(alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('/tmp/sir_parameter_comparison.png', dpi=150, bbox_inches='tight')
-    print(f"✓ Comparison plot saved to /tmp/sir_parameter_comparison.png")
+    filepath = OUTPUT_DIR / "sir_parameter_comparison.png"
+    plt.savefig(filepath, dpi=150, bbox_inches="tight")
+    print(f"✓ Comparison plot saved to {filepath}")
 
 
-if __name__ == "__main__":
-    # Run main example
-    results = run_sir_example()
-    
-    # Run parameter comparison
+def main() -> int:
+    """Execute all SIR demonstrations."""
+    run_sir_example()
     run_comparison_with_different_parameters()
-    
+
     print("\n" + "=" * 70)
     print("Example complete!")
     print("=" * 70)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

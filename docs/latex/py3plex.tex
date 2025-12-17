@@ -71,7 +71,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Dec 16, 2025}
+\date{Dec 17, 2025}
 \release{1.0.2}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -4345,7 +4345,7 @@ Test the queries with:
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:query-code}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}basic\PYGZus{}exploration}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}basic\PYGZus{}exploration}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Summarize layers: node counts, edge counts, and average degree per layer.}
 \PYG{l+s+sd}{    }
 \PYG{l+s+sd}{    Refactored: single DSL query over all layers + pandas groupby, no explicit}
@@ -4531,7 +4531,7 @@ family
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id1}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}cross\PYGZus{}layer\PYGZus{}hubs}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{p}{:}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}cross\PYGZus{}layer\PYGZus{}hubs}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{,} \PYG{n}{k}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{=} \PYG{l+m+mi}{5}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Find nodes that are consistently central across multiple layers.}
 \PYG{l+s+sd}{    }
 \PYG{l+s+sd}{    Refactored: one DSL query across all layers + pandas grouping, no explicit}
@@ -4765,7 +4765,7 @@ Per\sphinxhyphen{}layer iteration and aggregation across layers
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id5}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}layer\PYGZus{}similarity}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}layer\PYGZus{}similarity}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Compute structural similarity between layers based on degree distributions.}
 \PYG{l+s+sd}{    }
 \PYG{l+s+sd}{    Refactored: single DSL query + pivot, no explicit loops over layers/nodes.}
@@ -4943,7 +4943,7 @@ Using computed attributes for layer\sphinxhyphen{}level comparisons
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id9}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}community\PYGZus{}structure}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}community\PYGZus{}structure}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Detect communities and analyze their distribution across layers.}
 \PYG{l+s+sd}{    }
 \PYG{l+s+sd}{    This query finds communities in the multilayer network and examines}
@@ -5160,7 +5160,7 @@ Identifying dominant layers via aggregation
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id13}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}multiplex\PYGZus{}pagerank}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}multiplex\PYGZus{}pagerank}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Approximate multiplex PageRank by aggregating layer\PYGZhy{}specific scores.}
 \PYG{l+s+sd}{    }
 \PYG{l+s+sd}{    NOTE: This is still a *simplified* multiplex PageRank approximation}
@@ -5403,7 +5403,7 @@ Combining degree and PageRank for richer analysis
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id17}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}robustness\PYGZus{}analysis}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}robustness\PYGZus{}analysis}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Evaluate network robustness by removing each layer and recomputing stats.}
 \PYG{l+s+sd}{    }
 \PYG{l+s+sd}{    This query demonstrates robustness analysis by simulating layer failure.}
@@ -5662,7 +5662,7 @@ Measuring connectivity metrics before/after perturbations
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id21}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}advanced\PYGZus{}centrality\PYGZus{}comparison}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}advanced\PYGZus{}centrality\PYGZus{}comparison}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Compare multiple centrality measures on the aggregated multilayer network.}
 \PYG{l+s+sd}{    }
 \PYG{l+s+sd}{    Refactored: multilayer\PYGZhy{}aware with L[\PYGZdq{}*\PYGZdq{}], no loops.}
@@ -5909,7 +5909,7 @@ Classification based on computed attributes
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id25}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}edge\PYGZus{}grouping\PYGZus{}and\PYGZus{}coverage}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{:}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}edge\PYGZus{}grouping\PYGZus{}and\PYGZus{}coverage}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{,} \PYG{n}{k}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{=} \PYG{l+m+mi}{3}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{Dict}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{]}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Analyze edges across layer pairs with grouping and coverage.}
 \PYG{l+s+sd}{    }
 \PYG{l+s+sd}{    This query demonstrates the powerful new edge grouping capabilities}

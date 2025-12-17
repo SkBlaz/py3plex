@@ -343,7 +343,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Compute basic statistics per layer using the DSL.</p>
 <section id="query-code">
 <h3><a class="toc-backref" href="#id31" role="doc-backlink">Query Code</a><a class="headerlink" href="#query-code" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Summarize layers: node counts, edge counts, and average degree per layer.</span>
 <span class="sd">    </span>
 <span class="sd">    Refactored: single DSL query over all layers + pandas groupby, no explicit</span>
@@ -464,7 +464,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Find top-k central nodes per layer, then identify which nodes appear in multiple layers’ top lists.</p>
 <section id="id1">
 <h3><a class="toc-backref" href="#id36" role="doc-backlink">Query Code</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find nodes that are consistently central across multiple layers.</span>
 <span class="sd">    </span>
 <span class="sd">    Refactored: one DSL query across all layers + pandas grouping, no explicit</span>
@@ -606,7 +606,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Compute degree distributions per layer and measure pairwise correlations.</p>
 <section id="id5">
 <h3><a class="toc-backref" href="#id41" role="doc-backlink">Query Code</a><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute structural similarity between layers based on degree distributions.</span>
 <span class="sd">    </span>
 <span class="sd">    Refactored: single DSL query + pivot, no explicit loops over layers/nodes.</span>
@@ -725,7 +725,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Detect communities using multilayer community detection, then analyze their distribution across layers.</p>
 <section id="id9">
 <h3><a class="toc-backref" href="#id46" role="doc-backlink">Query Code</a><a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_community_structure</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_community_structure</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect communities and analyze their distribution across layers.</span>
 <span class="sd">    </span>
 <span class="sd">    This query finds communities in the multilayer network and examines</span>
@@ -860,7 +860,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Compute PageRank per layer, then aggregate across layers. (Note: This is a simplified version; true multiplex PageRank uses supra-adjacency matrices.)</p>
 <section id="id13">
 <h3><a class="toc-backref" href="#id51" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Approximate multiplex PageRank by aggregating layer-specific scores.</span>
 <span class="sd">    </span>
 <span class="sd">    NOTE: This is still a *simplified* multiplex PageRank approximation</span>
@@ -1012,7 +1012,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Simulate removing each layer and measure connectivity loss.</p>
 <section id="id17">
 <h3><a class="toc-backref" href="#id56" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate network robustness by removing each layer and recomputing stats.</span>
 <span class="sd">    </span>
 <span class="sd">    This query demonstrates robustness analysis by simulating layer failure.</span>
@@ -1189,7 +1189,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Compute multiple centralities, normalize them, and classify nodes by how many centralities place them in the top tier.</p>
 <section id="id21">
 <h3><a class="toc-backref" href="#id61" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare multiple centrality measures on the aggregated multilayer network.</span>
 <span class="sd">    </span>
 <span class="sd">    Refactored: multilayer-aware with L[&quot;*&quot;], no loops.</span>
@@ -1350,7 +1350,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Use the new <code class="docutils literal notranslate"><span class="pre">.per_layer_pair()</span></code> method to group edges by (src_layer, dst_layer) pairs, then apply top-k and coverage filtering.</p>
 <section id="id25">
 <h3><a class="toc-backref" href="#id66" role="doc-backlink">Query Code</a><a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_edge_grouping_and_coverage</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_edge_grouping_and_coverage</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze edges across layer pairs with grouping and coverage.</span>
 <span class="sd">    </span>
 <span class="sd">    This query demonstrates the powerful new edge grouping capabilities</span>
