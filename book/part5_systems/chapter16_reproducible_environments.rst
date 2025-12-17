@@ -121,19 +121,19 @@ Lock exact package versions to ensure reproducibility:
 * Regenerate when dependencies change
 * Use separate files for development (``requirements-dev.txt``) and production
 
-**Example requirements.txt structure:**
+**Example requirements.txt structure (with exact pins):**
 
 .. code-block:: text
 
-    # Core dependencies
+    # Core dependencies (exact versions)
     py3plex==1.0.1
-    numpy>=1.22.0
-    scipy>=1.8.0
-    networkx>=2.8
+    numpy==1.24.3
+    scipy==1.10.1
+    networkx==3.1
     
     # Optional features
-    matplotlib>=3.5.0
-    pandas>=1.4.0
+    matplotlib==3.7.1
+    pandas==2.0.2
 
 Docker Containers (Overview)
 -----------------------------

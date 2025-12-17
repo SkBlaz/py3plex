@@ -93,7 +93,7 @@ Default settings that work well for most networks:
         edge_size=1.0,            # Normal edges
         alphalevel=0.13,          # Semi-transparent
         background_shape="circle",
-        networks_color="rainbow",
+        networks_color="colorblind_safe",
         display=True
     )
 
@@ -182,14 +182,14 @@ Hub nodes become larger, making them easy to identify.
 Color Assignment
 ~~~~~~~~~~~~~~~~
 
-Py3plex uses colorblind-safe palettes by default:
+Py3plex provides several color palette options:
 
 .. code-block:: python
 
-    # Automatic rainbow colors
+    # Automatic colors (uses default palette)
     draw_multilayer_default(
         network.get_layers(),
-        networks_color="rainbow"
+        networks_color="auto"
     )
     
     # Custom palette
@@ -200,9 +200,12 @@ Py3plex uses colorblind-safe palettes by default:
 
 **Available palettes** (from ``py3plex.config``):
 
-- ``colorblind_safe``: 8 colors safe for colorblind viewers
-- ``wong``: 7-color Wong palette (scientifically validated)
+- ``colorblind_safe``: 8 colors safe for colorblind viewers (default)
+- ``wong``: 7-color Wong palette [#wong2011]_ (optimized for color vision deficiency)
 - ``tol_bright``: 7 bright colors
+- ``rainbow``: Full spectrum colors (not recommended for accessibility)
+
+**Recommendation:** Use ``colorblind_safe`` or ``wong`` palettes for publications and presentations to ensure accessibility for all viewers, including those with color vision deficiency.
 
 Matrix Visualizations
 ---------------------
@@ -307,3 +310,8 @@ Key visualization capabilities in py3plex:
 Choose visualization settings based on your network size and purpose. For quick exploration, use defaults. For publications, use dense mode with custom colors and layouts.
 
 **Next chapter:** Core algorithms for multilayer analysis (community detection, centrality, dynamics)
+
+References
+----------
+
+.. [#wong2011] Wong, B. (2011). Points of view: Color blindness. *Nature Methods*, 8(6), 441. doi:10.1038/nmeth.1618

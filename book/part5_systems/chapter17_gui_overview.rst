@@ -210,7 +210,7 @@ Security Considerations
 * Multi-tenant environments
 * Sensitive data processing
 
-**For production deployment:** See Appendix B for authentication, reverse proxy, and security hardening.
+**If you must deploy beyond localhost:** The GUI requires significant security hardening. See Appendix B for technical details on authentication, TLS, and reverse proxy configuration. However, note that even with these measures, the GUI is not designed as a production-grade web service and should only be deployed in controlled, trusted environments.
 
 Scalability Limits
 ~~~~~~~~~~~~~~~~~~
