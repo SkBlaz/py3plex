@@ -24,16 +24,16 @@ The SIS model tracks disease spread with possible reinfection:
 * **States:** S (susceptible), I (infected)
 * **Update rules:**
   
-  * S → I with probability λᵢ = 1 - ∏ⱼ (1 - β)^(Aᵢⱼ · Iⱼ)
-  * I → S with probability μ
+  * S → I with infection probability λ_i = 1 - ∏_j (1 - β)^(A_ij · I_j)
+  * I → S with recovery probability μ
 
 * **Parameters:**
   
-  * β: transmission probability per contact (0 ≤ β ≤ 1)
-  * μ: recovery probability per time step (0 ≤ μ ≤ 1)
+  * β (beta): transmission probability per contact (0 ≤ β ≤ 1)
+  * μ (mu): recovery probability per time step (0 ≤ μ ≤ 1)
 
-The SIS model exhibits endemic equilibria when R₀ = β/μ · λ₁(A) > 1, where
-λ₁(A) is the largest eigenvalue of the adjacency matrix.
+The SIS model exhibits endemic equilibria when R_0 = (β/μ) · λ_1(A) > 1, where
+λ_1(A) is the largest eigenvalue of the adjacency matrix.
 
 **SIR Model (Susceptible-Infected-Recovered)**
 
@@ -42,16 +42,16 @@ The SIR model includes permanent immunity after recovery:
 * **States:** S (susceptible), I (infected), R (recovered/removed)
 * **Update rules:**
   
-  * S → I with probability λᵢ = 1 - ∏ⱼ (1 - β)^(Aᵢⱼ · Iⱼ)
-  * I → R with probability γ
+  * S → I with infection probability λ_i = 1 - ∏_j (1 - β)^(A_ij · I_j)
+  * I → R with recovery probability γ
 
 * **Parameters:**
   
-  * β: transmission probability per contact
-  * γ: recovery probability per time step
+  * β (beta): transmission probability per contact (0 ≤ β ≤ 1)
+  * γ (gamma): recovery probability per time step (0 ≤ γ ≤ 1)
 
 The final outbreak size (attack rate) depends on the basic reproduction number
-R₀ = β/γ · ⟨k⟩, where ⟨k⟩ is the mean degree.
+R_0 = (β/γ) · ⟨k⟩, where ⟨k⟩ is the mean degree.
 
 **Random Walk**
 
@@ -62,7 +62,8 @@ Random walk dynamics model diffusion processes:
   at i with probability p_lazy (for lazy walks)
 * **Parameters:**
   
-  * teleport: probability of random teleportation (default: 0.05)
+  * p_teleport: probability of random teleportation (default: 0.05)
+  * p_lazy: probability of staying at current node (default: 0.0)
 
 Basic Dynamics DSL Usage
 ~~~~~~~~~~~~~~~~~~~~~~~~~

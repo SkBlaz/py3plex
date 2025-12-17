@@ -87,12 +87,12 @@ GUI Deployment
           context: .
           dockerfile: gui/Dockerfile
         ports:
-          - "5000:5000"
+          - "8000:8000"
         volumes:
           - ./data:/app/data
           - ./uploads:/app/uploads
         environment:
-          - FLASK_ENV=production
+          - ENV=production
           - SECRET_KEY=${SECRET_KEY}
         restart: unless-stopped
       
@@ -126,11 +126,18 @@ Running with Docker Compose
     # Rebuild after changes
     docker compose up -d --build
 
-Production Deployment
----------------------
+Controlled Environment Deployment
+----------------------------------
 
-Security Hardening
-~~~~~~~~~~~~~~~~~~
+.. warning::
+   
+   The GUI is experimental and not designed for public internet deployment.
+   These configurations are provided for deployment in controlled, trusted
+   environments (e.g., internal lab networks, behind VPN). They improve
+   security but do not make the GUI suitable for untrusted public access.
+
+Security Hardening (Trusted Networks Only)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **1. Use environment variables for secrets:**
 

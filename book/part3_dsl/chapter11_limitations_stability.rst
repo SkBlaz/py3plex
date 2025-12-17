@@ -38,8 +38,6 @@ Roadmap items (briefly mentioned, not detailed):
 * **Graph pattern matching** — Motif detection DSL
 * **Temporal queries** — Time-aware filtering
 
-[Keep this section SHORT—no long speculative lists]
-
 Current Limitations
 -------------------
 
