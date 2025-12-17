@@ -22,36 +22,36 @@ Mathematical Formalism
 The SIS model tracks disease spread with possible reinfection:
 
 * **States:** S (susceptible), I (infected)
-* **Update rules:**
+* **Update rules** (discrete time, node i):
   
-  * S → I with infection probability λ_i = 1 - ∏_j (1 - β)^(A_ij · I_j)
-  * I → S with recovery probability μ
+  * :math:`P(S_i \to I_i) = 1 - (1 - \beta)^{\sum_j A_{ij} I_j(t)}`
+  * :math:`P(I_i \to S_i) = \gamma`
 
 * **Parameters:**
   
-  * β (beta): transmission probability per contact (0 ≤ β ≤ 1)
-  * μ (mu): recovery probability per time step (0 ≤ μ ≤ 1)
+  * :math:`\beta \in (0, 1)`: transmission probability per contact
+  * :math:`\gamma \in (0, 1)`: recovery probability per time step (also denoted :math:`\mu`)
 
-The SIS model exhibits endemic equilibria when R_0 = (β/μ) · λ_1(A) > 1, where
-λ_1(A) is the largest eigenvalue of the adjacency matrix.
+* **Epidemic threshold:**
+  
+  * :math:`R_0 = \frac{\beta}{\gamma} \lambda_{\max}(A)` where :math:`\lambda_{\max}(A)` is the largest eigenvalue of the adjacency matrix. Endemic equilibria exist when :math:`R_0 > 1`.
 
 **SIR Model (Susceptible-Infected-Recovered)**
 
 The SIR model includes permanent immunity after recovery:
 
 * **States:** S (susceptible), I (infected), R (recovered/removed)
-* **Update rules:**
+* **Update rules** (discrete time, node i):
   
-  * S → I with infection probability λ_i = 1 - ∏_j (1 - β)^(A_ij · I_j)
-  * I → R with recovery probability γ
+  * :math:`P(S_i \to I_i) = 1 - (1 - \beta)^{\sum_j A_{ij} I_j(t)}`
+  * :math:`P(I_i \to R_i) = \gamma`
 
 * **Parameters:**
   
-  * β (beta): transmission probability per contact (0 ≤ β ≤ 1)
-  * γ (gamma): recovery probability per time step (0 ≤ γ ≤ 1)
+  * :math:`\beta \in (0, 1)`: transmission probability per contact
+  * :math:`\gamma \in (0, 1)`: recovery probability per time step
 
-The final outbreak size (attack rate) depends on the basic reproduction number
-R_0 = (β/γ) · ⟨k⟩, where ⟨k⟩ is the mean degree.
+The final outbreak size (attack rate) depends on the basic reproduction number :math:`R_0 = \frac{\beta}{\gamma} \langle k \rangle`, where :math:`\langle k \rangle` is the mean degree. Epidemic threshold at :math:`R_0 = 1`.
 
 **Random Walk**
 
@@ -290,9 +290,7 @@ The ``SimulationResult`` object provides rich analysis capabilities:
 .. admonition:: Status: Dynamics DSL
    :class: note
 
-   The dynamics DSL API shown above is **experimental**. The core dynamics classes
-   (``SIRDynamics``, ``SISDynamics``, ``RandomWalkDynamics``) are stable and production-ready.
-   The builder API (``D.process()``) is under active development.
+   The builder API (``D.process()``) is under active development and may change in future releases. The core dynamics classes (``SIRDynamics``, ``SISDynamics``, ``RandomWalkDynamics``) are stable and production-ready.
 
 Complex Query Patterns
 -----------------------

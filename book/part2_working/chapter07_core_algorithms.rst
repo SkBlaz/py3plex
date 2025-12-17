@@ -294,9 +294,9 @@ Simulate disease spread and information diffusion with SIR and SIS models:
 
 **Key parameters:**
 
-- **beta (β)**: Transmission rate (infection probability per contact)
-- **gamma (γ)**: Recovery rate (recovery probability per time step)
-- **R₀ = β/γ × ⟨k⟩**: Basic reproduction number (epidemic threshold at R₀=1)
+- :math:`\beta \in (0, 1)`: Transmission probability per contact (infection probability per contact)
+- :math:`\gamma \in (0, 1)`: Recovery probability per time step
+- :math:`R_0 = \frac{\beta}{\gamma} \langle k \rangle`: Basic reproduction number for homogeneous networks, with epidemic threshold at :math:`R_0 = 1`
 
 **Models:**
 
