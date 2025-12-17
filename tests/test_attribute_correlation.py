@@ -146,3 +146,19 @@ class TestAttributeCorrelation:
             net, 'weight', by_layer=False
         )
         assert isinstance(result2, dict)
+
+    def test_correlate_insufficient_nodes(self):
+        """Test with insufficient nodes for correlation."""
+        net = multinet.multi_layer_network(directed=False)
+        net.add_nodes([
+            {'source': 'A', 'type': 'layer1'},
+        ])
+        
+        if net.core_network:
+            nx.set_node_attributes(net.core_network, {'A': 1.0}, 'weight')
+        
+        # Should handle gracefully
+        result = correlate_attributes_with_centrality(
+            net, 'weight', by_layer=False
+        )
+        assert isinstance(result, dict)
