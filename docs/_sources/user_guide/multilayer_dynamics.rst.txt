@@ -76,8 +76,8 @@ The **SIR model** simulates epidemic spread where infected individuals recover w
 
 **Parameters:**
 
-- ``beta`` (β) — Transmission rate (probability per contact per time step)
-- ``gamma`` (γ) — Recovery rate (probability of recovery per time step)
+- ``beta`` (:math:`\beta \in (0, 1)`) — Transmission probability per contact per time step
+- ``gamma`` (:math:`\gamma \in (0, 1)`) — Recovery probability per time step
 - ``initial_infected`` — Fraction or number of initially infected nodes
 
 Basic Example
@@ -183,17 +183,17 @@ The multilayer structure allows faster spread through the digital layer while ma
 Understanding SIR Parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The **basic reproduction number** R₀ determines epidemic outcome:
+The **basic reproduction number** :math:`R_0` determines epidemic outcome:
 
 .. math::
 
-    R_0 = \\frac{\\beta}{\\gamma} \\times \\langle k \\rangle
+    R_0 = \frac{\beta}{\gamma} \langle k \rangle
 
-where :math:`\\langle k \\rangle` is the average degree.
+where :math:`\langle k \rangle` is the average degree.
 
 - **R₀ > 1**: Epidemic spreads (each infected person infects >1 others on average)
 - **R₀ < 1**: Epidemic dies out quickly
-- **R₀ ≈ 1**: Epidemic threshold — critical point
+- **R₀ = 1**: Epidemic threshold — critical point
 
 **Parameter Effects:**
 
@@ -250,8 +250,8 @@ The **SIS model** simulates diseases without lasting immunity — individuals re
 
 **Parameters:**
 
-- ``beta`` (β) — Transmission rate
-- ``gamma`` (γ) — Recovery rate  
+- ``beta`` (:math:`\beta \in (0, 1)`) — Transmission probability per contact
+- ``gamma`` (:math:`\gamma \in (0, 1)`) — Recovery probability per time step (also denoted ``mu`` for SIS)
 - ``initial_infected`` — Fraction or number initially infected
 
 Basic Example

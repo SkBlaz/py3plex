@@ -126,14 +126,14 @@ The **SIR (Susceptible-Infected-Recovered)** model describes epidemic spread wit
 
 **Discrete-Time Update Rules** (synchronous):
 
-1. **Recovery**: Each infected node recovers (I → R) with probability γ per time step
+1. **Recovery**: Each infected node recovers (I → R) with probability :math:`\gamma \in (0, 1)` per time step
 2. **Infection**: Each susceptible node with k infected neighbors becomes infected (S → I) with probability
 
    .. math::
 
       p_{\text{infect}} = 1 - (1 - \beta)^k
 
-   where β is the per-contact infection probability
+   where :math:`\beta \in (0, 1)` is the per-contact infection probability
 
 3. **Absorption**: Recovered nodes remain recovered (R → R) forever
 
@@ -257,12 +257,14 @@ The **SIS (Susceptible-Infected-Susceptible)** model describes epidemics **witho
 
 **Discrete-Time Update Rules** (synchronous):
 
-1. **Recovery**: Each infected node recovers (I → S) with probability γ (or μ) per time step
+1. **Recovery**: Each infected node recovers (I → S) with probability :math:`\gamma` (or :math:`\mu`) per time step
 2. **Infection**: Each susceptible node with k infected neighbors becomes infected (S → I) with probability
 
    .. math::
 
       p_{\text{infect}} = 1 - (1 - \beta)^k
+
+   where :math:`\beta \in (0, 1)` is the transmission probability per contact
 
 3. **No absorption**: Recovered nodes immediately return to susceptible state, allowing reinfection
 

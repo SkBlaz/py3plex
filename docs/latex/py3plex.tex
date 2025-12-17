@@ -10105,7 +10105,7 @@ The \sphinxstylestrong{SIR (Susceptible\sphinxhyphen{}Infected\sphinxhyphen{}Rec
 \sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Recovery}: Each infected node recovers (I \(\rightarrow\) R) with probability γ per time step
+\sphinxstylestrong{Recovery}: Each infected node recovers (I \(\rightarrow\) R) with probability \(\gamma \in (0, 1)\) per time step
 
 \item {} 
 \sphinxAtStartPar
@@ -10114,7 +10114,7 @@ The \sphinxstylestrong{SIR (Susceptible\sphinxhyphen{}Infected\sphinxhyphen{}Rec
 \begin{split}p_{\text{infect}} = 1 - (1 - \beta)^k\end{split}
 \end{equation*}
 \sphinxAtStartPar
-where β is the per\sphinxhyphen{}contact infection probability
+where \(\beta \in (0, 1)\) is the per\sphinxhyphen{}contact infection probability
 
 \item {} 
 \sphinxAtStartPar
@@ -10268,7 +10268,7 @@ The \sphinxstylestrong{SIS (Susceptible\sphinxhyphen{}Infected\sphinxhyphen{}Sus
 \sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Recovery}: Each infected node recovers (I \(\rightarrow\) S) with probability γ (or μ) per time step
+\sphinxstylestrong{Recovery}: Each infected node recovers (I \(\rightarrow\) S) with probability \(\gamma\) (or \(\mu\)) per time step
 
 \item {} 
 \sphinxAtStartPar
@@ -10276,6 +10276,9 @@ The \sphinxstylestrong{SIS (Susceptible\sphinxhyphen{}Infected\sphinxhyphen{}Sus
 \begin{equation*}
 \begin{split}p_{\text{infect}} = 1 - (1 - \beta)^k\end{split}
 \end{equation*}
+\sphinxAtStartPar
+where \(\beta \in (0, 1)\) is the transmission probability per contact
+
 \item {} 
 \sphinxAtStartPar
 \sphinxstylestrong{No absorption}: Recovered nodes immediately return to susceptible state, allowing reinfection

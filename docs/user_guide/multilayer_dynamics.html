@@ -211,8 +211,8 @@
 </ul>
 <p><strong>Parameters:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">beta</span></code> (β) — Transmission rate (probability per contact per time step)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code> (γ) — Recovery rate (probability of recovery per time step)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beta</span></code> (<span class="math notranslate nohighlight">\(\beta \in (0, 1)\)</span>) — Transmission probability per contact per time step</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code> (<span class="math notranslate nohighlight">\(\gamma \in (0, 1)\)</span>) — Recovery probability per time step</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">initial_infected</span></code> — Fraction or number of initially infected nodes</p></li>
 </ul>
 <section id="basic-example">
@@ -308,14 +308,14 @@ Attack rate: 55.00%
 </section>
 <section id="understanding-sir-parameters">
 <h3>Understanding SIR Parameters<a class="headerlink" href="#understanding-sir-parameters" title="Link to this heading"></a></h3>
-<p>The <strong>basic reproduction number</strong> R₀ determines epidemic outcome:</p>
+<p>The <strong>basic reproduction number</strong> <span class="math notranslate nohighlight">\(R_0\)</span> determines epidemic outcome:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}R_0 = \\frac{\\beta}{\\gamma} \\times \\langle k \\rangle\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\\langle k \\rangle\)</span> is the average degree.</p>
+\[R_0 = \frac{\beta}{\gamma} \langle k \rangle\]</div>
+<p>where <span class="math notranslate nohighlight">\(\langle k \rangle\)</span> is the average degree.</p>
 <ul class="simple">
 <li><p><strong>R₀ &gt; 1</strong>: Epidemic spreads (each infected person infects &gt;1 others on average)</p></li>
 <li><p><strong>R₀ &lt; 1</strong>: Epidemic dies out quickly</p></li>
-<li><p><strong>R₀ ≈ 1</strong>: Epidemic threshold — critical point</p></li>
+<li><p><strong>R₀ = 1</strong>: Epidemic threshold — critical point</p></li>
 </ul>
 <p><strong>Parameter Effects:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare different parameters</span>
@@ -368,8 +368,8 @@ Attack rate: 55.00%
 <p><strong>No recovered state</strong> — recovered individuals return to susceptible.</p>
 <p><strong>Parameters:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">beta</span></code> (β) — Transmission rate</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code> (γ) — Recovery rate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beta</span></code> (<span class="math notranslate nohighlight">\(\beta \in (0, 1)\)</span>) — Transmission probability per contact</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code> (<span class="math notranslate nohighlight">\(\gamma \in (0, 1)\)</span>) — Recovery probability per time step (also denoted <code class="docutils literal notranslate"><span class="pre">mu</span></code> for SIS)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">initial_infected</span></code> — Fraction or number initially infected</p></li>
 </ul>
 <section id="id1">

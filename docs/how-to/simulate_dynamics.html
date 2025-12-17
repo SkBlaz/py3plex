@@ -320,11 +320,11 @@
 </ul>
 <p><strong>Discrete-Time Update Rules</strong> (synchronous):</p>
 <ol class="arabic">
-<li><p><strong>Recovery</strong>: Each infected node recovers (I → R) with probability γ per time step</p></li>
+<li><p><strong>Recovery</strong>: Each infected node recovers (I → R) with probability <span class="math notranslate nohighlight">\(\gamma \in (0, 1)\)</span> per time step</p></li>
 <li><p><strong>Infection</strong>: Each susceptible node with k infected neighbors becomes infected (S → I) with probability</p>
 <div class="math notranslate nohighlight">
 \[p_{\text{infect}} = 1 - (1 - \beta)^k\]</div>
-<p>where β is the per-contact infection probability</p>
+<p>where <span class="math notranslate nohighlight">\(\beta \in (0, 1)\)</span> is the per-contact infection probability</p>
 </li>
 <li><p><strong>Absorption</strong>: Recovered nodes remain recovered (R → R) forever</p></li>
 </ol>
@@ -439,10 +439,11 @@ Attack rate: 100.00%
 </ul>
 <p><strong>Discrete-Time Update Rules</strong> (synchronous):</p>
 <ol class="arabic">
-<li><p><strong>Recovery</strong>: Each infected node recovers (I → S) with probability γ (or μ) per time step</p></li>
+<li><p><strong>Recovery</strong>: Each infected node recovers (I → S) with probability <span class="math notranslate nohighlight">\(\gamma\)</span> (or <span class="math notranslate nohighlight">\(\mu\)</span>) per time step</p></li>
 <li><p><strong>Infection</strong>: Each susceptible node with k infected neighbors becomes infected (S → I) with probability</p>
 <div class="math notranslate nohighlight">
 \[p_{\text{infect}} = 1 - (1 - \beta)^k\]</div>
+<p>where <span class="math notranslate nohighlight">\(\beta \in (0, 1)\)</span> is the transmission probability per contact</p>
 </li>
 <li><p><strong>No absorption</strong>: Recovered nodes immediately return to susceptible state, allowing reinfection</p></li>
 </ol>
