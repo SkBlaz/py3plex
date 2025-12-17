@@ -4,9 +4,10 @@ Tests for py3plex.algorithms.statistical_report module.
 This module tests statistical report generation for networks.
 """
 
+import json
+import os
 import pytest
 import tempfile
-import os
 from py3plex.core import multinet
 from py3plex.algorithms.statistical_report import (
     generate_statistical_report,
@@ -69,7 +70,6 @@ class TestStatisticalReport:
         
         assert isinstance(report, str)
         # Should be valid JSON
-        import json
         data = json.loads(report)
         assert isinstance(data, dict)
 
@@ -194,7 +194,6 @@ class TestStatisticalReport:
         )
         
         assert isinstance(report, str)
-        import json
         data = json.loads(report)
         # Should have at least some sections
         assert isinstance(data, dict)

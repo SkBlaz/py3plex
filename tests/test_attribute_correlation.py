@@ -106,7 +106,17 @@ class TestAttributeCorrelation:
         ])
         
         if net.core_network:
-            nx.set_node_attributes(net.core_network, {'A': 1.0, 'B': 2.0, 'C': 1.5}, 'weight')
+            # Use actual node identifiers from core_network
+            node_attrs = {}
+            for node in net.core_network.nodes():
+                # Assign weight based on node identity
+                if 'A' in str(node):
+                    node_attrs[node] = 1.0
+                elif 'B' in str(node):
+                    node_attrs[node] = 2.0
+                elif 'C' in str(node):
+                    node_attrs[node] = 1.5
+            nx.set_node_attributes(net.core_network, node_attrs, 'weight')
         
         # Test pearson
         result1 = correlate_attributes_with_centrality(
@@ -133,7 +143,15 @@ class TestAttributeCorrelation:
         ])
         
         if net.core_network:
-            nx.set_node_attributes(net.core_network, {'A': 1.0, 'B': 2.0}, 'weight')
+            # Use actual node identifiers from core_network
+            node_attrs = {}
+            for node in net.core_network.nodes():
+                # Assign weight based on node identity
+                if 'A' in str(node):
+                    node_attrs[node] = 1.0
+                elif 'B' in str(node):
+                    node_attrs[node] = 2.0
+            nx.set_node_attributes(net.core_network, node_attrs, 'weight')
         
         # Test with by_layer=True
         result1 = correlate_attributes_with_centrality(
@@ -155,7 +173,12 @@ class TestAttributeCorrelation:
         ])
         
         if net.core_network:
-            nx.set_node_attributes(net.core_network, {'A': 1.0}, 'weight')
+            # Use actual node identifiers from core_network
+            node_attrs = {}
+            for node in net.core_network.nodes():
+                if 'A' in str(node):
+                    node_attrs[node] = 1.0
+            nx.set_node_attributes(net.core_network, node_attrs, 'weight')
         
         # Should handle gracefully
         result = correlate_attributes_with_centrality(
