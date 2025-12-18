@@ -268,8 +268,8 @@ def test_add_mpx_edges_connects_corresponding_nodes(num_nodes, num_layers):
     # Add multiplex edges
     G = add_mpx_edges(G)
     
-    # Count multiplex edges (edges marked with type='mpx')
-    mpx_edges = [(u, v) for u, v, data in G.edges(data=True) if data.get('type') == 'mpx']
+    # Count multiplex edges (edges marked with type='coupling')
+    mpx_edges = [(u, v) for u, v, data in G.edges(data=True) if data.get('type') == 'coupling']
     
     # Should have edges connecting corresponding nodes
     # For n nodes across L layers, we expect n * C(L, 2) multiplex edges
@@ -298,7 +298,7 @@ def test_add_mpx_edges_only_between_layers(num_nodes, num_layers):
     G = add_mpx_edges(G)
     
     # Check all multiplex edges connect different layers
-    mpx_edges = [(u, v) for u, v, data in G.edges(data=True) if data.get('type') == 'mpx']
+    mpx_edges = [(u, v) for u, v, data in G.edges(data=True) if data.get('type') == 'coupling']
     
     for u, v in mpx_edges:
         assert u[1] != v[1], \
@@ -323,7 +323,7 @@ def test_add_mpx_edges_connects_same_node_ids(num_nodes, num_layers):
     G = add_mpx_edges(G)
     
     # Check all multiplex edges connect same node IDs
-    mpx_edges = [(u, v) for u, v, data in G.edges(data=True) if data.get('type') == 'mpx']
+    mpx_edges = [(u, v) for u, v, data in G.edges(data=True) if data.get('type') == 'coupling']
     
     for u, v in mpx_edges:
         assert u[0] == v[0], \
@@ -381,7 +381,7 @@ def test_add_mpx_edges_partial_overlap(num_shared, num_unique1, num_unique2):
     G = add_mpx_edges(G)
     
     # Count multiplex edges
-    mpx_edges = [(u, v) for u, v, data in G.edges(data=True) if data.get('type') == 'mpx']
+    mpx_edges = [(u, v) for u, v, data in G.edges(data=True) if data.get('type') == 'coupling']
     
     # Should only have multiplex edges for shared nodes
     assert len(mpx_edges) == num_shared, \
