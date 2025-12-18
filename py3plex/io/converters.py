@@ -93,7 +93,7 @@ def to_networkx(
             return (src, dst)
         # For undirected graphs, normalize the signature to avoid losing edges when
         # the same undirected edge is represented as (u, v) vs (v, u).
-        return tuple(sorted((src, dst), key=lambda x: str(x)))
+        return tuple(sorted((src, dst), key=str))
 
     if mode == "union":
         # Merge all layers - use only node IDs
