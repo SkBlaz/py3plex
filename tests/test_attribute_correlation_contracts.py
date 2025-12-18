@@ -135,8 +135,8 @@ def test_multilayer_assortativity_returns_per_layer_coefficients():
 
 
 def test_property_degree_attribute_always_correlates_with_degree_when_nonconstant():
-    scipy = pytest.importorskip("scipy")
-    hypothesis = pytest.importorskip("hypothesis")
+    pytest.importorskip("scipy")
+    pytest.importorskip("hypothesis")
     from hypothesis import given, strategies as st, assume
 
     @given(
