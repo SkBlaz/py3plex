@@ -79,6 +79,8 @@ def _find_node_by_name(G: nx.Graph, name: str) -> Optional[Any]:
     Returns:
         First matching node tuple, or None if not found
     """
+    if name in G:
+        return name
     for node in G.nodes():
         if isinstance(node, tuple) and len(node) >= 2:
             if str(node[0]) == str(name):
@@ -98,6 +100,8 @@ def _find_all_nodes_by_name(G: nx.Graph, name: str) -> List[Any]:
     Returns:
         List of matching node tuples
     """
+    if isinstance(name, tuple) and name in G:
+        return [name]
     matches = []
     for node in G.nodes():
         if isinstance(node, tuple) and len(node) >= 2:
@@ -106,6 +110,42 @@ def _find_all_nodes_by_name(G: nx.Graph, name: str) -> List[Any]:
         elif str(node) == str(name):
             matches.append(node)
     return matches
+
+
+def _filtered_graph(
+    G: nx.Graph,
+    layers: Optional[List[str]] = None,
+    cross_layer: bool = True,
+) -> nx.Graph:
+    """Return a graph filtered by layer and cross-layer constraints."""
+    if G is None:
+        return G
+
+    if layers:
+        allowed_nodes = [
+            n
+            for n in G.nodes()
+            if not (isinstance(n, tuple) and len(n) >= 2) or n[1] in layers
+        ]
+        H = G.subgraph(allowed_nodes).copy()
+    else:
+        H = G.copy()
+
+    if not cross_layer:
+        edges_to_remove = []
+        for u, v in H.edges():
+            if (
+                isinstance(u, tuple)
+                and isinstance(v, tuple)
+                and len(u) >= 2
+                and len(v) >= 2
+                and u[1] != v[1]
+            ):
+                edges_to_remove.append((u, v))
+        if edges_to_remove:
+            H.remove_edges_from(edges_to_remove)
+
+    return H
 
 
 @path_registry.register("shortest",
@@ -132,6 +172,7 @@ def shortest_path(
         Dictionary with paths and metadata
     """
     G = network.core_network if hasattr(network, 'core_network') else network
+    G = _filtered_graph(G, layers=layers, cross_layer=cross_layer)
     
     if G is None or len(G.nodes()) == 0:
         return {"paths": [], "error": "Empty network"}
@@ -144,11 +185,6 @@ def shortest_path(
         return {"paths": [], "error": f"Source node '{source}' not found"}
     if not target_nodes:
         return {"paths": [], "error": f"Target node '{target}' not found"}
-    
-    # Filter by layers if specified
-    if layers:
-        source_nodes = [n for n in source_nodes if isinstance(n, tuple) and n[1] in layers]
-        target_nodes = [n for n in target_nodes if isinstance(n, tuple) and n[1] in layers]
     
     # Find shortest paths from all source nodes to all target nodes
     paths = []
@@ -198,6 +234,7 @@ def all_paths(
         Dictionary with paths
     """
     G = network.core_network if hasattr(network, 'core_network') else network
+    G = _filtered_graph(G, layers=layers, cross_layer=cross_layer)
     
     if G is None or len(G.nodes()) == 0:
         return {"paths": []}
@@ -208,11 +245,6 @@ def all_paths(
     
     if not source_nodes or not target_nodes:
         return {"paths": []}
-    
-    # Filter by layers if specified
-    if layers:
-        source_nodes = [n for n in source_nodes if isinstance(n, tuple) and n[1] in layers]
-        target_nodes = [n for n in target_nodes if isinstance(n, tuple) and n[1] in layers]
     
     # Set default max length if not specified
     if max_length is None:
@@ -269,6 +301,7 @@ def random_walk(
         random.seed(seed)
     
     G = network.core_network if hasattr(network, 'core_network') else network
+    G = _filtered_graph(G, layers=layers, cross_layer=cross_layer)
     
     if G is None or len(G.nodes()) == 0:
         return {"visit_frequency": {}, "paths": []}
@@ -277,9 +310,6 @@ def random_walk(
     source_nodes = _find_all_nodes_by_name(G, source)
     if not source_nodes:
         return {"visit_frequency": {}, "error": f"Source '{source}' not found"}
-    
-    if layers:
-        source_nodes = [n for n in source_nodes if isinstance(n, tuple) and n[1] in layers]
     
     if not source_nodes:
         return {"visit_frequency": {}}
@@ -300,13 +330,6 @@ def random_walk(
         
         # Get neighbors
         neighbors = list(G.neighbors(current))
-        
-        # Filter by layers if not allowing cross-layer
-        if not cross_layer and layers:
-            neighbors = [
-                n for n in neighbors
-                if isinstance(n, tuple) and n[1] in layers
-            ]
         
         if not neighbors:
             # Restart at source if stuck
@@ -353,6 +376,7 @@ def multilayer_flow(
         Dictionary with flow_value and flow_values per edge
     """
     G = network.core_network if hasattr(network, 'core_network') else network
+    G = _filtered_graph(G, layers=layers, cross_layer=True)
     
     if G is None or len(G.nodes()) == 0:
         return {"flow_value": 0, "flow_values": {}}
@@ -360,14 +384,6 @@ def multilayer_flow(
     # Find source and target nodes
     source_nodes = _find_all_nodes_by_name(G, source)
     target_nodes = _find_all_nodes_by_name(G, target)
-    
-    if not source_nodes or not target_nodes:
-        return {"flow_value": 0, "flow_values": {}}
-    
-    # Filter by layers if specified
-    if layers:
-        source_nodes = [n for n in source_nodes if isinstance(n, tuple) and n[1] in layers]
-        target_nodes = [n for n in target_nodes if isinstance(n, tuple) and n[1] in layers]
     
     if not source_nodes or not target_nodes:
         return {"flow_value": 0, "flow_values": {}}

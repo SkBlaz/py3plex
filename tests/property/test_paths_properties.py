@@ -7,6 +7,7 @@ using hypothesis for property-based testing.
 import pytest
 from hypothesis import given, strategies as st, assume, settings
 import random
+import networkx as nx
 
 from py3plex.core import multinet
 from py3plex.paths import (
@@ -84,6 +85,90 @@ class TestShortestPathProperties:
         
         assert isinstance(result, dict)
         assert "paths" in result
+
+    @given(
+        n=st.integers(min_value=2, max_value=4),
+        edge_indices=st.data(),
+        cross_layer=st.booleans(),
+        restrict_to_source_layer=st.booleans(),
+    )
+    @settings(max_examples=25, deadline=None)
+    def test_shortest_path_respects_layer_and_cross_layer_constraints(
+        self,
+        n: int,
+        edge_indices,
+        cross_layer: bool,
+        restrict_to_source_layer: bool,
+    ):
+        """Returned paths must stay within requested layers and cross-layer constraints."""
+        layers = ["L1", "L2"]
+        nodes = [(f"n{i}", layer) for i in range(n) for layer in layers]
+        m = len(nodes)
+        assume(m >= 2)
+
+        max_edges = m * (m - 1) // 2
+        indices = edge_indices.draw(
+            st.sets(st.integers(min_value=0, max_value=max_edges - 1))
+        )
+
+        def index_to_pair(index: int):
+            pairs = []
+            for i in range(m):
+                for j in range(i + 1, m):
+                    pairs.append((i, j))
+            return pairs[index]
+
+        G = nx.Graph()
+        G.add_nodes_from(nodes)
+        for idx in indices:
+            i, j = index_to_pair(idx)
+            G.add_edge(nodes[i], nodes[j])
+
+        src_idx = edge_indices.draw(st.integers(min_value=0, max_value=m - 1))
+        tgt_idx = edge_indices.draw(st.integers(min_value=0, max_value=m - 1))
+        assume(src_idx != tgt_idx)
+
+        src = nodes[src_idx]
+        tgt = nodes[tgt_idx]
+
+        allowed_layers = None
+        if restrict_to_source_layer:
+            allowed_layers = [src[1]]
+
+        result = shortest_path(
+            G,
+            source=src,
+            target=tgt,
+            layers=allowed_layers,
+            cross_layer=cross_layer,
+        )
+
+        paths = result.get("paths", [])
+        if not paths:
+            return
+
+        # Build a reference filtered graph to validate constraints.
+        H = G.copy()
+        if allowed_layers:
+            allowed_nodes = [node for node in H.nodes if node[1] in allowed_layers]
+            H = H.subgraph(allowed_nodes).copy()
+        if not cross_layer:
+            H.remove_edges_from(
+                [
+                    (u, v)
+                    for u, v in list(H.edges())
+                    if u[1] != v[1]
+                ]
+            )
+
+        for path in paths:
+            assert path[0] == src
+            assert path[-1] == tgt
+            if allowed_layers:
+                assert all(node[1] in allowed_layers for node in path)
+            if not cross_layer:
+                assert all(u[1] == v[1] for u, v in zip(path, path[1:]))
+            assert all(H.has_edge(u, v) for u, v in zip(path, path[1:]))
 
 
 # ============================================================================

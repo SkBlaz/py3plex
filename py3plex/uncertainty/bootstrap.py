@@ -92,6 +92,9 @@ def bootstrap_metric(
     - For "layers" unit: resamples layers with replacement
     - The metric_fn must be able to handle graphs with different structure
     """
+    if n_boot <= 0:
+        raise ValueError("n_boot must be positive")
+
     rng = np.random.default_rng(random_state)
     
     # Compute original metric to get item IDs
@@ -147,7 +150,9 @@ def bootstrap_metric(
     
     # Compute statistics
     mean = np.mean(samples, axis=0)
-    std = np.std(samples, axis=0, ddof=1)  # Use sample std (n-1 denominator)
+    # For a single replicate, ddof=1 yields NaNs; treat as 0 variability.
+    ddof = 1 if n_boot > 1 else 0
+    std = np.std(samples, axis=0, ddof=ddof)
     
     # Compute confidence intervals using percentile method
     alpha = 1 - ci
@@ -296,7 +301,7 @@ def _resample_nodes(
             if isinstance(u, tuple) and isinstance(v, tuple):
                 source, source_layer = u
                 target, target_layer = v
-                if source in unique_nodes and target in unique_nodes:
+                if u in unique_nodes and v in unique_nodes:
                     weight = data.get('weight', 1.0)
                     edges.append([source, source_layer, target, target_layer, weight])
     

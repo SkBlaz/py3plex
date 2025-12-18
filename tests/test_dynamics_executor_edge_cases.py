@@ -107,3 +107,21 @@ def test_fractional_initial_infection_infects_at_least_one_node():
     # One infected out of five nodes -> prevalence 0.2
     assert result.data["prevalence"].shape == (1, 1)
     assert result.data["prevalence"][0, 0] == pytest.approx(0.2)
+
+
+def test_fractional_initial_infection_zero_keeps_all_susceptible():
+    """0.0 fraction should infect nobody (not force a 1-node infection)."""
+    net = _network_with_layered_nodes(n=3, layer="L")
+    stmt = SimulationStmt(
+        process_name="SIS",
+        steps=1,
+        measures=["prevalence"],
+        initial={"infected": InitialSpec(constant=0.0)},
+        params={"beta": 0.0, "mu": 0.0},
+        seed=0,
+    )
+
+    result = run_simulation(net, stmt)
+
+    assert result.data["prevalence"].shape == (1, 1)
+    assert result.data["prevalence"][0, 0] == pytest.approx(0.0)

@@ -241,8 +241,7 @@ def degree_correlation(
             tgt_id = target_node
 
         degrees_a[src_id] = degrees_a.get(src_id, 0) + 1
-        if src_id != tgt_id:
-            degrees_a[tgt_id] = degrees_a.get(tgt_id, 0) + 1
+        degrees_a[tgt_id] = degrees_a.get(tgt_id, 0) + 1
 
     # Compute degrees for network B
     degrees_b: Dict[Hashable, int] = {}
@@ -258,8 +257,7 @@ def degree_correlation(
             tgt_id = target_node
 
         degrees_b[src_id] = degrees_b.get(src_id, 0) + 1
-        if src_id != tgt_id:
-            degrees_b[tgt_id] = degrees_b.get(tgt_id, 0) + 1
+        degrees_b[tgt_id] = degrees_b.get(tgt_id, 0) + 1
 
     # Collect aligned degree pairs
     deg_pairs_a = []

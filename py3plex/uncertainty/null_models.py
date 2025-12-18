@@ -152,7 +152,9 @@ def null_model_metric(
     
     # Compute null statistics
     mean_null = np.mean(null_samples, axis=0)
-    std_null = np.std(null_samples, axis=0, ddof=1)
+    # For a single replicate, ddof=1 yields NaNs; treat as 0 variability.
+    ddof = 1 if n_null > 1 else 0
+    std_null = np.std(null_samples, axis=0, ddof=ddof)
     
     # Compute z-scores (handle zero std)
     with np.errstate(divide='ignore', invalid='ignore'):
@@ -301,56 +303,62 @@ def _generate_erdos_renyi_null(
     multi_layer_network
         Null model with random edges at same density.
     """
-    # Get nodes and layers
-    nodes = list(graph.get_nodes())
-    try:
-        layers_info = graph.get_layers()
-        if isinstance(layers_info, tuple) and len(layers_info) >= 1:
-            layer_names = layers_info[0]
+    # Build node sets per layer from existing node-layer identifiers.
+    nodes_by_layer: Dict[str, List[Any]] = {}
+    for node in graph.get_nodes():
+        if isinstance(node, tuple) and len(node) == 2:
+            node_id, layer = node
+            nodes_by_layer.setdefault(str(layer), []).append(node_id)
         else:
-            layer_names = ["default"]
-    except Exception:
-        layer_names = ["default"]
-    
-    n_nodes = len(nodes)
-    n_edges = len(list(graph.get_edges()))
-    
-    if n_nodes == 0 or n_edges == 0:
-        return multinet.multi_layer_network(
-            directed=graph.directed,
-            verbose=False
-        )
-    
-    # Calculate edge probability
-    # For undirected: max edges = n*(n-1)/2 per layer
-    # For directed: max edges = n*(n-1) per layer
-    if graph.directed:
-        max_edges_per_layer = n_nodes * (n_nodes - 1)
-    else:
-        max_edges_per_layer = n_nodes * (n_nodes - 1) // 2
-    
-    total_max_edges = max_edges_per_layer * len(layer_names)
-    p = n_edges / total_max_edges if total_max_edges > 0 else 0.5
-    
-    # Create null network
-    null_graph = multinet.multi_layer_network(
-        directed=graph.directed,
-        verbose=False
-    )
-    
-    # Generate random edges
+            nodes_by_layer.setdefault("default", []).append(node)
+
+    # Deduplicate node IDs per layer (preserve stable iteration order).
+    for layer, ids in list(nodes_by_layer.items()):
+        seen = set()
+        unique_ids = []
+        for node_id in ids:
+            if node_id in seen:
+                continue
+            seen.add(node_id)
+            unique_ids.append(node_id)
+        nodes_by_layer[layer] = unique_ids
+
+    # Compute density using intra-layer edges only (this null model generates intra-layer edges).
+    intra_edges = 0
+    for edge in graph.get_edges(data=False):
+        u, v = edge[:2]
+        if isinstance(u, tuple) and isinstance(v, tuple) and len(u) == 2 and len(v) == 2:
+            if u[1] == v[1]:
+                intra_edges += 1
+
+    total_max_edges = 0
+    for layer, ids in nodes_by_layer.items():
+        n = len(ids)
+        if graph.directed:
+            total_max_edges += n * (n - 1)
+        else:
+            total_max_edges += n * (n - 1) // 2
+
+    if total_max_edges <= 0:
+        return multinet.multi_layer_network(directed=graph.directed, verbose=False)
+
+    p = intra_edges / total_max_edges
+    p = float(np.clip(p, 0.0, 1.0))
+
+    null_graph = multinet.multi_layer_network(directed=graph.directed, verbose=False)
+
     edges = []
-    for layer in layer_names:
-        for i, u in enumerate(nodes):
+    for layer, ids in nodes_by_layer.items():
+        for i, u in enumerate(ids):
             start_j = i + 1 if not graph.directed else 0
-            for j in range(start_j, len(nodes)):
-                v = nodes[j]
+            for j in range(start_j, len(ids)):
+                v = ids[j]
                 if u != v and rng.random() < p:
                     edges.append([u, layer, v, layer, 1.0])
-    
+
     if edges:
         null_graph.add_edges(edges, input_type="list")
-    
+
     return null_graph
 
 
@@ -429,7 +437,15 @@ def _generate_configuration_null(
             if u < len(node_list) and v < len(node_list):
                 source = node_list[u]
                 target = node_list[v]
-                edges.append([source, default_layer, target, default_layer, 1.0])
+                if isinstance(source, tuple) and len(source) == 2:
+                    source_id, source_layer = source
+                else:
+                    source_id, source_layer = source, default_layer
+                if isinstance(target, tuple) and len(target) == 2:
+                    target_id, target_layer = target
+                else:
+                    target_id, target_layer = target, default_layer
+                edges.append([source_id, source_layer, target_id, target_layer, 1.0])
         
         if edges:
             null_graph.add_edges(edges, input_type="list")

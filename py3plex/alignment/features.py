@@ -80,6 +80,11 @@ def multilayer_node_features(
     >>> all(isinstance(v, np.ndarray) for v in feats.values())
     True
     """
+    # py3plex.core.multinet.multi_layer_network may keep `core_network=None` until the
+    # first nodes/edges are added. Treat this as an empty network.
+    if getattr(network, "core_network", None) is None:
+        return {}
+
     # Get layers
     if layers is None:
         layer_list = sorted(network.layers)
@@ -122,9 +127,7 @@ def multilayer_node_features(
         # Increment degrees for edges within the specified layers
         if src_layer in layer_idx:
             node_degrees[src_id][layer_idx[src_layer]] += 1
-        if tgt_layer in layer_idx and src_id != tgt_id:
-            # For undirected networks, count both endpoints
-            # For directed networks, this counts out-degree for source
+        if tgt_layer in layer_idx:
             node_degrees[tgt_id][layer_idx[tgt_layer]] += 1
 
     # Build feature vectors

@@ -352,11 +352,25 @@ def export_edgelist(
             return []
 
         for src, dst, data in nx_graph.edges(data=True):
+            # Derive layer information from edge attributes when present,
+            # otherwise fall back to the layer encoded in the node tuple.
+            src_layer = data.get("source_type", data.get("src_layer"))
+            if src_layer is None and isinstance(src, tuple) and len(src) >= 2:
+                src_layer = src[1]
+            if src_layer is None:
+                src_layer = "default"
+
+            dst_layer = data.get("target_type", data.get("dst_layer"))
+            if dst_layer is None and isinstance(dst, tuple) and len(dst) >= 2:
+                dst_layer = dst[1]
+            if dst_layer is None:
+                dst_layer = "default"
+
             edge_dict = {
                 "src": src,
                 "dst": dst,
-                "src_layer": data.get("source_type", data.get("src_layer", "default")),
-                "dst_layer": data.get("target_type", data.get("dst_layer", "default")),
+                "src_layer": src_layer,
+                "dst_layer": dst_layer,
             }
             if include_attributes:
                 # Add other attributes

@@ -217,6 +217,11 @@ def make_clique_multiplex(
 
     G = nx.MultiGraph()
 
+    # In a multiplex network, every node exists in every layer (even if isolated).
+    for node in range(n_nodes):
+        for layer_idx in range(n_layers):
+            G.add_node((node, layer_idx), type="default")
+
     for layer_idx in range(n_layers):
         for _ in range(n_cliques):
             # Select random nodes for this clique
@@ -277,6 +282,11 @@ def make_social_network(
 
     layer_names = ["friendship", "work", "family"]
     layer_map = {name: idx for idx, name in enumerate(layer_names)}
+
+    # In a multiplex network, every person exists in every layer (even if isolated).
+    for person in range(n_people):
+        for layer_idx in layer_map.values():
+            G.add_node((person, layer_idx), type="default")
 
     # Friendship layer: Power-law degree distribution (social network)
     friendship_graph = nx.barabasi_albert_graph(n_people, m=2, seed=random_state)

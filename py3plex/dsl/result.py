@@ -229,11 +229,8 @@ class QueryResult:
                                     expanded = _expand_uncertainty_value(attr_name, value)
                                     row.update(expanded)
                                 else:
-                                    # Extract mean from uncertainty dict if present
-                                    if isinstance(value, dict) and 'mean' in value:
-                                        row[attr_name] = value['mean']
-                                    else:
-                                        row[attr_name] = value
+                                    # Preserve uncertainty dictionaries unless explicitly expanded.
+                                    row[attr_name] = value
                             else:
                                 if expand_uncertainty:
                                     # Add None for all expanded columns
@@ -256,11 +253,8 @@ class QueryResult:
                                     expanded = _expand_uncertainty_value(attr_name, value)
                                     row.update(expanded)
                                 else:
-                                    # Extract mean from uncertainty dict if present
-                                    if isinstance(value, dict) and 'mean' in value:
-                                        row[attr_name] = value['mean']
-                                    else:
-                                        row[attr_name] = value
+                                    # Preserve uncertainty dictionaries unless explicitly expanded.
+                                    row[attr_name] = value
                             else:
                                 if expand_uncertainty:
                                     # Add None for all expanded columns
@@ -315,11 +309,8 @@ class QueryResult:
                                 expanded = _expand_uncertainty_value(attr_name, value)
                                 row.update(expanded)
                             else:
-                                # Extract mean from uncertainty dict if present
-                                if isinstance(value, dict) and 'mean' in value:
-                                    row[attr_name] = value['mean']
-                                else:
-                                    row[attr_name] = value
+                                # Preserve uncertainty dictionaries unless explicitly expanded.
+                                row[attr_name] = value
                         else:
                             if expand_uncertainty:
                                 # Add None for all expanded columns
@@ -342,11 +333,8 @@ class QueryResult:
                                 expanded = _expand_uncertainty_value(attr_name, value)
                                 row.update(expanded)
                             else:
-                                # Extract mean from uncertainty dict if present
-                                if isinstance(value, dict) and 'mean' in value:
-                                    row[attr_name] = value['mean']
-                                else:
-                                    row[attr_name] = value
+                                # Preserve uncertainty dictionaries unless explicitly expanded.
+                                row[attr_name] = value
                         else:
                             if expand_uncertainty:
                                 # Add None for all expanded columns

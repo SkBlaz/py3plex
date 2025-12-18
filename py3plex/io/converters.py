@@ -88,6 +88,13 @@ def to_networkx(
     # Add graph attributes
     G.graph.update(graph.attributes)
 
+    def _pair_signature(src: Any, dst: Any) -> tuple:
+        if graph.directed:
+            return (src, dst)
+        # For undirected graphs, normalize the signature to avoid losing edges when
+        # the same undirected edge is represented as (u, v) vs (v, u).
+        return tuple(sorted((src, dst), key=lambda x: str(x)))
+
     if mode == "union":
         # Merge all layers - use only node IDs
         # Add nodes with merged attributes
@@ -98,7 +105,7 @@ def to_networkx(
         edge_counts: Dict[tuple, int] = {}  # Track parallel edges
         for edge in graph.edges:
             # Create edge key for tracking parallel edges
-            edge_key = (edge.src, edge.dst)
+            edge_key = _pair_signature(edge.src, edge.dst)
             key = edge_counts.get(edge_key, 0)
             edge_counts[edge_key] = key + 1
 
@@ -118,7 +125,7 @@ def to_networkx(
         for edge in graph.edges:
             # Only consider intra-layer edges for intersection
             if edge.src_layer == edge.dst_layer:
-                sig = (edge.src, edge.dst)
+                sig = _pair_signature(edge.src, edge.dst)
                 if sig not in edge_signatures:
                     edge_signatures[sig] = set()
                 edge_signatures[sig].add(edge.src_layer)
@@ -132,13 +139,15 @@ def to_networkx(
         for node_id, node in graph.nodes.items():
             G.add_node(node_id, **node.attributes)
 
-        # Add only common edges
+        # Add only common edges (one representative edge per undirected/directed pair)
+        added = set()
         for edge in graph.edges:
             if edge.src_layer == edge.dst_layer:  # Only intra-layer
-                sig = (edge.src, edge.dst)
-                if sig in common_edges:
+                sig = _pair_signature(edge.src, edge.dst)
+                if sig in common_edges and sig not in added:
                     attrs = edge.attributes.copy()
                     G.add_edge(edge.src, edge.dst, key=edge.key, **attrs)
+                    added.add(sig)
 
     elif mode == "multiplex":
         # Preserve full multilayer structure using (node, layer) tuples

@@ -8,6 +8,7 @@ Supports:
 """
 
 import csv
+import gzip
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Union
 
@@ -113,7 +114,12 @@ def read_csv(
                 layers_dict[layer_id] = attributes
 
     # Read edges
-    with open(filepath, encoding="utf-8") as f:
+    if filepath.suffix == ".gz":
+        edge_fh = gzip.open(filepath, "rt", encoding="utf-8")
+    else:
+        edge_fh = open(filepath, encoding="utf-8")
+
+    with edge_fh as f:
         reader = csv.DictReader(f, delimiter=delimiter)
 
         # Check required columns
@@ -232,7 +238,12 @@ def write_csv(
         edge_attr_keys = list(edge_attr_keys_set)
 
     # Write edges
-    with open(filepath, "w", encoding="utf-8", newline="") as f:
+    if filepath.suffix == ".gz":
+        edge_fh = gzip.open(filepath, "wt", encoding="utf-8", newline="")
+    else:
+        edge_fh = open(filepath, "w", encoding="utf-8", newline="")
+
+    with edge_fh as f:
         # Define columns
         columns = ["src", "dst", "src_layer", "dst_layer", "key"] + list(edge_attr_keys)
         writer = csv.DictWriter(f, fieldnames=columns, delimiter=delimiter)
