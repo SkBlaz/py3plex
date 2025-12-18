@@ -12,6 +12,41 @@ from .uncertainty import Uncertainty, Delta
 from .provenance import Provenance
 
 
+def _scale_uncertainty(uncertainty: Uncertainty, factor: float) -> Uncertainty:
+    """Scale an uncertainty distribution by a constant factor.
+
+    Uncertainty models in this module represent *relative* uncertainty (offsets
+    around the point estimate). If a statistic is multiplied by a constant k,
+    the uncertainty offsets should also be multiplied by k.
+    """
+    from .uncertainty import Bootstrap, Empirical, Gaussian, Interval
+
+    if factor == 0:
+        return Delta(0.0)
+
+    if isinstance(uncertainty, Delta):
+        return Delta(abs(factor) * uncertainty.sigma)
+
+    if isinstance(uncertainty, Gaussian):
+        return Gaussian(uncertainty.mean * factor, abs(factor) * uncertainty.std_dev)
+
+    if isinstance(uncertainty, Interval):
+        low = uncertainty.low * factor
+        high = uncertainty.high * factor
+        if low <= high:
+            return Interval(low, high)
+        return Interval(high, low)
+
+    if isinstance(uncertainty, Bootstrap):
+        return Bootstrap(np.asarray(uncertainty.samples) * factor)
+
+    if isinstance(uncertainty, Empirical):
+        return Empirical(np.asarray(uncertainty.samples) * factor)
+
+    # Best-effort fallback for custom uncertainty types.
+    return Empirical(np.asarray(uncertainty.sample(4096, seed=0)) * factor)
+
+
 @dataclass(frozen=True)
 class StatValue:
     """A statistical value with uncertainty and provenance.
@@ -223,14 +258,7 @@ class StatValue:
         elif isinstance(other, (int, float, np.number)):
             # Scaling: multiply value and scale uncertainty proportionally
             new_value = self.value * other
-            # For scalar multiplication, scale the uncertainty
-            if abs(other) > 0:
-                # Scale uncertainty samples/bounds by the scalar
-                # This is a simplification - proper scaling depends on uncertainty type
-                scaled_std = self.std() * abs(other)
-                new_uncertainty = Delta(scaled_std) if scaled_std == 0 else self.uncertainty
-            else:
-                new_uncertainty = Delta(0.0)
+            new_uncertainty = _scale_uncertainty(self.uncertainty, float(other))
             return StatValue(new_value, new_uncertainty, self.provenance)
         else:
             return NotImplemented
@@ -254,9 +282,7 @@ class StatValue:
             if other == 0:
                 raise ZeroDivisionError("Cannot divide by zero")
             new_value = self.value / other
-            # Scale uncertainty
-            scaled_std = self.std() / abs(other)
-            new_uncertainty = Delta(scaled_std) if scaled_std == 0 else self.uncertainty
+            new_uncertainty = _scale_uncertainty(self.uncertainty, 1.0 / float(other))
             return StatValue(new_value, new_uncertainty, self.provenance)
         else:
             return NotImplemented

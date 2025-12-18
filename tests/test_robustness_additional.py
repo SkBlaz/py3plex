@@ -9,6 +9,7 @@ from py3plex.core import multinet
 from py3plex.robustness import (
     EdgeAdd,
     EdgeDrop,
+    NodeDrop,
     centrality_robustness,
     estimate_metric_distribution,
 )
@@ -117,3 +118,110 @@ def test_centrality_robustness_fills_missing_nodes_with_zero():
 
     assert all(stats["mean"] == pytest.approx(0.0) for stats in result["node_stats"].values())
     assert result["rank_stability"]["kendall_tau_mean"] is None
+
+
+def _single_edge_attrs(net: multinet.multi_layer_network, u, v) -> dict:
+    """Return the attribute dict for a single-edge MultiGraph between u and v."""
+    data = net.core_network.get_edge_data(u, v)
+    assert data is not None, "expected an edge to exist"
+    assert len(data) == 1, "test expects exactly one parallel edge"
+    return next(iter(data.values()))
+
+
+def test_edge_drop_p0_preserves_edge_and_node_attributes():
+    """EdgeDrop(p=0) should behave like identity (including attrs) for kept edges."""
+    net = multinet.multi_layer_network(directed=False, verbose=False)
+    net.add_nodes(
+        [
+            {"source": "a", "type": "L0", "role": "src"},
+            {"source": "b", "type": "L0", "role": "dst"},
+        ]
+    )
+    net.add_edges(
+        [
+            {
+                "source": "a",
+                "target": "b",
+                "source_type": "L0",
+                "target_type": "L0",
+                "weight": 2.5,
+                "type": "special",
+                "color": "red",
+            }
+        ]
+    )
+
+    rng = np.random.default_rng(0)
+    perturbed = EdgeDrop(p=0.0).apply(net, rng)
+
+    assert perturbed.core_network.nodes[("a", "L0")]["role"] == "src"
+    assert perturbed.core_network.nodes[("b", "L0")]["role"] == "dst"
+    attrs = _single_edge_attrs(perturbed, ("a", "L0"), ("b", "L0"))
+    assert attrs["weight"] == pytest.approx(2.5)
+    assert attrs["type"] == "special"
+    assert attrs["color"] == "red"
+
+
+def test_edge_add_p0_preserves_existing_edge_attributes():
+    """EdgeAdd(p=0) should copy existing edges without clobbering attrs."""
+    net = multinet.multi_layer_network(directed=False, verbose=False)
+    net.add_nodes(
+        [
+            {"source": "a", "type": "L0"},
+            {"source": "b", "type": "L0"},
+            {"source": "c", "type": "L0"},
+        ]
+    )
+    net.add_edges(
+        [
+            {
+                "source": "a",
+                "target": "b",
+                "source_type": "L0",
+                "target_type": "L0",
+                "weight": 7.0,
+                "type": "trusted",
+                "color": "blue",
+            }
+        ]
+    )
+
+    rng = np.random.default_rng(123)
+    perturbed = EdgeAdd(p=0.0).apply(net, rng)
+
+    attrs = _single_edge_attrs(perturbed, ("a", "L0"), ("b", "L0"))
+    assert attrs["weight"] == pytest.approx(7.0)
+    assert attrs["type"] == "trusted"
+    assert attrs["color"] == "blue"
+
+
+def test_node_drop_p0_preserves_kept_edge_attributes():
+    """NodeDrop(p=0) should preserve edge attrs since it keeps the entire graph."""
+    net = multinet.multi_layer_network(directed=False, verbose=False)
+    net.add_nodes(
+        [
+            {"source": "a", "type": "L0"},
+            {"source": "b", "type": "L0"},
+        ]
+    )
+    net.add_edges(
+        [
+            {
+                "source": "a",
+                "target": "b",
+                "source_type": "L0",
+                "target_type": "L0",
+                "weight": 1.25,
+                "type": "edge_type",
+                "note": "keep-me",
+            }
+        ]
+    )
+
+    rng = np.random.default_rng(999)
+    perturbed = NodeDrop(p=0.0).apply(net, rng)
+
+    attrs = _single_edge_attrs(perturbed, ("a", "L0"), ("b", "L0"))
+    assert attrs["weight"] == pytest.approx(1.25)
+    assert attrs["type"] == "edge_type"
+    assert attrs["note"] == "keep-me"

@@ -104,6 +104,16 @@ def robustness_centrality(
     ]
     if metric not in valid_metrics:
         raise ValueError(f"metric must be one of {valid_metrics}, got '{metric}'")
+
+    # py3plex.core.multinet.multi_layer_network may keep `core_network=None` until
+    # something is added. In that case the graph is effectively empty, and any
+    # removal has zero impact.
+    if getattr(graph, "core_network", None) is None or len(graph) == 0:
+        if target == "node":
+            targets = list(sample_nodes) if sample_nodes is not None else []
+        else:
+            targets = list(sample_layers) if sample_layers is not None else []
+        return {t: 0.0 for t in targets}
     
     # Create base RNG
     base_rng = np.random.default_rng(seed)
@@ -216,7 +226,9 @@ def _compute_giant_component(graph: multinet.multi_layer_network) -> float:
     float
         Size of the largest connected component (number of nodes).
     """
-    G = graph.core_network
+    G = getattr(graph, "core_network", None)
+    if G is None:
+        return 0.0
     
     if len(G) == 0:
         return 0.0
@@ -253,7 +265,9 @@ def _compute_avg_shortest_path(graph: multinet.multi_layer_network) -> float:
     For very large components (>1000 nodes), this can be expensive. Consider
     using sampling or approximation methods for large networks.
     """
-    G = graph.core_network
+    G = getattr(graph, "core_network", None)
+    if G is None:
+        return float("inf")
     
     if len(G) == 0:
         return float('inf')

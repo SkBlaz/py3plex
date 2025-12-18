@@ -295,9 +295,17 @@ def _initialize_state(process_spec: ProcessSpec,
             if infected_spec.constant is not None:
                 if isinstance(infected_spec.constant, float) and 0 <= infected_spec.constant <= 1:
                     # Fraction of nodes to infect
-                    n_infected = max(1, int(infected_spec.constant * n))
-                    infected_indices = rng.choice(n, size=n_infected, replace=False)
-                    state[infected_indices] = 1
+                    fraction = infected_spec.constant
+                    n_infected = int(fraction * n)
+                    # Preserve the "at least one" behavior for small positive fractions,
+                    # but allow an explicit 0.0 to mean "infect nobody".
+                    if fraction > 0 and n_infected == 0 and n > 0:
+                        n_infected = 1
+                    if n_infected > 0:
+                        infected_indices = rng.choice(
+                            n, size=min(n_infected, n), replace=False
+                        )
+                        state[infected_indices] = 1
                 elif isinstance(infected_spec.constant, int):
                     # Specific number of nodes
                     n_infected = min(infected_spec.constant, n)

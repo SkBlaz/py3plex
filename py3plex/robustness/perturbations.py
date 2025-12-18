@@ -79,11 +79,14 @@ class EdgeDrop:
         # Ensure the network is initialized even if empty
         new_net._initiate_network()
 
-        # Collect edges to keep
-        kept_edges = []
+        # Collect edges to keep (preserve edge attributes)
+        kept_edges: list[dict] = []
         for edge in network.get_edges(data=True):
-            source_node, target_node = edge[0], edge[1]
-            edge_data = edge[2] if len(edge) > 2 else {}
+            if len(edge) == 3:
+                source_node, target_node, edge_data = edge
+            else:
+                source_node, target_node, _, edge_data = edge
+            edge_data = edge_data or {}
 
             # Check if we should consider this edge for dropping
             should_consider = True
@@ -99,26 +102,25 @@ class EdgeDrop:
                 continue  # Drop this edge
 
             # Keep the edge
-            weight = edge_data.get("weight", 1.0)
-            kept_edges.append([
-                source_node[0], source_node[1],
-                target_node[0], target_node[1],
-                weight,
-            ])
+            kept_edges.append(
+                {
+                    "source": source_node[0],
+                    "target": target_node[0],
+                    "source_type": source_node[1],
+                    "target_type": target_node[1],
+                    **edge_data,
+                    "weight": edge_data.get("weight", 1.0),
+                    "type": edge_data.get("type", "default"),
+                }
+            )
 
         # Add all kept edges to the new network
         if kept_edges:
-            new_net.add_edges(kept_edges, input_type="list")
+            new_net.add_edges(kept_edges, input_type="dict")
 
-        # Also preserve isolated nodes
-        nodes_in_edges = set()
-        for edge in kept_edges:
-            nodes_in_edges.add((edge[0], edge[1]))
-            nodes_in_edges.add((edge[2], edge[3]))
-
-        for node in network.get_nodes():
-            if node not in nodes_in_edges:
-                new_net.core_network.add_node(node)
+        # Preserve all nodes (including isolated) and their attributes.
+        for node, attrs in network.get_nodes(data=True):
+            new_net.core_network.add_node(node, **(attrs or {}))
 
         return new_net
 
@@ -166,19 +168,26 @@ class EdgeAdd:
         new_net._initiate_network()
 
         # Copy all existing edges
-        edges_to_add = []
+        edges_to_add: list[dict] = []
         existing_edge_set = set()
 
         for edge in network.get_edges(data=True):
-            source_node, target_node = edge[0], edge[1]
-            edge_data = edge[2] if len(edge) > 2 else {}
-
-            weight = edge_data.get("weight", 1.0)
-            edges_to_add.append([
-                source_node[0], source_node[1],
-                target_node[0], target_node[1],
-                weight,
-            ])
+            if len(edge) == 3:
+                source_node, target_node, edge_data = edge
+            else:
+                source_node, target_node, _, edge_data = edge
+            edge_data = edge_data or {}
+            edges_to_add.append(
+                {
+                    "source": source_node[0],
+                    "target": target_node[0],
+                    "source_type": source_node[1],
+                    "target_type": target_node[1],
+                    **edge_data,
+                    "weight": edge_data.get("weight", 1.0),
+                    "type": edge_data.get("type", "default"),
+                }
+            )
             # Track existing edges (both directions for undirected)
             existing_edge_set.add((source_node, target_node))
             if not network.directed:
@@ -207,8 +216,11 @@ class EdgeAdd:
 
             # Limit number of samples to avoid O(n^2)
             # Sample approximately num_edges candidate pairs
-            num_existing = len([e for e in edges_to_add
-                               if e[1] == layer and e[3] == layer])
+            num_existing = sum(
+                1
+                for e in edges_to_add
+                if e.get("source_type") == layer and e.get("target_type") == layer
+            )
             num_samples = max(n_nodes, num_existing, 10)
 
             for _ in range(num_samples):
@@ -223,28 +235,27 @@ class EdgeAdd:
 
                 # Add with probability p
                 if rng.random() < self.p:
-                    edges_to_add.append([
-                        node_a[0], node_a[1],
-                        node_b[0], node_b[1],
-                        1.0,
-                    ])
+                    edges_to_add.append(
+                        {
+                            "source": node_a[0],
+                            "target": node_b[0],
+                            "source_type": node_a[1],
+                            "target_type": node_b[1],
+                            "weight": 1.0,
+                            "type": "default",
+                        }
+                    )
                     existing_edge_set.add((node_a, node_b))
                     if not network.directed:
                         existing_edge_set.add((node_b, node_a))
 
         # Add all edges to the new network
         if edges_to_add:
-            new_net.add_edges(edges_to_add, input_type="list")
+            new_net.add_edges(edges_to_add, input_type="dict")
 
-        # Also preserve isolated nodes
-        nodes_in_edges = set()
-        for edge in edges_to_add:
-            nodes_in_edges.add((edge[0], edge[1]))
-            nodes_in_edges.add((edge[2], edge[3]))
-
-        for node in network.get_nodes():
-            if node not in nodes_in_edges:
-                new_net.core_network.add_node(node)
+        # Preserve all nodes (including isolated) and their attributes.
+        for node, attrs in network.get_nodes(data=True):
+            new_net.core_network.add_node(node, **(attrs or {}))
 
         return new_net
 
@@ -288,37 +299,41 @@ class NodeDrop:
 
         # Decide which nodes to keep
         kept_nodes = set()
-        for node in network.get_nodes():
+        kept_node_attrs: dict = {}
+        for node, attrs in network.get_nodes(data=True):
             if rng.random() >= self.p:  # Keep with probability (1 - p)
                 kept_nodes.add(node)
+                kept_node_attrs[node] = attrs or {}
 
         # Collect edges where both endpoints are kept
-        kept_edges = []
+        kept_edges: list[dict] = []
         for edge in network.get_edges(data=True):
-            source_node, target_node = edge[0], edge[1]
-            edge_data = edge[2] if len(edge) > 2 else {}
+            if len(edge) == 3:
+                source_node, target_node, edge_data = edge
+            else:
+                source_node, target_node, _, edge_data = edge
+            edge_data = edge_data or {}
 
             if source_node in kept_nodes and target_node in kept_nodes:
-                weight = edge_data.get("weight", 1.0)
-                kept_edges.append([
-                    source_node[0], source_node[1],
-                    target_node[0], target_node[1],
-                    weight,
-                ])
+                kept_edges.append(
+                    {
+                        "source": source_node[0],
+                        "target": target_node[0],
+                        "source_type": source_node[1],
+                        "target_type": target_node[1],
+                        **edge_data,
+                        "weight": edge_data.get("weight", 1.0),
+                        "type": edge_data.get("type", "default"),
+                    }
+                )
 
         # Add all kept edges to the new network
         if kept_edges:
-            new_net.add_edges(kept_edges, input_type="list")
+            new_net.add_edges(kept_edges, input_type="dict")
 
-        # Also preserve isolated kept nodes
-        nodes_in_edges = set()
-        for edge in kept_edges:
-            nodes_in_edges.add((edge[0], edge[1]))
-            nodes_in_edges.add((edge[2], edge[3]))
-
+        # Preserve kept nodes (including isolated) and their attributes.
         for node in kept_nodes:
-            if node not in nodes_in_edges:
-                new_net.core_network.add_node(node)
+            new_net.core_network.add_node(node, **kept_node_attrs.get(node, {}))
 
         return new_net
 

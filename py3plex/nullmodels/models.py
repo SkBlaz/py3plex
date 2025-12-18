@@ -153,10 +153,10 @@ def configuration_model(
     
     # Create configuration model graph
     try:
-        random_G = nx.configuration_model(degree_sequence, seed=seed)
-        # Remove self-loops and parallel edges
-        random_G = nx.Graph(random_G)
-        random_G.remove_edges_from(nx.selfloop_edges(random_G))
+        # Generate a simple graph that preserves the *exact* degree sequence.
+        # nx.configuration_model can generate self-loops / parallel edges; converting
+        # to a simple Graph would silently change degrees, violating the contract.
+        random_G = nx.random_degree_sequence_graph(degree_sequence, seed=seed)
     except Exception:
         # Fallback: return copy of original
         return _copy_network(network)

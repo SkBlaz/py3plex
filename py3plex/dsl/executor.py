@@ -1067,20 +1067,24 @@ def _evaluate_conditions(item: Any, conditions: ConditionExpr,
     
     if not conditions.atoms:
         return True
-    
-    # Evaluate first condition
-    result = _evaluate_atom(item, conditions.atoms[0], network, G, params)
-    
-    # Apply logical operators
+
+    # Standard boolean precedence: AND binds tighter than OR.
+    # ConditionExpr is a flat sequence of atoms with ops in-between; interpret it as
+    # an OR of AND-chains.
+    first = _evaluate_atom(item, conditions.atoms[0], network, G, params)
+    current_and_chain = first
+    or_terms: List[bool] = []
+
     for i, op in enumerate(conditions.ops):
         next_result = _evaluate_atom(item, conditions.atoms[i + 1], network, G, params)
-        
         if op == "AND":
-            result = result and next_result
+            current_and_chain = current_and_chain and next_result
         elif op == "OR":
-            result = result or next_result
-    
-    return result
+            or_terms.append(current_and_chain)
+            current_and_chain = next_result
+
+    or_terms.append(current_and_chain)
+    return any(or_terms)
 
 
 def _evaluate_atom(item: Any, atom: ConditionAtom, network: Any, G: nx.Graph, 
@@ -1116,9 +1120,16 @@ def _evaluate_comparison(item: Any, comparison: Comparison,
     op = comparison.op
     
     if op == "=":
-        return str(actual_value) == str(expected_value)
+        # Prefer numeric equality when both sides look numeric.
+        try:
+            return float(actual_value) == float(expected_value)
+        except (ValueError, TypeError):
+            return str(actual_value) == str(expected_value)
     elif op == "!=":
-        return str(actual_value) != str(expected_value)
+        try:
+            return float(actual_value) != float(expected_value)
+        except (ValueError, TypeError):
+            return str(actual_value) != str(expected_value)
     elif op == ">":
         try:
             return float(actual_value) > float(expected_value)

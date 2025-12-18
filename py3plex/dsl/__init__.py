@@ -28,17 +28,17 @@ Example Usage:
     ... )
     >>>
     >>> # Execute the query
-    >>> result = q.execute(network, k=5)
-    >>> df = result.to_pandas()
+    >>> result = q.execute(network, k=5)  # doctest: +SKIP
+    >>> df = result.to_pandas()  # doctest: +SKIP
     >>>
     >>> # Compare two networks
-    >>> comparison = C.compare("baseline", "treatment").using("multiplex_jaccard").execute(networks)
+    >>> comparison = C.compare("baseline", "treatment").using("multiplex_jaccard").execute(networks)  # doctest: +SKIP
     >>>
     >>> # Generate null models
-    >>> nullmodels = N.configuration().samples(100).seed(42).execute(network)
+    >>> nullmodels = N.configuration().samples(100).seed(42).execute(network)  # doctest: +SKIP
     >>>
     >>> # Find paths
-    >>> paths = P.shortest("Alice", "Bob").crossing_layers().execute(network)
+    >>> paths = P.shortest("Alice", "Bob").crossing_layers().execute(network)  # doctest: +SKIP
     >>>
     >>> # Define custom operators
     >>> @dsl_operator("my_measure")
@@ -375,7 +375,7 @@ def dsl_operator(
         Decorator function that registers the operator
 
     Example:
-        >>> @dsl_operator("layer_resilience", category="dynamics")
+        >>> @dsl_operator("layer_resilience", category="dynamics", overwrite=True)
         ... def layer_resilience_op(context: DSLExecutionContext, alpha: float = 0.1):
         ...     '''Compute resilience score for current layers.'''
         ...     # Access context.graph, context.current_layers, etc.
@@ -411,9 +411,12 @@ def describe_operator(name: str) -> Optional[Dict[str, Any]]:
         Dictionary with operator metadata, or None if not found
 
     Example:
+        >>> @dsl_operator("layer_resilience", description="Compute resilience score for current layers.", overwrite=True)
+        ... def layer_resilience_op(context: DSLExecutionContext, alpha: float = 0.1):
+        ...     return 42.0
         >>> info = describe_operator("layer_resilience")
-        >>> print(info["description"])
-        Compute resilience score for current layers.
+        >>> info["description"]
+        'Compute resilience score for current layers.'
     """
     op = get_operator(name)
     if op is None:

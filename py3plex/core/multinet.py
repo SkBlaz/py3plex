@@ -482,14 +482,14 @@ class multi_layer_network:
         >>> net = multi_layer_network(network_type='multilayer', directed=False)
         >>>
         >>> # Add nodes to different layers
-        >>> net.add_nodes([
+        >>> _ = net.add_nodes([
         ...     {'source': 'A', 'type': 'social'},
         ...     {'source': 'B', 'type': 'social'},
         ...     {'source': 'A', 'type': 'email'}  # Same node, different layer
         ... ])
         >>>
         >>> # Add edges (intra-layer and inter-layer)
-        >>> net.add_edges([
+        >>> _ = net.add_edges([
         ...     {'source': 'A', 'target': 'B',
         ...      'source_type': 'social', 'target_type': 'social'},
         ...     {'source': 'A', 'target': 'A',
@@ -637,7 +637,7 @@ class multi_layer_network:
             >>> net = multi_layer_network()
             >>> len(net)
             0
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
             >>> len(net)
             1
         """
@@ -657,7 +657,7 @@ class multi_layer_network:
             >>> net = multi_layer_network()
             >>> bool(net)
             False
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
             >>> bool(net)
             True
             >>> if net:
@@ -681,7 +681,7 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network()
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
             >>> ('A', 'layer1') in net
             True
             >>> ('B', 'layer1') in net
@@ -706,7 +706,7 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network()
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
             >>> for node in net:
             ...     print(node)
             ('A', 'layer1')
@@ -728,7 +728,7 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network()
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
             >>> net.node_count
             1
         """
@@ -743,7 +743,7 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network()
-            >>> net.add_edges([{'source': 'A', 'target': 'B',
+            >>> _ = net.add_edges([{'source': 'A', 'target': 'B',
             ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
             >>> net.edge_count
             1
@@ -761,7 +761,7 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network()
-            >>> net.add_nodes([
+            >>> _ = net.add_nodes([
             ...     {'source': 'A', 'type': 'layer1'},
             ...     {'source': 'B', 'type': 'layer2'}
             ... ])
@@ -785,7 +785,7 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network()
-            >>> net.add_nodes([
+            >>> _ = net.add_nodes([
             ...     {'source': 'A', 'type': 'social'},
             ...     {'source': 'B', 'type': 'work'}
             ... ])
@@ -812,7 +812,7 @@ class multi_layer_network:
             >>> net = multi_layer_network()
             >>> net.is_empty
             True
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
             >>> net.is_empty
             False
         """
@@ -1171,8 +1171,8 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network()
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
-            >>> net.add_edges([{'source': 'A', 'target': 'B',
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_edges([{'source': 'A', 'target': 'B',
             ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
             >>> net.save_network('network.txt', output_type='multiedgelist')
 
@@ -1253,8 +1253,8 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network()
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
-            >>> net.add_edges([{'source': 'A', 'target': 'B',
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_edges([{'source': 'A', 'target': 'B',
             ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
             >>> stats = net.summary()
             >>> print(f"Network has {stats['Nodes']} nodes and {stats['Edges']} edges")
@@ -1389,7 +1389,7 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network(directed=False)
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
             >>> nx_graph = net.to_networkx()
             >>> print(type(nx_graph))
             <class 'networkx.classes.multigraph.MultiGraph'>
@@ -2010,7 +2010,8 @@ class multi_layer_network:
             node_dict.pop("source", None)
             node_dict.pop("type", None)
             nname = node_dict["node_for_adding"]
-            getattr(self.core_network, target_function)(nname)
+            node_dict.pop("node_for_adding", None)
+            getattr(self.core_network, target_function)(nname, **node_dict)
 
         else:
             # Handle list of node dictionaries
@@ -2033,7 +2034,8 @@ class multi_layer_network:
                 node_dict.pop("source", None)
                 node_dict.pop("type", None)
                 nname = node_dict["node_for_adding"]
-                getattr(self.core_network, target_function)(nname)
+                node_dict.pop("node_for_adding", None)
+                getattr(self.core_network, target_function)(nname, **node_dict)
 
     def _generic_node_list_manipulator(self, node_list, target_function):
         """Generic manipulator of node lists.
@@ -2151,6 +2153,8 @@ class multi_layer_network:
             self._generic_edge_dict_manipulator(edge_dict_list, "add_edge")
 
         elif input_type == "list":
+            if not edge_dict_list:
+                return self
             self._generic_edge_list_manipulator(edge_dict_list, "add_edge")
 
         elif input_type == "px_edge":
@@ -2260,7 +2264,7 @@ class multi_layer_network:
             ...     {'source': 'entity2', 'type': 'layer1'}
             ... ]
             >>> net.add_nodes(multi_layer_nodes)
-            <multi_layer_network: type=multilayer, directed=True, nodes=9, edges=0, layers=5>
+            <multi_layer_network: type=multilayer, directed=True, nodes=9, edges=0, layers=4>
 
         Notes:
             - The same node ID can exist in multiple layers
@@ -2326,8 +2330,10 @@ class multi_layer_network:
 
         Example:
             >>> net = multi_layer_network()
+            >>> _ = net.add_edges([['A', 'L0', 'B', 'L0', 1]], input_type='list')
             >>> tensor = net.get_tensor(sparsity_type='csr')
-            >>> print(tensor.shape)
+            >>> tensor.shape
+            (2, 2)
 
         Note:
             The returned matrix is the same as get_supra_adjacency_matrix(mtype='sparse')
@@ -3028,7 +3034,7 @@ class multi_layer_network:
         Examples:
             >>> from py3plex.core import multinet
             >>> net = multinet.multi_layer_network()
-            >>> net.add_edges([
+            >>> _ = net.add_edges([
             ...     ['A', 'layer1', 'B', 'layer1', 1],
             ...     ['B', 'layer1', 'C', 'layer1', 1],
             ... ], input_type="list")
@@ -3185,7 +3191,7 @@ class multi_layer_network:
         Examples:
             >>> from py3plex.core import multinet
             >>> net = multinet.multi_layer_network()
-            >>> net.add_edges([
+            >>> _ = net.add_edges([
             ...     ['A', 'layer1', 'B', 'layer1', 1],
             ...     ['B', 'layer1', 'C', 'layer1', 1],
             ... ], input_type="list")
@@ -3489,8 +3495,8 @@ class multi_layer_network:
 
         Examples:
             >>> net = multi_layer_network(directed=False)
-            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
-            >>> net.add_edges([{'source': 'A', 'target': 'B',
+            >>> _ = net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> _ = net.add_edges([{'source': 'A', 'target': 'B',
             ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
             >>> result = net.execute_query('SELECT nodes WHERE layer="layer1"')
             >>> result['count'] >= 0
@@ -3590,7 +3596,7 @@ class multi_layer_network:
         --------
         >>> from py3plex.core import multinet
         >>> net = multinet.multi_layer_network(directed=False)
-        >>> net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> _ = net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
         >>> partition = {('A', 'L1'): 0, ('B', 'L1'): 0}
         >>> net.assign_partition(partition)
         >>> print(net.community_sizes)
@@ -3628,7 +3634,7 @@ class multi_layer_network:
         --------
         >>> from py3plex.core import multinet
         >>> net = multinet.multi_layer_network(directed=False)
-        >>> net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> _ = net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
         >>> partition = {('A', 'L1'): 0, ('B', 'L1'): 1}
         >>> net.assign_partition(partition)
         >>> print(net.get_partition('A', 'L1'))
@@ -3667,7 +3673,7 @@ class multi_layer_network:
         --------
         >>> from py3plex.core import multinet
         >>> net = multinet.multi_layer_network(directed=False)
-        >>> net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> _ = net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
         >>> net.set_node_attribute('A', 'score', 42.0, 'L1')
         >>> print(net.get_node_attribute('A', 'score', 'L1'))
         42.0
@@ -3702,7 +3708,7 @@ class multi_layer_network:
         --------
         >>> from py3plex.core import multinet
         >>> net = multinet.multi_layer_network(directed=False)
-        >>> net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> _ = net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
         >>> net.set_node_attribute('A', 'score', 42.0, 'L1')
         >>> print(net.get_node_attribute('A', 'score', 'L1'))
         42.0

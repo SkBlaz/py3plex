@@ -122,11 +122,11 @@ operator_registry = OperatorRegistry()
 
 def register_operator(
     name: str,
-    func: Callable[..., Any],
+    func: Optional[Callable[..., Any]] = None,
     description: Optional[str] = None,
     category: Optional[str] = None,
     overwrite: bool = False,
-) -> None:
+) -> Callable[..., Any]:
     """Register a DSL operator with the global registry.
 
     This is a convenience function that delegates to operator_registry.register().
@@ -138,7 +138,17 @@ def register_operator(
         category: Optional category for organization
         overwrite: If True, allow replacing existing operators
     """
+    if func is None:
+        # Decorator usage: @register_operator("name")
+        def _decorator(f: Callable[..., Any]) -> Callable[..., Any]:
+            operator_registry.register(name, f, description, category, overwrite)
+            return f
+
+        return _decorator
+
+    # Direct usage: register_operator("name", func)
     operator_registry.register(name, func, description, category, overwrite)
+    return func
 
 
 def get_operator(name: str) -> Optional[DSLOperator]:

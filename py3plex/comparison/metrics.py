@@ -77,9 +77,12 @@ def _get_nodes_by_layer(network: Any, layer: str) -> Set[Any]:
     """Get nodes belonging to a specific layer."""
     nodes = set()
     if hasattr(network, 'get_nodes'):
-        for node in network.get_nodes():
-            if isinstance(node, tuple) and len(node) >= 2 and node[1] == layer:
-                nodes.add(node)
+        try:
+            for node in network.get_nodes():
+                if isinstance(node, tuple) and len(node) >= 2 and node[1] == layer:
+                    nodes.add(node)
+        except Exception:
+            return set()
     return nodes
 
 
@@ -87,9 +90,12 @@ def _get_layers(network: Any) -> Set[str]:
     """Get all layer names from a network."""
     layers = set()
     if hasattr(network, 'get_nodes'):
-        for node in network.get_nodes():
-            if isinstance(node, tuple) and len(node) >= 2:
-                layers.add(node[1])
+        try:
+            for node in network.get_nodes():
+                if isinstance(node, tuple) and len(node) >= 2:
+                    layers.add(node[1])
+        except Exception:
+            return set()
     return layers
 
 
@@ -115,8 +121,11 @@ def multiplex_jaccard(
     G_a = network_a.core_network if hasattr(network_a, 'core_network') else network_a
     G_b = network_b.core_network if hasattr(network_b, 'core_network') else network_b
     
-    if G_a is None or G_b is None:
-        return {"global_distance": 1.0, "layerwise_distance": {}}
+    # Treat uninitialized py3plex networks (`core_network=None`) as empty graphs.
+    if G_a is None:
+        G_a = nx.Graph()
+    if G_b is None:
+        G_b = nx.Graph()
     
     # Get all layers
     layers_a = _get_layers(network_a)
@@ -214,8 +223,11 @@ def multilayer_resistance_distance(
     G_a = network_a.core_network if hasattr(network_a, 'core_network') else network_a
     G_b = network_b.core_network if hasattr(network_b, 'core_network') else network_b
     
-    if G_a is None or G_b is None:
-        return {"global_distance": 1.0}
+    # Treat uninitialized py3plex networks (`core_network=None`) as empty graphs.
+    if G_a is None:
+        G_a = nx.Graph()
+    if G_b is None:
+        G_b = nx.Graph()
     
     # Get Laplacian matrices
     try:
@@ -233,13 +245,16 @@ def multilayer_resistance_distance(
         L_a_padded[:n_a, :n_a] = L_a
         L_b_padded[:n_b, :n_b] = L_b
         L_a, L_b = L_a_padded, L_b_padded
+    elif n_a == 0:
+        return {"global_distance": 0.0}
     
     # Frobenius norm of difference
     diff = L_a - L_b
     frobenius_norm = np.linalg.norm(diff, ord='fro')
     
     # Normalize by matrix size
-    global_distance = frobenius_norm / (L_a.shape[0] ** 2)
+    n = L_a.shape[0]
+    global_distance = frobenius_norm / (n**2) if n else 0.0
     
     return {"global_distance": global_distance}
 
@@ -266,8 +281,11 @@ def layer_edge_overlap(
     G_a = network_a.core_network if hasattr(network_a, 'core_network') else network_a
     G_b = network_b.core_network if hasattr(network_b, 'core_network') else network_b
     
-    if G_a is None or G_b is None:
-        return {"layerwise_distance": {}}
+    # Treat uninitialized py3plex networks (`core_network=None`) as empty graphs.
+    if G_a is None:
+        G_a = nx.Graph()
+    if G_b is None:
+        G_b = nx.Graph()
     
     # Get all layers
     layers_a = _get_layers(network_a)
@@ -341,26 +359,35 @@ def degree_correlation(
     G_a = network_a.core_network if hasattr(network_a, 'core_network') else network_a
     G_b = network_b.core_network if hasattr(network_b, 'core_network') else network_b
     
-    if G_a is None or G_b is None:
-        return {"global_distance": 1.0}
+    # Treat uninitialized py3plex networks (`core_network=None`) as empty graphs.
+    if G_a is None:
+        G_a = nx.Graph()
+    if G_b is None:
+        G_b = nx.Graph()
     
-    # Get shared nodes
+    # Nodes to compare: require some overlap, then compare over the union while
+    # treating missing nodes as having degree 0 (so isolated/unobserved nodes
+    # are still comparable).
     nodes_a = set(G_a.nodes())
     nodes_b = set(G_b.nodes())
     shared_nodes = nodes_a & nodes_b
     
     if layers:
-        shared_nodes = {
-            n for n in shared_nodes
-            if isinstance(n, tuple) and len(n) >= 2 and n[1] in layers
+        nodes_a = {
+            n for n in nodes_a if isinstance(n, tuple) and len(n) >= 2 and n[1] in layers
         }
+        nodes_b = {
+            n for n in nodes_b if isinstance(n, tuple) and len(n) >= 2 and n[1] in layers
+        }
+        shared_nodes = nodes_a & nodes_b
     
     if len(shared_nodes) < 2:
         return {"global_distance": 1.0, "shared_nodes": 0}
     
-    # Get degrees
-    degrees_a = [G_a.degree(n) for n in shared_nodes]
-    degrees_b = [G_b.degree(n) for n in shared_nodes]
+    nodes_to_compare = nodes_a | nodes_b
+    # Get degrees, defaulting to 0 for missing nodes.
+    degrees_a = [G_a.degree(n) if n in nodes_a else 0 for n in nodes_to_compare]
+    degrees_b = [G_b.degree(n) if n in nodes_b else 0 for n in nodes_to_compare]
     
     # Compute correlation
     if np.std(degrees_a) == 0 or np.std(degrees_b) == 0:
@@ -376,7 +403,7 @@ def degree_correlation(
     return {
         "global_distance": global_distance,
         "correlation": correlation,
-        "shared_nodes": len(shared_nodes),
+        "shared_nodes": len(nodes_to_compare),
     }
 
 
@@ -402,8 +429,11 @@ def degree_change(
     G_a = network_a.core_network if hasattr(network_a, 'core_network') else network_a
     G_b = network_b.core_network if hasattr(network_b, 'core_network') else network_b
     
-    if G_a is None or G_b is None:
-        return {"global_distance": 0.0, "per_node_difference": {}}
+    # Treat uninitialized py3plex networks (`core_network=None`) as empty graphs.
+    if G_a is None:
+        G_a = nx.Graph()
+    if G_b is None:
+        G_b = nx.Graph()
     
     # Get shared nodes
     nodes_a = set(G_a.nodes())

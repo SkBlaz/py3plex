@@ -118,8 +118,18 @@ class Delta(Uncertainty):
         }
     
     def sample(self, n: int, *, seed: Optional[int] = None) -> np.ndarray:
-        """Return constant samples (no randomness)."""
-        return np.full(n, 0.0)
+        """Generate samples for this uncertainty.
+
+        For sigma == 0, this is deterministic (all zeros).
+        For sigma > 0, we treat sigma as a standard deviation and sample
+        zero-mean Gaussian noise. This ensures Monte Carlo propagation
+        correctly reflects non-zero Delta uncertainty when combined with
+        non-Delta models.
+        """
+        if self.sigma == 0:
+            return np.full(n, 0.0)
+        rng = np.random.default_rng(seed)
+        return rng.normal(0.0, self.sigma, size=n)
     
     def ci(self, level: float = 0.95) -> Tuple[float, float]:
         """Return zero-width interval."""

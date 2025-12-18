@@ -214,6 +214,7 @@ class TestReport:
 
     def test_to_dataframe(self):
         """Test to_dataframe conversion."""
+        pytest.importorskip("pandas")
         config = ExperimentConfig(name="df_test")
         records = [{"x": 1, "y": 2}, {"x": 3, "y": 4}]
         report = Report(config=config, records=records)
@@ -226,6 +227,7 @@ class TestReport:
 
     def test_to_dataframe_empty(self):
         """Test to_dataframe with empty records."""
+        pytest.importorskip("pandas")
         config = ExperimentConfig(name="empty_df_test")
         report = Report(config=config, records=[])
 
@@ -355,6 +357,7 @@ class TestPipelineIntegration:
 
     def test_full_experiment_workflow(self):
         """Test complete experiment workflow with report export."""
+        pytest.importorskip("pandas")
         config = ExperimentConfig(
             name="Full Experiment",
             seed=123,

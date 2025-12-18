@@ -334,7 +334,8 @@ def _evaluate_expression(
         safe_expr = safe_expr.replace(param_name, str(param_value))
     
     # Validate expression only contains safe characters
-    allowed_chars = set('0123456789.+-*/() ')
+    # Allow scientific notation produced by float stringification (e.g., "1e-06").
+    allowed_chars = set('0123456789.+-*/() eE')
     if not all(c in allowed_chars for c in safe_expr):
         raise ValueError(f"Unsafe expression: {expr}")
     

@@ -63,6 +63,8 @@ class ExampleDegreeCentrality(CentralityPlugin):
         try:
             # Use the NetworkX graph directly
             G = network.core_network
+            if G is None:
+                return {}
             nodes = list(G.nodes())
         except AttributeError:
             raise ValueError("Network must be a py3plex multi_layer_network object")
@@ -124,14 +126,30 @@ class ExampleSimpleCommunity(CommunityPlugin):
         try:
             # Use the NetworkX graph directly
             G = network.core_network
-            nodes = list(G.nodes())
+            if G is None:
+                return {}
         except AttributeError:
             raise ValueError("Network must be a py3plex multi_layer_network object")
 
-        # Simple assignment: assign community based on node hash
-        # This is just for demonstration
-        for i, node in enumerate(nodes):
-            communities[node] = hash(str(node)) % num_communities
+        if G.number_of_nodes() == 0:
+            return {}
+
+        import networkx as nx
+
+        # Use connected components as a simple, deterministic community detector.
+        if G.is_directed():
+            components = list(nx.weakly_connected_components(G))
+        else:
+            components = list(nx.connected_components(G))
+
+        # Deterministic community IDs by sorting components by their stringified contents.
+        def _component_key(component):
+            return sorted(str(node) for node in component)
+
+        for community_idx, component in enumerate(sorted(components, key=_component_key)):
+            assigned_id = community_idx % num_communities if num_communities else community_idx
+            for node in component:
+                communities[node] = assigned_id
 
         return communities
 

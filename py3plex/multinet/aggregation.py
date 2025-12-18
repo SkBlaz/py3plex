@@ -142,6 +142,9 @@ def aggregate_layers(
             f"got shape {edges.shape}"
         )
 
+    if len(edges) == 0:
+        raise ValueError("edges must not be empty")
+
     if reducer not in {"sum", "mean", "max"}:
         raise ValueError(
             f"reducer must be one of ('sum', 'mean', 'max'), got '{reducer}'"
@@ -153,15 +156,58 @@ def aggregate_layers(
     )
 
     # Extract columns
-    rows: np.ndarray = edges[:, 1].astype(np.int32)  # Source nodes
-    cols: np.ndarray = edges[:, 2].astype(np.int32)  # Target nodes
+    rows_raw = edges[:, 1]
+    cols_raw = edges[:, 2]
+
+    # Guard against silent truncation of non-integer node identifiers.
+    # Many edge arrays are float-typed (because of weights), so validate integrality.
+    def _validate_integer_like(arr: np.ndarray, name: str) -> None:
+        if np.issubdtype(arr.dtype, np.integer):
+            return
+        if np.issubdtype(arr.dtype, np.floating):
+            if not np.all(np.isfinite(arr)) or not np.all(arr == np.floor(arr)):
+                raise ValueError(f"{name} node IDs must be integers")
+            return
+        try:
+            as_float = arr.astype(np.float64)
+        except (TypeError, ValueError):
+            return
+        if not np.all(np.isfinite(as_float)) or not np.all(as_float == np.floor(as_float)):
+            raise ValueError(f"{name} node IDs must be integers")
+
+    _validate_integer_like(rows_raw, "src")
+    _validate_integer_like(cols_raw, "dst")
+
+    rows: np.ndarray = rows_raw.astype(np.int32)  # Source nodes
+    cols: np.ndarray = cols_raw.astype(np.int32)  # Target nodes
+
+    if np.any(rows < 0) or np.any(cols < 0):
+        raise ValueError("node IDs must be non-negative integers")
 
     # Handle weights: use column 3 if available, else default to 1.0
     data: np.ndarray
-    if edges.shape[1] > 3:
-        data = edges[:, 3].astype(np.float64)
+    if isinstance(weight_col, int):
+        if weight_col < 0 or weight_col >= edges.shape[1]:
+            raise ValueError(
+                f"weight_col index {weight_col} is out of bounds for edges with {edges.shape[1]} columns"
+            )
+        data = edges[:, weight_col].astype(np.float64)
+    elif isinstance(weight_col, str):
+        if weight_col != "w":
+            raise TypeError(
+                "weight_col must be an integer column index for ndarray inputs"
+            )
+        if edges.shape[1] > 3:
+            data = edges[:, 3].astype(np.float64)
+        else:
+            data = np.ones(len(rows), dtype=np.float64)
     else:
-        data = np.ones(len(rows), dtype=np.float64)
+        raise TypeError(
+            f"weight_col must be str or int, got {type(weight_col).__name__}"
+        )
+
+    if np.any(data < 0):
+        raise ValueError("edge weights must be non-negative")
 
     # Determine matrix size
     n = max(rows.max(), cols.max()) + 1
