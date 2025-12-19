@@ -1,20 +1,20 @@
 Contributing to py3plex
 =======================
 
-We welcome contributions to py3plex. This guide explains how to contribute effectively.
+We welcome contributions to py3plex. This guide covers setup, workflow, expectations, and how to get help. Use it to keep contributions consistent, well-tested, and easy to review.
 
 Ways to Contribute
 ------------------
 
 You can contribute in many ways:
 
-* Report bugs - Open issues for bugs you encounter
-* Suggest features - Propose new features or improvements
-* Write documentation - Improve or expand documentation
-* Fix bugs - Submit pull requests fixing issues
-* Add features - Implement new algorithms or capabilities
-* Write tests - Improve test coverage
-* Review PRs - Help review pull requests from others
+* Report bugs by opening issues
+* Suggest or discuss features
+* Improve documentation
+* Fix bugs
+* Add new algorithms or capabilities
+* Write tests to improve coverage
+* Review pull requests from others
 
 Getting Started
 ---------------
@@ -35,9 +35,14 @@ Fork and Clone
 .. code-block:: bash
 
     git remote add upstream https://github.com/SkBlaz/py3plex.git
+    git fetch upstream
+    git checkout main
+    git merge upstream/main  # keep your main branch in sync
 
 Development Setup
 ~~~~~~~~~~~~~~~~~
+
+**Prerequisites:** Python 3.8+ and ``pip``. Install ``make`` if you want the Makefile shortcuts. Always activate your virtual environment before running ``make`` or ``pip`` so tools install into the same interpreter.
 
 **Recommended (Makefile-based):**
 
@@ -71,13 +76,17 @@ Both methods install:
 * Linting tools (black, ruff, isort, mypy)
 * Documentation tools (sphinx)
 
+If any tool is missing, reactivate the virtual environment and rerun the install command.
+
 Development Workflow
 --------------------
+
+Follow this loop for each change: sync with ``upstream/main`` → branch → code + docs → format → test → commit → push → PR. Keep PRs small so reviews stay focused.
 
 Create a Branch
 ~~~~~~~~~~~~~~~
 
-Always create a new branch for your work:
+Always create a new branch for your work. Sync with ``upstream/main`` first, then branch from your local ``main``:
 
 .. code-block:: bash
 
@@ -88,24 +97,29 @@ Always create a new branch for your work:
 Make Changes
 ~~~~~~~~~~~~
 
-1. Write your code following our coding standards (see below)
-2. Add or update tests
-3. Update documentation
-4. Run linters and tests
+1. Write your code following our coding standards (see below); keep the scope focused
+2. Add or update tests that cover the new behavior and edge cases
+3. Update documentation for any user-facing change (CLI flags, API shape, defaults)
+4. Run linters and tests locally before committing
 
 Run Tests
 ~~~~~~~~~
 
+Prefer deterministic seeds for random data so results are reproducible. Use narrow test targets while iterating, then run the full suite before you push.
+
 .. code-block:: bash
 
-    # Run all tests
+    # Run all tests with coverage
     make test
     
     # Or directly with pytest
-    python run_tests.py
+    python -m pytest tests/ -v
+    python -m pytest tests/test_module.py -k specific_case  # iterate on one test quickly
 
 Run Linters
 ~~~~~~~~~~~
+
+Run linters before pushing to catch easy issues early.
 
 .. code-block:: bash
 
@@ -113,26 +127,28 @@ Run Linters
     make lint
     
     # Or individual tools
-    make format  # Auto-format code (black, isort)
-    ruff check .
-    mypy py3plex
+    make format  # Auto-format code (black, isort, ruff --fix)
+    ruff check py3plex/
+    mypy py3plex/
+
+``make lint`` runs the configured checkers and should be clean before opening a PR. If a tool is missing, reactivate the virtual environment and reinstall dev dependencies.
 
 Commit Changes
 ~~~~~~~~~~~~~~
 
-Write clear, descriptive commit messages:
+Keep commits small and focused. Write clear, descriptive commit messages that explain the change and why it matters:
 
 .. code-block:: bash
 
     git add .
-    git commit -m "Add feature X to support Y
-    
-    - Implement algorithm for Z
-    - Add tests for edge cases
-    - Update documentation"
+    git commit -m "Add feature X to support Y"
+    # For multi-line messages, use your editor:
+    git commit
 
 Push and Create PR
 ~~~~~~~~~~~~~~~~~~
+
+Rebase your branch onto the latest ``upstream/main`` before pushing to reduce review churn.
 
 .. code-block:: bash
 
@@ -143,7 +159,7 @@ Then create a Pull Request on GitHub with:
 * Clear title describing the change
 * Description of what changed and why
 * Reference to related issues (e.g., "Fixes #123")
-* Screenshots for UI changes
+* Screenshots for UI changes (when relevant)
 
 Coding Standards
 ----------------
@@ -155,7 +171,7 @@ We follow PEP 8 with these specifics:
 
 * Line length: 100 characters (not 80)
 * Indentation: 4 spaces (no tabs)
-* String quotes: Single quotes preferred ('text' not "text")
+* String quotes: Prefer single quotes in Python unless an existing file uses double quotes
 * Imports: Grouped and sorted (using isort)
 
 Auto-format your code:
@@ -193,14 +209,14 @@ Naming Conventions
 Docstrings
 ~~~~~~~~~~
 
-Use NumPy-style docstrings for all public functions and classes:
+Use NumPy-style docstrings for all public functions and classes. Keep examples minimal but runnable:
 
 .. code-block:: python
 
     def multilayer_degree_centrality(network, layer=None, weighted=False):
         """
         Compute degree centrality for multilayer network.
-        
+
         Parameters
         ----------
         network : multi_layer_network
@@ -229,7 +245,7 @@ Use NumPy-style docstrings for all public functions and classes:
         
         Notes
         -----
-        For directed networks, this computes out-degree by default.
+        For directed networks, NetworkX defaults to out-degree; adjust your expectations if you need in-degree variants.
         
         References
         ----------
@@ -265,7 +281,7 @@ All new code should include tests:
 
 * Unit tests for individual functions
 * Integration tests for workflows
-* Edge cases for boundary conditions
+* Edge cases for boundary conditions and failure modes
 * Documentation tests for examples in docstrings
 
 Writing Tests
@@ -281,32 +297,29 @@ Use pytest for testing:
     from py3plex.algorithms.statistics import multilayer_statistics as mls
     
     def test_layer_density():
-        """Test layer density calculation."""
-        # Setup
+        """Layer density stays within [0, 1]."""
         network = multinet.multi_layer_network()
         network.add_edges([
             ['A', 'L1', 'B', 'L1', 1],
             ['B', 'L1', 'C', 'L1', 1],
         ], input_type='list')
-        
-        # Execute
+
         density = mls.layer_density(network, 'L1')
-        
-        # Assert
+
         assert 0 <= density <= 1
         assert density == pytest.approx(0.333, abs=0.01)
-    
+
     def test_invalid_layer():
-        """Test error handling for invalid layer."""
+        """Invalid layers raise an error."""
         network = multinet.multi_layer_network()
-        
+
         with pytest.raises(ValueError):
             mls.layer_density(network, 'nonexistent')
 
 Test Coverage
 ~~~~~~~~~~~~~
 
-Aim for high test coverage:
+Aim for high test coverage on new or changed code:
 
 .. code-block:: bash
 
@@ -318,7 +331,7 @@ Aim for high test coverage:
     # or
     xdg-open htmlcov/index.html  # Linux
 
-Target: >80% coverage for new code
+Target: >80% coverage for new code, and cover new branches or failure modes you introduce.
 
 Documentation
 -------------
@@ -338,37 +351,39 @@ Build Documentation
 
 .. code-block:: bash
 
-    cd docfiles
-    make html
+    # From repository root
+    make docs
+    
+    # Or from docfiles
+    cd docfiles && make html
     
     # View documentation
     open _build/html/index.html
+
+If the build fails because Sphinx is missing, (re)install the development extras in your active virtual environment and rerun the build until it completes without warnings.
 
 Documentation Style
 ~~~~~~~~~~~~~~~~~~~
 
 * Clear and concise - Use simple language
 * Code examples - Include working examples
-* Cross-references - Link to related documentation
+* Cross-references - Link to related documentation using Sphinx roles (use ``:func:`` for functions, ``:mod:`` for modules, etc.)
 * Visual aids - Add diagrams where helpful
 
 Pull Request Guidelines
-------------------------
+-----------------------
 
 Before Submitting
 ~~~~~~~~~~~~~~~~~
 
-[OK] Code follows style guide (``make lint`` passes)
+Use this quick checklist:
 
-[OK] All tests pass (``make test`` passes)
-
-[OK] New code has tests
-
-[OK] Documentation is updated
-
-[OK] Commit messages are clear
-
-[OK] Branch is up to date with main
+* Code follows style guide (``make lint`` passes)
+* All tests pass (``make test`` passes)
+* New code has tests
+* Documentation is updated
+* Commit messages are clear
+* Branch is up to date with ``upstream/main``
 
 PR Description
 ~~~~~~~~~~~~~~
@@ -430,12 +445,12 @@ When reporting bugs, include:
 
 * Description of the bug
 * Steps to reproduce
+* Minimal code example (and smallest possible data snippet)
 * Expected behavior
 * Actual behavior
 * Python version (``python --version``)
 * py3plex version
 * Operating system
-* Minimal code example
 
 Example:
 
@@ -456,7 +471,7 @@ Example:
     
     ## Expected
     
-    Density should be between 0 and 1, or raise ValueError for negative weights.
+    Density should be between 0 and 1; negative weights may need validation or an error.
     
     ## Actual
     
@@ -475,6 +490,7 @@ For feature requests, describe:
 
 * Use case - What problem does it solve?
 * Proposed solution - How should it work?
+* API shape - Preferred signatures, defaults, or CLI flags
 * Alternatives - Other approaches considered
 * Additional context - Examples, papers, etc.
 

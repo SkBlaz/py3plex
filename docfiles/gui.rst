@@ -2,7 +2,7 @@
 Py3plex GUI
 ********************
 
-A production-ready web-based GUI for **py3plex** multilayer network analysis, running locally via Docker Compose.
+A web-based GUI for **py3plex** multilayer network analysis. It runs locally via Docker Compose out of the box; apply the hardening steps below before exposing it beyond your machine.
 
 .. image:: https://img.shields.io/badge/license-BSD--3--Clause-blue
    :alt: License
@@ -24,8 +24,18 @@ The Py3plex GUI provides an intuitive web interface for multilayer network analy
 
 |
 
+Prerequisites
+=============
+
+- Docker (>= 20.10)
+- Docker Compose (>= 2.0)
+- 4GB RAM minimum
+- Ports available: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)
+
 Quickstart
 ===========
+
+Install the prerequisites above and ensure the listed ports are free, then:
 
 .. code-block:: bash
 
@@ -35,14 +45,14 @@ Quickstart
     # Copy environment configuration
     cp .env.example .env
 
-    # Start all services (builds automatically)
+    # Start all services (builds automatically; wait for containers to report "healthy")
     make up
 
     # Open in browser
     #  Application: http://localhost:8080
     # Data Job Monitor (Flower): http://localhost:5555
 
-**First time?** The build takes ~3-5 minutes. Subsequent starts are instant.
+**First time?** The build takes ~3-5 minutes because images are built and dependencies downloaded. Subsequent starts are instant.
 
 That's it! The application will be running with:
 
@@ -51,14 +61,6 @@ That's it! The application will be running with:
 - Celery workers for async jobs
 - Redis broker
 - Nginx reverse proxy
-
-Prerequisites
-=============
-
-- Docker (>= 20.10)
-- Docker Compose (>= 2.0)
-- 4GB RAM minimum
-- Ports available: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)
 
 Architecture
 ============
@@ -101,6 +103,7 @@ Architecture
 - **Broker**: Redis for job queue
 - **Proxy**: Nginx for unified access
 - **Monitoring**: Flower dashboard for job inspection
+- **Shared storage**: ``gui/data`` for uploads, artifacts, and workspaces so results persist across restarts
 
 Features
 ========
@@ -174,16 +177,15 @@ Export
 Workspace Bundles
 -----------------
 
-Save and restore complete analysis sessions:
+Save and restore complete analysis sessions. A bundle includes:
 
-.. code-block:: python
+- Original network file
+- Computed layouts
+- Centrality results
+- Community assignments
+- UI view state
 
-    # Bundle includes:
-    # - Original network file
-    # - Computed layouts
-    # - Centrality results
-    # - Community assignments
-    # - UI view state
+Export a bundle from the **Export** page and re-import it later to restore the exact session state.
 
 Job Monitoring
 --------------
@@ -358,7 +360,7 @@ Accepted Input Formats
 Example Dataset
 ---------------
 
-Try the included toy network:
+Try the included toy network (6 nodes, 14 edges, 3 layers):
 
 .. code-block:: bash
 
@@ -366,6 +368,8 @@ Try the included toy network:
     curl -F "file=@gui/toy_network.edgelist" http://localhost:8080/api/upload
 
     # Or use the Web UI at http://localhost:8080
+
+The upload endpoint must be reachable (start the stack via ``make up`` first).
 
 Testing
 =======
@@ -411,7 +415,7 @@ API Tests
 Integration Tests
 -----------------
 
-The CI workflow runs full integration tests:
+The CI workflow runs full integration tests (Docker Compose brings up the full stack and exercises uploads + analysis):
 
 .. code-block:: bash
 
@@ -431,8 +435,10 @@ Frontend Tests (WIP)
 Manual Testing Workflow
 -----------------------
 
+For a step-by-step manual checklist, see ``docfiles/gui/gui_testing.rst``. Quick smoke flow:
+
 1. **Upload** ``toy_network.edgelist`` via Web UI
-2. **Visualize** the network (6 nodes, 14 edges, 3 layers)
+2. **Visualize** the network (expect 6 nodes, 14 edges, 3 layers)
 3. **Analyze**:
    
    - Run Spring Layout
@@ -448,7 +454,7 @@ Production Deployment
 Static Build (Recommended)
 --------------------------
 
-For production, serve pre-built frontend assets:
+For production, serve pre-built frontend assets instead of the Vite dev server:
 
 .. code-block:: dockerfile
 
@@ -482,7 +488,7 @@ Security Considerations
 - Set resource limits per user/job
 - Enable Celery task rate limiting
 
-**Current Status**: Development mode - suitable for local use only. Do not expose to public internet without proper security hardening.
+**Current Status**: Development mode - suitable for local use only. Do not expose to the public internet without proper security hardening.
 
 Troubleshooting
 ===============

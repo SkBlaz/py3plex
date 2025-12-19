@@ -1,12 +1,12 @@
 Command-Line Interface (CLI) Tutorial
 ======================================
 
-Py3plex includes a comprehensive command-line interface that provides access to all main algorithms and functionality directly from the terminal. This is useful for quick analysis, scripting, and automation workflows.
+Py3plex includes a comprehensive command-line interface that provides access to all main algorithms and functionality directly from the terminal. This is useful for quick analysis, scripting, and automation workflows without writing Python code.
 
 Installation
 ------------
 
-The CLI tool is automatically available after installing py3plex:
+The CLI tool is available immediately after installing py3plex:
 
 .. code-block:: bash
 
@@ -20,7 +20,7 @@ After installation, verify the CLI is available:
 
 **Alternative: Using Docker**
 
-If you prefer Docker, the CLI is also available via the Docker container:
+If you prefer Docker, the CLI is also available via the Docker container. Mount a host directory to ``/data`` when you want outputs to persist:
 
 .. code-block:: bash
 
@@ -86,6 +86,7 @@ The py3plex CLI provides these main commands:
 * ``visualize`` - Create network visualizations
 * ``aggregate`` - Aggregate multilayer networks into single layer
 * ``convert`` - Convert between network formats
+* ``run-config`` - Run YAML/JSON workflow definitions
 * ``help`` - Show detailed help information
 
 Quick Reference
@@ -115,6 +116,12 @@ Quick Reference
     # Community detection workflow
     py3plex community net.graphml --algorithm louvain --output communities.json
 
+**Defaults and conventions:**
+
+* Input format is auto-detected by file extension; override with ``--input-type`` when necessary.
+* ``--output`` writes to a file and infers format from the extension; omit it to print to stdout where supported.
+* Commands return non-zero exit codes on validation or runtime errors, making them safe to chain in scripts and CI.
+
 Unix Piping and Stdin Support
 -----------------------------
 
@@ -133,10 +140,12 @@ Use ``-`` as the input file argument to read network data from stdin:
     # Pipe to query command
     cat network.edgelist | py3plex query - "SELECT nodes COMPUTE degree"
 
+When reading from stdin, set ``--input-type`` if the format cannot be inferred from a filename (for example when piping raw CSV or JSON).
+
 Piping Between Commands
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Chain py3plex commands together without intermediate files:
+Chain py3plex commands together without intermediate files. Commands write logs to stderr, so piping stdout keeps data clean:
 
 .. code-block:: bash
 
@@ -167,7 +176,7 @@ The ``query`` command executes DSL queries on networks and outputs results in mu
     py3plex query network.edgelist "SELECT nodes COMPUTE degree"
 
     # Multiple computations
-    py3plex query network.edgelist "SELECT nodes COMPUTE degree, betweenness_centrality"
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree betweenness_centrality"
 
 **Python DSL Builder Syntax (use ``--dsl`` flag):**
 
@@ -200,10 +209,14 @@ Control the output format for different use cases:
     # Table output - good for human reading in terminal
     py3plex query network.edgelist "SELECT nodes COMPUTE degree" --format table
 
+Default output is JSON. Use ``table`` for on-screen inspection and ``csv`` when you want a spreadsheet-friendly file.
+
 Combining with Unix Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Combine py3plex output with standard Unix tools for powerful data processing:
+
+Explicitly set ``--format`` when piping into other tools so output shape stays stable.
 
 **With jq (JSON processing):**
 
@@ -275,6 +288,8 @@ Complete Piping Workflow Examples
     py3plex create --nodes 50 --layers 2 -o /dev/stdout 2>/dev/null | \
         py3plex query - 'Q.nodes().compute("degree").order_by("-degree").limit(5)' --dsl
 
+For long pipelines, prefer explicit ``--format`` choices to keep output predictable for downstream tools.
+
 Tips for Piping Workflows
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -291,7 +306,7 @@ Before loading network data, you can validate file format and data integrity usi
 Basic Validation
 ~~~~~~~~~~~~~~~~
 
-Validate a graph data file (auto-detects format):
+Validate a graph data file (auto-detects format). The command returns exit code 0 when no errors are found:
 
 .. code-block:: bash
 
@@ -347,7 +362,7 @@ Use ``--strict`` to treat warnings as errors (useful for CI/CD pipelines):
 
     py3plex check network.csv --strict
 
-With strict mode enabled, the command exits with error code 1 if any warnings are found, making it suitable for automated validation in scripts.
+With strict mode enabled, the command exits with error code 1 if any warnings are found, making it suitable for automated validation in scripts. Successful validation still returns 0.
 
 Validation Checks
 ~~~~~~~~~~~~~~~~~
@@ -417,10 +432,12 @@ Create a simple multilayer network with random edges:
 
     py3plex create --nodes 100 --layers 3 --output network.graphml --seed 42
 
-This creates a network with 100 nodes per layer and 3 layers, saving it to ``network.graphml``.
+This creates a network with 100 nodes across 3 layers and saves it to ``network.graphml``.
 
 Network Generation Models
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``create`` command supports multiple random graph models. The ``--probability`` flag controls density or rewiring, depending on the model; use ``py3plex create --help`` for the exact parameter meaning before launching large jobs. Set ``--seed`` for reproducible output and reduce ``--probability`` if graphs become too dense for your machine.
 
 **Erdős-Rényi Random Graphs:**
 
@@ -558,7 +575,7 @@ Use label propagation for fast community detection:
 Infomap (Optional)
 ~~~~~~~~~~~~~~~~~~
 
-If Infomap is installed, use it for overlapping community detection:
+If Infomap is installed as an optional dependency, you can run it directly:
 
 .. code-block:: bash
 
@@ -588,6 +605,8 @@ Compute degree centrality and show top nodes:
       node18---layer2: 11.000000
       node77---layer1: 10.000000
       ...
+
+Use ``--top`` to limit printed entries; pair with ``--output`` to save all scores.
 
 Save Results
 ~~~~~~~~~~~~
@@ -636,6 +655,8 @@ Compute all available multilayer statistics:
 .. code-block:: bash
 
     py3plex stats network.graphml --measure all --output stats.json
+
+Statistics can be verbose; prefer ``--output`` to capture them as JSON.
 
 **Output includes:**
 
@@ -728,6 +749,8 @@ Network Aggregation
 
 Aggregate multiple layers into a single layer using different methods:
 
+Output format is inferred from the extension (``.graphml`` in the examples below).
+
 Sum Aggregation
 ~~~~~~~~~~~~~~~
 
@@ -759,6 +782,8 @@ Convert Between Formats
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Convert networks between different file formats:
+
+Format detection relies on file extensions; pass ``--input-type`` when converting from stdin or extensionless files.
 
 **To GEXF (for Gephi):**
 
@@ -862,46 +887,40 @@ Example 4: Validate External Data Before Analysis
 Tips and Best Practices
 ------------------------
 
-1. **Validate Data Files First**: Always run ``py3plex check`` on external data files before analysis to catch format issues early.
+- **Validate data first**: Run ``py3plex check`` on external files before analysis to catch format issues early.
+- **Use seeds for reproducibility**: Pass ``--seed`` when creating networks so results are repeatable.
+- **Save structured output**: Use ``--output`` (often with JSON) for results you plan to post-process.
+- **Consult per-command help**: Each command ships with examples:
 
-2. **Use Seeds for Reproducibility**: Always use ``--seed`` when creating networks for reproducible results.
+  .. code-block:: bash
 
-3. **JSON Output for Scripting**: Use ``--output`` to save results as JSON for post-processing with other tools.
+      py3plex <command> --help
 
-4. **Check Help for Each Command**: Each command has detailed help with examples:
-
-   .. code-block:: bash
-
-       py3plex <command> --help
-
-4. **Format Auto-Detection**: The CLI automatically detects file formats from extensions, so use appropriate extensions (.graphml, .gexf, .json, .gpickle).
-
-5. **Large Networks**: For large networks (>1000 nodes), prefer:
-   
-   * ``spring`` or ``circular`` layouts for visualization
-   * ``louvain`` for community detection (faster than infomap)
-   * ``degree`` centrality for quick analysis
-
-6. **Batch Processing**: Combine CLI commands with shell scripts for batch processing multiple networks.
+- **Rely on extensions for format detection**: Use meaningful extensions (``.graphml``, ``.gexf``, ``.json``, ``.gpickle``) so the CLI auto-detects formats correctly.
+- **Handling large networks (>1000 nodes)**:
+  * Prefer ``spring`` or ``circular`` layouts for quicker visualization
+  * Use ``louvain`` for community detection (typically faster than ``infomap``)
+  * Start with ``degree`` centrality for quick scans
+- **Batch processing**: Combine CLI commands with shell scripts to process many networks consistently.
 
 Common Issues and Solutions
 ----------------------------
 
 **Issue: "Infomap not available"**
 
-Solution: Infomap requires separate installation. Use ``louvain`` or ``label_prop`` instead.
+Solution: Infomap is an optional dependency. Install it if you need that algorithm, or choose ``louvain``/``label_prop`` instead.
 
 **Issue: "Eigenvector centrality failed"**
 
-Solution: Some networks don't converge for eigenvector centrality. The CLI automatically falls back to degree centrality.
+Solution: Eigenvector centrality may not converge on disconnected or poorly conditioned graphs. Run it on a connected subgraph or switch to ``degree`` centrality.
 
 **Issue: Visualization too slow**
 
-Solution: Use simpler layouts (``circular``) or reduce figure size (``--width 8 --height 6``).
+Solution: Use simpler layouts (``circular``), reduce figure size (``--width 8 --height 6``), or sample a subgraph before plotting.
 
 **Issue: Memory errors with large networks**
 
-Solution: Use aggregation to reduce network size before visualization, or compute statistics without visualization.
+Solution: Aggregate layers to shrink the graph, or stick to text-based stats instead of visualization.
 
 See Also
 --------

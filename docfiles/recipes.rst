@@ -6,6 +6,7 @@ Analysis Recipes & Workflows
 
 This guide provides **practical recipes** for **common analysis workflows** in py3plex. 
 Each recipe is a **complete, ready-to-use solution** for a real-world task.
+Example outputs use small sample networks; expect different values on your data.
 
 .. contents:: Recipe Index
    :local:
@@ -829,13 +830,15 @@ Recipe 16: Handle Large Networks Efficiently
 
     from py3plex.core import multinet
     import gc
+    import random
     
-    # === 1. Load network efficiently ===
-    # Use generators instead of loading all at once
-    network = multinet.multi_layer_network()
-    
-    # For very large files, load in chunks or stream
-    # (This is a conceptual example - actual implementation may vary)
+    # === 1. Load the network efficiently ===
+    # For very large files, prefer streamed loading; here we show standard load
+    network = multinet.multi_layer_network().load_network(
+        "data/large_network.txt",
+        input_type="multiedgelist",
+        directed=False
+    )
     
     # === 2. Process layers independently ===
     layers = network.get_layers()
@@ -862,14 +865,14 @@ Recipe 16: Handle Large Networks Efficiently
         print(f"{layer}: {stats['nodes']} nodes, {stats['edges']} edges")
     
     # === 3. Use sparse representations ===
-    # When computing supra-adjacency matrix
+    # Only build the supra-adjacency matrix when needed
     supra_adj = network.get_supra_adjacency_matrix(sparse=True)
     print(f"\nSupra-adjacency matrix: {supra_adj.shape} (sparse)")
+    # Skip this step for extremely large networks if layer-wise analysis is sufficient.
     
     # === 4. Sample for exploratory analysis ===
     # For visualization or initial exploration, work with a sample
     all_nodes = list(network.get_nodes())
-    import random
     random.seed(42)
     sample_size = min(1000, len(all_nodes))
     sampled_nodes = random.sample(all_nodes, sample_size)

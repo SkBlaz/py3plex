@@ -86,7 +86,7 @@ Dynamics models work with:
 
 * **py3plex multilayer networks**: Full support for inter-layer and intra-layer edges
 * **NetworkX graphs**: Single-layer networks (directed or undirected)
-* **Edge weights**: Used in weighted random walks; epidemic models currently treat edges as unweighted contacts
+* **Edge weights**: Epidemic models currently treat edges as unweighted contacts. ``RandomWalkDynamics`` samples neighbors uniformly, so weights are ignored unless you implement a weighted variant.
 
 Common Base Interface
 ~~~~~~~~~~~~~~~~~~~~~
@@ -111,6 +111,7 @@ All dynamics classes inherit from ``DynamicsProcess`` (discrete-time) or ``Conti
     state_counts = results.get_measure("state_counts")
 
 The ``results`` object is always a ``DynamicsResult`` instance with standardized measure extraction methods.
+Time series returned by ``.run(steps=k)`` include the initial state at ``t=0``, so arrays have length ``k + 1``.
 
 SIR Epidemic Model on Multilayer Networks
 ------------------------------------------
@@ -133,7 +134,7 @@ The **SIR (Susceptible-Infected-Recovered)** model describes epidemic spread wit
 
       p_{\text{infect}} = 1 - (1 - \beta)^k
 
-   where :math:`\beta \in (0, 1)` is the per-contact infection probability
+   where :math:`\beta \in (0, 1)` is the per-contact infection probability under independent transmission attempts from each infected neighbor
 
 3. **Absorption**: Recovered nodes remain recovered (R → R) forever
 
@@ -142,7 +143,7 @@ The **SIR (Susceptible-Infected-Recovered)** model describes epidemic spread wit
 On multilayer networks, the infection pressure on a node aggregates across all layers:
 
 * A susceptible node ``(i, layer_A)`` counts infected neighbors from both intra-layer edges (within ``layer_A``) and inter-layer edges (to other layers)
-* You can specify layer-specific transmission rates β as a dictionary (see :ref:`layer-specific-params`)
+* The built-in ``SIRDynamics`` uses a single :math:`\beta` value across all layers; to model heterogeneous layers, see :ref:`layer-specific-params` for a small customization pattern
 
 This means epidemics can spread within layers and jump between layers via inter-layer connections, mimicking real-world scenarios like workplace and household transmission.
 
@@ -213,7 +214,7 @@ Code Example
     Final recovered: 40 nodes
     Attack rate: 100.00%
 
-*Note: Exact values depend on network structure and random seed. The example shows a complete outbreak where all nodes eventually get infected.*
+*Note: Exact values depend on network structure and random seed. The example shows a complete outbreak where all nodes eventually get infected. On multilayer supra-networks, counts refer to node-layer pairs; collapse layers first if you need per-entity totals.*
 
 Time Series Visualization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -276,7 +277,7 @@ Unlike SIR (which eventually dies out), SIS can reach an **endemic equilibrium**
 
    R_0 = \frac{\beta}{\gamma} \langle k \rangle
 
-where ⟨k⟩ is the average degree. If R₀ > 1, the epidemic persists; if R₀ ≤ 1, it dies out.
+where ⟨k⟩ is the average degree in a homogeneous-network, small-:math:`\beta` approximation (using :math:`1 - (1 - \beta)^k \approx \beta k`). If R₀ > 1, endemicity is possible; if R₀ ≤ 1, the epidemic dies out in this mean-field view (heterogeneous networks can shift the threshold).
 
 **Multilayer Extension**
 
@@ -406,6 +407,7 @@ On multilayer networks:
 * Walkers navigate both intra-layer edges (within a layer) and inter-layer edges (between layers)
 * The state is a node-layer tuple, e.g., ``(node_id, layer)``
 * Transition probabilities are uniform over all neighbors (intra-layer + inter-layer)
+* Edge weights in the graph are ignored in this default implementation; to bias transitions by weight, subclass and resample neighbors proportionally
 
 Random walks are fundamental for:
 
@@ -521,33 +523,39 @@ Layer-Specific and Time-Varying Parameters
 Layer-Specific Transmission Rates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can configure different infection rates for different layers by passing a **dictionary** for the ``beta`` parameter:
+``SIRDynamics`` and ``SISDynamics`` accept a single scalar ``beta``. To model heterogeneous transmission across layers, subclass the process and choose a layer-dependent ``beta`` inside the susceptible transition:
 
 .. code-block:: python
 
     from py3plex.dynamics import SIRDynamics
     
-    # Define layer-specific transmission rates
+    class LayerAwareSIR(SIRDynamics):
+        def __init__(self, graph, layer_betas, default_beta=0.2, **kwargs):
+            super().__init__(graph, beta=default_beta, **kwargs)
+            self.layer_betas = layer_betas
+            self.transition_rules = dict(self.transition_rules)  # shallow copy
+            
+            def transition_S(node, state, neighbor_counts, rng, params):
+                layer = node[1] if isinstance(node, tuple) else None
+                beta = self.layer_betas.get(layer, params['beta'])
+                k = neighbor_counts['I']
+                if k > 0:
+                    p_infect = 1.0 - (1.0 - beta) ** k
+                    if rng.random() < p_infect:
+                        return 'I'
+                return 'S'
+            
+            self.transition_rules['S'] = transition_S
+    
     layer_rates = {
-        'household': 0.5,   # High transmission in households
-        'workplace': 0.2,   # Medium transmission at work
-        'social': 0.1       # Low transmission in casual social contacts
+        'household': 0.5,
+        'workplace': 0.2,
+        'social': 0.1,
     }
-    
-    sir = SIRDynamics(
-        network,
-        beta=layer_rates,   # Pass dict instead of scalar
-        gamma=0.1,
-        initial_infected=0.05
-    )
-    
+    sir = LayerAwareSIR(network, layer_betas=layer_rates, default_beta=0.1)
     results = sir.run(steps=100)
 
-**How It Works**
-
-* When computing infection pressure on a node ``(i, layer_A)``, edges within ``layer_A`` use ``beta['layer_A']``
-* Inter-layer edges use a default or average beta (implementation-dependent)
-* This allows modeling realistic scenarios where transmission varies by context
+This pattern mirrors the built-in rules while letting you vary infection pressure per layer.
 
 **Extracting Per-Layer Statistics**
 
@@ -592,7 +600,7 @@ To model interventions (e.g., school closures, social distancing), you can run m
     
     # Run phase 2 (with reduced beta)
     sir_intervention = SIRDynamics(network, beta=0.15, gamma=0.1)
-    sir_intervention.seed = 42  # Continue from same seed
+    sir_intervention.set_seed(42)  # Continue from same seed
     results_intervention = sir_intervention.run(steps=70, state=state_30)
     
     # Compare peak prevalence
@@ -687,6 +695,8 @@ Extracting and Analyzing Measures
     total_nodes = sum(state_counts[s][0] for s in state_counts.keys())  # Total at t=0
     attack_rate = state_counts['R'][-1] / total_nodes
     print(f"Attack rate: {attack_rate:.2%}")
+
+For multilayer networks, ``total_nodes`` counts supra-nodes (node-layer tuples). If you want a per-entity attack rate, aggregate layers first.
 
 Converting to pandas DataFrame
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -811,7 +821,7 @@ To explore how outcomes depend on parameters, run a grid sweep:
             results_grid.append({
                 'beta': beta,
                 'gamma': gamma,
-                'R0_approx': beta / gamma * 4.6,  # <k> ≈ 4.6 for karate club
+                'R0_approx': beta / gamma * 4.6,  # Mean-field R0 ≈ (β/γ)<k>; <k> ≈ 4.6 here (small-β assumption)
                 'peak_prevalence': prevalence.max(),
                 'peak_time': prevalence.argmax(),
                 'attack_rate': state_counts['R'][-1] / G.number_of_nodes(),
@@ -1034,9 +1044,12 @@ Query Infected Nodes
         'SELECT nodes WHERE sir_state="I"'
     )
     
-    print(f"Infected nodes: {len(infected)}")
+    infected_nodes = infected.get("nodes", [])
+    infected_count = infected.get("count", len(infected_nodes))
+    
+    print(f"Infected nodes: {infected_count}")
     print(f"Sample infected:")
-    for node in list(infected)[:5]:
+    for node in infected_nodes[:5]:
         print(f"  {node}")
 
 **Expected output:**
@@ -1215,13 +1228,15 @@ Extract Subpopulations
         'SELECT nodes WHERE sir_state="R"'
     )
     
+    recovered_matches = recovered_nodes.get("nodes", [])
+    
     # Extract induced subgraph
-    recovered_subgraph = network.core_network.subgraph(recovered_nodes)
+    recovered_subgraph = network.core_network.subgraph(recovered_matches)
     
     print(f"Recovered subnetwork:")
     print(f"  Nodes: {recovered_subgraph.number_of_nodes()}")
     print(f"  Edges: {recovered_subgraph.number_of_edges()}")
-    print(f"  Layers: {set(node[1] for node in recovered_nodes)}")
+    print(f"  Layers: {set(node[1] for node in recovered_matches)}")
 
 **Expected output:**
 
@@ -1244,8 +1259,10 @@ Extract Subpopulations
         'SELECT nodes WHERE sir_state="S"'
     )
     
+    susceptible_nodes = susceptible.get("nodes", [])
+    
     # Extract subgraph
-    S_subgraph = network.core_network.subgraph(susceptible)
+    S_subgraph = network.core_network.subgraph(susceptible_nodes)
     
     # Compute connected components
     if S_subgraph.number_of_nodes() > 0:

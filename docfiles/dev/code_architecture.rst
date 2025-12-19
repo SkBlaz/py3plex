@@ -1,12 +1,12 @@
 Architecture and Design
 =======================
 
-This document describes the **system architecture**, **design patterns**, and **extension points** of py3plex.
+This document describes the **system architecture**, **design patterns**, and **extension points** of py3plex. It explains how the layers fit together, what each layer owns, and where to plug in new capabilities without leaking responsibilities across layers.
 
 System Overview
 ---------------
 
-py3plex is built as a **modular, layered architecture** with clear separation of concerns:
+py3plex uses a **modular, layered architecture** with explicit boundaries. Higher layers depend on lower ones, never the reverse; data flows downward for computation and back upward for presentation:
 
 .. code-block:: text
 
@@ -45,59 +45,65 @@ py3plex is built as a **modular, layered architecture** with clear separation of
     │  MultiDiGraph, MultiGraph, Algorithms                │
     └─────────────────────────────────────────────────────┘
 
+**Reading the diagram:** NetworkX primitives sit at the base. The core layer wraps them in a multilayer-aware data model. Algorithms, visualization, and wrappers build on that model and never mutate it implicitly; wrappers orchestrate complete tasks while delegating computation to the lower layers.
+
 Architectural Layers
 --------------------
+
+Each layer has a narrow contract: the core encodes data, algorithms consume that encoding, visualization renders results, and wrappers orchestrate complete tasks. When extending py3plex, start from the lowest layer you need and only depend upward.
 
 Core Layer
 ~~~~~~~~~~
 
-**Purpose:** Fundamental data structures and I/O operations
+**Purpose:** Fundamental data structures and I/O operations. Everything else depends on this layer, so invariants and encoding live here.
 
 **Key Components:**
 
-* ``multinet.py`` - The ``multi_layer_network`` **class**
-* ``parsers.py`` - **Input/output** for various formats
-* ``converters.py`` - **Format conversion** utilities
-* ``random_generators.py`` - **Random network** generators
-* ``HINMINE/`` - **Heterogeneous network decomposition**
+* ``multinet.py`` - The ``multi_layer_network`` class (core facade)
+* ``parsers.py`` - Input/output for various formats
+* ``converters.py`` - Format conversion utilities
+* ``random_generators.py`` - Random network generators
+* ``HINMINE/`` - Heterogeneous network decomposition helpers
 
 **Responsibilities:**
 
-* **Network construction** and manipulation
-* **File I/O** (GraphML, GML, GEXF, edge lists, etc.)
-* **Layer management**
-* **Matrix representations** (adjacency, supra-adjacency)
-* **NetworkX integration**
+* Network construction and mutation through a single API
+* File I/O (GraphML, GML, GEXF, edge lists, etc.)
+* Layer management (string ↔ integer IDs, delimiter handling)
+* Matrix representations (adjacency, supra-adjacency)
+* NetworkX integration and type selection (directed vs. undirected)
+* Cache ownership (e.g., supra adjacency, embeddings) and invalidation hooks triggered by mutations
 
-**Design Pattern:** **Facade Pattern** - ``multi_layer_network`` provides a unified interface to complex NetworkX operations
+**Design Pattern:** **Facade Pattern** — ``multi_layer_network`` exposes one consistent interface while hiding NetworkX wiring and encoding details
 
 Algorithms Layer
 ~~~~~~~~~~~~~~~~
 
-**Purpose:** Network analysis algorithms optimized for multilayer networks
+**Purpose:** Network analysis algorithms optimized for multilayer networks. Algorithms assume core-layer encoding and never adjust it themselves.
 
 **Key Components:**
 
-* ``community_detection/`` - **Community detection** algorithms
-* ``statistics/`` - **Network statistics** and metrics
-* ``multilayer_algorithms/`` - **Multilayer-specific** algorithms
-* ``node_ranking/`` - **Centrality** and ranking measures
-* ``general/`` - **General-purpose** algorithms (random walks, etc.)
+* ``community_detection/`` - Community detection algorithms
+* ``statistics/`` - Network statistics and metrics
+* ``multilayer_algorithms/`` - Multilayer-specific methods
+* ``node_ranking/`` - Centrality and ranking measures
+* ``general/`` - General-purpose algorithms (random walks, etc.)
 
 **Responsibilities:**
 
-* **Community detection** (Louvain, Infomap, Label Propagation)
-* **Statistical analysis** (17+ multilayer metrics)
-* **Centrality computation** (degree, betweenness, PageRank, etc.)
-* **Random walks** and embeddings
-* **Network decomposition**
+* Community detection (Louvain, Infomap, Label Propagation)
+* Statistical analysis (multilayer density, inter-layer correlation, etc.)
+* Centrality computation (degree, betweenness, PageRank, and variants)
+* Random walks and embeddings
+* Network decomposition primitives
+* Result caching where appropriate (never mutating the underlying graph)
 
-**Design Pattern:** **Strategy Pattern** - Different algorithms implement common interfaces
+**Design Pattern:** **Strategy Pattern** — interchangeable algorithms share a common interface
 
 Visualization Layer
 ~~~~~~~~~~~~~~~~~~~
 
-**Purpose:** Network plotting and rendering
+**Purpose:** Network plotting and rendering for multilayer structures. Visualization consumes algorithm outputs but does not compute new graph state.
 
 **Key Components:**
 
@@ -109,18 +115,18 @@ Visualization Layer
 
 **Responsibilities:**
 
-* Diagonal projection plots
-* Force-directed layouts
+* Diagonal projection plots and multilayer-specific layouts
+* Force-directed and ForceAtlas2 layouts
 * Matrix visualizations
-* Color mapping and legends
+* Color mapping and legend helpers
 * Interactive plots (via Plotly)
 
-**Design Pattern:** **Template Method Pattern** - Layout algorithms follow a common template
+**Design Pattern:** **Template Method Pattern** — layout algorithms follow a shared skeleton with overridable steps
 
 Wrappers Layer
 ~~~~~~~~~~~~~~
 
-**Purpose:** High-level interfaces for common workflows
+**Purpose:** High-level interfaces for common workflows so users can run end-to-end tasks without touching internals. Wrappers compose algorithms and visualization, but defer state changes to the core.
 
 **Key Components:**
 
@@ -129,19 +135,19 @@ Wrappers Layer
 
 **Responsibilities:**
 
-* Simplified interfaces for complex workflows
+* Simplified interfaces for multi-step workflows
 * Integration with external tools
-* Benchmarking and evaluation
+* Benchmarking and evaluation shortcuts
 
-**Design Pattern:** **Facade Pattern** - Simplify complex multi-step operations
+**Design Pattern:** **Facade Pattern** — hides orchestration and sensible defaults behind a small API
 
 Core Data Structure
 -------------------
 
 The multi_layer_network Class
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Central to py3plex, this class manages multilayer network state:
+Central to py3plex, this class wraps the underlying NetworkX graph and enforces multilayer encoding invariants:
 
 .. code-block:: python
 
@@ -158,18 +164,19 @@ Central to py3plex, this class manages multilayer network state:
 
 * ``core_network`` - Underlying NetworkX graph
 * ``layer_name_map`` - Maps layer names to integer IDs
-* ``label_delimiter`` - Separator for node-layer encoding (default: "---")
+* ``label_delimiter`` - Separator for node-layer encoding (default: ``"---"``)
 * ``coupling_weight`` - Default weight for inter-layer edges
 * ``embedding`` - Cached node embedding matrix
 * ``labels`` - Node classification labels
 
-**Encoding Scheme:**
+**Encoding Scheme and Invariants:**
 
-Nodes are encoded as ``"{node_id}{delimiter}{layer_id}"``
-
-Example: Node 'A' in layer 'social' becomes ``"A---social"``
-
-This allows NetworkX to handle multilayer structure transparently.
+* Nodes are represented as ``(node_id, layer)`` tuples in Python.
+* When serialized to flat text (files, labels), tuples are joined with the delimiter: ``"{node_id}{delimiter}{layer}"``. Avoid using the delimiter inside raw IDs.
+* Layer names are mapped to integers in ``layer_name_map`` for stable ordering.
+* ``core_network`` stays a NetworkX ``MultiGraph``/``MultiDiGraph``; avoid injecting derived attributes that are not part of the graph definition.
+* Inter-layer edges use ``coupling_weight`` unless explicitly weighted; modifying coupling should clear related caches.
+* Any mutation (adding/removing nodes, relabeling layers) should invalidate cached matrices or embeddings.
 
 Design Patterns
 ---------------
@@ -179,21 +186,21 @@ Facade Pattern
 
 **Used in:** ``multi_layer_network``, wrappers
 
-**Purpose:** Provide simplified interface to complex subsystems
+**Purpose:** Provide a simplified interface to complex subsystems and enforce a single entry point for mutations.
 
 .. code-block:: python
 
     # Complex underlying operations hidden behind simple interface
     network = multinet.multi_layer_network()
     network.add_edges(edges, input_type='list')  # Handles parsing, encoding, validation
-    network.basic_stats()  # Aggregates multiple NetworkX calls
+    stats = network.basic_stats()  # Aggregates multiple NetworkX calls behind one call
 
 Strategy Pattern
 ~~~~~~~~~~~~~~~~
 
 **Used in:** Algorithms, layout computation
 
-**Purpose:** Interchangeable algorithms following common interface
+**Purpose:** Interchangeable algorithms following a common interface; callers pick by name without changing call sites.
 
 .. code-block:: python
 
@@ -204,14 +211,14 @@ Strategy Pattern
             'infomap': community_wrapper.infomap_communities,
             'label_prop': label_propagation.propagate
         }
-        return strategies[method](network.core_network)
+        return strategies[method](network.core_network)  # Adding a new strategy means adding one entry to the map
 
 Template Method Pattern
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 **Used in:** Visualization, layout algorithms
 
-**Purpose:** Define algorithm skeleton, allow customization in subclasses
+**Purpose:** Define algorithm skeleton, allow customization in subclasses; shared steps live in the base class.
 
 .. code-block:: python
 
@@ -235,7 +242,7 @@ Dependency Injection
 
 **Used in:** Configuration, algorithm parameters
 
-**Purpose:** Inject dependencies rather than hard-coding
+**Purpose:** Inject dependencies rather than hard-coding so testing and theming stay configurable.
 
 .. code-block:: python
 
@@ -245,7 +252,7 @@ Dependency Injection
     def draw_network(network, colors=None, layout_params=None):
         colors = colors or DEFAULT_COLORS
         layout_params = layout_params or LAYOUT_PARAMS
-        # Use injected configuration
+        # Use injected configuration without touching global state
 
 Data Flow
 ---------
@@ -253,34 +260,36 @@ Data Flow
 Typical Workflow
 ~~~~~~~~~~~~~~~~
 
-1. **Input:** Load or create network
+py3plex workflows follow a predictable sequence: load → compute → analyze → visualize → export. Each step uses the layer beneath it and should avoid mutating lower layers unless explicitly intended.
+
+1. **Input:** Load or create network, keeping encoding consistent
 
    .. code-block:: python
 
        network = multinet.multi_layer_network()
        network.load_network("data.graphml", input_type="graphml")
 
-2. **Processing:** Apply algorithms
+2. **Processing:** Apply algorithms against the core graph without re-encoding
 
    .. code-block:: python
 
        communities = community_louvain.best_partition(network.core_network)
        centrality = calc.multilayer_degree_centrality(network)
 
-3. **Analysis:** Compute statistics
+3. **Analysis:** Compute statistics on the derived results
 
    .. code-block:: python
 
        density = mls.layer_density(network, 'layer1')
-       correlation = mls.inter_layer_degree_correlation(network, 'L1', 'L2')
+       correlation = mls.inter_layer_degree_correlation(network, 'layer1', 'layer2')
 
-4. **Visualization:** Render results
+4. **Visualization:** Render results; visualization functions expect immutable inputs
 
    .. code-block:: python
 
        draw_multilayer_default([network], display=True)
 
-5. **Output:** Export results
+5. **Output:** Export results using the same delimiter and layer naming
 
    .. code-block:: python
 
@@ -289,7 +298,7 @@ Typical Workflow
 State Management
 ~~~~~~~~~~~~~~~~
 
-**Immutable Operations:** Most algorithms don't modify the network
+**Immutable Operations:** Most algorithms don't modify the network or its caches
 
 .. code-block:: python
 
@@ -297,7 +306,7 @@ State Management
     centrality = calc.multilayer_degree_centrality(network)
     communities = community_louvain.best_partition(network.core_network)
 
-**Mutable Operations:** Some operations modify network state
+**Mutable Operations:** Some operations modify network state (nodes, edges, layer mappings, caches)
 
 .. code-block:: python
 
@@ -305,13 +314,15 @@ State Management
     network.add_edges(new_edges, input_type='list')
     network.aggregate_layers(['L1', 'L2'], 'combined')
 
+After running mutable operations, clear or recompute cached matrices/embeddings before downstream analysis. If you need isolation, copy the network or work on a subgraph before running destructive operations.
+
 Extension Points
 ----------------
 
 Custom Algorithms
 ~~~~~~~~~~~~~~~~~
 
-Add new algorithms by following existing patterns:
+Add new algorithms by following existing patterns (pure functions returning dictionaries or NetworkX objects). Keep inputs typed as ``multi_layer_network`` to reuse encoding and caching, and avoid mutating the passed network unless the function is explicitly transformative. Document input assumptions (directed vs. undirected, weighted vs. unweighted) and expose new callables in the relevant package ``__init__`` when you want them importable by name.
 
 .. code-block:: python
 
@@ -344,7 +355,7 @@ Add new algorithms by following existing patterns:
 Custom Visualizations
 ~~~~~~~~~~~~~~~~~~~~~
 
-Create custom plots using drawing machinery:
+Create custom plots using drawing machinery. Treat the network as read-only and reuse shared layout helpers to keep visuals consistent with built-in plots:
 
 .. code-block:: python
 
@@ -368,7 +379,7 @@ Create custom plots using drawing machinery:
 Custom Parsers
 ~~~~~~~~~~~~~~
 
-Add support for new file formats:
+Add support for new file formats. Normalize layer names, respect ``label_delimiter``, and raise the appropriate domain exceptions so callers can distinguish parsing failures from missing data:
 
 .. code-block:: python
 
@@ -434,11 +445,15 @@ Usage:
     colors = DEFAULT_COLORS
     iterations = LAYOUT_PARAMS['force']['iterations']
 
+Prefer importing needed values rather than mutating module globals. For per-run overrides, pass parameters explicitly into drawing or layout helpers.
+
 Testing Architecture
 --------------------
 
 Test Organization
 ~~~~~~~~~~~~~~~~~
+
+Tests mirror the architecture: core primitives first, then algorithms and workflows.
 
 .. code-block:: text
 
@@ -478,8 +493,8 @@ Test Patterns
     def test_centrality_normalization():
         network = create_random_network()
         centrality = calc.multilayer_degree_centrality(network)
-        # Centrality values should be normalized
-        assert all(0 <= v <= 1 for v in centrality.values())
+        # Centrality values should not be negative; normalized variants stay within [0, 1]
+        assert all(v >= 0 for v in centrality.values())
 
 Performance Considerations
 --------------------------
@@ -487,7 +502,7 @@ Performance Considerations
 Lazy Evaluation
 ~~~~~~~~~~~~~~~
 
-Expensive operations are computed on-demand:
+Expensive operations are computed on-demand and cached on the instance:
 
 .. code-block:: python
 
@@ -501,7 +516,7 @@ Expensive operations are computed on-demand:
 Sparse Matrices
 ~~~~~~~~~~~~~~~
 
-Use sparse representations for large networks:
+Use sparse representations for large networks; the threshold is configurable in ``config.py``:
 
 .. code-block:: python
 
@@ -510,10 +525,12 @@ Use sparse representations for large networks:
             return scipy.sparse.csr_matrix(adj)
         return np.array(adj)
 
+Keep the chosen representation consistent downstream to avoid repeated dense↔sparse conversions.
+
 Vectorization
 ~~~~~~~~~~~~~
 
-Prefer NumPy vectorized operations:
+Prefer NumPy vectorized operations to avoid Python loops:
 
 .. code-block:: python
 
@@ -541,6 +558,8 @@ Centralized Logging
     logger.info("Processing network with %d nodes", num_nodes)
     logger.warning("Large network detected, using sparse matrices")
     logger.error("Invalid layer: %s", layer_name)
+    
+Call ``get_logger`` once per module; configure logging once in the application entrypoint to avoid duplicate handlers.
 
 Log Levels
 ~~~~~~~~~~
@@ -584,6 +603,8 @@ Usage:
             raise LayerNotFoundError(f"Layer '{layer_name}' not found")
         return self.layer_name_map[layer_name]
 
+Prefer raising domain-specific exceptions for recoverable errors so callers can distinguish parsing failures, missing layers, or invalid formats.
+
 Future Architecture
 -------------------
 
@@ -595,6 +616,8 @@ Planned Improvements
 3. **Distributed Computing:** Dask/Ray integration for large-scale analysis
 4. **Plugin System:** Easy addition of third-party algorithms
 5. **Type System:** Full type hints coverage (currently 65%)
+
+These roadmap items are exploratory; expect details and APIs to evolve.
 
 See Also
 --------

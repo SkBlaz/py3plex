@@ -1,7 +1,7 @@
 GUI Deployment Guide
 ====================
 
-This guide covers deploying the py3plex web interface for production use.
+This guide covers deploying the py3plex web interface for development, staging, and production. Pick the path that matches your environment and security requirements; keep secrets out of version control and persist user data on durable storage.
 
 Overview
 --------
@@ -19,18 +19,18 @@ Local Development Setup
 -----------------------
 
 Quickstart
-~~~~~~~~~~~
+~~~~~~~~~~
 
 .. code-block:: bash
 
     # Clone repository
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
-    
-    # Install with GUI dependencies
+
+    # Install with GUI dependencies (prefer a venv)
     pip install -e ".[gui]"
-    
-    # Start development server
+
+    # Start development server (auto-reload)
     python gui/app.py
 
 The GUI will be available at ``http://localhost:5000``.
@@ -38,7 +38,7 @@ The GUI will be available at ``http://localhost:5000``.
 Configuration
 ~~~~~~~~~~~~~
 
-Create a configuration file ``gui/config.py``:
+Create a configuration file ``gui/config.py`` (or use environment variables to override). Keep ``SECRET_KEY`` out of source control and store uploads on a path with enough disk space:
 
 .. code-block:: python
 
@@ -47,11 +47,11 @@ Create a configuration file ``gui/config.py``:
     HOST = '0.0.0.0'
     PORT = 5000
     SECRET_KEY = 'dev-secret-key-change-in-production'
-    
+
     # Upload settings
     UPLOAD_FOLDER = './uploads'
     MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100 MB max file size
-    
+
     # Allowed file extensions
     ALLOWED_EXTENSIONS = {'txt', 'edgelist', 'graphml', 'gml', 'json', 'arrow'}
 
@@ -67,7 +67,7 @@ The repository includes a Dockerfile for the GUI:
 
     # Build image
     docker build -t py3plex-gui:latest -f gui/Dockerfile .
-    
+
     # Run container
     docker run -d \
       -p 5000:5000 \
@@ -75,12 +75,12 @@ The repository includes a Dockerfile for the GUI:
       --name py3plex-gui \
       py3plex-gui:latest
 
-The GUI will be available at ``http://localhost:5000``.
+The GUI will be available at ``http://localhost:5000``. The bind mount keeps uploads and generated artifacts on the host for persistence.
 
 Docker Compose
 ~~~~~~~~~~~~~~
 
-Create ``docker-compose.yml``:
+Create ``docker-compose.yml`` (ensure ``./data`` and ``./uploads`` exist so Docker can mount them):
 
 .. code-block:: yaml
 
@@ -112,10 +112,10 @@ Start with:
 
     # Set secret key
     export SECRET_KEY=$(python -c 'import secrets; print(secrets.token_hex(32))')
-    
+
     # Start services
     docker-compose up -d
-    
+
     # Check logs
     docker-compose logs -f gui
 
@@ -144,8 +144,8 @@ Configure via environment variables:
      - Bind port
      - 5000
    * - ``MAX_WORKERS``
-     - Worker processes
-     - 4
+     - Worker processes (Gunicorn)
+     - 4 (tune to CPU cores and workload)
    * - ``UPLOAD_FOLDER``
      - Upload directory
      - ./uploads
@@ -153,13 +153,15 @@ Configure via environment variables:
      - Data directory
      - ./data
 
+For deployments, prefer setting these in an environment file or secrets manager instead of committing them to version control. Set ``SECRET_KEY`` before starting any service so sessions are secure.
+
 Production Deployment
 ---------------------
 
 Using Gunicorn
 ~~~~~~~~~~~~~~
 
-For production, use a production WSGI server like Gunicorn:
+For production, use a WSGI server like Gunicorn behind a reverse proxy. Adjust worker count to your CPU and workload, and bind to localhost when placing Nginx/Apache in front:
 
 .. code-block:: bash
 
@@ -178,7 +180,7 @@ For production, use a production WSGI server like Gunicorn:
 Supervisor Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use Supervisor to manage the GUI process:
+Use Supervisor to keep the Gunicorn process running:
 
 Create ``/etc/supervisor/conf.d/py3plex-gui.conf``:
 
@@ -205,7 +207,7 @@ Start with:
 Systemd Service
 ~~~~~~~~~~~~~~~
 
-Alternative: use systemd:
+Alternative: manage Gunicorn with systemd:
 
 Create ``/etc/systemd/system/py3plex-gui.service``:
 
@@ -241,6 +243,8 @@ Enable and start:
 
 Reverse Proxy Setup
 -------------------
+
+Terminate TLS and forward traffic to Gunicorn with a reverse proxy. Keep TLS certificates and private keys readable only by the web server user.
 
 Nginx Configuration
 ~~~~~~~~~~~~~~~~~~~
@@ -349,6 +353,8 @@ SSL/TLS with Let's Encrypt
 Security Considerations
 -----------------------
 
+Review the basics below before exposing the GUI to the internet.
+
 Secret Key Management
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -384,7 +390,7 @@ Configure upload restrictions:
 Rate Limiting
 ~~~~~~~~~~~~~
 
-Implement rate limiting for API endpoints:
+Implement rate limiting for API endpoints (adapt limits to expected traffic):
 
 .. code-block:: python
 
@@ -405,7 +411,7 @@ Implement rate limiting for API endpoints:
 Authentication
 ~~~~~~~~~~~~~~
 
-Add user authentication for production:
+Add user authentication for production and restrict admin endpoints:
 
 .. code-block:: python
 
@@ -422,10 +428,12 @@ Add user authentication for production:
 Monitoring and Logging
 ----------------------
 
+Centralize logs and metrics so you can trace errors across the stack.
+
 Application Logging
 ~~~~~~~~~~~~~~~~~~~
 
-Configure structured logging:
+Configure structured logging (ensure the log directory exists and is writable by the process owner):
 
 .. code-block:: python
 
@@ -461,7 +469,7 @@ Export metrics for Prometheus:
 Health Checks
 ~~~~~~~~~~~~~
 
-Implement health check endpoint:
+Implement a health check endpoint that exercises dependencies:
 
 .. code-block:: python
 
@@ -475,7 +483,9 @@ Implement health check endpoint:
             return {'status': 'unhealthy', 'error': str(e)}, 503
 
 Cloud Deployment Examples
---------------------------
+-------------------------
+
+These snippets are starting points; wire in your own secrets management, networking, and observability.
 
 AWS EC2
 ~~~~~~~
@@ -546,6 +556,8 @@ Azure Container Instances
 
 Performance Tuning
 ------------------
+
+Measure first (CPU, memory, request latency), then apply one change at a time. Avoid over-provisioning workers; test under representative load.
 
 Worker Configuration
 ~~~~~~~~~~~~~~~~~~~~
@@ -630,10 +642,12 @@ Document recovery procedure:
 1. Restore from backup
 2. Verify data integrity
 3. Restart services
-4. Test functionality
+4. Test functionality (smoke tests for uploads, analysis, and downloads)
 
 Troubleshooting
 ---------------
+
+Work through these checks before redeploying.
 
 Common Issues
 ~~~~~~~~~~~~~

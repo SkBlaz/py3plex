@@ -1,15 +1,20 @@
 How to Export and Serialize Networks
 =====================================
 
-**Goal:** Save multilayer networks to files and load them back.
+**Goal:** Save multilayer networks to files and load them back—quick persistence,
+interoperable edge lists, and analysis-ready formats.
 
-**Prerequisites:** A network to export (see :doc:`load_and_build_networks`).
+**Prerequisites:** A network to export (see :doc:`load_and_build_networks`). All
+examples assume an in-memory ``network`` instance.
 
 Quick Save and Load
 -------------------
 
 Using Pickle (Recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Pickle is the quickest way to persist a network within Python environments when
+you do not need cross-language compatibility.
 
 .. code-block:: python
 
@@ -33,11 +38,23 @@ Using Pickle (Recommended)
     
     loaded_network.basic_stats()
 
+.. note::
+   Only unpickle files from trusted sources, and prefer the same Python + py3plex
+   versions for best compatibility. Use a text format (CSV/JSON) if you need
+   portability.
+
 Export as Edge List
 -------------------
 
+Use plain text or CSV when you want human-readable exports or interoperability
+with tools outside Python.
+
 Simple Text Format
 ~~~~~~~~~~~~~~~~~~
+
+Write a plain text edge list with node IDs, layers, and weights. ``get_edges``
+returns edges as ``((node, layer), (node, layer))`` tuples. Each line below
+follows ``source source_layer target target_layer weight``.
 
 .. code-block:: python
 
@@ -56,6 +73,9 @@ Simple Text Format
 
 CSV Format
 ~~~~~~~~~~
+
+Create a CSV edge list with explicit columns for nodes, layers, and weights.
+CSV is easier to load in spreadsheets and dataframes than the plain text format.
 
 .. code-block:: python
 
@@ -86,6 +106,10 @@ Export as JSON
 
 Full Network Structure
 ~~~~~~~~~~~~~~~~~~~~~~~
+
+Capture nodes, layers, edge endpoints, and their attributes in a single JSON
+document for easy round-tripping. JSON keeps attribute dictionaries intact and
+readable.
 
 .. code-block:: python
 
@@ -130,6 +154,8 @@ Full Network Structure
 Load from JSON
 ~~~~~~~~~~~~~~
 
+Recreate a multilayer network from the exported JSON representation.
+
 .. code-block:: python
 
     import json
@@ -149,12 +175,18 @@ Load from JSON
             edge['target'], edge['target_layer'],
             **edge['attributes']
         )
+    
+    network.basic_stats()
 
 Export to NetworkX
 ------------------
 
 Convert to Single-Layer NetworkX Graph
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Flatten multilayer data into a single NetworkX graph, keeping the layer as a
+node attribute. This drops parallel edges between layers and merges nodes with
+the same ID across layers.
 
 .. code-block:: python
 
@@ -182,8 +214,11 @@ Convert to Single-Layer NetworkX Graph
 Export Specific Layer
 ~~~~~~~~~~~~~~~~~~~~~~
 
+Persist just one layer to a simpler graph file.
+
 .. code-block:: python
 
+    import networkx as nx
     from py3plex.dsl import Q, L
     
     # Extract single layer
@@ -194,7 +229,7 @@ Export Specific Layer
     G = nx.Graph()
     for edge in subgraph.get_edges():
         source, target = edge
-        G.add_edge(source[0], target[0])  # Just node IDs
+        G.add_edge(source[0], target[0])  # Just node IDs; include weights if needed
     
     # Save
     nx.write_edgelist(G, f'layer_{layer}.edgelist')
@@ -204,6 +239,10 @@ High-Performance: Apache Arrow/Parquet
 
 For Large Networks
 ~~~~~~~~~~~~~~~~~~
+
+Use columnar storage (Arrow/Parquet) to handle large edge lists efficiently.
+These formats preserve data types, compress well, and load quickly for analytics
+workloads.
 
 .. code-block:: python
 
@@ -241,6 +280,8 @@ For Large Networks
 Load from Parquet
 ~~~~~~~~~~~~~~~~~
 
+Rebuild a network from a Parquet edge list. Ensure ``pyarrow`` is installed.
+
 .. code-block:: python
 
     import pyarrow.parquet as pq
@@ -259,12 +300,17 @@ Load from Parquet
             row['target'], row['target_layer'],
             weight=row['weight']
         )
+    
+    network.basic_stats()
 
 Export Statistics and Results
 ------------------------------
 
 Save Analysis Results
 ~~~~~~~~~~~~~~~~~~~~~
+
+Persist computed metrics (via DSL) for later inspection or sharing with
+colleagues.
 
 .. code-block:: python
 
@@ -283,6 +329,9 @@ Save Analysis Results
 
 Save Communities
 ~~~~~~~~~~~~~~~~
+
+Store detected communities alongside node and layer IDs for downstream
+visualization or comparison.
 
 .. code-block:: python
 
@@ -310,9 +359,38 @@ Batch Export
 Export Multiple Formats
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+Create a small export bundle so you can hand off the same network in different
+formats.
+
 .. code-block:: python
 
+    import json
     import os
+    import pickle
+    import pandas as pd
+    
+    # Prepare reusable structures
+    def edges_to_df(network):
+        records = []
+        for edge in network.get_edges():
+            (src, src_layer), (dst, dst_layer) = edge
+            attrs = network.get_edge_data(edge[0], edge[1])
+            records.append({
+                "source": src,
+                "source_layer": src_layer,
+                "target": dst,
+                "target_layer": dst_layer,
+                "weight": attrs.get("weight", 1.0),
+            })
+        return pd.DataFrame(records)
+    
+    edges_df = edges_to_df(network)
+    
+    network_json = {
+        "nodes": [{"id": n, "layer": l} for (n, l) in network.get_nodes()],
+        "edges": edges_df.to_dict(orient="records"),
+        "layers": list(network.get_layers()),
+    }
     
     # Create output directory
     os.makedirs('export', exist_ok=True)
@@ -320,8 +398,8 @@ Export Multiple Formats
     # Export in multiple formats
     formats = {
         'pickle': lambda: pickle.dump(network, open('export/network.pkl', 'wb')),
-        'json': lambda: json.dump(network_data, open('export/network.json', 'w')),
-        'csv': lambda: df.to_csv('export/edges.csv', index=False)
+        'json': lambda: json.dump(network_json, open('export/network.json', 'w')),
+        'csv': lambda: edges_df.to_csv('export/edges.csv', index=False)
     }
     
     for fmt, export_func in formats.items():

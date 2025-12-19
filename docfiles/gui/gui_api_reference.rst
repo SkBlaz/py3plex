@@ -1,456 +1,418 @@
 GUI API Reference
 ==================
 
-This reference documents the REST API endpoints provided by the py3plex web interface.
+This reference documents the REST API endpoints provided by the py3plex GUI backend. All endpoints live under ``/api`` in development unless otherwise noted.
 
 Overview
 --------
 
-The py3plex GUI provides a REST API for:
+The py3plex GUI exposes a REST API for:
 
 * Uploading network data
 * Running analyses
 * Generating visualizations
 * Exporting results
 
-**Base URL:** ``http://localhost:5000/api`` (development)
+Conventions
+-----------
 
-**Authentication:** Currently no authentication (add in production)
+* **Base URL (development):** ``http://localhost:8000/api``
+* **Authentication:** None (add in production)
+* **Content types:** JSON for most endpoints; ``multipart/form-data`` for uploads
+* **IDs:** ``graph_id`` is returned by upload; asynchronous jobs return ``job_id``
+* **Async workflow:** Layout, centrality, and community detection run as Celery jobs. Each request returns a ``job_id``; poll ``GET /api/jobs/{job_id}`` for progress/results.
+* **Errors:** FastAPI returns JSON payloads with ``detail``; job failures appear in the job status payload.
+* **Docs:** Interactive docs live at ``/api/docs`` (Swagger UI) and ``/api/redoc``.
 
-**Response Format:** JSON
-
-General Endpoints
------------------
+Health
+------
 
 Health Check
 ~~~~~~~~~~~~
 
-Check if the server is running.
+Verify the API is reachable.
 
-**Endpoint:** ``GET /health``
-
-**Response:**
-
-.. code-block:: json
-
-    {
-      "status": "healthy",
-      "version": "0.95",
-      "timestamp": "2025-01-23T12:00:00Z"
-    }
-
-**Status Codes:**
-
-* 200 - Server is healthy
-* 503 - Server is unhealthy
-
-Server Info
-~~~~~~~~~~~
-
-Get server information.
-
-**Endpoint:** ``GET /api/info``
+**Endpoint:** ``GET /api/health``
 
 **Response:**
 
 .. code-block:: json
 
     {
-      "py3plex_version": "0.95",
-      "python_version": "3.10.0",
-      "available_algorithms": ["louvain", "infomap", "node2vec"],
-      "max_upload_size": 104857600
+      "status": "ok",
+      "version": "0.1.0"
     }
 
-Network Management
-------------------
+Uploads
+-------
 
 Upload Network
 ~~~~~~~~~~~~~~
 
-Upload a network file for analysis.
+Upload a network file and register it in the in-memory registry. The server detects the format and parses to NetworkX; a ``graph_id`` is returned for subsequent calls.
 
 **Endpoint:** ``POST /api/upload``
 
 **Parameters:**
 
-* ``file`` (form-data, required) - Network file
-* ``input_type`` (form-data, required) - File format (edgelist, multiedgelist, graphml, etc.)
-* ``directed`` (form-data, optional) - Boolean, default false
-
-**Request Example:**
-
-.. code-block:: bash
-
-    curl -X POST http://localhost:5000/api/upload \
-      -F "file=@network.edgelist" \
-      -F "input_type=edgelist" \
-      -F "directed=false"
+* ``file`` (form-data, required) - Network file (edgelist, multilayer edgelist, gml, gpickle, txt)
 
 **Response:**
 
 .. code-block:: json
 
     {
-      "success": true,
-      "network_id": "abc123",
-      "num_nodes": 100,
-      "num_edges": 450,
-      "num_layers": 3,
-      "message": "Network uploaded successfully"
+      "graph_id": "b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2",
+      "filename": "network.edgelist",
+      "message": "File uploaded and parsed successfully"
     }
 
-**Status Codes:**
+Graph Queries
+-------------
 
-* 200 - Success
-* 400 - Invalid file or parameters
-* 413 - File too large
-* 500 - Server error
+Get Graph Summary
+~~~~~~~~~~~~~~~~~
 
-List Networks
-~~~~~~~~~~~~~
+Return node/edge counts, detected layers, and node attribute names.
 
-List all uploaded networks.
-
-**Endpoint:** ``GET /api/networks``
+**Endpoint:** ``GET /api/graphs/{graph_id}/summary``
 
 **Response:**
 
 .. code-block:: json
 
     {
-      "networks": [
-        {
-          "id": "abc123",
-          "filename": "network.edgelist",
-          "uploaded_at": "2025-01-23T12:00:00Z",
-          "num_nodes": 100,
-          "num_edges": 450
-        }
+      "graph_id": "b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2",
+      "nodes": 120,
+      "edges": 340,
+      "layers": ["default"],
+      "attributes": ["layer", "weight"]
+    }
+
+Sample Graph
+~~~~~~~~~~~~
+
+Return a downsampled subgraph for preview (defaults to 500 nodes max). Small graphs return untouched; larger graphs include ``sampled: true`` and report totals.
+
+**Endpoint:** ``GET /api/graphs/{graph_id}/sample``
+
+**Query Parameters:**
+
+* ``max_nodes`` (optional, default: 500)
+
+**Response (full graph small enough):**
+
+.. code-block:: json
+
+    {
+      "graph_id": "b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2",
+      "nodes": 120,
+      "edges": 340,
+      "layers": ["default"],
+      "attributes": ["layer", "weight"]
+    }
+
+**Response (sampled):**
+
+.. code-block:: json
+
+    {
+      "graph_id": "b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2",
+      "sampled": true,
+      "nodes": 500,
+      "edges": 910,
+      "total_nodes": 1200,
+      "total_edges": 2400
+    }
+
+Get Node Positions
+~~~~~~~~~~~~~~~~~~
+
+Retrieve node coordinates for rendering. If positions are missing, a layout is generated on the fly for smaller graphs; very large graphs may skip automatic layout.
+
+**Endpoint:** ``GET /api/graphs/{graph_id}/positions``
+
+**Response:**
+
+.. code-block:: json
+
+    {
+      "graph_id": "b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2",
+      "positions": [
+        {"node_id": "n1", "x": 0.12, "y": -0.33, "layer": "default"},
+        {"node_id": "n2", "x": -0.48, "y": 0.05, "layer": "default"}
       ]
     }
 
-Get Network Info
-~~~~~~~~~~~~~~~~
+Filter Graph
+~~~~~~~~~~~~
 
-Get detailed information about a specific network.
+Create a filtered subgraph and receive its new ``graph_id``. Filters combine with logical AND.
 
-**Endpoint:** ``GET /api/networks/<network_id>``
+**Endpoint:** ``POST /api/graphs/{graph_id}/filter``
 
-**Response:**
+**Body (any combination is optional):**
 
-.. code-block:: json
-
-    {
-      "id": "abc123",
-      "filename": "network.edgelist",
-      "num_nodes": 100,
-      "num_edges": 450,
-      "num_layers": 3,
-      "layers": ["layer1", "layer2", "layer3"],
-      "statistics": {
-        "density": 0.045,
-        "clustering": 0.32
-      }
-    }
-
-Delete Network
-~~~~~~~~~~~~~~
-
-Delete an uploaded network.
-
-**Endpoint:** ``DELETE /api/networks/<network_id>``
+* ``attribute`` - Node attribute to filter on (not applied by default)
+* ``min_degree`` / ``max_degree`` - Degree bounds
+* ``layers`` - Keep only edges in these layers
+* ``communities`` - Keep nodes in the provided communities
 
 **Response:**
 
 .. code-block:: json
 
     {
-      "success": true,
-      "message": "Network deleted successfully"
+      "subgraph_id": "4e468de5-3a87-4ac8-814d-4f27b9b9af69",
+      "original_graph_id": "b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2",
+      "nodes": 80,
+      "edges": 210
     }
 
-Analysis Endpoints
-------------------
+Analysis Jobs (Async)
+---------------------
 
-Run Community Detection
-~~~~~~~~~~~~~~~~~~~~~~~
+The endpoints below enqueue Celery jobs and return a ``job_id`` immediately. Poll ``GET /api/jobs/{job_id}`` for progress, results, and artifact locations.
 
-Detect communities in a network.
+Layout
+~~~~~~
 
-**Endpoint:** ``POST /api/analysis/communities``
+Queue a layout computation.
 
-**Parameters:**
+**Endpoint:** ``POST /api/graphs/{graph_id}/layout``
 
-* ``network_id`` (required) - Network ID
-* ``algorithm`` (required) - Algorithm name (louvain, leiden, infomap)
-* ``gamma`` (optional) - Resolution parameter (default: 1.0)
-* ``omega`` (optional) - Inter-layer coupling (default: 1.0)
+**Body:**
 
-**Request:**
-
-.. code-block:: json
-
-    {
-      "network_id": "abc123",
-      "algorithm": "louvain",
-      "gamma": 1.0,
-      "omega": 1.0
-    }
+* ``algorithm`` (optional) - ``spring`` | ``force_atlas`` | ``kamada_kawai`` | ``circular`` | ``random`` (default: ``spring``)
+* ``seed`` (optional) - Integer seed (default: 42)
+* ``dimensions`` (optional) - ``2`` or ``3`` (default: 2)
+* ``iterations`` (optional) - Iteration budget (default: 50)
 
 **Response:**
 
 .. code-block:: json
 
     {
-      "success": true,
-      "num_communities": 5,
-      "modularity": 0.42,
-      "partition": {
-        "node1": 0,
-        "node2": 0,
-        "node3": 1
-      }
+      "job_id": "2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0",
+      "status": "queued"
     }
 
-Compute Statistics
-~~~~~~~~~~~~~~~~~~
+Centrality
+~~~~~~~~~~
 
-Compute network statistics.
+Queue centrality computation for one or more metrics.
 
-**Endpoint:** ``POST /api/analysis/statistics``
+**Endpoint:** ``POST /api/graphs/{graph_id}/analysis/centrality``
 
-**Parameters:**
+**Body:**
 
-* ``network_id`` (required) - Network ID
-* ``metrics`` (required) - List of metrics to compute
-
-**Request:**
-
-.. code-block:: json
-
-    {
-      "network_id": "abc123",
-      "metrics": ["density", "clustering", "degree_distribution"]
-    }
+* ``metrics`` (required) - List of ``degree``, ``betweenness``, ``closeness``, ``eigenvector``, ``pagerank``
+* ``layers`` (optional) - Restrict to these layers
 
 **Response:**
 
 .. code-block:: json
 
     {
-      "success": true,
-      "statistics": {
-        "density": 0.045,
-        "clustering": 0.32,
-        "degree_distribution": {
-          "1": 10,
-          "2": 25,
-          "3": 30
-        }
-      }
+      "job_id": "7e5a3b9d-6c3c-4c39-8f71-1b7f76dbd1c9",
+      "status": "queued"
     }
 
-Compute Centrality
-~~~~~~~~~~~~~~~~~~
-
-Compute node centrality measures.
-
-**Endpoint:** ``POST /api/analysis/centrality``
-
-**Parameters:**
-
-* ``network_id`` (required) - Network ID
-* ``measure`` (required) - Centrality measure (degree, betweenness, pagerank, eigenvector)
-* ``layer`` (optional) - Specific layer to analyze
-
-**Request:**
-
-.. code-block:: json
-
-    {
-      "network_id": "abc123",
-      "measure": "betweenness",
-      "layer": "layer1"
-    }
-
-**Response:**
-
-.. code-block:: json
-
-    {
-      "success": true,
-      "centrality": {
-        "node1": 0.42,
-        "node2": 0.35,
-        "node3": 0.15
-      }
-    }
-
-Generate Embeddings
+Community Detection
 ~~~~~~~~~~~~~~~~~~~
 
-Generate node embeddings.
+Queue community detection.
 
-**Endpoint:** ``POST /api/analysis/embeddings``
+**Endpoint:** ``POST /api/graphs/{graph_id}/analysis/community``
 
-**Parameters:**
+**Body:**
 
-* ``network_id`` (required) - Network ID
-* ``method`` (required) - Embedding method (node2vec, deepwalk)
-* ``dimensions`` (optional) - Embedding dimensions (default: 128)
-* ``walk_length`` (optional) - Walk length (default: 80)
-* ``num_walks`` (optional) - Walks per node (default: 10)
-* ``p`` (optional) - Return parameter (default: 1.0)
-* ``q`` (optional) - In-out parameter (default: 1.0)
-
-**Request:**
-
-.. code-block:: json
-
-    {
-      "network_id": "abc123",
-      "method": "node2vec",
-      "dimensions": 128,
-      "walk_length": 80,
-      "num_walks": 10,
-      "p": 1.0,
-      "q": 1.0
-    }
+* ``algorithm`` (optional) - ``louvain`` | ``label_propagation`` | ``greedy_modularity`` (default: ``louvain``)
+* ``resolution`` (optional) - Resolution parameter (default: ``1.0``)
+* ``seed`` (optional) - Integer seed (default: 42)
 
 **Response:**
 
 .. code-block:: json
 
     {
-      "success": true,
-      "embedding_id": "emb456",
-      "dimensions": 128,
-      "num_nodes": 100
+      "job_id": "8f3a4b42-35ec-4f65-91da-2de5c0b01407",
+      "status": "queued"
     }
 
-Visualization Endpoints
------------------------
+Jobs
+----
 
-Generate Layout
-~~~~~~~~~~~~~~~
+Get Job Status
+~~~~~~~~~~~~~~
 
-Compute network layout.
+Poll for Celery job progress and results. Progress runs from 0 to 100; completed jobs may include artifacts. Failed jobs include an ``error`` string.
 
-**Endpoint:** ``POST /api/visualization/layout``
+**Endpoint:** ``GET /api/jobs/{job_id}``
 
-**Parameters:**
+**Responses:**
 
-* ``network_id`` (required) - Network ID
-* ``algorithm`` (required) - Layout algorithm (force, spring, circular, diagonal)
-* ``iterations`` (optional) - Number of iterations (default: 50)
-
-**Request:**
+Queued/pending:
 
 .. code-block:: json
 
     {
-      "network_id": "abc123",
-      "algorithm": "force",
-      "iterations": 100
+      "job_id": "2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0",
+      "status": "queued",
+      "progress": 0
     }
+
+Running with progress metadata:
+
+.. code-block:: json
+
+    {
+      "job_id": "2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0",
+      "status": "running",
+      "progress": 45,
+      "phase": "computing layout"
+    }
+
+Completed:
+
+.. code-block:: json
+
+    {
+      "job_id": "2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0",
+      "status": "completed",
+      "progress": 100,
+      "result": {
+        "graph_id": "b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2",
+        "algorithm": "spring",
+        "num_nodes": 120,
+        "artifacts": ["/workspace/data/artifacts/<graph_id>/<job_id>/layout.json"]
+      },
+      "artifacts": ["/workspace/data/artifacts/<graph_id>/<job_id>/layout.json"]
+    }
+
+Failed:
+
+.. code-block:: json
+
+    {
+      "job_id": "2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0",
+      "status": "failed",
+      "error": "Graph not found"
+    }
+
+Cancel Job
+~~~~~~~~~~
+
+Best-effort cancellation for a running job. The task may still complete if already executing.
+
+**Endpoint:** ``DELETE /api/jobs/{job_id}``
 
 **Response:**
 
 .. code-block:: json
 
     {
-      "success": true,
-      "layout_id": "layout789",
-      "positions": {
-        "node1": [0.5, 0.3],
-        "node2": [0.6, 0.8]
+      "message": "Job cancellation requested",
+      "job_id": "2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0"
+    }
+
+Workspace Bundles
+-----------------
+
+Save Workspace
+~~~~~~~~~~~~~~
+
+Persist the current graph and optional frontend state into a bundle.
+
+**Endpoint:** ``POST /api/workspaces/save``
+
+**Body:**
+
+* ``name`` (required) - Workspace label
+* ``graph_id`` (required) - Graph to bundle
+* ``view_state`` (optional) - UI state snapshot
+
+**Response:**
+
+.. code-block:: json
+
+    {
+      "workspace_id": "d6d5f6c0-4f3f-4b3d-8d22-6c0cba9b7a77",
+      "filename": "workspace_d6d5f6c0.zip",
+      "message": "Workspace saved"
+    }
+
+Load Workspace
+~~~~~~~~~~~~~~
+
+Load a workspace by ID and return the graph/view state. ``workspace_id`` is passed as a query parameter.
+
+**Endpoint:** ``POST /api/workspaces/load?workspace_id={workspace_id}``
+
+**Response:**
+
+.. code-block:: json
+
+    {
+      "graph_id": "b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2",
+      "view_state": {},
+      "message": "Workspace loaded"
+    }
+
+Cache Management
+----------------
+
+Cache Stats
+~~~~~~~~~~~
+
+Inspect the in-memory caches.
+
+**Endpoint:** ``GET /api/cache/stats``
+
+**Response:**
+
+.. code-block:: json
+
+    {
+      "status": "ok",
+      "stats": {
+        "summary_cache_size": 2,
+        "position_cache_size": 1,
+        "graph_registry_size": 3
       }
     }
 
-Render Visualization
-~~~~~~~~~~~~~~~~~~~~
+Clear All Cache
+~~~~~~~~~~~~~~~
 
-Generate network visualization image.
+Purge summary/position caches and the registry. Clearing the registry invalidates all existing ``graph_id`` values.
 
-**Endpoint:** ``POST /api/visualization/render``
+**Endpoint:** ``DELETE /api/cache``
 
-**Parameters:**
-
-* ``network_id`` (required) - Network ID
-* ``layout_id`` (optional) - Pre-computed layout ID
-* ``width`` (optional) - Image width (default: 800)
-* ``height`` (optional) - Image height (default: 600)
-* ``format`` (optional) - Output format (png, svg, pdf, default: png)
-
-**Request:**
+**Response:**
 
 .. code-block:: json
 
     {
-      "network_id": "abc123",
-      "layout_id": "layout789",
-      "width": 1200,
-      "height": 900,
-      "format": "png"
+      "status": "ok",
+      "message": "All caches cleared"
     }
 
-**Response:**
+Clear Graph Cache
+~~~~~~~~~~~~~~~~~
 
-Returns image file with appropriate Content-Type header.
+Purge cached data for a specific graph.
 
-**Status Codes:**
-
-* 200 - Success (returns image)
-* 400 - Invalid parameters
-* 404 - Network or layout not found
-
-Export Endpoints
-----------------
-
-Export Network
-~~~~~~~~~~~~~~
-
-Export network in different formats.
-
-**Endpoint:** ``GET /api/export/network/<network_id>``
-
-**Query Parameters:**
-
-* ``format`` (required) - Export format (graphml, gml, edgelist, json, arrow)
-
-**Example:**
-
-.. code-block:: bash
-
-    curl http://localhost:5000/api/export/network/abc123?format=graphml \
-      -o output.graphml
+**Endpoint:** ``DELETE /api/cache/{graph_id}``
 
 **Response:**
 
-Returns file in requested format.
+.. code-block:: json
 
-Export Analysis Results
-~~~~~~~~~~~~~~~~~~~~~~~
-
-Export analysis results as JSON or CSV.
-
-**Endpoint:** ``GET /api/export/analysis/<analysis_id>``
-
-**Query Parameters:**
-
-* ``format`` (optional) - Export format (json, csv, default: json)
-
-**Example:**
-
-.. code-block:: bash
-
-    curl http://localhost:5000/api/export/analysis/analysis123?format=csv \
-      -o results.csv
-
-**Response:**
-
-Returns file in requested format.
+    {
+      "status": "ok",
+      "message": "Cache cleared for graph b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2"
+    }
 
 Error Handling
 --------------
@@ -458,67 +420,31 @@ Error Handling
 Error Response Format
 ~~~~~~~~~~~~~~~~~~~~~
 
-All errors return a consistent JSON format:
+FastAPI returns standard error payloads. Typical shapes:
+
+Validation error:
 
 .. code-block:: json
 
     {
-      "success": false,
-      "error": "Error message description",
-      "error_code": "ERROR_CODE",
-      "details": {
-        "field": "Additional error details"
-      }
+      "detail": [
+        {
+          "loc": ["body", "metrics", 0],
+          "msg": "value is not a valid enumeration member; permitted: 'degree', 'betweenness', 'closeness', 'eigenvector', 'pagerank'",
+          "type": "type_error.enum"
+        }
+      ]
     }
 
-Common Error Codes
-~~~~~~~~~~~~~~~~~~
+Not found:
 
-.. list-table::
-   :header-rows: 1
-   :widths: 20 20 60
+.. code-block:: json
 
-   * - HTTP Status
-     - Error Code
-     - Description
-   * - 400
-     - INVALID_INPUT
-     - Invalid request parameters
-   * - 400
-     - INVALID_FILE
-     - Invalid or corrupted file
-   * - 401
-     - UNAUTHORIZED
-     - Authentication required
-   * - 404
-     - NOT_FOUND
-     - Resource not found
-   * - 413
-     - FILE_TOO_LARGE
-     - Upload exceeds size limit
-   * - 500
-     - INTERNAL_ERROR
-     - Server error
-   * - 503
-     - SERVICE_UNAVAILABLE
-     - Service temporarily unavailable
+    {
+      "detail": "Graph not found"
+    }
 
-Rate Limits
------------
-
-Default rate limits (configurable):
-
-* 200 requests per day per IP
-* 50 requests per hour per IP
-* 10 uploads per hour per IP
-
-Rate limit headers in responses:
-
-.. code-block:: text
-
-    X-RateLimit-Limit: 50
-    X-RateLimit-Remaining: 45
-    X-RateLimit-Reset: 1674480000
+Job failures surface in the job status payload as ``status: "failed"`` and an ``error`` string.
 
 Usage Examples
 --------------
@@ -530,66 +456,64 @@ Python Client
 
     import requests
     
-    BASE_URL = "http://localhost:5000/api"
+    BASE_URL = "http://localhost:8000/api"
     
-    # Upload network
+    # Upload a graph
     with open("network.edgelist", "rb") as f:
         response = requests.post(
             f"{BASE_URL}/upload",
-            files={"file": f},
-            data={"input_type": "edgelist", "directed": "false"}
+            files={"file": f}
         )
     
-    network_id = response.json()["network_id"]
-    print(f"Uploaded network: {network_id}")
+    graph_id = response.json()["graph_id"]
+    print(f"Uploaded graph: {graph_id}")
     
-    # Run community detection
+    # Queue community detection
     response = requests.post(
-        f"{BASE_URL}/analysis/communities",
+        f"{BASE_URL}/graphs/{graph_id}/analysis/community",
         json={
-            "network_id": network_id,
-            "algorithm": "louvain"
+            "algorithm": "louvain",
+            "resolution": 1.0
         }
     )
     
-    communities = response.json()
-    print(f"Found {communities['num_communities']} communities")
+    job_id = response.json()["job_id"]
+    print(f"Community job queued: {job_id}")
+    
+    # Poll job until completion
+    status = requests.get(f"{BASE_URL}/jobs/{job_id}").json()
+    print(status)
 
 cURL Examples
 ~~~~~~~~~~~~~
 
 .. code-block:: bash
 
-    # Upload network
-    curl -X POST http://localhost:5000/api/upload \
-      -F "file=@network.edgelist" \
-      -F "input_type=edgelist" \
-      -F "directed=false"
+    # Upload graph
+    curl -X POST http://localhost:8000/api/upload \
+      -F "file=@network.edgelist"
     
-    # Get network info
-    curl http://localhost:5000/api/networks/abc123
+    # Get summary
+    curl http://localhost:8000/api/graphs/<graph_id>/summary
     
-    # Run analysis
-    curl -X POST http://localhost:5000/api/analysis/communities \
+    # Queue centrality
+    curl -X POST http://localhost:8000/api/graphs/<graph_id>/analysis/centrality \
       -H "Content-Type: application/json" \
-      -d '{"network_id":"abc123","algorithm":"louvain"}'
+      -d '{"metrics":["betweenness","pagerank"]}'
     
-    # Export network
-    curl http://localhost:5000/api/export/network/abc123?format=graphml \
-      -o output.graphml
+    # Poll job
+    curl http://localhost:8000/api/jobs/<job_id>
 
 JavaScript/Fetch Example
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: javascript
 
-    const BASE_URL = 'http://localhost:5000/api';
+    const BASE_URL = 'http://localhost:8000/api';
     
-    // Upload network
+    // Upload graph
     const formData = new FormData();
     formData.append('file', fileInput.files[0]);
-    formData.append('input_type', 'edgelist');
-    formData.append('directed', 'false');
     
     const response = await fetch(`${BASE_URL}/upload`, {
       method: 'POST',
@@ -597,22 +521,21 @@ JavaScript/Fetch Example
     });
     
     const data = await response.json();
-    console.log(`Uploaded network: ${data.network_id}`);
+    console.log(`Uploaded graph: ${data.graph_id}`);
     
-    // Run analysis
-    const analysisResponse = await fetch(`${BASE_URL}/analysis/communities`, {
+    // Queue community detection
+    const analysisResponse = await fetch(`${BASE_URL}/graphs/${data.graph_id}/analysis/community`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        network_id: data.network_id,
         algorithm: 'louvain'
       })
     });
     
     const communities = await analysisResponse.json();
-    console.log(`Found ${communities.num_communities} communities`);
+    console.log(`Job queued: ${communities.job_id}`);
 
 Related Documentation
 ---------------------
@@ -625,4 +548,4 @@ Related Documentation
 **External Resources:**
 
 * REST API Best Practices: https://restfulapi.net/
-* Flask-RESTful Documentation: https://flask-restful.readthedocs.io/
+* FastAPI Documentation: https://fastapi.tiangolo.com/

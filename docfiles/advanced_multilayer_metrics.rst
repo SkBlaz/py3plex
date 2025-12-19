@@ -4,18 +4,18 @@ Advanced Multilayer Metrics
 Overview
 --------
 
-The ``multilayer_statistics`` module provides advanced entropy-based, information-theoretic, and influence metrics for multilayer network analysis. These metrics enable deep characterization of structural complexity, layer interdependencies, and centrality patterns across network layers.
+The ``multilayer_statistics`` module provides advanced entropy-based, information-theoretic, and influence metrics for multilayer network analysis. These metrics enable deep characterization of structural complexity, layer interdependencies, and centrality patterns across network layers. Unless noted otherwise, entropy and mutual-information values are reported in bits with probabilities that sum to 1.
 
 New Metrics (v0.96+)
 --------------------
 
 The following advanced metrics have been added to py3plex for comprehensive multilayer network analysis:
 
-1. **Entropy-based Layer Complexity Measures**
-2. **Cross-layer Mutual Information**
-3. **Layer Influence Centrality**
-4. **Multilayer Betweenness Surface**
-5. **Inter-layer Degree Correlation Matrix**
+1. **Entropy-based Layer Complexity Measures** — layer connectivity, inter-layer dependence, and redundancy entropies
+2. **Cross-layer Mutual Information** — statistical dependence between layer degree distributions
+3. **Layer Influence Centrality** — coupling- and flow-based views of how layers affect each other
+4. **Multilayer Betweenness Surface** — heatmap-ready betweenness over node–layer pairs
+5. **Inter-layer Degree Correlation Matrix** — Pearson correlations of degrees across layers
 
 Installation
 ------------
@@ -70,11 +70,12 @@ Layer Connectivity Entropy
 
 Measures heterogeneity of node connectivity within a layer using Shannon entropy of the degree distribution.
 
-**Formula:** H_c = -Σᵢ (kᵢ/Σⱼkⱼ) log₂(kᵢ/Σⱼkⱼ)
+**Formula:** :math:`H_c = -\sum_i p_i \log_2 p_i`, where :math:`p_i = k_i / \sum_j k_j` is the normalized degree of node *i* in the layer.
 
 **Interpretation:**
-- H_c = 0: uniform degree distribution (all nodes have same degree)
-- Higher values: more diverse connectivity patterns
+- H_c = 0: one node concentrates all degree (perfect inequality)
+- Maximum is :math:`\log_2 m` when degrees are evenly distributed across the :math:`m` nodes that have degree > 0
+- Higher values: more diverse connectivity patterns; lower values: more skewed distributions
 - Useful for identifying layers with hub-and-spoke vs. distributed structures
 
 .. code-block:: python
@@ -95,13 +96,14 @@ Measures heterogeneity of node connectivity within a layer using Shannon entropy
 Inter-layer Dependence Entropy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Measures diversity in how nodes couple two layers through inter-layer edges.
+Measures diversity in how nodes couple two specific layers through inter-layer edges only.
 
-**Formula:** H_dep = -Σₙ pₙ log₂(pₙ), where pₙ is the proportion of inter-layer edges for node n
+**Formula:** :math:`H_{\text{dep}} = -\sum_n p_n \log_2 p_n`, where :math:`p_n` is the proportion of inter-layer edges incident on node *n* (so :math:`\sum_n p_n = 1`).
 
 **Interpretation:**
-- H_dep = 0: uniform coupling (all nodes equally involved in inter-layer connections)
-- Higher values: more heterogeneous coupling patterns
+- H_dep = 0: coupling concentrated on a single node
+- Higher values: more even involvement across nodes
+- Returns 0 if the two layers have no inter-layer edges
 - Identifies layers with specialized bridge nodes
 
 .. code-block:: python
@@ -119,13 +121,14 @@ Measures diversity in how nodes couple two layers through inter-layer edges.
 Cross-layer Redundancy Entropy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Measures diversity in structural overlap across all layer pairs using edge overlap.
+Measures diversity in structural overlap across all unordered layer pairs using edge overlap.
 
-**Formula:** H_r = -Σᵢⱼ rᵢⱼ log₂(rᵢⱼ), where rᵢⱼ is normalized edge overlap
+**Formula:** :math:`H_r = -\sum_{i<j} r_{ij} \log_2 r_{ij}`, where :math:`r_{ij} = \omega^{ij} / \sum_{p<q} \omega^{pq}` rescales the edge-overlap :math:`\omega^{ij}` for layer pair *(i, j)* so that :math:`\sum_{i<j} r_{ij} = 1`.
+Here :math:`\omega^{ij}` denotes the Jaccard edge overlap between layers :math:`i` and :math:`j`; if all overlaps are 0, :math:`H_r` is defined as 0.
 
 **Interpretation:**
-- H_r = 0: uniform redundancy across all layer pairs
-- Higher values: varied overlap patterns (some layers very similar, others distinct)
+- H_r = 0: overlap concentrated in a single layer pair (or no pairs overlap)
+- Higher values: varied overlap patterns; balanced but non-zero overlaps raise entropy
 - Useful for identifying functionally redundant vs. complementary layers
 
 .. code-block:: python
@@ -143,15 +146,19 @@ Measures diversity in structural overlap across all layer pairs using edge overl
 Cross-layer Mutual Information
 -------------------------------
 
-Quantifies statistical dependence between degree distributions in two layers.
+Quantifies statistical dependence between degree distributions in two layers (only nodes present in both layers are considered).
 
-**Formula:** I(Lᵢ; Lⱼ) = H(Lᵢ) + H(Lⱼ) - H(Lᵢ, Lⱼ)
+.. math::
+
+   I(L_i; L_j) = H(L_i) + H(L_j) - H(L_i, L_j)
+
+Degrees are discretized into ``bins`` per layer before computing the marginal and joint entropies.
 
 **Properties:**
-- I = 0: layers are statistically independent
+- I = 0: layers are statistically independent or have constant degrees
 - I > 0: layers are dependent (higher values = stronger dependence)
-- I(Lᵢ; Lⱼ) ≤ min(H(Lᵢ), H(Lⱼ))
-- Symmetric: I(Lᵢ; Lⱼ) = I(Lⱼ; Lᵢ)
+- :math:`I(L_i; L_j) \leq \min(H(L_i), H(L_j))`
+- Symmetric: :math:`I(L_i; L_j) = I(L_j; L_i)`
 
 **Use Cases:**
 - Identify functionally related layers
@@ -182,7 +189,7 @@ Quantifies statistical dependence between degree distributions in two layers.
 - ``network``: py3plex multi_layer_network object
 - ``layer_i``: First layer identifier
 - ``layer_j``: Second layer identifier
-- ``bins``: Number of bins for discretizing degree distributions (default: 10)
+- ``bins``: Number of bins for discretizing degree distributions (default: 10). Degrees are binned per layer; if fewer than two common nodes exist or all degrees in a layer are identical, the mutual information is defined as 0.
 
 Layer Influence Centrality
 ---------------------------
@@ -192,20 +199,25 @@ Quantifies how much a layer influences others through inter-layer connections or
 **Two Methods:**
 
 1. **Coupling-based Influence**
-   
-   **Formula:** Iᵅ = Σᵦ≠ᵅ C^αβ / (L-1)
-   
-   - Based on inter-layer coupling strength
-   - Structural measure
+
+   .. math::
+
+      I^\alpha_{\text{coupling}} = \frac{1}{L-1}\sum_{\beta \neq \alpha} C^{\alpha\beta}
+
+   where :math:`C^{\alpha\beta}` is the inter-layer coupling strength between layers :math:`\alpha` and :math:`\beta`.
+
+   - Structural measure based on edge counts/weights
    - Fast to compute
 
 2. **Flow-based Influence**
-   
-   **Formula:** Iᵅ = flow probability from layer α to other layers
-   
-   - Based on random walk simulations
-   - Dynamic measure
-   - Captures indirect influence
+
+   .. math::
+
+      I^\alpha_{\text{flow}} \approx \frac{1}{S}\sum_{s=1}^{S} \mathbf{1}\{\text{step } s \text{ leaves layer } \alpha\}
+
+   - Approximates the probability that a one-step random walk starting in layer :math:`\alpha` moves to a different layer
+   - Depends on ``sample_size`` (:math:`S`) for stability
+   - Captures indirect influence via connectivity
 
 **Interpretation:**
 - Higher values indicate layers that strongly influence others
@@ -245,7 +257,8 @@ Multilayer Betweenness Surface
 
 Visualizes betweenness centrality across all node-layer pairs as a 2D matrix (surface).
 
-**Output:** 2D array of shape (num_nodes, num_layers)
+**Output:** 2D array of shape (num_nodes, num_layers) plus ordered lists of node and layer labels for plotting
+Rows follow the returned ``nodes`` order; columns follow the returned ``layers`` order.
 
 **Applications:**
 - Identify bridge nodes that connect different layers
@@ -306,6 +319,8 @@ Computes Pearson correlations of node degrees between all pairs of layers.
 - Off-diagonal elements in [-1, 1]
 - Positive values: nodes with high degree in one layer tend to have high degree in another
 - Negative values: inverse relationship (hubs in one layer are peripheral in another)
+- Computed over nodes present in both layers; if variance in either layer is zero, the correlation defaults to 0
+- Single-layer networks return a 1×1 identity matrix
 
 **Applications:**
 - Identify correlated vs. independent layers
@@ -453,7 +468,7 @@ Calculate Shannon entropy of degree distribution within a layer.
 
 **Parameters:**
 - ``network`` (multi_layer_network): The multilayer network
-- ``layer`` (str): Layer identifier
+- ``layer`` (str): Layer identifier; layers with no intra-layer edges return 0.0
 
 **Returns:**
 - ``float``: Entropy in bits (≥ 0)
@@ -469,7 +484,7 @@ Calculate entropy of inter-layer coupling patterns.
 - ``layer_j`` (str): Second layer identifier
 
 **Returns:**
-- ``float``: Entropy in bits (≥ 0)
+- ``float``: Entropy in bits (≥ 0). Counts only inter-layer edges between ``layer_i`` and ``layer_j``.
 
 cross_layer_redundancy_entropy(network)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -480,7 +495,7 @@ Calculate entropy of edge overlap across all layer pairs.
 - ``network`` (multi_layer_network): The multilayer network
 
 **Returns:**
-- ``float``: Entropy in bits (≥ 0)
+- ``float``: Entropy in bits (≥ 0). Uses unordered layer pairs and Jaccard edge overlap.
 
 cross_layer_mutual_information(network, layer_i, layer_j, bins=10)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -491,7 +506,7 @@ Calculate mutual information between degree distributions.
 - ``network`` (multi_layer_network): The multilayer network
 - ``layer_i`` (str): First layer identifier
 - ``layer_j`` (str): Second layer identifier
-- ``bins`` (int): Number of bins for discretization (default: 10)
+- ``bins`` (int): Number of bins for discretization (default: 10). Uses only nodes present in both layers; returns 0 if fewer than two common nodes or if all degrees are equal in a layer.
 
 **Returns:**
 - ``float``: Mutual information in bits (≥ 0)
@@ -504,8 +519,8 @@ Calculate layer influence through coupling or flow.
 **Parameters:**
 - ``network`` (multi_layer_network): The multilayer network
 - ``layer`` (str): Layer identifier
-- ``method`` (str): 'coupling' or 'flow' (default: 'coupling')
-- ``sample_size`` (int): Number of random walk steps for flow method (default: 100)
+- ``method`` (str): 'coupling' (structural) or 'flow' (random-walk-based) (default: 'coupling')
+- ``sample_size`` (int): Number of random walk steps for flow method (default: 100; ignored for 'coupling')
 
 **Returns:**
 - ``float``: Influence centrality value (≥ 0)
@@ -525,8 +540,8 @@ Calculate betweenness centrality matrix for all node-layer pairs.
 - ``tuple``: (surface, (nodes, layers))
 
   - ``surface`` (np.ndarray): 2D array of shape (num_nodes, num_layers)
-  - ``nodes`` (list): Node labels
-  - ``layers`` (list): Layer labels
+  - ``nodes`` (list): Node labels (row order)
+  - ``layers`` (list): Layer labels (column order)
 
 interlayer_degree_correlation_matrix(network)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -540,7 +555,7 @@ Calculate Pearson correlations of node degrees between all layer pairs.
 
 - ``tuple``: (corr_matrix, layers)
 
-  - ``corr_matrix`` (np.ndarray): Symmetric correlation matrix
+  - ``corr_matrix`` (np.ndarray): Symmetric correlation matrix (1×1 identity if only one layer)
   - ``layers`` (list): Layer labels
 
 Best Practices
@@ -554,7 +569,7 @@ Best Practices
 - Use correlation matrix for layer similarity analysis
 
 **Computational Considerations:**
-- Entropy and correlation metrics are fast (O(E) or O(N×L))
+- Entropy and correlation metrics run in near-linear time over the edges of the layers involved
 - Mutual information requires discretization (adjust ``bins`` parameter)
 - Flow-based influence requires random walk simulation (adjust ``sample_size``)
 - Betweenness surface can be slow for large networks (consider sampling)
@@ -576,7 +591,7 @@ Overview
 
 The traditional clustering coefficient measures local transitivity: if node *v* is connected to nodes *x* and *y*, what is the probability that *x* and *y* are also connected? In multilayer networks, edges may exist in different layers, leading to several possible definitions of "closure."
 
-py3plex implements three variants of multilayer clustering coefficients:
+Unless noted otherwise, the definitions below assume undirected, unweighted edges and treat triangles as unordered. py3plex implements three variants of multilayer clustering coefficients:
 
 1. **Intra-layer clustering** - Classical clustering computed separately for each layer
 2. **Multiplex clustering** - Aggregates neighbors across layers, counts triangles that close in any layer
@@ -624,6 +639,8 @@ Count triangles where edges to neighbors can be in different layers, but closure
     \exists \alpha,\beta \in \mathcal{L} \text{ s.t. } E_\alpha(v,x)=1, E_\beta(v,y)=1, 
     \exists \gamma \in \mathcal{L} \text{ s.t. } E_\gamma(x,y)=1\}\big|
 
+This counts unordered neighbor pairs connected to *v* (possibly through different layers) that are themselves connected in at least one layer in *𝓛*.
+
 The multiplex clustering coefficient is:
 
 .. math::
@@ -634,7 +651,7 @@ The multiplex clustering coefficient is:
     0 & \text{otherwise}
     \end{cases}
 
-**Variant D: Supra-adjacency Clustering**
+**Variant C: Supra-adjacency Clustering**
 
 Construct the supra-adjacency matrix *A* on state nodes *V*\ :sub:`M` = {(*v*, *ℓ*) | *v* ∈ *V*, *ℓ* ∈ *L*}. For each state node *i*, the number of triangles is:
 
@@ -652,7 +669,7 @@ The supra-adjacency clustering coefficient is:
     0 & \text{otherwise}
     \end{cases}
 
-where *d*\ :sub:`i` is the degree of state node *i* in the supra-adjacency matrix.
+where *d*\ :sub:`i` is the degree of state node *i* in the supra-adjacency matrix. The default supra-adjacency omits self-loops; inter-layer edges contribute only when ``include_cross_layer=True`` (see examples below).
 
 Coefficient Type Mapping
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -771,9 +788,9 @@ Complexity and Performance
 
 **Computational Complexity:**
 
-- **Intra-layer**: *O*(Σ\ :sub:`v,ℓ` *k*\ :sup:`2`\ :sub:`v,ℓ`) - quadratic in local degree
-- **Multiplex**: *O*(Σ\ :sub:`v` (*k*\ :sup:`agg`\ :sub:`v`)\ :sup:`2` × |*L*|) - quadratic in aggregated degree
-- **Supra-adjacency**: *O*(*|V*\ :sub:`M`|\ :sup:`2.373`) for sparse matrix multiplication (Coppersmith-Winograd)
+- **Intra-layer**: *O*(Σ\ :sub:`v,ℓ` *k*\ :sup:`2`\ :sub:`v,ℓ`) — quadratic in local degree
+- **Multiplex**: *O*(Σ\ :sub:`v` (*k*\ :sup:`agg`\ :sub:`v`)\ :sup:`2` × |*L*|) — quadratic in aggregated degree
+- **Supra-adjacency**: roughly cubic in the number of state nodes :math:`|V_M|` for the dense matrix multiplications (sparser graphs reduce constants but remain heavy)
 
 **Memory Usage:**
 

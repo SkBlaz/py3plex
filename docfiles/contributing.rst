@@ -1,12 +1,21 @@
 Contributing to py3plex
 =======================
 
-We welcome contributions to py3plex. This guide explains how to contribute effectively.
+We welcome contributions to py3plex. This guide explains how to contribute efficiently and predictably.
+
+Quick Checklist
+---------------
+
+* Use a virtual environment and install ``.[dev]`` dependencies (``pip install -e ".[dev]"``).
+* Create a feature branch from an up-to-date ``main``.
+* Write tests alongside code changes and keep them deterministic.
+* Run linters and tests locally before opening a PR.
+* Update documentation when behavior changes or new features land.
 
 Ways to Contribute
 ------------------
 
-You can contribute in many ways:
+You can contribute in many ways. Pick the path that matches your time and interest:
 
 * Report bugs - Open issues for bugs you encounter
 * Suggest features - Propose new features or improvements
@@ -23,23 +32,24 @@ Fork and Clone
 ~~~~~~~~~~~~~~
 
 1. Fork the repository on GitHub
-2. Clone your fork:
+2. Clone your fork locally:
 
 .. code-block:: bash
 
     git clone https://github.com/YOUR_USERNAME/py3plex.git
     cd py3plex
 
-3. Add upstream remote:
+3. Add upstream remote so you can sync with the main project:
 
 .. code-block:: bash
 
     git remote add upstream https://github.com/SkBlaz/py3plex.git
+    git fetch upstream
 
 Development Setup
 ~~~~~~~~~~~~~~~~~
 
-Install in development mode with all dependencies:
+Install in development mode with all dependencies (use the Python version listed in ``README``):
 
 .. code-block:: bash
 
@@ -60,13 +70,17 @@ This installs:
 Development Workflow
 --------------------
 
+The typical loop is: branch -> change -> test -> lint -> document -> push -> PR. Keep each loop small to make reviews faster.
+
 Create a Branch
 ~~~~~~~~~~~~~~~
 
-Always create a new branch for your work:
+Always create a new branch for your work and start from an up-to-date ``main``:
 
 .. code-block:: bash
 
+    git checkout main
+    git pull upstream main
     git checkout -b feature/my-new-feature
     # or
     git checkout -b fix/issue-123
@@ -74,10 +88,10 @@ Always create a new branch for your work:
 Make Changes
 ~~~~~~~~~~~~
 
-1. Write your code following our coding standards (see below)
-2. Add or update tests
-3. Update documentation
-4. Run linters and tests
+1. Write your code following our coding standards (see below).
+2. Add or update tests while you build the feature (avoid combining many unrelated changes).
+3. Update documentation and examples if behavior changes.
+4. Run linters and tests locally before committing; fix warnings rather than silencing them.
 
 Run Tests
 ~~~~~~~~~
@@ -87,8 +101,14 @@ Run Tests
     # Run all tests
     make test
     
-    # Or directly with pytest
-    python run_tests.py
+    # Or directly with pytest (same command make calls)
+    python -m pytest
+
+Use ``-k`` to run a subset when iterating quickly:
+
+.. code-block:: bash
+
+    python -m pytest -k "my_feature"
 
 Run Linters
 ~~~~~~~~~~~
@@ -99,23 +119,32 @@ Run Linters
     make lint
     
     # Or individual tools
-    make format  # Auto-format code (black, isort)
-    ruff check .
-    mypy py3plex
+    make format          # Auto-format code (black, isort)
+    ruff check .         # Lint Python
+    mypy py3plex         # Type checks
+    black --check .      # Verify formatting when you cannot auto-format
 
 Commit Changes
 ~~~~~~~~~~~~~~
 
-Write clear, descriptive commit messages:
+Write clear, descriptive commit messages that explain the intent:
 
 .. code-block:: bash
 
     git add .
-    git commit -m "Add feature X to support Y
-    
+    git commit -m "Add feature X to support Y"
+
+Example message body:
+
+.. code-block:: text
+
+    Add feature X to support Y
+
     - Implement algorithm for Z
     - Add tests for edge cases
-    - Update documentation"
+    - Update documentation
+
+Keep the subject line under 72 characters and use the body to capture rationale and scope.
 
 Push and Create PR
 ~~~~~~~~~~~~~~~~~~
@@ -141,7 +170,7 @@ We follow PEP 8 with these specifics:
 
 * Line length: 100 characters (not 80)
 * Indentation: 4 spaces (no tabs)
-* String quotes: Single quotes preferred ('text' not "text")
+* String quotes: Single quotes preferred ('text' not "text"); Black may normalize during formatting
 * Imports: Grouped and sorted (using isort)
 
 Auto-format your code:
@@ -224,6 +253,8 @@ Use NumPy-style docstrings for all public functions and classes:
         """
         pass
 
+The ``pass`` above is only a placeholder; implement the described behavior. Keep examples runnable with minimal imports and avoid long-running, network-dependent, or nondeterministic code.
+
 Type Hints
 ~~~~~~~~~~
 
@@ -253,6 +284,7 @@ All new code should include tests:
 * Integration tests for workflows
 * Edge cases for boundary conditions
 * Documentation tests for examples in docstrings
+* Deterministic behavior (set seeds where randomness is involved and avoid network access)
 
 Writing Tests
 ~~~~~~~~~~~~~
@@ -324,11 +356,17 @@ Build Documentation
 
 .. code-block:: bash
 
+    # From repo root, strict build
+    sphinx-build -b html -n -W --keep-going docfiles docfiles/_build/html
+    
+    # Or use the Makefile from inside docfiles/
     cd docfiles
     make html
     
     # View documentation
     open _build/html/index.html
+
+The strict build flags (``-n -W``) are the same ones used in CI; fix warnings locally so CI stays green.
 
 Documentation Style
 ~~~~~~~~~~~~~~~~~~~
@@ -337,6 +375,7 @@ Documentation Style
 * Code examples - Include working examples
 * Cross-references - Link to related documentation
 * Visual aids - Add diagrams where helpful
+* Keep examples short, deterministic, and free of external dependencies
 
 Pull Request Guidelines
 ------------------------
@@ -344,17 +383,14 @@ Pull Request Guidelines
 Before Submitting
 ~~~~~~~~~~~~~~~~~
 
-[OK] Code follows style guide (``make lint`` passes)
+Make sure each item below is true before opening a PR:
 
-[OK] All tests pass (``make test`` passes)
-
-[OK] New code has tests
-
-[OK] Documentation is updated
-
-[OK] Commit messages are clear
-
-[OK] Branch is up to date with main
+* Code follows style guide (``make lint`` passes)
+* All tests pass (``make test`` passes)
+* New code has tests
+* Documentation is updated when behavior changes
+* Commit messages are clear
+* Branch is up to date with ``main`` (``git fetch upstream && git rebase upstream/main``)
 
 PR Description
 ~~~~~~~~~~~~~~
@@ -362,11 +398,12 @@ PR Description
 Include in your PR description:
 
 * What changed
-* Why the change is needed
-* How you implemented it
+* Why the change is needed (link the issue if one exists)
+* How you implemented it (high-level)
 * Testing done
 * Screenshots for visual changes
 * Breaking changes if any
+* Deployment or migration notes if they exist
 
 Example PR template:
 
@@ -402,7 +439,7 @@ Review Process
 ~~~~~~~~~~~~~~
 
 1. Maintainers will review your PR
-2. Address any feedback or requested changes
+2. Address any feedback or requested changes promptly
 3. Once approved, your PR will be merged
 4. Your contribution will be in the next release!
 
@@ -421,7 +458,7 @@ When reporting bugs, include:
 * Python version (``python --version``)
 * py3plex version
 * Operating system
-* Minimal code example
+* Minimal code example that runs without external data
 
 Example:
 

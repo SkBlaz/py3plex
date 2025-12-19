@@ -1,12 +1,12 @@
 Configuration & Environment
 ===========================
 
-This page documents configuration options, environment variables, and file formats for py3plex.
+This page collects the practical knobs for running py3plex: configuration files, environment variables, supported I/O formats, and common algorithm parameters.
 
 Configuration Files
 -------------------
 
-py3plex supports configuration files for reproducible workflows. Configuration can be provided in YAML or JSON format.
+py3plex supports configuration files for reproducible workflows. Provide them as YAML or JSON; omit sections you do not need.
 
 **Network Configuration (YAML):**
 
@@ -15,10 +15,15 @@ py3plex supports configuration files for reproducible workflows. Configuration c
     # network_config.yaml
     network:
       input_file: "data/multilayer.edges"
-      input_type: "multiedgelist"
+      input_type: "multiedgelist"  # one of: multiedgelist, edgelist, json, graphml, parquet
       directed: false
       weighted: true
     
+    # field meanings:
+    # input_file: path to your dataset
+    # input_type: parser to use (match the file format)
+    # directed/weighted: toggle graph properties
+
     # Load with:
     # network.load_network(**config['network'])
 
@@ -30,23 +35,29 @@ py3plex supports configuration files for reproducible workflows. Configuration c
     community_detection:
       algorithm: "louvain_multilayer"
       params:
-        gamma: 1.0
-        omega: 0.5
+        gamma: 1.0          # resolution; higher favors smaller communities
+        omega: 0.5          # inter-layer coupling strength
         random_state: 42
     
     node2vec:
       dimensions: 128
       walk_length: 80
       num_walks: 10
-      p: 1.0
-      q: 1.0
+      p: 1.0               # return hyperparameter (p > 1 biases against revisiting)
+      q: 1.0               # in-out hyperparameter (q < 1 encourages outward exploration)
     
     dynamics:
       model: "SIR"
-      beta: 0.3
-      gamma: 0.1
-      initial_infected: 0.05
+      beta: 0.3            # infection probability per contact
+      gamma: 0.1           # recovery probability
+      initial_infected: 0.05  # fraction of nodes initially infected (0–1)
       steps: 100
+
+Section meanings:
+
+* ``community_detection`` — choose algorithm and pass algorithm-specific params
+* ``node2vec`` — structural embedding hyperparameters (``p``/``q`` control walk bias)
+* ``dynamics`` — compartmental model parameters; ``initial_infected`` expects a fraction
 
 **Visualization Settings:**
 
@@ -84,7 +95,7 @@ py3plex supports configuration files for reproducible workflows. Configuration c
 Environment Variables
 ---------------------
 
-py3plex respects the following environment variables for customization:
+py3plex respects the following environment variables for customization. Override them in your shell before running scripts or set them in code via ``os.environ``.
 
 **Data Directories:**
 
@@ -100,15 +111,15 @@ py3plex respects the following environment variables for customization:
 
 **Performance Tuning:**
 
-* ``PY3PLEX_NUM_WORKERS`` — Number of parallel workers for algorithms
+* ``PY3PLEX_NUM_WORKERS`` — Suggested number of parallel workers for algorithms
   
-  * Default: ``os.cpu_count()``
-  * Used by: Node2Vec, community detection, some centrality computations
+  * Default recommendation: ``os.cpu_count()`` when you wire this through to APIs
+  * Effect: only applied by functions/scripts that read the variable
 
-* ``PY3PLEX_MEMORY_LIMIT`` — Memory limit for large-scale operations (in GB)
+* ``PY3PLEX_MEMORY_LIMIT`` — Optional memory budget for large-scale operations (in GB)
   
-  * Default: System memory / 2
-  * Used by: Tensor operations, large network processing
+  * Default: unset (falls back to library defaults)
+  * Effect: honored only by routines that support explicit memory caps
 
 **Setting environment variables:**
 
@@ -139,11 +150,11 @@ Input Formats
 
 Supported file formats:
 
-* ``multiedgelist`` — Multilayer edge list format
-* ``edgelist`` — Standard edge list
-* ``json`` — JSON network format
-* ``graphml`` — GraphML format
-* ``parquet`` — Apache Parquet (high performance)
+* ``multiedgelist`` — Multilayer edge list format with layer annotations
+* ``edgelist`` — Standard edge list (single layer)
+* ``json`` — JSON network format produced by py3plex tools
+* ``graphml`` — GraphML format for interoperability with NetworkX/Gephi
+* ``parquet`` — Apache Parquet for columnar, high-performance I/O
 
 See :doc:`../how-to/load_and_build_networks` for format details.
 
@@ -163,7 +174,7 @@ See :doc:`../how-to/export_serialize` for export details.
 Algorithm Configuration
 -----------------------
 
-Many algorithms accept configuration parameters:
+Many algorithms accept configuration parameters. The snippets below show common defaults and what each parameter controls.
 
 Community Detection
 ~~~~~~~~~~~~~~~~~~~
@@ -174,8 +185,8 @@ Community Detection
     
     communities = multilayer_louvain(
         network,
-        resolution=1.0,  # Resolution parameter
-        omega=0.5        # Inter-layer coupling
+        resolution=1.0,  # Higher → more, smaller communities
+        omega=0.5        # Inter-layer coupling strength
     )
 
 Node2Vec
@@ -188,11 +199,11 @@ Node2Vec
     embeddings = train_node2vec(
         network,
         dimensions=128,      # Embedding size
-        walk_length=80,      # Walk length
+        walk_length=80,      # Steps per walk
         num_walks=10,        # Walks per node
-        p=1.0,              # Return parameter
-        q=1.0,              # In-out parameter
-        workers=4           # Parallel workers
+        p=1.0,               # Return parameter (larger discourages backtracking)
+        q=1.0,               # In-out parameter (smaller explores outward)
+        workers=4            # Parallel workers
     )
 
 Dynamics
@@ -204,9 +215,9 @@ Dynamics
     
     sir = SIRDynamics(
         network,
-        beta=0.3,           # Infection rate
-        gamma=0.1,          # Recovery rate
-        initial_infected=5  # Initial infected count
+        beta=0.3,            # Infection probability per contact
+        gamma=0.1,           # Recovery probability per step
+        initial_infected=0.05  # Fraction of nodes initially infected (0–1)
     )
 
 See :doc:`algorithm_reference` for complete parameter documentation.
@@ -214,7 +225,7 @@ See :doc:`algorithm_reference` for complete parameter documentation.
 Visualization Configuration
 ---------------------------
 
-Customize visualization:
+Customize visualization; adjust node/edge sizes to match network scale. Set ``show=False`` for headless rendering:
 
 .. code-block:: python
 
@@ -321,6 +332,12 @@ For advanced use cases (e.g., sending logs to external systems):
 
 Performance Tuning
 ------------------
+
+Quick levers:
+
+* Match ``PY3PLEX_NUM_WORKERS`` to available cores when parallelism is supported.
+* Use ``parquet`` I/O for large networks to reduce load time.
+* Set ``PY3PLEX_MEMORY_LIMIT`` when supported to avoid oversubscription on shared machines.
 
 See :doc:`../project/benchmarking` for performance optimization strategies.
 

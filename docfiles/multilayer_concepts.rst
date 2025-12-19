@@ -1,64 +1,64 @@
 Core Concepts and Architecture
 ==============================
 
-This guide explains the fundamental concepts and architectural design of py3plex.
+This guide explains the fundamental concepts and architectural design of py3plex, with an emphasis on how multilayer data are represented internally and how node-layer pairs flow through the library.
 
 What are Multilayer Networks?
-------------------------------
+-----------------------------
 
-A multilayer network is a complex network structure that goes beyond traditional single-layer graphs by incorporating multiple types of relationships, node types, or interaction contexts.
+A multilayer network is a graph where nodes can participate in multiple contexts (layers), and edges may connect node instances within the same layer (intra-layer) or across layers (inter-layer). Each **node-layer pair** is treated as a distinct entity; the same node label may appear in several layers, but each occurrence is independent unless coupled by an inter-layer edge.
 
 Key Characteristics
 ~~~~~~~~~~~~~~~~~~~
 
-**Traditional (Single-Layer) Networks:**
+**Traditional (Single-Layer) Networks**
 
-* One type of node
-* One type of edge
-* Homogeneous structure
+* One node type
+* One edge type
+* Single interaction context
 
-**Multilayer Networks:**
+**Multilayer Networks**
 
-* Multiple node types
+* Multiple node types (per-layer semantics)
 * Multiple edge types
 * Multiple layers of interaction
-* Inter-layer and intra-layer connections
+* Both inter-layer and intra-layer connections
 
 Types of Multilayer Networks
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Multiplex Networks**
-  Multiple layers with the same set of nodes but different types of edges.
-  
+  Multiple layers with the same set of nodes but different edge semantics.
+
   *Example:* Social network with friendship, colleague, and family layers.
 
 **Heterogeneous Networks (HINs)**
-  Different node types with type-specific relationships.
-  
+  Different node types, each with type-specific relationships.
+
   *Example:* Academic network with authors, papers, and venues.
 
 **Temporal Networks**
-  Networks that evolve over time, with time-sliced layers.
-  
+  Networks that evolve over time, represented as time-sliced layers.
+
   *Example:* Communication network across different time periods.
 
 **Interdependent Networks**
   Multiple networks where nodes in one network depend on nodes in another.
-  
+
   *Example:* Power grid and communication network interdependency.
 
 Core Data Structure
 -------------------
 
 The ``multi_layer_network`` Class
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The central data structure in py3plex is the ``multi_layer_network`` class, which provides:
 
-* Layer Management: Add, remove, and query network layers
-* Node and Edge Operations: Efficient addition and retrieval
-* NetworkX Integration: Full compatibility with NetworkX algorithms
-* Matrix Representations: Supra-adjacency and layer-specific matrices
+* Layer management: add, remove, and query network layers
+* Node and edge operations: efficient addition and retrieval
+* NetworkX integration: works directly with NetworkX algorithms that support multigraphs
+* Matrix representations: supra-adjacency and layer-specific matrices
 
 Basic Structure
 ^^^^^^^^^^^^^^^
@@ -70,8 +70,8 @@ Basic Structure
     # Create a multilayer network
     network = multinet.multi_layer_network()
     
-    # The underlying NetworkX graph
-    nx_graph = network.core_network  # MultiDiGraph or MultiGraph
+    # The underlying NetworkX graph (MultiDiGraph or MultiGraph)
+    nx_graph = network.core_network
     
     # Layer management
     layers = network.get_layers()  # List of layer names
@@ -82,27 +82,30 @@ Internal Representation
 
 py3plex represents multilayer networks using:
 
-1. **Core NetworkX Graph:** A ``MultiDiGraph`` or ``MultiGraph`` storing all nodes and edges
-2. **Layer Encoding:** Nodes are encoded as ``node_id---layer_id`` using a delimiter (default: ``---``)
-3. **Layer Mapping:** Bidirectional mapping between layer names and integer IDs
-4. **Attributes:** Node and edge attributes stored in the NetworkX graph
+1. **Core NetworkX graph:** A ``MultiDiGraph`` or ``MultiGraph`` storing all node-layer pairs and edges
+2. **Layer encoding:** Node-layer pairs are encoded as ``node_id---layer_id`` using a delimiter (default: ``---``)
+3. **Layer mapping:** Bidirectional mapping between layer names and integer IDs for compact matrix construction
+4. **Attributes:** Node and edge attributes stored on the underlying NetworkX graph
+5. **Node ordering:** Methods that return matrices follow the node-layer ordering from ``network.get_nodes()``
 
 Example:
 
 .. code-block:: python
 
-    # Node 'A' in 'layer1' is stored as 'A---layer1'
+    # Node 'A' in 'layer1' is stored internally as 'A---layer1'
     network.add_nodes([('A', 'layer1')])
     
     # Access the encoded node
-    encoded_nodes = network.core_network.nodes()
+    encoded_nodes = list(network.core_network.nodes())
     # ['A---layer1']
 
 Network Construction
 --------------------
 
 Creating Networks from Scratch
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Nodes and edges are specified as ``(node_id, layer_name)`` tuples so each occurrence of a node is bound to a specific layer.
 
 .. code-block:: python
 
@@ -135,7 +138,7 @@ Creating Networks from Scratch
 Loading from Files
 ~~~~~~~~~~~~~~~~~~
 
-py3plex supports multiple input formats:
+py3plex supports multiple input formats; the loader creates layers on demand when they are discovered in the input.
 
 .. code-block:: python
 
@@ -167,7 +170,7 @@ Querying Network Elements
 .. code-block:: python
 
     # Get all nodes
-    nodes = network.get_nodes(data=True)
+    nodes = network.get_nodes(data=True)  # yields (node, data_dict)
     
     # Get nodes in a specific layer
     layer_nodes = network.get_nodes(layer='layer1')
@@ -176,9 +179,9 @@ Querying Network Elements
     edges = network.get_edges(data=True)
     
     # Get neighbors of a node in a layer
-    neighbors = network.get_neighbors('Alice', layer_id='social')
+    neighbors = network.get_neighbors(('Alice', 'social'))
     
-    # Get all layers
+    # Get all layers (sorted by internal ID)
     layers = network.get_layers()
 
 Network Transformations
@@ -202,6 +205,7 @@ Matrix Representations
 
     # Get supra-adjacency matrix (all layers stacked)
     supra_adj = network.get_supra_adjacency_matrix()
+    # Row/column ordering matches network.get_nodes() (node-layer pairs)
     
     # Get adjacency matrix for a single layer
     layer_adj = network.get_adjacency_matrix(layer='layer1')
@@ -269,9 +273,9 @@ Integration with NetworkX
 --------------------------
 
 Full NetworkX Compatibility
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``core_network`` attribute is a standard NetworkX graph:
+The ``core_network`` attribute is a standard NetworkX graph that stores encoded node-layer pairs, so any NetworkX algorithm that supports multigraphs works directly. Algorithms that expect simple graphs may require preprocessing (e.g., edge aggregation or conversion to a simple graph):
 
 .. code-block:: python
 
@@ -280,10 +284,13 @@ The ``core_network`` attribute is a standard NetworkX graph:
     
     # Create py3plex network
     mlnet = multinet.multi_layer_network()
-    mlnet.add_edges([['A', 'L1', 'B', 'L1', 1]])
+    mlnet.add_edges([
+        [('A', 'L1'), ('B', 'L1'), 1]
+    ])
     
     # Access underlying NetworkX graph
     G = mlnet.core_network
+    # Encoded nodes appear as strings (e.g., 'A---L1')
     
     # Use any NetworkX function
     betweenness = nx.betweenness_centrality(G)
@@ -312,7 +319,7 @@ Supra-Adjacency Matrix
 Mathematical Definition
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The **supra-adjacency matrix** is a block matrix representation of a multilayer network:
+The **supra-adjacency matrix** is a block matrix representation of a multilayer network where rows and columns correspond to node-layer pairs. If layer :math:`\alpha` has :math:`n_\alpha` nodes, the overall matrix has size :math:`(\sum_\alpha n_\alpha) \times (\sum_\alpha n_\alpha)`. Blocks are ordered by the layer mapping in ``network.layer_name_map`` (the same ordering returned by ``network.get_layers()``):
 
 .. math::
 
@@ -325,8 +332,8 @@ The **supra-adjacency matrix** is a block matrix representation of a multilayer 
 
 Where:
 
-* :math:`A_\alpha` is the adjacency matrix of layer :math:`\alpha`
-* :math:`C_{\alpha\beta}` is the coupling matrix between layers :math:`\alpha` and :math:`\beta`
+* :math:`A_\alpha` is the :math:`n_\alpha \times n_\alpha` adjacency matrix of layer :math:`\alpha`
+* :math:`C_{\alpha\beta}` is the :math:`n_\alpha \times n_\beta` coupling matrix between layers :math:`\alpha` and :math:`\beta`
 
 Construction in py3plex
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -341,8 +348,8 @@ Construction in py3plex
     # Get supra-adjacency matrix (sparse by default)
     supra_adj = network.get_supra_adjacency_matrix(sparse=True)
     
-    # Shape: (total_nodes, total_nodes)
-    # where total_nodes = sum of nodes across all layers
+    # Shape: (total_node_layer_pairs, total_node_layer_pairs)
+    # where total_node_layer_pairs = sum of nodes in each layer (node repeated per layer)
     print(f"Supra-adjacency shape: {supra_adj.shape}")
 
 Layer-Specific Operations

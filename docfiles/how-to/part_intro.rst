@@ -1,9 +1,11 @@
 How-to Guides
 =============
 
-Task-oriented guides for accomplishing specific goals with py3plex. Each guide is focused on a single question: "How do I...?"
+Task-oriented guides for accomplishing specific goals with py3plex. Each guide answers a single question: "How do I...?" with runnable steps you can copy and run.
 
-**This section covers:**
+Pick the task that matches your question and jump straight to the guide.
+
+**This section covers (by topic):**
 
 Network Operations
 ------------------
@@ -39,7 +41,7 @@ Workflows
 Reading This Section
 --------------------
 
-**Structure of each guide:**
+**What every guide contains:**
 
 1. **Goal:** What you'll accomplish
 2. **Prerequisites:** What you need to know first
@@ -47,12 +49,13 @@ Reading This Section
 4. **Expected output:** What you should see
 5. **Next steps:** Links to related concepts and references
 
-**How to use these guides:**
+**How to navigate:**
 
-* Each guide is **self-contained** — you can jump directly to the task you need
-* Code examples are **complete and runnable** — copy-paste and run
-* Guides focus on **what to do**, not why — for theory, see :doc:`../concepts/part_intro`
-* For API details, see :doc:`../reference/part_intro`
+* Jump directly to the task you need—each guide is **self-contained**
+* Copy-paste examples—they are **complete and runnable**
+* Find **what to do** here; for theory, see :doc:`../concepts/part_intro`
+* Need API signatures? Go to :doc:`../reference/part_intro`
+* Use the quick navigation below if you already know the task name
 
 Quick Navigation
 ----------------
@@ -60,6 +63,7 @@ Quick Navigation
 **I want to...**
 
 * Load data → :doc:`load_and_build_networks`
+* Export or serialize data → :doc:`export_serialize`
 * Measure network properties → :doc:`compute_statistics`
 * Find communities → :doc:`run_community_detection`
 * Create visualizations → :doc:`visualize_networks`
@@ -69,9 +73,9 @@ Quick Navigation
 
 **I'm coming from...**
 
-* **NetworkX:** Start with :doc:`load_and_build_networks` to see multilayer specifics, then :doc:`query_with_dsl` for py3plex's unique DSL
-* **Single-layer networks:** Read :doc:`compute_statistics` and :doc:`run_community_detection` to understand multilayer-specific metrics
-* **Other tools:** Jump to :doc:`export_serialize` for data import/export
+* **NetworkX:** Start with :doc:`load_and_build_networks` for multilayer basics, then :doc:`query_with_dsl` for py3plex's DSL
+* **Single-layer networks:** See :doc:`compute_statistics` and :doc:`run_community_detection` for multilayer-specific metrics
+* **Other tools:** Jump to :doc:`export_serialize` for import/export expectations
 
 Related Sections
 ----------------

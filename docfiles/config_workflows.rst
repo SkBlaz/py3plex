@@ -15,15 +15,28 @@ Config-driven workflows in py3plex allow you to define and execute complex netwo
 * **Batch processing** - Run multiple experiments with different parameters
 * **Version control** - Track experimental setups alongside code
 
+Execution Model
+---------------
+
+Workflows follow a fixed lifecycle:
+
+* Validate the configuration structure (required fields, supported types)
+* Load or generate all datasets
+* Execute operations in the order listed (each references a dataset by name)
+* Collect results in memory; optionally write them under ``output.directory``
+
+Results in memory are keyed as ``<dataset>_<operation>_<index>`` to avoid collisions across repeated operations.
+
 Configuration Format
 --------------------
 
-A workflow configuration file consists of three main sections:
+A workflow file always follows the same shape (YAML or JSON):
 
-1. **Metadata**: Workflow name and description
-2. **Datasets**: Networks to load or generate
-3. **Operations**: Analysis steps to perform
-4. **Output**: Where to save results
+* ``name`` (required): Workflow identifier. Used in logs and output filenames.
+* ``description`` (optional): Free-text summary of the workflow intent.
+* ``datasets`` (required): List of inputs to load or generate. Each entry must have a unique ``name`` so operations can reference it.
+* ``operations`` (required): Ordered list of steps. Each step has a ``type``, a ``dataset`` to operate on, and optional ``parameters``.
+* ``output`` (optional): Where to store results. If omitted, results stay in memory only.
 
 YAML Example
 ^^^^^^^^^^^^
@@ -104,6 +117,13 @@ JSON Example
 Dataset Specification
 ---------------------
 
+Each dataset entry requires a ``name`` and a ``type``. Supported ``type`` values:
+
+* ``file`` — load an existing network file (``path`` is required)
+* ``generate`` — create a synthetic network (``generator`` is required)
+
+Names must be unique because operations reference datasets by ``dataset``. Paths are resolved relative to the current working directory when you run the workflow, not the config file location.
+
 Loading from File
 ^^^^^^^^^^^^^^^^^
 
@@ -122,25 +142,37 @@ Supported file formats:
 * GPickle (``.gpickle``)
 * Multiedgelist (``.edgelist``, ``.txt``)
 
+The loader preserves the directed/undirected flag stored in the file when available. Multiedgelist input is treated as undirected by default.
+
 Generating Networks
 ^^^^^^^^^^^^^^^^^^^
 
-Generate synthetic networks:
+Generate synthetic networks with the built-in ``random`` generator:
 
 .. code-block:: yaml
 
    datasets:
      - name: "random_network"
        type: "generate"
-       generator: "random"
+       generator: "random"   # Currently supported generator
        parameters:
-         nodes: 50        # Number of nodes
-         layers: 2        # Number of layers
-         probability: 0.15 # Edge probability
-         seed: 42         # Random seed (optional)
+         nodes: 50         # Number of nodes (default: 10)
+         layers: 2         # Number of layers (default: 2)
+         probability: 0.15 # Edge probability (default: 0.1)
+         seed: 42          # Random seed (optional; keeps runs reproducible)
+
+Nodes are named ``node0`` ... ``nodeN`` per layer; layers are named ``layer1``, ``layer2``, etc.
 
 Available Operations
 --------------------
+
+All operations share the same basic shape and are validated against the allowed ``type`` values:
+
+.. code-block:: yaml
+
+   - type: "<operation_name>"
+     dataset: "<dataset_name>"
+     parameters: { ... }
 
 Statistics
 ^^^^^^^^^^
@@ -149,20 +181,21 @@ Compute network statistics:
 
 .. code-block:: yaml
 
-   - type: "stats"
-     dataset: "my_network"
-     parameters: {}
+     - type: "stats"
+       dataset: "my_network"
+       parameters: {}
 
 Computes:
 
 * Node and edge counts
-* Layer densities
-* Clustering coefficients
+* Layer densities (one density per layer if layers can be inferred from node tuples)
+
+Result keys: ``nodes``, ``edges``, and optional ``layer_densities`` (one entry per detected layer).
 
 Community Detection
 ^^^^^^^^^^^^^^^^^^^
 
-Detect communities:
+Detect communities (Louvain):
 
 .. code-block:: yaml
 
@@ -173,7 +206,9 @@ Detect communities:
 
 Supported algorithms:
 
-* ``louvain`` - Louvain method
+* ``louvain`` - Louvain method for community detection
+
+Directed graphs are converted to undirected for community detection to match the algorithm's assumptions. Results include ``algorithm``, ``num_communities``, and a ``communities`` mapping from stringified node IDs to integer community labels.
 
 Centrality
 ^^^^^^^^^^
@@ -193,23 +228,27 @@ Supported measures:
 * ``betweenness`` - Betweenness centrality
 * ``closeness`` - Closeness centrality
 
+Directed graphs are converted to undirected before computing measures. Results include ``measure`` and a ``centrality`` dictionary keyed by node (as strings).
+
 Visualization
 ^^^^^^^^^^^^^
 
-Visualize networks:
+Visualize networks and save a static image:
 
 .. code-block:: yaml
 
    - type: "visualize"
      dataset: "my_network"
      parameters:
-       output: "network.png"  # Output file
-       layout: "spring"       # Layout algorithm
+       output: "network.png"  # Output file (default: network.png)
+       layout: "spring"       # Layout algorithm (default: spring)
 
 Supported layouts:
 
 * ``spring`` - Force-directed spring layout
 * ``circular`` - Circular layout
+
+Visualization always writes an image file (default ``network.png``) and returns the output path; node labels are omitted for readability on large graphs.
 
 Aggregation
 ^^^^^^^^^^^
@@ -221,7 +260,7 @@ Aggregate multilayer networks:
    - type: "aggregate"
      dataset: "my_network"
      parameters:
-       method: "sum"  # Aggregation method
+       method: "sum"  # Aggregation method (default: sum)
 
 Supported methods:
 
@@ -229,6 +268,8 @@ Supported methods:
 * ``mean`` - Average edge weights
 * ``max`` - Maximum edge weight
 * ``min`` - Minimum edge weight
+
+Aggregation returns an in-memory aggregated network object in the workflow results. To persist it, follow with a ``convert`` step.
 
 Conversion
 ^^^^^^^^^^
@@ -241,6 +282,26 @@ Convert network formats:
      dataset: "my_network"
      parameters:
        output: "network.json"  # Output file
+
+Supported outputs:
+
+* ``.graphml`` - Full graph structure (preferred)
+* ``.json`` - Node/edge lists without extra attributes
+
+Unsupported extensions raise an error. GraphML preserves attributes and edge multiplicity; the JSON output is a minimal node/edge list.
+
+Output Section
+--------------
+
+The ``output`` block controls where results are written:
+
+.. code-block:: yaml
+
+   output:
+     directory: "results"    # Created if missing (default: ".")
+     summary: "summary.json" # File containing all operation results (default: summary.json)
+
+If the ``output`` block is omitted, results remain in memory only. The summary file mirrors the in-memory results dictionary.
 
 Running Workflows
 -----------------
@@ -257,6 +318,8 @@ Run a workflow from the command line:
 
    # Validate configuration without running
    py3plex run-config my_workflow.yaml --validate-only
+
+The runner validates required fields before execution and stops if validation fails. Validation checks dataset names/types, required parameters for each type, and whether operations reference known datasets.
 
 Python API
 ^^^^^^^^^^
@@ -284,6 +347,8 @@ Run workflows programmatically:
        runner = WorkflowRunner(config)
        runner.run()
 
+Results are kept in memory during the run and optionally written to disk based on the ``output`` section. If ``output`` is omitted, no files are written. The Python API raises ``ValueError`` on validation failure.
+
 Examples
 --------
 
@@ -310,23 +375,23 @@ Best Practices
 Version Control
 ^^^^^^^^^^^^^^^
 
-* Store config files in version control alongside your code
-* Use descriptive names for workflows
-* Document parameters in comments
+* Store config files in version control alongside your code.
+* Use descriptive names for workflows and datasets to make logs readable.
+* Document non-obvious parameters in comments next to the field.
 
 Reproducibility
 ^^^^^^^^^^^^^^^
 
-* Always set random seeds for generated networks
-* Document dataset sources and versions
-* Include workflow descriptions
+* Set ``seed`` when generating networks to reproduce results.
+* Document dataset sources and versions in ``description`` or comments.
+* Keep configs and the exact py3plex version together in your repo or summary output.
 
 Organization
 ^^^^^^^^^^^^
 
-* Use separate configs for different experiments
-* Group related operations together
-* Create reusable config templates
+* Use separate configs for distinct experiments rather than overloading a single file.
+* Group related operations together so results are easy to trace.
+* Start from a template (YAML/JSON) and adjust parameters instead of editing from scratch.
 
 Troubleshooting
 ---------------
