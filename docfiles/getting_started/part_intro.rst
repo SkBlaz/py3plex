@@ -1,7 +1,7 @@
 Getting Started (Tutorials)
 ===========================
 
-This section provides step-by-step tutorials to help you install py3plex and complete your first multilayer network analysis.
+Use these tutorials to install py3plex and complete your first multilayer network analysis in small, ordered steps.
 
 **What's in this section:**
 
@@ -11,7 +11,11 @@ This section provides step-by-step tutorials to help you install py3plex and com
 
 **Why Tutorials?**
 
-These pages are **learning-oriented**—they walk you through concrete steps to build skills and confidence. Unlike how-to guides (which assume you know what you want to do), tutorials guide you through a complete journey from start to finish.
+These pages are **learning-oriented**—they walk through concrete steps to build skills and confidence. How-to guides assume you already know the task; tutorials take you from a blank environment to a finished result.
+
+**How to use this section**
+
+Start with a clean environment if possible. Pick the path below that matches your background and follow it in order.
 
 Recommended Path
 ----------------
@@ -19,14 +23,14 @@ Recommended Path
 **Complete Beginner?**
 
 1. :doc:`installation` — Set up your environment
-2. :doc:`tutorial_10min` — Complete tutorial from basics to advanced topics
-3. Then explore :doc:`../how-to/part_intro` for specific tasks
+2. :doc:`tutorial_10min` — Build a first multilayer network and run core analyses
+3. :doc:`../how-to/part_intro` — Apply what you learned to specific tasks
 
 **Experienced with Networks?**
 
-1. Skim :doc:`tutorial_10min` to see py3plex syntax and features
+1. Skim :doc:`tutorial_10min` for py3plex syntax and features
 2. Jump to :doc:`../how-to/part_intro` for task-oriented guides
-3. Check :doc:`../concepts/py3plex_core_model` for the data model
+3. Review :doc:`../concepts/py3plex_core_model` for the data model
 
 **Having Problems?**
 
@@ -38,19 +42,17 @@ What You'll Learn
 After completing these tutorials, you'll know how to:
 
 * Install py3plex and its dependencies
-* Create multilayer networks from scratch
-* Load networks from files
-* Compute basic statistics and centrality measures
-* Detect communities across layers
+* Create multilayer networks from scratch or load them from files
+* Compute basic statistics, centrality, and community structure
 * Visualize multilayer networks
 * Query networks with the DSL
 
 **Next Steps After Tutorials:**
 
-* **Task-oriented guides:** :doc:`../how-to/part_intro`
-* **Understand the theory:** :doc:`../concepts/multilayer_networks_101`
-* **See more examples:** :doc:`../examples/index`
-* **API reference:** :doc:`../reference/api_index`
+* :doc:`../how-to/part_intro` — Task-oriented recipes
+* :doc:`../concepts/multilayer_networks_101` — Theory and design
+* :doc:`../examples/index` — Additional worked examples
+* :doc:`../reference/api_index` — Full API reference
 
 **Relation to Other Sections:**
 

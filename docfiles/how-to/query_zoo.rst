@@ -40,7 +40,7 @@ The Query Zoo is organized around common multilayer analysis tasks:
 7. **Advanced Centrality Comparison** — Identify versatile vs specialized hubs
 8. **Edge Grouping and Coverage** — Analyze edges across layer pairs with top-k and coverage
 
-All examples use small, reproducible multilayer networks from the ``examples/dsl_query_zoo/datasets.py`` module.
+All examples use small, reproducible multilayer networks from the ``examples/dsl_query_zoo/datasets.py`` module with fixed seeds so you can match the outputs shown here.
 
 .. tip::
    **Running the Examples**
@@ -144,6 +144,7 @@ Top cross-layer hubs (k=5):
    "Charlie", "social", 3, 0.0273, 2
 
 **Interpretation:** Bob appears as a top-5 hub in *all three layers* (layer_count=3), making him the most versatile connector. Alice and Charlie are hubs in two layers each.
+``layer_count`` is the number of distinct layers in which a node enters the per-layer top-k list.
 
 DSL Concepts Demonstrated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,7 +195,8 @@ Correlation matrix for ``social_work_network``:
    "work", "0.159", "1.000", "-0.267"
    "family", "0.000", "-0.267", "1.000"
 
-**Interpretation:** Social and work layers have weak positive correlation (0.159), suggesting some structural overlap. Family and work are *negatively* correlated (-0.267), indicating they capture different connectivity patterns.
+**Interpretation:** Social and work layers have weak positive correlation (0.159), suggesting some structural overlap. Family and work are *negatively* correlated (-0.267), indicating they capture different connectivity patterns. Correlations are Pearson coefficients computed from the node-by-layer degree matrix.
+Nodes missing from a layer contribute a degree of 0 in that matrix so every layer uses the same node ordering.
 
 DSL Concepts Demonstrated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,7 +259,7 @@ DSL Concepts Demonstrated
 
 **Problem:** Standard PageRank treats each layer independently. How do we compute importance considering the full multiplex structure?
 
-**Solution:** Compute PageRank per layer, then aggregate across layers. (Note: This is a simplified version; true multiplex PageRank uses supra-adjacency matrices.)
+**Solution:** Compute PageRank per layer, then take the average across layers as a simplified multiplex score. (True multiplex PageRank uses supra-adjacency matrices.)
 
 Query Code
 ~~~~~~~~~~
@@ -287,7 +289,7 @@ Top nodes by multiplex PageRank in ``transport_network``:
    "CentralStation", 0.1683, 6, 0.1971, 0.1909, 0.117
    "BusinessDistrict", 0.1484, 4, 0.079, 0.1994, 0.1667
 
-**Interpretation:** ShoppingMall has highest multiplex PageRank (0.1811) because it's central across all three transport modes. Park has high walking PageRank but zero metro, reflecting its limited accessibility.
+**Interpretation:** ShoppingMall has highest multiplex PageRank (0.1811) because it's central across all three transport modes. Park has high walking PageRank but zero metro, reflecting its limited accessibility. Scores are the mean of per-layer PageRank values.
 
 DSL Concepts Demonstrated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -339,7 +341,8 @@ Robustness of ``transport_network``:
    "without metro", 11, 1.82, 10, 33.33
    "without walking", 14, 2.0, 14, 6.67
 
-**Interpretation:** Removing the bus layer causes 46.67% connectivity loss — it's the most critical layer. Walking is least critical (only 6.67% loss), indicating good redundancy from other transport modes.
+**Interpretation:** Removing the bus layer causes 46.67% connectivity loss — it's the most critical layer. Walking is least critical (only 6.67% loss), indicating good redundancy from other transport modes. Connectivity loss is computed from total degree (divided by 2 for undirected edges), so it assumes undirected layers.
+The reported loss compares baseline total degree to the degree after removing a layer; for undirected networks total degree is twice the number of edges.
 
 DSL Concepts Demonstrated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -354,7 +357,7 @@ DSL Concepts Demonstrated
 7. Advanced Centrality Comparison
 ----------------------------------
 
-**Problem:** Different centralities capture different notions of importance. Which nodes are "versatile hubs" (high in many centralities) vs "specialized hubs" (high in only one)?
+**Problem:** Different centralities capture different notions of importance. Which nodes are "versatile hubs" (high in many centralities relative to the best scorer) vs "specialized hubs" (high in only one)?
 
 **Solution:** Compute multiple centralities, normalize them, and classify nodes by how many centralities place them in the top tier.
 
@@ -385,7 +388,7 @@ Running on ``communication_network`` (email layer):
    "Dev1", 1, 0.0, 0.5294, 0.0592, 0, "peripheral"
    "Dev2", 1, 0.0, 0.5294, 0.0592, 0, "peripheral"
 
-**Interpretation:** Manager is a **versatile hub** (top 30% in all 4 centralities). All other nodes are peripheral in this star-topology email network.
+**Interpretation:** Manager is a **versatile hub** (it reaches at least 70% of the best score in all four centralities). All other nodes are peripheral in this star-topology email network.
 
 DSL Concepts Demonstrated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -402,7 +405,7 @@ DSL Concepts Demonstrated
 
 **Problem:** You want to analyze which edges (connections) are important within and between layers. Which edges consistently appear in the top-k across different layer-pair contexts?
 
-**Solution:** Use the new ``.per_layer_pair()`` method to group edges by (src_layer, dst_layer) pairs, then apply top-k and coverage filtering.
+**Solution:** Use the new ``.per_layer_pair()`` method to group edges by (src_layer, dst_layer) pairs, then keep the top-k edges per pair. (Add ``.coverage(...)`` if you later need to filter across groups.)
 
 Query Code
 ~~~~~~~~~~
@@ -422,7 +425,7 @@ Why It's Interesting
 Example Output
 ~~~~~~~~~~~~~~
 
-Running on ``social_work_network`` with k=3:
+Running on ``social_work_network`` with k=3 (insertion order per layer determines which edges are kept):
 
 **Edges Grouped by Layer Pair (top 3 per pair):**
 
@@ -431,11 +434,14 @@ Running on ``social_work_network`` with k=3:
    :widths: 25, 25, 25, 25
 
    "Alice", "Bob", "social", "social"
-   "Alice", "Carol", "social", "social"
-   "Bob", "Carol", "social", "social"
+   "Alice", "Charlie", "social", "social"
+   "Bob", "Charlie", "social", "social"
    "Alice", "Bob", "work", "work"
-   "Alice", "Carol", "work", "work"
-   "Bob", "Carol", "work", "work"
+   "Alice", "David", "work", "work"
+   "Alice", "Frank", "work", "work"
+   "Alice", "Charlie", "family", "family"
+   "Bob", "Eve", "family", "family"
+   "David", "Frank", "family", "family"
 
 **Group Summary:**
 
@@ -446,16 +452,16 @@ Running on ``social_work_network`` with k=3:
    "social", "social", 3
    "work", "work", 3
    "family", "family", 3
-   "social", "work", 1
 
-**Interpretation:** The query reveals edge distribution across layer pairs. Each pair (e.g., social-social, work-work) contains up to k=3 edges. Inter-layer pairs (social-work) typically have fewer connections, showing the separation between layers. The family layer has sparser connectivity overall.
+**Interpretation:** The query reveals edge distribution across layer pairs. Each intra-layer pair (e.g., social-social, work-work) contains up to k=3 edges. The sample dataset has only intra-layer edges; inter-layer pairs would appear if your network contains cross-layer connections. The family layer has sparser connectivity overall, so only three family edges remain after limiting.
+When no sort key is provided, ``top_k`` keeps edges by their existing order; specify a weight to make the selection explicitly score-based.
 
 DSL Concepts Demonstrated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``.per_layer_pair()`` — Group edges by (src_layer, dst_layer) pairs
 * ``.top_k(k, "weight")`` — Select top-k items per group
-* ``.coverage(mode="at_least", k=2)`` — Cross-group filtering
+* ``.coverage(mode="at_least", k=2)`` — Optional cross-group filtering
 * ``.group_summary()`` — Get aggregate statistics per group
 * Edge-specific grouping metadata in ``QueryResult.meta["grouping"]``
 

@@ -1,12 +1,12 @@
 10-Minute Tutorial
 ==================
 
-Create a multilayer network, compute statistics, detect communities, and visualize—all in 10 minutes. This comprehensive tutorial takes you from basic network creation to advanced multilayer analysis.
+Create a multilayer network, compute statistics, detect communities, and visualize—all in 10 minutes. This tutorial takes you from a blank environment to advanced multilayer analysis as a single runnable flow.
 
 .. admonition:: 📓 Run this tutorial online
    :class: tip
 
-   You can run this tutorial in your browser without any local installation:
+   You can run this tutorial in your browser without any local setup:
    
    .. image:: https://colab.research.google.com/assets/colab-badge.svg
       :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/tutorial_10min.ipynb
@@ -29,16 +29,17 @@ Installation
 
 .. code-block:: bash
 
-    pip install py3plex
+    python -m pip install py3plex
 
 For Docker setup or optional dependencies, see :doc:`installation`.
+Run inside a virtual environment to keep dependencies isolated.
 
 ----
 
 Part 1: Your First Network (2 min)
 ----------------------------------
 
-Let's create a simple multilayer network and explore its basic properties.
+Create a simple multilayer network and explore its basic properties.
 
 Create from scratch:
 
@@ -48,7 +49,7 @@ Create from scratch:
    :end-before: return network
    :dedent: 4
 
-The complete executable version is available at ``examples/getting_started/tutorial_10min.py``.
+The complete executable version is available at ``examples/getting_started/tutorial_10min.py`` and produces the outputs shown below.
 
 **Output:**
 
@@ -72,6 +73,7 @@ Visualize your network:
     draw_multilayer_default([network], display=True)
 
 Nodes are colored by layer. Edges connect nodes within and across layers.
+Set ``display=False`` in headless environments and call ``plt.show()`` or ``plt.savefig(...)`` manually.
 
 Load from file:
 
@@ -85,7 +87,7 @@ Load from file:
     )
     network.basic_stats()
 
-**Supported formats:** ``multiedgelist`` (source, target, layer), ``edgelist`` (source, target), ``gpickle``, ``gml``, ``graphml``
+**Supported formats:** ``multiedgelist`` (source, target, layer), ``edgelist`` (source, target), ``gpickle``, ``gml``, ``graphml``. File paths in this tutorial are relative to the repository root.
 
 ----
 
@@ -113,12 +115,12 @@ Compute layer-specific metrics:
     Colleagues density: 0.667
     Bob's activity: 1.000
 
-* **Density 0.667** — 2 of 3 possible edges exist
-* **Activity 1.0** — Bob appears in 100% of layers (both)
+* **Density 0.667** — with 3 nodes in an undirected layer there are 3 possible edges; 2 exist here
+* **Activity 1.0** — Bob appears in every available layer in this example
 
 Query with the DSL:
 
-Py3plex features a powerful SQL-like DSL for querying networks!
+Py3plex includes a SQL-like DSL for querying networks without manual iteration.
 
 .. admonition:: DSL Example: Network Queries
    :class: dsl-example
@@ -142,7 +144,7 @@ Py3plex features a powerful SQL-like DSL for querying networks!
             .execute(network)
        )
 
-   The DSL makes complex network analysis intuitive and concise!
+   ``Q`` builds queries and ``L`` selects layers. Both forms return a result object with counts, selected nodes, and any computed measures.
 
 See :doc:`../user_guide/dsl` for complete DSL documentation.
 
@@ -174,12 +176,13 @@ Extract subnetworks:
     pairs = network.subnetwork([('Alice', 'friends'), ('Bob', 'friends')], 
                                subset_by="node_layer_names")
 
+Use ``subset_by`` to control whether you filter by layers, node names, or explicit node-layer tuples.
 ----
 
 Part 3: Advanced Metrics (2 min)
 --------------------------------
 
-Layer-specific centrality (using NetworkX):
+Layer-specific centrality (using NetworkX wrappers):
 
 .. code-block:: python
 
@@ -209,6 +212,7 @@ Multilayer statistics:
     similarity = mls.layer_similarity(network, 'friends', 'colleagues', method='jaccard')
 
 **Available statistics:** ``layer_density``, ``entropy_of_multiplexity``, ``node_activity``, ``edge_overlap``, ``layer_similarity``, ``algebraic_connectivity``, ``multilayer_clustering_coefficient``, and more.
+``layer_density`` compares existing edges to the maximum possible within a layer; ``node_activity`` is the fraction of layers a node appears in; ``edge_overlap`` and ``layer_similarity`` compare relationships across layers.
 
 ----
 
@@ -222,7 +226,7 @@ Part 4: Community Detection (2 min)
     partition = louvain_multilayer(
         network,
         gamma=1.0,      # Resolution (higher = more communities)
-        omega=1.0,      # Inter-layer coupling
+        omega=1.0,      # Inter-layer coupling strength
         random_state=42
     )
 
@@ -232,6 +236,7 @@ Part 4: Community Detection (2 min)
     sizes = Counter(partition.values())
     print(f"Sizes: {dict(sizes)}")
 
+``partition`` maps each node-layer pair to a community label. Tune ``gamma`` (resolution) and ``omega`` (inter-layer coupling) to control granularity; fix ``random_state`` for reproducible runs.
 ----
 
 Part 5: Random Walks (1 min)
@@ -252,11 +257,13 @@ Node2Vec biased walks:
 
 .. code-block:: python
 
-    # BFS-like (local)
+    # BFS-like (local): higher q biases walks to stay close
     walk_bfs = node2vec_walk(G, start, walk_length=20, p=1.0, q=2.0, seed=42)
 
-    # DFS-like (explore)
+    # DFS-like (explore): lower q encourages exploration
     walk_dfs = node2vec_walk(G, start, walk_length=20, p=1.0, q=0.5, seed=42)
+
+``p`` controls the likelihood of returning to the previous node, while ``q`` biases walks toward breadth-first (higher) or depth-first (lower) exploration; keep ``seed`` fixed to reproduce results.
 
 Generate walks for embeddings:
 
@@ -264,6 +271,7 @@ Generate walks for embeddings:
 
     walks = generate_walks(G, num_walks=10, walk_length=10, p=1.0, q=1.0, seed=42)
     # Use with Word2Vec: model = Word2Vec([[str(n) for n in w] for w in walks])
+    # Set seeds for reproducibility; tune p and q to balance local/global exploration.
 
 ----
 
@@ -287,6 +295,7 @@ With community colors:
 .. code-block:: python
 
     from py3plex.visualization.colors import colors_default
+    from collections import Counter
 
     top_communities = [c for c, _ in Counter(partition.values()).most_common(5)]
     color_map = dict(zip(top_communities, colors_default[:5]))
@@ -297,20 +306,21 @@ With community colors:
     plt.savefig("communities.png", dpi=150, bbox_inches='tight')
     plt.close()
 
+``get_layers(style="hairball")`` returns a NetworkX graph and color mapping ready for ``hairball_plot``; saving figures makes headless runs reproducible.
 ----
 
 Key Concepts
 ------------
 
-Understanding these core concepts will help you work effectively with py3plex:
+Understand these concepts to navigate py3plex effectively:
 
-1. **Node-layer pairs:** Nodes are ``(node_id, layer_id)`` tuples. Alice in friends is different from Alice in colleagues. This allows the same entity to have different connections in different contexts.
+1. **Node-layer pairs:** Nodes are ``(node_id, layer_id)`` tuples. Alice in friends is distinct from Alice in colleagues, so each context keeps its own edges.
 
-2. **Layers preserve context:** Each layer represents a different relationship type (friends, colleagues, family, etc.). Statistics and algorithms respect layer boundaries, revealing patterns invisible to single-layer analysis.
+2. **Layer boundaries:** Every layer represents a relationship type (friends, colleagues, transit, etc.). Metrics respect layer boundaries, surfacing patterns that disappear in single-layer projections.
 
-3. **NetworkX compatible:** py3plex uses NetworkX internally. All NetworkX algorithms work on py3plex networks, giving you access to a rich ecosystem of graph algorithms.
+3. **NetworkX compatibility:** py3plex wraps NetworkX internally; use ``network.core_network`` directly with NetworkX algorithms when needed.
 
-4. **Multilayer statistics:** Metrics like node activity and edge overlap reveal cross-layer patterns. These measures quantify how entities interact across different relationship contexts.
+4. **Cross-layer measures:** Node activity and edge overlap quantify how entities and links span layers; use them to compare behaviors across contexts.
 
 ----
 
@@ -403,7 +413,7 @@ Common Issues
 
 **Visualization not showing:** In Jupyter, add ``%matplotlib inline``. In scripts, use ``plt.show()`` or save to file.
 
-**Missing dependencies:** Install extras with ``pip install py3plex[viz,algos]``
+**Missing dependencies:** Install extras with ``python -m pip install "py3plex[viz,algos]"``
 
 ----
 
@@ -432,5 +442,3 @@ Next Steps
 
 * ``examples/`` directory — 50+ working examples
 * :doc:`../examples/index` — Annotated example gallery
-
-

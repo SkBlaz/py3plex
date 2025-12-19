@@ -1,12 +1,12 @@
 Command-Line Interface (CLI) Tutorial
 ======================================
 
-Py3plex includes a comprehensive command-line interface that provides access to all main algorithms and functionality directly from the terminal. This is useful for quick analysis, scripting, and automation workflows.
+Py3plex includes a comprehensive command-line interface that provides access to all main algorithms and functionality directly from the terminal. This is useful for quick analysis, scripting, and automation workflows without writing Python code.
 
 Installation
 ------------
 
-The CLI tool is automatically available after installing py3plex:
+The CLI tool is available immediately after installing py3plex:
 
 .. code-block:: bash
 
@@ -86,6 +86,7 @@ The py3plex CLI provides these main commands:
 * ``visualize`` - Create network visualizations
 * ``aggregate`` - Aggregate multilayer networks into single layer
 * ``convert`` - Convert between network formats
+* ``run-config`` - Run YAML/JSON workflow definitions
 * ``help`` - Show detailed help information
 
 Quick Reference
@@ -114,6 +115,12 @@ Quick Reference
 
     # Community detection workflow
     py3plex community net.graphml --algorithm louvain --output communities.json
+
+**Defaults and conventions:**
+
+* Input format is auto-detected by file extension; override with ``--input-type`` when necessary.
+* ``--output`` writes to a file and infers format from the extension; omit it to print to stdout where supported.
+* Commands return non-zero exit codes on validation or runtime errors, making them safe to chain in scripts and CI.
 
 Unix Piping and Stdin Support
 -----------------------------
@@ -275,6 +282,8 @@ Complete Piping Workflow Examples
     py3plex create --nodes 50 --layers 2 -o /dev/stdout 2>/dev/null | \
         py3plex query - 'Q.nodes().compute("degree").order_by("-degree").limit(5)' --dsl
 
+For long pipelines, prefer explicit ``--format`` choices to keep output predictable for downstream tools.
+
 Tips for Piping Workflows
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -347,7 +356,7 @@ Use ``--strict`` to treat warnings as errors (useful for CI/CD pipelines):
 
     py3plex check network.csv --strict
 
-With strict mode enabled, the command exits with error code 1 if any warnings are found, making it suitable for automated validation in scripts.
+With strict mode enabled, the command exits with error code 1 if any warnings are found, making it suitable for automated validation in scripts. Successful validation still returns 0.
 
 Validation Checks
 ~~~~~~~~~~~~~~~~~
@@ -417,10 +426,12 @@ Create a simple multilayer network with random edges:
 
     py3plex create --nodes 100 --layers 3 --output network.graphml --seed 42
 
-This creates a network with 100 nodes per layer and 3 layers, saving it to ``network.graphml``.
+This creates a network with 100 nodes across 3 layers and saves it to ``network.graphml``.
 
 Network Generation Models
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``create`` command supports multiple random graph models. The ``--probability`` flag controls density or rewiring, depending on the model; use ``py3plex create --help`` for the exact parameter meaning before launching large jobs.
 
 **Erdős-Rényi Random Graphs:**
 
@@ -862,38 +873,32 @@ Example 4: Validate External Data Before Analysis
 Tips and Best Practices
 ------------------------
 
-1. **Validate Data Files First**: Always run ``py3plex check`` on external data files before analysis to catch format issues early.
+- **Validate data first**: Run ``py3plex check`` on external files before analysis to catch format issues early.
+- **Use seeds for reproducibility**: Pass ``--seed`` when creating networks so results are repeatable.
+- **Save structured output**: Use ``--output`` (often with JSON) for results you plan to post-process.
+- **Consult per-command help**: Each command ships with examples:
 
-2. **Use Seeds for Reproducibility**: Always use ``--seed`` when creating networks for reproducible results.
+  .. code-block:: bash
 
-3. **JSON Output for Scripting**: Use ``--output`` to save results as JSON for post-processing with other tools.
+      py3plex <command> --help
 
-4. **Check Help for Each Command**: Each command has detailed help with examples:
-
-   .. code-block:: bash
-
-       py3plex <command> --help
-
-4. **Format Auto-Detection**: The CLI automatically detects file formats from extensions, so use appropriate extensions (.graphml, .gexf, .json, .gpickle).
-
-5. **Large Networks**: For large networks (>1000 nodes), prefer:
-   
-   * ``spring`` or ``circular`` layouts for visualization
-   * ``louvain`` for community detection (faster than infomap)
-   * ``degree`` centrality for quick analysis
-
-6. **Batch Processing**: Combine CLI commands with shell scripts for batch processing multiple networks.
+- **Rely on extensions for format detection**: Use meaningful extensions (``.graphml``, ``.gexf``, ``.json``, ``.gpickle``) so the CLI auto-detects formats correctly.
+- **Handling large networks (>1000 nodes)**:
+  * Prefer ``spring`` or ``circular`` layouts for quicker visualization
+  * Use ``louvain`` for community detection (typically faster than ``infomap``)
+  * Start with ``degree`` centrality for quick scans
+- **Batch processing**: Combine CLI commands with shell scripts to process many networks consistently.
 
 Common Issues and Solutions
 ----------------------------
 
 **Issue: "Infomap not available"**
 
-Solution: Infomap requires separate installation. Use ``louvain`` or ``label_prop`` instead.
+Solution: Infomap requires separate installation. Install it if needed, or use ``louvain`` or ``label_prop`` instead.
 
 **Issue: "Eigenvector centrality failed"**
 
-Solution: Some networks don't converge for eigenvector centrality. The CLI automatically falls back to degree centrality.
+Solution: Eigenvector centrality may not converge on disconnected or poorly conditioned graphs. Try running on a connected subgraph or switch to ``degree`` centrality.
 
 **Issue: Visualization too slow**
 

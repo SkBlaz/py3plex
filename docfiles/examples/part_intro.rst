@@ -1,7 +1,7 @@
 Examples
 ========
 
-This section provides complete, working code examples for various py3plex use cases.
+Complete, runnable code examples for common py3plex workflows. Every script lives under ``examples/`` and mirrors the categories listed in :doc:`index`.
 
 Each example is:
 
@@ -9,7 +9,7 @@ Each example is:
 * **Annotated** — Explains what the code does and why
 * **Practical** — Based on real analysis patterns
 
-**Examples cover:**
+**Topics covered**
 
 * Network creation and loading
 * Statistical analysis
@@ -21,20 +21,20 @@ Each example is:
 How to Use
 ----------
 
-* **Learning:** Work through examples in order to build skills progressively
-* **Templates:** Find a similar example and adapt it to your problem
-* **Reference:** Quick reminder of how to do specific tasks
-* **Validation:** Verify your installation works correctly
+* **Learn:** Start with the simplest scripts, then progress to full pipelines.
+* **Adapt:** Copy the closest example and swap in your data or parameters.
+* **Refer:** Jump to a specific topic when you need a quick reminder.
+* **Validate:** Run an example after installing py3plex to confirm your setup.
 
-Browse the :doc:`index` to find relevant examples.
+Run scripts from the repository root with your virtual environment activated so relative paths resolve correctly. See the :doc:`index` for a full listing.
 
 .. note::
 
-   All examples require py3plex to be installed. Some need optional dependencies—check imports at the top of each example.
-   
+   All examples require py3plex to be installed. Some need optional dependencies—check imports at the top of each example and install as needed.
+
    Common optional dependencies:
-   
-   * ``matplotlib`` — visualization
-   * ``gensim`` — embeddings
-   * ``python-louvain`` — community detection
-   * ``sklearn`` — machine learning
+
+   * ``matplotlib`` — Visualization
+   * ``gensim`` — Embeddings
+   * ``python-louvain`` — Community detection
+   * ``sklearn`` — Machine learning

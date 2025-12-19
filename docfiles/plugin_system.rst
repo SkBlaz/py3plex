@@ -14,6 +14,8 @@ The plugin system provides:
 * **Safe module loading** with conflict detection
 * **Validation** before plugin instantiation
 
+Typical workflow: implement a plugin class, register it (via decorator or direct call), ensure it validates cleanly, and then retrieve it through the registry or automatic discovery.
+
 Plugin Types
 ------------
 
@@ -37,6 +39,7 @@ For custom node centrality measures.
 .. code-block:: python
 
     from py3plex.plugins import CentralityPlugin, PluginRegistry
+    import networkx as nx
 
     @PluginRegistry.register('centrality', 'my_centrality')
     class MyCustomCentrality(CentralityPlugin):
@@ -54,14 +57,14 @@ For custom node centrality measures.
         
         def compute(self, network, normalized=False, **kwargs):
             """Compute centrality scores for all nodes."""
-            centrality = {}
-            
-            # Your algorithm here
             G = network.core_network
-            for node in G.nodes():
-                centrality[node] = compute_score(node)
-            
-            return centrality
+            raw_scores = nx.degree_centrality(G)
+
+            if not normalized or not raw_scores:
+                return raw_scores
+
+            max_score = max(raw_scores.values()) or 1.0
+            return {node: score / max_score for node, score in raw_scores.items()}
 
 CommunityPlugin
 ~~~~~~~~~~~~~~~
@@ -83,6 +86,7 @@ For community detection algorithms.
 .. code-block:: python
 
     from py3plex.plugins import CommunityPlugin, PluginRegistry
+    import networkx as nx
 
     @PluginRegistry.register('community', 'my_detector')
     class MyDetector(CommunityPlugin):
@@ -96,13 +100,10 @@ For community detection algorithms.
         
         def detect(self, network, resolution=1.0, **kwargs):
             """Detect communities in the network."""
-            communities = {}
-            
-            # Your algorithm here
             G = network.core_network
-            # ... community detection logic ...
-            
-            return communities
+            # Replace with your preferred algorithm (e.g., networkx or community-louvain)
+            partition = nx.algorithms.community.greedy_modularity_communities(G, weight='weight' if self.supports_weighted else None)
+            return {node: community_id for community_id, nodes in enumerate(partition) for node in nodes}
 
 LayoutPlugin
 ~~~~~~~~~~~~
@@ -123,6 +124,7 @@ For network layout algorithms.
 .. code-block:: python
 
     from py3plex.plugins import LayoutPlugin, PluginRegistry
+    import math
 
     @PluginRegistry.register('layout', 'my_layout')
     class MyLayout(LayoutPlugin):
@@ -136,19 +138,22 @@ For network layout algorithms.
         
         def compute_layout(self, network, dimensions=2, **kwargs):
             """Compute layout positions."""
-            import math
-            
             positions = {}
             G = network.core_network
             nodes = list(G.nodes())
             
-            # Your layout algorithm here
+            # Simple circular layout example
             for i, node in enumerate(nodes):
+                angle = 2 * math.pi * i / max(len(nodes), 1)
+                x = math.cos(angle)
+                y = math.sin(angle)
                 if dimensions == 2:
                     positions[node] = (x, y)
                 elif dimensions == 3:
-                    positions[node] = (x, y, z)
-            
+                    positions[node] = (x, y, 0.0)
+                else:
+                    raise ValueError("dimensions must be 2 or 3")
+
             return positions
 
 MetricPlugin
@@ -169,6 +174,7 @@ For custom network metrics.
 .. code-block:: python
 
     from py3plex.plugins import MetricPlugin, PluginRegistry
+    import networkx as nx
 
     @PluginRegistry.register('metric', 'my_metric')
     class MyMetric(MetricPlugin):
@@ -183,11 +189,9 @@ For custom network metrics.
         def compute(self, network, **kwargs):
             """Compute network metrics."""
             G = network.core_network
-            
-            # Your metric computation
-            value = compute_metric(G)
-            
-            return {'metric_name': value}
+
+            density = nx.density(G)
+            return {'density': density}
 
 Using Plugins
 -------------
@@ -222,8 +226,8 @@ Getting and Using Plugins
 
     from py3plex import PluginRegistry, multi_layer_network
 
-    # Get plugin instance
     registry = PluginRegistry()
+    # Make sure your plugin has been registered or discovered first
     plugin = registry.get('centrality', 'my_plugin')
 
     # Use plugin
@@ -297,6 +301,8 @@ Programmatically:
     # Discover plugins from custom directory
     count = discover_plugins('/path/to/my/plugins')
     print(f"Loaded {count} plugins")
+
+Discovery should be called after your plugin modules are importable (e.g., installed in the environment or placed in the plugin directory).
 
 Creating Discoverable Plugins
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,16 +1,31 @@
 API Documentation
 =================
 
-This section contains the complete API documentation for py3plex, automatically generated from docstrings.
+This section contains the complete API documentation for py3plex, automatically generated from docstrings. The modules listed below anchor high-traffic entry points; the full tree produced by ``sphinx-apidoc`` lives under ``AUTOGEN_results`` after a build. Keep the order stable so cross-references into the generated tree remain predictable.
 
-For auto-generated module documentation, run::
+How to regenerate
+-----------------
 
-    cd docfiles
-    sphinx-apidoc -o AUTOGEN_results -f ../py3plex
-    make html
+Prerequisites: py3plex importable in the current environment and ``sphinx``/``sphinx-apidoc`` available on ``PATH``.
+
+#. From the repository root, change into ``docfiles``::
+
+       cd docfiles
+
+#. Rebuild the API stubs (``-f`` overwrites existing files)::
+
+       sphinx-apidoc -o AUTOGEN_results -f ../py3plex
+
+#. Build the documentation with warnings treated as errors to catch missing imports or directives::
+
+       sphinx-build -b html -n -W --keep-going docfiles _build/loop-docs
+
+Use ``:noindex:`` on any ``automodule`` entries that appear elsewhere to avoid duplicate index warnings.
 
 Core Modules
 ------------
+
+Core multilayer network container, parsers, converters, generators, and compatibility helpers.
 
 .. automodule:: py3plex.core.multinet
    :members:
@@ -45,6 +60,8 @@ Core Modules
 HINMINE Network Decomposition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Legacy hierarchical decomposition utilities used by HINMINE components.
+
 .. automodule:: py3plex.core.HINMINE.decomposition
    :members:
    :undoc-members:
@@ -57,6 +74,8 @@ HINMINE Network Decomposition
 
 Configuration and Utilities
 ----------------------------
+
+Configuration loader, convenience utilities, and shared exceptions.
 
 .. automodule:: py3plex.config
    :members:
@@ -76,8 +95,12 @@ Configuration and Utilities
 Algorithms
 ----------
 
+Algorithm modules are grouped by task; most depend on NetworkX and may require optional extras for specific methods.
+
 Community Detection
 ~~~~~~~~~~~~~~~~~~~
+
+Wrappers for modularity-based and benchmark community detection in multilayer graphs.
 
 .. automodule:: py3plex.algorithms.community_detection.community_wrapper
    :members:
@@ -106,6 +129,8 @@ Community Detection
 
 Statistics
 ~~~~~~~~~~
+
+Descriptive statistics, topology summaries, enrichment tests, and correlation utilities.
 
 .. automodule:: py3plex.algorithms.statistics.statistics
    :members:
@@ -140,6 +165,8 @@ Statistics
 Multilayer Algorithms
 ~~~~~~~~~~~~~~~~~~~~~
 
+Centrality and entanglement measures defined over supra-adjacency representations.
+
 .. automodule:: py3plex.algorithms.multilayer_algorithms.centrality
    :members:
    :undoc-members:
@@ -168,6 +195,8 @@ Multilayer Algorithms
 General Algorithms
 ~~~~~~~~~~~~~~~~~~
 
+Random-walk primitives and generic benchmarking helpers.
+
 .. automodule:: py3plex.algorithms.general.walkers
    :members:
    :undoc-members:
@@ -181,6 +210,8 @@ General Algorithms
 Node Ranking
 ~~~~~~~~~~~~
 
+Single-layer node ranking utilities.
+
 .. automodule:: py3plex.algorithms.node_ranking.node_ranking
    :members:
    :undoc-members:
@@ -188,6 +219,8 @@ Node Ranking
 
 Network Classification
 ~~~~~~~~~~~~~~~~~~~~~~
+
+Label propagation and related network-level classifiers.
 
 .. Note: :noindex: prevents duplicate object descriptions in the documentation index
    since this module is also documented elsewhere.
@@ -200,6 +233,8 @@ Network Classification
 
 Visualization
 -------------
+
+Rendering utilities for multilayer networks, layouts, and color helpers.
 
 .. automodule:: py3plex.visualization.multilayer
    :members:
@@ -234,6 +269,8 @@ Visualization
 Wrappers
 --------
 
+Command-line friendly wrappers for embeddings and benchmarking workflows.
+
 .. automodule:: py3plex.wrappers.node2vec_embedding
    :members:
    :undoc-members:
@@ -247,14 +284,17 @@ Wrappers
 I/O Operations
 --------------
 
+Low-level file readers and writers.
+
 .. automodule:: py3plex.io.input_output
    :members:
    :undoc-members:
    :show-inheritance:
 
-For the complete auto-generated API documentation, see the AUTOGEN_results directory after building the docs.
 Aggregation and Network Operations
 ----------------------------------
+
+Graph aggregation helpers for multiplex/multilayer data.
 
 .. automodule:: py3plex.multinet.aggregation
    :members:
@@ -264,6 +304,8 @@ Aggregation and Network Operations
 Profiling Utilities
 -------------------
 
+Timing and profiling helpers used across algorithms.
+
 .. automodule:: py3plex.profiling
    :members:
    :undoc-members:
@@ -272,6 +314,8 @@ Profiling Utilities
 Logging Configuration
 ---------------------
 
+Logger setup used by CLI and modules.
+
 .. automodule:: py3plex.logging_config
    :members:
    :undoc-members:
@@ -279,6 +323,8 @@ Logging Configuration
 
 I/O Schema and Validation
 -------------------------
+
+Schema helpers and validation API for structured inputs.
 
 .. Note: :noindex: prevents duplicate object descriptions in the documentation index
    since this module is documented in multiple locations.
@@ -296,6 +342,8 @@ I/O Schema and Validation
 
 Hedwig Rule Learning
 --------------------
+
+Hedwig rule-learning algorithms and supporting components.
 
 .. automodule:: py3plex.algorithms.hedwig
    :members:
@@ -320,6 +368,8 @@ Hedwig Rule Learning
 Force Atlas 2 Visualization
 ---------------------------
 
+ForceAtlas2 layout implementation and utilities.
+
 .. automodule:: py3plex.visualization.fa2.forceatlas2
    :members:
    :undoc-members:
@@ -333,6 +383,8 @@ Force Atlas 2 Visualization
 Embedding Visualization
 -----------------------
 
+Helpers for plotting learned embeddings.
+
 .. automodule:: py3plex.visualization.embedding_visualization.embedding_visualization
    :members:
    :undoc-members:
@@ -341,6 +393,8 @@ Embedding Visualization
 Network Generation and Benchmarking
 -----------------------------------
 
+Synthetic graph generators and benchmark helpers.
+
 .. automodule:: py3plex.algorithms.general.network_generation
    :members:
    :undoc-members:
@@ -348,6 +402,8 @@ Network Generation and Benchmarking
 
 Additional Statistics and Analysis
 ----------------------------------
+
+Bayesian comparisons, information theory helpers, and distributions.
 
 .. automodule:: py3plex.algorithms.statistics.bayesiantests
    :members:
@@ -367,6 +423,8 @@ Additional Statistics and Analysis
 Community Detection Advanced
 ----------------------------
 
+Advanced or experimental community detection routines.
+
 .. automodule:: py3plex.algorithms.community_detection.NoRC
    :members:
    :undoc-members:
@@ -385,6 +443,8 @@ Community Detection Advanced
 Node Ranking and Classification
 -------------------------------
 
+Higher-level ranking and classification front-ends.
+
 .. automodule:: py3plex.algorithms.node_ranking
    :members:
    :undoc-members:
@@ -397,6 +457,8 @@ Node Ranking and Classification
 
 Embeddings and Wrappers
 -----------------------
+
+Training wrappers for node2vec/word2vec embeddings.
 
 .. automodule:: py3plex.wrappers.train_node2vec_embedding
    :members:
@@ -411,6 +473,8 @@ Embeddings and Wrappers
 Network Motifs and Patterns
 ---------------------------
 
+Motif detection and related pattern utilities.
+
 .. automodule:: py3plex.algorithms.network_patterns.motif_detection
    :members:
    :undoc-members:
@@ -418,6 +482,8 @@ Network Motifs and Patterns
 
 HINMINE Data Structures
 -----------------------
+
+Data structures used by the HINMINE components.
 
 .. automodule:: py3plex.core.HINMINE.dataStructures
    :members:
@@ -427,6 +493,8 @@ HINMINE Data Structures
 Command-Line Interface
 ----------------------
 
+CLI entry points and option parsing.
+
 .. automodule:: py3plex.cli
    :members:
    :undoc-members:
@@ -435,6 +503,8 @@ Command-Line Interface
 Validation Utilities
 --------------------
 
+Validators for graph inputs and model outputs.
+
 .. automodule:: py3plex.validation
    :members:
    :undoc-members:
@@ -442,6 +512,8 @@ Validation Utilities
 
 Network Comparison and Testing
 ------------------------------
+
+Distances, comparisons, and slicing helpers.
 
 .. automodule:: py3plex.algorithms.general.network_comparison
    :members:
@@ -461,6 +533,8 @@ Network Comparison and Testing
 Hedwig Learning Algorithms
 --------------------------
 
+Learners used by Hedwig for rule induction.
+
 .. automodule:: py3plex.algorithms.hedwig.learners.learner
    :members:
    :undoc-members:
@@ -479,6 +553,8 @@ Hedwig Learning Algorithms
 Hedwig Statistics and Scoring
 -----------------------------
 
+Scoring and validation routines for Hedwig rules.
+
 .. automodule:: py3plex.algorithms.hedwig.stats.scorefunctions
    :members:
    :undoc-members:
@@ -491,6 +567,8 @@ Hedwig Statistics and Scoring
 
 Hedwig Core Components
 ----------------------
+
+Core conversions, knowledge bases, and settings for Hedwig.
 
 .. automodule:: py3plex.algorithms.hedwig.core.converters
    :members:
@@ -510,6 +588,8 @@ Hedwig Core Components
 Time Series and Temporal Analysis
 ---------------------------------
 
+Temporal analysis helpers for sequence-based data.
+
 .. automodule:: py3plex.algorithms.temporal.time_series_analysis
    :members:
    :undoc-members:
@@ -517,6 +597,8 @@ Time Series and Temporal Analysis
 
 Advanced Visualization
 ----------------------
+
+Additional layouts and visual encodings for large or complex networks.
 
 .. automodule:: py3plex.visualization.hairballs
    :members:
@@ -530,6 +612,8 @@ Advanced Visualization
 
 Link Prediction
 ---------------
+
+Baseline link-prediction routines.
 
 .. automodule:: py3plex.algorithms.link_prediction.link_prediction
    :members:

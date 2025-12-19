@@ -1,6 +1,8 @@
 Acknowledgements
-=====================
+================
 
-ForceAtlas2 cython implementation is based on the one provided at https://github.com/bhargavchippada/forceatlas2, developed by Bhargav Chippada. The code is included by the author's permission. 
+py3plex includes community contributions that we gratefully acknowledge:
 
-We also thank Thomas Aynaud for the permission to include the initial version of the Louvain algorithm. Other contributors to this project are Jan Kralj and Nika Erzen.
+- The ForceAtlas2 Cython implementation is adapted from the version developed by `Bhargav Chippada <https://github.com/bhargavchippada/forceatlas2>`_ and included with the author's permission.
+- Thomas Aynaud permitted the inclusion of the initial Louvain algorithm implementation.
+- Additional contributions came from Jan Kralj and Nika Erzen.

@@ -1,16 +1,23 @@
 Docker Usage Guide
 ==================
 
-This guide provides comprehensive instructions for using Py3plex via Docker.
+This guide provides concise, step-by-step instructions for running Py3plex with Docker. It assumes Docker is installed and that you are working from the repository root unless noted otherwise.
 
 .. contents:: Table of Contents
    :local:
    :depth: 2
 
+Prerequisites
+-------------
+
+* Docker installed and running (``docker ps`` should work).
+* Optional: Docker Compose (``docker compose`` or ``docker-compose``) if you prefer compose workflows.
+* Run commands from the repository root unless a command explicitly sets another path.
+
 Quickstart
 -----------
 
-The fastest way to get started with Py3plex using Docker:
+The fastest way to get started with Py3plex using Docker (uses the ``latest`` tag):
 
 .. code-block:: bash
 
@@ -33,9 +40,11 @@ Building the Image
 Using Docker
 ~~~~~~~~~~~~
 
+Build directly from the repository root:
+
 .. code-block:: bash
 
-    # Build from the repository root
+    # Build from the repository root (default tag)
     docker build -t py3plex:latest .
 
     # Build with a specific tag
@@ -47,9 +56,11 @@ Using Docker
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
+If you prefer docker-compose (or ``docker compose``), use the provided configuration:
+
 .. code-block:: bash
 
-    # Build using docker-compose
+    # Build using docker-compose (v1 syntax)
     docker-compose build
 
     # Force rebuild
@@ -61,7 +72,7 @@ Running Commands
 Basic Commands
 ~~~~~~~~~~~~~~
 
-The Docker container is set up with ``py3plex`` as the entrypoint, so you can run any py3plex CLI command directly:
+The image sets ``py3plex`` as the entrypoint, so you can run CLI commands directly. Substitute your tag if not using ``latest``.
 
 .. code-block:: bash
 
@@ -80,7 +91,7 @@ The Docker container is set up with ``py3plex`` as the entrypoint, so you can ru
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
-With docker-compose, commands are slightly more verbose but easier to manage:
+With Docker Compose, commands are slightly more verbose but easier to repeat:
 
 .. code-block:: bash
 
@@ -92,11 +103,13 @@ With docker-compose, commands are slightly more verbose but easier to manage:
 
     # Show help
     docker-compose run --rm py3plex help
+    # Show help (modern syntax)
+    docker compose run --rm py3plex help
 
 Working with Files
 ------------------
 
-To work with network files, you need to mount a local directory to the container's ``/data`` directory.
+To persist inputs/outputs, mount a local directory to ``/data`` inside the container. Examples assume ``./data`` on the host and a POSIX shell; adjust the path syntax for Windows shells.
 
 Creating a Data Directory
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,8 +126,11 @@ Mounting Volumes
 
 .. code-block:: bash
 
-    # Mount current directory's data folder
+    # Mount current directory's data folder (Linux/macOS)
     docker run --rm -v $(pwd)/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
+
+    # If your path contains spaces, quote it:
+    docker run --rm -v "$(pwd)"/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
 
     # On Windows (PowerShell)
     docker run --rm -v ${PWD}/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
@@ -132,6 +148,8 @@ The ``docker-compose.yml`` file already configures volume mounting from ``./data
 
 Complete Workflow Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+End-to-end example using volume mounts and the default ``latest`` tag:
 
 .. code-block:: bash
 
@@ -204,7 +222,7 @@ You can also use py3plex as a Python library inside the container:
 Custom Image Builds
 ~~~~~~~~~~~~~~~~~~~
 
-If you need additional packages:
+If you need additional Python or system packages, extend the base image. Pin the base tag you want to customize (e.g., ``py3plex:latest`` or a versioned tag):
 
 .. code-block:: dockerfile
 
@@ -222,7 +240,7 @@ If you need additional packages:
 Docker Compose with Multiple Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can extend the ``docker-compose.yml`` to include related services:
+You can extend the ``docker-compose.yml`` to include related services and run them together (``docker compose up jupyter``):
 
 .. code-block:: yaml
 
@@ -248,7 +266,7 @@ You can extend the ``docker-compose.yml`` to include related services:
 Helper Scripts
 --------------
 
-The repository includes convenient helper scripts to simplify Docker usage.
+The repository includes optional helper scripts to simplify Docker usage.
 
 py3plex-docker.sh
 ~~~~~~~~~~~~~~~~~
@@ -359,7 +377,7 @@ This script will:
 Permission Issues
 ~~~~~~~~~~~~~~~~~
 
-If you encounter permission issues with mounted volumes:
+If you encounter permission issues with mounted volumes (common on Linux), run with your UID/GID so files stay writable on the host:
 
 .. code-block:: bash
 
@@ -369,7 +387,7 @@ If you encounter permission issues with mounted volumes:
 Container Not Found
 ~~~~~~~~~~~~~~~~~~~
 
-If the image isn't found:
+If the image is missing locally:
 
 .. code-block:: bash
 
@@ -382,7 +400,7 @@ If the image isn't found:
 Network Issues During Build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you encounter network timeouts during build:
+If you encounter network timeouts during build, try a higher timeout or a different PyPI mirror:
 
 .. code-block:: bash
 
@@ -417,15 +435,17 @@ Build with verbose output:
 Best Practices
 --------------
 
-1. **Use Volume Mounts**: Always mount volumes for input/output files
-2. **Use --rm Flag**: Remove containers after execution with ``--rm`` to save space
-3. **Tag Images**: Use specific tags (e.g., ``py3plex:0.95a``) for reproducibility
-4. **Keep Data Separate**: Store network files in the mounted ``data`` directory
-5. **Use Docker Compose**: For repeated operations, docker-compose simplifies commands
-6. **Regular Updates**: Rebuild the image periodically to get latest py3plex updates
+1. **Use Volume Mounts:** Always mount volumes for input/output files.
+2. **Use --rm Flag:** Remove containers after execution with ``--rm`` to save space.
+3. **Tag Images:** Use specific tags (e.g., ``py3plex:0.95a``) for reproducibility.
+4. **Keep Data Separate:** Store network files in the mounted ``data`` directory.
+5. **Use Docker Compose:** For repeated operations, Docker Compose simplifies commands.
+6. **Regular Updates:** Rebuild the image periodically to get the latest Py3plex updates.
 
 Practical Examples
 ------------------
+
+The following examples assume you created ``./data`` and will reuse it across commands.
 
 Basic Network Analysis
 ~~~~~~~~~~~~~~~~~~~~~~

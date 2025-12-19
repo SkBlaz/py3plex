@@ -5,6 +5,8 @@ How to Reproduce Common Analysis Workflows
 
 **Prerequisites:** Basic understanding of py3plex (see :doc:`../getting_started/tutorial_10min`).
 
+**About examples:** Code and outputs below use the bundled synthetic datasets unless noted. Replace file paths with your own data; metrics will differ accordingly.
+
 Complete Workflows
 ------------------
 
@@ -130,22 +132,24 @@ Execute workflow:
 .. code-block:: python
 
     from py3plex.workflows import execute_workflow
-    
+
     results = execute_workflow("workflow_config.yaml")
 
 See :doc:`../user_guide/recipes_and_workflows` for complete config-driven workflow examples.
+
+The config captures *what* to run (input format, metrics, algorithms, visualization) so you can reuse the same analysis across datasets by swapping only the file path.
 
 DSL-Driven Analysis Workflows
 ------------------------------
 
 **Goal:** Use py3plex's DSL to create reproducible, declarative analysis pipelines.
 
-The DSL provides a powerful way to express analysis workflows as queries rather than imperative code. This makes workflows more readable, maintainable, and reproducible.
+The DSL expresses analysis workflows as queries rather than imperative code, keeping them readable and reproducible. ``Q`` builds a query, ``L`` is a layer helper, and ``execute_query`` returns dictionaries keyed by ``(node_id, layer)`` tuples.
 
 Basic DSL Workflow Pattern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Template for DSL-first analysis:**
+**Template for DSL-first analysis:** Keep the pipeline linear—load, query, refine, export—so each step can be repeated with different parameters.
 
 .. code-block:: python
 
@@ -166,7 +170,7 @@ Basic DSL Workflow Pattern
          .where(degree__gt=5)
          .order_by("betweenness_centrality", reverse=True)
          .execute(network)
-    )
+    )  # dict keyed by (node_id, layer) -> metrics
     
     # 3. Extract subnetwork
     subgraph = network.core_network.subgraph(high_degree_nodes.keys())
@@ -189,7 +193,7 @@ Basic DSL Workflow Pattern
     ])
     df.to_csv('high_degree_analysis.csv', index=False)
 
-**Expected output:**
+**Expected output (synthetic_multilayer sample):**
 
 .. code-block:: text
 
@@ -337,6 +341,8 @@ Multilayer Exploration Workflow
         node15: present in 2 layers - ['layer1', 'layer3']
         node8: present in 2 layers - ['layer2', 'layer3']
 
+The thresholds (degree > 7, overlap counts) match the bundled ``synthetic_multilayer`` dataset. Adjust them for sparser or denser graphs so averages and Jaccard scores remain meaningful.
+
 Community Detection + DSL Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -346,7 +352,8 @@ Community Detection + DSL Workflow
 
     from py3plex.algorithms.community_detection.community_wrapper import louvain_communities
     from py3plex.dsl import Q, execute_query
-    
+    from collections import Counter
+
     # Detect communities
     communities = louvain_communities(network)
     
@@ -366,6 +373,7 @@ Community Detection + DSL Workflow
             network,
             f'SELECT nodes WHERE community={comm_id}'
         )
+        members = comm_nodes.get("nodes", [])
         
         # Compute community metrics
         comm_result = (
@@ -376,17 +384,22 @@ Community Detection + DSL Workflow
         )
         
         # Statistics
-        avg_degree = sum(d['degree'] for d in comm_result.values()) / len(comm_result)
-        avg_betw = sum(d['betweenness_centrality'] for d in comm_result.values()) / len(comm_result)
+        if comm_result:
+            avg_degree = sum(d['degree'] for d in comm_result.values()) / len(comm_result)
+            avg_betw = sum(d['betweenness_centrality'] for d in comm_result.values()) / len(comm_result)
+        else:
+            avg_degree = avg_betw = 0.0
         
         # Layer composition
-        layer_counts = Counter(node[1] for node in comm_nodes)
+        layer_counts = Counter(layer for _, layer in members)
         
         print(f"\nCommunity {comm_id}:")
-        print(f"  Size: {len(comm_nodes)} nodes")
+        print(f"  Size: {len(members)} nodes")
         print(f"  Avg degree: {avg_degree:.2f}")
         print(f"  Avg betweenness: {avg_betw:.6f}")
         print(f"  Layer composition: {dict(layer_counts)}")
+
+**Notes:** ``execute_query`` returns a dictionary; access community members via ``result["nodes"]`` as shown. If a community has no nodes (rare with Louvain), averages safely fall back to ``0.0``. Community labels live on the NetworkX backing graph (``network.core_network``), so they persist across subsequent DSL queries.
 
 Dynamics + DSL Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -397,6 +410,7 @@ Dynamics + DSL Workflow
 
     from py3plex.dynamics import SIRDynamics
     from py3plex.dsl import Q, L
+    from collections import Counter
     
     # Run SIR simulation
     sir = SIRDynamics(
@@ -426,13 +440,14 @@ Dynamics + DSL Workflow
         )
         
         total = len(layer_nodes)
-        infected_pct = state_counts.get('I', 0) / total * 100 if total > 0 else 0
-        recovered_pct = state_counts.get('R', 0) / total * 100 if total > 0 else 0
+        
+        def pct(count):
+            return count / total * 100 if total else 0
         
         print(f"\n{layer}:")
-        print(f"  S: {state_counts.get('S', 0)} ({state_counts.get('S', 0)/total*100:.1f}%)")
-        print(f"  I: {state_counts.get('I', 0)} ({infected_pct:.1f}%)")
-        print(f"  R: {state_counts.get('R', 0)} ({recovered_pct:.1f}%)")
+        print(f"  S: {state_counts.get('S', 0)} ({pct(state_counts.get('S', 0)):.1f}%)")
+        print(f"  I: {state_counts.get('I', 0)} ({pct(state_counts.get('I', 0)):.1f}%)")
+        print(f"  R: {state_counts.get('R', 0)} ({pct(state_counts.get('R', 0)):.1f}%)")
     
     # Identify superspreaders (infected nodes with high degree)
     superspreaders = (
@@ -447,6 +462,8 @@ Dynamics + DSL Workflow
     print(f"\nSuperspreaders (infected, degree > 6): {len(superspreaders)}")
     for node, data in list(superspreaders.items())[:5]:
         print(f"  {node}: degree={data['degree']}, betw={data['betweenness_centrality']:.4f}")
+
+**Notes:** The SIR outcomes depend on ``beta`` (infection rate), ``gamma`` (recovery rate), and the random seed. Percentages are guarded against empty layers so the snippet can be reused on sparse networks, and ``sir_state`` is stored per node as ``S``, ``I``, or ``R`` for follow-up filtering.
 
 Reusable DSL Query Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -558,6 +575,8 @@ Process multiple networks:
     
     # Aggregate results
     summary = aggregate_results(results)
+
+``analyze_network`` and ``aggregate_results`` are placeholders for your own reusable pipeline (e.g., computing summary stats, exporting community labels). Keep them pure functions so the batch loop stays predictable.
 
 Complete Example Templates
 ---------------------------

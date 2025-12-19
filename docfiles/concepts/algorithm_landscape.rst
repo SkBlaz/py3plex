@@ -1,12 +1,12 @@
 Algorithm Landscape
 ===================
 
-This guide provides a narrative overview of the algorithm families available in py3plex, helping you understand when to use each type of algorithm for multilayer network analysis.
+This guide provides a narrative overview of the algorithm families available in py3plex, highlighting when to use each type of algorithm for multilayer network analysis. It complements the API reference with plain-language guidance, trade-offs, and cues for multilayer specifics.
 
 Overview
 --------
 
-py3plex provides algorithms in seven main categories:
+py3plex provides algorithms in seven main categories that work on multilayer graphs encoded as ``(node_id, layer_id)`` pairs:
 
 1. **Community Detection** - Finding groups of densely connected nodes
 2. **Centrality & Importance** - Measuring node and edge importance
@@ -16,12 +16,12 @@ py3plex provides algorithms in seven main categories:
 6. **Visualization & Layout** - Rendering and spatial arrangement
 7. **Benchmarking & Generation** - Testing and synthetic network creation
 
-For detailed parameter lists and API reference, see :doc:`../reference/algorithm_reference`.
+For detailed parameter lists and API reference, see :doc:`../reference/algorithm_reference`. Use this page to choose a method family, then dive into the reference for parameters.
 
 Community Detection
 -------------------
 
-**Goal:** Identify groups of nodes that are more densely connected to each other than to the rest of the network.
+**Goal:** Identify groups of nodes that are more densely connected to each other than to the rest of the network (within or across layers). In multilayer settings, decide whether communities should be layer-specific or span layers via coupling (e.g., ``omega`` controlling inter-layer links).
 
 When to Use
 ~~~~~~~~~~~
@@ -45,7 +45,7 @@ Algorithm Families
 
 * **Louvain** - Fast, greedy modularity optimization
 * **Leiden** - Improved version of Louvain with better stability
-* **Multilayer Louvain** - Extends Louvain to multiple layers with inter-layer coupling
+* **Multilayer Louvain** - Extends Louvain to multiple layers with inter-layer coupling (set ``omega > 0`` when layers should interact)
 
 *Trade-offs:*
 
@@ -61,7 +61,7 @@ Algorithm Families
     # Single-layer Louvain
     partition = community_louvain.best_partition(network.core_network)
     
-    # Multilayer Louvain
+    # Multilayer Louvain (gamma: resolution, omega: inter-layer coupling)
     from py3plex.algorithms.community_detection.multilayer_modularity import (
         louvain_multilayer
     )
@@ -74,7 +74,7 @@ Algorithm Families
 *Examples:*
 
 * **Infomap** - Minimizes description length of random walks
-* **Walktrap** - Based on random walk distances
+* **Walktrap** - Based on random walk distances (single-layer)
 
 *Trade-offs:*
 
@@ -82,6 +82,7 @@ Algorithm Families
 * ✓ Finds hierarchical structure
 * ✗ Slower than modularity methods
 * ✗ May require external binaries
+* ✗ Sensitive to how inter-layer edges are weighted (add them explicitly before running on multilayer data)
 
 .. code-block:: python
 
@@ -119,7 +120,7 @@ Algorithm Families
 Choosing a Community Detection Method
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use this decision tree:
+Use this decision tree (follow the first condition that applies):
 
 .. code-block:: text
 
@@ -137,7 +138,7 @@ Use this decision tree:
 Centrality & Importance
 -----------------------
 
-**Goal:** Quantify the importance of nodes or edges in the network.
+**Goal:** Quantify the importance of nodes or edges in the network, per layer or aggregated. Decide whether to keep (node, layer) pairs separate or to aggregate scores per entity.
 
 When to Use
 ~~~~~~~~~~~
@@ -161,13 +162,13 @@ Algorithm Families
 
 * **Degree Centrality** - Number of connections
 * **Multilayer Degree** - Degree summed across layers
-* **Versatility** - Participation across layers
+* **Versatility** - Participation across layers (counts how many layers a node engages with)
 
 *When to use:*
 
 * Quick assessment of connectivity
 * Identifying hubs
-* Local importance measures
+* Local importance measures; supply ``weight`` if edge weights matter
 
 .. code-block:: python
 
@@ -186,15 +187,15 @@ Algorithm Families
 
 *Examples:*
 
-* **Closeness Centrality** - Average distance to all other nodes
+* **Closeness Centrality** - Average distance to all other nodes (per connected component)
 * **Betweenness Centrality** - Fraction of shortest paths through node
-* **Harmonic Centrality** - Harmonic mean of distances
+* **Harmonic Centrality** - Harmonic mean of distances (stable on disconnected graphs)
 
 *When to use:*
 
 * Identifying central nodes
 * Finding information brokers
-* Understanding information flow
+* Understanding information flow (run per connected component if closeness is used)
 
 .. code-block:: python
 
@@ -210,9 +211,9 @@ Algorithm Families
 
 *Examples:*
 
-* **Eigenvector Centrality** - First eigenvector of adjacency matrix
-* **PageRank** - Google's ranking algorithm
-* **HITS** - Hubs and authorities
+* **Eigenvector Centrality** - First eigenvector of adjacency matrix (requires connectivity within the component)
+* **PageRank** - Google's ranking algorithm (damping factor controls teleportation)
+* **HITS** - Hubs and authorities (use on directed graphs)
 
 *When to use:*
 
@@ -244,16 +245,19 @@ Consider these questions:
 3. **Network type?**
    - Directed → PageRank or HITS
    - Undirected → Any method
-   - Weighted → Use weight-aware versions
+   - Weighted → Use weight-aware versions (pass ``weight`` to the function)
 
 4. **Computational cost?**
    - Large network → Degree or PageRank (fast)
    - Small network → Betweenness (expensive but informative)
+5. **Layer handling?**
+   - Keep per-layer scores when layer context matters
+   - Aggregate across layers only after aligning node identifiers
 
 Network Statistics
 ------------------
 
-**Goal:** Characterize network structure at the global, layer, or node level.
+**Goal:** Characterize network structure at the global, layer, or node level without committing to a specific downstream task. These checks help validate data quality before heavier modeling.
 
 When to Use
 ~~~~~~~~~~~
@@ -275,10 +279,10 @@ Statistic Families
 
 * Number of nodes, edges, layers
 * Density, clustering coefficient
-* Average path length
+* Average path length (per connected component unless you use harmonic variants)
 * Degree distribution
 
-*When to use:* Basic network characterization
+*When to use:* Basic network characterization or sanity checks before heavier analysis
 
 .. code-block:: python
 
@@ -303,6 +307,8 @@ Statistic Families
 * Inter-layer degree correlation
 
 *When to use:* Comparing layers, understanding layer relationships
+
+Layer similarity and overlap assume node identifiers are consistent across layers; if they differ, map or relabel before comparing.
 
 .. code-block:: python
 
@@ -340,7 +346,7 @@ Statistic Families
 Random Walks & Embeddings
 --------------------------
 
-**Goal:** Generate node representations or sample the network through traversal.
+**Goal:** Generate node representations or sample the network through traversal (often as input to downstream ML). Walks operate on the encoded (node, layer) graph, so inter-layer edges influence the sampled context.
 
 When to Use
 ~~~~~~~~~~~
@@ -370,6 +376,7 @@ Algorithm Families
 * ``num_walks`` - Walks per node
 * ``p`` (Node2Vec) - Return parameter
 * ``q`` (Node2Vec) - In-out parameter
+* ``random_seed`` - Set for reproducible walks
 
 .. code-block:: python
 
@@ -397,6 +404,8 @@ Algorithm Families
         walk_length=80,
         p=1.0, q=0.5  # DFS-like
     )
+
+Pass ``random_seed`` to ``generate_walks`` for reproducible samples.
 
 **Embedding Methods**
 
@@ -442,9 +451,9 @@ Choosing Walk Parameters
 
 **p (return parameter):**
 
-* p < 1: More likely to return to previous node
+* p < 1: More likely to return to previous node (stay local)
 * p = 1: Balanced
-* p > 1: Less likely to return
+* p > 1: Less likely to return (keep exploring)
 
 **q (in-out parameter):**
 
@@ -455,7 +464,7 @@ Choosing Walk Parameters
 Visualization & Layout
 ----------------------
 
-**Goal:** Create visual representations of multilayer networks.
+**Goal:** Create visual representations of multilayer networks for exploration or presentation.
 
 When to Use
 ~~~~~~~~~~~
@@ -527,7 +536,7 @@ For complete visualization documentation, see :doc:`../user_guide/visualization`
 Benchmarking & Generation
 --------------------------
 
-**Goal:** Create synthetic networks for testing and validation.
+**Goal:** Create synthetic networks for testing and validation without risking production data.
 
 When to Use
 ~~~~~~~~~~~
@@ -539,6 +548,7 @@ Use synthetic network generation when you want to:
 * Create controlled experiments
 * Generate training data
 * Benchmark scalability
+* Produce reproducible baselines (fix ``random_state`` when available)
 
 Generator Families
 ~~~~~~~~~~~~~~~~~~
@@ -550,6 +560,8 @@ Generator Families
 * **Erdős-Rényi** - Random edges with fixed probability
 * **Barabási-Albert** - Preferential attachment (scale-free)
 * **Watts-Strogatz** - Small-world networks
+
+Use ER for null models, BA for heavy-tailed degree distributions, and WS when you need clustering with short paths.
 
 .. code-block:: python
 
@@ -571,11 +583,15 @@ Generator Families
 * Configuration model (preserving degree distribution)
 * Block model (with planted partition)
 
+Pick LFR when you need ground truth for community detection, configuration for degree-preserving nulls, and block models for controllable meso-scale structure.
+
 Algorithm Combinations
 ----------------------
 
 Common Workflows
 ~~~~~~~~~~~~~~~~
+
+Use these as starting patterns; swap in alternative algorithms from the sections above as needed.
 
 **Community Detection + Visualization:**
 
@@ -642,14 +658,16 @@ Algorithm Complexity
      - O(nm) or O(nm + n²log n)
      - Expensive for large networks
    * - Louvain
-     - O(n log n)
-     - Fast community detection
+     - ~O(m)
+     - Near-linear in practice on sparse graphs
    * - Node2Vec
-     - O(k·l·n)
-     - k=walks, l=length, n=nodes
+     - O(k·l·m) for walk generation
+     - k = walks per node, l = walk length (training adds extra cost)
    * - Force Layout
      - O(n²)
      - Slow for >1000 nodes
+
+n = nodes, m = edges, k = walks per node, l = walk length. Complexities are approximate and assume sparse graphs unless stated otherwise.
 
 When working with large networks:
 

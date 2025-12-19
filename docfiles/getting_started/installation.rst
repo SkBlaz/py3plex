@@ -24,7 +24,7 @@ The legacy docs are available at https://py3plex.readthedocs.io but are **not up
 Installation Modes
 ------------------
 
-Choose the installation method based on your needs:
+Choose the installation method based on your needs. In all cases, prefer a virtual environment to keep dependencies isolated from system Python:
 
 .. list-table::
    :header-rows: 1
@@ -34,7 +34,7 @@ Choose the installation method based on your needs:
      - Command
      - When to Use
    * - **User Install**
-     - ``pip install py3plex``
+     - ``python -m pip install py3plex``
      - Standard usage: running analyses, using the library
    * - **Developer Install**
      - Clone repo + ``make setup`` + ``make dev-install``
@@ -43,14 +43,15 @@ Choose the installation method based on your needs:
 Basic Installation
 ------------------
 
-Install from GitHub (Recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install from PyPI (Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The latest version is always available on GitHub:
+The latest stable release is available on PyPI:
 
 .. code-block:: bash
 
-    pip install py3plex
+    python -m pip install --upgrade pip
+    python -m pip install py3plex
 
 This installs the core py3plex library with all required dependencies.
 
@@ -63,7 +64,8 @@ For development or to access the latest features:
 
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
-    pip install -e .
+    python -m pip install --upgrade pip
+    python -m pip install -e .
 
 The ``-e`` flag installs in editable mode, so changes to the source code are immediately available.
 
@@ -81,9 +83,9 @@ For a containerized environment with all dependencies pre-installed, use Docker:
     # Build the Docker image
     docker build -t py3plex:latest .
     
-    # Run py3plex commands
-    docker run --rm py3plex:latest --version
-    docker run --rm py3plex:latest selftest
+    # Run py3plex commands (mount local data if needed)
+    docker run --rm -v ${PWD}:/data py3plex:latest --version
+    docker run --rm -v ${PWD}:/data py3plex:latest selftest
 
 **Benefits of Docker installation:**
 
@@ -103,7 +105,7 @@ See :doc:`../deployment/cli_and_docker` for complete Docker documentation includ
 Optional Dependencies
 ---------------------
 
-py3plex offers several optional feature sets that can be installed separately:
+py3plex offers several optional feature sets that can be installed separately. Quote extras (``"py3plex[extra]"``) to avoid shell globbing on some terminals.
 
 Advanced Community Detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -112,7 +114,7 @@ Install Infomap for advanced overlapping community detection:
 
 .. code-block:: bash
 
-    pip install py3plex[infomap]
+    python -m pip install "py3plex[infomap]"
 
 Additional Algorithms
 ~~~~~~~~~~~~~~~~~~~~~
@@ -121,7 +123,7 @@ Install extra community detection algorithms (Louvain, cdlib):
 
 .. code-block:: bash
 
-    pip install py3plex[algos]
+    python -m pip install "py3plex[algos]"
 
 Advanced Visualization
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -130,7 +132,7 @@ Install Plotly and igraph for interactive and advanced visualizations:
 
 .. code-block:: bash
 
-    pip install py3plex[viz]
+    python -m pip install "py3plex[viz]"
 
 Apache Arrow Support
 ~~~~~~~~~~~~~~~~~~~~
@@ -139,9 +141,9 @@ Install pyarrow for high-performance I/O with Arrow/Parquet formats:
 
 .. code-block:: bash
 
-    pip install py3plex[arrow]
+    python -m pip install "py3plex[arrow]"
 
-Arrow format provides 2-3x faster read/write operations and better compression compared to JSON.
+Arrow format typically provides faster read/write operations and better compression than JSON/CSV for large graphs.
 See :doc:`../user_guide/io_and_formats` for details on using Arrow format.
 
 Multiple Extras
@@ -151,7 +153,16 @@ Install multiple feature sets at once:
 
 .. code-block:: bash
 
-    pip install py3plex[infomap,viz,algos,arrow]
+    python -m pip install "py3plex[infomap,viz,algos,arrow]"
+
+Workflow Configuration Support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install YAML support for config-driven workflows:
+
+.. code-block:: bash
+
+    python -m pip install "py3plex[workflows]"
 
 Development Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -173,7 +184,8 @@ For contributors, install with development tools (testing, linting):
 
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
-    pip install -e ".[dev]"
+    python -m pip install --upgrade pip
+    python -m pip install -e ".[dev]"
 
 Both methods install:
 
@@ -211,19 +223,22 @@ Core Dependencies
 These are automatically installed with py3plex:
 
 * ``networkx>=2.5`` - Graph data structures and algorithms
-* ``numpy>=0.8`` - Numerical computing
-* ``scipy>=1.1.0`` - Scientific computing and sparse matrices
+* ``numpy>=1.19.0`` - Numerical computing
+* ``scipy>=1.5.0`` - Scientific computing and sparse matrices
 * ``pandas`` - Data manipulation
-* ``matplotlib`` - Static visualization
-* ``scikit-learn`` - Machine learning utilities
-* ``tqdm`` - Progress bars
-* ``rdflib>=0.1`` - Semantic web support
+* ``matplotlib>=3.3.0`` - Static visualization
+* ``scikit-learn>=0.24.0`` - Machine learning utilities
+* ``tqdm>=4.40.0`` - Progress bars
+* ``rdflib>=6.0.0`` - Semantic web support
 * ``bitarray>=2.0.0`` - Efficient boolean arrays
+* ``gensim>=4.0.0`` - Topic modeling utilities
+* ``seaborn>=0.11.0`` - Statistical plotting
+* ``cython>=0.29.0`` - Extension compilation support
 
 External Binaries (Optional)
 -----------------------------
 
-**Note:** As of October 2025, py3plex no longer bundles external binaries to reduce repository size and improve licensing clarity.
+py3plex no longer bundles external binaries; install them separately when needed to keep the base package lightweight and licensing clear.
 
 Infomap Community Detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -234,7 +249,7 @@ For advanced community detection using Infomap:
 
 .. code-block:: bash
 
-    pip install py3plex[infomap]
+    python -m pip install "py3plex[infomap]"
 
 **Option 2:** Download the C++ binary from the official source:
 
@@ -257,13 +272,13 @@ For Node2Vec node embeddings, use pure Python alternatives:
 
 .. code-block:: bash
 
-    pip install pecanpy
+    python -m pip install pecanpy
 
 **Option 2:** Use node2vec package:
 
 .. code-block:: bash
 
-    pip install node2vec
+    python -m pip install node2vec
 
 **Option 3:** Use py3plex's built-in random walk implementation:
 
@@ -276,7 +291,7 @@ For Node2Vec node embeddings, use pure Python alternatives:
 Virtual Environment Setup
 --------------------------
 
-We strongly recommend using a virtual environment:
+We strongly recommend using a virtual environment to prevent dependency conflicts:
 
 Using venv
 ~~~~~~~~~~
@@ -292,8 +307,9 @@ Using venv
     # Activate (Windows)
     py3plex-env\Scripts\activate
     
-    # Install py3plex
-    pip install py3plex
+    # Install py3plex inside the environment
+    python -m pip install --upgrade pip
+    python -m pip install py3plex
 
 Using conda
 ~~~~~~~~~~~
@@ -307,7 +323,7 @@ Using conda
     conda activate py3plex
     
     # Install py3plex
-    pip install py3plex
+    python -m pip install py3plex
 
 Common Installation Issues
 --------------------------
@@ -315,12 +331,12 @@ Common Installation Issues
 Issue: "No module named 'numpy'"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Solution:** Install numpy first:
+**Solution:** Install numpy first (preferably in a virtual environment):
 
 .. code-block:: bash
 
-    pip install numpy
-    pip install py3plex
+    python -m pip install numpy
+    python -m pip install py3plex
 
 Issue: Compilation errors on Windows
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -329,27 +345,35 @@ Issue: Compilation errors on Windows
 
 1. Download from: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 2. Install "Desktop development with C++"
-3. Retry installation
+3. Restart your shell, then retry installation
 
 Issue: "Permission denied" on Linux/macOS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Solution:** Use pip install with --user flag:
+**Solution 1:** Use a virtual environment:
 
 .. code-block:: bash
 
-    pip install --user py3plex
+    python3 -m venv py3plex-env
+    source py3plex-env/bin/activate  # On Windows: py3plex-env\Scripts\activate
+    python -m pip install --upgrade pip
+    python -m pip install py3plex
 
-Or use a virtual environment (recommended).
+**Solution 2:** Use the ``--user`` flag if you cannot use venv:
+
+.. code-block:: bash
+
+    python -m pip install --user py3plex
 
 Issue: Old version installed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Solution:** Upgrade to latest version:
+**Solution:** Check the installed version and upgrade if needed:
 
 .. code-block:: bash
 
-    pip install --upgrade py3plex
+    python -m pip show py3plex
+    python -m pip install --upgrade py3plex
 
 Verifying Installation
 ----------------------

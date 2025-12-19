@@ -1,12 +1,19 @@
 Citation and References
 =======================
 
-If you use py3plex in your research, please **cite our work**.
+If you use py3plex in your research, please **cite our work**. Cite the primary journal article in all cases, add the conference paper when discussing the original algorithmic design or scalability, and include algorithm-specific papers when you rely on those methods.
+
+How to cite
+-----------
+
+- Always cite the **primary py3plex journal article**.
+- Add the **conference paper** when you describe the algorithmic design, scalability, or evaluation setup.
+- When you use a specific built-in algorithm, **cite both py3plex and the original method** listed below.
 
 Primary Citation
 ----------------
 
-**Recommended citation for py3plex:**
+**Recommended citation for py3plex (use this for any publication that uses the library, figures, pipelines, or datasets):**
 
 .. code-block:: bibtex
 
@@ -29,7 +36,7 @@ Primary Citation
 Conference Paper
 ----------------
 
-For the **initial algorithmic work**:
+For the **initial algorithmic design and scalability discussion** (cite alongside the primary paper when you reference these contributions):
 
 .. code-block:: bibtex
 
@@ -50,10 +57,12 @@ For the **initial algorithmic work**:
 Algorithm-Specific Citations
 -----------------------------
 
-When using **specific algorithms**, please also cite the **original papers**:
+When using a **specific algorithm implementation inside py3plex**, cite **both py3plex** and the **original method** listed below.
 
 Multilayer Modularity
 ~~~~~~~~~~~~~~~~~~~~~
+
+For multilayer modularity optimization:
 
 .. code-block:: bibtex
 
@@ -72,6 +81,8 @@ Multilayer Modularity
 Node2Vec
 ~~~~~~~~
 
+For node embedding with biased random walks:
+
 .. code-block:: bibtex
 
     @InProceedings{Grover2016,
@@ -86,6 +97,8 @@ Node2Vec
 
 Louvain Algorithm
 ~~~~~~~~~~~~~~~~~
+
+For modularity-based community detection:
 
 .. code-block:: bibtex
 
@@ -104,6 +117,8 @@ Louvain Algorithm
 Infomap
 ~~~~~~~
 
+For flow-based community detection:
+
 .. code-block:: bibtex
 
     @Article{Rosvall2008,
@@ -119,6 +134,8 @@ Infomap
 
 MultiXRank
 ~~~~~~~~~~
+
+For random-walk-based multilayer ranking:
 
 .. code-block:: bibtex
 
@@ -136,6 +153,8 @@ MultiXRank
 DeepWalk
 ~~~~~~~~
 
+For uniform random-walk node embeddings:
+
 .. code-block:: bibtex
 
     @InProceedings{Perozzi2014,
@@ -151,7 +170,7 @@ DeepWalk
 Multilayer Network Theory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Foundational papers** on multilayer networks:
+**Foundational papers** on multilayer networks (cite when you discuss the underlying theory, mathematical formulation, or compare with py3plex defaults):
 
 .. code-block:: bibtex
 
@@ -201,7 +220,7 @@ Multilayer Network Theory
 Complete Citation List
 ----------------------
 
-For algorithm citations, see the :doc:`algorithm_guide` which includes all major algorithms with their original references and DOIs.
+For additional algorithms, see :doc:`algorithm_guide`, which lists all major methods with their original references and DOIs.
 
 Acknowledgments
 ---------------

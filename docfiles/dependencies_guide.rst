@@ -1,7 +1,11 @@
 Dependency Management and Troubleshooting
 ==========================================
 
-This guide covers dependency installation, optional features, and common troubleshooting scenarios.
+This guide covers dependency installation, optional features, and common troubleshooting scenarios. Install the core package first, then add extras via ``pip`` extras when you need them:
+
+- ``py3plex[viz]`` — interactive or advanced visualization
+- ``py3plex[algos]`` — additional community detection algorithms
+- ``py3plex[infomap]`` — Infomap (AGPLv3; see license warning below)
 
 .. contents:: Table of Contents
    :local:
@@ -13,7 +17,7 @@ Core Dependencies
 Automatic Installation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Core dependencies are **automatically installed** when you install Py3plex:
+Core dependencies install with the base package:
 
 .. code-block:: bash
 
@@ -37,7 +41,7 @@ Core dependencies are **automatically installed** when you install Py3plex:
 Verifying Installation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Check that Py3plex and dependencies are installed:
+Confirm that Py3plex and core dependencies import correctly:
 
 .. code-block:: python
 
@@ -60,7 +64,7 @@ Check that Py3plex and dependencies are installed:
 Optional Dependencies
 ---------------------
 
-Py3plex offers several optional feature sets. Install only what you need.
+Py3plex exposes optional features through ``pip`` extras. Install only what you need.
 
 Advanced Visualization (Recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,12 +143,11 @@ Install Infomap for information-theoretic community detection:
 
 * ``infomap >= 2.0.0`` - Information flow-based community detection
 
-**WARNING️ Important licensing note:**
+**Important licensing note:**
 
-Infomap is licensed under **AGPLv3** (viral copyleft license). If you use Infomap functions
-in your project, your project may also need to be AGPLv3 licensed.
+Infomap is licensed under **AGPLv3** (copyleft). Using Infomap can extend AGPLv3 obligations to your project.
 
-**For commercial/proprietary projects:** Use alternative algorithms:
+**For commercial/proprietary projects:** prefer permissive alternatives:
 
 * Louvain (BSD-3-Clause)
 * Label propagation (MIT)
@@ -163,9 +166,9 @@ in your project, your project may also need to be AGPLv3 licensed.
         print("  OR use Louvain algorithm instead")
 
 Installing All Optional Features
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Install everything at once:
+Install everything at once (includes Infomap, which is AGPLv3):
 
 .. code-block:: bash
 
@@ -195,7 +198,7 @@ For contributors and developers:
 * ``hypothesis`` - Property-based testing
 
 Dependency Troubleshooting
----------------------------
+--------------------------
 
 Common Installation Issues
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -203,78 +206,82 @@ Common Installation Issues
 Issue: "Could not find a version that satisfies the requirement"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Python version too old or package unavailable
+**Cause:** Python version too old or package unavailable.
 
-**Solution 1:** Upgrade Python to 3.8 or higher
+**Fix:**
 
-.. code-block:: bash
+1. Upgrade Python to 3.8 or higher.
 
-    python --version  # Check current version
-    # If < 3.8, install Python 3.10 or 3.11
+   .. code-block:: bash
 
-**Solution 2:** Update pip
+       python --version  # Check current version
+       # If < 3.8, install Python 3.10 or 3.11
 
-.. code-block:: bash
+2. Update ``pip`` and build tools.
 
-    pip install --upgrade pip setuptools wheel
+   .. code-block:: bash
 
-**Solution 3:** Check PyPI availability
+       pip install --upgrade pip setuptools wheel
 
-.. code-block:: bash
+3. Check PyPI availability.
 
-    pip search networkx  # Check if package exists
+   .. code-block:: bash
+
+       pip index versions networkx  # Confirm the package is reachable
 
 Issue: "No matching distribution found"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Network issues or package not available for your platform
+**Cause:** Network issues or package not available for your platform.
 
-**Solution 1:** Check internet connection
+**Fix:**
 
-.. code-block:: bash
+1. Check internet connectivity.
 
-    ping pypi.org
+   .. code-block:: bash
 
-**Solution 2:** Use alternative index
+       ping pypi.org
 
-.. code-block:: bash
+2. Use the default PyPI index explicitly.
 
-    pip install --index-url https://pypi.org/simple/ py3plex
+   .. code-block:: bash
 
-**Solution 3:** Check platform compatibility
+       pip install --index-url https://pypi.org/simple/ py3plex
 
-Some packages may not be available for all platforms (e.g., Windows ARM, older macOS).
+3. Verify platform compatibility; some packages lack builds for certain OS/architecture combinations.
 
 Issue: "Failed building wheel"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Missing C compiler or development headers
+**Cause:** Missing C compiler or development headers.
 
-**Solution (Ubuntu/Debian):**
+**Fix:**
 
-.. code-block:: bash
+- Ubuntu/Debian:
 
-    sudo apt-get update
-    sudo apt-get install python3-dev build-essential
+  .. code-block:: bash
 
-**Solution (macOS):**
+      sudo apt-get update
+      sudo apt-get install python3-dev build-essential
 
-.. code-block:: bash
+- macOS:
 
-    xcode-select --install
+  .. code-block:: bash
 
-**Solution (Windows):**
+      xcode-select --install
 
-1. Download Visual C++ Build Tools
-2. Install "Desktop development with C++"
-3. Restart and try again
+- Windows:
+
+  1. Install Visual C++ Build Tools.
+  2. Select \"Desktop development with C++\".
+  3. Restart and retry.
 
 Issue: "Permission denied"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Trying to install in system Python without sudo
+**Cause:** Trying to install in system Python without sudo.
 
-**Solution 1:** Use virtual environment (recommended)
+**Fix 1 (recommended):** Use a virtual environment.
 
 .. code-block:: bash
 
@@ -284,7 +291,7 @@ Issue: "Permission denied"
     
     pip install py3plex
 
-**Solution 2:** User installation
+**Fix 2:** Install for the current user.
 
 .. code-block:: bash
 
@@ -296,7 +303,7 @@ Runtime Dependency Issues
 Issue: "No module named 'plotly'"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Optional visualization dependency not installed
+**Cause:** Optional visualization dependency not installed.
 
 **Solution:**
 
@@ -307,12 +314,12 @@ Issue: "No module named 'plotly'"
     # OR install just what you need
     pip install plotly
 
-**Workaround:** Use matplotlib for visualization (included by default)
+**Workaround:** Use matplotlib for visualization (included by default).
 
 Issue: "ImportError: cannot import name 'infomap'"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Optional Infomap package not installed
+**Cause:** Optional Infomap package not installed.
 
 **Solution:**
 
@@ -330,9 +337,9 @@ Issue: "ImportError: cannot import name 'infomap'"
 Issue: "Qt platform plugin could not be initialized"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Matplotlib backend issue (usually on headless servers)
+**Cause:** Matplotlib backend issue (often on headless servers).
 
-**Solution:** Use non-interactive backend
+**Solution:** Use a non-interactive backend.
 
 .. code-block:: python
 
@@ -343,11 +350,11 @@ Issue: "Qt platform plugin could not be initialized"
 Issue: "MemoryError" with large networks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Insufficient RAM for dense operations
+**Cause:** Insufficient RAM for dense operations.
 
-**Solution 1:** Use sparse matrices (automatic for most operations)
+**Fix 1:** Use sparse matrices (automatic for most operations).
 
-**Solution 2:** Sample network
+**Fix 2:** Sample the network.
 
 .. code-block:: python
 
@@ -360,7 +367,7 @@ Issue: "MemoryError" with large networks
     
     subnetwork = network.get_subnetwork(sample_nodes)
 
-**Solution 3:** Increase swap space or use machine with more RAM
+**Fix 3:** Increase swap space or use a machine with more RAM.
 
 Version Conflicts
 ~~~~~~~~~~~~~~~~~
@@ -368,9 +375,9 @@ Version Conflicts
 Issue: "Incompatible versions of numpy and scipy"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** Version mismatch between numerical packages
+**Cause:** Version mismatch between numerical packages.
 
-**Solution:** Reinstall in correct order
+**Fix:** Reinstall in a clean order.
 
 .. code-block:: bash
 
@@ -381,9 +388,9 @@ Issue: "Incompatible versions of numpy and scipy"
 Issue: "AttributeError: module 'networkx' has no attribute 'X'"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Cause:** NetworkX version too old
+**Cause:** NetworkX version too old.
 
-**Solution:** Upgrade NetworkX
+**Solution:** Upgrade NetworkX.
 
 .. code-block:: bash
 

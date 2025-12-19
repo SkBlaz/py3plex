@@ -1,7 +1,7 @@
 Examples & Recipes
 ==================
 
-Complete working examples demonstrating py3plex capabilities. All examples are available in the `examples/ directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ of the repository.
+Browse runnable scripts grouped by topic. Every entry below corresponds to a file in the ``examples/`` directory (`GitHub listing <https://github.com/SkBlaz/py3plex/tree/master/examples>`_), so you can copy, run, and adapt it directly. Run commands from the repository root with your virtual environment activated.
 
 **What's here:**
 
@@ -9,12 +9,12 @@ Complete working examples demonstrating py3plex capabilities. All examples are a
 * **Analysis Recipes** — Reusable patterns (:doc:`../user_guide/recipes_and_workflows`)
 * **Case Studies** — In-depth applications (:doc:`../user_guide/case_studies`)
 
-**Quick Start:**
+**Quick start picks (paths relative to ``examples/``):**
 
-* **DSL examples:** ``example_dsl_builder_api.py`` — Best starting point
-* **Visualization:** ``example_multilayer_visualization.py``
-* **Community detection:** ``example_community_detection.py``
-* **10-minute tutorial:** ``tutorial_10min.py``
+* **DSL examples:** ``network_analysis/example_dsl_builder_api.py`` — Best starting point
+* **Visualization:** ``visualization/example_multilayer_visualization.py``
+* **Community detection:** ``communities/example_community_detection.py``
+* **10-minute tutorial:** ``getting_started/tutorial_10min.py``
 
 .. admonition:: Featured: DSL Examples
    :class: dsl-example
@@ -38,7 +38,7 @@ Complete working examples demonstrating py3plex capabilities. All examples are a
        )
 
    **Recommended starting points:**
-   
+
    * ``example_dsl_builder_api.py`` — Complete DSL v2 tutorial
    * ``example_dsl_queries.py`` — String DSL syntax
    * ``example_dsl_advanced.py`` — Advanced patterns
@@ -98,10 +98,10 @@ Community Detection Examples
 DSL and Query Examples
 ----------------------
 
-**DSL v2 (Recommended)**
+**DSL v2 (recommended)**
 
 * ``example_dsl_builder_api.py`` - Comprehensive Python builder API examples (Q, L, Param)
-* ``example_dsl_queries.py`` - String DSL syntax examples  
+* ``example_dsl_queries.py`` - String DSL syntax examples
 * ``example_dsl_advanced.py`` - Advanced queries and transportation network analysis
 * ``example_dsl_community_detection.py`` - Community detection with DSL
 
@@ -236,21 +236,21 @@ GUI and API
 Case Studies: End-to-End Workflows
 -----------------------------------
 
-**Complete domain-specific analysis pipelines** with interpretation. Each case study follows a standard workflow: Data Import → Stats → Analysis → Visualization → Interpretation.
+Complete domain-specific analysis pipelines with interpretation. Each case study follows a standard workflow: Data Import → Stats → Analysis → Visualization → Interpretation.
 
 All case studies are in the ``examples/case_studies/`` directory. See the `Case Studies README <https://github.com/SkBlaz/py3plex/tree/master/examples/case_studies/README.md>`_ for complete documentation.
 
-**Biological Networks** — 🟡 Intermediate
+**Biological Networks** — Intermediate
 
 * ``biological_networks.py`` - Protein-gene-disease multilayer network
 
-  * Analyzes how protein interactions, gene regulation, and diseases interconnect
-  * Identifies hub proteins (e.g., TP53) as potential drug targets
+  * Explores how protein interactions, gene regulation, and diseases interconnect
+  * Surfaces hub proteins (e.g., TP53) as potential drug targets
   * Detects functional biological modules through community detection
   * **Layers:** protein (PPI), gene (regulation), disease (associations)
-  * **Key techniques:** Multi-layer centrality, cross-layer communities
+  * **Key techniques:** Multilayer centrality, cross-layer communities
 
-**Social Networks** — 🟢 Beginner
+**Social Networks** — Beginner
 
 * ``social_networks.py`` - Multi-platform social media analysis
 
@@ -260,7 +260,7 @@ All case studies are in the ``examples/case_studies/`` directory. See the `Case 
   * **Layers:** facebook (friends), twitter (followers), linkedin (professional)
   * **Key techniques:** Influence metrics, platform comparison
 
-**Transportation Networks** — 🟡 Intermediate
+**Transportation Networks** — Intermediate
 
 * ``transportation_networks.py`` - Multi-modal urban transport
 
@@ -273,6 +273,7 @@ All case studies are in the ``examples/case_studies/`` directory. See the `Case 
 **Using Case Studies:**
 
 Each case study is:
+
 * **Self-contained** — Generates synthetic data, no external files needed
 * **Structured** — Follows 4-step pipeline (Import → Stats → Pipeline → Viz)
 * **Interpretable** — Extensive domain-specific commentary on results
@@ -287,7 +288,8 @@ Run a case study:
     python examples/case_studies/transportation_networks.py
 
 See also:
-* **Book Chapter 12-14** — Extended case studies with theoretical background
+
+* **Book chapters 12-14 (where available)** — Extended case studies with theoretical background
 * **Notebooks** — Interactive versions (coming soon)
 
 Real-World Datasets
@@ -313,7 +315,7 @@ Real-World Datasets
 Running Examples
 ----------------
 
-All examples can be run directly with Python from the repository root:
+All examples can be run directly with Python from the repository root (paths below are relative to that root and assume an active virtual environment):
 
 .. code-block:: bash
 
@@ -383,12 +385,12 @@ Contributing Examples
 
 To contribute an example:
 
-1. Create a well-documented script in the appropriate ``examples/<category>/`` directory
-2. Use the template above with docstring + ``main()`` + ``if __name__ == "__main__":``
-3. Follow the naming convention: ``example_<feature>.py``
-4. Test that it runs without errors
-5. Add it to this index with a brief description
-6. Submit a pull request
+1. Create a well-documented script in the appropriate ``examples/<category>/`` directory.
+2. Use the template above with docstring + ``main()`` + ``if __name__ == "__main__":``.
+3. Follow the naming convention: ``example_<feature>.py``.
+4. Test that it runs without errors from the repository root.
+5. Add it to this index with a brief description under the correct topic.
+6. Submit a pull request.
 
 See :doc:`../dev/contributing` for detailed guidelines.
 

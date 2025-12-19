@@ -1,7 +1,7 @@
 Common Issues and Troubleshooting
 ==================================
 
-This guide helps you troubleshoot common problems when getting started with py3plex.
+Quick fixes for frequent issues when getting started with py3plex. Work through the sections in order: installation → data loading → visualization → performance → algorithms. Try one solution at a time and retest before moving on.
 
 Installation Issues
 -------------------
@@ -11,57 +11,59 @@ Installation Issues
 
 **Problem:** Import error when trying to use py3plex.
 
-**Solution:** Install numpy first:
+**Solution:** Install numpy first (preferably in a virtual environment to avoid system-wide changes):
 
 .. code-block:: bash
 
-    pip install numpy
-    pip install py3plex
+    python -m pip install numpy
+    python -m pip install py3plex
 
 Compilation Errors on Windows
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Problem:** C++ compilation errors during installation on Windows.
 
-**Solution:** Install Visual C++ Build Tools:
+**Solution:** Install Visual C++ Build Tools, then reinstall:
 
 1. Download from: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 2. Install "Desktop development with C++"
-3. Retry installation
+3. Restart your shell, then retry installation
 
 .. code-block:: bash
 
-    pip install py3plex
+    python -m pip install py3plex
 
 "Permission denied" on Linux/macOS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Problem:** Permission errors during pip install.
 
-**Solution 1:** Use pip install with --user flag:
-
-.. code-block:: bash
-
-    pip install --user py3plex
-
-**Solution 2:** Use a virtual environment (recommended):
+**Solution 1:** Use a virtual environment (recommended; keeps dependencies isolated):
 
 .. code-block:: bash
 
     python3 -m venv py3plex-env
     source py3plex-env/bin/activate  # On Windows: py3plex-env\Scripts\activate
-    pip install py3plex
+    python -m pip install --upgrade pip
+    python -m pip install py3plex
+
+**Solution 2:** Use pip install with --user flag (if you cannot use venv):
+
+.. code-block:: bash
+
+    python -m pip install --user py3plex
 
 Old Version Installed
 ~~~~~~~~~~~~~~~~~~~~~
 
 **Problem:** Changes not reflecting or documentation mentions newer features.
 
-**Solution:** Upgrade to the latest version:
+**Solution:** Verify and upgrade to the latest release:
 
 .. code-block:: bash
 
-    pip install --upgrade py3plex
+    python -m pip show py3plex
+    python -m pip install --upgrade py3plex
 
 Data Loading Issues
 -------------------
@@ -71,44 +73,42 @@ File Not Found Errors
 
 **Problem:** ``FileNotFoundError`` when loading networks.
 
-**Solution 1:** Use absolute paths:
+**Solution 1:** Confirm the file exists and your working directory is correct (``os.getcwd()`` often differs from the script directory):
 
 .. code-block:: python
 
     import os
-    
+
+    print("Current directory:", os.getcwd())
+    print("File exists:", os.path.exists("data.edgelist"))
+
+**Solution 2:** Use an absolute path to avoid ambiguity:
+
+.. code-block:: python
+
     network_path = "/absolute/path/to/data.edgelist"
     network = multinet.multi_layer_network().load_network(
         network_path, input_type="edgelist", directed=False
     )
 
-**Solution 2:** Ensure you're running from the correct directory:
+**Solution 3:** Build a path relative to the script location (avoids brittle working-directory assumptions):
 
 .. code-block:: python
 
     import os
-    
-    # Check current directory
-    print("Current directory:", os.getcwd())
-    
-    # List files
-    print("Files:", os.listdir('.'))
 
-**Solution 3:** Use paths relative to script location:
-
-.. code-block:: python
-
-    import os
-    
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(script_dir, "data", "network.edgelist")
+    network = multinet.multi_layer_network().load_network(
+        data_path, input_type="edgelist", directed=False
+    )
 
 Empty or Malformed Networks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** Network loads but has no nodes or edges.
+**Problem:** Network loads but has no nodes or edges (zero counts).
 
-**Solution:** Check file format matches input_type:
+**Solution:** Confirm the file contents and chosen ``input_type`` match. Pick the loader that matches your columns and delimiter:
 
 .. code-block:: python
 
@@ -121,21 +121,23 @@ Empty or Malformed Networks
     # Always verify after loading
     network.basic_stats()
 
+If counts are still zero, inspect the first few lines of the file for the expected number of columns and delimiters, and confirm there are no header lines being parsed as data.
+
 Visualization Issues
 --------------------
 
 Visualization Not Showing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** No window appears when calling visualization functions.
+**Problem:** No window appears when calling visualization functions (plots silently finish).
 
-**Solution 1:** For Jupyter notebooks, add at the top:
+**Solution 1:** For Jupyter notebooks, enable inline plots:
 
 .. code-block:: python
 
     %matplotlib inline
 
-**Solution 2:** For scripts, explicitly show the plot:
+**Solution 2:** For scripts, explicitly show the plot or set ``display=True``:
 
 .. code-block:: python
 
@@ -164,7 +166,7 @@ Visualization Not Showing
 
 **Problem:** Error on headless servers or SSH sessions without X11.
 
-**Solution:** Use Agg backend for matplotlib:
+**Solution:** Use Agg backend for matplotlib so plots are rendered to files:
 
 .. code-block:: python
 
@@ -182,11 +184,11 @@ Blurry or Low-Quality Plots
 
 **Problem:** Plots look pixelated or blurry.
 
-**Solution:** Increase DPI when saving:
+**Solution:** Increase DPI and tighten bounding boxes when saving:
 
 .. code-block:: python
 
-    plt.savefig("network.png", dpi=300, bbox_inches='tight')
+    plt.savefig("network.png", dpi=300, bbox_inches="tight")
 
 Missing Dependencies
 --------------------
@@ -196,11 +198,11 @@ Missing Dependencies
 
 **Problem:** Interactive visualization features not working.
 
-**Solution:** Install visualization extras:
+**Solution:** Install visualization extras (plotly and related dependencies):
 
 .. code-block:: bash
 
-    pip install py3plex[viz]
+    python -m pip install "py3plex[viz]"  # Quotes required on some shells
 
 "No module named 'infomap'"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -211,9 +213,9 @@ Missing Dependencies
 
 .. code-block:: bash
 
-    pip install py3plex[infomap]
+    python -m pip install "py3plex[infomap]"  # Quotes required on some shells
 
-Or use alternative community detection methods:
+Or use alternative community detection methods if you cannot install the extra:
 
 .. code-block:: python
 
@@ -228,12 +230,12 @@ Very Slow Loading
 
 **Problem:** Loading large networks takes too long.
 
-**Solution 1:** Use Arrow/Parquet format for large networks:
+**Solution 1:** Prefer Arrow/Parquet for large networks to speed up I/O:
 
 .. code-block:: bash
 
     # Install Arrow support
-    pip install py3plex[arrow]
+    python -m pip install "py3plex[arrow]"  # Quotes required on some shells
 
 .. code-block:: python
 
@@ -242,10 +244,10 @@ Very Slow Loading
     # Save in efficient format
     write(network, "network.arrow")
     
-    # Load much faster
+    # Load faster from Arrow
     network = read("network.arrow")
 
-**Solution 2:** Process in chunks or use subnetworks:
+**Solution 2:** Process in chunks or use subnetworks for testing:
 
 .. code-block:: python
 
@@ -273,9 +275,9 @@ Algorithm Issues
 Community Detection Returns Trivial Results
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** Each node in its own community or all nodes in one community.
+**Problem:** Each node in its own community or all nodes in one community (degenerate partition).
 
-**Solution:** Adjust algorithm parameters:
+**Solution:** Adjust algorithm parameters and randomness, then compare partitions:
 
 .. code-block:: python
 
@@ -296,7 +298,7 @@ Random Walk or Embedding Errors
 
 **Problem:** Random walk or Node2Vec functions fail.
 
-**Solution:** Ensure network is connected:
+**Solution:** Ensure the graph is connected before running walks:
 
 .. code-block:: python
 
@@ -314,6 +316,8 @@ Random Walk or Embedding Errors
         # Create subgraph
         subgraph = network.core_network.subgraph(largest)
 
+Use the subgraph for embedding or random walk routines if the full network is disconnected. Re-attach results to the full graph only after inspecting coverage.
+
 Docker Issues
 -------------
 
@@ -322,7 +326,7 @@ Docker Build Fails
 
 **Problem:** Docker build fails or takes very long.
 
-**Solution:** Clear Docker cache and rebuild:
+**Solution:** Clear Docker cache (removes all unused images and build layers) and rebuild:
 
 .. code-block:: bash
 
@@ -334,7 +338,7 @@ Cannot Access Files in Docker
 
 **Problem:** Docker container can't see your data files.
 
-**Solution:** Mount volumes correctly:
+**Solution:** Mount volumes correctly so container paths resolve:
 
 .. code-block:: bash
 
@@ -343,6 +347,8 @@ Cannot Access Files in Docker
     
     # On Windows (PowerShell)
     docker run -v ${PWD}:/data py3plex:latest /data/network.edgelist
+
+Adjust the command after the image name to match your workflow (for example, ``py3plex load /data/network.edgelist --info``).
 
 See :doc:`../deployment/cli_and_docker` for complete Docker documentation.
 
@@ -357,10 +363,10 @@ If you encounter an issue not covered here:
 
 When reporting issues, include:
 * Python version (``python --version``)
-* py3plex version (``pip show py3plex``)
+* py3plex version (``python -m pip show py3plex``)
 * Operating system
 * Full error traceback
-* Minimal code to reproduce the problem
+* Minimal code to reproduce the problem (or a link to the example you ran)
 
 Related Pages
 -------------

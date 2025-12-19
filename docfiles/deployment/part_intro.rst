@@ -1,7 +1,7 @@
 Environments & Deployment
 =========================
 
-This section covers running py3plex from the command line, in Docker containers, and at scale.
+Use this section to run py3plex from the command line, inside Docker containers, and at scale—without losing reproducibility.
 
 **This section covers:**
 
@@ -11,27 +11,27 @@ This section covers running py3plex from the command line, in Docker containers,
 When to Use This Section
 ------------------------
 
-Read this section when you need to:
+Use these chapters when you want to:
 
-* Automate analyses that currently run interactively
+* Automate analyses that you currently run interactively
 * Process networks too large for a single Python session
-* Share reproducible environments with collaborators
-* Integrate py3plex into a production pipeline
+* Share reproducible environments with collaborators or CI
+* Integrate py3plex into a production data pipeline
 
-**CLI** provides a scriptable interface for common operations—no Python required.
+**CLI** gives you a scriptable interface for common operations—no Python coding required and suitable for headless automation.
 
-**Docker** ensures identical results everywhere, eliminating environment issues.
+**Docker** keeps environments identical across machines, avoiding "works on my machine" issues.
 
-**Performance** chapter covers memory management and optimization for large networks.
+The **performance** chapter covers memory management and optimization for large networks once you have a working workflow.
 
-Start with :doc:`cli_and_docker` for automation, then :doc:`performance_scalability` for optimization.
+Most readers start with :doc:`cli_and_docker` to script or containerize workflows, then move to :doc:`performance_scalability` to tune runtime and memory as datasets grow.
 
 .. tip::
 
    **Deployment checklist:**
    
-   * Version-pin all dependencies
-   * Add error handling for edge cases
-   * Verify results on test data
-   * Set up logging for debugging
-   * Test on the target environment
+   * Pin dependency versions (requirements.txt or lock file)
+   * Handle missing files and empty inputs explicitly
+   * Validate results on a small test network before scaling up
+   * Enable logging for reproducibility and debugging
+   * Run a dry run on the target environment (local, Docker, or cluster)

@@ -13,7 +13,7 @@ Overview
 The py3plex DSL provides two interfaces:
 
 1. **String syntax:** SQL-like queries for quick exploration
-2. **Builder API:** Type-safe Python interface for production code
+2. **Builder API:** Type-safe Python interface for production code (autocomputes referenced metrics)
 
 String Syntax Reference
 -----------------------
@@ -24,12 +24,15 @@ Basic Structure
 .. code-block:: text
 
     SELECT <target> [FROM <layers>] [WHERE <conditions>] [COMPUTE <metrics>] [ORDER BY <field>] [LIMIT <n>]
+    [AT <timestamp> | DURING <start> TO <end>]
+
+Use ``AT`` for a single time point and ``DURING`` for closed intervals (ISO 8601 strings).
 
 Targets
 ~~~~~~~
 
 * ``nodes`` — Select nodes
-* ``edges`` — Select edges (experimental)
+* ``edges`` — Select edges (experimental; limited coverage support)
 
 Layer Selection
 ~~~~~~~~~~~~~~~
@@ -38,6 +41,8 @@ Layer Selection
 
     FROM layer="layer_name"
     FROM layers IN ("layer1", "layer2")
+
+If ``FROM`` is omitted, all layers are considered.
 
 Conditions
 ~~~~~~~~~~
@@ -55,6 +60,7 @@ Conditions
 
 * ``AND`` — Both conditions must be true
 * ``OR`` — Either condition must be true
+* ``NOT`` — Negate a condition
 
 **Examples:**
 
@@ -63,6 +69,9 @@ Conditions
     WHERE degree > 5
     WHERE layer="friends" AND degree > 3
     WHERE degree > 5 OR betweenness_centrality > 0.1
+    WHERE NOT layer="spam"
+
+String values must be wrapped in double quotes.
 
 Compute Clause
 ~~~~~~~~~~~~~~
@@ -72,8 +81,8 @@ Calculate metrics for selected nodes:
 .. code-block:: text
 
     COMPUTE degree
-    COMPUTE degree COMPUTE betweenness_centrality
-    COMPUTE clustering
+    COMPUTE degree betweenness_centrality
+    COMPUTE clustering pagerank
 
 **Available metrics:**
 
@@ -84,7 +93,7 @@ Calculate metrics for selected nodes:
 * ``pagerank`` — PageRank score
 * ``layer_count`` — Number of layers node appears in
 
-See :doc:`algorithm_reference` for complete metric list.
+Metrics are computed after filtering and layer selection. See :doc:`algorithm_reference` for the complete metric list.
 
 Order By
 ~~~~~~~~
@@ -94,6 +103,8 @@ Order By
     ORDER BY degree
     ORDER BY -degree  # Descending (prefix with -)
     ORDER BY betweenness_centrality
+
+You can specify multiple keys in sequence; each key may be prefixed with ``-`` for descending order.
 
 Limit
 ~~~~~
@@ -464,27 +475,33 @@ Working with Results
 Result Object
 ~~~~~~~~~~~~~
 
-Query results are dictionaries mapping nodes to their computed attributes:
+``execute`` returns a ``QueryResult`` with items, computed attributes, and metadata:
 
 .. code-block:: python
 
     result = Q.nodes().compute("degree").execute(network)
     
-    # Access individual node
-    node = ('Alice', 'friends')
-    degree = result[node]['degree']
+    # Counts and identifiers
+    print(result.count)    # -> number of nodes/edges
+    print(result.nodes[:3])  # first few nodes (use .edges for edge queries)
     
-    # Iterate
-    for node, data in result.items():
-        print(f"{node}: {data}")
+    # Attributes are aligned lists keyed by metric name
+    degrees = result.attributes["degree"]
+    for node, deg in zip(result.nodes, degrees):
+        print(node, deg)
+    
+    # Execution metadata (e.g., grouping, ordering)
+    print(result.meta)
 
 Convert to Pandas
 ~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    df = result.to_pandas()
+    df = result.to_pandas(multiindex=True, include_grouping=True)
     print(df.head())
+
+Set ``expand_uncertainty=True`` to unpack UQ-aware metrics into multiple columns.
 
 Extensibility
 -------------

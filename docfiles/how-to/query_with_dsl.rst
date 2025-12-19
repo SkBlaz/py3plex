@@ -26,6 +26,7 @@ How to Query Multilayer Graphs with the SQL-like DSL
 * A loaded ``multi_layer_network`` object (see :doc:`load_and_build_networks`)
 * Basic familiarity with multilayer network concepts (nodes, layers, intralayer/interlayer edges)
 * For complete DSL grammar and operator reference, see :doc:`../reference/dsl_reference`
+* Pick your interface: string syntax for quick experiments, builder API for reusable production code with IDE support
 
 Conceptual Overview
 -------------------
@@ -64,6 +65,7 @@ A typical DSL query follows this pipeline:
 * **Layer set algebra**: Combine layers with set operations (``|`` union, ``&`` intersection, ``-`` difference, ``~`` complement). The new LayerSet algebra enables expressive layer selection like ``L["* - coupling"]`` or ``L["(ppi | gene) & disease"]``. See :doc:`../reference/layer_set_algebra` for complete documentation.
 * **Special predicates**: ``intralayer=True`` selects edges within a layer; ``interlayer=("layer1", "layer2")`` selects edges crossing specific layers.
 * **Lazy execution**: Queries are built incrementally and executed only when ``.execute(network)`` is called.
+* **``Q`` and ``L`` helpers**: ``Q`` builds queries; ``L`` builds layer expressions. Import both from ``py3plex.dsl``.
 
 **Comparison to SQL:**
 
@@ -117,16 +119,18 @@ Select all nodes and inspect the result:
         if i >= 4:
             break
 
-**Expected output:**
+**Expected output (will vary with your data):**
 
 .. code-block:: text
 
-    Found 6 nodes
+    Found 7 nodes
       ('alice', 'social'): {'degree': 1, 'layer': 'social', 'layer_count': 2}
       ('bob', 'social'): {'degree': 2, 'layer': 'social', 'layer_count': 2}
       ('charlie', 'social'): {'degree': 1, 'layer': 'social', 'layer_count': 2}
       ('alice', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
       ('bob', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
+      ('charlie', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
+      ('dave', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 1}
 
 .. tip:: Loading from files
    
@@ -141,10 +145,8 @@ Select all nodes and inspect the result:
        import os
        path = os.path.join(os.path.dirname(__file__), "datasets", "multiedgelist.txt")
        network.load_network(path, input_type="multiedgelist")
-      ('diana', 'social'): {'degree': 9, 'layer': 'social', 'layer_count': 3}
-      ('eve', 'work'): {'degree': 4, 'layer': 'work', 'layer_count': 1}
 
-**Note:** Keys are ``(node, layer)`` tuples representing node-layer pairs. The ``layer_count`` attribute indicates how many layers the node appears in across the entire network.
+**Note:** ``execute_query`` returns a dict-like result. Keys are ``(node, layer)`` tuples representing node-layer pairs. The ``layer_count`` attribute counts how many distinct layers the node appears in across the entire network. ``len(result)`` gives the number of returned items, and ``result.items()`` yields the full (key, value) pairs.
 
 Filter by Layer
 ~~~~~~~~~~~~~~~
@@ -165,7 +167,7 @@ Restrict queries to nodes in a specific layer:
 
 * ``layer="friends"`` selects only the node-layer pairs where ``layer == "friends"``
 * This does **not** select all occurrences of nodes across layers—only their representation in the specified layer
-* Use ``layer_count >= 2`` to find nodes appearing in multiple layers
+* Use ``layer_count >= 2`` to find nodes appearing in multiple layers (``layer_count`` is the number of distinct layers for that node)
 
 **Example with statistics:**
 
@@ -180,7 +182,7 @@ Restrict queries to nodes in a specific layer:
     print(f"Average degree in 'friends': {df['degree'].mean():.2f}")
     print(f"Max degree in 'friends': {df['degree'].max()}")
 
-**Expected output:**
+**Expected output (example from a synthetic dataset):**
 
 .. code-block:: text
 
@@ -213,7 +215,7 @@ Use comparisons to filter nodes by computed or intrinsic attributes:
 
 **Multiple conditions** are combined with ``AND``. For more complex logic, use the builder API (see below).
 
-**Expected output:**
+**Expected output (counts will vary with your data):**
 
 .. code-block:: text
 
@@ -243,7 +245,7 @@ The ``COMPUTE`` clause calculates network metrics and attaches them to result ro
     print("\nSummary statistics:")
     print(df[['degree', 'betweenness_centrality']].describe())
 
-**Expected output:**
+**Expected output (values depend on the network):**
 
 .. code-block:: text
 
@@ -395,7 +397,7 @@ Use ``compute()`` to calculate network metrics. Metrics are computed efficiently
          .execute(network)
     )
 
-**Expected output:**
+**Expected output (illustrative):**
 
 .. code-block:: text
 
@@ -504,7 +506,7 @@ Computing Metrics with Uncertainty
             print(f"  Betweenness: {mean:.4f} ± {std:.4f}")
             print(f"  95% CI: [{ci_low:.4f}, {ci_high:.4f}]")
 
-**Expected output:**
+**Expected output (example metrics on a weighted layer):**
 
 .. code-block:: text
 
@@ -578,7 +580,7 @@ Use ``order_by()`` and ``limit()`` to control result ordering and size:
 * ``order_by("-degree")``: descending (high to low)
 * Multiple keys: ``order_by("-degree", "layer_count")``: sort by degree descending, then layer_count ascending
 
-**Expected output:**
+**Expected output (example ranking):**
 
 .. code-block:: text
 
@@ -625,7 +627,7 @@ Access as Dictionary
 
 **Result structure for edges:**
 
-* **Keys**: ``((source, source_layer), (target, target_layer), {edge_data})`` tuples
+* **Keys**: ``((source, source_layer), (target, target_layer))`` tuples (interlayer edges include both layer names)
 * **Values**: Dictionaries with edge attributes and computed metrics
 
 **Expected output:**
@@ -762,7 +764,7 @@ This section showcases the DSL's power for sophisticated multilayer network anal
 Multiple Layer Selection
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use **layer algebra** to combine layers. The ``L`` object supports set operations:
+Use **layer algebra** to combine layers. The ``L`` object supports set operations (``|`` for union, ``&`` for intersection, ``-`` for difference):
 
 .. code-block:: python
 
@@ -771,7 +773,7 @@ Use **layer algebra** to combine layers. The ``L`` object supports set operation
     # Union: nodes/edges from EITHER layer
     result = (
         Q.nodes()
-         .from_layers(L["friends"] + L["work"])
+         .from_layers(L["friends"] | L["work"])
          .compute("degree")
          .execute(network)
     )
@@ -782,7 +784,7 @@ Use **layer algebra** to combine layers. The ``L`` object supports set operation
 
 **Set semantics:**
 
-* ``L["friends"] + L["work"]``: **Union** of nodes/edges from both layers (nodes appearing in either layer)
+* ``L["friends"] | L["work"]``: **Union** of nodes/edges from both layers (nodes appearing in either layer)
 * ``L["friends"] & L["work"]``: **Intersection** (see next section)
 * ``L["friends"] - L["work"]``: **Difference** (nodes in friends but not work)
 

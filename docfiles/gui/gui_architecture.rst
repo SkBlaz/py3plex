@@ -2,8 +2,12 @@
 Py3plex GUI Architecture
 **************************
 
+This document explains how the GUI stack (frontend, FastAPI backend, Celery workers, Redis, and nginx) fits together, how data moves through it, and where to look when troubleshooting or extending a feature.
+
 System Overview
 ===============
+
+High-level container topology and dev ports for the docker-compose development stack.
 
 ::
 
@@ -87,6 +91,8 @@ Data Flow
 Upload & Parse Flow
 -------------------
 
+Reads a file from the browser, writes it to disk, and registers a NetworkX graph in memory for subsequent API calls.
+
 ::
 
     User → Frontend → API /upload → io.save_upload()
@@ -101,6 +107,8 @@ Upload & Parse Flow
 
 Analysis Job Flow
 -----------------
+
+Queues CPU-heavy work (layout, centrality, community detection) and streams progress back to the UI via Redis; errors surface on the same polling endpoint.
 
 ::
 
@@ -212,6 +220,8 @@ Directory Structure
 Component Responsibilities
 ==========================
 
+Each block below summarizes what runs where so you can navigate the codebase quickly and understand which service owns a behavior.
+
 Visual Component Reference
 --------------------------
 
@@ -252,7 +262,7 @@ Frontend
 - User interaction
 - File upload UI
 - Real-time job polling
-- Graph visualization (placeholder)
+- Graph visualization (current placeholder renderer)
 - State management (Zustand)
 
 **Technologies**:
@@ -273,6 +283,7 @@ API (FastAPI)
 - File upload handling
 - Job orchestration
 - py3plex integration
+- Graph registry lifecycle and artifact paths
 
 **Key Services**:
 
@@ -281,6 +292,7 @@ API (FastAPI)
 - ``metrics``: Centrality calculations
 - ``community``: Community detection
 - ``workspace``: Save/load bundles
+- ``model``: Registry access and graph queries
 
 Worker (Celery)
 ---------------
@@ -290,7 +302,7 @@ Worker (Celery)
 - Async job execution
 - Progress reporting
 - Result persistence
-- Resource management
+- Resource management (bounded by ``CELERY_CONCURRENCY``)
 
 **Tasks**:
 
@@ -306,6 +318,7 @@ Redis
 - Job queue (broker)
 - Result backend
 - Session storage (future)
+- Caches are small by design; long-lived artifacts stay on disk.
 
 Nginx
 -----
@@ -326,6 +339,7 @@ Flower
 - Worker monitoring
 - Task history
 - Performance metrics
+- Quick sanity check when jobs stall or are delayed.
 
 Data Models
 ===========
@@ -344,6 +358,9 @@ Graph Registry (In-Memory)
         }
     }
 
+Stores lightweight metadata and the in-memory NetworkX object for quick API access. Large artifacts (layouts, metrics) live under ``/data/artifacts/<graph_id>/`` instead of bloating Redis.
+Registry contents are process-local; a backend restart clears uploads unless they are exported to a workspace bundle.
+
 Job State (Redis)
 -----------------
 
@@ -357,6 +374,9 @@ Job State (Redis)
         "result": {...}       # Output data
     }
 
+A Celery task updates ``progress`` and ``phase`` via ``update_state`` so the UI can poll ``/jobs/{job_id}`` without hitting the worker directly.
+``queued`` transitions to ``running`` once a worker starts; ``failed`` includes the exception string in ``result.error``.
+
 Workspace Bundle (Zip)
 ----------------------
 
@@ -369,6 +389,8 @@ Workspace Bundle (Zip)
     └── artifacts/
         ├── centrality.json
         └── community.json
+
+Bundles let users pause work and resume later; only the bundle ID needs to be stored client-side.
 
 Security Architecture
 =====================
@@ -449,7 +471,7 @@ Local Development (Current)
 
 .. code-block:: bash
 
-    make up  # All containers on localhost
+    make up  # All containers on localhost (frontend/api hot reload)
 
 GPU-Enabled
 -----------
@@ -512,6 +534,8 @@ Volume Mounts
     ../api/app/                → /app (dev mode)
     ../frontend/src/           → /app/src (dev mode)
 
+Read-only mounts keep source code immutable inside containers; ``/data`` remains writable for uploads, job artifacts, and workspace bundles.
+
 Environment Variables
 =====================
 
@@ -529,24 +553,28 @@ Environment Variables
     # Frontend
     VITE_API_URL=http://localhost:8080/api
 
+These mirror ``.env.example``; copy to ``.env`` and adjust per deployment.
+
 Performance Characteristics
 ===========================
+
+Indicative timings from the dev container; expect variance with hardware, graph size, and algorithms.
 
 Small Graphs (< 100 nodes)
 --------------------------
 
-- Upload: < 1s
-- Layout: 2-5s
-- Centrality: 1-3s
-- Community: 1-3s
+- Upload: typically < 1s
+- Layout: ~2-5s
+- Centrality: ~1-3s
+- Community: ~1-3s
 
 Medium Graphs (100-1000 nodes)
 ------------------------------
 
-- Upload: 1-3s
-- Layout: 5-15s
-- Centrality: 3-10s
-- Community: 3-10s
+- Upload: ~1-3s
+- Layout: ~5-15s
+- Centrality: ~3-10s
+- Community: ~3-10s
 
 Large Graphs (> 1000 nodes)
 ---------------------------
@@ -554,7 +582,7 @@ Large Graphs (> 1000 nodes)
 - Consider sampling for preview
 - Progressive rendering recommended
 - May need GPU acceleration
-- Memory: ~1GB per 10k nodes
+- Memory: rough heuristic is ~1GB per 10k nodes; measure for your dataset and hardware
 
 Future Enhancements
 ===================
@@ -562,7 +590,7 @@ Future Enhancements
 Phase 2
 -------
 
-- WebGL visualization
+- WebGL visualization for large graphs
 - Real-time collaboration
 - Database backend (PostgreSQL)
 - Authentication service
@@ -581,4 +609,4 @@ Phase 3
 
 **Version**: 0.1.0
 
-**Last Updated**: 2025-11-09
+**Last Updated**: 2025-12-18 (update when architecture changes)

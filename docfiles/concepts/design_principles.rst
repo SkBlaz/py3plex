@@ -29,10 +29,11 @@ Simple, Off-the-Shelf Functionality
     
     # Simple, intuitive API
     network = multinet.multi_layer_network()
+    # List format: [source, source_layer, target, target_layer, weight]
     network.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type="list")
     network.basic_stats()  # Works immediately
 
-**Rationale:** Researchers and practitioners need tools that are easy to adopt without extensive setup or configuration. py3plex aims to minimize the barrier to entry for multilayer network analysis.
+**Rationale:** Researchers and practitioners need tools that are easy to adopt without extensive setup or configuration. py3plex minimizes the barrier to entry for multilayer network analysis by keeping the first run frictionless.
 
 NetworkX Compatibility
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -96,6 +97,8 @@ Modular Architecture
 Implementation Principles
 -------------------------
 
+These principles translate the philosophy into everyday coding patterns inside py3plex.
+
 Flexibility
 ~~~~~~~~~~~
 
@@ -104,6 +107,9 @@ Flexibility
 **Examples:**
 
 .. code-block:: python
+
+    from py3plex.core import multinet
+    network = multinet.multi_layer_network()
 
     # Multiple ways to create networks
     
@@ -126,7 +132,7 @@ Flexibility
 Lazy Evaluation
 ~~~~~~~~~~~~~~~
 
-**Principle:** Compute expensive operations only when needed.
+**Principle:** Compute expensive operations only when needed, and only once when caching is safe.
 
 **In practice:**
 
@@ -141,16 +147,17 @@ Lazy Evaluation
     
     # Subsequent calls may use cached result (where appropriate)
 
-**Rationale:** Many multilayer operations (e.g., matrix construction) are computationally expensive. Lazy evaluation:
+**Rationale:** Many multilayer operations (e.g., supra-adjacency matrix construction, typically of shape ``(n·L)×(n·L)``) are computationally expensive. Lazy evaluation:
 
 * Improves performance for common operations
 * Reduces memory usage
 * Allows working with large networks when full matrices aren't needed
+* Encourages recomputing expensive results only after meaningful graph changes
 
 Graceful Degradation
 ~~~~~~~~~~~~~~~~~~~~
 
-**Principle:** Optional features should fail gracefully, not crash the entire application.
+**Principle:** Optional features should fail gracefully, not crash the entire application. Where possible, suggest viable fallbacks.
 
 **In practice:**
 
@@ -214,7 +221,7 @@ Sparse Representations
     # Dense only for small networks or specific algorithms
     supra_adj_dense = network.get_supra_adjacency_matrix(sparse=False)
 
-**Rationale:** Real-world networks are typically sparse (few edges relative to potential edges). Sparse representations:
+**Rationale:** Real-world networks are typically sparse (few edges relative to potential edges). The supra-adjacency matrix indexes (node, layer) pairs, so sparsity keeps it tractable. Sparse representations:
 
 * Reduce memory usage by orders of magnitude
 * Enable analysis of networks with millions of nodes
@@ -232,7 +239,7 @@ Efficient Data Structures
 * Sparse matrices for linear algebra
 * Sets for membership testing
 
-**Rationale:** The right data structure makes operations fast and memory-efficient.
+**Rationale:** The right data structure keeps common operations both fast and memory-efficient.
 
 Algorithmic Defaults
 ~~~~~~~~~~~~~~~~~~~~
@@ -256,6 +263,7 @@ Algorithmic Defaults
 * Make the library easy to use for beginners
 * Reduce parameter tuning overhead
 * Are based on published research and empirical validation
+* Provide a safe baseline before task-specific tuning (adjust ``gamma``/``omega`` for resolution and coupling)
 
 Extensibility
 -------------
@@ -274,7 +282,7 @@ Plugin-Friendly Architecture
         """Custom centrality measure."""
         G = ml_network.core_network
         # Implement your algorithm
-        return centrality_scores
+        return centrality_scores  # Dict keyed by (node, layer) tuples
     
     # Easy to add custom visualizations
     def my_plot(ml_network, **kwargs):
@@ -289,7 +297,7 @@ Plugin-Friendly Architecture
 Clear Interfaces
 ~~~~~~~~~~~~~~~~
 
-**Principle:** Define clear, stable APIs for modules.
+**Principle:** Define clear, stable APIs for modules so that code using them remains forward-compatible.
 
 **In practice:**
 
@@ -325,6 +333,7 @@ Comprehensive Documentation
 * Code examples in documentation
 * Real-world use cases
 * API reference with parameter descriptions
+* Cross-links between conceptual guides and API reference
 
 **Rationale:** Good documentation:
 
@@ -336,7 +345,7 @@ Comprehensive Documentation
 Extensive Testing
 ~~~~~~~~~~~~~~~~~
 
-**Principle:** Test all core functionality and edge cases.
+**Principle:** Test all core functionality and edge cases, including multilayer specifics.
 
 **In practice:**
 
@@ -381,13 +390,13 @@ Cross-Platform Compatibility
 
 **Principle:** Work consistently across operating systems.
 
-**Tested on:**
+**Regularly exercised on:**
 
 * Linux (Ubuntu 20.04, 22.04)
 * macOS (11, 12, 13)
 * Windows (Server 2019, 2022)
 
-**Rationale:** Users work on different platforms. Cross-platform support ensures py3plex works everywhere.
+**Rationale:** Users work on different platforms. Cross-platform support keeps behavior consistent and reduces support surprises.
 
 Research-Oriented Design
 ------------------------
@@ -418,7 +427,7 @@ Citation and Attribution
 Reproducibility
 ~~~~~~~~~~~~~~~
 
-**Principle:** Support reproducible research.
+**Principle:** Support reproducible research by exposing seed controls wherever randomness is involved.
 
 **In practice:**
 
@@ -432,6 +441,8 @@ Reproducibility
     
     walks = generate_walks(
         network,
+        num_walks=5,
+        walk_length=10,
         seed=42  # Reproducible walks
     )
 
@@ -444,13 +455,13 @@ Reproducibility
 Validation and Benchmarking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Principle:** Validate algorithms against published results.
+**Principle:** Validate algorithms against published results and known properties when possible.
 
 **In practice:**
 
-* Benchmark suite comparing to reference implementations
-* Validation against known network properties
-* Performance metrics for large networks
+* Benchmark scripts comparing to reference implementations when available
+* Validation against known network properties (e.g., degree sequences, connectivity)
+* Performance metrics for representative network sizes
 
 **Rationale:** Validation ensures:
 

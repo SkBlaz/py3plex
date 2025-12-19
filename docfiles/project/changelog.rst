@@ -1,7 +1,7 @@
 Changelog
 =========
 
-This page documents the release history of py3plex. For the most up-to-date information, see `GitHub Releases <https://github.com/SkBlaz/py3plex/releases>`_.
+This page summarizes the release history of py3plex. For granular, date-stamped entries, see `GitHub Releases <https://github.com/SkBlaz/py3plex/releases>`_ or the root ``CHANGELOG.md``.
 
 Release History
 ---------------
@@ -9,7 +9,9 @@ Release History
 Version 1.0.0 (Current)
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-**Release Date:** 2024
+**Release Date:** 2024 (current stable line)
+
+The 1.0 series focuses on a stable DSL, multilayer ergonomics, and reproducible analysis workflows.
 
 **Major Features:**
 
@@ -81,19 +83,21 @@ Version 1.0.0 (Current)
 
 **Performance Improvements:**
 
-* Optimized tensor operations
+* Optimized tensor operations for multilayer algebra
 * Sparse matrix support for large networks
-* Caching for expensive computations
+* Caching for expensive computations (centrality, community detection)
 
 **Bug Fixes:**
 
-* Numerous edge case fixes in community detection
+* Numerous edge-case fixes in community detection
 * Corrected centrality calculations for directed multilayer networks
-* Fixed memory leaks in dynamics simulations
-* Resolved NetworkX compatibility issues
+* Fixed memory leaks in long-running dynamics simulations
+* Resolved NetworkX compatibility issues (version pinning and adapters)
 
 Previous Versions (0.x Series)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The 0.x series delivered the multilayer foundations: data structures, early DSL prototypes, and visualization primitives. Expect minor API inconsistencies compared to 1.0; migrate when possible.
 
 **Version 0.30 - 0.35 (2020-2023)**
 
@@ -124,6 +128,8 @@ Previous Versions (0.x Series)
 How to Check Your Version
 --------------------------
 
+Confirm the installed package version from Python (or use ``pip show py3plex`` in the shell):
+
 .. code-block:: python
 
     import py3plex
@@ -144,13 +150,13 @@ Upgrade Instructions
 
     pip install --upgrade py3plex
 
-**Install from specific version:**
+**Install a specific version:**
 
 .. code-block:: bash
 
     pip install py3plex==1.0.0
 
-**Install development version:**
+**Install development snapshot:**
 
 .. code-block:: bash
 
@@ -207,13 +213,16 @@ Migrating from 0.x to 1.0
 **Migration Steps:**
 
 1. Update py3plex: ``pip install --upgrade py3plex``
-2. Run your existing code - warnings will indicate deprecated usage
-3. Gradually migrate to DSL for queries
-4. Update community detection code to expect tuple keys
-5. Handle uncertainty in centrality results if using ``uncertainty=True``
+2. Run your existing code; deprecation warnings will indicate legacy usage
+3. Gradually migrate to DSL for queries and layer selection
+4. Update community detection code to expect tuple ``(node, layer)`` keys
+5. Handle uncertainty-aware results if using ``uncertainty=True`` (e.g., use ``result.mean``)
+6. Re-run tests or notebooks to confirm parity before removing legacy patterns
 
 API Changes and Deprecations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use this section to triage warnings during upgrades; deprecated items will be removed in 2.0 unless noted otherwise.
 
 **Removed in 1.0:**
 
@@ -233,7 +242,7 @@ API Changes and Deprecations
 Contributing to Changelog
 --------------------------
 
-When submitting PRs, please update the "Unreleased" section in CHANGELOG.md in the repository root with:
+When submitting PRs, update the "Unreleased" section in ``CHANGELOG.md`` (repository root) and mirror major notes here if they affect users:
 
 * Brief description of changes
 * Link to issue (if applicable)
@@ -255,4 +264,3 @@ Next Steps
 * **Upgrade guide:** See "Migration Guides" above
 * **What's new:** :doc:`roadmap` for planned features
 * **Report issues:** https://github.com/SkBlaz/py3plex/issues
-

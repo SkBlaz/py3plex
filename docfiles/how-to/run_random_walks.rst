@@ -5,6 +5,8 @@ How to Run Random Walk Algorithms
 
 **Prerequisites:** A loaded network (see :doc:`load_and_build_networks`).
 
+All embedding helpers in py3plex return a mapping from ``(node_id, layer)`` tuples to dense vectors of length ``dimensions``. Single-layer inputs still keep the layer entry so you can tell layers apart in multiplex graphs.
+
 .. note:: Where to find this data
    
    Examples in this guide create networks programmatically for clarity. You can also:
@@ -55,8 +57,10 @@ Node2Vec generates vector representations of nodes by simulating biased random w
 
 The `p` and `q` parameters control the walk behavior:
 
-* **p** (return parameter): Likelihood of returning to previous node
-* **q** (in-out parameter): Likelihood of exploring outward vs. staying local
+* **p** (return parameter): Cost of immediately revisiting the previous node (low ``p`` = easy to backtrack; high ``p`` = discouraged)
+* **q** (in-out parameter): Balance between staying near the previous node versus exploring new territory (``q > 1`` ≈ breadth-first/local, ``q < 1`` ≈ depth-first/outward)
+
+Think of ``p`` as controlling backtracking and ``q`` as controlling locality; tune them together to steer walks toward either local neighborhoods or long-range exploration.
 
 DeepWalk Embeddings
 -------------------
@@ -78,6 +82,8 @@ DeepWalk is a special case of Node2Vec with ``p=1, q=1``:
 Using Embeddings for Downstream Tasks
 --------------------------------------
 
+The following examples assume you already computed ``embeddings`` with Node2Vec or DeepWalk; adjust names if you generate multiple embedding sets.
+
 Node Classification
 ~~~~~~~~~~~~~~~~~~~
 
@@ -91,7 +97,7 @@ Node Classification
     nodes = list(embeddings.keys())
     X = np.array([embeddings[node] for node in nodes])
     
-    # Assuming you have labels
+    # Replace with your label lookup (one label per (node, layer) tuple)
     y = np.array([get_label(node) for node in nodes])
     
     # Train classifier
@@ -107,6 +113,8 @@ Node Classification
 
 Link Prediction
 ~~~~~~~~~~~~~~~
+
+Embeddings are keyed by ``(node, layer)``; compare nodes within the same layer when interpreting similarity scores.
 
 .. code-block:: python
 
@@ -220,8 +228,12 @@ Export to CSV
 Parameter Tuning
 ----------------
 
+Random walk hyperparameters meaningfully change embedding quality. Use small validation loops to pick settings that balance accuracy and runtime, and fix seeds (``random_state`` / ``workers``) when you want reproducibility across runs.
+
 Grid Search for Best Parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Training embeddings inside a grid search can be expensive; start with a coarse grid or a small subgraph, then refine around promising regions.
 
 .. code-block:: python
 
@@ -250,7 +262,10 @@ Grid Search for Best Parameters
                 )
                 
                 # Evaluate (assuming you have labels)
+                nodes = list(emb.keys())
+                labels = [get_label(n) for n in nodes]  # Provide labels keyed by (node, layer)
                 X = np.array([emb[n] for n in nodes])
+                y = np.array(labels)
                 scores = cross_val_score(
                     LogisticRegression(),
                     X, y, cv=5
@@ -443,6 +458,8 @@ Combine Embeddings with Node Attributes
 
 .. code-block:: python
 
+    import numpy as np
+
     # After generating embeddings, attach them as attributes
     for node, vector in embeddings.items():
         # Store embedding norm as an attribute
@@ -455,7 +472,9 @@ Combine Embeddings with Node Attributes
         'SELECT nodes WHERE embedding_norm > 10.0'
     )
     
-    print(f"Nodes with large embedding norms: {len(large_norm_nodes)}")
+    norm_matches = large_norm_nodes.get("nodes", [])
+    count = large_norm_nodes.get("count", len(norm_matches))
+    print(f"Nodes with large embedding norms: {count}")
 
 Layer-Specific Embedding Analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

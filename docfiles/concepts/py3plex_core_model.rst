@@ -203,12 +203,12 @@ Edges connecting nodes across different layers:
 Supra-Adjacency Matrix
 ----------------------
 
-The supra-adjacency matrix is a block matrix representation that encodes the entire multilayer network structure.
+The supra-adjacency matrix is a block matrix representation that encodes the entire multilayer network structure in one object. It respects the ordering of node-layer pairs, so always check how nodes are ordered in your network before interpreting row/column indices.
 
 Mathematical Definition
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-For a multilayer network with :math:`L` layers, the supra-adjacency matrix :math:`\mathbf{S}` is:
+For a multilayer network with :math:`L` layers, the supra-adjacency matrix :math:`\mathbf{S}` is built by stacking each layer's adjacency and the inter-layer coupling blocks. We assume node-layer pairs are ordered by layer, then by node within each layer:
 
 .. math::
 
@@ -221,8 +221,11 @@ For a multilayer network with :math:`L` layers, the supra-adjacency matrix :math
 
 Where:
 
-* :math:`A_\alpha` is the adjacency matrix of layer :math:`\alpha` (intra-layer connections)
-* :math:`C_{\alpha\beta}` is the coupling matrix between layers :math:`\alpha` and :math:`\beta` (inter-layer connections)
+* :math:`A_\alpha \in \mathbb{R}^{n_\alpha \times n_\alpha}` is the adjacency matrix of layer :math:`\alpha` (intra-layer connections)
+* :math:`C_{\alpha\beta} \in \mathbb{R}^{n_\alpha \times n_\beta}` is the coupling matrix between layers :math:`\alpha` and :math:`\beta` (inter-layer connections)
+* The full matrix has size :math:`(\sum_{\alpha=1}^L n_\alpha) \times (\sum_{\alpha=1}^L n_\alpha)`
+
+In multiplex networks, :math:`n_\alpha` is typically the same for all layers, so :math:`\mathbf{S}` becomes an :math:`(N \cdot L) \times (N \cdot L)` matrix. For undirected networks, :math:`A_\alpha = A_\alpha^\top` and :math:`C_{\alpha\beta} = C_{\beta\alpha}^\top`; for directed networks these blocks can be asymmetric. Identity coupling corresponds to :math:`C_{\alpha\beta} = \omega I` (with coupling weight :math:`\omega`) when layers share node identities.
 
 Numeric Example
 ~~~~~~~~~~~~~~~
@@ -260,7 +263,7 @@ Layer 2 adjacency matrix (A₂):
 
 **Inter-layer coupling blocks (C₁₂ and C₂₁):**
 
-In a multiplex network, we typically add identity coupling—each node connects to itself across layers:
+In a multiplex network, we typically add identity coupling—each node connects to itself across layers with the chosen coupling weight (here 1.0):
 
 .. code-block:: text
 
@@ -315,13 +318,15 @@ Construction
 Memory Implications
 ~~~~~~~~~~~~~~~~~~~
 
-The supra-adjacency matrix has size (N×L)² where N is nodes per layer and L is layers:
+Let :math:`n_\text{total} = \sum_{\alpha=1}^L n_\alpha` (the number of node-layer pairs). The supra-adjacency matrix is :math:`n_\text{total} \times n_\text{total}`. If every layer has :math:`N` nodes, then :math:`n_\text{total} = N \cdot L`.
+
+Worked estimates (assuming equal nodes per layer):
 
 * **Small network (100 nodes, 3 layers):** 300×300 = 90,000 entries → ~720 KB dense
 * **Medium network (1,000 nodes, 5 layers):** 5,000×5,000 = 25 million entries → ~200 MB dense
-* **Large network (10,000 nodes, 10 layers):** 100,000×100,000 = 10 billion entries → impossible dense
+* **Large network (10,000 nodes, 10 layers):** 100,000×100,000 = 10 billion entries → ~80 GB dense (impractical)
 
-**Always use sparse=True** for networks with more than ~1,000 total node-layer pairs. Sparse matrices only store non-zero entries, reducing memory from O(N²L²) to O(edges + coupling).
+**Always use sparse=True** for networks with more than ~1,000 total node-layer pairs. Sparse matrices only store non-zero entries, reducing memory from :math:`O(n_\text{total}^2)` potential entries to roughly :math:`O(\text{edges} + \text{coupling edges})` actual non-zeros.
 
 Visualization
 ~~~~~~~~~~~~~
@@ -783,7 +788,7 @@ Node-layer pairs mean that a node appearing in :math:`L` layers occupies :math:`
 Tensor-Like Indexing
 ~~~~~~~~~~~~~~~~~~~~
 
-You can access nodes and edges using tensor-like notation:
+You can access nodes and edges using tensor-like notation on the underlying NetworkX graph:
 
 .. code-block:: python
 
@@ -800,9 +805,9 @@ You can access nodes and edges using tensor-like notation:
     node_data = network[some_nodes[0]]
     print(f"Node {some_nodes[0]} data: {node_data}")
     
-    # Access edge (returns edge attributes)
+    # Access edge (returns the adjacency dict for that pair)
     edge_data = network[some_edges[0][0]][some_edges[0][1]]
-    print(f"Edge data: {edge_data}")
+    print(f"Edge data: {edge_data}")  # For MultiGraph, edge keys map to attribute dicts
 
 Design Principles
 -----------------
@@ -835,24 +840,11 @@ Comparison with Other Representations
 Why Node-Layer Pairs?
 ~~~~~~~~~~~~~~~~~~~~~
 
-Alternative representations exist, but py3plex's node-layer pair approach offers key advantages:
+Alternative representations exist, but py3plex's node-layer pair approach offers key advantages over the two common options:
 
-**Alternative: Separate graphs per layer**
-
-*Drawback:* Loses inter-layer information, requires manual bookkeeping for cross-layer operations.
-
-**Alternative: Single graph with edge type attributes**
-
-*Drawback:* Cannot distinguish node context across layers, loses layer-specific node attributes.
-
-**py3plex approach: Node-layer pairs**
-
-*Advantages:*
-
-* Preserves both intra-layer and inter-layer structure
-* Allows layer-specific node attributes
-* Compatible with NetworkX algorithms
-* Efficient for multilayer-specific operations
+* **Separate graphs per layer:** Simple, but loses inter-layer information and requires manual bookkeeping for cross-layer operations.
+* **Single graph with edge type attributes:** Keeps everything in one graph, but cannot distinguish node context across layers or attach layer-specific node attributes.
+* **Node-layer pairs (py3plex):** Preserves both intra-layer and inter-layer structure, supports layer-specific attributes, and stays compatible with NetworkX algorithms while enabling multilayer-specific operations.
 
 What You Learned
 ----------------

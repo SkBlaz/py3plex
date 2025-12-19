@@ -1,12 +1,16 @@
 Key Use Cases
 =============
 
-py3plex is used across multiple domains for analyzing complex systems with multiple relationship types.
+py3plex models systems where the same entities interact through many
+relationship types (layers). Each node may appear in multiple layers, and
+interlayer edges let you model transfers or couplings between contexts. Below
+are common domains, what the layers represent, and the kinds of questions you
+can answer.
 
 Social Networks
 ---------------
 
-**Multiplex social networks** capture different types of social relationships:
+Layers represent communication channels or contexts for the same people:
 
 * Friendship, family, and professional connections
 * Online interactions: mentions, retweets, replies
@@ -20,26 +24,27 @@ Social Networks
 
 .. code-block:: python
 
+    from collections import Counter
+    from py3plex.core import multinet
+
     # Example: Multi-platform social network
     network = multinet.multi_layer_network()
+    # List input: [source, source_layer, target, target_layer, weight]
     network.add_edges([
         ['Alice', 'twitter', 'Bob', 'twitter', 1],
         ['Alice', 'linkedin', 'Bob', 'linkedin', 1],
         ['Bob', 'twitter', 'Carol', 'twitter', 1],
     ], input_type="list")
     
-    # Find users active across platforms
-    from py3plex.dsl import Q
-    active_users = (
-        Q.nodes()
-         .where(layer_count__gt=1)  # Present in multiple layers
-         .execute(network)
-    )
+    # Find users present in more than one layer
+    layer_counts = Counter(node for node, layer in network.get_nodes())
+    active_users = [node for node, count in layer_counts.items() if count > 1]
+    print(active_users)
 
 Biological Networks
 -------------------
 
-**Molecular interaction networks** with multiple relationship types:
+Layers capture different biological interaction types:
 
 * Protein-protein interactions (physical binding)
 * Gene regulatory networks (transcriptional control)
@@ -56,24 +61,27 @@ Biological Networks
 
     # Example: Multi-omics biological network
     # Protein-protein interactions + gene regulation
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query
+
     network = multinet.multi_layer_network()
     
     # Physical interactions
     network.add_edge('TP53', 'ppi', 'MDM2', 'ppi')
-    
+
     # Regulatory interactions
     network.add_edge('TP53', 'regulation', 'CDKN1A', 'regulation')
-    
-    # Find key regulators with multiple interaction types
+
+    # Compute centrality within the regulatory layer
     result = execute_query(network,
-        'SELECT nodes WHERE layer_count > 1 '
-        'COMPUTE degree COMPUTE betweenness_centrality'
+        'SELECT nodes WHERE layer="regulation" '
+        'COMPUTE betweenness_centrality'
     )
 
 Transportation Networks
 -----------------------
 
-**Multimodal transportation** with different travel modes:
+Layers represent travel modes and transfers between them:
 
 * Road networks
 * Public transit (bus, metro, train)
@@ -89,6 +97,8 @@ Transportation Networks
 .. code-block:: python
 
     # Example: Multimodal city transportation
+    from py3plex.core import multinet
+
     network = multinet.multi_layer_network()
     
     # Different transportation modes
@@ -99,14 +109,23 @@ Transportation Networks
     # Inter-layer connections (transfers)
     network.add_edge('StationA', 'metro', 'StationA', 'bus', 
                      type='interlayer')
+    
+    # Identify busy transfer points (degree > 2 across all modes)
+    busy_stations = [
+        node for node in network.get_nodes()
+        if network.core_network.degree(node) > 2
+    ]
 
 Knowledge Graphs
 ----------------
 
-**Heterogeneous knowledge networks** with different entity and relation types:
+Layers separate relation types between entities:
 
 * Entity types: people, organizations, locations, concepts
 * Relation types: employment, location, authorship, citation
+
+Keeping relations in distinct layers preserves meaning (employment vs. location)
+while still allowing cross-layer queries.
 
 **Example applications:**
 
@@ -117,7 +136,7 @@ Knowledge Graphs
 Scientific Collaboration
 ------------------------
 
-**Co-authorship networks** across disciplines:
+Layers represent collaboration contexts:
 
 * Joint publications
 * Grant collaborations
@@ -130,10 +149,13 @@ Scientific Collaboration
 * Detecting emerging research communities
 * Predicting future collaborations
 
+Layered collaboration data keeps formal publications separate from informal
+interactions while still letting you track cross-context teams.
+
 Epidemic Modeling
 -----------------
 
-**Disease transmission** through multiple contact types:
+Layers represent contact types with different transmission risks:
 
 * Household contacts
 * Workplace interactions
@@ -146,12 +168,15 @@ Epidemic Modeling
 * Evaluating intervention strategies
 * Identifying super-spreader events
 
+Assign layer-specific transmission probabilities to model different risks (e.g.,
+household vs. workplace).
+
 See :doc:`../how-to/simulate_dynamics` for epidemic modeling how-tos.
 
 Communication Networks
 ----------------------
 
-**Enterprise communication** across channels:
+Layers capture organizational communication channels:
 
 * Email correspondence
 * Instant messaging
@@ -164,10 +189,13 @@ Communication Networks
 * Information flow optimization
 * Team effectiveness measurement
 
+Layered communication captures channel preferences without losing the underlying
+person identifiers.
+
 Financial Networks
 ------------------
 
-**Economic relationships** at multiple scales:
+Layers distinguish financial instruments and ownership ties:
 
 * Trade networks (goods, services)
 * Financial flows (investments, loans)
@@ -186,7 +214,7 @@ Financial Networks
 .. code-block:: python
 
     from py3plex.core import multinet
-    from py3plex.dsl import Q, execute_query
+    from py3plex.dsl import execute_query
     
     # Build financial network with multiple relationship types
     network = multinet.multi_layer_network(directed=True)
@@ -211,51 +239,33 @@ Financial Networks
         ['BankC', 'lending', 'BankA', 'lending', 200],
     ], input_type="list")
     
-    # Identify systemically important institutions
-    # (high degree across multiple relationship types)
-    systemic_nodes = (
-        Q.nodes()
-         .compute("degree", "betweenness_centrality")
-         .where(degree__gt=3)
-         .order_by("betweenness_centrality", reverse=True)
-         .execute(network)
-    )
+    # Identify systemically important institutions using DSL
+    # (unweighted betweenness across all layers; pass weight='weight' to include amounts)
+    centrality = execute_query(
+        network,
+        'SELECT nodes COMPUTE betweenness_centrality'
+    )['computed']['betweenness_centrality']
     
-    print("Systemically Important Institutions:")
-    for node, data in list(systemic_nodes.items())[:5]:
-        print(f"  {node}: degree={data['degree']}, "
-              f"betweenness={data['betweenness_centrality']:.4f}")
+    top_3 = sorted(
+        centrality.items(),
+        key=lambda item: item[1],
+        reverse=True
+    )[:3]
     
-    # Analyze risk propagation
-    # Find institutions connected across multiple layers
+    print("Top betweenness nodes (node, betweenness):")
+    for node, score in top_3:
+        print(f"  {node}: {score:.4f}")
+    
+    # Find institutions represented in multiple layers
     from collections import Counter
-    node_layer_count = Counter()
-    for node, layer in network.get_nodes():
-        node_layer_count[node] += 1
+    node_layer_count = Counter(node for node, layer in network.get_nodes())
+    multi_layer_nodes = [
+        node for node, count in node_layer_count.items() if count >= 2
+    ]
     
-    highly_connected = {
-        node: count for node, count in node_layer_count.items()
-        if count >= 2  # Present in 2+ layers
-    }
-    
-    print(f"\nInstitutions with multiple relationship types: {len(highly_connected)}")
-    for node, count in sorted(highly_connected.items(), 
-                              key=lambda x: x[1], reverse=True):
-        print(f"  {node}: {count} relationship types")
-
-**Expected output:**
-
-.. code-block:: text
-
-    Systemically Important Institutions:
-      ('BankA', 'trade'): degree=4, betweenness=0.1234
-      ('BankB', 'lending'): degree=4, betweenness=0.1156
-      ('BankC', 'trade'): degree=3, betweenness=0.0987
-    
-    Institutions with multiple relationship types: 3
-      BankA: 3 relationship types
-      BankB: 3 relationship types
-      BankC: 2 relationship types
+    print(f"\nInstitutions with multiple relationship types: {len(multi_layer_nodes)}")
+    for node in sorted(multi_layer_nodes):
+        print(f"  {node}")
 
 **Use cases for financial network analysis:**
 

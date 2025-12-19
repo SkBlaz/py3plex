@@ -1,5 +1,5 @@
 Multilayer Networks in 2 Minutes
-=================================
+================================
 
 A **multilayer network** represents systems where entities can be connected through multiple types of relationships simultaneously.
 
@@ -13,7 +13,7 @@ In the real world, relationships are rarely uniform. Consider a group of researc
 * They **attend conferences** together (social network)
 * They may **share funding** (grant network)
 
-A single-layer network can only capture one of these relationships. A multilayer network captures all of them.
+A single-layer network captures only one of these relationships. A multilayer network keeps every relationship type separate while linking the same entity across layers.
 
 Visual Intuition
 ----------------
@@ -44,24 +44,22 @@ Visual Intuition
 Key Concepts
 ------------
 
-**Layers**
+Keep these quick definitions in mind while you read the rest.
 
-Each layer represents a type of relationship (e.g., friendship, collaboration, family).
+**Layers**  
+Each layer represents one relationship type (e.g., friendship, collaboration, family).
 
-**Intra-layer edges**
+**Node-layer pairs**  
+Every node is represented per layer. In py3plex, ``('Alice', 'friends')`` and ``('Alice', 'work')`` are distinct node-layer pairs that can be linked. Counts in py3plex statistics refer to these pairs, not just the unique entity names.
 
+**Intra-layer edges**  
 Connections within a single layer (e.g., Alice friends with Bob).
 
-**Inter-layer edges**
-
-Connections between layers, usually representing the same entity across layers (e.g., Alice in the friendship layer is the same person as Alice in the collaboration layer).
-
-**Node-layer pairs**
-
-In py3plex, a node in layer A is conceptually distinct from the same node in layer B. This is the fundamental abstraction that makes multilayer analysis possible.
+**Inter-layer edges**  
+Connections between layers, typically tying the same entity across layers (e.g., Alice in the friendship layer ↔ Alice in the collaboration layer). They can also connect different entity types when modeling interactions between layers.
 
 Types of Multilayer Networks
------------------------------
+----------------------------
 
 **Multiplex networks**
 
@@ -81,7 +79,7 @@ Types of Multilayer Networks
 * Example: Communication networks over days/weeks
 
 Why Multilayer Matters
------------------------
+---------------------
 
 **Information is lost when flattening**
 
@@ -95,10 +93,10 @@ If you merge all layers into a single network, you lose critical information:
 
 Multilayer networks have properties that don't exist in single-layer networks:
 
-* **Node versatility:** How many layers does a node participate in?
-* **Layer correlation:** Are connections in layer A predictive of layer B?
-* **Multilayer communities:** Groups that span multiple relationship types
-* **Multiplexity:** Number of different relationship types between two nodes
+* **Node versatility:** How many layers a node participates in, and whether its role shifts by layer.
+* **Layer correlation:** Whether connections in layer A are predictive of connections in layer B.
+* **Multilayer communities:** Groups that span multiple relationship types.
+* **Multiplexity:** Number of different relationship types between two nodes.
 
 Real-World Impact
 -----------------
@@ -129,7 +127,7 @@ Quick Example in Code
     
     # Add edges in different layers
     network.add_edges([
-        # Friendship layer
+        # Friendship layer (source, source_layer, target, target_layer, weight)
         ['Alice', 'friends', 'Bob', 'friends', 1],
         ['Bob', 'friends', 'Carol', 'friends', 1],
         
@@ -138,7 +136,7 @@ Quick Example in Code
         ['Carol', 'work', 'David', 'work', 1],
     ], input_type="list")
     
-    # Analyze
+    # Analyze (counts are for node-layer pairs)
     stats = network.basic_stats()
     print(f"Layers: {len(network.get_layers())}")
     print(f"Nodes: {stats['nodes']}")

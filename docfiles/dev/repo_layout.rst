@@ -1,7 +1,8 @@
 Repository Layout
 =================
 
-This document explains the structure of the py3plex repository and what each directory contains.
+Use this guide to navigate the py3plex repository and understand what each directory contains.
+Treat it as a map: start from the overview tree, then jump to the sections below to find what you need.
 
 Overview
 --------
@@ -75,12 +76,20 @@ Sphinx documentation source files:
     ├── examples/             # Example index
     └── reference/            # API reference
 
-**Building documentation:**
+**Building documentation (from repository root):**
+
+.. code-block:: bash
+
+    make docs            # Output in docfiles/_build/html/
+
+If Sphinx is missing, (re)install the development extras in your active virtual environment and rerun the command.
+
+**Manual build from docfiles/:**
 
 .. code-block:: bash
 
     cd docfiles
-    make html  # Output in _build/html/
+    sphinx-build -b html . _build/html  # Output in _build/html/
 
 Examples (examples/)
 --------------------
@@ -114,6 +123,7 @@ Executable example scripts demonstrating various features:
 
 .. code-block:: bash
 
+    # From an activated virtual environment
     python examples/basic/example_load_network.py
 
 Tests (tests/)
@@ -136,9 +146,10 @@ Test suite using pytest:
 
 .. code-block:: bash
 
-    make test          # Run all tests
-    make test-fast     # Skip slow tests
-    make coverage      # With coverage report
+    make test             # Run all tests (default environment)
+    make test-fast        # Skip slow tests
+    make coverage         # With coverage report
+    python -m pytest tests/test_core.py -k "degree"  # Targeted run
 
 GUI (gui/)
 ----------
@@ -259,26 +270,19 @@ Initial Setup
 Development Workflow
 ~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: bash
+1. Activate your virtual environment.
+2. Make focused changes to code or docs.
+3. Format: ``make format``.
+4. Lint: ``make lint``.
+5. Test: ``make test`` (or ``make test-fast`` for quicker feedback).
+6. Build docs: ``make docs``.
+7. Commit and push:
 
-    # 1. Make changes to code
-    
-    # 2. Format code
-    make format
-    
-    # 3. Run linters
-    make lint
-    
-    # 4. Run tests
-    make test
-    
-    # 5. Build documentation
-    make docs
-    
-    # 6. Commit changes
-    git add .
-    git commit -m "Description"
-    git push
+   .. code-block:: bash
+
+        git add .
+        git commit -m "Description"
+        git push
 
 Finding Things
 --------------

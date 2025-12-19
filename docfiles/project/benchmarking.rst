@@ -1,12 +1,12 @@
 Benchmarking & Performance
 ==========================
 
-Performance characteristics and optimization strategies for py3plex.
+Performance characteristics, runtime expectations, and practical optimization strategies for py3plex.
 
 Network Scale Guidelines
--------------------------
+------------------------
 
-py3plex is optimized for research-scale networks:
+py3plex targets research-scale multilayer networks. Use the ranges below as directional guidance rather than hard limits; structure (density, layer coupling) has a bigger impact than raw node counts.
 
 .. list-table:: Network Scale Performance
    :header-rows: 1
@@ -47,12 +47,12 @@ For large networks, use sparse matrix representations:
     
     network = multinet.multi_layer_network(sparse=True)
 
-This reduces memory usage by 10-100x for typical networks.
+This typically reduces memory usage by 10-100x for moderately sparse graphs.
 
 Batch Operations
 ~~~~~~~~~~~~~~~~
 
-Process multiple operations together:
+Process multiple operations together instead of issuing separate passes:
 
 .. code-block:: python
 
@@ -65,12 +65,12 @@ Process multiple operations together:
          .execute(network)
     )
 
-Avoid repeated single-metric computations.
+Avoid repeated single-metric computations when they can be combined.
 
 Use Arrow/Parquet for I/O
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For large datasets:
+For large datasets, prefer columnar formats over CSV:
 
 .. code-block:: python
 
@@ -99,17 +99,23 @@ For Node2Vec and other CPU-intensive algorithms:
 Benchmark Results
 -----------------
 
-Performance benchmarks for common operations on synthetic multilayer networks. These results provide guidance for planning analyses and optimizing workflows.
+Performance benchmarks for common operations on synthetic multilayer networks. Use these results for rough planning, not as guarantees.
 
-**Test Environment:**
+**Test Environment**
 
 * CPU: Intel Core i7-9700K @ 3.6GHz (8 cores)
 * RAM: 32 GB DDR4
 * Python: 3.10
 * py3plex: v1.0.0
 
+**Methodology & Caveats**
+
+* Synthetic multilayer graphs with comparable density across sizes
+* Single-run wall-clock timings on the hardware above
+* Runtimes vary materially with density, weight usage, and layer count; rerun locally for precise estimates
+
 Algorithm Runtimes vs. Network Size
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Community Detection (Louvain)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -167,7 +173,7 @@ Centrality Computation (Betweenness)
      - 3
      - N/A (too slow)
 
-*Note: Betweenness is O(n³) - use approximation methods for large networks*
+*Note: Betweenness is O(n³); use approximation methods for large networks.*
 
 Node2Vec Embeddings
 ^^^^^^^^^^^^^^^^^^^
@@ -226,7 +232,7 @@ Dynamics Simulation (SIR)
      - 680s (11 min)
 
 Memory Usage Profiles
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table:: Peak Memory Usage
    :header-rows: 1
@@ -253,10 +259,10 @@ Memory Usage Profiles
      - 240 GB
      - 180 MB
 
-**Key Insight:** Sparse storage reduces memory by 10-1000x for typical networks.
+**Key Insight:** Sparse storage reduces memory by 10-1000x for typical moderately sparse networks (adjacency-like storage, unweighted).
 
 Comparison with Other Tools
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Community Detection: py3plex vs. NetworkX
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -278,7 +284,7 @@ Community Detection: py3plex vs. NetworkX
      - 0.08s
      - C++ backend, faster
 
-**Verdict:** py3plex is competitive for single-layer, adds multilayer capability others lack.
+**Verdict:** py3plex is competitive on single-layer inputs while adding multilayer capability others lack.
 
 Node Embeddings: py3plex vs. node2vec
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -300,30 +306,24 @@ Node Embeddings: py3plex vs. node2vec
      - 12s
      - Optimized Word2Vec
 
-**Verdict:** py3plex uses established libraries (gensim), performance is comparable.
+**Verdict:** py3plex wraps established libraries (e.g., gensim); performance is comparable, with minor Python overhead expected.
 
-**Benchmarking Notes:**
+**Benchmarking Notes**
 
-* Results vary based on network structure (density, clustering, layer coupling)
-* Runtimes scale differently for different algorithms (linear, quadratic, cubic)
-* Use these benchmarks as rough guidelines, not exact predictions
-* For the most accurate estimates, run benchmarks on your specific hardware and data
-
-**Running Custom Benchmarks:**
-
-See the ``benchmarks/`` directory in the repository for scripts to reproduce these results or run your own benchmarks.
+* Results vary with network structure (density, clustering, layer coupling).
+* Algorithmic scaling differs (linear vs. quadratic vs. cubic) and dominates at large sizes.
+* Treat these tables as directional; rerun locally for reliable planning.
+* For the most accurate estimates, run the bundled scripts on your hardware and data.
 
 Running Benchmarks
 ------------------
 
-Run benchmarks yourself:
+Reproduce or extend the tables above with the bundled scripts:
 
 .. code-block:: bash
 
     cd benchmarks
     python run_benchmarks.py
-
-See the `benchmarks/` directory in the repository for benchmark scripts.
 
 Profiling Your Code
 -------------------
