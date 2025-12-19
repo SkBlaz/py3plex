@@ -21,7 +21,7 @@ Simple, Off-the-Shelf Functionality
 
 **Principle:** Provide ready-to-use tools that work out of the box with minimal configuration.
 
-**In practice:**
+**In practice:** keep the first example minimal, without mandatory boilerplate.
 
 .. code-block:: python
 
@@ -40,7 +40,7 @@ NetworkX Compatibility
 
 **Principle:** Build on NetworkX rather than reinventing the wheel.
 
-**In practice:**
+**In practice:** py3plex wraps a NetworkX graph and keeps it accessible.
 
 .. code-block:: python
 
@@ -57,8 +57,8 @@ NetworkX Compatibility
 
 * Leverages a mature, well-tested codebase
 * Provides access to hundreds of NetworkX algorithms
-* Ensures interoperability with the broader Python ecosystem
-* Reduces learning curve for users familiar with NetworkX
+* Ensures interoperability with the broader Python ecosystem (e.g., pandas, scipy)
+* Reduces learning curve for users familiar with NetworkX, while adding multilayer semantics
 
 Modular Architecture
 ~~~~~~~~~~~~~~~~~~~~
@@ -134,7 +134,7 @@ Lazy Evaluation
 
 **Principle:** Compute expensive operations only when needed, and only once when caching is safe.
 
-**In practice:**
+**In practice:** defer heavy construction until explicitly requested.
 
 .. code-block:: python
 
@@ -145,7 +145,7 @@ Lazy Evaluation
     # Matrix is computed only when requested
     supra_adj = network.get_supra_adjacency_matrix()  # Computed here
     
-    # Subsequent calls may use cached result (where appropriate)
+    # Subsequent calls may reuse cached result unless the graph changes
 
 **Rationale:** Many multilayer operations (e.g., supra-adjacency matrix construction, typically of shape ``(n·L)×(n·L)``) are computationally expensive. Lazy evaluation:
 
@@ -159,7 +159,7 @@ Graceful Degradation
 
 **Principle:** Optional features should fail gracefully, not crash the entire application. Where possible, suggest viable fallbacks.
 
-**In practice:**
+**In practice:** catch optional-dependency errors and steer users to alternatives.
 
 .. code-block:: python
 
@@ -182,7 +182,7 @@ Explicit Over Implicit
 
 **Principle:** Make behavior explicit and predictable, avoiding surprising defaults.
 
-**Good examples:**
+**Good examples:** be clear about formats, directionality, and layer scope.
 
 .. code-block:: python
 
@@ -200,7 +200,7 @@ Explicit Over Implicit
 
 * Easier to understand and debug
 * Less prone to errors
-* Self-documenting
+* Self-documenting (intent is visible from the call site)
 * More maintainable
 
 Performance Considerations
@@ -234,7 +234,7 @@ Efficient Data Structures
 
 **Examples:**
 
-* NetworkX graphs for topology (edge lookups, traversals)
+* NetworkX graphs for topology (edge lookups, traversals; preserves attributes)
 * Dictionaries for layer mappings (O(1) lookups)
 * Sparse matrices for linear algebra
 * Sets for membership testing
@@ -263,7 +263,7 @@ Algorithmic Defaults
 * Make the library easy to use for beginners
 * Reduce parameter tuning overhead
 * Are based on published research and empirical validation
-* Provide a safe baseline before task-specific tuning (adjust ``gamma``/``omega`` for resolution and coupling)
+* Provide a safe baseline before task-specific tuning (adjust ``gamma``/``omega`` for resolution and coupling as network density changes)
 
 Extensibility
 -------------
@@ -299,7 +299,7 @@ Clear Interfaces
 
 **Principle:** Define clear, stable APIs for modules so that code using them remains forward-compatible.
 
-**In practice:**
+**In practice:** similar functions take the same arguments, and return shapes stay stable.
 
 .. code-block:: python
 
@@ -315,9 +315,9 @@ Clear Interfaces
 **Rationale:** Clear interfaces make py3plex:
 
 * Easier to learn (patterns repeat)
-* More predictable
+* More predictable (fewer surprises across modules)
 * More maintainable
-* Easier to extend
+* Easier to extend without breaking callers
 
 Documentation and Testing
 -------------------------
@@ -327,7 +327,7 @@ Comprehensive Documentation
 
 **Principle:** Every feature should be documented with examples.
 
-**In practice:**
+**In practice:** blend narrative guides with executable snippets.
 
 * Detailed docstrings for all public functions
 * Code examples in documentation
@@ -347,7 +347,7 @@ Extensive Testing
 
 **Principle:** Test all core functionality and edge cases, including multilayer specifics.
 
-**In practice:**
+**In practice:** combine correctness checks with performance guards.
 
 .. code-block:: bash
 
@@ -360,7 +360,7 @@ Extensive Testing
 
 * Code works as intended
 * Changes don't break existing functionality
-* Edge cases are handled correctly
+* Edge cases are handled correctly (layered vs. aggregated workflows)
 * Performance regressions are caught
 
 Interoperability
@@ -383,14 +383,14 @@ Standard Formats
 
 * Data sharing between tools
 * Integration with other software
-* Long-term data preservation
+* Long-term data preservation (avoid lock-in to bespoke formats)
 
 Cross-Platform Compatibility
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Principle:** Work consistently across operating systems.
 
-**Regularly exercised on:**
+**Regularly exercised on:** (through automated builds and manual checks)
 
 * Linux (Ubuntu 20.04, 22.04)
 * macOS (11, 12, 13)
@@ -457,11 +457,12 @@ Validation and Benchmarking
 
 **Principle:** Validate algorithms against published results and known properties when possible.
 
-**In practice:**
+**In practice:** combine qualitative checks (structure) with quantitative ones (scores, timings).
 
 * Benchmark scripts comparing to reference implementations when available
 * Validation against known network properties (e.g., degree sequences, connectivity)
 * Performance metrics for representative network sizes
+* Recorded assumptions when a formal ground truth is unavailable
 
 **Rationale:** Validation ensures:
 
@@ -530,9 +531,8 @@ py3plex vs. Other Multilayer Tools
 
 * Pure Python (easy installation)
 * Comprehensive algorithm library
-* NetworkX integration
-* Active development
-* Research-backed
+* NetworkX integration (reuse familiar APIs)
+* Active development with research-backed defaults
 
 What You Learned
 ----------------

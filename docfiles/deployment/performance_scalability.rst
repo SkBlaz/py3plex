@@ -1,7 +1,7 @@
 Performance and Scalability Best Practices
 ==========================================
 
-This guide shows how to tune py3plex for large multilayer networks: memory usage, runtime, visualization, and tool choices.
+This guide shows how to tune py3plex for large multilayer networks: memory usage, runtime, visualization, and tool choices. The advice targets typical sparse, research-scale graphs; adjust down if your network is unusually dense.
 
 .. contents:: Table of Contents
    :local:
@@ -10,7 +10,7 @@ This guide shows how to tune py3plex for large multilayer networks: memory usage
 Network Scale Guidelines
 ------------------------
 
-py3plex is optimized for research-scale networks. These ranges are rough heuristics to pick appropriate tactics; dense graphs behave like larger networks than their node count alone suggests:
+py3plex is optimized for research-scale networks. These ranges are rough heuristics to pick appropriate tactics; dense graphs behave like larger networks than their node count alone suggests because memory and runtime scale with edge count.
 
 .. list-table:: Network Scale Performance
    :header-rows: 1
@@ -43,7 +43,7 @@ Sparse Matrix Backend
 Why Sparse Matrices?
 ~~~~~~~~~~~~~~~~~~~~
 
-Most real-world networks are **sparse** (few edges compared to possible edges). Using sparse matrices:
+Most real-world networks are **sparse** (few edges compared to possible edges). Using sparse matrices keeps storage and computation proportional to the number of non-zero entries rather than the square of node count:
 
 * **Cuts memory** by an order of magnitude for typical networks
 * **Speeds up** matrix operations (multiplication, inversion)
@@ -71,7 +71,7 @@ py3plex **automatically uses sparse matrices** for:
 * Large network storage (>1000 nodes)
 * Matrix-based algorithms (PageRank, spectral methods)
 
-If SciPy's sparse support is unavailable, py3plex falls back to dense matrices—install ``scipy`` to keep large workloads memory-efficient.
+If SciPy's sparse support is unavailable, py3plex falls back to dense matrices—install ``scipy`` to keep large workloads memory-efficient and avoid silent slowdowns.
 
 **Verify sparse usage:**
 
@@ -92,7 +92,7 @@ If SciPy's sparse support is unavailable, py3plex falls back to dense matrices�
 Force Sparse Operations
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-For custom algorithms, explicitly use sparse operations:
+For custom algorithms, explicitly use sparse operations and avoid converting back to dense arrays mid-computation:
 
 .. code-block:: python
 
@@ -133,10 +133,12 @@ Sampling helps when:
 * Memory usage is excessive (>8 GB RAM)
 * You need quick exploratory analysis before full runs
 
-Skip sampling when you must preserve exact counts or connectivity for reproducibility; run the full network once resources allow.
+Skip sampling when you must preserve exact counts or connectivity-sensitive metrics (diameter, exact shortest paths); run the full network once resources allow.
 
 Random Node Sampling
 ~~~~~~~~~~~~~~~~~~~~
+
+Use when you want an unbiased glimpse of the network at smaller scale.
 
 .. code-block:: python
 
@@ -162,6 +164,8 @@ Random Node Sampling
 Stratified Sampling (Preserve Layer Distribution)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Use when layer proportions matter (multiplex data).
+
 .. code-block:: python
 
     import random
@@ -183,6 +187,8 @@ Stratified Sampling (Preserve Layer Distribution)
 
 Hub-Based Sampling (Keep Important Nodes)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use when high-degree nodes dominate the phenomenon you study (traffic, influence).
 
 .. code-block:: python
 
@@ -256,6 +262,7 @@ Limit Algorithm Iterations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Iteration limits prevent runaway runtimes on large, sparse graphs while keeping results stable enough for exploration.
+Lower ``tol`` increases accuracy but may require more iterations; pair it with a sensible ``max_iter`` cap.
 
 .. code-block:: python
 
@@ -281,7 +288,7 @@ Parallel Processing
 Multi-Core Processing
 ~~~~~~~~~~~~~~~~~~~~~
 
-Use joblib for embarrassingly parallel node/edge operations; cap ``n_jobs`` to avoid oversubscribing shared machines:
+Use joblib for embarrassingly parallel node/edge operations; cap ``n_jobs`` to avoid oversubscribing shared machines or container limits:
 
 .. code-block:: python
 
@@ -306,7 +313,7 @@ Use joblib for embarrassingly parallel node/edge operations; cap ``n_jobs`` to a
 GPU Acceleration (Advanced)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For very large networks with a CUDA-capable GPU, try GPU acceleration. Keep data sparse to avoid blowing GPU memory:
+For very large networks with a CUDA-capable GPU, try GPU acceleration. Keep data sparse to avoid blowing GPU memory and move only the operations that benefit from GPU throughput:
 
 .. code-block:: bash
 
@@ -485,7 +492,7 @@ Benchmark Results
 Illustrative Performance Benchmarks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Tested on: Intel i7-10700K, 32 GB RAM, Python 3.10 (ballpark only; expect variation by dataset and hardware)
+Tested on: Intel i7-10700K, 32 GB RAM, Python 3.10. These figures illustrate order-of-magnitude behavior; disk speed, graph density, and algorithm parameters will change your results.
 
 .. list-table:: Operation Performance
    :header-rows: 1

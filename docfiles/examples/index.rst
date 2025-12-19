@@ -1,7 +1,7 @@
 Examples & Recipes
 ==================
 
-Browse runnable scripts grouped by topic. Every entry below corresponds to a file in the ``examples/`` directory (`GitHub listing <https://github.com/SkBlaz/py3plex/tree/master/examples>`_), so you can copy, run, and adapt it directly. Run commands from the repository root with your virtual environment activated.
+Browse runnable scripts grouped by topic. Every entry below corresponds to a file in the ``examples/`` directory (`GitHub listing <https://github.com/SkBlaz/py3plex/tree/master/examples>`_), so you can copy, run, and adapt it directly. Run commands from the repository root with your virtual environment activated, and treat all paths as relative to ``examples/``.
 
 **What's here:**
 
@@ -15,6 +15,12 @@ Browse runnable scripts grouped by topic. Every entry below corresponds to a fil
 * **Visualization:** ``visualization/example_multilayer_visualization.py``
 * **Community detection:** ``communities/example_community_detection.py``
 * **10-minute tutorial:** ``getting_started/tutorial_10min.py``
+
+To run any example:
+
+.. code-block:: bash
+
+    python examples/<category>/<filename>.py
 
 .. admonition:: Featured: DSL Examples
    :class: dsl-example
@@ -48,6 +54,8 @@ Browse runnable scripts grouped by topic. Every entry below corresponds to a fil
 Getting Started Examples
 ------------------------
 
+Create small networks, load existing ones, and get oriented with the library.
+
 **Basic Network Creation**
 
 * ``example_load_network.py`` - Loading networks from files
@@ -61,6 +69,8 @@ Getting Started Examples
 
 Visualization Examples
 ----------------------
+
+Plot multilayer networks, from simple layouts to interactive views.
 
 **Basic Visualization**
 
@@ -83,6 +93,8 @@ Visualization Examples
 Community Detection Examples
 -----------------------------
 
+Detect communities in single-layer and multilayer settings.
+
 **Single-Layer Community Detection**
 
 * ``example_community_detection.py`` - Louvain and Infomap
@@ -98,6 +110,8 @@ Community Detection Examples
 DSL and Query Examples
 ----------------------
 
+Use the DSL for expressive queries via strings or the builder API.
+
 **DSL v2 (recommended)**
 
 * ``example_dsl_builder_api.py`` - Comprehensive Python builder API examples (Q, L, Param)
@@ -105,7 +119,7 @@ DSL and Query Examples
 * ``example_dsl_advanced.py`` - Advanced queries and transportation network analysis
 * ``example_dsl_community_detection.py`` - Community detection with DSL
 
-**Features**:
+**Highlights:**
 - SQL-like syntax for network queries
 - Python builder API with type hints (``Q.nodes()``, ``L["layer"]``, ``Param``)
 - Layer algebra (union, difference, intersection)
@@ -116,6 +130,8 @@ DSL and Query Examples
 
 Network Statistics Examples
 ----------------------------
+
+Compute and compare network-level and node-level statistics.
 
 **Basic Statistics**
 
@@ -136,6 +152,8 @@ Network Statistics Examples
 
 I/O and Data Format Examples
 -----------------------------
+
+Load, validate, and convert networks across common formats.
 
 **Loading Networks**
 
@@ -158,6 +176,8 @@ I/O and Data Format Examples
 Random Walks and Embeddings
 ----------------------------
 
+Generate walks and derive embeddings for downstream tasks.
+
 **Random Walks**
 
 * ``example_random_walks.py`` - Basic and Node2Vec walks
@@ -179,12 +199,16 @@ Random Walks and Embeddings
 Network Decomposition
 ----------------------
 
+Extract features and tensors from multilayer networks.
+
 * ``example_network_decomposition.py`` - Meta-path feature extraction
 * ``example_feature_extraction.py`` - Network feature engineering
 * ``example_tensor_decomposition.py`` - Tensor decomposition methods
 
 Network Manipulation
 --------------------
+
+Modify, subset, and aggregate networks.
 
 * ``example_manipulation.py`` - Network operations (add, remove, filter)
 * ``example_subnetworks.py`` - Extracting subnetworks
@@ -193,6 +217,8 @@ Network Manipulation
 
 Algorithms and Analysis
 -----------------------
+
+Explore dynamics, motifs, and ML pipelines on networks.
 
 **Network Dynamics**
 
@@ -215,6 +241,8 @@ Algorithms and Analysis
 NetworkX Integration
 --------------------
 
+Bridge py3plex and NetworkX for interoperability.
+
 * ``example_networkx_wrapper.py`` - Using NetworkX functions
 * ``example_networkx_interop.py`` - NetworkX interoperability
 * ``example_convert_networkx.py`` - Converting to/from NetworkX
@@ -222,12 +250,16 @@ NetworkX Integration
 Benchmarking
 ------------
 
+Measure performance and resource usage on representative workloads.
+
 * ``example_benchmarking.py`` - Performance benchmarking
 * ``example_scalability.py`` - Scalability testing
 * ``example_memory_profiling.py`` - Memory usage analysis
 
 GUI and API
 -----------
+
+Drive py3plex via the REST API, GUI, or batch commands.
 
 * ``example_api_usage.py`` - Using the REST API
 * ``example_gui_integration.py`` - GUI integration examples
@@ -245,8 +277,8 @@ All case studies are in the ``examples/case_studies/`` directory. See the `Case 
 * ``biological_networks.py`` - Protein-gene-disease multilayer network
 
   * Explores how protein interactions, gene regulation, and diseases interconnect
-  * Surfaces hub proteins (e.g., TP53) as potential drug targets
-  * Detects functional biological modules through community detection
+  * Shows how to surface hub proteins (e.g., TP53) as potential drug targets
+  * Demonstrates detecting functional biological modules through community detection
   * **Layers:** protein (PPI), gene (regulation), disease (associations)
   * **Key techniques:** Multilayer centrality, cross-layer communities
 
@@ -254,9 +286,9 @@ All case studies are in the ``examples/case_studies/`` directory. See the `Case 
 
 * ``social_networks.py`` - Multi-platform social media analysis
 
-  * Identifies cross-platform influencers
+  * Shows how to identify cross-platform influencers
   * Compares behavior across Facebook, Twitter, LinkedIn
-  * Detects social communities spanning multiple platforms
+  * Demonstrates detecting social communities spanning multiple platforms
   * **Layers:** facebook (friends), twitter (followers), linkedin (professional)
   * **Key techniques:** Influence metrics, platform comparison
 
@@ -264,9 +296,9 @@ All case studies are in the ``examples/case_studies/`` directory. See the `Case 
 
 * ``transportation_networks.py`` - Multi-modal urban transport
 
-  * Identifies critical transfer hubs
+  * Highlights critical transfer hubs
   * Computes accessibility metrics for urban planning
-  * Detects service zones and coverage gaps
+  * Highlights service zones and coverage gaps
   * **Layers:** bus (coverage), metro (backbone), bike (short trips)
   * **Key techniques:** Accessibility analysis, hub identification
 

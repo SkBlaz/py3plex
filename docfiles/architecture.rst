@@ -1,12 +1,12 @@
 Architecture and Design
 =======================
 
-This document describes the **system architecture**, **design patterns**, and **extension points** of py3plex. It is a map of how the layers fit together, what invariants each layer keeps, and where to extend the library safely.
+This document describes the **system architecture**, **design patterns**, and **extension points** of py3plex. It is a map of how the layers fit together, what invariants each layer keeps, and where to extend the library safely without breaking caller expectations.
 
 System Overview
 ---------------
 
-py3plex is built as a **modular, layered architecture** with clear separation of concerns. Each layer depends only on the one below it, which keeps algorithm code focused on logic instead of plumbing.
+py3plex is built as a **modular, layered architecture** with clear separation of concerns. Each layer depends only on the one below it, which keeps algorithm code focused on logic instead of plumbing. All layers operate on **encoded node-layer identifiers** supplied by the core layer so that layer membership is always explicit.
 
 .. code-block:: text
 
@@ -70,8 +70,9 @@ Core Layer
 * **Layer management**
 * **Matrix representations** (adjacency, supra-adjacency) with clear encoding rules
 * **NetworkX integration** so downstream algorithms work on familiar graphs
+* **Encoding invariants** that keep node-layer separation consistent across the stack
 
-**Design Pattern:** **Facade Pattern** - ``multi_layer_network`` provides a unified interface to complex NetworkX operations
+**Design Pattern:** **Facade Pattern** - ``multi_layer_network`` provides a unified interface to complex NetworkX operations and centralizes encoding/decoding rules
 
 Algorithms Layer
 ~~~~~~~~~~~~~~~~
@@ -92,7 +93,7 @@ Algorithms Layer
 * **Statistical analysis** (density, overlap, correlation)
 * **Centrality computation** (degree, betweenness, PageRank, etc.)
 * **Random walks** and embeddings
-* **Network decomposition** using explicit layer boundaries
+* **Network decomposition** using explicit layer boundaries or coupling rules
 
 **Design Pattern:** **Strategy Pattern** - Different algorithms implement common interfaces
 
@@ -117,7 +118,7 @@ Visualization Layer
 * Color mapping and legends
 * Interactive plots (via Plotly)
 
-**Design Pattern:** **Template Method Pattern** - Layout algorithms follow a common template
+**Design Pattern:** **Template Method Pattern** - Layout algorithms follow a common template and separate layout computation from rendering
 
 Wrappers Layer
 ~~~~~~~~~~~~~~
@@ -171,7 +172,7 @@ Nodes are encoded as ``"{node_id}{delimiter}{layer_id}"`` before they are added 
 
 Example: Node 'A' in layer 'social' becomes ``"A---social"``. This keeps the multilayer structure explicit while allowing standard NetworkX algorithms to run.
 
-Encoded node keys are opaque to callers. When returning results (e.g., centrality), keep them encoded to preserve layer information unless explicitly decoded for presentation.
+Encoded node keys remain opaque to callers. When returning results (e.g., centrality), keep them encoded to preserve layer information unless explicitly decoded for presentation. If raw node IDs are needed, split on ``label_delimiter`` consistently so delimiter changes do not silently corrupt parsing.
 
 Design Patterns
 ---------------
@@ -188,7 +189,7 @@ Facade Pattern
     # Complex underlying operations hidden behind simple interface
     network = multinet.multi_layer_network()
     network.add_edges(edges, input_type='list')  # Handles parsing, encoding, validation
-    network.basic_stats()  # Aggregates multiple NetworkX calls
+    network.basic_stats()  # Aggregates multiple NetworkX calls and keeps caches coherent
 
 Strategy Pattern
 ~~~~~~~~~~~~~~~~
@@ -252,7 +253,7 @@ Dependency Injection
 Data Flow
 ---------
 
-The steps below show how a typical workflow moves through the layers: creation in the core, processing in algorithms, summarization, and presentation in visualization or wrappers.
+The steps below show how a typical workflow moves through the layers: creation in the core, processing in algorithms, summarization, and presentation in visualization or wrappers. The examples use encoded nodes throughout so layer context is preserved.
 
 Typical Workflow
 ~~~~~~~~~~~~~~~~
@@ -309,7 +310,7 @@ State Management
     network.add_edges(new_edges, input_type='list')
     network.aggregate_layers(['L1', 'L2'], 'combined')
 
-When mutating, clear or recompute any cached matrices or embeddings that depend on structure before running further analysis. Mutations should be localized (e.g., via helper methods) so cache invalidation stays centralized.
+When mutating, clear or recompute any cached matrices or embeddings that depend on structure before running further analysis. Mutations should be localized (e.g., via helper methods) so cache invalidation stays centralized and deterministic.
 
 Extension Points
 ----------------
@@ -317,7 +318,7 @@ Extension Points
 Custom Algorithms
 ~~~~~~~~~~~~~~~~~
 
-Add new algorithms by following existing patterns. Prefer operating on ``network.core_network`` (already encoded) and return results keyed by encoded nodes or layers so downstream utilities work unchanged:
+Add new algorithms by following existing patterns. Prefer operating on ``network.core_network`` (already encoded) and return results keyed by encoded nodes or layers so downstream utilities work unchanged. Keep any cacheable intermediates (e.g., supra-adjacency) out of global scope to avoid cross-test leakage:
 
 .. code-block:: python
 
@@ -374,7 +375,7 @@ Create custom plots using drawing machinery. Keep layout computation separate fr
 Custom Parsers
 ~~~~~~~~~~~~~~
 
-Add support for new file formats. Keep parsing side effects minimal and reuse existing helpers for validation where possible:
+Add support for new file formats. Keep parsing side effects minimal and reuse existing helpers for validation where possible. Preserve the node-layer encoding contract so downstream algorithms receive encoded nodes:
 
 .. code-block:: python
 
@@ -440,7 +441,7 @@ Usage:
     colors = DEFAULT_COLORS
     iterations = LAYOUT_PARAMS['force']['iterations']
 
-Override configuration at call sites instead of mutating globals to keep tests reproducible. If a global default must change, document the reason and expected downstream effects.
+Override configuration at call sites instead of mutating globals to keep tests reproducible. If a global default must change, document the reason and expected downstream effects on visualization, performance, or memory.
 
 Testing Architecture
 --------------------
@@ -489,7 +490,7 @@ Test Patterns
         # Centrality values should be normalized
         assert all(0 <= v <= 1 for v in centrality.values())
 
-Use small synthetic networks for speed, seed any randomness (e.g., layouts or random walks), and isolate file I/O behind fixtures.
+Use small synthetic networks for speed, seed any randomness (e.g., layouts or random walks), and isolate file I/O behind fixtures. Validate invariants on encoded nodes (node-layer pairs) to catch subtle encoding regressions early.
 
 Performance Considerations
 --------------------------
@@ -516,11 +517,12 @@ Use sparse representations for large networks:
 .. code-block:: python
 
     def get_supra_adjacency_matrix(self, sparse=True):
+        adj = self._compute_dense_adjacency()
         if sparse or len(self.get_nodes()) > SPARSE_THRESHOLD:
             return scipy.sparse.csr_matrix(adj)
         return np.array(adj)
 
-``n`` refers to encoded nodes (node-layer pairs) and ``m`` to edges in the aggregated core graph. Use sparse matrices once ``n`` grows beyond a few thousand to avoid cubic blowups in dense linear algebra. Dense operations scale poorly on supra-adjacency matrices because they are block-structured but still quadratic in layer count.
+In this section, ``n`` refers to encoded nodes (node-layer pairs) and ``m`` to edges in the aggregated core graph. Use sparse matrices once ``n`` grows beyond a few thousand to avoid cubic blowups in dense linear algebra. Dense operations scale poorly on supra-adjacency matrices because they are block-structured but still quadratic in layer count.
 
 Vectorization
 ~~~~~~~~~~~~~
@@ -530,7 +532,7 @@ Prefer NumPy vectorized operations:
 .. code-block:: python
 
     # Bad: Python loop
-    degrees = [sum(1 for _ in G.neighbors(node)) for node in nodes]
+    degrees = [sum(1 for _ in G.neighbors(node)) for node in G.nodes()]
     
     # Good: Vectorized
     degrees = np.array(list(dict(G.degree()).values()))

@@ -15,6 +15,18 @@ Config-driven workflows in py3plex allow you to define and execute complex netwo
 * **Batch processing** - Run multiple experiments with different parameters
 * **Version control** - Track experimental setups alongside code
 
+Execution Model
+---------------
+
+Workflows follow a fixed lifecycle:
+
+* Validate the configuration structure (required fields, supported types)
+* Load or generate all datasets
+* Execute operations in the order listed (each references a dataset by name)
+* Collect results in memory; optionally write them under ``output.directory``
+
+Results in memory are keyed as ``<dataset>_<operation>_<index>`` to avoid collisions across repeated operations.
+
 Configuration Format
 --------------------
 
@@ -169,14 +181,16 @@ Compute network statistics:
 
 .. code-block:: yaml
 
-   - type: "stats"
-     dataset: "my_network"
-     parameters: {}
+     - type: "stats"
+       dataset: "my_network"
+       parameters: {}
 
 Computes:
 
 * Node and edge counts
-* Layer densities (one density per layer, if layers can be inferred from node tuples)
+* Layer densities (one density per layer if layers can be inferred from node tuples)
+
+Result keys: ``nodes``, ``edges``, and optional ``layer_densities`` (one entry per detected layer).
 
 Community Detection
 ^^^^^^^^^^^^^^^^^^^
@@ -194,7 +208,7 @@ Supported algorithms:
 
 * ``louvain`` - Louvain method for community detection
 
-Directed graphs are converted to undirected for community detection to match the algorithm's assumptions.
+Directed graphs are converted to undirected for community detection to match the algorithm's assumptions. Results include ``algorithm``, ``num_communities``, and a ``communities`` mapping from stringified node IDs to integer community labels.
 
 Centrality
 ^^^^^^^^^^
@@ -214,7 +228,7 @@ Supported measures:
 * ``betweenness`` - Betweenness centrality
 * ``closeness`` - Closeness centrality
 
-Directed graphs are converted to undirected before computing measures.
+Directed graphs are converted to undirected before computing measures. Results include ``measure`` and a ``centrality`` dictionary keyed by node (as strings).
 
 Visualization
 ^^^^^^^^^^^^^
@@ -233,6 +247,8 @@ Supported layouts:
 
 * ``spring`` - Force-directed spring layout
 * ``circular`` - Circular layout
+
+Visualization always writes an image file (default ``network.png``) and returns the output path; node labels are omitted for readability on large graphs.
 
 Aggregation
 ^^^^^^^^^^^
@@ -272,6 +288,8 @@ Supported outputs:
 * ``.graphml`` - Full graph structure (preferred)
 * ``.json`` - Node/edge lists without extra attributes
 
+Unsupported extensions raise an error. GraphML preserves attributes and edge multiplicity; the JSON output is a minimal node/edge list.
+
 Output Section
 --------------
 
@@ -283,7 +301,7 @@ The ``output`` block controls where results are written:
      directory: "results"    # Created if missing (default: ".")
      summary: "summary.json" # File containing all operation results (default: summary.json)
 
-If the ``output`` block is omitted, results remain in memory and are not written to disk.
+If the ``output`` block is omitted, results remain in memory only. The summary file mirrors the in-memory results dictionary.
 
 Running Workflows
 -----------------
@@ -329,7 +347,7 @@ Run workflows programmatically:
        runner = WorkflowRunner(config)
        runner.run()
 
-Results are kept in memory during the run and optionally written to disk based on the ``output`` section. If ``output`` is omitted, no files are written.
+Results are kept in memory during the run and optionally written to disk based on the ``output`` section. If ``output`` is omitted, no files are written. The Python API raises ``ValueError`` on validation failure.
 
 Examples
 --------

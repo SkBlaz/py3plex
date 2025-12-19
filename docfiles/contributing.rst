@@ -6,9 +6,9 @@ We welcome contributions to py3plex. This guide explains how to contribute effic
 Quick Checklist
 ---------------
 
-* Use a virtual environment and install ``.[dev]`` dependencies.
+* Use a virtual environment and install ``.[dev]`` dependencies (``pip install -e ".[dev]"``).
 * Create a feature branch from an up-to-date ``main``.
-* Write tests alongside code changes.
+* Write tests alongside code changes and keep them deterministic.
 * Run linters and tests locally before opening a PR.
 * Update documentation when behavior changes or new features land.
 
@@ -70,7 +70,7 @@ This installs:
 Development Workflow
 --------------------
 
-The typical loop is: branch -> change -> test -> lint -> document -> push -> PR.
+The typical loop is: branch -> change -> test -> lint -> document -> push -> PR. Keep each loop small to make reviews faster.
 
 Create a Branch
 ~~~~~~~~~~~~~~~
@@ -89,9 +89,9 @@ Make Changes
 ~~~~~~~~~~~~
 
 1. Write your code following our coding standards (see below).
-2. Add or update tests while you build the feature.
+2. Add or update tests while you build the feature (avoid combining many unrelated changes).
 3. Update documentation and examples if behavior changes.
-4. Run linters and tests locally before committing.
+4. Run linters and tests locally before committing; fix warnings rather than silencing them.
 
 Run Tests
 ~~~~~~~~~
@@ -122,6 +122,7 @@ Run Linters
     make format          # Auto-format code (black, isort)
     ruff check .         # Lint Python
     mypy py3plex         # Type checks
+    black --check .      # Verify formatting when you cannot auto-format
 
 Commit Changes
 ~~~~~~~~~~~~~~
@@ -142,6 +143,8 @@ Example message body:
     - Implement algorithm for Z
     - Add tests for edge cases
     - Update documentation
+
+Keep the subject line under 72 characters and use the body to capture rationale and scope.
 
 Push and Create PR
 ~~~~~~~~~~~~~~~~~~
@@ -250,7 +253,7 @@ Use NumPy-style docstrings for all public functions and classes:
         """
         pass
 
-The ``pass`` above is only a placeholder; implement the described behavior. Keep examples runnable with minimal imports and avoid long-running or network-dependent code.
+The ``pass`` above is only a placeholder; implement the described behavior. Keep examples runnable with minimal imports and avoid long-running, network-dependent, or nondeterministic code.
 
 Type Hints
 ~~~~~~~~~~
@@ -281,7 +284,7 @@ All new code should include tests:
 * Integration tests for workflows
 * Edge cases for boundary conditions
 * Documentation tests for examples in docstrings
-* Deterministic behavior (set seeds where randomness is involved)
+* Deterministic behavior (set seeds where randomness is involved and avoid network access)
 
 Writing Tests
 ~~~~~~~~~~~~~
@@ -363,6 +366,8 @@ Build Documentation
     # View documentation
     open _build/html/index.html
 
+The strict build flags (``-n -W``) are the same ones used in CI; fix warnings locally so CI stays green.
+
 Documentation Style
 ~~~~~~~~~~~~~~~~~~~
 
@@ -370,6 +375,7 @@ Documentation Style
 * Code examples - Include working examples
 * Cross-references - Link to related documentation
 * Visual aids - Add diagrams where helpful
+* Keep examples short, deterministic, and free of external dependencies
 
 Pull Request Guidelines
 ------------------------
@@ -384,7 +390,7 @@ Make sure each item below is true before opening a PR:
 * New code has tests
 * Documentation is updated when behavior changes
 * Commit messages are clear
-* Branch is up to date with ``main``
+* Branch is up to date with ``main`` (``git fetch upstream && git rebase upstream/main``)
 
 PR Description
 ~~~~~~~~~~~~~~
@@ -397,6 +403,7 @@ Include in your PR description:
 * Testing done
 * Screenshots for visual changes
 * Breaking changes if any
+* Deployment or migration notes if they exist
 
 Example PR template:
 
@@ -451,7 +458,7 @@ When reporting bugs, include:
 * Python version (``python --version``)
 * py3plex version
 * Operating system
-* Minimal code example
+* Minimal code example that runs without external data
 
 Example:
 

@@ -203,12 +203,12 @@ Edges connecting nodes across different layers:
 Supra-Adjacency Matrix
 ----------------------
 
-The supra-adjacency matrix is a block matrix representation that encodes the entire multilayer network structure in one object. It respects the ordering of node-layer pairs, so always check how nodes are ordered in your network before interpreting row/column indices.
+The supra-adjacency matrix is a block matrix representation that encodes the entire multilayer network structure in one object. It respects the ordering of node-layer pairs (by layer, then by node within each layer), so always check your node ordering before interpreting row or column indices.
 
 Mathematical Definition
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-For a multilayer network with :math:`L` layers, the supra-adjacency matrix :math:`\mathbf{S}` is built by stacking each layer's adjacency and the inter-layer coupling blocks. We assume node-layer pairs are ordered by layer, then by node within each layer:
+For a multilayer network with :math:`L` layers and :math:`n_\alpha` nodes in layer :math:`\alpha`, the supra-adjacency matrix :math:`\mathbf{S}` stacks the intra-layer adjacency blocks with the inter-layer coupling blocks. With layer-major ordering of node-layer pairs, it has the block form:
 
 .. math::
 
@@ -223,7 +223,8 @@ Where:
 
 * :math:`A_\alpha \in \mathbb{R}^{n_\alpha \times n_\alpha}` is the adjacency matrix of layer :math:`\alpha` (intra-layer connections)
 * :math:`C_{\alpha\beta} \in \mathbb{R}^{n_\alpha \times n_\beta}` is the coupling matrix between layers :math:`\alpha` and :math:`\beta` (inter-layer connections)
-* The full matrix has size :math:`(\sum_{\alpha=1}^L n_\alpha) \times (\sum_{\alpha=1}^L n_\alpha)`
+* :math:`n_\text{total} = \sum_{\alpha=1}^L n_\alpha` is the total number of node-layer pairs across all layers
+* The full matrix has size :math:`n_\text{total} \times n_\text{total}`
 
 In multiplex networks, :math:`n_\alpha` is typically the same for all layers, so :math:`\mathbf{S}` becomes an :math:`(N \cdot L) \times (N \cdot L)` matrix. For undirected networks, :math:`A_\alpha = A_\alpha^\top` and :math:`C_{\alpha\beta} = C_{\beta\alpha}^\top`; for directed networks these blocks can be asymmetric. Identity coupling corresponds to :math:`C_{\alpha\beta} = \omega I` (with coupling weight :math:`\omega`) when layers share node identities.
 
@@ -320,7 +321,7 @@ Memory Implications
 
 Let :math:`n_\text{total} = \sum_{\alpha=1}^L n_\alpha` (the number of node-layer pairs). The supra-adjacency matrix is :math:`n_\text{total} \times n_\text{total}`. If every layer has :math:`N` nodes, then :math:`n_\text{total} = N \cdot L`.
 
-Worked estimates (assuming equal nodes per layer):
+Worked estimates (assuming equal nodes per layer and 8-byte floats, ignoring library overhead):
 
 * **Small network (100 nodes, 3 layers):** 300×300 = 90,000 entries → ~720 KB dense
 * **Medium network (1,000 nodes, 5 layers):** 5,000×5,000 = 25 million entries → ~200 MB dense
@@ -788,7 +789,7 @@ Node-layer pairs mean that a node appearing in :math:`L` layers occupies :math:`
 Tensor-Like Indexing
 ~~~~~~~~~~~~~~~~~~~~
 
-You can access nodes and edges using tensor-like notation on the underlying NetworkX graph:
+You can access neighbors and edge attribute dictionaries using tensor-like notation on the underlying NetworkX graph:
 
 .. code-block:: python
 
@@ -801,13 +802,17 @@ You can access nodes and edges using tensor-like notation on the underlying Netw
     some_nodes = list(network.get_nodes())[0:5]
     some_edges = list(network.get_edges())[0:5]
     
-    # Access node directly (returns node attributes)
-    node_data = network[some_nodes[0]]
-    print(f"Node {some_nodes[0]} data: {node_data}")
+    # Access adjacency view for a node (neighbors and edge dictionaries)
+    adjacency_view = network[some_nodes[0]]
+    print(f"Neighbors of {some_nodes[0]}: {list(adjacency_view.keys())}")
     
-    # Access edge (returns the adjacency dict for that pair)
-    edge_data = network[some_edges[0][0]][some_edges[0][1]]
-    print(f"Edge data: {edge_data}")  # For MultiGraph, edge keys map to attribute dicts
+    # Access node attributes explicitly
+    node_attrs = network.core_network.nodes[some_nodes[0]]
+    print(f"Node attributes for {some_nodes[0]}: {node_attrs}")
+    
+    # Access edge data (adjacency dict keyed by edge IDs in a MultiGraph)
+    edge_data = network.core_network[some_edges[0][0]][some_edges[0][1]]
+    print(f"Edge data: {edge_data}")
 
 Design Principles
 -----------------

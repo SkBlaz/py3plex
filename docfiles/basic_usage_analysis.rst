@@ -1,18 +1,20 @@
 Network Analysis
 ================
 
-This guide shows how to inspect multilayer networks, extract subnetworks, and reuse NetworkX algorithms on the encoded node-layer graph. Start with the encoding conventions, then iterate, subset, and analyze.
+This guide shows how to inspect multilayer networks, extract subnetworks, and reuse NetworkX algorithms on the encoded node-layer graph. Begin with the encoding conventions, then iterate, subset, and analyze.
 
 Understanding the Data Model
 ----------------------------
 
 Before running algorithms, know how py3plex encodes multilayer graphs:
 
-**Node-layer pairs:** Nodes are stored as tuples ``(node_id, layer_id)``. The same entity (e.g., "Alice") appears once per layer she participates in, so ``('Alice', 'friends')`` and ``('Alice', 'colleagues')`` are distinct nodes.
+**Node-layer pairs:** Nodes are stored as tuples ``(node_id, layer_id)``. The same entity (e.g., "Alice") appears once per layer she participates in, so ``('Alice', 'friends')`` and ``('Alice', 'colleagues')`` are distinct node-layer entries.
 
-**Edge attributes:** Edges connect node-layer pairs and carry an attribute dictionary (e.g., ``weight``). The ``type`` attribute on nodes stores the layer ID for quick access in iterators and filters; edge endpoints are always encoded node-layer tuples.
+**Edge attributes:** Edges connect node-layer pairs and carry an attribute dictionary (e.g., ``weight``). The ``type`` attribute on nodes mirrors the layer ID for quick access in iterators and filters; edge endpoints are always encoded node-layer tuples.
 
-**Why this matters:** Encoded node-layer pairs let each entity have layer-specific neighbors, weights, and metrics (Alice can be a hub in friends but peripheral at work).
+**Graph type:** The underlying core graph is a NetworkX ``MultiGraph`` or ``MultiDiGraph`` that preserves multi-edges between the same encoded endpoints. Degree-based metrics therefore count multi-edges unless you collapse them yourself.
+
+**Why this matters:** Encoded node-layer pairs let each entity have layer-specific neighbors, weights, and metrics (Alice can be a hub in friends but peripheral at work). Always interpret algorithm outputs with this per-layer context in mind.
 
 Core Operations
 ---------------
@@ -22,7 +24,7 @@ The ``multi_layer_network`` object provides methods to iterate, subset, and pass
 Basic Iteration
 ~~~~~~~~~~~~~~~
 
-Iterating over nodes and edges is the foundation of most analysis tasks. The example loads the bundled multilayer edgelist, then walks through edges and nodes:
+Iterating over nodes and edges is the foundation of most analysis tasks. The example loads the bundled multilayer edgelist, then walks through edges and nodes to reveal how tuples and attributes appear in practice:
 
 .. code-block:: python
 
@@ -66,7 +68,7 @@ Iterating over nodes and edges is the foundation of most analysis tasks. The exa
 Extracting Subnetworks
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Subnetwork extraction narrows the scope before running heavier analyses:
+Subnetwork extraction narrows the scope before running heavier analyses. Choose the filter that matches how specific you need to be:
 
 .. code-block:: python
 
@@ -93,7 +95,7 @@ Subnetwork extraction narrows the scope before running heavier analyses:
 NetworkX Integration
 ~~~~~~~~~~~~~~~~~~~~
 
-Py3plex wraps NetworkX so you can call familiar algorithms on the encoded graph. ``monoplex_nx_wrapper`` runs the requested NetworkX function on the encoded graph and returns results keyed by encoded node-layer pairs:
+Py3plex wraps NetworkX so you can call familiar algorithms on the encoded graph. ``monoplex_nx_wrapper`` invokes the requested NetworkX function on the core ``MultiGraph``/``MultiDiGraph`` and returns results keyed by encoded node-layer pairs:
 
 .. code-block:: python
 
@@ -117,9 +119,9 @@ Py3plex wraps NetworkX so you can call familiar algorithms on the encoded graph.
 
 **Available NetworkX functions:**
 
-The wrapper forwards to any NetworkX function that accepts a graph. Pass keyword arguments (e.g., ``kwargs={"weight": "weight"}``) when an algorithm should respect edge weights:
+The wrapper forwards to any NetworkX function that accepts a graph. Pass keyword arguments (e.g., ``kwargs={"weight": "weight"}``) when an algorithm should respect edge weights, and remember that multi-edges remain present:
 
-- ``"degree_centrality"`` - Fraction of nodes each node is connected to
+- ``"degree_centrality"`` - Fraction of nodes each encoded node is connected to
 - ``"betweenness_centrality"`` - How often a node lies on shortest paths
 - ``"closeness_centrality"`` - How close a node is to all others
 - ``"pagerank"`` - Importance based on link structure
@@ -129,7 +131,7 @@ The wrapper forwards to any NetworkX function that accepts a graph. Pass keyword
 Direct NetworkX Access
 ~~~~~~~~~~~~~~~~~~~~~~
 
-For more control, access the underlying NetworkX graph directly:
+For more control, access the underlying NetworkX graph directly. This is useful when an algorithm is not covered by the wrapper or when you need to pre-process multi-edges:
 
 .. code-block:: python
 
@@ -152,10 +154,12 @@ For more control, access the underlying NetworkX graph directly:
         path = nx.shortest_path(G, ('1', '1'), ('6', '2'))
         print(f"Shortest path: {' -> '.join(str(n) for n in path)}")
 
+Some NetworkX algorithms treat multi-edges differently or expect simple graphs. Convert ``G`` to ``nx.Graph``/``nx.DiGraph`` if you need to coalesce multi-edges (e.g., by summing weights) before running those algorithms.
+
 Practical Analysis Workflow
 ---------------------------
 
-Here's a complete workflow for analyzing a multilayer network:
+Here's a complete workflow for analyzing a multilayer network end-to-end:
 
 .. code-block:: python
 
@@ -167,9 +171,9 @@ Here's a complete workflow for analyzing a multilayer network:
         "../datasets/multiedgelist.txt", input_type="multiedgelist", directed=False)
     network.basic_stats()  # prints node/edge counts and layer summary
     
-    # 2. Extract and compare layers
-    layers = network.get_layers()  # mapping: layer_id -> NetworkX graph for that layer
-    for layer_id, layer_graph in layers.items():
+    # 2. Extract and compare layers (names aligned with returned graphs)
+    layer_names, layer_graphs, _ = network.get_layers(style="diagonal", compute_layouts=False)
+    for layer_id, layer_graph in zip(layer_names, layer_graphs):
         density = nx.density(layer_graph)
         clustering = nx.average_clustering(layer_graph)
         print(f"Layer {layer_id}: density={density:.4f}, clustering={clustering:.4f}")

@@ -1,8 +1,8 @@
 Repository Layout
 =================
 
-Use this guide to navigate the py3plex repository and understand what each directory contains.
-Treat it as a map: start from the overview tree, then jump to the sections below to find what you need.
+Use this guide as a map to the py3plex repository so you can quickly find code, docs, tests, and supporting assets.
+Start with the tree below, then jump to the section that matches what you need.
 
 Overview
 --------
@@ -57,7 +57,7 @@ Source code for the py3plex library:
 * ``io/`` - Modern schema-based I/O
 
 Documentation (docfiles/)
---------------------------
+-------------------------
 
 Sphinx documentation source files:
 
@@ -76,13 +76,13 @@ Sphinx documentation source files:
     ├── examples/             # Example index
     └── reference/            # API reference
 
-**Building documentation (from repository root):**
+**Building documentation (from repository root with your virtual environment active):**
 
 .. code-block:: bash
 
     make docs            # Output in docfiles/_build/html/
 
-If Sphinx is missing, (re)install the development extras in your active virtual environment and rerun the command.
+If Sphinx is missing, reinstall the development extras in your active virtual environment and rerun the command.
 
 **Manual build from docfiles/:**
 
@@ -94,7 +94,7 @@ If Sphinx is missing, (re)install the development extras in your active virtual 
 Examples (examples/)
 --------------------
 
-Executable example scripts demonstrating various features:
+Executable example scripts that you can run directly:
 
 .. code-block:: text
 
@@ -119,17 +119,16 @@ Executable example scripts demonstrating various features:
         ├── example_arrow_io.py
         └── example_format_conversion.py
 
-**Running examples:**
+**Running examples (from repository root with an active virtual environment):**
 
 .. code-block:: bash
 
-    # From an activated virtual environment
     python examples/basic/example_load_network.py
 
 Tests (tests/)
 --------------
 
-Test suite using pytest:
+Test suite powered by pytest:
 
 .. code-block:: text
 
@@ -142,7 +141,7 @@ Test suite using pytest:
     ├── test_fuzzing_properties.py# Property-based tests
     └── conftest.py               # Pytest configuration
 
-**Running tests:**
+**Running tests (from repository root):**
 
 .. code-block:: bash
 
@@ -166,7 +165,7 @@ Web interface for py3plex:
     ├── config.py             # Configuration
     └── Dockerfile            # Docker container
 
-**Running GUI:**
+**Running GUI (from repository root):**
 
 .. code-block:: bash
 
@@ -198,7 +197,7 @@ Performance benchmarking suite:
     ├── bench_io.py           # I/O performance
     └── bench_aggregation.py  # Aggregation benchmarks
 
-**Running benchmarks:**
+**Running benchmarks (from repository root):**
 
 .. code-block:: bash
 
@@ -224,7 +223,7 @@ Configuration Files
 
 Root-level configuration:
 
-* ``pyproject.toml`` - Package metadata, dependencies, build config
+* ``pyproject.toml`` - Package metadata, dependencies, build configuration
 * ``Makefile`` - Development commands (make test, make docs, etc.)
 * ``README.md`` - Project overview and quick start
 * ``.gitignore`` - Git ignore rules
@@ -246,9 +245,9 @@ Initial Setup
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
     
-    # Create virtual environment and install dependencies
-    make setup
-    
+    # Create virtual environment and install dependencies (.venv)
+    make setup  # keeps the venv pinned under .venv/
+
     # Install package in editable mode with dev dependencies
     make dev-install
 
@@ -263,20 +262,20 @@ Initial Setup
     # Create virtual environment
     python3 -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
-    
+
     # Install in development mode
     pip install -e ".[dev]"
 
 Development Workflow
 ~~~~~~~~~~~~~~~~~~~~
 
-1. Activate your virtual environment.
+1. Activate your virtual environment so every command uses the same interpreter.
 2. Make focused changes to code or docs.
 3. Format: ``make format``.
 4. Lint: ``make lint``.
 5. Test: ``make test`` (or ``make test-fast`` for quicker feedback).
 6. Build docs: ``make docs``.
-7. Commit and push:
+7. Commit and push with a descriptive message:
 
    .. code-block:: bash
 

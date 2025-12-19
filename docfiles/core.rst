@@ -6,7 +6,7 @@ The ``multi_layer_network`` class is the **core data structure** in py3plex. It 
 Basic Usage
 -----------
 
-Start by creating a network, loading data, and inspecting quick stats:
+Start by creating a network, loading data, and inspecting quick stats. The network is undirected by default; set ``directed=True`` when needed.
 
 .. code-block:: python
 
@@ -26,7 +26,7 @@ Supported Input Formats
 
 py3plex supports **all NetworkX formats** plus **multilayer-specific formats**. Pick the ``input_type`` that matches your file structure:
 
-- **edgelist** - Simple edge lists.
+- **edgelist** - Simple edge lists (one layer or already aggregated).
 - **multiedgelist** - Multilayer edge lists (``node1 layer1 node2 layer2 weight``).
 - **multiplex_edges** - Multiplex format (``layer node1 node2 weight``).
 - **gml** - GML format.
@@ -37,8 +37,8 @@ py3plex supports **all NetworkX formats** plus **multilayer-specific formats**. 
 Multilayer Conventions
 -----------------------
 
-- Nodes and edges carry a ``type`` flag to mark layer membership.
-- Edges can include a ``weight`` attribute.
+- Nodes and edges carry a ``type`` flag to mark layer membership; keep this consistent across files.
+- Edges can include a ``weight`` attribute; omit it for unweighted graphs.
 - Node labels can encode multiple classes with a delimiter (e.g., ``class1---class2``).
 - When loading, set the delimiter explicitly: ``load_network(..., label_delimiter="---")``.
 

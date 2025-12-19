@@ -50,6 +50,8 @@ py3plex uses a **modular, layered architecture** with explicit boundaries. Highe
 Architectural Layers
 --------------------
 
+Each layer has a narrow contract: the core encodes data, algorithms consume that encoding, visualization renders results, and wrappers orchestrate complete tasks. When extending py3plex, start from the lowest layer you need and only depend upward.
+
 Core Layer
 ~~~~~~~~~~
 
@@ -70,7 +72,7 @@ Core Layer
 * Layer management (string ↔ integer IDs, delimiter handling)
 * Matrix representations (adjacency, supra-adjacency)
 * NetworkX integration and type selection (directed vs. undirected)
-* Cache ownership (e.g., supra adjacency, embeddings) and invalidation hooks
+* Cache ownership (e.g., supra adjacency, embeddings) and invalidation hooks triggered by mutations
 
 **Design Pattern:** **Facade Pattern** — ``multi_layer_network`` exposes one consistent interface while hiding NetworkX wiring and encoding details
 
@@ -145,7 +147,7 @@ Core Data Structure
 The multi_layer_network Class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Central to py3plex, this class manages multilayer network state:
+Central to py3plex, this class wraps the underlying NetworkX graph and enforces multilayer encoding invariants:
 
 .. code-block:: python
 
@@ -172,6 +174,7 @@ Central to py3plex, this class manages multilayer network state:
 * Nodes are represented as ``(node_id, layer)`` tuples in Python.
 * When serialized to flat text (files, labels), tuples are joined with the delimiter: ``"{node_id}{delimiter}{layer}"``. Avoid using the delimiter inside raw IDs.
 * Layer names are mapped to integers in ``layer_name_map`` for stable ordering.
+* ``core_network`` stays a NetworkX ``MultiGraph``/``MultiDiGraph``; avoid injecting derived attributes that are not part of the graph definition.
 * Inter-layer edges use ``coupling_weight`` unless explicitly weighted; modifying coupling should clear related caches.
 * Any mutation (adding/removing nodes, relabeling layers) should invalidate cached matrices or embeddings.
 
@@ -259,34 +262,34 @@ Typical Workflow
 
 py3plex workflows follow a predictable sequence: load → compute → analyze → visualize → export. Each step uses the layer beneath it and should avoid mutating lower layers unless explicitly intended.
 
-1. **Input:** Load or create network
+1. **Input:** Load or create network, keeping encoding consistent
 
    .. code-block:: python
 
        network = multinet.multi_layer_network()
        network.load_network("data.graphml", input_type="graphml")
 
-2. **Processing:** Apply algorithms
+2. **Processing:** Apply algorithms against the core graph without re-encoding
 
    .. code-block:: python
 
        communities = community_louvain.best_partition(network.core_network)
        centrality = calc.multilayer_degree_centrality(network)
 
-3. **Analysis:** Compute statistics
+3. **Analysis:** Compute statistics on the derived results
 
    .. code-block:: python
 
        density = mls.layer_density(network, 'layer1')
        correlation = mls.inter_layer_degree_correlation(network, 'layer1', 'layer2')
 
-4. **Visualization:** Render results
+4. **Visualization:** Render results; visualization functions expect immutable inputs
 
    .. code-block:: python
 
        draw_multilayer_default([network], display=True)
 
-5. **Output:** Export results
+5. **Output:** Export results using the same delimiter and layer naming
 
    .. code-block:: python
 
@@ -311,7 +314,7 @@ State Management
     network.add_edges(new_edges, input_type='list')
     network.aggregate_layers(['L1', 'L2'], 'combined')
 
-If you need isolation, copy the network or work on a subgraph before running destructive operations, and clear caches on copies after mutation to avoid stale derived data.
+After running mutable operations, clear or recompute cached matrices/embeddings before downstream analysis. If you need isolation, copy the network or work on a subgraph before running destructive operations.
 
 Extension Points
 ----------------
@@ -319,7 +322,7 @@ Extension Points
 Custom Algorithms
 ~~~~~~~~~~~~~~~~~
 
-Add new algorithms by following existing patterns (pure functions returning dictionaries or NetworkX objects). Keep inputs typed as ``multi_layer_network`` to reuse encoding and caching, and avoid mutating the passed network unless the function is explicitly transformative.
+Add new algorithms by following existing patterns (pure functions returning dictionaries or NetworkX objects). Keep inputs typed as ``multi_layer_network`` to reuse encoding and caching, and avoid mutating the passed network unless the function is explicitly transformative. Document input assumptions (directed vs. undirected, weighted vs. unweighted) and expose new callables in the relevant package ``__init__`` when you want them importable by name.
 
 .. code-block:: python
 
@@ -352,7 +355,7 @@ Add new algorithms by following existing patterns (pure functions returning dict
 Custom Visualizations
 ~~~~~~~~~~~~~~~~~~~~~
 
-Create custom plots using drawing machinery:
+Create custom plots using drawing machinery. Treat the network as read-only and reuse shared layout helpers to keep visuals consistent with built-in plots:
 
 .. code-block:: python
 
@@ -376,7 +379,7 @@ Create custom plots using drawing machinery:
 Custom Parsers
 ~~~~~~~~~~~~~~
 
-Add support for new file formats. Normalize layer names and respect ``label_delimiter`` to keep interoperability with existing loaders:
+Add support for new file formats. Normalize layer names, respect ``label_delimiter``, and raise the appropriate domain exceptions so callers can distinguish parsing failures from missing data:
 
 .. code-block:: python
 
@@ -490,8 +493,8 @@ Test Patterns
     def test_centrality_normalization():
         network = create_random_network()
         centrality = calc.multilayer_degree_centrality(network)
-        # Centrality values should be normalized to [0, 1]
-        assert all(0 <= v <= 1 for v in centrality.values())
+        # Centrality values should not be negative; normalized variants stay within [0, 1]
+        assert all(v >= 0 for v in centrality.values())
 
 Performance Considerations
 --------------------------
@@ -521,6 +524,8 @@ Use sparse representations for large networks; the threshold is configurable in 
         if sparse or len(self.get_nodes()) > SPARSE_THRESHOLD:
             return scipy.sparse.csr_matrix(adj)
         return np.array(adj)
+
+Keep the chosen representation consistent downstream to avoid repeated dense↔sparse conversions.
 
 Vectorization
 ~~~~~~~~~~~~~
@@ -554,7 +559,7 @@ Centralized Logging
     logger.warning("Large network detected, using sparse matrices")
     logger.error("Invalid layer: %s", layer_name)
     
-Configure logging once in the application entrypoint to avoid duplicate handlers.
+Call ``get_logger`` once per module; configure logging once in the application entrypoint to avoid duplicate handlers.
 
 Log Levels
 ~~~~~~~~~~

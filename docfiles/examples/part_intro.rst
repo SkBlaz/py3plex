@@ -26,7 +26,13 @@ How to Use
 * **Refer:** Jump to a specific topic when you need a quick reminder.
 * **Validate:** Run an example after installing py3plex to confirm your setup.
 
-Run scripts from the repository root with your virtual environment activated so relative paths resolve correctly. See the :doc:`index` for a full listing.
+Run scripts from the repository root with your virtual environment activated so relative paths resolve correctly:
+
+.. code-block:: bash
+
+   python examples/<category>/<filename>.py
+
+See the :doc:`index` for a full listing.
 
 .. note::
 

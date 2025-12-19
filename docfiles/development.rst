@@ -1,30 +1,30 @@
 Development Guide
 ==================
 
-This guide covers **development workflows**, **Makefile commands**, **testing**, and **contributing** to py3plex. Use it as your single reference while coding, testing, and writing docs.
+This guide covers **development workflows**, **Makefile commands**, **testing**, and **contributing** to py3plex. Keep it handy as your single reference while coding, testing, and writing docs.
 
 Getting Started
 ---------------
 
-**Clone the repository** and install in **development mode**. Requirements: Python 3.8+ and ``pip``; ``make`` is recommended for the shortcuts below. Keep your virtual environment active so the same interpreter is used for every command.
+Clone the repository and install in development mode. Requirements: Python 3.8+ and ``pip``; ``make`` is recommended for the shortcuts below. Keep your virtual environment active so the same interpreter is used for every command.
 
 .. code-block:: bash
 
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
     
-    # Setup development environment
+    # Setup development environment (creates .venv)
     make setup
     
     # Install package in editable mode with dev dependencies
     make dev-install
 
-If you prefer manual setup, create and activate ``.venv`` yourself, then run ``pip install -e .[dev]`` from the repository root.
+If you prefer manual setup, create and activate ``.venv`` yourself, then run ``pip install -e .[dev]`` from the repository root. Whichever path you choose, activate the environment before running any ``make`` target so the same interpreter is used consistently.
 
 Makefile Commands
 -----------------
 
-The Makefile provides a streamlined development workflow (run targets from the repository root with your virtual environment active):
+The Makefile provides a streamlined development workflow. Run targets from the repository root with your virtual environment active:
 
 .. code-block:: bash
 
@@ -59,12 +59,12 @@ Makefile highlights:
 - Uses ``.venv/bin/`` tools when available, otherwise falls back to global tools
 - Colorized output with clear **success/warning/error** messages
 - Works on **Linux** and **macOS**
-- ``make ci`` is the superset; use it before pushing, and use ``make format`` / ``make lint`` / ``make test`` for quicker local loops
+- ``make ci`` is the superset; use it before pushing. Use ``make format`` / ``make lint`` / ``make test`` for quicker local loops during development.
 
 Testing
 -------
 
-Start with the Makefile target, then drill down with pytest as needed. Favor deterministic seeds for generators so results are reproducible.
+Start with the Makefile target, then drill down with pytest as needed. Favor deterministic seeds for generators so results are reproducible. Use narrow targets while iterating, then run the full suite.
 
 .. code-block:: bash
 
@@ -77,6 +77,7 @@ Start with the Makefile target, then drill down with pytest as needed. Favor det
 
     # Run a specific test module or node
     python -m pytest tests/test_core.py -k "degree"
+    python -m pytest tests/test_core.py::test_degree  # single test
 
 The coverage HTML report is written to ``htmlcov/index.html``.
 
@@ -91,7 +92,7 @@ Tools configured in ``pyproject.toml``:
 - **Mypy**: Type checking
 - **Pytest**: Testing with coverage
 
-Before committing, run the quality loop from an active virtual environment:
+Before committing, run the quality loop from an active virtual environment. Reinstall dev dependencies if a tool is missing.
 
 .. code-block:: bash
 
@@ -108,8 +109,8 @@ We welcome contributions! Recommended workflow:
 1. Sync your local ``main`` with ``upstream/main``
 2. Create a feature branch
 3. Make focused changes with tests and docs
-4. Run ``make format``, ``make lint``, ``make test`` (or ``make ci``)
-5. Commit with clear messages
+4. Run ``make format``, ``make lint``, ``make test`` (or ``make ci``) from your active environment
+5. Commit with clear messages that explain what changed and why
 6. Push to your fork
 7. Open a Pull Request
 

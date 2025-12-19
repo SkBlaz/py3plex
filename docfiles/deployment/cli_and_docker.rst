@@ -12,12 +12,12 @@ Prerequisites
 
 * Docker installed and running (``docker ps`` should work).
 * Optional: Docker Compose (``docker compose`` or ``docker-compose``) if you prefer compose workflows.
-* Run commands from the repository root unless a command explicitly sets another path.
+* Run commands from the repository root unless a command explicitly sets another path (the ``docker-compose.yml`` lives here).
 
 Quickstart
 -----------
 
-The fastest way to get started with Py3plex using Docker (uses the ``latest`` tag):
+The fastest way to get started with Py3plex using Docker. This builds the image locally and uses the ``latest`` tag:
 
 .. code-block:: bash
 
@@ -56,15 +56,18 @@ Build directly from the repository root:
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
-If you prefer docker-compose (or ``docker compose``), use the provided configuration:
+If you prefer Compose, use the included ``docker-compose.yml`` from the repository root. Modern Docker installs prefer ``docker compose``; older installs use ``docker-compose``:
 
 .. code-block:: bash
 
-    # Build using docker-compose (v1 syntax)
-    docker-compose build
+    # Build using Compose (preferred syntax)
+    docker compose build
 
     # Force rebuild
-    docker-compose build --no-cache
+    docker compose build --no-cache
+
+    # If you only have docker-compose v1 installed:
+    # docker-compose build
 
 Running Commands
 ----------------
@@ -91,25 +94,26 @@ The image sets ``py3plex`` as the entrypoint, so you can run CLI commands direct
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
-With Docker Compose, commands are slightly more verbose but easier to repeat:
+Compose commands are slightly more verbose but easier to repeat. Use ``docker compose`` if available; fall back to ``docker-compose`` (v1) on older setups:
 
 .. code-block:: bash
 
     # Show version
-    docker-compose run --rm py3plex --version
+    docker compose run --rm py3plex --version
 
-    # Run self-test
-    docker-compose run --rm py3plex selftest -v
+    # Run self-test (add -v for verbose)
+    docker compose run --rm py3plex selftest
 
     # Show help
-    docker-compose run --rm py3plex help
-    # Show help (modern syntax)
     docker compose run --rm py3plex help
+
+    # If you only have docker-compose v1 installed, swap the command name:
+    # docker-compose run --rm py3plex help
 
 Working with Files
 ------------------
 
-To persist inputs/outputs, mount a local directory to ``/data`` inside the container. Examples assume ``./data`` on the host and a POSIX shell; adjust the path syntax for Windows shells.
+Persist inputs/outputs by mounting a host directory to ``/data`` inside the container. Use the same mount across commands so outputs accumulate in one place. Examples assume ``./data`` on the host; adjust path syntax for Windows shells.
 
 Creating a Data Directory
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,25 +130,25 @@ Mounting Volumes
 
 .. code-block:: bash
 
+    DATA_DIR="$(pwd)/data"  # adjust for Windows shells
+
     # Mount current directory's data folder (Linux/macOS)
-    docker run --rm -v $(pwd)/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
+    docker run --rm -v "${DATA_DIR}":/data py3plex:latest \
+      create --nodes 100 --layers 3 --output /data/network.edgelist
 
-    # If your path contains spaces, quote it:
-    docker run --rm -v "$(pwd)"/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
+    # Windows PowerShell
+    # docker run --rm -v ${PWD}/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
 
-    # On Windows (PowerShell)
-    docker run --rm -v ${PWD}/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
+    # Windows CMD
+    # docker run --rm -v %cd%/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
 
-    # On Windows (CMD)
-    docker run --rm -v %cd%/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
+**With docker compose:**
 
-**With docker-compose:**
-
-The ``docker-compose.yml`` file already configures volume mounting from ``./data`` to ``/data``, so you can simply:
+The ``docker-compose.yml`` file maps ``./data`` to ``/data`` by default, so you can simply:
 
 .. code-block:: bash
 
-    docker-compose run --rm py3plex create --nodes 100 --layers 3 --output /data/network.edgelist
+    docker compose run --rm py3plex create --nodes 100 --layers 3 --output /data/network.edgelist
 
 Complete Workflow Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -178,6 +182,8 @@ End-to-end example using volume mounts and the default ``latest`` tag:
 
     # 6. View the results
     ls -lh data/
+
+All generated files appear in ``./data`` on the host.
 
 Advanced Usage
 --------------
@@ -240,7 +246,7 @@ If you need additional Python or system packages, extend the base image. Pin the
 Docker Compose with Multiple Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can extend the ``docker-compose.yml`` to include related services and run them together (``docker compose up jupyter``):
+You can extend ``docker-compose.yml`` with related services that share the same data mount (example below adds Jupyter; start it with ``docker compose up jupyter``):
 
 .. code-block:: yaml
 
@@ -350,15 +356,13 @@ The ``.dockerignore`` file controls which files are excluded from the Docker bui
 
 The ``.dockerignore`` file is located in the repository root.
 
-
-
 Troubleshooting
 ---------------
 
 Testing the Docker Setup
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-To verify your Docker setup is working correctly, use the included test script:
+To verify your Docker setup is working correctly, use the included test script from the repository root. It builds and exercises the ``py3plex:latest`` image:
 
 .. code-block:: bash
 
@@ -384,6 +388,8 @@ If you encounter permission issues with mounted volumes (common on Linux), run w
     # On Linux, you might need to run with your user ID
     docker run --rm -v $(pwd)/data:/data --user $(id -u):$(id -g) py3plex:latest create --output /data/network.edgelist
 
+For Compose, set ``user: "${UID}:${GID}"`` in the service definition if you hit the same issue.
+
 Container Not Found
 ~~~~~~~~~~~~~~~~~~~
 
@@ -397,6 +403,8 @@ If the image is missing locally:
     # Rebuild if necessary
     docker build -t py3plex:latest .
 
+Use the same tag (``py3plex:latest`` in these examples) when running containers.
+
 Network Issues During Build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -407,7 +415,7 @@ If you encounter network timeouts during build, try a higher timeout or a differ
     # Increase timeout
     docker build --build-arg PIP_DEFAULT_TIMEOUT=300 -t py3plex:latest .
 
-    # Or use a different PyPI mirror
+    # Or point pip to a mirror reachable from your network
     docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple -t py3plex:latest .
 
 Out of Disk Space
@@ -422,6 +430,8 @@ Clean up unused Docker resources:
 
     # Remove all stopped containers, unused networks, and dangling images
     docker system prune -a
+
+These commands remove unused artifacts; review before running on shared hosts.
 
 Debugging Build Issues
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -440,7 +450,7 @@ Best Practices
 3. **Tag Images:** Use specific tags (e.g., ``py3plex:0.95a``) for reproducibility.
 4. **Keep Data Separate:** Store network files in the mounted ``data`` directory.
 5. **Use Docker Compose:** For repeated operations, Docker Compose simplifies commands.
-6. **Regular Updates:** Rebuild the image periodically to get the latest Py3plex updates.
+6. **Regular Updates:** Rebuild after pulling new commits or dependency changes to keep images current.
 
 Practical Examples
 ------------------
@@ -557,6 +567,8 @@ Create a Python script (``analysis.py``) and run it in the container:
     print("Analysis complete!")
 
 **Run it:**
+
+Adjust the layer names in the script to match your data before running:
 
 .. code-block:: bash
 

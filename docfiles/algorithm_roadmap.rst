@@ -10,11 +10,12 @@ Notation and assumptions
 
 Unless otherwise specified:
 
-* :math:`n` = number of physical nodes, :math:`m` = total edges (including inter-layer edges when present)
-* :math:`n_L` = number of state nodes (node-layer pairs), :math:`L` = number of layers
+* :math:`n` = number of physical nodes; :math:`m` = edges on the graph being analyzed (aggregated by default, supra-graph when explicitly stated)
+* :math:`n_L` = number of state nodes (node-layer pairs), :math:`L` = number of layers; supra-graph algorithms use :math:`n_L` and the corresponding intra- + inter-layer edge count
 * When both :math:`n` and :math:`n_L` appear, :math:`n`/:math:`m` refer to the aggregated physical-node graph; :math:`n_L` and its edge count refer to the supra-adjacency
 * Complexities assume sparse graphs and hide iteration-dependent constants from solvers
 * Supra-adjacency matrices are sparse unless noted; dense forms are only for toy examples
+* Shortest-path-based metrics assume non-negative edge weights; negative weights are unsupported
 
 Algorithm Categories
 --------------------
@@ -94,7 +95,7 @@ Multilayer Louvain
 
 **Best for:** Community detection across multiple layers with inter-layer coupling
 
-**Complexity:** O(n_L^2) to build a dense supra-adjacency (sparse construction: O(m)) plus Louvain-style optimization (about O(m log n_L) on the sparse supra-graph)
+**Complexity:** O(n_L^2) to build a dense supra-adjacency (sparse construction: O(m)) plus Louvain-style optimization (about O(m log n_L) on the sparse supra-graph); prefer sparse supra-adjacency for anything beyond small toy graphs
 
 **Algorithm details:** Implements Mucha et al. (2010) multilayer modularity optimization
 
@@ -120,7 +121,7 @@ Leiden Algorithm
 
 **Best for:** More stable community detection than Louvain
 
-**Complexity:** About O(m) per iteration on sparse graphs with faster convergence than Louvain (m counts intra + inter-layer edges)
+**Complexity:** About O(m) per iteration on the supplied graph (m counts intra + inter-layer edges when using a supra-adjacency), with faster convergence than Louvain
 
 **Related algorithms:**
   - :ref:`louvain-algorithm` (predecessor)
@@ -253,9 +254,11 @@ Path-Based Measures
 
 **Best for:** Bridge identification, broadcasting efficiency
 
-**Complexity:** O(n_L m) for unweighted, O(n_L m + n_L^2 log n_L) for weighted
+**Complexity:** O(n_L m) for unweighted, O(n_L m + n_L^2 log n_L) for weighted (Brandes with Dijkstra on the supra-graph)
 
 **Warning:** Expensive beyond a few thousand state nodes; use sampling or approximations when possible. Distances are computed on the supra-graph; unreachable pairs yield zero scores.
+
+**Note:** Weighted variants rely on non-negative edge weights for Dijkstra-based shortest paths.
 
 **Related measures:**
   - :ref:`centrality-all` (batch computation)
@@ -371,7 +374,7 @@ Multilayer Statistics
 
 **Best for:** Understanding multilayer network structure and properties
 
-**Complexity:** Varies by measure; most layer/node summaries are O(n_L + m), while spectral routines operate on the supra-graph and can reach O(n_L^2) on dense inputs
+**Complexity:** Varies by measure; most layer/node summaries are O(n_L + m) on the relevant graph, while spectral routines operate on the supra-graph and can reach O(n_L^2) on dense inputs
 
 **Related algorithms:**
   - :ref:`basic-statistics` (simpler measures)

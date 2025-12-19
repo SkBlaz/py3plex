@@ -1,7 +1,7 @@
 Dependency Management and Troubleshooting
 ==========================================
 
-This guide covers dependency installation, optional features, and common troubleshooting scenarios. Install the core package first, then add extras via ``pip`` extras when you need them:
+This guide covers dependency installation, optional features, and common troubleshooting scenarios. Install the core package first, then add extras via ``pip`` only when you need them. If unsure, start with the base package and add one extra at a time:
 
 - ``py3plex[viz]`` — interactive or advanced visualization
 - ``py3plex[algos]`` — additional community detection algorithms
@@ -17,7 +17,7 @@ Core Dependencies
 Automatic Installation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Core dependencies install with the base package:
+Core dependencies install with the base package. Use a virtual environment to keep projects isolated:
 
 .. code-block:: bash
 
@@ -41,7 +41,7 @@ Core dependencies install with the base package:
 Verifying Installation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Confirm that Py3plex and core dependencies import correctly:
+Confirm that Py3plex and core dependencies import correctly. Run this in the same environment where you installed the package. Add optional imports (``plotly``, ``igraph``, ``infomap``) if you installed those extras:
 
 .. code-block:: python
 
@@ -64,7 +64,7 @@ Confirm that Py3plex and core dependencies import correctly:
 Optional Dependencies
 ---------------------
 
-Py3plex exposes optional features through ``pip`` extras. Install only what you need.
+Py3plex exposes optional features through ``pip`` extras. Install only what you need to keep environments lean and license-compliant. Each extra is independent—add them incrementally and retest after each install.
 
 Advanced Visualization (Recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,9 +143,7 @@ Install Infomap for information-theoretic community detection:
 
 * ``infomap >= 2.0.0`` - Information flow-based community detection
 
-**Important licensing note:**
-
-Infomap is licensed under **AGPLv3** (copyleft). Using Infomap can extend AGPLv3 obligations to your project.
+**Important licensing note:** Infomap is licensed under **AGPLv3** (copyleft). Using Infomap can extend AGPLv3 obligations to your project.
 
 **For commercial/proprietary projects:** prefer permissive alternatives:
 
@@ -168,7 +166,7 @@ Infomap is licensed under **AGPLv3** (copyleft). Using Infomap can extend AGPLv3
 Installing All Optional Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Install everything at once (includes Infomap, which is AGPLv3):
+Install everything at once (includes Infomap, which is AGPLv3). Review licenses first if you distribute downstream artifacts:
 
 .. code-block:: bash
 
@@ -199,6 +197,8 @@ For contributors and developers:
 
 Dependency Troubleshooting
 --------------------------
+
+Run troubleshooting steps in the environment where Py3plex is installed. If issues persist, retry in a fresh virtual environment to rule out conflicts.
 
 Common Installation Issues
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -242,13 +242,13 @@ Issue: "No matching distribution found"
 
        ping pypi.org
 
-2. Use the default PyPI index explicitly.
+2. Use the default PyPI index explicitly (helps when mirrors are stale).
 
    .. code-block:: bash
 
        pip install --index-url https://pypi.org/simple/ py3plex
 
-3. Verify platform compatibility; some packages lack builds for certain OS/architecture combinations.
+3. Verify platform compatibility; some packages lack builds for certain OS/architecture combinations or Python versions.
 
 Issue: "Failed building wheel"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -352,7 +352,7 @@ Issue: "MemoryError" with large networks
 
 **Cause:** Insufficient RAM for dense operations.
 
-**Fix 1:** Use sparse matrices (automatic for most operations).
+**Fix 1:** Prefer sparse data structures; many operations use them automatically, but avoid forcing dense adjacency matrices for large graphs.
 
 **Fix 2:** Sample the network.
 
@@ -447,34 +447,34 @@ Provide users with this diagnostic script:
         """Check which dependencies are available."""
         
         required = {
-            'networkx': 'Core',
-            'numpy': 'Core',
-            'scipy': 'Core',
-            'matplotlib': 'Core',
-            'pandas': 'Core',
+            'networkx': ('Core', 'networkx'),
+            'numpy': ('Core', 'numpy'),
+            'scipy': ('Core', 'scipy'),
+            'matplotlib': ('Core', 'matplotlib'),
+            'pandas': ('Core', 'pandas'),
         }
         
         optional = {
-            'plotly': 'Visualization',
-            'igraph': 'Visualization',
-            'infomap': 'Community detection',
-            'python-louvain': 'Community detection',
+            'plotly': ('Visualization', 'plotly'),
+            'igraph': ('Visualization', 'igraph'),
+            'infomap': ('Community detection', 'infomap'),
+            'python-louvain': ('Community detection', 'community'),
         }
         
         print("=== Py3plex Dependency Check ===\n")
         
         print("Required packages:")
-        for package, category in required.items():
+        for package, (category, module_name) in required.items():
             try:
-                __import__(package.replace('-', '_'))
+                __import__(module_name)
                 print(f"  [OK] {package:20s} ({category})")
             except ImportError:
                 print(f"  [X] {package:20s} ({category}) - MISSING!")
         
         print("\nOptional packages:")
-        for package, category in optional.items():
+        for package, (category, module_name) in optional.items():
             try:
-                __import__(package.replace('-', '_'))
+                __import__(module_name)
                 print(f"  [OK] {package:20s} ({category})")
             except ImportError:
                 print(f"  [X] {package:20s} ({category}) - Not installed")
@@ -527,6 +527,8 @@ Recommendations for Different Use Cases
     # Core + algos (all permissive licenses)
     pip install py3plex[viz,algos]
     # Avoid: infomap (AGPLv3)
+
+Review licenses for optional packages before redistribution (e.g., Infomap is AGPLv3; verify visualization libraries for compatibility).
 
 Virtual Environment Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

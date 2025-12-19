@@ -1,7 +1,7 @@
 Contributing to py3plex
 =======================
 
-We welcome contributions to py3plex. This guide covers setup, workflow, expectations, and how to get help. Use it to keep contributions consistent and easy to review.
+We welcome contributions to py3plex. This guide covers setup, workflow, expectations, and how to get help. Use it to keep contributions consistent, well-tested, and easy to review.
 
 Ways to Contribute
 ------------------
@@ -81,7 +81,7 @@ If any tool is missing, reactivate the virtual environment and rerun the install
 Development Workflow
 --------------------
 
-Follow this loop for each change: sync with ``upstream/main`` → branch → code + docs → format → test → commit → push → PR.
+Follow this loop for each change: sync with ``upstream/main`` → branch → code + docs → format → test → commit → push → PR. Keep PRs small so reviews stay focused.
 
 Create a Branch
 ~~~~~~~~~~~~~~~
@@ -98,14 +98,14 @@ Make Changes
 ~~~~~~~~~~~~
 
 1. Write your code following our coding standards (see below); keep the scope focused
-2. Add or update tests
-3. Update documentation
+2. Add or update tests that cover the new behavior and edge cases
+3. Update documentation for any user-facing change (CLI flags, API shape, defaults)
 4. Run linters and tests locally before committing
 
 Run Tests
 ~~~~~~~~~
 
-Prefer deterministic seeds for random data so results are reproducible.
+Prefer deterministic seeds for random data so results are reproducible. Use narrow test targets while iterating, then run the full suite before you push.
 
 .. code-block:: bash
 
@@ -114,6 +114,7 @@ Prefer deterministic seeds for random data so results are reproducible.
     
     # Or directly with pytest
     python -m pytest tests/ -v
+    python -m pytest tests/test_module.py -k specific_case  # iterate on one test quickly
 
 Run Linters
 ~~~~~~~~~~~
@@ -130,10 +131,12 @@ Run linters before pushing to catch easy issues early.
     ruff check py3plex/
     mypy py3plex/
 
+``make lint`` runs the configured checkers and should be clean before opening a PR. If a tool is missing, reactivate the virtual environment and reinstall dev dependencies.
+
 Commit Changes
 ~~~~~~~~~~~~~~
 
-Keep commits small and focused. Write clear, descriptive commit messages:
+Keep commits small and focused. Write clear, descriptive commit messages that explain the change and why it matters:
 
 .. code-block:: bash
 
@@ -168,7 +171,7 @@ We follow PEP 8 with these specifics:
 
 * Line length: 100 characters (not 80)
 * Indentation: 4 spaces (no tabs)
-* String quotes: Single quotes preferred ('text' not "text")
+* String quotes: Prefer single quotes in Python unless an existing file uses double quotes
 * Imports: Grouped and sorted (using isort)
 
 Auto-format your code:
@@ -206,7 +209,7 @@ Naming Conventions
 Docstrings
 ~~~~~~~~~~
 
-Use NumPy-style docstrings for all public functions and classes:
+Use NumPy-style docstrings for all public functions and classes. Keep examples minimal but runnable:
 
 .. code-block:: python
 
@@ -242,7 +245,7 @@ Use NumPy-style docstrings for all public functions and classes:
         
         Notes
         -----
-        For directed networks, this computes out-degree by default.
+        For directed networks, NetworkX defaults to out-degree; adjust your expectations if you need in-degree variants.
         
         References
         ----------
@@ -316,7 +319,7 @@ Use pytest for testing:
 Test Coverage
 ~~~~~~~~~~~~~
 
-Aim for high test coverage:
+Aim for high test coverage on new or changed code:
 
 .. code-block:: bash
 
@@ -328,7 +331,7 @@ Aim for high test coverage:
     # or
     xdg-open htmlcov/index.html  # Linux
 
-Target: >80% coverage for new code
+Target: >80% coverage for new code, and cover new branches or failure modes you introduce.
 
 Documentation
 -------------
@@ -357,7 +360,7 @@ Build Documentation
     # View documentation
     open _build/html/index.html
 
-If the build fails because Sphinx is missing, (re)install the development extras in your active virtual environment.
+If the build fails because Sphinx is missing, (re)install the development extras in your active virtual environment and rerun the build until it completes without warnings.
 
 Documentation Style
 ~~~~~~~~~~~~~~~~~~~
@@ -448,7 +451,6 @@ When reporting bugs, include:
 * Python version (``python --version``)
 * py3plex version
 * Operating system
-* Minimal code example
 
 Example:
 

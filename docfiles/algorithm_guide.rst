@@ -8,11 +8,12 @@ Notation and assumptions
 
 Unless noted otherwise:
 
-* :math:`n` = number of physical nodes, :math:`m` = total edges (including inter-layer edges when present)
-* :math:`n_L` = number of state nodes (node-layer pairs), :math:`L` = number of layers
-* For embeddings and other core-network operations, :math:`n` and :math:`m` refer to the aggregated physical-node graph; supra-adjacency algorithms use :math:`n_L` and their corresponding edge count
+* :math:`n` = number of physical nodes; :math:`m` = edges on the graph being analyzed (aggregated by default, supra-graph when explicitly stated)
+* :math:`n_L` = number of state nodes (node-layer pairs), :math:`L` = number of layers; supra-graph algorithms use :math:`n_L` and the corresponding intra- + inter-layer edge count
+* For embeddings and other core-network operations, :math:`n` and :math:`m` refer to the aggregated physical-node graph; supra-adjacency algorithms use :math:`n_L` instead
 * Complexities assume sparse graphs and hide constant factors from iterative solvers
 * Supra-adjacency constructions are assumed sparse; dense forms are only for toy examples
+* Shortest-path-based metrics assume non-negative edge weights; negative weights are unsupported
 
 Community Detection
 -------------------
@@ -128,7 +129,7 @@ Best for:
 * Layer coupling analysis
 * Research applications
 
-**Complexity:** :math:`O(n_L^2)` to build a dense supra-adjacency (sparse: :math:`O(m)`) plus the downstream Louvain optimization (:math:`O(m \log n_L)` in practice on the sparse supra-graph)
+**Complexity:** :math:`O(n_L^2)` to build a dense supra-adjacency (sparse: :math:`O(m)`) plus the downstream Louvain optimization (:math:`O(m \log n_L)` in practice on the sparse supra-graph). Prefer sparse supra-adjacency for anything beyond small toy graphs.
 
 **Usage:**
 
@@ -189,7 +190,7 @@ Betweenness Centrality
 * Information flow bottlenecks
 * Critical path analysis
 
-**Complexity:** :math:`O(n_L m)` for unweighted, :math:`O(n_L m + n_L^2 \log n_L)` for weighted
+**Complexity:** :math:`O(n_L m)` for unweighted, :math:`O(n_L m + n_L^2 \log n_L)` for weighted (Brandes with Dijkstra on the supra-graph)
 
 **Usage:**
 
@@ -200,7 +201,7 @@ Betweenness Centrality
 
 **Warning:** Computationally expensive beyond a few thousand state nodes; use sampling or approximations when possible
 
-**Note:** Weighted variants rely on Dijkstra; disconnected components yield zero betweenness for unreachable pairs.
+**Note:** Runs on the supra-graph; weighted variants rely on Dijkstra and add the :math:`n_L^2 \log n_L` term. Disconnected components yield zero betweenness for unreachable pairs.
 
 Closeness Centrality
 ~~~~~~~~~~~~~~~~~~~~
@@ -280,7 +281,7 @@ Versatility Centrality
 New Multiplex Network Metrics
 ------------------------------
 
-The following metrics extend standard network analysis to multiplex networks, accounting for inter-layer couplings and layer-specific structures. Unless noted, :math:`n_L` is the number of node-layer pairs and :math:`m` counts both intra- and inter-layer edges.
+The following metrics extend standard network analysis to multiplex networks, accounting for inter-layer couplings and layer-specific structures. Unless noted, :math:`n_L` is the number of node-layer pairs and :math:`m` counts both intra- and inter-layer edges; all path-based quantities use the supra-graph.
 
 Multiplex Betweenness Centrality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -291,7 +292,7 @@ Multiplex Betweenness Centrality
 * Finding bottlenecks in multiplex information flow
 * Analyzing paths that traverse inter-layer couplings
 
-**Complexity:** :math:`O(n_L m)` 
+**Complexity:** :math:`O(n_L m)` for unweighted supra-graphs
 
 **Usage:**
 
@@ -301,7 +302,7 @@ Multiplex Betweenness Centrality
     betweenness = mls.multiplex_betweenness_centrality(network, normalized=True)
     top_nodes = sorted(betweenness.items(), key=lambda x: x[1], reverse=True)[:5]
 
-**Definition:** Uses shortest paths on the supra-graph; set inter-layer edge weights to reflect coupling strength.
+**Definition:** Uses shortest paths on the supra-graph; set inter-layer edge weights to reflect coupling strength and ensure weights are non-negative.
 
 **Reference:** De Domenico et al. (2015), "Structural reducibility of multilayer networks"
 
@@ -336,7 +337,7 @@ Community Participation Metrics
 * Identifying nodes that bridge different communities
 * Analyzing cross-community connections
 
-**Complexity:** :math:`O(k)` per node (overall :math:`O(m)`) where :math:`k` is node degree
+**Complexity:** :math:`O(k)` per node (overall :math:`O(m)`) where :math:`k` is node degree across all layers
 
 **Usage:**
 
@@ -348,7 +349,7 @@ Community Participation Metrics
     # Participation entropy: H_i = -sum_s (k_is / k_i) * log(k_is / k_i)
     entropy = mls.community_participation_entropy(network, communities, 'Alice')
 
-**Definitions:** :math:`k_{is}` is the number of links from node :math:`i` to community :math:`s`, and :math:`k_i = \sum_s k_{is}`. If :math:`k_i = 0`, both metrics return 0 to avoid undefined values.
+**Definitions:** :math:`k_{is}` is the number of links from node :math:`i` to community :math:`s` (summing over layers), and :math:`k_i = \sum_s k_{is}`. If :math:`k_i = 0`, both metrics return 0 to avoid undefined values.
 
 **Reference:** Guimera & Amaral (2005), "Functional cartography of complex metabolic networks"
 
@@ -373,7 +374,7 @@ Layer Redundancy Analysis
     # Count unique and redundant edges
     unique, redundant = mls.unique_redundant_edges(network, 'social', 'work')
 
-**Definition:** :math:`E_\alpha` denotes edges in layer :math:`\alpha`; :math:`R_{\alpha,\beta}` is asymmetric because it normalizes by :math:`|E_\alpha|`.
+**Definition:** :math:`E_\alpha` denotes edges in layer :math:`\alpha` (treated as unordered pairs unless your data are directed); :math:`R_{\alpha,\beta}` is asymmetric because it normalizes by :math:`|E_\alpha|`.
 
 **Reference:** Nicosia & Latora (2015), "Measuring and modeling correlations in multiplex networks"
 
@@ -393,6 +394,8 @@ Multiplex Rich-Club Coefficient
 .. code-block:: python
 
     rich_club = mls.multiplex_rich_club_coefficient(network, k=10, normalized=True)
+
+**Note:** ``normalized=True`` uses the function's internal null-model rescaling; set it to ``False`` for the raw coefficient.
 
 **Reference:** Extended from Alstott et al. (2014) to multiplex networks
 

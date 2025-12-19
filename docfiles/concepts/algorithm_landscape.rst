@@ -21,7 +21,7 @@ For detailed parameter lists and API reference, see :doc:`../reference/algorithm
 Community Detection
 -------------------
 
-**Goal:** Identify groups of nodes that are more densely connected to each other than to the rest of the network (within or across layers). In multilayer settings, decide whether communities should be layer-specific or span layers via coupling (e.g., ``omega`` controlling inter-layer links).
+**Goal:** Identify groups of nodes that are more densely connected to each other than to the rest of the network (within or across layers). In multilayer settings, decide whether communities should stay layer-specific or span layers via coupling (``omega`` controls inter-layer links; ``omega = 0`` means layers do not interact).
 
 When to Use
 ~~~~~~~~~~~
@@ -45,7 +45,7 @@ Algorithm Families
 
 * **Louvain** - Fast, greedy modularity optimization
 * **Leiden** - Improved version of Louvain with better stability
-* **Multilayer Louvain** - Extends Louvain to multiple layers with inter-layer coupling (set ``omega > 0`` when layers should interact)
+* **Multilayer Louvain** - Extends Louvain to multiple layers with inter-layer coupling (set ``omega > 0`` when layers should interact; ``gamma`` tunes community resolution)
 
 *Trade-offs:*
 
@@ -73,7 +73,7 @@ Algorithm Families
 
 *Examples:*
 
-* **Infomap** - Minimizes description length of random walks
+* **Infomap** - Minimizes description length of random walks (treat multilayer by adding explicit inter-layer edges or by aggregating first)
 * **Walktrap** - Based on random walk distances (single-layer)
 
 *Trade-offs:*
@@ -82,7 +82,7 @@ Algorithm Families
 * ✓ Finds hierarchical structure
 * ✗ Slower than modularity methods
 * ✗ May require external binaries
-* ✗ Sensitive to how inter-layer edges are weighted (add them explicitly before running on multilayer data)
+* ✗ Sensitive to how inter-layer edges are weighted (add or scale them explicitly before running on multilayer data)
 
 .. code-block:: python
 
@@ -100,7 +100,7 @@ Algorithm Families
 
 *Examples:*
 
-* **NoRC** - Network of Ranked Communities
+* **NoRC** - Network of Ranked Communities (overlapping membership)
 * **Clique Percolation** - Based on overlapping cliques
 
 *Trade-offs:*
@@ -125,7 +125,7 @@ Use this decision tree (follow the first condition that applies):
 .. code-block:: text
 
     Do you need overlapping communities?
-    ├─ Yes → NoRC or Clique Percolation
+    ├─ Yes → NoRC or Clique Percolation (expect overlapping memberships)
     └─ No
        └─ Is your network multilayer?
           ├─ Yes → Multilayer Louvain or Leiden
@@ -133,12 +133,12 @@ Use this decision tree (follow the first condition that applies):
              └─ What's most important?
                 ├─ Speed → Louvain
                 ├─ Stability → Leiden
-                └─ Theory → Infomap
+                └─ Theory / flow objective → Infomap
 
 Centrality & Importance
 -----------------------
 
-**Goal:** Quantify the importance of nodes or edges in the network, per layer or aggregated. Decide whether to keep (node, layer) pairs separate or to aggregate scores per entity.
+**Goal:** Quantify the importance of nodes or edges in the network, per layer or aggregated. Decide whether to keep ``(node, layer)`` pairs separate (preserves context) or to aggregate scores per entity after aligning identifiers.
 
 When to Use
 ~~~~~~~~~~~
@@ -162,7 +162,7 @@ Algorithm Families
 
 * **Degree Centrality** - Number of connections
 * **Multilayer Degree** - Degree summed across layers
-* **Versatility** - Participation across layers (counts how many layers a node engages with)
+* **Versatility** - Participation across layers (counts how many layers a node engages with; higher means broader presence)
 
 *When to use:*
 
@@ -187,7 +187,7 @@ Algorithm Families
 
 *Examples:*
 
-* **Closeness Centrality** - Average distance to all other nodes (per connected component)
+* **Closeness Centrality** - Average distance to all other nodes (computed within connected components)
 * **Betweenness Centrality** - Fraction of shortest paths through node
 * **Harmonic Centrality** - Harmonic mean of distances (stable on disconnected graphs)
 
@@ -195,7 +195,7 @@ Algorithm Families
 
 * Identifying central nodes
 * Finding information brokers
-* Understanding information flow (run per connected component if closeness is used)
+* Understanding information flow (run per connected component if closeness is used, or switch to harmonic variants)
 
 .. code-block:: python
 
@@ -211,7 +211,7 @@ Algorithm Families
 
 *Examples:*
 
-* **Eigenvector Centrality** - First eigenvector of adjacency matrix (requires connectivity within the component)
+* **Eigenvector Centrality** - First eigenvector of adjacency matrix (requires connectivity within each component; compute per component)
 * **PageRank** - Google's ranking algorithm (damping factor controls teleportation)
 * **HITS** - Hubs and authorities (use on directed graphs)
 
@@ -253,6 +253,29 @@ Consider these questions:
 5. **Layer handling?**
    - Keep per-layer scores when layer context matters
    - Aggregate across layers only after aligning node identifiers
+
+Node Ranking & Classification
+-----------------------------
+
+**Goal:** Order nodes by importance or predict node labels using network-derived features. In multilayer settings, decide whether to rank per layer or on an aggregated view, and whether to treat layers as features.
+
+When to Use
+~~~~~~~~~~~
+
+Use ranking or classification when you want to:
+
+* Prioritize entities (recommendations, audits, interventions)
+* Score candidates for follow-up analysis
+* Train classifiers from structural features (centrality, embeddings)
+* Combine multilayer evidence into a single ordering
+
+Approaches
+~~~~~~~~~~
+
+* **Rank with centrality:** Use degree/PageRank/eigenvector (per layer or aggregated); normalize if layers differ in size.
+* **Rank with random walks:** Use multilayer random-walk methods (e.g., MultiXRank) to blend within-layer and cross-layer signals; tune restart probability to control locality.
+* **Classify with embeddings:** Generate node embeddings (Node2Vec/DeepWalk/LINE) then train a downstream classifier (e.g., scikit-learn). Include layer ID as a feature if labels depend on layer context.
+* **Hybrid scores:** Combine statistical features (degree, clustering, participation coefficient) with embeddings for models that need both local and global cues.
 
 Network Statistics
 ------------------
@@ -346,7 +369,7 @@ Layer similarity and overlap assume node identifiers are consistent across layer
 Random Walks & Embeddings
 --------------------------
 
-**Goal:** Generate node representations or sample the network through traversal (often as input to downstream ML). Walks operate on the encoded (node, layer) graph, so inter-layer edges influence the sampled context.
+**Goal:** Generate node representations or sample the network through traversal (often as input to downstream ML). Walks operate on the encoded ``(node, layer)`` graph, so inter-layer edges and their weights directly influence the sampled context.
 
 When to Use
 ~~~~~~~~~~~
@@ -367,7 +390,7 @@ Algorithm Families
 *Examples:*
 
 * **Basic Random Walk** - Uniform random traversal
-* **Node2Vec** - Biased walks (BFS/DFS-like)
+* **Node2Vec** - Biased walks (BFS/DFS-like); works on multilayer graphs if inter-layer edges are present
 * **DeepWalk** - Uniform random walks for embeddings
 
 *Parameters:*
@@ -644,6 +667,8 @@ Performance Considerations
 Algorithm Complexity
 ~~~~~~~~~~~~~~~~~~~~
 
+Complexity notation: n = number of nodes, m = number of edges, k = walks per node, l = walk length. Complexities are approximate and assume sparse graphs unless stated otherwise.
+
 .. list-table::
    :header-rows: 1
    :widths: 30 30 40
@@ -661,13 +686,11 @@ Algorithm Complexity
      - ~O(m)
      - Near-linear in practice on sparse graphs
    * - Node2Vec
-     - O(k·l·m) for walk generation
-     - k = walks per node, l = walk length (training adds extra cost)
+     - O(m) to precompute + O(k·l·n) for walk generation
+     - Training adds extra cost proportional to walk tokens; tune k and l to control runtime
    * - Force Layout
      - O(n²)
      - Slow for >1000 nodes
-
-n = nodes, m = edges, k = walks per node, l = walk length. Complexities are approximate and assume sparse graphs unless stated otherwise.
 
 When working with large networks:
 

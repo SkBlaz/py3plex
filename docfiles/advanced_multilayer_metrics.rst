@@ -11,11 +11,11 @@ New Metrics (v0.96+)
 
 The following advanced metrics have been added to py3plex for comprehensive multilayer network analysis:
 
-1. **Entropy-based Layer Complexity Measures**
-2. **Cross-layer Mutual Information**
-3. **Layer Influence Centrality**
-4. **Multilayer Betweenness Surface**
-5. **Inter-layer Degree Correlation Matrix**
+1. **Entropy-based Layer Complexity Measures** — layer connectivity, inter-layer dependence, and redundancy entropies
+2. **Cross-layer Mutual Information** — statistical dependence between layer degree distributions
+3. **Layer Influence Centrality** — coupling- and flow-based views of how layers affect each other
+4. **Multilayer Betweenness Surface** — heatmap-ready betweenness over node–layer pairs
+5. **Inter-layer Degree Correlation Matrix** — Pearson correlations of degrees across layers
 
 Installation
 ------------
@@ -123,12 +123,12 @@ Cross-layer Redundancy Entropy
 
 Measures diversity in structural overlap across all unordered layer pairs using edge overlap.
 
-**Formula:** :math:`H_r = -\sum_{i<j} r_{ij} \log_2 r_{ij}`, where :math:`r_{ij} = \omega^{ij} / \sum_{p<q} \omega^{pq}` normalizes the edge-overlap :math:`\omega^{ij}` for layer pair *(i, j)* so that :math:`\sum_{i<j} r_{ij} = 1`.
-Here :math:`\omega^{ij}` denotes the Jaccard edge overlap between layers :math:`i` and :math:`j`.
+**Formula:** :math:`H_r = -\sum_{i<j} r_{ij} \log_2 r_{ij}`, where :math:`r_{ij} = \omega^{ij} / \sum_{p<q} \omega^{pq}` rescales the edge-overlap :math:`\omega^{ij}` for layer pair *(i, j)* so that :math:`\sum_{i<j} r_{ij} = 1`.
+Here :math:`\omega^{ij}` denotes the Jaccard edge overlap between layers :math:`i` and :math:`j`; if all overlaps are 0, :math:`H_r` is defined as 0.
 
 **Interpretation:**
-- H_r = 0: overlap concentrated in a single layer pair
-- Higher values: varied overlap patterns (some layers very similar, others distinct; balanced overlap raises entropy)
+- H_r = 0: overlap concentrated in a single layer pair (or no pairs overlap)
+- Higher values: varied overlap patterns; balanced but non-zero overlaps raise entropy
 - Useful for identifying functionally redundant vs. complementary layers
 
 .. code-block:: python
@@ -258,6 +258,7 @@ Multilayer Betweenness Surface
 Visualizes betweenness centrality across all node-layer pairs as a 2D matrix (surface).
 
 **Output:** 2D array of shape (num_nodes, num_layers) plus ordered lists of node and layer labels for plotting
+Rows follow the returned ``nodes`` order; columns follow the returned ``layers`` order.
 
 **Applications:**
 - Identify bridge nodes that connect different layers
@@ -590,7 +591,7 @@ Overview
 
 The traditional clustering coefficient measures local transitivity: if node *v* is connected to nodes *x* and *y*, what is the probability that *x* and *y* are also connected? In multilayer networks, edges may exist in different layers, leading to several possible definitions of "closure."
 
-py3plex implements three variants of multilayer clustering coefficients:
+Unless noted otherwise, the definitions below assume undirected, unweighted edges and treat triangles as unordered. py3plex implements three variants of multilayer clustering coefficients:
 
 1. **Intra-layer clustering** - Classical clustering computed separately for each layer
 2. **Multiplex clustering** - Aggregates neighbors across layers, counts triangles that close in any layer
@@ -638,6 +639,8 @@ Count triangles where edges to neighbors can be in different layers, but closure
     \exists \alpha,\beta \in \mathcal{L} \text{ s.t. } E_\alpha(v,x)=1, E_\beta(v,y)=1, 
     \exists \gamma \in \mathcal{L} \text{ s.t. } E_\gamma(x,y)=1\}\big|
 
+This counts unordered neighbor pairs connected to *v* (possibly through different layers) that are themselves connected in at least one layer in *𝓛*.
+
 The multiplex clustering coefficient is:
 
 .. math::
@@ -666,7 +669,7 @@ The supra-adjacency clustering coefficient is:
     0 & \text{otherwise}
     \end{cases}
 
-where *d*\ :sub:`i` is the degree of state node *i* in the supra-adjacency matrix.
+where *d*\ :sub:`i` is the degree of state node *i* in the supra-adjacency matrix. The default supra-adjacency omits self-loops; inter-layer edges contribute only when ``include_cross_layer=True`` (see examples below).
 
 Coefficient Type Mapping
 ~~~~~~~~~~~~~~~~~~~~~~~~~

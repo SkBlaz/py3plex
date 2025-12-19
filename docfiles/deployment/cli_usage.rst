@@ -20,7 +20,7 @@ After installation, verify the CLI is available:
 
 **Alternative: Using Docker**
 
-If you prefer Docker, the CLI is also available via the Docker container:
+If you prefer Docker, the CLI is also available via the Docker container. Mount a host directory to ``/data`` when you want outputs to persist:
 
 .. code-block:: bash
 
@@ -140,10 +140,12 @@ Use ``-`` as the input file argument to read network data from stdin:
     # Pipe to query command
     cat network.edgelist | py3plex query - "SELECT nodes COMPUTE degree"
 
+When reading from stdin, set ``--input-type`` if the format cannot be inferred from a filename (for example when piping raw CSV or JSON).
+
 Piping Between Commands
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Chain py3plex commands together without intermediate files:
+Chain py3plex commands together without intermediate files. Commands write logs to stderr, so piping stdout keeps data clean:
 
 .. code-block:: bash
 
@@ -174,7 +176,7 @@ The ``query`` command executes DSL queries on networks and outputs results in mu
     py3plex query network.edgelist "SELECT nodes COMPUTE degree"
 
     # Multiple computations
-    py3plex query network.edgelist "SELECT nodes COMPUTE degree, betweenness_centrality"
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree betweenness_centrality"
 
 **Python DSL Builder Syntax (use ``--dsl`` flag):**
 
@@ -207,10 +209,14 @@ Control the output format for different use cases:
     # Table output - good for human reading in terminal
     py3plex query network.edgelist "SELECT nodes COMPUTE degree" --format table
 
+Default output is JSON. Use ``table`` for on-screen inspection and ``csv`` when you want a spreadsheet-friendly file.
+
 Combining with Unix Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Combine py3plex output with standard Unix tools for powerful data processing:
+
+Explicitly set ``--format`` when piping into other tools so output shape stays stable.
 
 **With jq (JSON processing):**
 
@@ -300,7 +306,7 @@ Before loading network data, you can validate file format and data integrity usi
 Basic Validation
 ~~~~~~~~~~~~~~~~
 
-Validate a graph data file (auto-detects format):
+Validate a graph data file (auto-detects format). The command returns exit code 0 when no errors are found:
 
 .. code-block:: bash
 
@@ -431,7 +437,7 @@ This creates a network with 100 nodes across 3 layers and saves it to ``network.
 Network Generation Models
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``create`` command supports multiple random graph models. The ``--probability`` flag controls density or rewiring, depending on the model; use ``py3plex create --help`` for the exact parameter meaning before launching large jobs.
+The ``create`` command supports multiple random graph models. The ``--probability`` flag controls density or rewiring, depending on the model; use ``py3plex create --help`` for the exact parameter meaning before launching large jobs. Set ``--seed`` for reproducible output and reduce ``--probability`` if graphs become too dense for your machine.
 
 **Erdős-Rényi Random Graphs:**
 
@@ -569,7 +575,7 @@ Use label propagation for fast community detection:
 Infomap (Optional)
 ~~~~~~~~~~~~~~~~~~
 
-If Infomap is installed, use it for overlapping community detection:
+If Infomap is installed as an optional dependency, you can run it directly:
 
 .. code-block:: bash
 
@@ -599,6 +605,8 @@ Compute degree centrality and show top nodes:
       node18---layer2: 11.000000
       node77---layer1: 10.000000
       ...
+
+Use ``--top`` to limit printed entries; pair with ``--output`` to save all scores.
 
 Save Results
 ~~~~~~~~~~~~
@@ -647,6 +655,8 @@ Compute all available multilayer statistics:
 .. code-block:: bash
 
     py3plex stats network.graphml --measure all --output stats.json
+
+Statistics can be verbose; prefer ``--output`` to capture them as JSON.
 
 **Output includes:**
 
@@ -739,6 +749,8 @@ Network Aggregation
 
 Aggregate multiple layers into a single layer using different methods:
 
+Output format is inferred from the extension (``.graphml`` in the examples below).
+
 Sum Aggregation
 ~~~~~~~~~~~~~~~
 
@@ -770,6 +782,8 @@ Convert Between Formats
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Convert networks between different file formats:
+
+Format detection relies on file extensions; pass ``--input-type`` when converting from stdin or extensionless files.
 
 **To GEXF (for Gephi):**
 
@@ -894,19 +908,19 @@ Common Issues and Solutions
 
 **Issue: "Infomap not available"**
 
-Solution: Infomap requires separate installation. Install it if needed, or use ``louvain`` or ``label_prop`` instead.
+Solution: Infomap is an optional dependency. Install it if you need that algorithm, or choose ``louvain``/``label_prop`` instead.
 
 **Issue: "Eigenvector centrality failed"**
 
-Solution: Eigenvector centrality may not converge on disconnected or poorly conditioned graphs. Try running on a connected subgraph or switch to ``degree`` centrality.
+Solution: Eigenvector centrality may not converge on disconnected or poorly conditioned graphs. Run it on a connected subgraph or switch to ``degree`` centrality.
 
 **Issue: Visualization too slow**
 
-Solution: Use simpler layouts (``circular``) or reduce figure size (``--width 8 --height 6``).
+Solution: Use simpler layouts (``circular``), reduce figure size (``--width 8 --height 6``), or sample a subgraph before plotting.
 
 **Issue: Memory errors with large networks**
 
-Solution: Use aggregation to reduce network size before visualization, or compute statistics without visualization.
+Solution: Aggregate layers to shrink the graph, or stick to text-based stats instead of visualization.
 
 See Also
 --------

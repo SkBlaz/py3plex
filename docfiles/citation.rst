@@ -1,7 +1,7 @@
 Citation and References
 =======================
 
-If you use py3plex in your research, please **cite our work**. Cite the primary journal article in all cases, add the conference paper when discussing the original algorithmic design or scalability, and include algorithm-specific papers when you rely on those methods.
+If you use py3plex in your research, please **cite our work**. Always include the primary journal article, add the conference paper when you mention design or scalability, and pair py3plex with the original algorithm papers whenever you rely on specific built-ins.
 
 How to cite
 -----------
@@ -57,12 +57,12 @@ For the **initial algorithmic design and scalability discussion** (cite alongsid
 Algorithm-Specific Citations
 -----------------------------
 
-When using a **specific algorithm implementation inside py3plex**, cite **both py3plex** and the **original method** listed below.
+When you rely on a **specific algorithm implementation inside py3plex**, cite **both py3plex** and the **original method** listed below. Use the paper that corresponds to the computation you run (community detection, embeddings, ranking, etc.).
 
 Multilayer Modularity
 ~~~~~~~~~~~~~~~~~~~~~
 
-For multilayer modularity optimization:
+For multilayer modularity optimization and multilayer community detection:
 
 .. code-block:: bibtex
 
@@ -81,7 +81,7 @@ For multilayer modularity optimization:
 Node2Vec
 ~~~~~~~~
 
-For node embedding with biased random walks:
+For node embeddings learned via biased random walks:
 
 .. code-block:: bibtex
 
@@ -98,7 +98,7 @@ For node embedding with biased random walks:
 Louvain Algorithm
 ~~~~~~~~~~~~~~~~~
 
-For modularity-based community detection:
+For modularity-based community detection on single-layer projections:
 
 .. code-block:: bibtex
 
@@ -117,7 +117,7 @@ For modularity-based community detection:
 Infomap
 ~~~~~~~
 
-For flow-based community detection:
+For flow-based community detection (information-theoretic objective):
 
 .. code-block:: bibtex
 
@@ -135,7 +135,7 @@ For flow-based community detection:
 MultiXRank
 ~~~~~~~~~~
 
-For random-walk-based multilayer ranking:
+For multilayer node ranking based on random walk with restart:
 
 .. code-block:: bibtex
 
@@ -256,9 +256,7 @@ py3plex builds upon **excellent open-source libraries**:
 Community Acknowledgments
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We thank all contributors, users, and the broader network science community for their support, feedback, and contributions.
-
-Special thanks to contributors who have submitted pull requests, reported issues, or provided feedback.
+We thank all contributors, users, and the broader network science community for feedback, pull requests, and issue reports.
 
 License Information
 -------------------

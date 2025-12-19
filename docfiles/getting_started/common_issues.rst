@@ -1,7 +1,7 @@
 Common Issues and Troubleshooting
 ==================================
 
-Quick fixes for frequent issues when getting started with py3plex. Work through the sections in order: installation → data loading → visualization → performance → algorithms. Try one solution at a time and retest before moving on.
+Quick fixes for frequent issues when getting started with py3plex. Work through the sections in order (installation → data loading → visualization → performance → algorithms). Apply one fix at a time, then rerun your script before trying the next so you know which change helped.
 
 Installation Issues
 -------------------
@@ -9,12 +9,13 @@ Installation Issues
 "No module named 'numpy'"
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** Import error when trying to use py3plex.
+**Problem:** Import error when trying to use py3plex (``ModuleNotFoundError``).
 
-**Solution:** Install numpy first (preferably in a virtual environment to avoid system-wide changes):
+**Solution:** Install numpy first (preferably in a virtual environment to avoid system-wide changes). Upgrading pip often avoids build warnings:
 
 .. code-block:: bash
 
+    python -m pip install --upgrade pip
     python -m pip install numpy
     python -m pip install py3plex
 
@@ -36,7 +37,7 @@ Compilation Errors on Windows
 "Permission denied" on Linux/macOS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** Permission errors during pip install.
+**Problem:** Permission errors during pip install (for example, ``[Errno 13] Permission denied`` or ``EACCES``).
 
 **Solution 1:** Use a virtual environment (recommended; keeps dependencies isolated):
 
@@ -58,12 +59,13 @@ Old Version Installed
 
 **Problem:** Changes not reflecting or documentation mentions newer features.
 
-**Solution:** Verify and upgrade to the latest release:
+**Solution:** Verify the installed version, then upgrade to the latest release:
 
 .. code-block:: bash
 
     python -m pip show py3plex
     python -m pip install --upgrade py3plex
+    python -m pip show py3plex  # Confirm the version changed
 
 Data Loading Issues
 -------------------
@@ -121,7 +123,11 @@ Empty or Malformed Networks
     # Always verify after loading
     network.basic_stats()
 
-If counts are still zero, inspect the first few lines of the file for the expected number of columns and delimiters, and confirm there are no header lines being parsed as data.
+If counts are still zero:
+
+* Inspect the first few lines for the expected number of columns and delimiters.
+* Ensure header rows are skipped or removed before loading.
+* Check that the file is not empty (``os.path.getsize``).
 
 Visualization Issues
 --------------------
@@ -192,6 +198,8 @@ Blurry or Low-Quality Plots
 
 Missing Dependencies
 --------------------
+
+**Tip:** Feature-specific extras are optional; install only what you need.
 
 "No module named 'plotly'"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

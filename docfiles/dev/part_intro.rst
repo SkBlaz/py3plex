@@ -1,7 +1,7 @@
 Developer & Contributor Docs
 =============================
 
-Use this page as your landing point for development setup, code architecture, and contribution guidelines. Each linked page below expands on a specific area so you can move from setup to contributing without guessing the next step.
+Use this page as your landing point for development setup, code architecture, and contribution guidelines. Follow the linked pages in order so you can move from setup to contributing without guessing the next step.
 
 **This section covers:**
 
@@ -13,7 +13,7 @@ Use this page as your landing point for development setup, code architecture, an
 Types of Contributions
 ----------------------
 
-* **Bug reports** — Include repro steps, expected vs. actual behavior, and environment details
+* **Bug reports** — Include steps to reproduce, expected vs. actual behavior, and environment details (OS, Python, py3plex version)
 * **Documentation** — Improve explanations, runnable examples, and doc tests
 * **Code fixes** — Address bugs, safety gaps, or performance bottlenecks
 * **New features** — Add algorithms, visualizations, I/O formats, or plugins
@@ -26,7 +26,7 @@ Getting Started
 1. Read :doc:`development_guide` to set up your environment and workflow.
 2. Pick a small, scoped task (docs, tests, or a single bug) to get familiar with the process.
 3. Browse GitHub issues labeled "good first issue" or propose a doc improvement you can finish quickly.
-4. Comment on the issue you plan to tackle so others know it is in progress.
-5. Ask questions in the relevant issue or discussion thread when blocked.
+4. Comment on the issue you plan to tackle so others know it is in progress, and keep the thread updated with findings.
+5. Ask questions in the relevant issue or discussion thread when blocked; link any experiments or logs that help others assist you.
 
 See :doc:`contributing` for the complete process.

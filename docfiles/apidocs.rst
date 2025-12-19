@@ -1,12 +1,12 @@
 API Documentation
 =================
 
-This section contains the complete API documentation for py3plex, automatically generated from docstrings. The modules listed below anchor high-traffic entry points; the full tree produced by ``sphinx-apidoc`` lives under ``AUTOGEN_results`` after a build. Keep the order stable so cross-references into the generated tree remain predictable.
+This section contains the complete API documentation for py3plex, automatically generated from docstrings. The modules listed below anchor high-traffic entry points; the full tree produced by ``sphinx-apidoc`` lives under ``AUTOGEN_results`` after a build. Keep the order stable so cross-references into the generated tree remain predictable, and avoid hand-editing anything under ``AUTOGEN_results`` because it is overwritten on regeneration.
 
 How to regenerate
 -----------------
 
-Prerequisites: py3plex importable in the current environment and ``sphinx``/``sphinx-apidoc`` available on ``PATH``.
+Prerequisites: py3plex importable in the current environment and ``sphinx``/``sphinx-apidoc`` available on ``PATH`` (e.g., in an activated virtual environment).
 
 #. From the repository root, change into ``docfiles``::
 
@@ -20,7 +20,8 @@ Prerequisites: py3plex importable in the current environment and ``sphinx``/``sp
 
        sphinx-build -b html -n -W --keep-going docfiles _build/loop-docs
 
-Use ``:noindex:`` on any ``automodule`` entries that appear elsewhere to avoid duplicate index warnings.
+.. note::
+   Use ``:noindex:`` on any ``automodule`` entries that appear elsewhere to avoid duplicate index warnings.
 
 Core Modules
 ------------
@@ -222,8 +223,8 @@ Network Classification
 
 Label propagation and related network-level classifiers.
 
-.. Note: :noindex: prevents duplicate object descriptions in the documentation index
-   since this module is also documented elsewhere.
+.. note::
+   ``:noindex:`` prevents duplicate object descriptions in the documentation index since this module is also documented elsewhere.
 
 .. automodule:: py3plex.algorithms.network_classification.label_propagation
    :members:
@@ -326,8 +327,8 @@ I/O Schema and Validation
 
 Schema helpers and validation API for structured inputs.
 
-.. Note: :noindex: prevents duplicate object descriptions in the documentation index
-   since this module is documented in multiple locations.
+.. note::
+   ``:noindex:`` prevents duplicate object descriptions in the documentation index since this module is documented in multiple locations.
 
 .. automodule:: py3plex.io.schema
    :members:
