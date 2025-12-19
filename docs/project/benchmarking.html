@@ -177,10 +177,10 @@
              
   <section id="benchmarking-performance">
 <h1>Benchmarking &amp; Performance<a class="headerlink" href="#benchmarking-performance" title="Link to this heading"></a></h1>
-<p>Performance characteristics and optimization strategies for py3plex.</p>
+<p>Performance characteristics, runtime expectations, and practical optimization strategies for py3plex.</p>
 <section id="network-scale-guidelines">
 <h2>Network Scale Guidelines<a class="headerlink" href="#network-scale-guidelines" title="Link to this heading"></a></h2>
-<p>py3plex is optimized for research-scale networks:</p>
+<p>py3plex targets research-scale multilayer networks. Use the ranges below as directional guidance rather than hard limits; structure (density, layer coupling) has a bigger impact than raw node counts.</p>
 <table class="docutils align-default" id="id1">
 <caption><span class="caption-text">Network Scale Performance</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <colgroup>
@@ -230,11 +230,11 @@
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This reduces memory usage by 10-100x for typical networks.</p>
+<p>This typically reduces memory usage by 10-100x for moderately sparse graphs.</p>
 </section>
 <section id="batch-operations">
 <h3>Batch Operations<a class="headerlink" href="#batch-operations" title="Link to this heading"></a></h3>
-<p>Process multiple operations together:</p>
+<p>Process multiple operations together instead of issuing separate passes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
 <span class="c1"># Compute multiple metrics at once</span>
@@ -245,11 +245,11 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Avoid repeated single-metric computations.</p>
+<p>Avoid repeated single-metric computations when they can be combined.</p>
 </section>
 <section id="use-arrow-parquet-for-i-o">
 <h3>Use Arrow/Parquet for I/O<a class="headerlink" href="#use-arrow-parquet-for-i-o" title="Link to this heading"></a></h3>
-<p>For large datasets:</p>
+<p>For large datasets, prefer columnar formats over CSV:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.parquet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pq</span>
 
 <span class="c1"># Save</span>
@@ -275,13 +275,19 @@
 </section>
 <section id="benchmark-results">
 <h2>Benchmark Results<a class="headerlink" href="#benchmark-results" title="Link to this heading"></a></h2>
-<p>Performance benchmarks for common operations on synthetic multilayer networks. These results provide guidance for planning analyses and optimizing workflows.</p>
-<p><strong>Test Environment:</strong></p>
+<p>Performance benchmarks for common operations on synthetic multilayer networks. Use these results for rough planning, not as guarantees.</p>
+<p><strong>Test Environment</strong></p>
 <ul class="simple">
 <li><p>CPU: Intel Core i7-9700K &#64; 3.6GHz (8 cores)</p></li>
 <li><p>RAM: 32 GB DDR4</p></li>
 <li><p>Python: 3.10</p></li>
 <li><p>py3plex: v1.0.0</p></li>
+</ul>
+<p><strong>Methodology &amp; Caveats</strong></p>
+<ul class="simple">
+<li><p>Synthetic multilayer graphs with comparable density across sizes</p></li>
+<li><p>Single-run wall-clock timings on the hardware above</p></li>
+<li><p>Runtimes vary materially with density, weight usage, and layer count; rerun locally for precise estimates</p></li>
 </ul>
 <section id="algorithm-runtimes-vs-network-size">
 <h3>Algorithm Runtimes vs. Network Size<a class="headerlink" href="#algorithm-runtimes-vs-network-size" title="Link to this heading"></a></h3>
@@ -366,7 +372,7 @@
 </tr>
 </tbody>
 </table>
-<p><em>Note: Betweenness is O(n³) - use approximation methods for large networks</em></p>
+<p><em>Note: Betweenness is O(n³); use approximation methods for large networks.</em></p>
 </section>
 <section id="node2vec-embeddings">
 <h4>Node2Vec Embeddings<a class="headerlink" href="#node2vec-embeddings" title="Link to this heading"></a></h4>
@@ -491,7 +497,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Key Insight:</strong> Sparse storage reduces memory by 10-1000x for typical networks.</p>
+<p><strong>Key Insight:</strong> Sparse storage reduces memory by 10-1000x for typical moderately sparse networks (adjacency-like storage, unweighted).</p>
 </section>
 <section id="comparison-with-other-tools">
 <h3>Comparison with Other Tools<a class="headerlink" href="#comparison-with-other-tools" title="Link to this heading"></a></h3>
@@ -525,7 +531,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Verdict:</strong> py3plex is competitive for single-layer, adds multilayer capability others lack.</p>
+<p><strong>Verdict:</strong> py3plex is competitive on single-layer inputs while adding multilayer capability others lack.</p>
 </section>
 <section id="node-embeddings-py3plex-vs-node2vec">
 <h4>Node Embeddings: py3plex vs. node2vec<a class="headerlink" href="#node-embeddings-py3plex-vs-node2vec" title="Link to this heading"></a></h4>
@@ -557,27 +563,24 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Verdict:</strong> py3plex uses established libraries (gensim), performance is comparable.</p>
-<p><strong>Benchmarking Notes:</strong></p>
+<p><strong>Verdict:</strong> py3plex wraps established libraries (e.g., gensim); performance is comparable, with minor Python overhead expected.</p>
+<p><strong>Benchmarking Notes</strong></p>
 <ul class="simple">
-<li><p>Results vary based on network structure (density, clustering, layer coupling)</p></li>
-<li><p>Runtimes scale differently for different algorithms (linear, quadratic, cubic)</p></li>
-<li><p>Use these benchmarks as rough guidelines, not exact predictions</p></li>
-<li><p>For the most accurate estimates, run benchmarks on your specific hardware and data</p></li>
+<li><p>Results vary with network structure (density, clustering, layer coupling).</p></li>
+<li><p>Algorithmic scaling differs (linear vs. quadratic vs. cubic) and dominates at large sizes.</p></li>
+<li><p>Treat these tables as directional; rerun locally for reliable planning.</p></li>
+<li><p>For the most accurate estimates, run the bundled scripts on your hardware and data.</p></li>
 </ul>
-<p><strong>Running Custom Benchmarks:</strong></p>
-<p>See the <code class="docutils literal notranslate"><span class="pre">benchmarks/</span></code> directory in the repository for scripts to reproduce these results or run your own benchmarks.</p>
 </section>
 </section>
 </section>
 <section id="running-benchmarks">
 <h2>Running Benchmarks<a class="headerlink" href="#running-benchmarks" title="Link to this heading"></a></h2>
-<p>Run benchmarks yourself:</p>
+<p>Reproduce or extend the tables above with the bundled scripts:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>benchmarks
 python<span class="w"> </span>run_benchmarks.py
 </pre></div>
 </div>
-<p>See the <cite>benchmarks/</cite> directory in the repository for benchmark scripts.</p>
 </section>
 <section id="profiling-your-code">
 <h2>Profiling Your Code<a class="headerlink" href="#profiling-your-code" title="Link to this heading"></a></h2>

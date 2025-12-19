@@ -3,11 +3,12 @@ GUI Testing Guide
 **********************
 
 Complete testing guide for the Py3plex GUI, including automated CI tests and manual validation.
+Use this document to (a) understand what CI covers and (b) run the same checks locally in a predictable order.
 
 Visual Interface Preview
 ========================
 
-The Py3plex GUI consists of several key pages that work together for network analysis:
+The Py3plex GUI consists of several pages that work together for network analysis:
 
 .. image:: ../example_images/gui_load_data.png
    :width: 600px
@@ -44,9 +45,9 @@ GitHub Actions Workflow
 
 All GUI tests run automatically on GitHub Actions:
 
-**Workflow**: ``.github/workflows/gui-tests.yml``
+**Workflow file**: ``.github/workflows/gui-tests.yml``
 
-**Triggers**:
+**Triggers (auto)**:
 
 - Push to main/master/develop branches (if ``gui/`` files changed)
 - Pull requests targeting main/master/develop (if ``gui/`` files changed)
@@ -80,7 +81,7 @@ All GUI tests run automatically on GitHub Actions:
 Running CI Tests Locally
 ------------------------
 
-You can run the same tests locally:
+You can run the same tests locally (Docker and Node required). Run the following from ``gui/``:
 
 .. code-block:: bash
 
@@ -89,6 +90,7 @@ You can run the same tests locally:
     # API tests
     docker compose build api worker redis
     docker compose up -d api worker redis
+    # wait for health: curl -f http://localhost:8080/api/health
     docker compose exec api pytest ci/api-tests/ -v
     docker compose down -v
 
@@ -96,7 +98,7 @@ You can run the same tests locally:
     docker compose up -d --build
     # Wait for services
     curl -f http://localhost:8080/api/health
-    # Run manual integration tests (see below)
+    # Run manual integration tests (see below) to mirror CI expectations
     docker compose down -v
 
     # Frontend build
@@ -119,13 +121,15 @@ Prerequisites
 Setup
 -----
 
+Use a clean working tree so logs are easy to read. All paths below are relative to ``gui/``.
+
 .. code-block:: bash
 
     cd gui
     cp .env.example .env
     make up
 
-**Expected**: All containers start successfully. Check with ``docker compose ps``.
+**Expected**: All containers start successfully; ``docker compose ps`` shows services marked ``healthy``.
 
 Test 1: Health Check
 --------------------
@@ -141,7 +145,7 @@ API Health
 
 .. code-block:: json
 
-    {"status":"ok","version":"0.1.0"}
+    {"status":"ok","version":"<current_version>"}
 
 Frontend Access
 ^^^^^^^^^^^^^^^
@@ -174,6 +178,8 @@ Open browser to ``http://localhost:5555``
 Test 2: Upload Network
 ----------------------
 
+Use the bundled ``toy_network.edgelist`` from ``gui/example_data/``.
+
 1. Navigate to **Load Data** page
 2. Click "Click to upload" or drag and drop ``toy_network.edgelist``
 3. Click "Upload & Parse"
@@ -197,7 +203,7 @@ Test 3: Visualize Network
 **Expected**:
 
 - Page shows three panels: Layers, Network View, Inspect
-- Network View shows placeholder with "Graph with X nodes"
+- Network View shows placeholder with "Graph with 6 nodes" and layer controls
 - No errors in console
 
 Test 4: Run Layout Job
@@ -212,6 +218,7 @@ Test 4: Run Layout Job
 - Status shows "queued" → "running" → "completed"
 - Progress updates (10% → 30% → 80% → 100%)
 - Job shows green checkmark when complete
+- Layout appears in the Visualize page after completion
 
 Verify in Flower
 ^^^^^^^^^^^^^^^^
@@ -231,6 +238,7 @@ Test 5: Run Centrality Analysis
 - New job appears in Job Center
 - Type: "Centrality"
 - Status progresses to "completed"
+- Results table lists centrality scores (degree + betweenness) per node
 - No errors
 
 Test 6: Run Community Detection
@@ -243,7 +251,7 @@ Test 6: Run Community Detection
 - New job appears in Job Center
 - Type: "Community Detection"
 - Status progresses to "completed"
-- Result includes number of communities found
+- Result includes number of communities found and lists nodes per community (or a download link)
 
 Test 7: Export Workspace
 -------------------------
@@ -264,7 +272,7 @@ Verify File Created
 
     ls -lh gui/data/workspaces/
 
-**Expected**: Zip file exists with recent timestamp
+**Expected**: Zip file exists with recent timestamp and non-zero size
 
 Test 8: API Direct Testing
 ---------------------------
@@ -272,9 +280,11 @@ Test 8: API Direct Testing
 Upload via API
 ^^^^^^^^^^^^^^
 
+Keep the stack running from the earlier steps.
+
 .. code-block:: bash
 
-    curl -F "file=@toy_network.edgelist" \
+    curl -F "file=@example_data/toy_network.edgelist" \
       http://localhost:8080/api/upload
 
 **Expected**: JSON response with ``graph_id``
@@ -309,7 +319,11 @@ Check Job Status
     JOB_ID=<from_previous_step>
     curl http://localhost:8080/api/jobs/$JOB_ID
 
-**Expected**: JSON with status, progress, result
+**Expected**:
+
+- JSON with status, progress, result
+- Status transitions through ``queued`` → ``running`` → ``completed``
+- ``result`` contains coordinates for 6 nodes
 
 Test 9: Logs Inspection
 -----------------------
@@ -362,8 +376,8 @@ Test 12: Multiple Jobs
 **Expected**:
 
 - All three jobs appear in Job Center
-- Jobs process in parallel (check Flower)
-- All complete successfully
+- Jobs process in parallel (check Flower to confirm)
+- All complete successfully without errors in the browser console or service logs
 
 Common Issues
 =============
@@ -453,7 +467,7 @@ For reference, on a typical development machine:
 - **Centrality job**: 1-3 seconds
 - **Community detection**: 1-3 seconds
 
-Larger networks (1000+ nodes) may take proportionally longer.
+Larger networks (1000+ nodes) may take proportionally longer. Benchmarks are indicative, not SLAs.
 
 Security Testing (Development Mode)
 ===================================
@@ -479,6 +493,6 @@ If all tests pass:
 
 ---
 
-**Last Updated**: 2025-11-09
+**Last Reviewed**: 2025-11-09 (update this stamp when content changes)
 
 **Version**: 0.1.0

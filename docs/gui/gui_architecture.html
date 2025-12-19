@@ -146,8 +146,10 @@
              
   <section id="py3plex-gui-architecture">
 <h1>Py3plex GUI Architecture<a class="headerlink" href="#py3plex-gui-architecture" title="Link to this heading"></a></h1>
+<p>This document explains how the GUI stack (frontend, FastAPI backend, Celery workers, Redis, and nginx) fits together, how data moves through it, and where to look when troubleshooting or extending a feature.</p>
 <section id="system-overview">
 <h2>System Overview<a class="headerlink" href="#system-overview" title="Link to this heading"></a></h2>
+<p>High-level container topology and dev ports for the docker-compose development stack.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌────────────────────────────────────────────────────────────────┐
 │                    User Browser (Port 8080)                     │
 └────────────────────────────────┬───────────────────────────────┘
@@ -228,6 +230,7 @@
 <h2>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading"></a></h2>
 <section id="upload-parse-flow">
 <h3>Upload &amp; Parse Flow<a class="headerlink" href="#upload-parse-flow" title="Link to this heading"></a></h3>
+<p>Reads a file from the browser, writes it to disk, and registers a NetworkX graph in memory for subsequent API calls.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>User → Frontend → API /upload → io.save_upload()
                                       ↓
                               io.load_graph_from_file()
@@ -242,6 +245,7 @@
 </section>
 <section id="analysis-job-flow">
 <h3>Analysis Job Flow<a class="headerlink" href="#analysis-job-flow" title="Link to this heading"></a></h3>
+<p>Queues CPU-heavy work (layout, centrality, community detection) and streams progress back to the UI via Redis; errors surface on the same polling endpoint.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>User → Frontend → API /analysis/centrality
                         ↓
                   Create Celery task
@@ -351,6 +355,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 </section>
 <section id="component-responsibilities">
 <h2>Component Responsibilities<a class="headerlink" href="#component-responsibilities" title="Link to this heading"></a></h2>
+<p>Each block below summarizes what runs where so you can navigate the codebase quickly and understand which service owns a behavior.</p>
 <section id="visual-component-reference">
 <h3>Visual Component Reference<a class="headerlink" href="#visual-component-reference" title="Link to this heading"></a></h3>
 <p>The architecture components are realized in the following user interface pages:</p>
@@ -380,7 +385,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <li><p>User interaction</p></li>
 <li><p>File upload UI</p></li>
 <li><p>Real-time job polling</p></li>
-<li><p>Graph visualization (placeholder)</p></li>
+<li><p>Graph visualization (current placeholder renderer)</p></li>
 <li><p>State management (Zustand)</p></li>
 </ul>
 <p><strong>Technologies</strong>:</p>
@@ -401,6 +406,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <li><p>File upload handling</p></li>
 <li><p>Job orchestration</p></li>
 <li><p>py3plex integration</p></li>
+<li><p>Graph registry lifecycle and artifact paths</p></li>
 </ul>
 <p><strong>Key Services</strong>:</p>
 <ul class="simple">
@@ -409,6 +415,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <li><p><code class="docutils literal notranslate"><span class="pre">metrics</span></code>: Centrality calculations</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">community</span></code>: Community detection</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">workspace</span></code>: Save/load bundles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model</span></code>: Registry access and graph queries</p></li>
 </ul>
 </section>
 <section id="worker-celery">
@@ -418,7 +425,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <li><p>Async job execution</p></li>
 <li><p>Progress reporting</p></li>
 <li><p>Result persistence</p></li>
-<li><p>Resource management</p></li>
+<li><p>Resource management (bounded by <code class="docutils literal notranslate"><span class="pre">CELERY_CONCURRENCY</span></code>)</p></li>
 </ul>
 <p><strong>Tasks</strong>:</p>
 <ul class="simple">
@@ -434,6 +441,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <li><p>Job queue (broker)</p></li>
 <li><p>Result backend</p></li>
 <li><p>Session storage (future)</p></li>
+<li><p>Caches are small by design; long-lived artifacts stay on disk.</p></li>
 </ul>
 </section>
 <section id="nginx">
@@ -454,6 +462,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <li><p>Worker monitoring</p></li>
 <li><p>Task history</p></li>
 <li><p>Performance metrics</p></li>
+<li><p>Quick sanity check when jobs stall or are delayed.</p></li>
 </ul>
 </section>
 </section>
@@ -471,6 +480,8 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>Stores lightweight metadata and the in-memory NetworkX object for quick API access. Large artifacts (layouts, metrics) live under <code class="docutils literal notranslate"><span class="pre">/data/artifacts/&lt;graph_id&gt;/</span></code> instead of bloating Redis.
+Registry contents are process-local; a backend restart clears uploads unless they are exported to a workspace bundle.</p>
 </section>
 <section id="job-state-redis">
 <h3>Job State (Redis)<a class="headerlink" href="#job-state-redis" title="Link to this heading"></a></h3>
@@ -483,6 +494,8 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>A Celery task updates <code class="docutils literal notranslate"><span class="pre">progress</span></code> and <code class="docutils literal notranslate"><span class="pre">phase</span></code> via <code class="docutils literal notranslate"><span class="pre">update_state</span></code> so the UI can poll <code class="docutils literal notranslate"><span class="pre">/jobs/{job_id}</span></code> without hitting the worker directly.
+<code class="docutils literal notranslate"><span class="pre">queued</span></code> transitions to <code class="docutils literal notranslate"><span class="pre">running</span></code> once a worker starts; <code class="docutils literal notranslate"><span class="pre">failed</span></code> includes the exception string in <code class="docutils literal notranslate"><span class="pre">result.error</span></code>.</p>
 </section>
 <section id="workspace-bundle-zip">
 <h3>Workspace Bundle (Zip)<a class="headerlink" href="#workspace-bundle-zip" title="Link to this heading"></a></h3>
@@ -495,6 +508,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
     └── community.json
 </pre></div>
 </div>
+<p>Bundles let users pause work and resume later; only the bundle ID needs to be stored client-side.</p>
 </section>
 </section>
 <section id="security-architecture">
@@ -586,7 +600,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <h2>Deployment Variants<a class="headerlink" href="#deployment-variants" title="Link to this heading"></a></h2>
 <section id="local-development-current">
 <h3>Local Development (Current)<a class="headerlink" href="#local-development-current" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>up<span class="w">  </span><span class="c1"># All containers on localhost</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>up<span class="w">  </span><span class="c1"># All containers on localhost (frontend/api hot reload)</span>
 </pre></div>
 </div>
 </section>
@@ -647,6 +661,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 ../frontend/src/           → /app/src (dev mode)
 </pre></div>
 </div>
+<p>Read-only mounts keep source code immutable inside containers; <code class="docutils literal notranslate"><span class="pre">/data</span></code> remains writable for uploads, job artifacts, and workspace bundles.</p>
 </section>
 <section id="environment-variables">
 <h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
@@ -663,25 +678,27 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <span class="nv">VITE_API_URL</span><span class="o">=</span>http://localhost:8080/api
 </pre></div>
 </div>
+<p>These mirror <code class="docutils literal notranslate"><span class="pre">.env.example</span></code>; copy to <code class="docutils literal notranslate"><span class="pre">.env</span></code> and adjust per deployment.</p>
 </section>
 <section id="performance-characteristics">
 <h2>Performance Characteristics<a class="headerlink" href="#performance-characteristics" title="Link to this heading"></a></h2>
+<p>Indicative timings from the dev container; expect variance with hardware, graph size, and algorithms.</p>
 <section id="small-graphs-100-nodes">
 <h3>Small Graphs (&lt; 100 nodes)<a class="headerlink" href="#small-graphs-100-nodes" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Upload: &lt; 1s</p></li>
-<li><p>Layout: 2-5s</p></li>
-<li><p>Centrality: 1-3s</p></li>
-<li><p>Community: 1-3s</p></li>
+<li><p>Upload: typically &lt; 1s</p></li>
+<li><p>Layout: ~2-5s</p></li>
+<li><p>Centrality: ~1-3s</p></li>
+<li><p>Community: ~1-3s</p></li>
 </ul>
 </section>
 <section id="medium-graphs-100-1000-nodes">
 <h3>Medium Graphs (100-1000 nodes)<a class="headerlink" href="#medium-graphs-100-1000-nodes" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Upload: 1-3s</p></li>
-<li><p>Layout: 5-15s</p></li>
-<li><p>Centrality: 3-10s</p></li>
-<li><p>Community: 3-10s</p></li>
+<li><p>Upload: ~1-3s</p></li>
+<li><p>Layout: ~5-15s</p></li>
+<li><p>Centrality: ~3-10s</p></li>
+<li><p>Community: ~3-10s</p></li>
 </ul>
 </section>
 <section id="large-graphs-1000-nodes">
@@ -690,7 +707,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <li><p>Consider sampling for preview</p></li>
 <li><p>Progressive rendering recommended</p></li>
 <li><p>May need GPU acceleration</p></li>
-<li><p>Memory: ~1GB per 10k nodes</p></li>
+<li><p>Memory: rough heuristic is ~1GB per 10k nodes; measure for your dataset and hardware</p></li>
 </ul>
 </section>
 </section>
@@ -699,7 +716,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <section id="phase-2">
 <h3>Phase 2<a class="headerlink" href="#phase-2" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>WebGL visualization</p></li>
+<li><p>WebGL visualization for large graphs</p></li>
 <li><p>Real-time collaboration</p></li>
 <li><p>Database backend (PostgreSQL)</p></li>
 <li><p>Authentication service</p></li>
@@ -717,7 +734,7 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 </ul>
 <p>—</p>
 <p><strong>Version</strong>: 0.1.0</p>
-<p><strong>Last Updated</strong>: 2025-11-09</p>
+<p><strong>Last Updated</strong>: 2025-12-18 (update when architecture changes)</p>
 </section>
 </section>
 </section>

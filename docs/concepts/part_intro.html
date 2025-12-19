@@ -151,46 +151,46 @@
              
   <section id="concepts-explanations">
 <h1>Concepts &amp; Explanations<a class="headerlink" href="#concepts-explanations" title="Link to this heading"></a></h1>
-<p>Multilayer networks capture systems where entities interact through multiple types of relationships simultaneously. This section explains the theory behind multilayer networks and how py3plex implements them.</p>
-<p><strong>What’s in this section:</strong></p>
+<p>Multilayer networks capture systems where entities interact through multiple relationship types at once. This page orients you within the conceptual docs and points to the deeper explanations you may need next.</p>
+<p><strong>What’s in this section</strong></p>
 <ul class="simple">
-<li><p><a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> — Types (multiplex, heterogeneous, temporal) and when to use them</p></li>
-<li><p><a class="reference internal" href="py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a> — Node-layer pairs, supra-adjacency matrix, NetworkX integration</p></li>
-<li><p><a class="reference internal" href="design_principles.html"><span class="doc">Design Principles</span></a> — Why py3plex works the way it does</p></li>
-<li><p><a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> — Overview of available algorithms</p></li>
+<li><p><a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> — Modeling choices (multiplex, heterogeneous, temporal) and when each makes sense</p></li>
+<li><p><a class="reference internal" href="py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a> — Node-layer pairs, the supra-adjacency matrix, and how py3plex wraps NetworkX</p></li>
+<li><p><a class="reference internal" href="design_principles.html"><span class="doc">Design Principles</span></a> — Why py3plex is structured as it is</p></li>
+<li><p><a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> — What analysis tools are available and how they fit together</p></li>
 </ul>
-<p><strong>Reading Paths:</strong></p>
+<p><strong>Pick a path</strong></p>
 <ul class="simple">
-<li><p><strong>New to multilayer networks?</strong> Start with <a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> for essential concepts, then <a class="reference internal" href="py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a> to see how py3plex represents them. This foundation is crucial before using the library.</p></li>
-<li><p><strong>Coming from NetworkX?</strong> Read <a class="reference internal" href="py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a> to understand the node-layer pair abstraction and supra-adjacency matrix, then <a class="reference internal" href="design_principles.html"><span class="doc">Design Principles</span></a> for design decisions. Skip the theory in 101 if you’re familiar with complex networks.</p></li>
-<li><p><strong>Building expertise?</strong> Read all chapters in order: theory (<a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a>), implementation (<a class="reference internal" href="py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a>), design rationale (<a class="reference internal" href="design_principles.html"><span class="doc">Design Principles</span></a>), and available tools (<a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a>).</p></li>
+<li><p><strong>New to multilayer networks?</strong> Start with <a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a>, then read <a class="reference internal" href="py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a> to see how layers, node-layer pairs, and coupling are represented.</p></li>
+<li><p><strong>Coming from NetworkX?</strong> Jump to <a class="reference internal" href="py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a> for the node-layer abstraction and supra-adjacency matrix, then skim <a class="reference internal" href="design_principles.html"><span class="doc">Design Principles</span></a> for rationale.</p></li>
+<li><p><strong>Building expertise?</strong> Read in order: theory (<a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a>), implementation (<a class="reference internal" href="py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a>), design rationale (<a class="reference internal" href="design_principles.html"><span class="doc">Design Principles</span></a>), and tools (<a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a>).</p></li>
 </ul>
 <section id="after-reading-this-section">
 <h2>After Reading This Section<a class="headerlink" href="#after-reading-this-section" title="Link to this heading"></a></h2>
 <p>You’ll be able to:</p>
 <ul class="simple">
-<li><p>Model real-world systems as multilayer networks</p></li>
-<li><p>Choose appropriate parameters (e.g., inter-layer coupling strength)</p></li>
-<li><p>Interpret results correctly</p></li>
-<li><p>Avoid common pitfalls (e.g., flattening important structure)</p></li>
+<li><p>Model real-world systems as multilayer networks instead of flattening away layer semantics.</p></li>
+<li><p>Choose sensible parameters (e.g., layer definitions, inter-layer coupling strength) for your data.</p></li>
+<li><p>Interpret results in terms of layers and node-layer pairs rather than anonymous nodes.</p></li>
+<li><p>Avoid common pitfalls (e.g., flattening important structure, mismatched identifiers).</p></li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p><strong>Quick check:</strong> After reading this section, you should be able to answer:</p>
 <ul class="simple">
-<li><p>What’s the difference between multiplex and heterogeneous networks?</p></li>
-<li><p>What does the supra-adjacency matrix represent?</p></li>
-<li><p>When should you use high vs. low inter-layer coupling?</p></li>
+<li><p>What distinguishes multiplex from heterogeneous networks?</p></li>
+<li><p>What does the supra-adjacency matrix represent and why use it?</p></li>
+<li><p>When should you tighten vs. relax inter-layer coupling?</p></li>
 </ul>
 </div>
-<p><strong>Relation to Other Sections:</strong></p>
+<p><strong>Relation to other sections</strong></p>
 <ul class="simple">
-<li><p><strong>Overview</strong> (<a class="reference internal" href="../overview/part_intro.html"><span class="doc">Overview</span></a>) — Quick 2-minute intro to multilayer networks</p></li>
-<li><p><strong>How-to Guides</strong> (<a class="reference internal" href="../how-to/part_intro.html"><span class="doc">How-to Guides</span></a>) — Apply these concepts in practice</p></li>
-<li><p><strong>Reference</strong> (<a class="reference internal" href="../reference/part_intro.html"><span class="doc">API &amp; DSL Reference</span></a>) — Detailed API and algorithm documentation</p></li>
-<li><p><strong>Examples</strong> (<a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a>) — See concepts in action with real code</p></li>
+<li><p><strong>Overview</strong> (<a class="reference internal" href="../overview/part_intro.html"><span class="doc">Overview</span></a>) — Quick 2-minute intro to multilayer networks.</p></li>
+<li><p><strong>How-to Guides</strong> (<a class="reference internal" href="../how-to/part_intro.html"><span class="doc">How-to Guides</span></a>) — Apply these concepts in practice.</p></li>
+<li><p><strong>Reference</strong> (<a class="reference internal" href="../reference/part_intro.html"><span class="doc">API &amp; DSL Reference</span></a>) — Detailed API and algorithm documentation.</p></li>
+<li><p><strong>Examples</strong> (<a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a>) — See concepts in action with real code.</p></li>
 </ul>
-<p><strong>Jump to Practical Applications:</strong></p>
+<p><strong>Jump to practical applications</strong></p>
 <p>Once you understand the concepts:</p>
 <ul class="simple">
 <li><p><strong>Load networks:</strong> <a class="reference internal" href="../how-to/load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a></p></li>

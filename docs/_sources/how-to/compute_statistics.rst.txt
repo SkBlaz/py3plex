@@ -1,9 +1,17 @@
 How to Compute Network Statistics
 ==================================
 
-**Goal:** Calculate metrics that describe the structure of your multilayer network.
+**Goal:** Calculate metrics that describe the structure of your multilayer network—quick counts, per-layer comparisons, node-level rankings, and multilayer-specific measures.
 
-**Prerequisites:** A loaded network (see :doc:`load_and_build_networks`).
+**Prerequisites:** A loaded network (see :doc:`load_and_build_networks`). Examples reuse the same small network unless noted.
+
+.. note:: Imports used below
+   
+   Most snippets rely on the DSL helpers ``Q`` and ``L``:
+   
+   .. code-block:: python
+   
+       from py3plex.dsl import Q, L
 
 .. note:: Where to find this data
    
@@ -18,7 +26,7 @@ How to Compute Network Statistics
 Quick Statistics
 ----------------
 
-Get an overview of your network:
+Get a fast overview (total nodes, edges, layers):
 
 .. code-block:: python
 
@@ -36,11 +44,11 @@ Get an overview of your network:
     # Display comprehensive stats
     network.basic_stats()
 
-**Expected output:**
+**Example output:**
 
 .. code-block:: text
 
-    Number of nodes: 7
+    Number of nodes: 6
     Number of edges: 4
     Number of unique node IDs (across all layers): 4
     Nodes per layer:
@@ -50,8 +58,12 @@ Get an overview of your network:
 Layer-Specific Statistics
 --------------------------
 
+Understand how structure varies per layer before aggregating the network.
+
 Compute Per-Layer Density
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Density compares observed edges ``m`` to the maximum possible edges among ``n`` nodes in one layer.
 
 .. code-block:: python
 
@@ -59,8 +71,6 @@ Compute Per-Layer Density
     
     for layer in layers:
         # Get nodes and edges in this layer
-        from py3plex.dsl import Q, L
-        
         nodes = Q.nodes().from_layers(L[layer]).execute(network)
         edges = Q.edges().from_layers(L[layer]).execute(network)
         
@@ -73,6 +83,8 @@ Compute Per-Layer Density
         
         print(f"Layer {layer}: density = {density:.4f}")
 
+For directed layers, use ``max_edges = n * (n - 1)`` instead (ordered pairs).
+
 Compare Layers
 ~~~~~~~~~~~~~~
 
@@ -80,9 +92,7 @@ Use the DSL for efficient comparison:
 
 .. code-block:: python
 
-    from py3plex.dsl import Q, L
-    
-    for layer in ["layer1", "layer2", "layer3"]:
+    for layer in network.get_layers():
         result = (
             Q.nodes()
              .from_layers(L[layer])
@@ -92,7 +102,7 @@ Use the DSL for efficient comparison:
         df = result.to_pandas()
         print(f"{layer}: avg degree = {df['degree'].mean():.2f}")
 
-**Expected output:**
+**Example output (values depend on your data):**
 
 .. code-block:: text
 
@@ -103,20 +113,20 @@ Use the DSL for efficient comparison:
 Node-Level Statistics
 ----------------------
 
+Once you know layer-level trends, drill down to node importance and activity.
+
 Node Activity (Layer Count)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-How many layers does each node participate in?
+How many layers does each node participate in? ``layer_count`` counts unique layers where the node appears.
 
 .. code-block:: python
 
-    from py3plex.dsl import Q
-    
     # Get nodes present in multiple layers
     active_nodes = (
         Q.nodes()
-         .where(layer_count__gt=1)
          .compute("layer_count")
+         .where(layer_count__gt=1)
          .order_by("-layer_count")
          .execute(network)
     )
@@ -124,7 +134,7 @@ How many layers does each node participate in?
     df = active_nodes.to_pandas()
     print(df.head(10))
 
-**Expected output:**
+**Example output:**
 
 .. code-block:: text
 
@@ -137,7 +147,7 @@ How many layers does each node participate in?
 Degree Centrality
 ~~~~~~~~~~~~~~~~~
 
-Compute degree for all nodes:
+Compute degree for all nodes and sort in descending order:
 
 .. code-block:: python
 
@@ -158,7 +168,7 @@ Compute degree for all nodes:
 Betweenness Centrality
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Find nodes that bridge different parts of the network:
+Find nodes that bridge different parts of the network (higher values indicate more shortest paths go through the node):
 
 .. code-block:: python
 
@@ -177,6 +187,8 @@ Find nodes that bridge different parts of the network:
 Multiple Metrics at Once
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+Compute several measures in one pass to avoid recomputing them separately:
+
 .. code-block:: python
 
     result = (
@@ -191,10 +203,12 @@ Multiple Metrics at Once
 Multilayer-Specific Statistics
 -------------------------------
 
+Use these measures when the interaction between layers matters, not just within-layer structure.
+
 Node Versatility
 ~~~~~~~~~~~~~~~~
 
-Versatility measures how evenly a node distributes its connections across layers:
+Versatility measures how evenly a node distributes its connections across layers; higher values mean more balanced participation across layers.
 
 .. code-block:: python
 
@@ -226,6 +240,8 @@ How many connections exist in multiple layers?
     
     print(f"Edge overlap between layer1 and layer2: {overlap:.2%}")
 
+``overlap`` is a ratio (0–1) of edges shared by both layers.
+
 Inter-Layer Degree Correlation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -243,9 +259,12 @@ Are high-degree nodes in layer 1 also high-degree in layer 2?
     )
     
     print(f"Degree correlation: {correlation:.3f}")
+    # Values near 1.0 indicate that high-degree nodes stay high across layers.
 
 Network-Wide Statistics
 ------------------------
+
+Aggregate everything into a single view of the whole multilayer graph.
 
 Global Clustering Coefficient
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -264,12 +283,15 @@ Average Path Length
 
     from py3plex.algorithms.statistics import average_path_length
     
-    # Note: computationally expensive for large networks
+    # Note: computationally expensive for large networks; ensure the graph
+    # is connected or run on the largest connected component.
     apl = average_path_length(network)
     print(f"Average path length: {apl:.2f}")
 
 Exporting Statistics
 --------------------
+
+Persist results so you can compare runs or feed them into other tools.
 
 Save to CSV
 ~~~~~~~~~~~
@@ -293,6 +315,7 @@ Save to JSON
 .. code-block:: python
 
     import json
+    from py3plex.dsl import Q, L
     
     stats = {
         'num_nodes': len(list(network.get_nodes())),
@@ -302,9 +325,12 @@ Save to JSON
     }
     
     for layer in network.get_layers():
-        nodes = Q.nodes().from_layers(L[layer]).execute(network)
-        edges = Q.edges().from_layers(L[layer]).execute(network)
-        stats['density_by_layer'][layer] = len(edges) / (len(nodes) ** 2)
+        layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
+        layer_edges = Q.edges().from_layers(L[layer]).execute(network)
+        n = len(layer_nodes)
+        m = len(layer_edges)
+        max_edges = n * (n - 1) / 2  # undirected density
+        stats['density_by_layer'][layer] = m / max_edges if max_edges > 0 else 0
     
     with open('stats.json', 'w') as f:
         json.dump(stats, f, indent=2)

@@ -28,7 +28,7 @@ Py3plex: Multilayer Network Analysis
 
 py3plex provides scalable analysis and visualization of multilayer and multiplex networks in Python.
 
-**Key Features:**
+**Key features at a glance:**
 
 * Multiplex and multilayer network structures
 * **SQL-like DSL for network queries** — first-class feature
@@ -42,7 +42,7 @@ py3plex provides scalable analysis and visualization of multilayer and multiplex
 .. admonition:: DSL: Query Networks Like SQL
    :class: dsl-example
 
-   The py3plex DSL lets you query networks using intuitive SQL-like syntax or a type-safe Python builder API:
+   The py3plex DSL lets you query networks using intuitive SQL-like syntax or a type-safe Python builder API. Both return the same results; pick the style that fits your workflow.
 
    .. code-block:: python
 
@@ -77,13 +77,15 @@ py3plex provides scalable analysis and visualization of multilayer and multiplex
 Quickstart
 ==========
 
-Install:
+Get started in three steps: install, build a tiny multilayer network, and inspect it.
+
+Step 1 — Install
 
 .. code-block:: bash
 
     pip install py3plex
 
-Create a multilayer network:
+Step 2 — Create a multilayer network
 
 .. code-block:: python
 
@@ -99,28 +101,30 @@ Create a multilayer network:
     network.basic_stats()
     network.visualize_network(show=True)
 
-**Expected output:**
+Expected output
 
 .. code-block:: text
 
     Number of nodes: 6
     Number of edges: 3
 
+Counts reflect per-layer node identities (Alice/Bob/Carol each appear in two layers). Your totals will differ if you change the edge list. The visualization opens in a Matplotlib window and colors nodes by layer.
+
 Start Here
 ==========
 
-**New to py3plex?** → Begin with the :doc:`getting_started/tutorial_10min` to go from basics to advanced analysis in 10 minutes.
+**New to py3plex?** Start with :doc:`getting_started/tutorial_10min` to move from basics to a full analysis in about 10 minutes.
 
-**Already familiar with multilayer networks?** → Jump to :doc:`how-to/run_community_detection` or explore the :doc:`how-to/part_intro`.
+**Already familiar with multilayer networks?** Jump to :doc:`how-to/run_community_detection` or browse :doc:`how-to/part_intro` for task-focused guides.
 
-**Just need the API?** → Go straight to :doc:`reference/api_index` or :doc:`reference/dsl_reference`.
+**Just need the API?** See :doc:`reference/api_index` or :doc:`reference/dsl_reference`.
 
-**Want to understand the concepts?** → Read :doc:`concepts/multilayer_networks_101` for the theory behind multilayer networks.
+**Want to understand the concepts?** Read :doc:`concepts/multilayer_networks_101` for the theory behind multilayer networks.
 
 Documentation Structure
 =======================
 
-This documentation follows the `Diátaxis <https://diataxis.fr/>`_ framework with 7 top-level sections:
+This documentation follows the `Diátaxis <https://diataxis.fr/>`_ framework with 7 top-level sections. Use the outline below to jump directly to the content type you need—tutorials for learning, how-to guides for tasks, explanations for concepts, and reference for precise details.
 
 Part I: Overview
 ----------------

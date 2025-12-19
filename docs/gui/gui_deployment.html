@@ -146,7 +146,7 @@
              
   <section id="gui-deployment-guide">
 <h1>GUI Deployment Guide<a class="headerlink" href="#gui-deployment-guide" title="Link to this heading"></a></h1>
-<p>This guide covers deploying the py3plex web interface for production use.</p>
+<p>This guide covers deploying the py3plex web interface for development, staging, and production. Pick the path that matches your environment and security requirements; keep secrets out of version control and persist user data on durable storage.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>The py3plex GUI can be deployed in several ways:</p>
@@ -166,10 +166,10 @@
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 
-<span class="c1"># Install with GUI dependencies</span>
+<span class="c1"># Install with GUI dependencies (prefer a venv)</span>
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[gui]&quot;</span>
 
-<span class="c1"># Start development server</span>
+<span class="c1"># Start development server (auto-reload)</span>
 python<span class="w"> </span>gui/app.py
 </pre></div>
 </div>
@@ -177,7 +177,7 @@ python<span class="w"> </span>gui/app.py
 </section>
 <section id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h3>
-<p>Create a configuration file <code class="docutils literal notranslate"><span class="pre">gui/config.py</span></code>:</p>
+<p>Create a configuration file <code class="docutils literal notranslate"><span class="pre">gui/config.py</span></code> (or use environment variables to override). Keep <code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code> out of source control and store uploads on a path with enough disk space:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Development configuration</span>
 <span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">HOST</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.0&#39;</span>
@@ -210,11 +210,11 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <span class="w">  </span>py3plex-gui:latest
 </pre></div>
 </div>
-<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:5000</span></code>.</p>
+<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:5000</span></code>. The bind mount keeps uploads and generated artifacts on the host for persistence.</p>
 </section>
 <section id="docker-compose">
 <h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Link to this heading"></a></h3>
-<p>Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>:</p>
+<p>Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> (ensure <code class="docutils literal notranslate"><span class="pre">./data</span></code> and <code class="docutils literal notranslate"><span class="pre">./uploads</span></code> exist so Docker can mount them):</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
 
 <span class="nt">services</span><span class="p">:</span>
@@ -283,8 +283,8 @@ docker-compose<span class="w"> </span>logs<span class="w"> </span>-f<span class=
 <td><p>5000</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MAX_WORKERS</span></code></p></td>
-<td><p>Worker processes</p></td>
-<td><p>4</p></td>
+<td><p>Worker processes (Gunicorn)</p></td>
+<td><p>4 (tune to CPU cores and workload)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UPLOAD_FOLDER</span></code></p></td>
 <td><p>Upload directory</p></td>
@@ -296,13 +296,14 @@ docker-compose<span class="w"> </span>logs<span class="w"> </span>-f<span class=
 </tr>
 </tbody>
 </table>
+<p>For deployments, prefer setting these in an environment file or secrets manager instead of committing them to version control. Set <code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code> before starting any service so sessions are secure.</p>
 </section>
 </section>
 <section id="production-deployment">
 <h2>Production Deployment<a class="headerlink" href="#production-deployment" title="Link to this heading"></a></h2>
 <section id="using-gunicorn">
 <h3>Using Gunicorn<a class="headerlink" href="#using-gunicorn" title="Link to this heading"></a></h3>
-<p>For production, use a production WSGI server like Gunicorn:</p>
+<p>For production, use a WSGI server like Gunicorn behind a reverse proxy. Adjust worker count to your CPU and workload, and bind to localhost when placing Nginx/Apache in front:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Gunicorn</span>
 pip<span class="w"> </span>install<span class="w"> </span>gunicorn
 
@@ -319,7 +320,7 @@ gunicorn<span class="w"> </span><span class="se">\</span>
 </section>
 <section id="supervisor-configuration">
 <h3>Supervisor Configuration<a class="headerlink" href="#supervisor-configuration" title="Link to this heading"></a></h3>
-<p>Use Supervisor to manage the GUI process:</p>
+<p>Use Supervisor to keep the Gunicorn process running:</p>
 <p>Create <code class="docutils literal notranslate"><span class="pre">/etc/supervisor/conf.d/py3plex-gui.conf</span></code>:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[program:py3plex-gui]</span>
 <span class="na">command</span><span class="o">=</span><span class="s">/path/to/venv/bin/gunicorn --bind 127.0.0.1:5000 --workers 4 gui.app:app</span>
@@ -341,7 +342,7 @@ sudo<span class="w"> </span>supervisorctl<span class="w"> </span>start<span clas
 </section>
 <section id="systemd-service">
 <h3>Systemd Service<a class="headerlink" href="#systemd-service" title="Link to this heading"></a></h3>
-<p>Alternative: use systemd:</p>
+<p>Alternative: manage Gunicorn with systemd:</p>
 <p>Create <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/py3plex-gui.service</span></code>:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[Unit]</span>
 <span class="na">Description</span><span class="o">=</span><span class="s">Py3plex GUI</span>
@@ -374,6 +375,7 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="
 </section>
 <section id="reverse-proxy-setup">
 <h2>Reverse Proxy Setup<a class="headerlink" href="#reverse-proxy-setup" title="Link to this heading"></a></h2>
+<p>Terminate TLS and forward traffic to Gunicorn with a reverse proxy. Keep TLS certificates and private keys readable only by the web server user.</p>
 <section id="nginx-configuration">
 <h3>Nginx Configuration<a class="headerlink" href="#nginx-configuration" title="Link to this heading"></a></h3>
 <p>Configure Nginx as a reverse proxy:</p>
@@ -473,6 +475,7 @@ sudo<span class="w"> </span>certbot<span class="w"> </span>renew<span class="w">
 </section>
 <section id="security-considerations">
 <h2>Security Considerations<a class="headerlink" href="#security-considerations" title="Link to this heading"></a></h2>
+<p>Review the basics below before exposing the GUI to the internet.</p>
 <section id="secret-key-management">
 <h3>Secret Key Management<a class="headerlink" href="#secret-key-management" title="Link to this heading"></a></h3>
 <p><strong>Never</strong> hardcode secret keys in code or configuration files:</p>
@@ -503,7 +506,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 </section>
 <section id="rate-limiting">
 <h3>Rate Limiting<a class="headerlink" href="#rate-limiting" title="Link to this heading"></a></h3>
-<p>Implement rate limiting for API endpoints:</p>
+<p>Implement rate limiting for API endpoints (adapt limits to expected traffic):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_limiter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Limiter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">flask_limiter.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_remote_address</span>
 
@@ -522,7 +525,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 </section>
 <section id="authentication">
 <h3>Authentication<a class="headerlink" href="#authentication" title="Link to this heading"></a></h3>
-<p>Add user authentication for production:</p>
+<p>Add user authentication for production and restrict admin endpoints:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoginManager</span><span class="p">,</span> <span class="n">login_required</span>
 
 <span class="n">login_manager</span> <span class="o">=</span> <span class="n">LoginManager</span><span class="p">()</span>
@@ -538,9 +541,10 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 </section>
 <section id="monitoring-and-logging">
 <h2>Monitoring and Logging<a class="headerlink" href="#monitoring-and-logging" title="Link to this heading"></a></h2>
+<p>Centralize logs and metrics so you can trace errors across the stack.</p>
 <section id="application-logging">
 <h3>Application Logging<a class="headerlink" href="#application-logging" title="Link to this heading"></a></h3>
-<p>Configure structured logging:</p>
+<p>Configure structured logging (ensure the log directory exists and is writable by the process owner):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging.handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">RotatingFileHandler</span>
 
@@ -572,7 +576,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 </section>
 <section id="health-checks">
 <h3>Health Checks<a class="headerlink" href="#health-checks" title="Link to this heading"></a></h3>
-<p>Implement health check endpoint:</p>
+<p>Implement a health check endpoint that exercises dependencies:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/health&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">():</span>
     <span class="c1"># Check dependencies</span>
@@ -587,6 +591,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 </section>
 <section id="cloud-deployment-examples">
 <h2>Cloud Deployment Examples<a class="headerlink" href="#cloud-deployment-examples" title="Link to this heading"></a></h2>
+<p>These snippets are starting points; wire in your own secrets management, networking, and observability.</p>
 <section id="aws-ec2">
 <h3>AWS EC2<a class="headerlink" href="#aws-ec2" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
@@ -655,6 +660,7 @@ az<span class="w"> </span>container<span class="w"> </span>create<span class="w"
 </section>
 <section id="performance-tuning">
 <h2>Performance Tuning<a class="headerlink" href="#performance-tuning" title="Link to this heading"></a></h2>
+<p>Measure first (CPU, memory, request latency), then apply one change at a time. Avoid over-provisioning workers; test under representative load.</p>
 <section id="worker-configuration">
 <h3>Worker Configuration<a class="headerlink" href="#worker-configuration" title="Link to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rule of thumb: (2 x CPU cores) + 1</span>
@@ -729,12 +735,13 @@ find<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACK
 <li><p>Restore from backup</p></li>
 <li><p>Verify data integrity</p></li>
 <li><p>Restart services</p></li>
-<li><p>Test functionality</p></li>
+<li><p>Test functionality (smoke tests for uploads, analysis, and downloads)</p></li>
 </ol>
 </section>
 </section>
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<p>Work through these checks before redeploying.</p>
 <section id="common-issues">
 <h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
 <p><strong>Port already in use:</strong></p>

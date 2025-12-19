@@ -1,7 +1,7 @@
 Project Info
 ============
 
-Information about the py3plex project, including how to contribute, cite, and stay up-to-date with development.
+Overview of the py3plex project, with pointers on how to contribute, cite, and stay up-to-date with development.
 
 **This section covers:**
 
@@ -13,38 +13,28 @@ Information about the py3plex project, including how to contribute, cite, and st
 
 **Quick Links:**
 
-* **GitHub Repository:** https://github.com/SkBlaz/py3plex
-* **Issue Tracker:** https://github.com/SkBlaz/py3plex/issues
-* **PyPI Package:** https://pypi.org/project/py3plex/
-* **Documentation:** https://py3plex.readthedocs.io/
+* GitHub repository: https://github.com/SkBlaz/py3plex
+* Issue tracker: https://github.com/SkBlaz/py3plex/issues
+* PyPI package: https://pypi.org/project/py3plex/
+* Documentation: https://py3plex.readthedocs.io/
 
 Getting Involved
 ----------------
 
-**Report Issues:**
+**Report issues:** Found a bug or have a feature request? Open an issue on GitHub with a clear title and reproduction steps.
 
-Found a bug? Have a feature request? Open an issue on GitHub.
+**Contribute code:** See :doc:`contributing` for branch, testing, and documentation expectations before opening a pull request.
 
-**Contribute Code:**
+**Join discussions:** Participate in GitHub Discussions to ask questions, share ideas, or propose new features.
 
-See :doc:`contributing` for guidelines on submitting pull requests.
-
-**Join Discussions:**
-
-Participate in GitHub Discussions to ask questions and share ideas.
-
-**Stay Updated:**
-
-* Watch the repository for release announcements
-* Follow the :doc:`changelog` for recent changes
-* Check the :doc:`roadmap` for planned features
+**Stay updated:** Watch the repository for releases, follow the :doc:`changelog`, and review the :doc:`roadmap` for upcoming work.
 
 License
 -------
 
-py3plex is released under the MIT License. See LICENSE file in the repository.
+py3plex is released under the MIT License. See the ``LICENSE`` file in the repository for full terms.
 
 Acknowledgements
 ----------------
 
-See :doc:`citing` for acknowledgements and how to cite py3plex.
+See :doc:`citing` for acknowledgements, citation instructions, and BibTeX entries.

@@ -148,14 +148,15 @@
   <section id="supra-matrix-function-centralities">
 <span id="multilayer-centrality-matrix-functions"></span><h1>Supra Matrix Function Centralities<a class="headerlink" href="#supra-matrix-function-centralities" title="Link to this heading"></a></h1>
 <p>These centrality measures operate directly on the supra-adjacency matrix of a multilayer network using matrix functions. They provide global measures of node-layer pair importance based on walks, paths, and communication patterns across the entire network structure.</p>
+<p>The supra-adjacency matrix <span class="math notranslate nohighlight">\(A_{\text{supra}}\)</span> is an <span class="math notranslate nohighlight">\(n \times n\)</span> matrix whose rows and columns correspond to node-layer pairs (<code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">number_of_nodes</span> <span class="pre">×</span> <span class="pre">number_of_layers</span></code>). All formulas below follow the node-layer ordering returned by <code class="docutils literal notranslate"><span class="pre">net.get_nodes()</span></code>.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>Matrix function centralities extend classical centrality concepts to multilayer networks by:</p>
 <ul class="simple">
 <li><p>Operating on the full supra-adjacency matrix that captures both intra-layer and inter-layer connections</p></li>
 <li><p>Using matrix functions (exponential, matrix inversion) to account for all paths simultaneously</p></li>
-<li><p>Providing normalized scores that can be compared across different network structures</p></li>
-<li><p>Supporting both sparse and dense computation for efficiency</p></li>
+<li><p>Producing scores that can be normalized for comparisons across networks</p></li>
+<li><p>Supporting both sparse and dense computation for efficiency, depending on <span class="math notranslate nohighlight">\(n\)</span> and sparsity</p></li>
 </ul>
 <p>These measures are particularly useful for:</p>
 <ul class="simple">
@@ -169,7 +170,7 @@
 <h2>Available Methods<a class="headerlink" href="#available-methods" title="Link to this heading"></a></h2>
 <section id="communicability-centrality">
 <h3>Communicability Centrality<a class="headerlink" href="#communicability-centrality" title="Link to this heading"></a></h3>
-<p>Communicability centrality measures the weighted sum of all walks between nodes, with exponentially decaying weights for longer walks. It is based on the matrix exponential of the supra-adjacency matrix.</p>
+<p>Communicability centrality measures the weighted sum of all walks between nodes, with exponentially decaying weights for longer walks. It is computed from the matrix exponential of the supra-adjacency matrix.</p>
 <p><strong>Mathematical Definition:</strong></p>
 <div class="math notranslate nohighlight">
 \[c_i = \sum_j (e^{A_{\text{supra}}})_{ij}\]</div>
@@ -181,7 +182,7 @@
 <li><p>Networks where multiple paths contribute to influence</p></li>
 <li><p>Global network analysis</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n^2)\)</span> for sparse matrices using Krylov subspace methods, where <span class="math notranslate nohighlight">\(n\)</span> is the total number of node-layer pairs</p>
+<p><strong>Complexity:</strong> Uses sparse matrix exponential multiplication when <code class="docutils literal notranslate"><span class="pre">use_sparse=True</span></code> and <span class="math notranslate nohighlight">\(n^2 \ge 10{,}000\)</span> (roughly <span class="math notranslate nohighlight">\(O(\text{nnz} \times k)\)</span> for <span class="math notranslate nohighlight">\(k\)</span> Krylov iterations). Falls back to dense <span class="math notranslate nohighlight">\(O(n^3)\)</span> computation for smaller matrices, where <span class="math notranslate nohighlight">\(n\)</span> is the total number of node-layer pairs and <span class="math notranslate nohighlight">\(\text{nnz}\)</span> is the number of nonzeros.</p>
 <p><strong>Reference:</strong> Estrada, E., &amp; Hatano, N. (2008). Communicability in complex networks. Physical Review E, 77(3), 036111.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality.communicability_centrality">
@@ -229,11 +230,11 @@ for matrices smaller than 10000 elements.</p></li>
 </section>
 <section id="katz-centrality">
 <h3>Katz Centrality<a class="headerlink" href="#katz-centrality" title="Link to this heading"></a></h3>
-<p>Katz centrality measures node influence by accounting for all paths with exponentially decaying weights, controlled by an attenuation parameter <span class="math notranslate nohighlight">\(\alpha\)</span>. It includes an exogenous influence term to ensure all nodes have non-zero centrality.</p>
+<p>Katz centrality measures node influence by accounting for all paths with exponentially decaying weights, controlled by an attenuation parameter <span class="math notranslate nohighlight">\(\alpha\)</span>. It includes an exogenous influence term <span class="math notranslate nohighlight">\(\beta \mathbf{1}\)</span> so every node-layer pair keeps a baseline score.</p>
 <p><strong>Mathematical Definition:</strong></p>
 <div class="math notranslate nohighlight">
 \[x = (I - \alpha A_{\text{supra}})^{-1} \mathbf{1}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\alpha &lt; 1/\lambda_{\max}(A_{\text{supra}})\)</span> is the attenuation parameter and <span class="math notranslate nohighlight">\(\mathbf{1}\)</span> is a vector of ones.</p>
+<p>where <span class="math notranslate nohighlight">\(\alpha &lt; 1/\lambda_{\max}(A_{\text{supra}})\)</span> is the attenuation parameter and <span class="math notranslate nohighlight">\(\mathbf{1}\)</span> is a vector of ones. The implementation normalizes the resulting scores to sum to 1.</p>
 <p><strong>Best for:</strong></p>
 <ul class="simple">
 <li><p>Controlling the influence of distant connections via <span class="math notranslate nohighlight">\(\alpha\)</span></p></li>
@@ -241,7 +242,7 @@ for matrices smaller than 10000 elements.</p></li>
 <li><p>Comparing with PageRank and eigenvector centrality</p></li>
 <li><p>Tunable sensitivity to network topology</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n^2)\)</span> for sparse linear system solving, where <span class="math notranslate nohighlight">\(n\)</span> is the total number of node-layer pairs</p>
+<p><strong>Complexity:</strong> Sparse linear solve scales with matrix sparsity (approximately <span class="math notranslate nohighlight">\(O(\text{nnz} \times k)\)</span> for iterative solvers) or <span class="math notranslate nohighlight">\(O(n^3)\)</span> for dense matrices, where <span class="math notranslate nohighlight">\(n\)</span> is the total number of node-layer pairs.</p>
 <p><strong>Reference:</strong> Katz, L. (1953). A new status index derived from sociometric analysis. Psychometrika, 18(1), 39-43.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality.katz_centrality">
@@ -306,7 +307,7 @@ If None, defaults to 0.85 / lambda_max(A).</p></li>
 <span class="c1"># Create a random multiplex network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multiplex_ER</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
 
-<span class="c1"># Get the supra-adjacency matrix</span>
+<span class="c1"># Get the supra-adjacency matrix (ordering matches net.get_nodes())</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
 
 <span class="c1"># Compute communicability centrality</span>
@@ -371,6 +372,7 @@ If None, defaults to 0.85 / lambda_max(A).</p></li>
     <span class="n">communicability_centrality</span><span class="p">,</span>
     <span class="n">katz_centrality</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Load a multiplex network from edge list</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
@@ -378,7 +380,7 @@ If None, defaults to 0.85 / lambda_max(A).</p></li>
     <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiplex_edges&quot;</span>
 <span class="p">)</span>
 
-<span class="c1"># Get supra-adjacency matrix</span>
+<span class="c1"># Get supra-adjacency matrix (rows/cols correspond to node-layer pairs)</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
 
 <span class="c1"># Compute centralities</span>
@@ -402,33 +404,26 @@ If None, defaults to 0.85 / lambda_max(A).</p></li>
 <section id="matrix-size-and-sparsity">
 <h3>Matrix Size and Sparsity<a class="headerlink" href="#matrix-size-and-sparsity" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Small networks (&lt; 100 node-layer pairs):</strong> Dense computation is faster</p></li>
-<li><p><strong>Medium networks (100-1000 pairs):</strong> Sparse computation recommended</p></li>
-<li><p><strong>Large networks (&gt; 1000 pairs):</strong> Only sparse computation is feasible</p></li>
+<li><p><strong>Small networks (&lt; 100 node-layer pairs):</strong> Dense computation is often faster</p></li>
+<li><p><strong>Medium networks (100-1000 pairs):</strong> Sparse computation recommended unless the matrix is very dense</p></li>
+<li><p><strong>Large networks (&gt; 1000 pairs):</strong> Use sparse computation only; dense methods quickly become infeasible</p></li>
 </ul>
-<p>The implementation automatically chooses the appropriate method based on matrix size when <code class="docutils literal notranslate"><span class="pre">use_sparse=True</span></code> is set for communicability centrality.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">use_sparse=True</span></code> is set for communicability centrality, the implementation switches to sparse matrix exponential for matrices with <span class="math notranslate nohighlight">\(n^2 \ge 10{,}000\)</span>; smaller matrices use dense computation even when <code class="docutils literal notranslate"><span class="pre">use_sparse=True</span></code>.</p>
 </section>
 <section id="memory-usage">
 <h3>Memory Usage<a class="headerlink" href="#memory-usage" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Communicability:</strong> Requires <span class="math notranslate nohighlight">\(O(n)\)</span> memory for Krylov subspace methods (sparse) or <span class="math notranslate nohighlight">\(O(n^2)\)</span> for dense matrices</p></li>
-<li><p><strong>Katz:</strong> Requires <span class="math notranslate nohighlight">\(O(n^2)\)</span> memory for sparse linear system factorization</p></li>
+<li><p><strong>Communicability:</strong> Requires storage for the sparse matrix plus a few working vectors (<span class="math notranslate nohighlight">\(O(\text{nnz} + n)\)</span>) or <span class="math notranslate nohighlight">\(O(n^2)\)</span> for dense matrices</p></li>
+<li><p><strong>Katz:</strong> Sparse solves store the matrix and factorization/iterates (<span class="math notranslate nohighlight">\(O(\text{nnz} + n)\)</span>); dense solves need <span class="math notranslate nohighlight">\(O(n^2)\)</span> memory</p></li>
 </ul>
 </section>
 <section id="computation-time">
 <h3>Computation Time<a class="headerlink" href="#computation-time" title="Link to this heading"></a></h3>
-<p>Typical computation times on a standard workstation:</p>
+<p>Runtime grows with both <span class="math notranslate nohighlight">\(n\)</span> and density. Dense computations scale cubically in <span class="math notranslate nohighlight">\(n\)</span>; sparse methods scale with <span class="math notranslate nohighlight">\(\text{nnz}\)</span> and the number of iterations required for convergence. For very large or dense networks:</p>
 <ul class="simple">
-<li><p><strong>50 node-layer pairs:</strong> &lt; 0.1 seconds</p></li>
-<li><p><strong>150 node-layer pairs (50 nodes × 3 layers):</strong> 0.5-1 second</p></li>
-<li><p><strong>500 node-layer pairs:</strong> 5-10 seconds</p></li>
-<li><p><strong>1500 node-layer pairs (500 nodes × 3 layers):</strong> 30-60 seconds</p></li>
-</ul>
-<p>For very large networks, consider:</p>
-<ul class="simple">
-<li><p>Using higher tolerance values (e.g., <code class="docutils literal notranslate"><span class="pre">tol=1e-4</span></code>)</p></li>
-<li><p>Focusing on specific layers rather than the full supra-matrix</p></li>
-<li><p>Using other centrality measures like degree or PageRank</p></li>
+<li><p>Use higher tolerance values (e.g., <code class="docutils literal notranslate"><span class="pre">tol=1e-4</span></code>) to reduce iterations</p></li>
+<li><p>Focus on specific layers rather than the full supra-matrix</p></li>
+<li><p>Consider cheaper centrality measures (e.g., degree or PageRank)</p></li>
 </ul>
 </section>
 </section>
@@ -437,19 +432,18 @@ If None, defaults to 0.85 / lambda_max(A).</p></li>
 <section id="id1">
 <h3>Communicability Centrality<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">normalize=True</span></code>: Always recommended for comparing across networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">use_sparse=True</span></code>: Recommended for networks &gt; 100 node-layer pairs</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">max_iter=100</span></code>: Default is sufficient for most networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tol=1e-6</span></code>: Default provides good accuracy; increase for speed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalize=True</span></code>: Recommended when comparing across networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">use_sparse=True</span></code>: Recommended for networks with &gt; 100 node-layer pairs or appreciable sparsity; small matrices fall back to dense</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_iter</span></code> and <code class="docutils literal notranslate"><span class="pre">tol</span></code>: Reserved for sparse approximation hooks; currently unused by the implementation</p></li>
 </ul>
 </section>
 <section id="id2">
 <h3>Katz Centrality<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">alpha=None</span></code>: Auto-compute as 0.85/λ_max (recommended)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">alpha=0.01-0.1</span></code>: Manual values for custom attenuation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha=None</span></code>: Auto-compute as <span class="math notranslate nohighlight">\(0.85 / \lambda_{\max}\)</span> with fallback to 0.01 if eigenvalue estimation fails or the matrix is near-zero</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha=0.01-0.1</span></code>: Manual values for custom attenuation; must satisfy <span class="math notranslate nohighlight">\(\alpha &lt; 1/\lambda_{\max}\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">beta=1.0</span></code>: Default uniform exogenous influence (rarely needs changing)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tol=1e-6</span></code>: Eigenvalue computation tolerance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tol=1e-6</span></code>: Eigenvalue computation tolerance (increase if eigenvalue estimation is slow or unstable)</p></li>
 </ul>
 </section>
 </section>
@@ -475,6 +469,12 @@ If None, defaults to 0.85 / lambda_max(A).</p></li>
 <li><p>Consider analyzing individual layers separately</p></li>
 <li><p>Increase available system memory</p></li>
 </ul>
+</section>
+<section id="uniform-output">
+<h3>Uniform Output<a class="headerlink" href="#uniform-output" title="Link to this heading"></a></h3>
+<p><strong>Symptom:</strong> All centrality values are identical</p>
+<p><strong>Cause:</strong> The supra-adjacency matrix is effectively zero, so the computation returns a uniform distribution.</p>
+<p><strong>Resolution:</strong> Check that edges were loaded correctly and that <code class="docutils literal notranslate"><span class="pre">get_supra_adjacency_matrix()</span></code> returned expected weights.</p>
 </section>
 </section>
 <section id="see-also">

@@ -208,10 +208,10 @@
              
   <section id="architecture-and-design">
 <h1>Architecture and Design<a class="headerlink" href="#architecture-and-design" title="Link to this heading"></a></h1>
-<p>This document describes the <strong>system architecture</strong>, <strong>design patterns</strong>, and <strong>extension points</strong> of py3plex.</p>
+<p>This document describes the <strong>system architecture</strong>, <strong>design patterns</strong>, and <strong>extension points</strong> of py3plex. It explains how the layers fit together, what each layer owns, and where to plug in new capabilities without leaking responsibilities across layers.</p>
 <section id="system-overview">
 <h2>System Overview<a class="headerlink" href="#system-overview" title="Link to this heading"></a></h2>
-<p>py3plex is built as a <strong>modular, layered architecture</strong> with clear separation of concerns:</p>
+<p>py3plex uses a <strong>modular, layered architecture</strong> with explicit boundaries. Higher layers depend on lower ones, never the reverse; data flows downward for computation and back upward for presentation:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────┐
 │          High-Level Interfaces (Wrappers)           │
 │  node2vec_embedding, benchmark_nodes                │
@@ -248,54 +248,58 @@
 └─────────────────────────────────────────────────────┘
 </pre></div>
 </div>
+<p><strong>Reading the diagram:</strong> NetworkX primitives sit at the base. The core layer wraps them in a multilayer-aware data model. Algorithms, visualization, and wrappers build on that model and never mutate it implicitly; wrappers orchestrate complete tasks while delegating computation to the lower layers.</p>
 </section>
 <section id="architectural-layers">
 <h2>Architectural Layers<a class="headerlink" href="#architectural-layers" title="Link to this heading"></a></h2>
+<p>Each layer has a narrow contract: the core encodes data, algorithms consume that encoding, visualization renders results, and wrappers orchestrate complete tasks. When extending py3plex, start from the lowest layer you need and only depend upward.</p>
 <section id="core-layer">
 <h3>Core Layer<a class="headerlink" href="#core-layer" title="Link to this heading"></a></h3>
-<p><strong>Purpose:</strong> Fundamental data structures and I/O operations</p>
+<p><strong>Purpose:</strong> Fundamental data structures and I/O operations. Everything else depends on this layer, so invariants and encoding live here.</p>
 <p><strong>Key Components:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">multinet.py</span></code> - The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> <strong>class</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">parsers.py</span></code> - <strong>Input/output</strong> for various formats</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">converters.py</span></code> - <strong>Format conversion</strong> utilities</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">random_generators.py</span></code> - <strong>Random network</strong> generators</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">HINMINE/</span></code> - <strong>Heterogeneous network decomposition</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multinet.py</span></code> - The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class (core facade)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parsers.py</span></code> - Input/output for various formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">converters.py</span></code> - Format conversion utilities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">random_generators.py</span></code> - Random network generators</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HINMINE/</span></code> - Heterogeneous network decomposition helpers</p></li>
 </ul>
 <p><strong>Responsibilities:</strong></p>
 <ul class="simple">
-<li><p><strong>Network construction</strong> and manipulation</p></li>
-<li><p><strong>File I/O</strong> (GraphML, GML, GEXF, edge lists, etc.)</p></li>
-<li><p><strong>Layer management</strong></p></li>
-<li><p><strong>Matrix representations</strong> (adjacency, supra-adjacency)</p></li>
-<li><p><strong>NetworkX integration</strong></p></li>
+<li><p>Network construction and mutation through a single API</p></li>
+<li><p>File I/O (GraphML, GML, GEXF, edge lists, etc.)</p></li>
+<li><p>Layer management (string ↔ integer IDs, delimiter handling)</p></li>
+<li><p>Matrix representations (adjacency, supra-adjacency)</p></li>
+<li><p>NetworkX integration and type selection (directed vs. undirected)</p></li>
+<li><p>Cache ownership (e.g., supra adjacency, embeddings) and invalidation hooks triggered by mutations</p></li>
 </ul>
-<p><strong>Design Pattern:</strong> <strong>Facade Pattern</strong> - <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> provides a unified interface to complex NetworkX operations</p>
+<p><strong>Design Pattern:</strong> <strong>Facade Pattern</strong> — <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> exposes one consistent interface while hiding NetworkX wiring and encoding details</p>
 </section>
 <section id="algorithms-layer">
 <h3>Algorithms Layer<a class="headerlink" href="#algorithms-layer" title="Link to this heading"></a></h3>
-<p><strong>Purpose:</strong> Network analysis algorithms optimized for multilayer networks</p>
+<p><strong>Purpose:</strong> Network analysis algorithms optimized for multilayer networks. Algorithms assume core-layer encoding and never adjust it themselves.</p>
 <p><strong>Key Components:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">community_detection/</span></code> - <strong>Community detection</strong> algorithms</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">statistics/</span></code> - <strong>Network statistics</strong> and metrics</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_algorithms/</span></code> - <strong>Multilayer-specific</strong> algorithms</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">node_ranking/</span></code> - <strong>Centrality</strong> and ranking measures</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">general/</span></code> - <strong>General-purpose</strong> algorithms (random walks, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community_detection/</span></code> - Community detection algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">statistics/</span></code> - Network statistics and metrics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_algorithms/</span></code> - Multilayer-specific methods</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">node_ranking/</span></code> - Centrality and ranking measures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">general/</span></code> - General-purpose algorithms (random walks, etc.)</p></li>
 </ul>
 <p><strong>Responsibilities:</strong></p>
 <ul class="simple">
-<li><p><strong>Community detection</strong> (Louvain, Infomap, Label Propagation)</p></li>
-<li><p><strong>Statistical analysis</strong> (17+ multilayer metrics)</p></li>
-<li><p><strong>Centrality computation</strong> (degree, betweenness, PageRank, etc.)</p></li>
-<li><p><strong>Random walks</strong> and embeddings</p></li>
-<li><p><strong>Network decomposition</strong></p></li>
+<li><p>Community detection (Louvain, Infomap, Label Propagation)</p></li>
+<li><p>Statistical analysis (multilayer density, inter-layer correlation, etc.)</p></li>
+<li><p>Centrality computation (degree, betweenness, PageRank, and variants)</p></li>
+<li><p>Random walks and embeddings</p></li>
+<li><p>Network decomposition primitives</p></li>
+<li><p>Result caching where appropriate (never mutating the underlying graph)</p></li>
 </ul>
-<p><strong>Design Pattern:</strong> <strong>Strategy Pattern</strong> - Different algorithms implement common interfaces</p>
+<p><strong>Design Pattern:</strong> <strong>Strategy Pattern</strong> — interchangeable algorithms share a common interface</p>
 </section>
 <section id="visualization-layer">
 <h3>Visualization Layer<a class="headerlink" href="#visualization-layer" title="Link to this heading"></a></h3>
-<p><strong>Purpose:</strong> Network plotting and rendering</p>
+<p><strong>Purpose:</strong> Network plotting and rendering for multilayer structures. Visualization consumes algorithm outputs but does not compute new graph state.</p>
 <p><strong>Key Components:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">multilayer.py</span></code> - High-level multilayer plotting</p></li>
@@ -306,17 +310,17 @@
 </ul>
 <p><strong>Responsibilities:</strong></p>
 <ul class="simple">
-<li><p>Diagonal projection plots</p></li>
-<li><p>Force-directed layouts</p></li>
+<li><p>Diagonal projection plots and multilayer-specific layouts</p></li>
+<li><p>Force-directed and ForceAtlas2 layouts</p></li>
 <li><p>Matrix visualizations</p></li>
-<li><p>Color mapping and legends</p></li>
+<li><p>Color mapping and legend helpers</p></li>
 <li><p>Interactive plots (via Plotly)</p></li>
 </ul>
-<p><strong>Design Pattern:</strong> <strong>Template Method Pattern</strong> - Layout algorithms follow a common template</p>
+<p><strong>Design Pattern:</strong> <strong>Template Method Pattern</strong> — layout algorithms follow a shared skeleton with overridable steps</p>
 </section>
 <section id="wrappers-layer">
 <h3>Wrappers Layer<a class="headerlink" href="#wrappers-layer" title="Link to this heading"></a></h3>
-<p><strong>Purpose:</strong> High-level interfaces for common workflows</p>
+<p><strong>Purpose:</strong> High-level interfaces for common workflows so users can run end-to-end tasks without touching internals. Wrappers compose algorithms and visualization, but defer state changes to the core.</p>
 <p><strong>Key Components:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">node2vec_embedding.py</span></code> - Node2Vec embedding generation</p></li>
@@ -324,18 +328,18 @@
 </ul>
 <p><strong>Responsibilities:</strong></p>
 <ul class="simple">
-<li><p>Simplified interfaces for complex workflows</p></li>
+<li><p>Simplified interfaces for multi-step workflows</p></li>
 <li><p>Integration with external tools</p></li>
-<li><p>Benchmarking and evaluation</p></li>
+<li><p>Benchmarking and evaluation shortcuts</p></li>
 </ul>
-<p><strong>Design Pattern:</strong> <strong>Facade Pattern</strong> - Simplify complex multi-step operations</p>
+<p><strong>Design Pattern:</strong> <strong>Facade Pattern</strong> — hides orchestration and sensible defaults behind a small API</p>
 </section>
 </section>
 <section id="core-data-structure">
 <h2>Core Data Structure<a class="headerlink" href="#core-data-structure" title="Link to this heading"></a></h2>
 <section id="the-multi-layer-network-class">
 <h3>The multi_layer_network Class<a class="headerlink" href="#the-multi-layer-network-class" title="Link to this heading"></a></h3>
-<p>Central to py3plex, this class manages multilayer network state:</p>
+<p>Central to py3plex, this class wraps the underlying NetworkX graph and enforces multilayer encoding invariants:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">multi_layer_network</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="n">coupling_weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">core_network</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">()</span> <span class="k">if</span> <span class="n">directed</span> <span class="k">else</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiGraph</span><span class="p">()</span>
@@ -350,15 +354,20 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">core_network</span></code> - Underlying NetworkX graph</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">layer_name_map</span></code> - Maps layer names to integer IDs</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_delimiter</span></code> - Separator for node-layer encoding (default: “—“)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label_delimiter</span></code> - Separator for node-layer encoding (default: <code class="docutils literal notranslate"><span class="pre">&quot;---&quot;</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">coupling_weight</span></code> - Default weight for inter-layer edges</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">embedding</span></code> - Cached node embedding matrix</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code> - Node classification labels</p></li>
 </ul>
-<p><strong>Encoding Scheme:</strong></p>
-<p>Nodes are encoded as <code class="docutils literal notranslate"><span class="pre">&quot;{node_id}{delimiter}{layer_id}&quot;</span></code></p>
-<p>Example: Node ‘A’ in layer ‘social’ becomes <code class="docutils literal notranslate"><span class="pre">&quot;A---social&quot;</span></code></p>
-<p>This allows NetworkX to handle multilayer structure transparently.</p>
+<p><strong>Encoding Scheme and Invariants:</strong></p>
+<ul class="simple">
+<li><p>Nodes are represented as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer)</span></code> tuples in Python.</p></li>
+<li><p>When serialized to flat text (files, labels), tuples are joined with the delimiter: <code class="docutils literal notranslate"><span class="pre">&quot;{node_id}{delimiter}{layer}&quot;</span></code>. Avoid using the delimiter inside raw IDs.</p></li>
+<li><p>Layer names are mapped to integers in <code class="docutils literal notranslate"><span class="pre">layer_name_map</span></code> for stable ordering.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">core_network</span></code> stays a NetworkX <code class="docutils literal notranslate"><span class="pre">MultiGraph</span></code>/<code class="docutils literal notranslate"><span class="pre">MultiDiGraph</span></code>; avoid injecting derived attributes that are not part of the graph definition.</p></li>
+<li><p>Inter-layer edges use <code class="docutils literal notranslate"><span class="pre">coupling_weight</span></code> unless explicitly weighted; modifying coupling should clear related caches.</p></li>
+<li><p>Any mutation (adding/removing nodes, relabeling layers) should invalidate cached matrices or embeddings.</p></li>
+</ul>
 </section>
 </section>
 <section id="design-patterns">
@@ -366,18 +375,18 @@
 <section id="facade-pattern">
 <h3>Facade Pattern<a class="headerlink" href="#facade-pattern" title="Link to this heading"></a></h3>
 <p><strong>Used in:</strong> <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code>, wrappers</p>
-<p><strong>Purpose:</strong> Provide simplified interface to complex subsystems</p>
+<p><strong>Purpose:</strong> Provide a simplified interface to complex subsystems and enforce a single entry point for mutations.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Complex underlying operations hidden behind simple interface</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>  <span class="c1"># Handles parsing, encoding, validation</span>
-<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>  <span class="c1"># Aggregates multiple NetworkX calls</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>  <span class="c1"># Aggregates multiple NetworkX calls behind one call</span>
 </pre></div>
 </div>
 </section>
 <section id="strategy-pattern">
 <h3>Strategy Pattern<a class="headerlink" href="#strategy-pattern" title="Link to this heading"></a></h3>
 <p><strong>Used in:</strong> Algorithms, layout computation</p>
-<p><strong>Purpose:</strong> Interchangeable algorithms following common interface</p>
+<p><strong>Purpose:</strong> Interchangeable algorithms following a common interface; callers pick by name without changing call sites.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Different community detection strategies</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">detect_communities</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;louvain&#39;</span><span class="p">):</span>
     <span class="n">strategies</span> <span class="o">=</span> <span class="p">{</span>
@@ -385,14 +394,14 @@
         <span class="s1">&#39;infomap&#39;</span><span class="p">:</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">,</span>
         <span class="s1">&#39;label_prop&#39;</span><span class="p">:</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">propagate</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="n">strategies</span><span class="p">[</span><span class="n">method</span><span class="p">](</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">strategies</span><span class="p">[</span><span class="n">method</span><span class="p">](</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>  <span class="c1"># Adding a new strategy means adding one entry to the map</span>
 </pre></div>
 </div>
 </section>
 <section id="template-method-pattern">
 <h3>Template Method Pattern<a class="headerlink" href="#template-method-pattern" title="Link to this heading"></a></h3>
 <p><strong>Used in:</strong> Visualization, layout algorithms</p>
-<p><strong>Purpose:</strong> Define algorithm skeleton, allow customization in subclasses</p>
+<p><strong>Purpose:</strong> Define algorithm skeleton, allow customization in subclasses; shared steps live in the base class.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LayoutAlgorithm</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
@@ -413,14 +422,14 @@
 <section id="dependency-injection">
 <h3>Dependency Injection<a class="headerlink" href="#dependency-injection" title="Link to this heading"></a></h3>
 <p><strong>Used in:</strong> Configuration, algorithm parameters</p>
-<p><strong>Purpose:</strong> Inject dependencies rather than hard-coding</p>
+<p><strong>Purpose:</strong> Inject dependencies rather than hard-coding so testing and theming stay configurable.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration injected rather than hard-coded</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_COLORS</span><span class="p">,</span> <span class="n">LAYOUT_PARAMS</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">draw_network</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layout_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">colors</span> <span class="o">=</span> <span class="n">colors</span> <span class="ow">or</span> <span class="n">DEFAULT_COLORS</span>
     <span class="n">layout_params</span> <span class="o">=</span> <span class="n">layout_params</span> <span class="ow">or</span> <span class="n">LAYOUT_PARAMS</span>
-    <span class="c1"># Use injected configuration</span>
+    <span class="c1"># Use injected configuration without touching global state</span>
 </pre></div>
 </div>
 </section>
@@ -429,31 +438,32 @@
 <h2>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading"></a></h2>
 <section id="typical-workflow">
 <h3>Typical Workflow<a class="headerlink" href="#typical-workflow" title="Link to this heading"></a></h3>
+<p>py3plex workflows follow a predictable sequence: load → compute → analyze → visualize → export. Each step uses the layer beneath it and should avoid mutating lower layers unless explicitly intended.</p>
 <ol class="arabic">
-<li><p><strong>Input:</strong> Load or create network</p>
+<li><p><strong>Input:</strong> Load or create network, keeping encoding consistent</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.graphml&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p><strong>Processing:</strong> Apply algorithms</p>
+<li><p><strong>Processing:</strong> Apply algorithms against the core graph without re-encoding</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p><strong>Analysis:</strong> Compute statistics</p>
+<li><p><strong>Analysis:</strong> Compute statistics on the derived results</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
-<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">)</span>
+<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p><strong>Visualization:</strong> Render results</p>
+<li><p><strong>Visualization:</strong> Render results; visualization functions expect immutable inputs</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p><strong>Output:</strong> Export results</p>
+<li><p><strong>Output:</strong> Export results using the same delimiter and layer naming</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">&quot;output.graphml&quot;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -462,25 +472,26 @@
 </section>
 <section id="state-management">
 <h3>State Management<a class="headerlink" href="#state-management" title="Link to this heading"></a></h3>
-<p><strong>Immutable Operations:</strong> Most algorithms don’t modify the network</p>
+<p><strong>Immutable Operations:</strong> Most algorithms don’t modify the network or its caches</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># These don&#39;t modify the network</span>
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Mutable Operations:</strong> Some operations modify network state</p>
+<p><strong>Mutable Operations:</strong> Some operations modify network state (nodes, edges, layer mappings, caches)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># These modify the network</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">new_edges</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">aggregate_layers</span><span class="p">([</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">],</span> <span class="s1">&#39;combined&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>After running mutable operations, clear or recompute cached matrices/embeddings before downstream analysis. If you need isolation, copy the network or work on a subgraph before running destructive operations.</p>
 </section>
 </section>
 <section id="extension-points">
 <h2>Extension Points<a class="headerlink" href="#extension-points" title="Link to this heading"></a></h2>
 <section id="custom-algorithms">
 <h3>Custom Algorithms<a class="headerlink" href="#custom-algorithms" title="Link to this heading"></a></h3>
-<p>Add new algorithms by following existing patterns:</p>
+<p>Add new algorithms by following existing patterns (pure functions returning dictionaries or NetworkX objects). Keep inputs typed as <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> to reuse encoding and caching, and avoid mutating the passed network unless the function is explicitly transformative. Document input assumptions (directed vs. undirected, weighted vs. unweighted) and expose new callables in the relevant package <code class="docutils literal notranslate"><span class="pre">__init__</span></code> when you want them importable by name.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py3plex/algorithms/my_module/my_algorithm.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core.multinet</span><span class="w"> </span><span class="kn">import</span> <span class="n">multi_layer_network</span>
 
@@ -511,7 +522,7 @@
 </section>
 <section id="custom-visualizations">
 <h3>Custom Visualizations<a class="headerlink" href="#custom-visualizations" title="Link to this heading"></a></h3>
-<p>Create custom plots using drawing machinery:</p>
+<p>Create custom plots using drawing machinery. Treat the network as read-only and reuse shared layout helpers to keep visuals consistent with built-in plots:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">drawing_machinery</span> <span class="k">as</span> <span class="n">dm</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
@@ -533,7 +544,7 @@
 </section>
 <section id="custom-parsers">
 <h3>Custom Parsers<a class="headerlink" href="#custom-parsers" title="Link to this heading"></a></h3>
-<p>Add support for new file formats:</p>
+<p>Add support for new file formats. Normalize layer names, respect <code class="docutils literal notranslate"><span class="pre">label_delimiter</span></code>, and raise the appropriate domain exceptions so callers can distinguish parsing failures from missing data:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py3plex/core/parsers.py</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_my_format</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -593,12 +604,14 @@
 <span class="n">iterations</span> <span class="o">=</span> <span class="n">LAYOUT_PARAMS</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">][</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>Prefer importing needed values rather than mutating module globals. For per-run overrides, pass parameters explicitly into drawing or layout helpers.</p>
 </section>
 </section>
 <section id="testing-architecture">
 <h2>Testing Architecture<a class="headerlink" href="#testing-architecture" title="Link to this heading"></a></h2>
 <section id="test-organization">
 <h3>Test Organization<a class="headerlink" href="#test-organization" title="Link to this heading"></a></h3>
+<p>Tests mirror the architecture: core primitives first, then algorithms and workflows.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>tests/
 ├── test_core_functionality.py      # Core data structure tests
 ├── test_multilayer_*.py            # Multilayer algorithm tests
@@ -629,8 +642,8 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_centrality_normalization</span><span class="p">():</span>
     <span class="n">network</span> <span class="o">=</span> <span class="n">create_random_network</span><span class="p">()</span>
     <span class="n">centrality</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="c1"># Centrality values should be normalized</span>
-    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">v</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">centrality</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="c1"># Centrality values should not be negative; normalized variants stay within [0, 1]</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">centrality</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
@@ -639,7 +652,7 @@
 <h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
 <section id="lazy-evaluation">
 <h3>Lazy Evaluation<a class="headerlink" href="#lazy-evaluation" title="Link to this heading"></a></h3>
-<p>Expensive operations are computed on-demand:</p>
+<p>Expensive operations are computed on-demand and cached on the instance:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">multi_layer_network</span><span class="p">:</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">supra_adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -651,17 +664,18 @@
 </section>
 <section id="sparse-matrices">
 <h3>Sparse Matrices<a class="headerlink" href="#sparse-matrices" title="Link to this heading"></a></h3>
-<p>Use sparse representations for large networks:</p>
+<p>Use sparse representations for large networks; the threshold is configurable in <code class="docutils literal notranslate"><span class="pre">config.py</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_supra_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">sparse</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span> <span class="o">&gt;</span> <span class="n">SPARSE_THRESHOLD</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Keep the chosen representation consistent downstream to avoid repeated dense↔sparse conversions.</p>
 </section>
 <section id="vectorization">
 <h3>Vectorization<a class="headerlink" href="#vectorization" title="Link to this heading"></a></h3>
-<p>Prefer NumPy vectorized operations:</p>
+<p>Prefer NumPy vectorized operations to avoid Python loops:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bad: Python loop</span>
 <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">node</span><span class="p">))</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
 
@@ -686,6 +700,7 @@
 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid layer: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Call <code class="docutils literal notranslate"><span class="pre">get_logger</span></code> once per module; configure logging once in the application entrypoint to avoid duplicate handlers.</p>
 </section>
 <section id="log-levels">
 <h3>Log Levels<a class="headerlink" href="#log-levels" title="Link to this heading"></a></h3>
@@ -725,6 +740,7 @@
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_name_map</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>Prefer raising domain-specific exceptions for recoverable errors so callers can distinguish parsing failures, missing layers, or invalid formats.</p>
 </section>
 </section>
 <section id="future-architecture">
@@ -738,6 +754,7 @@
 <li><p><strong>Plugin System:</strong> Easy addition of third-party algorithms</p></li>
 <li><p><strong>Type System:</strong> Full type hints coverage (currently 65%)</p></li>
 </ol>
+<p>These roadmap items are exploratory; expect details and APIs to evolve.</p>
 </section>
 </section>
 <section id="see-also">

@@ -2,7 +2,7 @@
 GUI Testing Guide
 **********************
 
-Complete testing guide for the Py3plex GUI, including automated CI tests and manual validation.
+Use this guide to verify the Py3plex GUI before merging or releasing. It covers automated CI runs and manual smoke tests.
 
 Visual Interface Preview
 ========================
@@ -42,7 +42,7 @@ Automated Testing (CI)
 GitHub Actions Workflow
 -----------------------
 
-All GUI tests run automatically on GitHub Actions:
+All GUI tests run automatically on GitHub Actions to prevent regressions in the API, worker, and frontend:
 
 **Workflow**: ``.github/workflows/gui-tests.yml``
 
@@ -80,13 +80,14 @@ All GUI tests run automatically on GitHub Actions:
 Running CI Tests Locally
 ------------------------
 
-You can run the same tests locally:
+You can run the same tests locally (requires Docker Compose v2 and npm). Stop any existing GUI stack first so ports are free:
 
 .. code-block:: bash
 
     cd gui
 
     # API tests
+    # Uses sample data and pytest checks in ci/api-tests/
     docker compose build api worker redis
     docker compose up -d api worker redis
     docker compose exec api pytest ci/api-tests/ -v
@@ -94,9 +95,9 @@ You can run the same tests locally:
 
     # Integration tests
     docker compose up -d --build
-    # Wait for services
+    # Wait for services to become healthy
     curl -f http://localhost:8080/api/health
-    # Run manual integration tests (see below)
+    # Run manual integration tests (see below) or add automated steps here
     docker compose down -v
 
     # Frontend build
@@ -107,7 +108,7 @@ You can run the same tests locally:
 Manual Testing Guide
 ====================
 
-Manual testing guide for the Py3plex GUI. Follow these steps to validate the implementation.
+Follow these manual smoke tests after standing up the stack locally. Keep logs open in another terminal so you can capture failures quickly, and only proceed once all services report healthy.
 
 Prerequisites
 -------------
@@ -115,6 +116,7 @@ Prerequisites
 - Docker and Docker Compose installed
 - At least 4GB RAM available
 - Ports 8080, 5555, 8000, 6379 available
+- Sample file available at ``gui/toy_network.edgelist`` (included in repo)
 
 Setup
 -----
@@ -125,7 +127,7 @@ Setup
     cp .env.example .env
     make up
 
-**Expected**: All containers start successfully. Check with ``docker compose ps``.
+**Expected**: All containers start successfully. Check with ``docker compose ps`` and wait until services report ``healthy`` before proceeding.
 
 Test 1: Health Check
 --------------------
@@ -175,7 +177,7 @@ Test 2: Upload Network
 ----------------------
 
 1. Navigate to **Load Data** page
-2. Click "Click to upload" or drag and drop ``toy_network.edgelist``
+2. Click "Click to upload" or drag and drop ``toy_network.edgelist`` (repo copy lives in ``gui/toy_network.edgelist``)
 3. Click "Upload & Parse"
 
 **Expected**:
@@ -188,6 +190,7 @@ Test 2: Upload Network
   - Nodes: 6
   - Edges: 14
   - Layers: hobby, social, work
+  - No error alerts or toast messages
 
 Test 3: Visualize Network
 --------------------------
@@ -198,7 +201,7 @@ Test 3: Visualize Network
 
 - Page shows three panels: Layers, Network View, Inspect
 - Network View shows placeholder with "Graph with X nodes"
-- No errors in console
+- No errors in browser console
 
 Test 4: Run Layout Job
 ----------------------
@@ -267,7 +270,7 @@ Verify File Created
 **Expected**: Zip file exists with recent timestamp
 
 Test 8: API Direct Testing
----------------------------
+--------------------------
 
 Upload via API
 ^^^^^^^^^^^^^^
@@ -277,7 +280,7 @@ Upload via API
     curl -F "file=@toy_network.edgelist" \
       http://localhost:8080/api/upload
 
-**Expected**: JSON response with ``graph_id``
+**Expected**: JSON response with ``graph_id`` (save it for the next steps).
 
 Get Graph Summary
 ^^^^^^^^^^^^^^^^^
@@ -287,7 +290,7 @@ Get Graph Summary
     GRAPH_ID=<from_previous_step>
     curl http://localhost:8080/api/graphs/$GRAPH_ID/summary
 
-**Expected**: JSON with nodes, edges, layers
+**Expected**: JSON with node, edge, and layer counts matching the upload.
 
 Start Layout Job
 ^^^^^^^^^^^^^^^^
@@ -309,7 +312,7 @@ Check Job Status
     JOB_ID=<from_previous_step>
     curl http://localhost:8080/api/jobs/$JOB_ID
 
-**Expected**: JSON with status, progress, result
+**Expected**: JSON with status, progress, and a ``result`` payload when complete.
 
 Test 9: Logs Inspection
 -----------------------
@@ -347,7 +350,7 @@ Test 11: Data Persistence
 **Expected**: 
 
 - Uploads work after restart
-- Previous artifacts still in ``gui/data/``
+- Previous artifacts still in ``gui/data/`` (verify workspace ZIPs and layout outputs exist)
 
 Test 12: Multiple Jobs
 ----------------------
@@ -374,7 +377,7 @@ Port Already in Use
 .. code-block:: bash
 
     # Find and kill process
-    lsof -ti:8080 | xargs kill -9
+    lsof -ti:8080 | xargs -r kill
 
     # Or change port in docker-compose.yml
     ports:
@@ -445,7 +448,7 @@ Test Checklist
 Performance Benchmarks
 ======================
 
-For reference, on a typical development machine:
+For reference, on a typical development machine (approximate and hardware-dependent):
 
 - **Startup time**: 30-60 seconds (first build: 3-5 minutes)
 - **Upload (toy network)**: < 1 second
@@ -466,6 +469,8 @@ Security Testing (Development Mode)
 - [ ] Setting rate limits
 - [ ] Validating file uploads strictly
 
+These checks are meant for local verification only; harden the deployment before opening any external access.
+
 Next Steps
 ==========
 
@@ -476,6 +481,7 @@ If all tests pass:
 3. Load test with concurrent users
 4. Profile memory usage
 5. Test edge cases (malformed files, very large files)
+6. Capture logs and screenshots for any failing scenario before filing issues
 
 ---
 

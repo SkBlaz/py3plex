@@ -17,6 +17,7 @@
       <script src="_static/documentation_options.js?v=1ed6394b"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -148,6 +149,18 @@
 <h1>Algorithm Roadmap<a class="headerlink" href="#algorithm-roadmap" title="Link to this heading"></a></h1>
 <p>This page provides a <strong>comprehensive overview</strong> of all algorithms implemented in py3plex, organized by category and showing relationships between different methods.</p>
 <p><strong>Purpose:</strong> Help you quickly find the right algorithm for your multilayer network analysis task.</p>
+<section id="notation-and-assumptions">
+<h2>Notation and assumptions<a class="headerlink" href="#notation-and-assumptions" title="Link to this heading"></a></h2>
+<p>Unless otherwise specified:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(n\)</span> = number of physical nodes; <span class="math notranslate nohighlight">\(m\)</span> = edges on the graph being analyzed (aggregated by default, supra-graph when explicitly stated)</p></li>
+<li><p><span class="math notranslate nohighlight">\(n_L\)</span> = number of state nodes (node-layer pairs), <span class="math notranslate nohighlight">\(L\)</span> = number of layers; supra-graph algorithms use <span class="math notranslate nohighlight">\(n_L\)</span> and the corresponding intra- + inter-layer edge count</p></li>
+<li><p>When both <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(n_L\)</span> appear, <span class="math notranslate nohighlight">\(n\)</span>/<span class="math notranslate nohighlight">\(m\)</span> refer to the aggregated physical-node graph; <span class="math notranslate nohighlight">\(n_L\)</span> and its edge count refer to the supra-adjacency</p></li>
+<li><p>Complexities assume sparse graphs and hide iteration-dependent constants from solvers</p></li>
+<li><p>Supra-adjacency matrices are sparse unless noted; dense forms are only for toy examples</p></li>
+<li><p>Shortest-path-based metrics assume non-negative edge weights; negative weights are unsupported</p></li>
+</ul>
+</section>
 <section id="algorithm-categories">
 <h2>Algorithm Categories<a class="headerlink" href="#algorithm-categories" title="Link to this heading"></a></h2>
 <p>The algorithms in py3plex are organized into these main categories:</p>
@@ -177,7 +190,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">induced_graph(partition,</span> <span class="pre">graph,</span> <span class="pre">weight)</span></code> - Create quotient graph</p></li>
 </ul>
 <p><strong>Best for:</strong> Fast community detection on large single-layer networks</p>
-<p><strong>Complexity:</strong> O(n log n)</p>
+<p><strong>Complexity:</strong> O(m log n) in typical sparse settings</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a> (multilayer extension)</p></li>
@@ -195,8 +208,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">run_infomap(network,</span> <span class="pre">binary_path,</span> <span class="pre">arguments)</span></code> - Execute Infomap binary</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">parse_infomap(outfile)</span></code> - Parse Infomap output</p></li>
 </ul>
-<p><strong>Best for:</strong> Flow-based community detection, hierarchical structure</p>
-<p><strong>Complexity:</strong> O(m log n) where m is edges, n is nodes</p>
+<p><strong>Best for:</strong> Flow-based community detection, hierarchical structure, optional overlapping output</p>
+<p><strong>Complexity:</strong> O(m log n) where m is edges, n is nodes (average-case)</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (faster alternative)</p></li>
@@ -214,7 +227,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">build_supra_modularity_matrix(network,</span> <span class="pre">omega)</span></code> - Build modularity matrix</p></li>
 </ul>
 <p><strong>Best for:</strong> Community detection across multiple layers with inter-layer coupling</p>
-<p><strong>Complexity:</strong> O(n² L) where L is number of layers</p>
+<p><strong>Complexity:</strong> O(n_L^2) to build a dense supra-adjacency (sparse construction: O(m)) plus Louvain-style optimization (about O(m log n_L) on the sparse supra-graph); prefer sparse supra-adjacency for anything beyond small toy graphs</p>
 <p><strong>Algorithm details:</strong> Implements Mucha et al. (2010) multilayer modularity optimization</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
@@ -236,7 +249,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">LeidenResult</span></code> - Holds partition results with modularity score</p></li>
 </ul>
 <p><strong>Best for:</strong> More stable community detection than Louvain</p>
-<p><strong>Complexity:</strong> O(n log n) with better quality guarantees</p>
+<p><strong>Complexity:</strong> About O(m) per iteration on the supplied graph (m counts intra + inter-layer edges when using a supra-adjacency), with faster convergence than Louvain</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (predecessor)</p></li>
@@ -256,6 +269,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">create_tree(centers)</span></code> - Build community hierarchy</p></li>
 </ul>
 <p><strong>Best for:</strong> Networks with overlapping communities</p>
+<p><strong>Complexity:</strong> Dominated by PageRank-style iterations on the core graph; scales roughly with O(m * i) where i is iterations</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#community-ranking"><span class="std std-ref">Community Ranking</span></a> (related approach)</p></li>
@@ -312,7 +326,7 @@
 <section id="multilayercentrality-class">
 <h3>MultilayerCentrality Class<a class="headerlink" href="#multilayercentrality-class" title="Link to this heading"></a></h3>
 <p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">multilayer_algorithms.centrality.MultilayerCentrality</span></code></p>
-<p><strong>Main class for computing various centrality measures.</strong></p>
+<p><strong>Main class for computing various centrality measures on the supra-adjacency of state nodes (:math:`n_L`).</strong></p>
 <section id="basic-centrality-measures">
 <h4>Basic Centrality Measures<a class="headerlink" href="#basic-centrality-measures" title="Link to this heading"></a></h4>
 <p><strong>Methods:</strong></p>
@@ -323,7 +337,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">average_degree_centrality()</span></code> - Average degree across layers</p></li>
 </ul>
 <p><strong>Best for:</strong> Quick importance ranking, well-connected node identification</p>
-<p><strong>Complexity:</strong> O(n + m) where n is nodes, m is edges</p>
+<p><strong>Complexity:</strong> O(n_L + m) where n_L is state nodes, m is edges (intra + inter-layer)</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a> (cross-layer activity)</p></li>
@@ -341,7 +355,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">communicability_centrality(beta)</span></code> - Communicability centrality</p></li>
 </ul>
 <p><strong>Best for:</strong> Influence measure, recursive importance, prestige ranking</p>
-<p><strong>Complexity:</strong> O(m) per iteration, typically converges quickly</p>
+<p><strong>Complexity:</strong> O(m) per iteration on sparse supra-adjacency; typically converges in few iterations</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#hubs-authorities"><span class="std std-ref">Hubs and Authorities (HITS)</span></a> (directed networks)</p></li>
@@ -357,8 +371,9 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">multilayer_closeness_centrality()</span></code> - Closeness across layers</p></li>
 </ul>
 <p><strong>Best for:</strong> Bridge identification, broadcasting efficiency</p>
-<p><strong>Complexity:</strong> O(nm) for unweighted, O(nm + n² log n) for weighted</p>
-<p><strong>Warning:</strong> Expensive for large networks (&gt;1000 nodes)</p>
+<p><strong>Complexity:</strong> O(n_L m) for unweighted, O(n_L m + n_L^2 log n_L) for weighted (Brandes with Dijkstra on the supra-graph)</p>
+<p><strong>Warning:</strong> Expensive beyond a few thousand state nodes; use sampling or approximations when possible. Distances are computed on the supra-graph; unreachable pairs yield zero scores.</p>
+<p><strong>Note:</strong> Weighted variants rely on non-negative edge weights for Dijkstra-based shortest paths.</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#centrality-all"><span class="std std-ref">Utility Functions</span></a> (batch computation)</p></li>
@@ -394,7 +409,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">versatility_centrality(network,</span> <span class="pre">centrality_type)</span></code> - Cross-layer versatility measure</p></li>
 </ul>
 <p><strong>Best for:</strong> Measuring how uniformly a node’s importance is distributed across layers</p>
-<p><strong>Complexity:</strong> O(m × L) where L is number of layers</p>
+<p><strong>Complexity:</strong> O(m L) where L is number of layers (dominated by the chosen per-layer centrality)</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
 <li><p>All centrality measures in <a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
@@ -411,7 +426,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">katz_centrality(supra_matrix,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">max_iter,</span> <span class="pre">tol)</span></code> - Resolvent based</p></li>
 </ul>
 <p><strong>Best for:</strong> Advanced centrality using matrix functions on supra-adjacency</p>
-<p><strong>Complexity:</strong> Depends on matrix operations, typically O(n²) or O(n³)</p>
+<p><strong>Complexity:</strong> Dense matrix functions scale as O(n_L^2) to O(n_L^3); prefer sparse-aware solvers for larger supra-graphs</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a> (standard measures)</p></li>
@@ -465,7 +480,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">algebraic_connectivity(network)</span></code> - Second smallest Laplacian eigenvalue</p></li>
 </ul>
 <p><strong>Best for:</strong> Understanding multilayer network structure and properties</p>
-<p><strong>Complexity:</strong> Varies by measure, typically O(n) to O(n²)</p>
+<p><strong>Complexity:</strong> Varies by measure; most layer/node summaries are O(n_L + m) on the relevant graph, while spectral routines operate on the supra-graph and can reach O(n_L^2) on dense inputs</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (simpler measures)</p></li>
@@ -487,7 +502,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">core_network_statistics(network)</span></code> - Comprehensive network statistics</p></li>
 </ul>
 <p><strong>Best for:</strong> Quick network overview, hub identification</p>
-<p><strong>Complexity:</strong> O(n + m) for most measures</p>
+<p><strong>Complexity:</strong> O(n + m) on the aggregated core graph for most measures</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#id7"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (advanced measures)</p></li>
@@ -499,7 +514,7 @@
 <span id="topology-measures"></span><h3>Topology Analysis<a class="headerlink" href="#topology-analysis" title="Link to this heading"></a></h3>
 <p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">statistics.topology</span></code></p>
 <p>Functions for analyzing topological properties of networks.</p>
-<p><strong>Purpose:</strong> Study structural properties like degree distributions, connected components, etc.</p>
+<p><strong>Purpose:</strong> Study structural properties like degree distributions, connected components, etc., on the aggregated core graph or per-layer projections.</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a></p></li>
@@ -573,6 +588,7 @@
 <section id="node-ranking-classification">
 <span id="id9"></span><h2>Node Ranking &amp; Classification<a class="headerlink" href="#node-ranking-classification" title="Link to this heading"></a></h2>
 <p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.node_ranking</span></code> and <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.network_classification</span></code></p>
+<p>These methods operate on the aggregated (often directed) core graph; <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(m\)</span> below refer to physical nodes and edges.</p>
 <section id="node-ranking">
 <span id="node-ranking-algorithms"></span><h3>Node Ranking<a class="headerlink" href="#node-ranking" title="Link to this heading"></a></h3>
 <p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">node_ranking.node_ranking</span></code></p>
@@ -586,7 +602,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">stochastic_normalization_hin(matrix)</span></code> - Normalize for heterogeneous networks</p></li>
 </ul>
 <p><strong>Best for:</strong> Ranking nodes by importance in directed networks</p>
-<p><strong>Complexity:</strong> O(m) per iteration for PageRank, O(nm) for HITS</p>
+<p><strong>Complexity:</strong> O(m) per iteration for PageRank; HITS uses similar power iterations with the same per-iteration cost</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p>PageRank in <a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
@@ -608,7 +624,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">normalize_exp(mat)</span></code> - Exponential normalization</p></li>
 </ul>
 <p><strong>Best for:</strong> Semi-supervised node classification</p>
-<p><strong>Complexity:</strong> O(m × i) where i is number of iterations</p>
+<p><strong>Complexity:</strong> O(m * i) where m is edges and i is number of iterations</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#ppr-algorithm"><span class="std std-ref">Personalized PageRank (PPR)</span></a> (personalized version)</p></li>
@@ -627,7 +643,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">validate_ppr(...)</span></code> - Validation function</p></li>
 </ul>
 <p><strong>Best for:</strong> Local network exploration, personalized node ranking</p>
-<p><strong>Complexity:</strong> O(n²) for dense computation, can be approximated</p>
+<p><strong>Complexity:</strong> O(n^2) for dense computation; sparse power iterations are about O(m * i) where i is iterations</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#label-propagation"><span class="std std-ref">Label Propagation</span></a> (similar propagation mechanism)</p></li>
@@ -652,7 +668,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">layer_specific_random_walk(network,</span> <span class="pre">start_node,</span> <span class="pre">start_layer,</span> <span class="pre">walk_length,</span> <span class="pre">...)</span></code> - Multilayer walk</p></li>
 </ul>
 <p><strong>Best for:</strong> Foundation for embedding algorithms, network exploration</p>
-<p><strong>Complexity:</strong> O(L) per walk where L is walk length</p>
+<p><strong>Complexity:</strong> O(ell) per walk where ell is the walk length</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="reference/algorithm_reference.html#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a> (uses these walks)</p></li>
@@ -670,7 +686,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">train_node2vec(graph,</span> <span class="pre">...)</span></code> - Training wrapper</p></li>
 </ul>
 <p><strong>Best for:</strong> Feature learning, link prediction, node classification</p>
-<p><strong>Complexity:</strong> O(r × l × V) where r is walks per node, l is walk length, V is number of vertices</p>
+<p><strong>Complexity:</strong> O(r * l * n) where r is walks per node, l is walk length, n is nodes on the (aggregated) walk graph</p>
 <p><strong>Parameters:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">p</span></code>: Return parameter (controls backtracking)</p></li>
@@ -750,9 +766,9 @@
 <p><strong>Best for:</strong> Visualizing multilayer network structure</p>
 <dl class="simple">
 <dt><strong>Scalability:</strong></dt><dd><ul class="simple">
-<li><p>Diagonal projection: 10,000+ nodes</p></li>
-<li><p>Force-directed: &lt;5,000 nodes</p></li>
-<li><p>Matrix view: 100,000+ nodes</p></li>
+<li><p>Diagonal projection: practical for tens of thousands of nodes in sparse graphs</p></li>
+<li><p>Force-directed: best for a few thousand nodes</p></li>
+<li><p>Matrix view: memory-bound; works for small/medium graphs or very sparse matrices—otherwise sample or project first</p></li>
 </ul>
 </dd>
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
@@ -845,6 +861,7 @@
 </section>
 <section id="by-network-size">
 <h3>By Network Size<a class="headerlink" href="#by-network-size" title="Link to this heading"></a></h3>
+<p>Counts below refer to physical nodes; for dense multilayer graphs treat the effective size as <span class="math notranslate nohighlight">\(n_L\)</span>.</p>
 <dl class="simple">
 <dt><strong>Small (&lt;1,000 nodes):</strong></dt><dd><ul class="simple">
 <li><p>All algorithms work well</p></li>
@@ -853,15 +870,15 @@
 </ul>
 </dd>
 <dt><strong>Medium (1,000-10,000 nodes):</strong></dt><dd><ul class="simple">
-<li><p>Use Louvain over Infomap</p></li>
+<li><p>Prefer Louvain/Leiden over Infomap for speed</p></li>
 <li><p>Avoid full betweenness centrality</p></li>
 <li><p>Use diagonal projection for visualization</p></li>
 </ul>
 </dd>
 <dt><strong>Large (10,000-100,000 nodes):</strong></dt><dd><ul class="simple">
-<li><p>Degree-based measures only</p></li>
+<li><p>Degree/PageRank; avoid all-pairs paths</p></li>
 <li><p>Louvain or label propagation</p></li>
-<li><p>Matrix visualizations</p></li>
+<li><p>Use sampling or projections instead of matrix visualizations</p></li>
 </ul>
 </dd>
 <dt><strong>Very Large (&gt;100,000 nodes):</strong></dt><dd><ul class="simple">
@@ -892,13 +909,13 @@
 </ul>
 </dd>
 <dt><strong>Weighted networks:</strong></dt><dd><ul class="simple">
-<li><p>All algorithms support weights</p></li>
-<li><p>Specify <code class="docutils literal notranslate"><span class="pre">weight</span></code> parameter</p></li>
+<li><p>Most algorithms support weights</p></li>
+<li><p>Specify a <code class="docutils literal notranslate"><span class="pre">weight</span></code> field/parameter where available</p></li>
 </ul>
 </dd>
 <dt><strong>Temporal networks:</strong></dt><dd><ul class="simple">
 <li><p>Layer-based representation</p></li>
-<li><p>Time-respecting random walks: <a class="reference internal" href="reference/algorithm_reference.html#random-walk-primitives"><span class="std std-ref">Random Walk Primitives</span></a></p></li>
+<li><p>Time-respecting random walks: <a class="reference internal" href="reference/algorithm_reference.html#random-walk-primitives"><span class="std std-ref">Random Walk Primitives</span></a> (ensure edges respect ordering)</p></li>
 </ul>
 </dd>
 </dl>

@@ -1,7 +1,16 @@
 Contributing to py3plex
 =======================
 
-We welcome contributions to py3plex. This guide explains how to contribute effectively.
+We welcome contributions to py3plex. This guide explains how to contribute effectively and what we expect before you open a pull request.
+
+Quick Checklist
+---------------
+
+* Use a feature branch (``git checkout -b feature/my-topic``).
+* Keep changes focused and small; split unrelated changes into separate PRs.
+* Add or update tests that cover the change.
+* Run ``make lint`` and ``make test`` before opening a PR.
+* Update documentation (docstrings and RST) when behavior or APIs change.
 
 Ways to Contribute
 ------------------
@@ -88,10 +97,10 @@ Always create a new branch for your work:
 Make Changes
 ~~~~~~~~~~~~
 
-1. Write your code following our coding standards (see below)
-2. Add or update tests
-3. Update documentation
-4. Run linters and tests
+1. Write your code following our coding standards (see below).
+2. Add or update tests that exercise the change, including edge cases.
+3. Update documentation (docstrings, RST, examples) if behavior changes.
+4. Run linters and tests locally to catch issues early.
 
 Run Tests
 ~~~~~~~~~
@@ -125,11 +134,12 @@ Write clear, descriptive commit messages:
 .. code-block:: bash
 
     git add .
-    git commit -m "Add feature X to support Y
-    
-    - Implement algorithm for Z
-    - Add tests for edge cases
-    - Update documentation"
+    git commit -m "Add feature X to support Y"
+    git commit --amend  # optional, to refine the message before pushing
+    # A good body explains:
+    # - Why the change is needed
+    # - What was changed
+    # - Any follow-up steps
 
 Push and Create PR
 ~~~~~~~~~~~~~~~~~~
@@ -358,17 +368,17 @@ Pull Request Guidelines
 Before Submitting
 ~~~~~~~~~~~~~~~~~
 
-[OK] Code follows style guide (``make lint`` passes)
+[OK] Code follows style guide (``make lint`` passes).
 
-[OK] All tests pass (``make test`` passes)
+[OK] All tests pass (``make test`` passes).
 
-[OK] New code has tests
+[OK] New code has tests (unit and integration when applicable).
 
-[OK] Documentation is updated
+[OK] Documentation is updated (docstrings and relevant RST pages).
 
-[OK] Commit messages are clear
+[OK] Commit messages are clear and scoped to the change.
 
-[OK] Branch is up to date with main
+[OK] Branch is up to date with ``main`` (rebase if needed to avoid conflicts).
 
 PR Description
 ~~~~~~~~~~~~~~
@@ -415,10 +425,10 @@ Example PR template:
 Review Process
 ~~~~~~~~~~~~~~
 
-1. Maintainers will review your PR
-2. Address any feedback or requested changes
-3. Once approved, your PR will be merged
-4. Your contribution will be in the next release!
+1. Maintainers will review your PR.
+2. Address feedback promptly; keep commits focused on the requested changes.
+3. Once approved, your PR will be merged.
+4. Your contribution will be included in the next release.
 
 Reporting Issues
 ----------------

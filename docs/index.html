@@ -162,7 +162,7 @@
 </div>
 <hr class="docutils" />
 <p>py3plex provides scalable analysis and visualization of multilayer and multiplex networks in Python.</p>
-<p><strong>Key Features:</strong></p>
+<p><strong>Key features at a glance:</strong></p>
 <ul class="simple">
 <li><p>Multiplex and multilayer network structures</p></li>
 <li><p><strong>SQL-like DSL for network queries</strong> — first-class feature</p></li>
@@ -175,7 +175,7 @@
 </ul>
 <div class="dsl-example admonition">
 <p class="admonition-title">DSL: Query Networks Like SQL</p>
-<p>The py3plex DSL lets you query networks using intuitive SQL-like syntax or a type-safe Python builder API:</p>
+<p>The py3plex DSL lets you query networks using intuitive SQL-like syntax or a type-safe Python builder API. Both return the same results; pick the style that fits your workflow.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># String DSL: Simple and readable</span>
@@ -207,11 +207,12 @@
 </div>
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h2>
-<p>Install:</p>
+<p>Get started in three steps: install, build a tiny multilayer network, and inspect it.</p>
+<p>Step 1 — Install</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
-<p>Create a multilayer network:</p>
+<p>Step 2 — Create a multilayer network</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -225,22 +226,23 @@
 <span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
+<p>Expected output</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 6
 Number of edges: 3
 </pre></div>
 </div>
+<p>Counts reflect per-layer node identities (Alice/Bob/Carol each appear in two layers). Your totals will differ if you change the edge list. The visualization opens in a Matplotlib window and colors nodes by layer.</p>
 </section>
 <section id="start-here">
 <h2>Start Here<a class="headerlink" href="#start-here" title="Link to this heading"></a></h2>
-<p><strong>New to py3plex?</strong> → Begin with the <a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial</span></a> to go from basics to advanced analysis in 10 minutes.</p>
-<p><strong>Already familiar with multilayer networks?</strong> → Jump to <a class="reference internal" href="how-to/run_community_detection.html"><span class="doc">How to Run Community Detection on Multilayer Networks</span></a> or explore the <a class="reference internal" href="how-to/part_intro.html"><span class="doc">How-to Guides</span></a>.</p>
-<p><strong>Just need the API?</strong> → Go straight to <a class="reference internal" href="reference/api_index.html"><span class="doc">API Documentation</span></a> or <a class="reference internal" href="reference/dsl_reference.html"><span class="doc">DSL Reference</span></a>.</p>
-<p><strong>Want to understand the concepts?</strong> → Read <a class="reference internal" href="concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> for the theory behind multilayer networks.</p>
+<p><strong>New to py3plex?</strong> Start with <a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial</span></a> to move from basics to a full analysis in about 10 minutes.</p>
+<p><strong>Already familiar with multilayer networks?</strong> Jump to <a class="reference internal" href="how-to/run_community_detection.html"><span class="doc">How to Run Community Detection on Multilayer Networks</span></a> or browse <a class="reference internal" href="how-to/part_intro.html"><span class="doc">How-to Guides</span></a> for task-focused guides.</p>
+<p><strong>Just need the API?</strong> See <a class="reference internal" href="reference/api_index.html"><span class="doc">API Documentation</span></a> or <a class="reference internal" href="reference/dsl_reference.html"><span class="doc">DSL Reference</span></a>.</p>
+<p><strong>Want to understand the concepts?</strong> Read <a class="reference internal" href="concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> for the theory behind multilayer networks.</p>
 </section>
 <section id="documentation-structure">
 <h2>Documentation Structure<a class="headerlink" href="#documentation-structure" title="Link to this heading"></a></h2>
-<p>This documentation follows the <a class="reference external" href="https://diataxis.fr/">Diátaxis</a> framework with 7 top-level sections:</p>
+<p>This documentation follows the <a class="reference external" href="https://diataxis.fr/">Diátaxis</a> framework with 7 top-level sections. Use the outline below to jump directly to the content type you need—tutorials for learning, how-to guides for tasks, explanations for concepts, and reference for precise details.</p>
 <section id="part-i-overview">
 <h3>Part I: Overview<a class="headerlink" href="#part-i-overview" title="Link to this heading"></a></h3>
 <p>High-level introduction to py3plex and multilayer networks.</p>
@@ -314,10 +316,13 @@ Number of edges: 3
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#part-1-your-first-network-2-min">Part 1: Your First Network (2 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#part-2-basic-analysis-2-min">Part 2: Basic Analysis (2 min)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#use-subset-by-to-control-whether-you-filter-by-layers-node-names-or-explicit-node-layer-tuples">Use <code class="docutils literal notranslate"><span class="pre">subset_by</span></code> to control whether you filter by layers, node names, or explicit node-layer tuples.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#part-3-advanced-metrics-2-min">Part 3: Advanced Metrics (2 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#part-4-community-detection-2-min">Part 4: Community Detection (2 min)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#partition-maps-each-node-layer-pair-to-a-community-label-tune-gamma-resolution-and-omega-inter-layer-coupling-to-control-granularity-fix-random-state-for-reproducible-runs"><code class="docutils literal notranslate"><span class="pre">partition</span></code> maps each node-layer pair to a community label. Tune <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (resolution) and <code class="docutils literal notranslate"><span class="pre">omega</span></code> (inter-layer coupling) to control granularity; fix <code class="docutils literal notranslate"><span class="pre">random_state</span></code> for reproducible runs.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#part-5-random-walks-1-min">Part 5: Random Walks (1 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#part-6-visualization-1-min">Part 6: Visualization (1 min)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#get-layers-style-hairball-returns-a-networkx-graph-and-color-mapping-ready-for-hairball-plot-saving-figures-makes-headless-runs-reproducible"><code class="docutils literal notranslate"><span class="pre">get_layers(style=&quot;hairball&quot;)</span></code> returns a NetworkX graph and color mapping ready for <code class="docutils literal notranslate"><span class="pre">hairball_plot</span></code>; saving figures makes headless runs reproducible.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#key-concepts">Key Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#complete-example">Complete Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#dsl-query-networks-like-sql">DSL: Query Networks Like SQL</a></li>
@@ -487,11 +492,11 @@ Number of edges: 3
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#basic-pipeline">Basic Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#available-operations">Available Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#complex-pipelines">Complex Pipelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#combining-with-dsl">Combining with DSL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#sklearn-style-pipelines">Sklearn-Style Pipelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#scikit-learn-style-pipelines">Scikit-learn-style Pipelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#exporting-pipelines">Exporting Pipelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#reusable-pipelines">Reusable Pipelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-to/build_pipelines.html#next-steps">Next Steps</a></li>
@@ -568,6 +573,7 @@ Number of edges: 3
 <li class="toctree-l2"><a class="reference internal" href="concepts/algorithm_landscape.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/algorithm_landscape.html#community-detection">Community Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/algorithm_landscape.html#centrality-importance">Centrality &amp; Importance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/algorithm_landscape.html#node-ranking-classification">Node Ranking &amp; Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/algorithm_landscape.html#network-statistics">Network Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/algorithm_landscape.html#random-walks-embeddings">Random Walks &amp; Embeddings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/algorithm_landscape.html#visualization-layout">Visualization &amp; Layout</a></li>
@@ -648,35 +654,36 @@ Number of edges: 3
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.core.multinet">Core Modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.config">Configuration and Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.dsl">Domain-Specific Language (DSL)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.uncertainty">Uncertainty Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#core-modules">Core Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#configuration-and-utilities">Configuration and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#domain-specific-language-dsl">Domain-Specific Language (DSL)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#uncertainty-quantification">Uncertainty Quantification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#algorithms">Algorithms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.visualization.multilayer">Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.wrappers.benchmark_nodes">Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#visualization">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#wrappers">Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#i-o-operations">I/O Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.profiling">Profiling Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.logging_config">Logging Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#aggregation-and-network-operations">Aggregation and Network Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#profiling-utilities">Profiling Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#logging-configuration">Logging Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#i-o-schema-and-validation">I/O Schema and Validation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.hedwig">Hedwig Rule Learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.visualization.fa2.forceatlas2">Force Atlas 2 Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.visualization.embedding_visualization.embedding_visualization">Embedding Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hedwig-rule-learning">Hedwig Rule Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#force-atlas-2-visualization">Force Atlas 2 Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#embedding-visualization">Embedding Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#network-generation-and-benchmarking">Network Generation and Benchmarking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.statistics.bayesiantests">Additional Statistics and Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.community_detection.NoRC">Community Detection Advanced</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.node_ranking">Node Ranking and Classification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.wrappers.train_node2vec_embedding">Embeddings and Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#additional-statistics-and-analysis">Additional Statistics and Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#community-detection-advanced">Community Detection Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#node-ranking-and-classification">Node Ranking and Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#embeddings-and-wrappers">Embeddings and Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#network-motifs-and-patterns">Network Motifs and Patterns</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.core.HINMINE.dataStructures">HINMINE Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.cli">Command-Line Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.validation">Validation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hinmine-data-structures">HINMINE Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#validation-utilities">Validation Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#network-comparison-and-testing">Network Comparison and Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.hedwig.learners.learner">Hedwig Learning Algorithms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.hedwig.stats.scorefunctions">Hedwig Statistics and Scoring</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.hedwig.core.converters">Hedwig Core Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hedwig-learning-algorithms">Hedwig Learning Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hedwig-statistics-and-scoring">Hedwig Statistics and Scoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hedwig-core-components">Hedwig Core Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#time-series-and-temporal-analysis">Time Series and Temporal Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.visualization.sankey">Advanced Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#advanced-visualization">Advanced Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#link-prediction">Link Prediction</a></li>
 </ul>
 </li>
@@ -789,6 +796,7 @@ Number of edges: 3
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="project/contributing.html">Contributing to py3plex</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="project/contributing.html#quick-checklist">Quick Checklist</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project/contributing.html#ways-to-contribute">Ways to Contribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project/contributing.html#getting-started">Getting Started</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project/contributing.html#development-workflow">Development Workflow</a></li>

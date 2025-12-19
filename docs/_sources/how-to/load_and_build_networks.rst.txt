@@ -5,8 +5,12 @@ How to Load and Build Networks
 
 **Prerequisites:** Basic Python knowledge. For conceptual background, see :doc:`../concepts/py3plex_core_model`.
 
+Start from the format you already have: add edges directly if you are prototyping, or load from files/dataframes when your data is already tabular. The examples below always build a ``network`` object you can reuse in later steps.
+
 Creating Networks from Scratch
 -------------------------------
+
+Use these options when you want to assemble a small network interactively or generate synthetic structures.
 
 Method 1: Add Edges Directly (Recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +50,7 @@ The simplest approach—nodes are created automatically when you add edges.
 Method 2: Add Nodes First
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For more control over node attributes:
+For more control over node attributes and to ensure edges only connect existing nodes:
 
 .. code-block:: python
 
@@ -73,10 +77,12 @@ For more control over node attributes:
 Method 3: Use Dictionary Format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For networks with edge attributes:
+For networks with edge attributes and mixed field names (timestamps, types, etc.):
 
 .. code-block:: python
 
+    from py3plex.core import multinet
+    
     network = multinet.multi_layer_network()
     
     # Add edges with custom attributes
@@ -103,10 +109,13 @@ For networks with edge attributes:
 Loading Networks from Files
 ----------------------------
 
+Use file-based loading when your data already lives on disk. Edge lists remain the most compact choice; JSON is convenient for richer metadata. Each snippet builds the same ``network`` interface shown above.
+
 Load Edge Lists
 ~~~~~~~~~~~~~~~
 
-Most common format: one edge per line.
+Most common format: one edge per line. The ``multiedgelist`` loader expects
+``source source_layer target target_layer weight`` (weight defaults to ``1.0`` if omitted).
 
 **File format (stored as datasets/simple_multiplex.txt in the repository):**
 
@@ -142,7 +151,7 @@ Most common format: one edge per line.
 Load from Pandas DataFrame
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Convert tabular data to networks:
+Convert tabular data to networks (each row becomes an edge). Use separate ``layer`` columns if endpoints belong to different layers.
 
 .. code-block:: python
 
@@ -166,11 +175,23 @@ Convert tabular data to networks:
             row['target'], row['layer'],
             weight=row['weight']
         )
+    
+    # If your dataframe has ``source_layer`` and ``target_layer`` columns,
+    # pass those instead of a single ``layer`` column:
+    # network.add_edge(
+    #     row['source'], row['source_layer'],
+    #     row['target'], row['target_layer'],
+    #     weight=row['weight']
+    # )
+    
+    network.basic_stats()
 
 Load from JSON
 ~~~~~~~~~~~~~~
 
-For complex networks with metadata:
+For complex networks with metadata (define both nodes and edges explicitly). Keep
+edge dictionaries consistent: ``source``, ``source_layer``, ``target``,
+``target_layer``, plus any other attributes you want to preserve.
 
 .. code-block:: python
 
@@ -190,11 +211,19 @@ For complex networks with metadata:
             edge['target'], edge['target_layer'],
             **edge.get('attributes', {})
         )
+    
+    # Optionally, add nodes first if your JSON includes node attributes
+    # for node in data.get('nodes', []):
+    #     network.add_nodes([(node['id'], node['layer'])])
+    
+    network.basic_stats()
 
 Load from NetworkX
 ~~~~~~~~~~~~~~~~~~
 
-Convert existing single-layer networks:
+Convert existing single-layer networks by assigning a default layer name. If the
+original graph has edge attributes, pass them through ``add_edge`` as keyword
+arguments.
 
 .. code-block:: python
 
@@ -213,7 +242,7 @@ Convert existing single-layer networks:
 Loading with Inter-layer Edges
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To represent the same entity across layers:
+To represent the same entity across layers, connect node-layer tuples that share the same node identifier:
 
 .. code-block:: python
 
@@ -231,6 +260,8 @@ To represent the same entity across layers:
 
 Common Patterns
 ---------------
+
+Pick a template that matches your data model, then extend it with attributes as needed.
 
 Pattern 1: Social Networks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -292,7 +323,7 @@ See :doc:`../reference/api_index` for temporal network details.
 Verifying Your Network
 -----------------------
 
-After loading, verify the structure:
+After loading, verify the structure to catch layer/weight mistakes early:
 
 .. code-block:: python
 

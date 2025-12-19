@@ -5,6 +5,8 @@ Py3plex GUI Architecture
 System Overview
 ===============
 
+The GUI stack runs as a small set of containers: a React frontend, a FastAPI API, and a Celery worker connected through Redis and fronted by nginx. Default ports and traffic paths are illustrated below so you can trace how a browser request reaches each service.
+
 ::
 
     ┌────────────────────────────────────────────────────────────────┐
@@ -84,6 +86,8 @@ System Overview
 Data Flow
 =========
 
+Two primary flows drive the application: uploading/parsing graphs and dispatching analysis jobs to Celery workers. Each flow returns an identifier (``graph_id`` or ``job_id``) so the frontend can poll for status and fetch artifacts without keeping state client-side.
+
 Upload & Parse Flow
 -------------------
 
@@ -98,6 +102,13 @@ Upload & Parse Flow
                                   Stored in GRAPH_REGISTRY
                                           ↓
                                   Return graph_id to frontend
+
+Flow summary:
+
+1. Frontend posts upload to ``/upload``.
+2. ``io.save_upload`` persists the file under ``/data/uploads`` and detects the format.
+3. ``io.load_graph_from_file`` parses to NetworkX (errors are surfaced to the client).
+4. Graph is cached in ``GRAPH_REGISTRY`` (dev memory store) and a ``graph_id`` is returned.
 
 Analysis Job Flow
 -----------------
@@ -124,8 +135,17 @@ Analysis Job Flow
                             ↓
     User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 
+Flow summary:
+
+1. Frontend submits an analysis request (e.g., centrality) with ``graph_id``.
+2. FastAPI enqueues a Celery task and immediately returns ``job_id``.
+3. Celery worker processes the job, updates ``progress`` (0–100) in Redis, and writes artifacts.
+4. Frontend polls ``/jobs/{job_id}`` until the result or failure details are available.
+
 Directory Structure
 ===================
+
+The GUI lives in ``gui/`` with backend, frontend, and worker projects aligned for Docker-based development. Runtime data stays under ``data/`` and is gitignored.
 
 ::
 
@@ -212,10 +232,12 @@ Directory Structure
 Component Responsibilities
 ==========================
 
+Use the sections below to map user-visible pages to the backend pieces they exercise, and to see which service owns which concern.
+
 Visual Component Reference
 --------------------------
 
-The architecture components are realized in the following user interface pages:
+The diagrams below map runtime components to the user-facing pages that exercise them.
 
 .. image:: ../example_images/gui_load_data.png
    :width: 600px
@@ -251,8 +273,8 @@ Frontend
 
 - User interaction
 - File upload UI
-- Real-time job polling
-- Graph visualization (placeholder)
+- Real-time job polling and notifications
+- Graph visualization (lightweight preview)
 - State management (Zustand)
 
 **Technologies**:
@@ -272,11 +294,11 @@ API (FastAPI)
 - Request validation (Pydantic)
 - File upload handling
 - Job orchestration
-- py3plex integration
+- py3plex integration (graph loading, analysis calls)
 
 **Key Services**:
 
-- ``io``: File loading, format detection
+- ``io``: File loading, format detection, upload persistence
 - ``layouts``: Layout computation (NetworkX)
 - ``metrics``: Centrality calculations
 - ``community``: Community detection
@@ -290,13 +312,14 @@ Worker (Celery)
 - Async job execution
 - Progress reporting
 - Result persistence
-- Resource management
+- Resource management (concurrency via ``CELERY_CONCURRENCY``)
 
 **Tasks**:
 
 - ``run_layout``: Force-directed layouts
 - ``run_centrality``: Node/edge metrics
 - ``run_community``: Community detection
+- Progress metadata is emitted via ``task.update_state`` for frontend polling
 
 Redis
 -----
@@ -305,7 +328,7 @@ Redis
 
 - Job queue (broker)
 - Result backend
-- Session storage (future)
+- Session storage (planned; persist volume if durability is needed)
 
 Nginx
 -----
@@ -333,6 +356,8 @@ Data Models
 Graph Registry (In-Memory)
 --------------------------
 
+In development mode, uploaded graphs are kept in memory and indexed by a generated ``graph_id`` for subsequent analysis calls. Registry contents are lost if the API container restarts.
+
 .. code-block:: python
 
     GRAPH_REGISTRY = {
@@ -347,6 +372,8 @@ Graph Registry (In-Memory)
 Job State (Redis)
 -----------------
 
+Celery stores job metadata in Redis so the frontend can poll progress and fetch results.
+
 .. code-block:: python
 
     {
@@ -359,6 +386,8 @@ Job State (Redis)
 
 Workspace Bundle (Zip)
 ----------------------
+
+Workspace exports bundle the original upload and derived artifacts so a session can be restored or shared later.
 
 ::
 
@@ -378,7 +407,7 @@ Current (Development Mode)
 
 - ✓ Read-only py3plex mount
 - ✓ Isolated data directories
-- ✗ CORS allows all origins
+- ✗ CORS allows all origins (development convenience)
 - ✗ No authentication
 - ✗ No HTTPS
 - ✗ No rate limiting
@@ -444,6 +473,8 @@ Production Hardening
 Deployment Variants
 ===================
 
+Pick a docker-compose variant based on available hardware and intended use.
+
 Local Development (Current)
 ---------------------------
 
@@ -508,12 +539,16 @@ Volume Mounts
 
     Host                      → Container
     ../                       → /workspace (ro)
-    ../data/                   → /data
-    ../api/app/                → /app (dev mode)
-    ../frontend/src/           → /app/src (dev mode)
+    ../data/                  → /data
+    ../api/app/               → /app (dev mode)
+    ../frontend/src/          → /app/src (dev mode)
+
+Read-only mounts keep source immutable inside containers; ``/data`` remains writable for uploads, artifacts, and workspaces.
 
 Environment Variables
 =====================
+
+Key runtime toggles are provided via environment variables; sizes are in MB unless noted.
 
 .. code-block:: bash
 
@@ -531,6 +566,8 @@ Environment Variables
 
 Performance Characteristics
 ===========================
+
+Timings below are indicative from local development runs on a laptop; real performance depends on hardware, graph size, and selected algorithms.
 
 Small Graphs (< 100 nodes)
 --------------------------
@@ -554,7 +591,7 @@ Large Graphs (> 1000 nodes)
 - Consider sampling for preview
 - Progressive rendering recommended
 - May need GPU acceleration
-- Memory: ~1GB per 10k nodes
+- Memory: rough rule of thumb is ~1GB per 10k nodes (depends on density)
 
 Future Enhancements
 ===================

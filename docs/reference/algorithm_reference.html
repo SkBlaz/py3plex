@@ -226,6 +226,7 @@
 <h1>Algorithm Roadmap<a class="headerlink" href="#algorithm-roadmap" title="Link to this heading"></a></h1>
 <p>This page provides a <strong>comprehensive overview</strong> of all algorithms implemented in py3plex, organized by category and showing relationships between different methods.</p>
 <p><strong>Purpose:</strong> Help you quickly find the right algorithm for your multilayer network analysis task.</p>
+<p><strong>Complexities:</strong> Listed time complexities are indicative and assume sparse graphs unless noted.</p>
 <section id="algorithm-categories">
 <h2>Algorithm Categories<a class="headerlink" href="#algorithm-categories" title="Link to this heading"></a></h2>
 <p>The algorithms in py3plex are organized into these main categories:</p>
@@ -255,7 +256,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">induced_graph(partition,</span> <span class="pre">graph,</span> <span class="pre">weight)</span></code> - Create quotient graph</p></li>
 </ul>
 <p><strong>Best for:</strong> Fast community detection on large single-layer networks</p>
-<p><strong>Complexity:</strong> O(n log n)</p>
+<p><strong>Complexity:</strong> Roughly O(m) per iteration on sparse graphs; multiple passes are performed</p>
 <p><strong>Runnable Example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span> <span class="k">as</span> <span class="n">louvain</span>
@@ -296,7 +297,7 @@ Modularity: 0.4198
 <li><p><code class="docutils literal notranslate"><span class="pre">parse_infomap(outfile)</span></code> - Parse Infomap output</p></li>
 </ul>
 <p><strong>Best for:</strong> Flow-based community detection, hierarchical structure</p>
-<p><strong>Complexity:</strong> O(m log n) where m is edges, n is nodes</p>
+<p><strong>Complexity:</strong> Typically near O(m log n) on sparse graphs; depends on hierarchy depth</p>
 <p><strong>Runnable Example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_wrapper</span>
@@ -334,7 +335,7 @@ Modularity: 0.4198
 <li><p><code class="docutils literal notranslate"><span class="pre">build_supra_modularity_matrix(network,</span> <span class="pre">omega)</span></code> - Build modularity matrix</p></li>
 </ul>
 <p><strong>Best for:</strong> Community detection across multiple layers with inter-layer coupling</p>
-<p><strong>Complexity:</strong> O(n² L) where L is number of layers</p>
+<p><strong>Complexity:</strong> Dominated by supra-adjacency size; roughly O(m × iterations) with additional cost for L layers</p>
 <p><strong>Algorithm details:</strong> Implements Mucha et al. (2010) multilayer modularity optimization</p>
 <p><strong>Runnable Example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
@@ -391,7 +392,7 @@ Modularity: 0.4198
 <li><p><code class="docutils literal notranslate"><span class="pre">LeidenResult</span></code> - Holds partition results with modularity score</p></li>
 </ul>
 <p><strong>Best for:</strong> More stable community detection than Louvain</p>
-<p><strong>Complexity:</strong> O(n log n) with better quality guarantees</p>
+<p><strong>Complexity:</strong> Similar to Louvain; typically linear in edges per refinement iteration</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (predecessor)</p></li>
@@ -613,6 +614,7 @@ Std deviations: [0.019 0.021 0.018 ...]
 95% CI: [[0.146 0.172 0.146 ...], [0.238 0.241 0.221 ...]]
 </pre></div>
 </div>
+<p>Exact values depend on graph structure and random seeds; treat these arrays as illustrative.</p>
 <p><strong>Best for:</strong></p>
 <ul class="simple">
 <li><p>Influence ranking with confidence intervals</p></li>
@@ -1095,12 +1097,13 @@ Std deviations: [0.019 0.021 0.018 ...]
 <li><p>Layer-separated visualization</p></li>
 </ul>
 <p><strong>Best for:</strong> Visualizing multilayer network structure</p>
-<dl class="simple">
+<dl>
 <dt><strong>Scalability:</strong></dt><dd><ul class="simple">
 <li><p>Diagonal projection: 10,000+ nodes</p></li>
 <li><p>Force-directed: &lt;5,000 nodes</p></li>
 <li><p>Matrix view: 100,000+ nodes</p></li>
 </ul>
+<p>(Rules of thumb; pick based on hardware and desired visual fidelity)</p>
 </dd>
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
 <li><p><a class="reference internal" href="#layout-algorithms"><span class="std std-ref">Layout Algorithms</span></a> (positioning)</p></li>
@@ -1239,8 +1242,8 @@ Std deviations: [0.019 0.021 0.018 ...]
 </ul>
 </dd>
 <dt><strong>Weighted networks:</strong></dt><dd><ul class="simple">
-<li><p>All algorithms support weights</p></li>
-<li><p>Specify <code class="docutils literal notranslate"><span class="pre">weight</span></code> parameter</p></li>
+<li><p>Most algorithms accept weights; check individual signatures</p></li>
+<li><p>Specify the <code class="docutils literal notranslate"><span class="pre">weight</span></code> parameter when supported</p></li>
 </ul>
 </dd>
 <dt><strong>Temporal networks:</strong></dt><dd><ul class="simple">

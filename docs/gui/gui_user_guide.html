@@ -115,8 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="part_intro.html">GUI: Web Interface for Network Exploration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Py3plex GUI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#visual-overview">Visual Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#features">Features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-loading">Data Loading</a></li>
@@ -208,7 +208,7 @@
              
   <section id="py3plex-gui">
 <h1>Py3plex GUI<a class="headerlink" href="#py3plex-gui" title="Link to this heading"></a></h1>
-<p>A production-ready web-based GUI for <strong>py3plex</strong> multilayer network analysis, running locally via Docker Compose.</p>
+<p>A production-ready web-based GUI for <strong>py3plex</strong> multilayer network analysis, running locally via Docker Compose. Upload multilayer graphs, explore them visually, and run common analytics from your browser.</p>
 <img alt="License" src="https://img.shields.io/badge/license-BSD--3--Clause-blue" />
 <img alt="Docker" src="https://img.shields.io/badge/docker-compose-blue" />
 <section id="visual-overview">
@@ -221,8 +221,18 @@
 <div class="line"><br /></div>
 </div>
 </section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Docker (&gt;= 20.10)</p></li>
+<li><p>Docker Compose (&gt;= 2.0)</p></li>
+<li><p>4GB RAM minimum</p></li>
+<li><p>Ports available: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)</p></li>
+</ul>
+</section>
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h2>
+<p>Use this sequence after the prerequisites above are installed and ports are free:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Navigate to the gui directory</span>
 <span class="nb">cd</span><span class="w"> </span>gui
 
@@ -237,7 +247,8 @@ make<span class="w"> </span>up
 <span class="c1"># Data Job Monitor (Flower): http://localhost:5555</span>
 </pre></div>
 </div>
-<p><strong>First time?</strong> The build takes ~3-5 minutes. Subsequent starts are instant.</p>
+<p><strong>First time?</strong> The build takes ~3-5 minutes. Subsequent starts are instant.
+Wait for containers to report <code class="docutils literal notranslate"><span class="pre">healthy</span></code> before using the UI.</p>
 <p>That’s it! The application will be running with:</p>
 <ul class="simple">
 <li><p>React + TypeScript frontend with hot reload</p></li>
@@ -245,15 +256,6 @@ make<span class="w"> </span>up
 <li><p>Celery workers for async jobs</p></li>
 <li><p>Redis broker</p></li>
 <li><p>Nginx reverse proxy</p></li>
-</ul>
-</section>
-<section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Docker (&gt;= 20.10)</p></li>
-<li><p>Docker Compose (&gt;= 2.0)</p></li>
-<li><p>4GB RAM minimum</p></li>
-<li><p>Ports available: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)</p></li>
 </ul>
 </section>
 <section id="architecture">
@@ -359,15 +361,15 @@ make<span class="w"> </span>up
 </section>
 <section id="workspace-bundles">
 <h3>Workspace Bundles<a class="headerlink" href="#workspace-bundles" title="Link to this heading"></a></h3>
-<p>Save and restore complete analysis sessions:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bundle includes:</span>
-<span class="c1"># - Original network file</span>
-<span class="c1"># - Computed layouts</span>
-<span class="c1"># - Centrality results</span>
-<span class="c1"># - Community assignments</span>
-<span class="c1"># - UI view state</span>
-</pre></div>
-</div>
+<p>Save and restore complete analysis sessions. A bundle includes:</p>
+<ul class="simple">
+<li><p>Original network file</p></li>
+<li><p>Computed layouts</p></li>
+<li><p>Centrality results</p></li>
+<li><p>Community assignments</p></li>
+<li><p>UI view state</p></li>
+</ul>
+<p>Export a bundle from the <strong>Export</strong> page and re-import it later to restore the exact session state.</p>
 </section>
 <section id="job-monitoring">
 <h3>Job Monitoring<a class="headerlink" href="#job-monitoring" title="Link to this heading"></a></h3>
@@ -514,6 +516,7 @@ make<span class="w"> </span>clean<span class="w">          </span><span class="c
 <span class="n">C</span> <span class="n">D</span>
 </pre></div>
 </div>
+<p>Use whitespace-separated columns. Include the layer column for multilayer graphs; omit it for single-layer files. Weights are optional and default to 1.0 if absent.</p>
 <p><strong>2. GML (.gml)</strong></p>
 <ul class="simple">
 <li><p>Graph Modeling Language</p></li>
@@ -527,7 +530,7 @@ make<span class="w"> </span>clean<span class="w">          </span><span class="c
 </section>
 <section id="example-dataset">
 <h3>Example Dataset<a class="headerlink" href="#example-dataset" title="Link to this heading"></a></h3>
-<p>Try the included toy network:</p>
+<p>Try the included toy network (6 nodes, 14 edges, 3 layers):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># From host</span>
 curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@gui/toy_network.edgelist&quot;</span><span class="w"> </span>http://localhost:8080/api/upload
 
@@ -540,7 +543,7 @@ curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;fil
 <h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
 <section id="continuous-integration">
 <h3>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Link to this heading"></a></h3>
-<p>GUI tests run automatically on GitHub Actions for any changes to the <code class="docutils literal notranslate"><span class="pre">gui/</span></code> directory:</p>
+<p>GUI tests run automatically on GitHub Actions for any changes to the <code class="docutils literal notranslate"><span class="pre">gui/</span></code> directory. Pushes and pull requests that touch GUI files trigger the workflow:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Workflow: .github/workflows/gui-tests.yml</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API unit tests (pytest)</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Integration tests (Docker Compose)</span>
@@ -572,11 +575,13 @@ docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">ex
 </section>
 <section id="integration-tests">
 <h3>Integration Tests<a class="headerlink" href="#integration-tests" title="Link to this heading"></a></h3>
-<p>The CI workflow runs full integration tests:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Upload and analyze a network</span>
+<p>The CI workflow runs full integration tests (Docker Compose brings up the full stack and exercises uploads + analysis):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># With the stack running (`make up`):</span>
 <span class="nb">cd</span><span class="w"> </span>gui
+<span class="c1"># Upload the sample network</span>
 curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@toy_network.edgelist&quot;</span><span class="w"> </span>http://localhost:8080/api/upload
-<span class="c1"># Run layout, centrality, and community detection jobs</span>
+<span class="c1"># Kick off layout, centrality, and community detection jobs</span>
+<span class="c1"># Verify each job reaches status=completed and returns results</span>
 </pre></div>
 </div>
 </section>
@@ -589,9 +594,10 @@ make<span class="w"> </span>e2e
 </section>
 <section id="manual-testing-workflow">
 <h3>Manual Testing Workflow<a class="headerlink" href="#manual-testing-workflow" title="Link to this heading"></a></h3>
+<p>For a step-by-step manual checklist, see <code class="docutils literal notranslate"><span class="pre">docfiles/gui/gui_testing.rst</span></code>. Quick smoke flow:</p>
 <ol class="arabic simple">
 <li><p><strong>Upload</strong> <code class="docutils literal notranslate"><span class="pre">toy_network.edgelist</span></code> via Web UI</p></li>
-<li><p><strong>Visualize</strong> the network (6 nodes, 14 edges, 3 layers)</p></li>
+<li><p><strong>Visualize</strong> the network (expect 6 nodes, 14 edges, 3 layers)</p></li>
 <li><p><strong>Analyze</strong>:</p>
 <ul class="simple">
 <li><p>Run Spring Layout</p></li>
@@ -599,7 +605,7 @@ make<span class="w"> </span>e2e
 <li><p>Detect Communities (Louvain)</p></li>
 </ul>
 </li>
-<li><p><strong>Monitor</strong> jobs at <a class="reference external" href="http://localhost:5555">http://localhost:5555</a> (Flower)</p></li>
+<li><p><strong>Monitor</strong> jobs at <a class="reference external" href="http://localhost:5555">http://localhost:5555</a> (Flower) and confirm they transition to <code class="docutils literal notranslate"><span class="pre">completed</span></code> without errors</p></li>
 <li><p><strong>Export</strong> workspace bundle</p></li>
 </ol>
 </section>
@@ -608,7 +614,7 @@ make<span class="w"> </span>e2e
 <h2>Production Deployment<a class="headerlink" href="#production-deployment" title="Link to this heading"></a></h2>
 <section id="static-build-recommended">
 <h3>Static Build (Recommended)<a class="headerlink" href="#static-build-recommended" title="Link to this heading"></a></h3>
-<p>For production, serve pre-built frontend assets:</p>
+<p>For production, serve pre-built frontend assets instead of the Vite dev server:</p>
 <div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="c"># Modify Dockerfile.frontend to use multi-stage build</span>
 <span class="k">FROM</span><span class="w"> </span><span class="s">node:20-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
 <span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
@@ -639,7 +645,7 @@ make<span class="w"> </span>e2e
 <li><p>Set resource limits per user/job</p></li>
 <li><p>Enable Celery task rate limiting</p></li>
 </ul>
-<p><strong>Current Status</strong>: Development mode - suitable for local use only. Do not expose to public internet without proper security hardening.</p>
+<p><strong>Current Status</strong>: Development mode - suitable for local use only. Do not expose to the public internet without proper security hardening.</p>
 </section>
 </section>
 <section id="troubleshooting">
@@ -647,7 +653,7 @@ make<span class="w"> </span>e2e
 <section id="issue-port-already-in-use">
 <h3>Issue: Port already in use<a class="headerlink" href="#issue-port-already-in-use" title="Link to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find process using port 8080</span>
-lsof<span class="w"> </span>-ti:8080<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-9
+lsof<span class="w"> </span>-ti:8080<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>-r<span class="w"> </span><span class="nb">kill</span>
 
 <span class="c1"># Or change port in docker-compose.yml</span>
 ports:

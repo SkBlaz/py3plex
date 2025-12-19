@@ -1,49 +1,47 @@
 Concepts & Explanations
 =======================
 
-Multilayer networks capture systems where entities interact through multiple types of relationships simultaneously. This section explains the theory behind multilayer networks and how py3plex implements them.
+Multilayer networks capture systems where entities interact through multiple relationship types at once. This page orients you within the conceptual docs and points to the deeper explanations you may need next.
 
-**What's in this section:**
+**What's in this section**
 
-* :doc:`multilayer_networks_101` — Types (multiplex, heterogeneous, temporal) and when to use them
-* :doc:`py3plex_core_model` — Node-layer pairs, supra-adjacency matrix, NetworkX integration
-* :doc:`design_principles` — Why py3plex works the way it does
-* :doc:`algorithm_landscape` — Overview of available algorithms
+* :doc:`multilayer_networks_101` — Modeling choices (multiplex, heterogeneous, temporal) and when each makes sense
+* :doc:`py3plex_core_model` — Node-layer pairs, the supra-adjacency matrix, and how py3plex wraps NetworkX
+* :doc:`design_principles` — Why py3plex is structured as it is
+* :doc:`algorithm_landscape` — What analysis tools are available and how they fit together
 
-**Reading Paths:**
+**Pick a path**
 
-* **New to multilayer networks?** Start with :doc:`multilayer_networks_101` for essential concepts, then :doc:`py3plex_core_model` to see how py3plex represents them. This foundation is crucial before using the library.
-
-* **Coming from NetworkX?** Read :doc:`py3plex_core_model` to understand the node-layer pair abstraction and supra-adjacency matrix, then :doc:`design_principles` for design decisions. Skip the theory in 101 if you're familiar with complex networks.
-
-* **Building expertise?** Read all chapters in order: theory (:doc:`multilayer_networks_101`), implementation (:doc:`py3plex_core_model`), design rationale (:doc:`design_principles`), and available tools (:doc:`algorithm_landscape`).
+* **New to multilayer networks?** Start with :doc:`multilayer_networks_101`, then read :doc:`py3plex_core_model` to see how layers, node-layer pairs, and coupling are represented.
+* **Coming from NetworkX?** Jump to :doc:`py3plex_core_model` for the node-layer abstraction and supra-adjacency matrix, then skim :doc:`design_principles` for rationale.
+* **Building expertise?** Read in order: theory (:doc:`multilayer_networks_101`), implementation (:doc:`py3plex_core_model`), design rationale (:doc:`design_principles`), and tools (:doc:`algorithm_landscape`).
 
 After Reading This Section
----------------------------
+--------------------------
 
 You'll be able to:
 
-* Model real-world systems as multilayer networks
-* Choose appropriate parameters (e.g., inter-layer coupling strength)
-* Interpret results correctly
-* Avoid common pitfalls (e.g., flattening important structure)
+* Model real-world systems as multilayer networks instead of flattening away layer semantics.
+* Choose sensible parameters (e.g., layer definitions, inter-layer coupling strength) for your data.
+* Interpret results in terms of layers and node-layer pairs rather than anonymous nodes.
+* Avoid common pitfalls (e.g., flattening important structure, mismatched identifiers).
 
 .. tip::
 
    **Quick check:** After reading this section, you should be able to answer:
-   
-   * What's the difference between multiplex and heterogeneous networks?
-   * What does the supra-adjacency matrix represent?
-   * When should you use high vs. low inter-layer coupling?
 
-**Relation to Other Sections:**
+   * What distinguishes multiplex from heterogeneous networks?
+   * What does the supra-adjacency matrix represent and why use it?
+   * When should you tighten vs. relax inter-layer coupling?
 
-* **Overview** (:doc:`../overview/part_intro`) — Quick 2-minute intro to multilayer networks
-* **How-to Guides** (:doc:`../how-to/part_intro`) — Apply these concepts in practice
-* **Reference** (:doc:`../reference/part_intro`) — Detailed API and algorithm documentation
-* **Examples** (:doc:`../examples/index`) — See concepts in action with real code
+**Relation to other sections**
 
-**Jump to Practical Applications:**
+* **Overview** (:doc:`../overview/part_intro`) — Quick 2-minute intro to multilayer networks.
+* **How-to Guides** (:doc:`../how-to/part_intro`) — Apply these concepts in practice.
+* **Reference** (:doc:`../reference/part_intro`) — Detailed API and algorithm documentation.
+* **Examples** (:doc:`../examples/index`) — See concepts in action with real code.
+
+**Jump to practical applications**
 
 Once you understand the concepts:
 

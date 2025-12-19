@@ -5,6 +5,8 @@ This page provides a **comprehensive overview** of all algorithms implemented in
 
 **Purpose:** Help you quickly find the right algorithm for your multilayer network analysis task.
 
+**Complexities:** Listed time complexities are indicative and assume sparse graphs unless noted.
+
 Algorithm Categories
 --------------------
 
@@ -44,7 +46,7 @@ Louvain Algorithm
 
 **Best for:** Fast community detection on large single-layer networks
 
-**Complexity:** O(n log n)
+**Complexity:** Roughly O(m) per iteration on sparse graphs; multiple passes are performed
 
 **Runnable Example:**
 
@@ -89,7 +91,7 @@ Infomap Algorithm
 
 **Best for:** Flow-based community detection, hierarchical structure
 
-**Complexity:** O(m log n) where m is edges, n is nodes
+**Complexity:** Typically near O(m log n) on sparse graphs; depends on hierarchy depth
 
 **Runnable Example:**
 
@@ -132,7 +134,7 @@ Multilayer Louvain
 
 **Best for:** Community detection across multiple layers with inter-layer coupling
 
-**Complexity:** O(n² L) where L is number of layers
+**Complexity:** Dominated by supra-adjacency size; roughly O(m × iterations) with additional cost for L layers
 
 **Algorithm details:** Implements Mucha et al. (2010) multilayer modularity optimization
 
@@ -197,7 +199,7 @@ Leiden Algorithm
 
 **Best for:** More stable community detection than Louvain
 
-**Complexity:** O(n log n) with better quality guarantees
+**Complexity:** Similar to Louvain; typically linear in edges per refinement iteration
 
 **Related algorithms:**
   - :ref:`louvain-algorithm` (predecessor)
@@ -442,6 +444,8 @@ Multilayer PageRank (with Uncertainty)
     Mean scores: [0.186 0.192 0.181 ...]
     Std deviations: [0.019 0.021 0.018 ...]
     95% CI: [[0.146 0.172 0.146 ...], [0.238 0.241 0.221 ...]]
+
+Exact values depend on graph structure and random seeds; treat these arrays as illustrative.
 
 **Best for:** 
 
@@ -973,6 +977,7 @@ Multilayer Visualization
   - Diagonal projection: 10,000+ nodes
   - Force-directed: <5,000 nodes
   - Matrix view: 100,000+ nodes
+  (Rules of thumb; pick based on hardware and desired visual fidelity)
 
 **Related algorithms:**
   - :ref:`layout-algorithms` (positioning)
@@ -1106,8 +1111,8 @@ By Network Type
   * See :ref:`node-ranking-algorithms`
 
 **Weighted networks:**
-  * All algorithms support weights
-  * Specify ``weight`` parameter
+  * Most algorithms accept weights; check individual signatures
+  * Specify the ``weight`` parameter when supported
 
 **Temporal networks:**
   * Layer-based representation

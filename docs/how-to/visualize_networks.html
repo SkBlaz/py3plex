@@ -82,6 +82,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#layout-algorithms">Layout Algorithms</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#force-directed-layout">Force-Directed Layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#circular-layout">Circular Layout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#diagonal-multilayer-layout">Diagonal Multilayer Layout</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#layer-specific-visualization">Layer-Specific Visualization</a><ul>
@@ -193,7 +194,9 @@
   <section id="how-to-visualize-multilayer-networks">
 <h1>How to Visualize Multilayer Networks<a class="headerlink" href="#how-to-visualize-multilayer-networks" title="Link to this heading"></a></h1>
 <p><strong>Goal:</strong> Create publication-ready visualizations of multilayer networks.</p>
-<p><strong>Prerequisites:</strong> A loaded network (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>).</p>
+<p><strong>Prerequisites:</strong> A loaded network (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>). Most
+snippets reuse a <code class="docutils literal notranslate"><span class="pre">network</span></code> object created in the quick plot example; swap in
+your own network if you already have one loaded.</p>
 <section id="basic-visualization">
 <h2>Basic Visualization<a class="headerlink" href="#basic-visualization" title="Link to this heading"></a></h2>
 <section id="quick-plot">
@@ -212,12 +215,13 @@
 <span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This opens an interactive window with the network visualization.</p>
+<p>This opens an interactive window with the aggregated multilayer visualization. Set
+<code class="docutils literal notranslate"><span class="pre">show=False</span></code> for headless environments.</p>
 </section>
 <section id="save-to-file">
 <h3>Save to File<a class="headerlink" href="#save-to-file" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span>
-    <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;network.png&#39;</span><span class="p">,</span>
+    <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;network.png&#39;</span><span class="p">,</span>  <span class="c1"># png, pdf, svg are supported</span>
     <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 </pre></div>
@@ -228,54 +232,111 @@
 <h2>Customizing Visualizations<a class="headerlink" href="#customizing-visualizations" title="Link to this heading"></a></h2>
 <section id="node-sizes-and-colors">
 <h3>Node Sizes and Colors<a class="headerlink" href="#node-sizes-and-colors" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_network_custom</span>
-
-<span class="c1"># Compute node importance</span>
+<p>The built-in hairball plot draws the aggregated network with layer-based colors.
+You can override sizing and colors explicitly to emphasize node importance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="n">degrees</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
-<span class="c1"># Visualize with custom node sizes</span>
-<span class="n">visualize_network_custom</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="n">node_sizes</span><span class="o">=</span><span class="n">degrees</span><span class="p">,</span>
-    <span class="n">node_color_by_layer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;network_sized.png&#39;</span>
+<span class="c1"># Compute degrees for sizing</span>
+<span class="n">degree_data</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">node_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+<span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">degree_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">50</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_order</span>
+<span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">hairball_plot</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">node_sizes</span><span class="o">=</span><span class="n">node_sizes</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">,</span>
+    <span class="n">alpha_channel</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network_sized.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="edge-weights">
 <h3>Edge Weights<a class="headerlink" href="#edge-weights" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">visualize_network_custom</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="n">edge_width_by_weight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">show</span><span class="o">=</span><span class="kc">True</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Widths based on stored weight (default to 1); clamp to keep faint edges visible</span>
+<span class="n">edge_widths</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">pos</span><span class="p">,</span>
+    <span class="n">with_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="n">edge_widths</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="layout-algorithms">
 <h2>Layout Algorithms<a class="headerlink" href="#layout-algorithms" title="Link to this heading"></a></h2>
+<p>Switch layouts to highlight different structures: force-directed for overall
+connectivity, circular for equal treatment of nodes within a layer, or diagonal
+layouts for explicit layer separation.</p>
 <section id="force-directed-layout">
 <h3>Force-Directed Layout<a class="headerlink" href="#force-directed-layout" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
 
 <span class="n">hairball_plot</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force_directed&#39;</span><span class="p">,</span>
-    <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;force_layout.png&#39;</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force&#39;</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="circular-layout">
 <h3>Circular Layout<a class="headerlink" href="#circular-layout" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hairball_plot</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;circular&#39;</span><span class="p">,</span>
-    <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;circular_layout.png&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">circular_layout</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">pos</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;lightgray&#39;</span><span class="p">,</span>
+    <span class="n">with_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;circular_layout.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="diagonal-multilayer-layout">
+<h3>Diagonal Multilayer Layout<a class="headerlink" href="#diagonal-multilayer-layout" title="Link to this heading"></a></h3>
+<p>Use the built-in diagonal style to keep layer membership explicit (<code class="docutils literal notranslate"><span class="pre">orientation</span></code>
+controls whether layers slope up or down):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="s2">&quot;diagonal&quot;</span><span class="p">,</span>
+    <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;upper&quot;</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -286,28 +347,55 @@
 <section id="visualize-single-layer">
 <h3>Visualize Single Layer<a class="headerlink" href="#visualize-single-layer" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
-<span class="c1"># Extract layer</span>
-<span class="n">layer_network</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="c1"># Extract nodes belonging to one layer</span>
+<span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">friends_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">layer_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-<span class="c1"># Visualize</span>
-<span class="n">layer_network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span>
-    <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;friends_layer.png&#39;</span><span class="p">,</span>
-    <span class="n">show</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">friends_subgraph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+    <span class="n">friends_subgraph</span><span class="p">,</span>
+    <span class="n">pos</span><span class="p">,</span>
+    <span class="n">node_color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span><span class="p">,</span>
+    <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+    <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span>
 <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;friends_layer.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="side-by-side-layer-comparison">
 <h3>Side-by-Side Layer Comparison<a class="headerlink" href="#side-by-side-layer-comparison" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
 <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">]):</span>
-    <span class="n">layer_net</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="c1"># Visualize on specific axis</span>
-    <span class="n">visualize_on_axis</span><span class="p">(</span><span class="n">layer_net</span><span class="p">,</span> <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Layer: </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">layer_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">layer_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">layer_subgraph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+        <span class="n">layer_subgraph</span><span class="p">,</span>
+        <span class="n">pos</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+        <span class="n">node_color</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">,</span>
+        <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+        <span class="n">with_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">node_size</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span>
+    <span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Layer: </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;layers_comparison.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
@@ -318,7 +406,10 @@
 <section id="dsl-driven-visualization-workflows">
 <h2>DSL-Driven Visualization Workflows<a class="headerlink" href="#dsl-driven-visualization-workflows" title="Link to this heading"></a></h2>
 <p><strong>Goal:</strong> Use DSL queries to select and visualize specific network subsets.</p>
-<p>The DSL enables you to create targeted visualizations by filtering nodes and edges before rendering. This is essential for large multilayer networks where visualizing everything is impractical.</p>
+<p>The DSL enables you to create targeted visualizations by filtering nodes and
+edges before rendering. This is essential for large multilayer networks where
+visualizing everything is impractical. Unless otherwise noted, the examples
+below reuse the <code class="docutils literal notranslate"><span class="pre">network</span></code> instance built in the basic visualization section.</p>
 <section id="visualize-high-degree-subnetwork">
 <h3>Visualize High-Degree Subnetwork<a class="headerlink" href="#visualize-high-degree-subnetwork" title="Link to this heading"></a></h3>
 <p><strong>Focus visualization on hub nodes:</strong></p>
@@ -376,7 +467,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved: hub_subnetwork.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
+<p><strong>Example output (counts depend on the dataset):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Hub nodes (degree &gt; 6): 18
 Saved: hub_subnetwork.png
 </pre></div>
@@ -386,7 +477,7 @@ Saved: hub_subnetwork.png
 <h3>Visualize Community Structure with DSL<a class="headerlink" href="#visualize-community-structure-with-dsl" title="Link to this heading"></a></h3>
 <p><strong>Community-aware visualization:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.community_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
@@ -407,10 +498,11 @@ Saved: hub_subnetwork.png
 
 <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">community_ids</span><span class="p">)[:</span><span class="mi">4</span><span class="p">]):</span>
     <span class="c1"># Query community members</span>
-    <span class="n">comm_nodes</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">comm_nodes_result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
         <span class="n">network</span><span class="p">,</span>
         <span class="sa">f</span><span class="s1">&#39;SELECT nodes WHERE community=</span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="p">)</span>
+    <span class="n">comm_nodes</span> <span class="o">=</span> <span class="n">comm_nodes_result</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span>
 
     <span class="c1"># Extract community subgraph</span>
     <span class="n">comm_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">comm_nodes</span><span class="p">)</span>
@@ -503,11 +595,10 @@ Saved: hub_subnetwork.png
 </section>
 <section id="visualize-central-nodes">
 <h3>Visualize Central Nodes<a class="headerlink" href="#visualize-central-nodes" title="Link to this heading"></a></h3>
-<p><strong>Highlight nodes by centrality:</strong></p>
+<p><strong>Highlight nodes by centrality (betweenness for color, degree for size):</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Compute centrality for all nodes</span>
 <span class="n">centrality_result</span> <span class="o">=</span> <span class="p">(</span>
@@ -622,7 +713,7 @@ Saved: hub_subnetwork.png
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved: sir_visualization.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
+<p><strong>Example output (depends on network size and random seed):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Infected: 8, Recovered: 82, Susceptible: 30
 Saved: sir_visualization.png
 </pre></div>
@@ -630,7 +721,7 @@ Saved: sir_visualization.png
 </section>
 <section id="interactive-visualization-with-dsl-filtering">
 <h3>Interactive Visualization with DSL Filtering<a class="headerlink" href="#interactive-visualization-with-dsl-filtering" title="Link to this heading"></a></h3>
-<p><strong>Create interactive plots with Plotly:</strong></p>
+<p><strong>Create interactive plots with Plotly (browser-rendered HTML):</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
@@ -791,7 +882,8 @@ Saved: sir_visualization.png
 <span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s1">&#39;network.graphml&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Then open <cite>network.graphml</cite> in Gephi or Cytoscape for advanced visualization.</p>
+<p>Then open <code class="docutils literal notranslate"><span class="pre">network.graphml</span></code> in Gephi or Cytoscape for advanced visualization
+of the aggregated network.</p>
 </section>
 </section>
 <section id="next-steps">

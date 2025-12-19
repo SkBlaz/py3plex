@@ -146,456 +146,370 @@
              
   <section id="gui-api-reference">
 <h1>GUI API Reference<a class="headerlink" href="#gui-api-reference" title="Link to this heading"></a></h1>
-<p>This reference documents the REST API endpoints provided by the py3plex web interface.</p>
+<p>This reference documents the REST API endpoints provided by the py3plex GUI backend. All endpoints live under <code class="docutils literal notranslate"><span class="pre">/api</span></code> in development unless otherwise noted.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>The py3plex GUI provides a REST API for:</p>
+<p>The py3plex GUI exposes a REST API for:</p>
 <ul class="simple">
 <li><p>Uploading network data</p></li>
 <li><p>Running analyses</p></li>
 <li><p>Generating visualizations</p></li>
 <li><p>Exporting results</p></li>
 </ul>
-<p><strong>Base URL:</strong> <code class="docutils literal notranslate"><span class="pre">http://localhost:5000/api</span></code> (development)</p>
-<p><strong>Authentication:</strong> Currently no authentication (add in production)</p>
-<p><strong>Response Format:</strong> JSON</p>
 </section>
-<section id="general-endpoints">
-<h2>General Endpoints<a class="headerlink" href="#general-endpoints" title="Link to this heading"></a></h2>
-<section id="health-check">
-<h3>Health Check<a class="headerlink" href="#health-check" title="Link to this heading"></a></h3>
-<p>Check if the server is running.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/health</span></code></p>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;healthy&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.95&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-01-23T12:00:00Z&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Status Codes:</strong></p>
+<section id="conventions">
+<h2>Conventions<a class="headerlink" href="#conventions" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>200 - Server is healthy</p></li>
-<li><p>503 - Server is unhealthy</p></li>
+<li><p><strong>Base URL (development):</strong> <code class="docutils literal notranslate"><span class="pre">http://localhost:8000/api</span></code></p></li>
+<li><p><strong>Authentication:</strong> None (add in production)</p></li>
+<li><p><strong>Content types:</strong> JSON for most endpoints; <code class="docutils literal notranslate"><span class="pre">multipart/form-data</span></code> for uploads</p></li>
+<li><p><strong>IDs:</strong> <code class="docutils literal notranslate"><span class="pre">graph_id</span></code> is returned by upload; asynchronous jobs return <code class="docutils literal notranslate"><span class="pre">job_id</span></code></p></li>
+<li><p><strong>Async workflow:</strong> Layout, centrality, and community detection run as Celery jobs. Each request returns a <code class="docutils literal notranslate"><span class="pre">job_id</span></code>; poll <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/jobs/{job_id}</span></code> for progress/results.</p></li>
+<li><p><strong>Errors:</strong> FastAPI returns JSON payloads with <code class="docutils literal notranslate"><span class="pre">detail</span></code>; job failures appear in the job status payload.</p></li>
+<li><p><strong>Docs:</strong> Interactive docs live at <code class="docutils literal notranslate"><span class="pre">/api/docs</span></code> (Swagger UI) and <code class="docutils literal notranslate"><span class="pre">/api/redoc</span></code>.</p></li>
 </ul>
 </section>
-<section id="server-info">
-<h3>Server Info<a class="headerlink" href="#server-info" title="Link to this heading"></a></h3>
-<p>Get server information.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/info</span></code></p>
+<section id="health">
+<h2>Health<a class="headerlink" href="#health" title="Link to this heading"></a></h2>
+<section id="health-check">
+<h3>Health Check<a class="headerlink" href="#health-check" title="Link to this heading"></a></h3>
+<p>Verify the API is reachable.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/health</span></code></p>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;py3plex_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.95&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;python_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3.10.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;available_algorithms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;infomap&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;node2vec&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;max_upload_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">104857600</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ok&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 </section>
 </section>
-<section id="network-management">
-<h2>Network Management<a class="headerlink" href="#network-management" title="Link to this heading"></a></h2>
+<section id="uploads">
+<h2>Uploads<a class="headerlink" href="#uploads" title="Link to this heading"></a></h2>
 <section id="upload-network">
 <h3>Upload Network<a class="headerlink" href="#upload-network" title="Link to this heading"></a></h3>
-<p>Upload a network file for analysis.</p>
+<p>Upload a network file and register it in the in-memory registry. The server detects the format and parses to NetworkX; a <code class="docutils literal notranslate"><span class="pre">graph_id</span></code> is returned for subsequent calls.</p>
 <p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/upload</span></code></p>
 <p><strong>Parameters:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code> (form-data, required) - Network file</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">input_type</span></code> (form-data, required) - File format (edgelist, multiedgelist, graphml, etc.)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">directed</span></code> (form-data, optional) - Boolean, default false</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code> (form-data, required) - Network file (edgelist, multilayer edgelist, gml, gpickle, txt)</p></li>
 </ul>
-<p><strong>Request Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:5000/api/upload<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;file=@network.edgelist&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;input_type=edgelist&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;directed=false&quot;</span>
-</pre></div>
-</div>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;network_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_layers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Network uploaded successfully&quot;</span>
+<span class="w">  </span><span class="nt">&quot;graph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;network.edgelist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File uploaded and parsed successfully&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Status Codes:</strong></p>
-<ul class="simple">
-<li><p>200 - Success</p></li>
-<li><p>400 - Invalid file or parameters</p></li>
-<li><p>413 - File too large</p></li>
-<li><p>500 - Server error</p></li>
-</ul>
 </section>
-<section id="list-networks">
-<h3>List Networks<a class="headerlink" href="#list-networks" title="Link to this heading"></a></h3>
-<p>List all uploaded networks.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/networks</span></code></p>
+</section>
+<section id="graph-queries">
+<h2>Graph Queries<a class="headerlink" href="#graph-queries" title="Link to this heading"></a></h2>
+<section id="get-graph-summary">
+<h3>Get Graph Summary<a class="headerlink" href="#get-graph-summary" title="Link to this heading"></a></h3>
+<p>Return node/edge counts, detected layers, and node attribute names.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/graphs/{graph_id}/summary</span></code></p>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;networks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;network.edgelist&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;uploaded_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-01-23T12:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;num_nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;num_edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">&quot;graph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">340</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;layers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;attributes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;weight&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="sample-graph">
+<h3>Sample Graph<a class="headerlink" href="#sample-graph" title="Link to this heading"></a></h3>
+<p>Return a downsampled subgraph for preview (defaults to 500 nodes max). Small graphs return untouched; larger graphs include <code class="docutils literal notranslate"><span class="pre">sampled:</span> <span class="pre">true</span></code> and report totals.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/graphs/{graph_id}/sample</span></code></p>
+<p><strong>Query Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">max_nodes</span></code> (optional, default: 500)</p></li>
+</ul>
+<p><strong>Response (full graph small enough):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;graph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">340</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;layers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;attributes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;weight&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response (sampled):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;graph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sampled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">910</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2400</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="get-node-positions">
+<h3>Get Node Positions<a class="headerlink" href="#get-node-positions" title="Link to this heading"></a></h3>
+<p>Retrieve node coordinates for rendering. If positions are missing, a layout is generated on the fly for smaller graphs; very large graphs may skip automatic layout.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/graphs/{graph_id}/positions</span></code></p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;graph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;positions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;node_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.12</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-0.33</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;layer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;node_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;n2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-0.48</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;layer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 </section>
-<section id="get-network-info">
-<h3>Get Network Info<a class="headerlink" href="#get-network-info" title="Link to this heading"></a></h3>
-<p>Get detailed information about a specific network.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/networks/&lt;network_id&gt;</span></code></p>
+<section id="filter-graph">
+<h3>Filter Graph<a class="headerlink" href="#filter-graph" title="Link to this heading"></a></h3>
+<p>Create a filtered subgraph and receive its new <code class="docutils literal notranslate"><span class="pre">graph_id</span></code>. Filters combine with logical AND.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/graphs/{graph_id}/filter</span></code></p>
+<p><strong>Body (any combination is optional):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">attribute</span></code> - Node attribute to filter on (not applied by default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_degree</span></code> / <code class="docutils literal notranslate"><span class="pre">max_degree</span></code> - Degree bounds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layers</span></code> - Keep only edges in these layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">communities</span></code> - Keep nodes in the provided communities</p></li>
+</ul>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;network.edgelist&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_layers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;layers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;layer2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;layer3&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;statistics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;density&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.045</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;clustering&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.32</span>
+<span class="w">  </span><span class="nt">&quot;subgraph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4e468de5-3a87-4ac8-814d-4f27b9b9af69&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;original_graph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">210</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="analysis-jobs-async">
+<h2>Analysis Jobs (Async)<a class="headerlink" href="#analysis-jobs-async" title="Link to this heading"></a></h2>
+<p>The endpoints below enqueue Celery jobs and return a <code class="docutils literal notranslate"><span class="pre">job_id</span></code> immediately. Poll <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/jobs/{job_id}</span></code> for progress, results, and artifact locations.</p>
+<section id="layout">
+<h3>Layout<a class="headerlink" href="#layout" title="Link to this heading"></a></h3>
+<p>Queue a layout computation.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/graphs/{graph_id}/layout</span></code></p>
+<p><strong>Body:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> (optional) - <code class="docutils literal notranslate"><span class="pre">spring</span></code> | <code class="docutils literal notranslate"><span class="pre">force_atlas</span></code> | <code class="docutils literal notranslate"><span class="pre">kamada_kawai</span></code> | <code class="docutils literal notranslate"><span class="pre">circular</span></code> | <code class="docutils literal notranslate"><span class="pre">random</span></code> (default: <code class="docutils literal notranslate"><span class="pre">spring</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (optional) - Integer seed (default: 42)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dimensions</span></code> (optional) - <code class="docutils literal notranslate"><span class="pre">2</span></code> or <code class="docutils literal notranslate"><span class="pre">3</span></code> (default: 2)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iterations</span></code> (optional) - Iteration budget (default: 50)</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;queued&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="centrality">
+<h3>Centrality<a class="headerlink" href="#centrality" title="Link to this heading"></a></h3>
+<p>Queue centrality computation for one or more metrics.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/graphs/{graph_id}/analysis/centrality</span></code></p>
+<p><strong>Body:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">metrics</span></code> (required) - List of <code class="docutils literal notranslate"><span class="pre">degree</span></code>, <code class="docutils literal notranslate"><span class="pre">betweenness</span></code>, <code class="docutils literal notranslate"><span class="pre">closeness</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvector</span></code>, <code class="docutils literal notranslate"><span class="pre">pagerank</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layers</span></code> (optional) - Restrict to these layers</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;7e5a3b9d-6c3c-4c39-8f71-1b7f76dbd1c9&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;queued&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="community-detection">
+<h3>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h3>
+<p>Queue community detection.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/graphs/{graph_id}/analysis/community</span></code></p>
+<p><strong>Body:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> (optional) - <code class="docutils literal notranslate"><span class="pre">louvain</span></code> | <code class="docutils literal notranslate"><span class="pre">label_propagation</span></code> | <code class="docutils literal notranslate"><span class="pre">greedy_modularity</span></code> (default: <code class="docutils literal notranslate"><span class="pre">louvain</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution</span></code> (optional) - Resolution parameter (default: <code class="docutils literal notranslate"><span class="pre">1.0</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (optional) - Integer seed (default: 42)</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8f3a4b42-35ec-4f65-91da-2de5c0b01407&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;queued&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="jobs">
+<h2>Jobs<a class="headerlink" href="#jobs" title="Link to this heading"></a></h2>
+<section id="get-job-status">
+<h3>Get Job Status<a class="headerlink" href="#get-job-status" title="Link to this heading"></a></h3>
+<p>Poll for Celery job progress and results. Progress runs from 0 to 100; completed jobs may include artifacts. Failed jobs include an <code class="docutils literal notranslate"><span class="pre">error</span></code> string.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/jobs/{job_id}</span></code></p>
+<p><strong>Responses:</strong></p>
+<p>Queued/pending:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;queued&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;progress&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Running with progress metadata:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;running&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;progress&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;phase&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;computing layout&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Completed:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;progress&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;result&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;graph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;algorithm&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;spring&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;num_nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;artifacts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/workspace/data/artifacts/&lt;graph_id&gt;/&lt;job_id&gt;/layout.json&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;artifacts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/workspace/data/artifacts/&lt;graph_id&gt;/&lt;job_id&gt;/layout.json&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Failed:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;failed&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Graph not found&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="cancel-job">
+<h3>Cancel Job<a class="headerlink" href="#cancel-job" title="Link to this heading"></a></h3>
+<p>Best-effort cancellation for a running job. The task may still complete if already executing.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/api/jobs/{job_id}</span></code></p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Job cancellation requested&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;job_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2c1b6f35-2b4a-4ce2-9be9-3c77f2a5c4c0&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="workspace-bundles">
+<h2>Workspace Bundles<a class="headerlink" href="#workspace-bundles" title="Link to this heading"></a></h2>
+<section id="save-workspace">
+<h3>Save Workspace<a class="headerlink" href="#save-workspace" title="Link to this heading"></a></h3>
+<p>Persist the current graph and optional frontend state into a bundle.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/workspaces/save</span></code></p>
+<p><strong>Body:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (required) - Workspace label</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">graph_id</span></code> (required) - Graph to bundle</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">view_state</span></code> (optional) - UI state snapshot</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;workspace_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;d6d5f6c0-4f3f-4b3d-8d22-6c0cba9b7a77&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;workspace_d6d5f6c0.zip&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Workspace saved&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="load-workspace">
+<h3>Load Workspace<a class="headerlink" href="#load-workspace" title="Link to this heading"></a></h3>
+<p>Load a workspace by ID and return the graph/view state. <code class="docutils literal notranslate"><span class="pre">workspace_id</span></code> is passed as a query parameter.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/workspaces/load?workspace_id={workspace_id}</span></code></p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;graph_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;view_state&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Workspace loaded&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cache-management">
+<h2>Cache Management<a class="headerlink" href="#cache-management" title="Link to this heading"></a></h2>
+<section id="cache-stats">
+<h3>Cache Stats<a class="headerlink" href="#cache-stats" title="Link to this heading"></a></h3>
+<p>Inspect the in-memory caches.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/cache/stats</span></code></p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ok&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;stats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;summary_cache_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;position_cache_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;graph_registry_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 </section>
-<section id="delete-network">
-<h3>Delete Network<a class="headerlink" href="#delete-network" title="Link to this heading"></a></h3>
-<p>Delete an uploaded network.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/api/networks/&lt;network_id&gt;</span></code></p>
+<section id="clear-all-cache">
+<h3>Clear All Cache<a class="headerlink" href="#clear-all-cache" title="Link to this heading"></a></h3>
+<p>Purge summary/position caches and the registry. Clearing the registry invalidates all existing <code class="docutils literal notranslate"><span class="pre">graph_id</span></code> values.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/api/cache</span></code></p>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Network deleted successfully&quot;</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ok&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;All caches cleared&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 </section>
-</section>
-<section id="analysis-endpoints">
-<h2>Analysis Endpoints<a class="headerlink" href="#analysis-endpoints" title="Link to this heading"></a></h2>
-<section id="run-community-detection">
-<h3>Run Community Detection<a class="headerlink" href="#run-community-detection" title="Link to this heading"></a></h3>
-<p>Detect communities in a network.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/analysis/communities</span></code></p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">network_id</span></code> (required) - Network ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> (required) - Algorithm name (louvain, leiden, infomap)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code> (optional) - Resolution parameter (default: 1.0)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">omega</span></code> (optional) - Inter-layer coupling (default: 1.0)</p></li>
-</ul>
-<p><strong>Request:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;network_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;algorithm&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;omega&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span>
-<span class="p">}</span>
-</pre></div>
-</div>
+<section id="clear-graph-cache">
+<h3>Clear Graph Cache<a class="headerlink" href="#clear-graph-cache" title="Link to this heading"></a></h3>
+<p>Purge cached data for a specific graph.</p>
+<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/api/cache/{graph_id}</span></code></p>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_communities&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;modularity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.42</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;partition&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;node1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;node2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;node3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ok&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cache cleared for graph b3e5cfd5-7f6b-4b30-8c3e-220f9a9c0de2&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="compute-statistics">
-<h3>Compute Statistics<a class="headerlink" href="#compute-statistics" title="Link to this heading"></a></h3>
-<p>Compute network statistics.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/analysis/statistics</span></code></p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">network_id</span></code> (required) - Network ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">metrics</span></code> (required) - List of metrics to compute</p></li>
-</ul>
-<p><strong>Request:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;network_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;metrics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;clustering&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;degree_distribution&quot;</span><span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;statistics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;density&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.045</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;clustering&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.32</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;degree_distribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="compute-centrality">
-<h3>Compute Centrality<a class="headerlink" href="#compute-centrality" title="Link to this heading"></a></h3>
-<p>Compute node centrality measures.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/analysis/centrality</span></code></p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">network_id</span></code> (required) - Network ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">measure</span></code> (required) - Centrality measure (degree, betweenness, pagerank, eigenvector)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">layer</span></code> (optional) - Specific layer to analyze</p></li>
-</ul>
-<p><strong>Request:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;network_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;measure&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;betweenness&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;layer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;layer1&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;centrality&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;node1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.42</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;node2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.35</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;node3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.15</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="generate-embeddings">
-<h3>Generate Embeddings<a class="headerlink" href="#generate-embeddings" title="Link to this heading"></a></h3>
-<p>Generate node embeddings.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/analysis/embeddings</span></code></p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">network_id</span></code> (required) - Network ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code> (required) - Embedding method (node2vec, deepwalk)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dimensions</span></code> (optional) - Embedding dimensions (default: 128)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">walk_length</span></code> (optional) - Walk length (default: 80)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">num_walks</span></code> (optional) - Walks per node (default: 10)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> (optional) - Return parameter (default: 1.0)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code> (optional) - In-out parameter (default: 1.0)</p></li>
-</ul>
-<p><strong>Request:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;network_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;node2vec&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;dimensions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;walk_length&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_walks&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;p&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;q&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;embedding_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emb456&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;dimensions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;num_nodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="visualization-endpoints">
-<h2>Visualization Endpoints<a class="headerlink" href="#visualization-endpoints" title="Link to this heading"></a></h2>
-<section id="generate-layout">
-<h3>Generate Layout<a class="headerlink" href="#generate-layout" title="Link to this heading"></a></h3>
-<p>Compute network layout.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/visualization/layout</span></code></p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">network_id</span></code> (required) - Network ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> (required) - Layout algorithm (force, spring, circular, diagonal)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">iterations</span></code> (optional) - Number of iterations (default: 50)</p></li>
-</ul>
-<p><strong>Request:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;network_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;algorithm&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;force&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;iterations&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;layout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;layout789&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;positions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;node1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;node2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">]</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="render-visualization">
-<h3>Render Visualization<a class="headerlink" href="#render-visualization" title="Link to this heading"></a></h3>
-<p>Generate network visualization image.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/visualization/render</span></code></p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">network_id</span></code> (required) - Network ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">layout_id</span></code> (optional) - Pre-computed layout ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code> (optional) - Image width (default: 800)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code> (optional) - Image height (default: 600)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code> (optional) - Output format (png, svg, pdf, default: png)</p></li>
-</ul>
-<p><strong>Request:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;network_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;layout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;layout789&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;width&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;height&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">900</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;png&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Response:</strong></p>
-<p>Returns image file with appropriate Content-Type header.</p>
-<p><strong>Status Codes:</strong></p>
-<ul class="simple">
-<li><p>200 - Success (returns image)</p></li>
-<li><p>400 - Invalid parameters</p></li>
-<li><p>404 - Network or layout not found</p></li>
-</ul>
-</section>
-</section>
-<section id="export-endpoints">
-<h2>Export Endpoints<a class="headerlink" href="#export-endpoints" title="Link to this heading"></a></h2>
-<section id="export-network">
-<h3>Export Network<a class="headerlink" href="#export-network" title="Link to this heading"></a></h3>
-<p>Export network in different formats.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/export/network/&lt;network_id&gt;</span></code></p>
-<p><strong>Query Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code> (required) - Export format (graphml, gml, edgelist, json, arrow)</p></li>
-</ul>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:5000/api/export/network/abc123?format<span class="o">=</span>graphml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="w"> </span>output.graphml
-</pre></div>
-</div>
-<p><strong>Response:</strong></p>
-<p>Returns file in requested format.</p>
-</section>
-<section id="export-analysis-results">
-<h3>Export Analysis Results<a class="headerlink" href="#export-analysis-results" title="Link to this heading"></a></h3>
-<p>Export analysis results as JSON or CSV.</p>
-<p><strong>Endpoint:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/export/analysis/&lt;analysis_id&gt;</span></code></p>
-<p><strong>Query Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code> (optional) - Export format (json, csv, default: json)</p></li>
-</ul>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:5000/api/export/analysis/analysis123?format<span class="o">=</span>csv<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="w"> </span>results.csv
-</pre></div>
-</div>
-<p><strong>Response:</strong></p>
-<p>Returns file in requested format.</p>
 </section>
 </section>
 <section id="error-handling">
 <h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
 <section id="error-response-format">
 <h3>Error Response Format<a class="headerlink" href="#error-response-format" title="Link to this heading"></a></h3>
-<p>All errors return a consistent JSON format:</p>
+<p>FastAPI returns standard error payloads. Typical shapes:</p>
+<p>Validation error:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Error message description&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;error_code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ERROR_CODE&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;details&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Additional error details&quot;</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;loc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;body&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;msg&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;value is not a valid enumeration member; permitted: &#39;degree&#39;, &#39;betweenness&#39;, &#39;closeness&#39;, &#39;eigenvector&#39;, &#39;pagerank&#39;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;type_error.enum&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="common-error-codes">
-<h3>Common Error Codes<a class="headerlink" href="#common-error-codes" title="Link to this heading"></a></h3>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 20.0%" />
-<col style="width: 20.0%" />
-<col style="width: 60.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>HTTP Status</p></th>
-<th class="head"><p>Error Code</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>400</p></td>
-<td><p>INVALID_INPUT</p></td>
-<td><p>Invalid request parameters</p></td>
-</tr>
-<tr class="row-odd"><td><p>400</p></td>
-<td><p>INVALID_FILE</p></td>
-<td><p>Invalid or corrupted file</p></td>
-</tr>
-<tr class="row-even"><td><p>401</p></td>
-<td><p>UNAUTHORIZED</p></td>
-<td><p>Authentication required</p></td>
-</tr>
-<tr class="row-odd"><td><p>404</p></td>
-<td><p>NOT_FOUND</p></td>
-<td><p>Resource not found</p></td>
-</tr>
-<tr class="row-even"><td><p>413</p></td>
-<td><p>FILE_TOO_LARGE</p></td>
-<td><p>Upload exceeds size limit</p></td>
-</tr>
-<tr class="row-odd"><td><p>500</p></td>
-<td><p>INTERNAL_ERROR</p></td>
-<td><p>Server error</p></td>
-</tr>
-<tr class="row-even"><td><p>503</p></td>
-<td><p>SERVICE_UNAVAILABLE</p></td>
-<td><p>Service temporarily unavailable</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="rate-limits">
-<h2>Rate Limits<a class="headerlink" href="#rate-limits" title="Link to this heading"></a></h2>
-<p>Default rate limits (configurable):</p>
-<ul class="simple">
-<li><p>200 requests per day per IP</p></li>
-<li><p>50 requests per hour per IP</p></li>
-<li><p>10 uploads per hour per IP</p></li>
-</ul>
-<p>Rate limit headers in responses:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>X-RateLimit-Limit: 50
-X-RateLimit-Remaining: 45
-X-RateLimit-Reset: 1674480000
+<p>Not found:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Graph not found&quot;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
+<p>Job failures surface in the job status payload as <code class="docutils literal notranslate"><span class="pre">status:</span> <span class="pre">&quot;failed&quot;</span></code> and an <code class="docutils literal notranslate"><span class="pre">error</span></code> string.</p>
+</section>
 </section>
 <section id="usage-examples">
 <h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
@@ -603,64 +517,62 @@ X-RateLimit-Reset: 1674480000
 <h3>Python Client<a class="headerlink" href="#python-client" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
-<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:5000/api&quot;</span>
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:8000/api&quot;</span>
 
-<span class="c1"># Upload network</span>
+<span class="c1"># Upload a graph</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;network.edgelist&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/upload&quot;</span><span class="p">,</span>
-        <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">},</span>
-        <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;input_type&quot;</span><span class="p">:</span> <span class="s2">&quot;edgelist&quot;</span><span class="p">,</span> <span class="s2">&quot;directed&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">}</span>
+        <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">}</span>
     <span class="p">)</span>
 
-<span class="n">network_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;network_id&quot;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploaded network: </span><span class="si">{</span><span class="n">network_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">graph_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;graph_id&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploaded graph: </span><span class="si">{</span><span class="n">graph_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Run community detection</span>
+<span class="c1"># Queue community detection</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/analysis/communities&quot;</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/graphs/</span><span class="si">{</span><span class="n">graph_id</span><span class="si">}</span><span class="s2">/analysis/community&quot;</span><span class="p">,</span>
     <span class="n">json</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;network_id&quot;</span><span class="p">:</span> <span class="n">network_id</span><span class="p">,</span>
-        <span class="s2">&quot;algorithm&quot;</span><span class="p">:</span> <span class="s2">&quot;louvain&quot;</span>
+        <span class="s2">&quot;algorithm&quot;</span><span class="p">:</span> <span class="s2">&quot;louvain&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;resolution&quot;</span><span class="p">:</span> <span class="mf">1.0</span>
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">communities</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">communities</span><span class="p">[</span><span class="s1">&#39;num_communities&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="n">job_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;job_id&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community job queued: </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Poll job until completion</span>
+<span class="n">status</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/jobs/</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="curl-examples">
 <h3>cURL Examples<a class="headerlink" href="#curl-examples" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Upload network</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:5000/api/upload<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;file=@network.edgelist&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;input_type=edgelist&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;directed=false&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Upload graph</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/upload<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;file=@network.edgelist&quot;</span>
 
-<span class="c1"># Get network info</span>
-curl<span class="w"> </span>http://localhost:5000/api/networks/abc123
+<span class="c1"># Get summary</span>
+curl<span class="w"> </span>http://localhost:8000/api/graphs/&lt;graph_id&gt;/summary
 
-<span class="c1"># Run analysis</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:5000/api/analysis/communities<span class="w"> </span><span class="se">\</span>
+<span class="c1"># Queue centrality</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/graphs/&lt;graph_id&gt;/analysis/centrality<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;network_id&quot;:&quot;abc123&quot;,&quot;algorithm&quot;:&quot;louvain&quot;}&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;metrics&quot;:[&quot;betweenness&quot;,&quot;pagerank&quot;]}&#39;</span>
 
-<span class="c1"># Export network</span>
-curl<span class="w"> </span>http://localhost:5000/api/export/network/abc123?format<span class="o">=</span>graphml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="w"> </span>output.graphml
+<span class="c1"># Poll job</span>
+curl<span class="w"> </span>http://localhost:8000/api/jobs/&lt;job_id&gt;
 </pre></div>
 </div>
 </section>
 <section id="javascript-fetch-example">
 <h3>JavaScript/Fetch Example<a class="headerlink" href="#javascript-fetch-example" title="Link to this heading"></a></h3>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">BASE_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;http://localhost:5000/api&#39;</span><span class="p">;</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">BASE_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;http://localhost:8000/api&#39;</span><span class="p">;</span>
 
-<span class="c1">// Upload network</span>
+<span class="c1">// Upload graph</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">formData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">FormData</span><span class="p">();</span>
 <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">fileInput</span><span class="p">.</span><span class="nx">files</span><span class="p">[</span><span class="mf">0</span><span class="p">]);</span>
-<span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;input_type&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;edgelist&#39;</span><span class="p">);</span>
-<span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;directed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;false&#39;</span><span class="p">);</span>
 
 <span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">BASE_URL</span><span class="si">}</span><span class="sb">/upload`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="p">,</span>
@@ -668,22 +580,21 @@ curl<span class="w"> </span>http://localhost:5000/api/export/network/abc123?form
 <span class="p">});</span>
 
 <span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Uploaded network: </span><span class="si">${</span><span class="nx">data</span><span class="p">.</span><span class="nx">network_id</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Uploaded graph: </span><span class="si">${</span><span class="nx">data</span><span class="p">.</span><span class="nx">graph_id</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
 
-<span class="c1">// Run analysis</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">analysisResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">BASE_URL</span><span class="si">}</span><span class="sb">/analysis/communities`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="c1">// Queue community detection</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">analysisResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">BASE_URL</span><span class="si">}</span><span class="sb">/graphs/</span><span class="si">${</span><span class="nx">data</span><span class="p">.</span><span class="nx">graph_id</span><span class="si">}</span><span class="sb">/analysis/community`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/json&#39;</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">network_id</span><span class="o">:</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">network_id</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">algorithm</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;louvain&#39;</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="p">});</span>
 
 <span class="kd">const</span><span class="w"> </span><span class="nx">communities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">analysisResponse</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Found </span><span class="si">${</span><span class="nx">communities</span><span class="p">.</span><span class="nx">num_communities</span><span class="si">}</span><span class="sb"> communities`</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Job queued: </span><span class="si">${</span><span class="nx">communities</span><span class="p">.</span><span class="nx">job_id</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
@@ -699,7 +610,7 @@ curl<span class="w"> </span>http://localhost:5000/api/export/network/abc123?form
 <p><strong>External Resources:</strong></p>
 <ul class="simple">
 <li><p>REST API Best Practices: <a class="reference external" href="https://restfulapi.net/">https://restfulapi.net/</a></p></li>
-<li><p>Flask-RESTful Documentation: <a class="reference external" href="https://flask-restful.readthedocs.io/">https://flask-restful.readthedocs.io/</a></p></li>
+<li><p>FastAPI Documentation: <a class="reference external" href="https://fastapi.tiangolo.com/">https://fastapi.tiangolo.com/</a></p></li>
 </ul>
 </section>
 </section>

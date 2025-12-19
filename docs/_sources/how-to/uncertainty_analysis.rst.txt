@@ -14,14 +14,29 @@ Overview
 py3plex provides first-class support for uncertainty quantification in network analysis. Every graph statistic can optionally carry uncertainty information including:
 
 - **Confidence intervals** (via bootstrap or perturbation)
-- **Standard errors** 
+- **Standard errors** (empirical across replicates)
 - **Z-scores and p-values** (via null models)
-- **Replication metadata**
+- **Replication metadata** (number of replicates, method identifiers)
 
 This makes it easy to assess the robustness of your network findings and perform statistical hypothesis testing.
 
 Basic Usage
 ===========
+
+What ``uncertainty=True`` returns
+---------------------------------
+
+When uncertainty is enabled, each metric value becomes a dictionary with common keys:
+
+- ``mean``: Point estimate computed on the observed network
+- ``std``: Standard deviation across replicates (bootstrap / perturbation) or across null draws (null model)
+- ``quantiles``: Empirical confidence interval bounds keyed by probabilities, e.g. ``quantiles[0.025]``
+- ``n_boot`` or ``n_null``: Number of bootstrap or null-model replicates used
+- ``method``: Estimation method that produced the entry (e.g., ``"bootstrap"`` or ``"null_model"``)
+
+This structure is consistent across bootstrap, null-model, perturbation, and seed-based methods.
+
+When ``uncertainty=False``, metrics are returned as plain scalars or arrays instead of dictionaries.
 
 Computing Metrics with Uncertainty
 -----------------------------------
@@ -51,14 +66,6 @@ Use the ``uncertainty=True`` parameter in ``compute()`` to enable uncertainty es
     # Access results
     df = result.to_pandas()
     print(df["degree"])
-
-When ``uncertainty=True``, metric values are dictionaries containing:
-
-- ``mean``: Point estimate
-- ``std``: Standard deviation
-- ``quantiles``: Confidence interval bounds
-- ``n_boot`` or ``n_null``: Number of replicates
-- ``method``: Estimation method used
 
 Uncertainty Estimation Methods
 ===============================
@@ -91,9 +98,9 @@ Bootstrap resampling provides confidence intervals by resampling network units (
 
 - ``method="bootstrap"``: Use bootstrap resampling
 - ``n_boot``: Number of bootstrap replicates (default: 50)
-- ``ci``: Confidence interval level, e.g., 0.95 for 95% CI (default: 0.95)
-- ``bootstrap_unit``: What to resample - ``"edges"``, ``"nodes"``, or ``"layers"`` (default: ``"edges"``)
-- ``bootstrap_mode``: Resampling mode - ``"resample"`` (with replacement) or ``"permute"`` (shuffle) (default: ``"resample"``)
+- ``ci``: Confidence interval level, e.g., 0.95 for 95% CI (default: 0.95); intervals use percentile bounds from the bootstrap draws
+- ``bootstrap_unit``: What to resample - ``"edges"``, ``"nodes"``, or ``"layers"`` (default: ``"edges"``); resampling a unit rebuilds an induced graph from that sample
+- ``bootstrap_mode``: Resampling mode - ``"resample"`` (sample with replacement) or ``"permute"`` (shuffle labels without replacement to break associations) (default: ``"resample"``)
 - ``random_state``: Random seed for reproducibility (optional)
 
 **Example: Finding Robust Hubs**
@@ -156,9 +163,9 @@ Null models test statistical significance by comparing observed values to random
 - ``n_null``: Number of null model replicates (default: 200)
 - ``null_model``: Null model type (default: ``"degree_preserving"``)
   
-  - ``"degree_preserving"``: Rewire edges while preserving degree sequence
-  - ``"erdos_renyi"``: Random graph with same density
-  - ``"configuration"``: Configuration model matching degree distribution
+  - ``"degree_preserving"``: Rewire edges while preserving degree sequence (keeps degree histogram fixed)
+  - ``"erdos_renyi"``: Random graph with the same density (destroys degree sequence)
+  - ``"configuration"``: Configuration model matching degree distribution (allows multi-edges/self-loops depending on implementation)
 
 - ``random_state``: Random seed for reproducibility (optional)
 
@@ -166,11 +173,11 @@ Null models test statistical significance by comparing observed values to random
 
 When ``method="null_model"``, metric dictionaries contain:
 
-- ``mean``: Observed value
+- ``mean``: Observed value on the input network
 - ``mean_null``: Mean value from null models
-- ``std``: Standard deviation of null distribution
-- ``zscore``: Z-score: ``(observed - mean_null) / std``
-- ``pvalue``: Two-tailed p-value
+- ``std``: Standard deviation of the null distribution
+- ``zscore``: ``(observed - mean_null) / std`` (defined when ``std > 0``; undefined if null distribution is degenerate)
+- ``pvalue``: Two-tailed p-value under the null distribution
 - ``n_null``: Number of null replicates
 - ``method``: Null model type used
 
@@ -201,13 +208,13 @@ When ``method="null_model"``, metric dictionaries contain:
             zscore = bc['zscore']
             pvalue = bc['pvalue']
             
-            if pvalue < 0.05:  # Significant at α = 0.05
+            if pvalue < 0.05:  # Significant at α = 0.05 (adjust for multiple tests as needed)
                 print(f"{node_id}: observed={obs:.4f}, z={zscore:.2f}, p={pvalue:.4f} *")
 
 Legacy Methods
 --------------
 
-py3plex also supports legacy uncertainty methods for backward compatibility:
+py3plex also supports legacy uncertainty methods for backward compatibility; prefer ``bootstrap`` or ``null_model`` unless you need behavior preserved from earlier releases.
 
 **Perturbation:**
 
@@ -219,6 +226,8 @@ py3plex also supports legacy uncertainty methods for backward compatibility:
         .execute(net)
     )
 
+Randomly perturb edges (e.g., add/drop according to internal defaults) and recompute the metric.
+
 **Seed (Monte Carlo):**
 
 .. code-block:: python
@@ -229,10 +238,12 @@ py3plex also supports legacy uncertainty methods for backward compatibility:
         .execute(net)
     )
 
+Run multiple independent executions with different random seeds when the metric itself is stochastic.
+
 Global Defaults
 ===============
 
-Set global defaults for uncertainty parameters to avoid repeating them in every query.
+Set global defaults for uncertainty parameters to avoid repeating them in every query. The ``enabled`` flag toggles whether uncertainty is applied automatically; otherwise you still opt-in per call with ``uncertainty=True``.
 
 Setting Defaults
 ----------------
@@ -463,7 +474,7 @@ Test whether observed centrality values are significantly different from random:
     for idx, row in df.iterrows():
         bc = row['betweenness_centrality']
         if isinstance(bc, dict):
-            if bc['pvalue'] < 0.01:  # Bonferroni-corrected threshold
+            if bc['pvalue'] < 0.01:  # Bonferroni-corrected threshold (assumes independence)
                 significant.append({
                     'node': row['id'],
                     'observed': bc['mean'],
@@ -481,6 +492,8 @@ Use uncertainty to compare metric distributions across layers:
 
 .. code-block:: python
 
+    import numpy as np
+    
     # Compute degree with uncertainty per layer
     layer_results = (
         Q.nodes()
@@ -520,6 +533,8 @@ Choosing Replication Counts
 - **Publication quality**: 500-1000 replicates
 - **Critical decisions**: 1000+ replicates
 
+Increase the replication count until the reported intervals stop changing materially for your metric of interest.
+
 Bootstrap Unit Selection
 -------------------------
 
@@ -554,7 +569,7 @@ Performance Tips
 1. Start with small replication counts during development
 2. Use ``bootstrap_unit="layers"`` for faster computation on large networks
 3. Set global defaults to avoid repetition
-4. Consider using ``method="perturbation"`` for very large networks (faster than bootstrap)
+4. Consider ``method="perturbation"`` for very large networks when full bootstrap runs are prohibitively slow (results are approximate)
 
 API Reference
 =============
@@ -570,8 +585,8 @@ compute() Parameters
         aliases=None,                   # Dict of metric aliases
         uncertainty=False,              # Enable uncertainty estimation
         method=None,                    # "bootstrap", "null_model", "perturbation", "seed"
-        n_samples=None,                 # Number of samples (default: 50)
-        n_boot=None,                    # Alias for n_samples (bootstrap)
+        n_samples=None,                 # Generic replicate count (default: 50)
+        n_boot=None,                    # Alias for n_samples when using bootstrap/perturbation/seed
         n_null=None,                    # Number of null replicates (default: 200)
         ci=None,                        # Confidence level (default: 0.95)
         bootstrap_unit=None,            # "edges", "nodes", "layers" (default: "edges")

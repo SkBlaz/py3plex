@@ -5,6 +5,18 @@ This page provides a **comprehensive overview** of all algorithms implemented in
 
 **Purpose:** Help you quickly find the right algorithm for your multilayer network analysis task.
 
+Notation and assumptions
+------------------------
+
+Unless otherwise specified:
+
+* :math:`n` = number of physical nodes; :math:`m` = edges on the graph being analyzed (aggregated by default, supra-graph when explicitly stated)
+* :math:`n_L` = number of state nodes (node-layer pairs), :math:`L` = number of layers; supra-graph algorithms use :math:`n_L` and the corresponding intra- + inter-layer edge count
+* When both :math:`n` and :math:`n_L` appear, :math:`n`/:math:`m` refer to the aggregated physical-node graph; :math:`n_L` and its edge count refer to the supra-adjacency
+* Complexities assume sparse graphs and hide iteration-dependent constants from solvers
+* Supra-adjacency matrices are sparse unless noted; dense forms are only for toy examples
+* Shortest-path-based metrics assume non-negative edge weights; negative weights are unsupported
+
 Algorithm Categories
 --------------------
 
@@ -44,7 +56,7 @@ Louvain Algorithm
 
 **Best for:** Fast community detection on large single-layer networks
 
-**Complexity:** O(n log n)
+**Complexity:** O(m log n) in typical sparse settings
 
 **Related algorithms:** 
   - :ref:`multilayer-louvain` (multilayer extension)
@@ -61,9 +73,9 @@ Infomap Algorithm
 * ``run_infomap(network, binary_path, arguments)`` - Execute Infomap binary
 * ``parse_infomap(outfile)`` - Parse Infomap output
 
-**Best for:** Flow-based community detection, hierarchical structure
+**Best for:** Flow-based community detection, hierarchical structure, optional overlapping output
 
-**Complexity:** O(m log n) where m is edges, n is nodes
+**Complexity:** O(m log n) where m is edges, n is nodes (average-case)
 
 **Related algorithms:**
   - :ref:`louvain-algorithm` (faster alternative)
@@ -83,7 +95,7 @@ Multilayer Louvain
 
 **Best for:** Community detection across multiple layers with inter-layer coupling
 
-**Complexity:** O(n² L) where L is number of layers
+**Complexity:** O(n_L^2) to build a dense supra-adjacency (sparse construction: O(m)) plus Louvain-style optimization (about O(m log n_L) on the sparse supra-graph); prefer sparse supra-adjacency for anything beyond small toy graphs
 
 **Algorithm details:** Implements Mucha et al. (2010) multilayer modularity optimization
 
@@ -109,7 +121,7 @@ Leiden Algorithm
 
 **Best for:** More stable community detection than Louvain
 
-**Complexity:** O(n log n) with better quality guarantees
+**Complexity:** About O(m) per iteration on the supplied graph (m counts intra + inter-layer edges when using a supra-adjacency), with faster convergence than Louvain
 
 **Related algorithms:**
   - :ref:`louvain-algorithm` (predecessor)
@@ -128,6 +140,8 @@ NoRC Algorithm
 * ``create_tree(centers)`` - Build community hierarchy
 
 **Best for:** Networks with overlapping communities
+
+**Complexity:** Dominated by PageRank-style iterations on the core graph; scales roughly with O(m * i) where i is iterations
 
 **Related algorithms:**
   - :ref:`community-ranking` (related approach)
@@ -194,7 +208,7 @@ MultilayerCentrality Class
 
 **Path:** ``multilayer_algorithms.centrality.MultilayerCentrality``
 
-**Main class for computing various centrality measures.**
+**Main class for computing various centrality measures on the supra-adjacency of state nodes (:math:`n_L`).**
 
 Basic Centrality Measures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -208,7 +222,7 @@ Basic Centrality Measures
 
 **Best for:** Quick importance ranking, well-connected node identification
 
-**Complexity:** O(n + m) where n is nodes, m is edges
+**Complexity:** O(n_L + m) where n_L is state nodes, m is edges (intra + inter-layer)
 
 **Related measures:** 
   - :ref:`versatility-centrality` (cross-layer activity)
@@ -225,7 +239,7 @@ Eigenvector-Based Measures
 
 **Best for:** Influence measure, recursive importance, prestige ranking
 
-**Complexity:** O(m) per iteration, typically converges quickly
+**Complexity:** O(m) per iteration on sparse supra-adjacency; typically converges in few iterations
 
 **Related measures:**
   - :ref:`hubs-authorities` (directed networks)
@@ -240,9 +254,11 @@ Path-Based Measures
 
 **Best for:** Bridge identification, broadcasting efficiency
 
-**Complexity:** O(nm) for unweighted, O(nm + n² log n) for weighted
+**Complexity:** O(n_L m) for unweighted, O(n_L m + n_L^2 log n_L) for weighted (Brandes with Dijkstra on the supra-graph)
 
-**Warning:** Expensive for large networks (>1000 nodes)
+**Warning:** Expensive beyond a few thousand state nodes; use sampling or approximations when possible. Distances are computed on the supra-graph; unreachable pairs yield zero scores.
+
+**Note:** Weighted variants rely on non-negative edge weights for Dijkstra-based shortest paths.
 
 **Related measures:**
   - :ref:`centrality-all` (batch computation)
@@ -283,7 +299,7 @@ Versatility Centrality
 
 **Best for:** Measuring how uniformly a node's importance is distributed across layers
 
-**Complexity:** O(m × L) where L is number of layers
+**Complexity:** O(m L) where L is number of layers (dominated by the chosen per-layer centrality)
 
 **Related measures:**
   - All centrality measures in :ref:`centrality-measures-algorithms`
@@ -300,7 +316,7 @@ Supra Matrix Function Centralities
 
 **Best for:** Advanced centrality using matrix functions on supra-adjacency
 
-**Complexity:** Depends on matrix operations, typically O(n²) or O(n³)
+**Complexity:** Dense matrix functions scale as O(n_L^2) to O(n_L^3); prefer sparse-aware solvers for larger supra-graphs
 
 **Related measures:**
   - :ref:`centrality-measures-algorithms` (standard measures)
@@ -358,7 +374,7 @@ Multilayer Statistics
 
 **Best for:** Understanding multilayer network structure and properties
 
-**Complexity:** Varies by measure, typically O(n) to O(n²)
+**Complexity:** Varies by measure; most layer/node summaries are O(n_L + m) on the relevant graph, while spectral routines operate on the supra-graph and can reach O(n_L^2) on dense inputs
 
 **Related algorithms:**
   - :ref:`basic-statistics` (simpler measures)
@@ -384,7 +400,7 @@ Basic Statistics
 
 **Best for:** Quick network overview, hub identification
 
-**Complexity:** O(n + m) for most measures
+**Complexity:** O(n + m) on the aggregated core graph for most measures
 
 **Related algorithms:**
   - :ref:`multilayer-statistics` (advanced measures)
@@ -398,7 +414,7 @@ Topology Analysis
 
 Functions for analyzing topological properties of networks.
 
-**Purpose:** Study structural properties like degree distributions, connected components, etc.
+**Purpose:** Study structural properties like degree distributions, connected components, etc., on the aggregated core graph or per-layer projections.
 
 **Related algorithms:**
   - :ref:`basic-statistics`
@@ -470,6 +486,8 @@ Node Ranking & Classification
 
 **Module:** ``py3plex.algorithms.node_ranking`` and ``py3plex.algorithms.network_classification``
 
+These methods operate on the aggregated (often directed) core graph; :math:`n` and :math:`m` below refer to physical nodes and edges.
+
 .. _node-ranking-algorithms:
 
 Node Ranking
@@ -488,7 +506,7 @@ Node Ranking
 
 **Best for:** Ranking nodes by importance in directed networks
 
-**Complexity:** O(m) per iteration for PageRank, O(nm) for HITS
+**Complexity:** O(m) per iteration for PageRank; HITS uses similar power iterations with the same per-iteration cost
 
 **Related algorithms:**
   - PageRank in :ref:`centrality-measures-algorithms`
@@ -512,7 +530,7 @@ Label Propagation
 
 **Best for:** Semi-supervised node classification
 
-**Complexity:** O(m × i) where i is number of iterations
+**Complexity:** O(m * i) where m is edges and i is number of iterations
 
 **Related algorithms:**
   - :ref:`ppr-algorithm` (personalized version)
@@ -533,7 +551,7 @@ Personalized PageRank (PPR)
 
 **Best for:** Local network exploration, personalized node ranking
 
-**Complexity:** O(n²) for dense computation, can be approximated
+**Complexity:** O(n^2) for dense computation; sparse power iterations are about O(m * i) where i is iterations
 
 **Related algorithms:**
   - :ref:`label-propagation` (similar propagation mechanism)
@@ -563,7 +581,7 @@ Random Walk Primitives
 
 **Best for:** Foundation for embedding algorithms, network exploration
 
-**Complexity:** O(L) per walk where L is walk length
+**Complexity:** O(ell) per walk where ell is the walk length
 
 **Related algorithms:**
   - :ref:`node2vec-embedding` (uses these walks)
@@ -583,7 +601,7 @@ Node2Vec Embedding
 
 **Best for:** Feature learning, link prediction, node classification
 
-**Complexity:** O(r × l × V) where r is walks per node, l is walk length, V is number of vertices
+**Complexity:** O(r * l * n) where r is walks per node, l is walk length, n is nodes on the (aggregated) walk graph
 
 **Parameters:**
 
@@ -669,9 +687,9 @@ Multilayer Visualization
 **Best for:** Visualizing multilayer network structure
 
 **Scalability:** 
-  - Diagonal projection: 10,000+ nodes
-  - Force-directed: <5,000 nodes
-  - Matrix view: 100,000+ nodes
+  - Diagonal projection: practical for tens of thousands of nodes in sparse graphs
+  - Force-directed: best for a few thousand nodes
+  - Matrix view: memory-bound; works for small/medium graphs or very sparse matrices—otherwise sample or project first
 
 **Related algorithms:**
   - :ref:`layout-algorithms` (positioning)
@@ -768,20 +786,22 @@ By Task Type
 By Network Size
 ~~~~~~~~~~~~~~~
 
+Counts below refer to physical nodes; for dense multilayer graphs treat the effective size as :math:`n_L`.
+
 **Small (<1,000 nodes):**
   * All algorithms work well
   * Can use expensive path-based measures
   * All visualization methods
 
 **Medium (1,000-10,000 nodes):**
-  * Use Louvain over Infomap
+  * Prefer Louvain/Leiden over Infomap for speed
   * Avoid full betweenness centrality
   * Use diagonal projection for visualization
 
 **Large (10,000-100,000 nodes):**
-  * Degree-based measures only
+  * Degree/PageRank; avoid all-pairs paths
   * Louvain or label propagation
-  * Matrix visualizations
+  * Use sampling or projections instead of matrix visualizations
 
 **Very Large (>100,000 nodes):**
   * Degree, PageRank only
@@ -805,12 +825,12 @@ By Network Type
   * See :ref:`node-ranking-algorithms`
 
 **Weighted networks:**
-  * All algorithms support weights
-  * Specify ``weight`` parameter
+  * Most algorithms support weights
+  * Specify a ``weight`` field/parameter where available
 
 **Temporal networks:**
   * Layer-based representation
-  * Time-respecting random walks: :ref:`random-walk-primitives`
+  * Time-respecting random walks: :ref:`random-walk-primitives` (ensure edges respect ordering)
 
 Algorithm Dependencies
 ----------------------

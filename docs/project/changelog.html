@@ -165,12 +165,13 @@
              
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
-<p>This page documents the release history of py3plex. For the most up-to-date information, see <a class="reference external" href="https://github.com/SkBlaz/py3plex/releases">GitHub Releases</a>.</p>
+<p>This page summarizes the release history of py3plex. For granular, date-stamped entries, see <a class="reference external" href="https://github.com/SkBlaz/py3plex/releases">GitHub Releases</a> or the root <code class="docutils literal notranslate"><span class="pre">CHANGELOG.md</span></code>.</p>
 <section id="release-history">
 <h2>Release History<a class="headerlink" href="#release-history" title="Link to this heading"></a></h2>
 <section id="version-1-0-0-current">
 <h3>Version 1.0.0 (Current)<a class="headerlink" href="#version-1-0-0-current" title="Link to this heading"></a></h3>
-<p><strong>Release Date:</strong> 2024</p>
+<p><strong>Release Date:</strong> 2024 (current stable line)</p>
+<p>The 1.0 series focuses on a stable DSL, multilayer ergonomics, and reproducible analysis workflows.</p>
 <p><strong>Major Features:</strong></p>
 <ul class="simple">
 <li><p><strong>DSL Query Language:</strong> SQL-like domain-specific language for querying multilayer networks</p>
@@ -251,20 +252,21 @@
 </ul>
 <p><strong>Performance Improvements:</strong></p>
 <ul class="simple">
-<li><p>Optimized tensor operations</p></li>
+<li><p>Optimized tensor operations for multilayer algebra</p></li>
 <li><p>Sparse matrix support for large networks</p></li>
-<li><p>Caching for expensive computations</p></li>
+<li><p>Caching for expensive computations (centrality, community detection)</p></li>
 </ul>
 <p><strong>Bug Fixes:</strong></p>
 <ul class="simple">
-<li><p>Numerous edge case fixes in community detection</p></li>
+<li><p>Numerous edge-case fixes in community detection</p></li>
 <li><p>Corrected centrality calculations for directed multilayer networks</p></li>
-<li><p>Fixed memory leaks in dynamics simulations</p></li>
-<li><p>Resolved NetworkX compatibility issues</p></li>
+<li><p>Fixed memory leaks in long-running dynamics simulations</p></li>
+<li><p>Resolved NetworkX compatibility issues (version pinning and adapters)</p></li>
 </ul>
 </section>
 <section id="previous-versions-0-x-series">
 <h3>Previous Versions (0.x Series)<a class="headerlink" href="#previous-versions-0-x-series" title="Link to this heading"></a></h3>
+<p>The 0.x series delivered the multilayer foundations: data structures, early DSL prototypes, and visualization primitives. Expect minor API inconsistencies compared to 1.0; migrate when possible.</p>
 <p><strong>Version 0.30 - 0.35 (2020-2023)</strong></p>
 <ul class="simple">
 <li><p>Incremental feature additions</p></li>
@@ -295,6 +297,7 @@
 </section>
 <section id="how-to-check-your-version">
 <h2>How to Check Your Version<a class="headerlink" href="#how-to-check-your-version" title="Link to this heading"></a></h2>
+<p>Confirm the installed package version from Python (or use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">show</span> <span class="pre">py3plex</span></code> in the shell):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">py3plex</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </pre></div>
@@ -310,11 +313,11 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>py3plex
 </pre></div>
 </div>
-<p><strong>Install from specific version:</strong></p>
+<p><strong>Install a specific version:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">py3plex</span><span class="o">==</span><span class="m">1</span>.0.0
 </pre></div>
 </div>
-<p><strong>Install development version:</strong></p>
+<p><strong>Install development snapshot:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git@main
 </pre></div>
 </div>
@@ -370,14 +373,16 @@
 <p><strong>Migration Steps:</strong></p>
 <ol class="arabic simple">
 <li><p>Update py3plex: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">py3plex</span></code></p></li>
-<li><p>Run your existing code - warnings will indicate deprecated usage</p></li>
-<li><p>Gradually migrate to DSL for queries</p></li>
-<li><p>Update community detection code to expect tuple keys</p></li>
-<li><p>Handle uncertainty in centrality results if using <code class="docutils literal notranslate"><span class="pre">uncertainty=True</span></code></p></li>
+<li><p>Run your existing code; deprecation warnings will indicate legacy usage</p></li>
+<li><p>Gradually migrate to DSL for queries and layer selection</p></li>
+<li><p>Update community detection code to expect tuple <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> keys</p></li>
+<li><p>Handle uncertainty-aware results if using <code class="docutils literal notranslate"><span class="pre">uncertainty=True</span></code> (e.g., use <code class="docutils literal notranslate"><span class="pre">result.mean</span></code>)</p></li>
+<li><p>Re-run tests or notebooks to confirm parity before removing legacy patterns</p></li>
 </ol>
 </section>
 <section id="api-changes-and-deprecations">
 <h3>API Changes and Deprecations<a class="headerlink" href="#api-changes-and-deprecations" title="Link to this heading"></a></h3>
+<p>Use this section to triage warnings during upgrades; deprecated items will be removed in 2.0 unless noted otherwise.</p>
 <p><strong>Removed in 1.0:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">old_louvain_function()</span></code> - replaced by <code class="docutils literal notranslate"><span class="pre">louvain_communities()</span></code></p></li>
@@ -397,7 +402,7 @@
 </section>
 <section id="contributing-to-changelog">
 <h2>Contributing to Changelog<a class="headerlink" href="#contributing-to-changelog" title="Link to this heading"></a></h2>
-<p>When submitting PRs, please update the “Unreleased” section in CHANGELOG.md in the repository root with:</p>
+<p>When submitting PRs, update the “Unreleased” section in <code class="docutils literal notranslate"><span class="pre">CHANGELOG.md</span></code> (repository root) and mirror major notes here if they affect users:</p>
 <ul class="simple">
 <li><p>Brief description of changes</p></li>
 <li><p>Link to issue (if applicable)</p></li>

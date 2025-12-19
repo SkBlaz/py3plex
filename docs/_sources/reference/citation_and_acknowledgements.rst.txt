@@ -1,7 +1,7 @@
 Citation and References
 =======================
 
-If you use py3plex in your research, please **cite our work**.
+If you use py3plex in your research, please **cite our work**. The primary journal article is the recommended citation for the toolkit. When you rely on a specific algorithm implementation, add the corresponding original paper below.
 
 Primary Citation
 ----------------
@@ -22,14 +22,14 @@ Primary Citation
       url       = {https://doi.org/10.1007/s41109-019-0203-7}
     }
 
-**Plain text:**
+**Plain text for copy/paste:**
 
   Škrlj, B., Kralj, J., & Lavrač, N. (2019). Py3plex toolkit for visualization and analysis of multilayer networks. *Applied Network Science*, 4(1), 94. https://doi.org/10.1007/s41109-019-0203-7
 
 Conference Paper
 ----------------
 
-For the **initial algorithmic work**:
+For the **initial algorithmic work** and overall system description:
 
 .. code-block:: bibtex
 
@@ -50,10 +50,12 @@ For the **initial algorithmic work**:
 Algorithm-Specific Citations
 -----------------------------
 
-When using **specific algorithms**, please also cite the **original papers**:
+When using **specific algorithms**, please also cite the **original papers** that introduced them. Match the citation to the algorithm you invoked in your workflow.
 
 Multilayer Modularity
 ~~~~~~~~~~~~~~~~~~~~~
+
+Use this for multilayer modularity-based community detection (:mod:`py3plex.algorithms.community_detection.multilayer_modularity`).
 
 .. code-block:: bibtex
 
@@ -72,6 +74,8 @@ Multilayer Modularity
 Node2Vec
 ~~~~~~~~
 
+Random-walk-based node embedding used by :mod:`py3plex.wrappers.node2vec_embedding` and related utilities.
+
 .. code-block:: bibtex
 
     @InProceedings{Grover2016,
@@ -86,6 +90,8 @@ Node2Vec
 
 Louvain Algorithm
 ~~~~~~~~~~~~~~~~~
+
+Greedy modularity optimization for single- and multi-layer community detection.
 
 .. code-block:: bibtex
 
@@ -104,6 +110,8 @@ Louvain Algorithm
 Infomap
 ~~~~~~~
 
+Information-theoretic community detection based on random walks.
+
 .. code-block:: bibtex
 
     @Article{Rosvall2008,
@@ -119,6 +127,8 @@ Infomap
 
 MultiXRank
 ~~~~~~~~~~
+
+Multilayer random walk with restart used for ranking and recommendation tasks.
 
 .. code-block:: bibtex
 
@@ -136,6 +146,8 @@ MultiXRank
 DeepWalk
 ~~~~~~~~
 
+Uniform random-walk embeddings that predate Node2Vec.
+
 .. code-block:: bibtex
 
     @InProceedings{Perozzi2014,
@@ -151,7 +163,7 @@ DeepWalk
 Multilayer Network Theory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Foundational papers** on multilayer networks:
+**Foundational papers** on multilayer networks and their mathematical formulation:
 
 .. code-block:: bibtex
 
@@ -201,7 +213,7 @@ Multilayer Network Theory
 Complete Citation List
 ----------------------
 
-For algorithm citations, see the :doc:`../algorithm_guide` which includes all major algorithms with their original references and DOIs.
+For a full list of algorithm-specific citations, see the :doc:`../algorithm_guide`, which includes the major algorithms with their original references and DOIs.
 
 Acknowledgments
 ---------------

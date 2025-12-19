@@ -146,13 +146,13 @@
              
   <section id="multiplex-network-analysis">
 <h1>Multiplex Network Analysis<a class="headerlink" href="#multiplex-network-analysis" title="Link to this heading"></a></h1>
-<p>Multiplex networks have the same nodes across different layers, enabling specialized analysis techniques.</p>
+<p>Multiplex networks share the same node set across layers (e.g., friendship, collaboration, transport). Typical workflows either (a) aggregate information across layers into a single weighted projection or (b) operate only on selected layers or nodes where the layer context matters.</p>
 <section id="network-aggregation">
 <h2>Network Aggregation<a class="headerlink" href="#network-aggregation" title="Link to this heading"></a></h2>
-<p>Combine information across layers into a single network:</p>
+<p>Aggregate edges across layers to obtain a single weighted network of base nodes. The example below builds a random multiplex graph, aggregates it twice with different normalization choices, and then inspects the resulting edge weights.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_generators</span>
 
-<span class="c1"># Generate random multiplex network</span>
+<span class="c1"># Generate random multiplex network (same node IDs on every layer)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multiplex_ER</span><span class="p">(</span>
     <span class="n">num_nodes</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="mf">0.0005</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -161,7 +161,7 @@
 <span class="n">aggregated2</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">aggregate_edges</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="n">normalize_by</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The first network divides the contribution of an individual edge by the average node degree in a given layer, and the second one simply sums them.</p>
+<p><code class="docutils literal notranslate"><span class="pre">metric=&quot;count&quot;</span></code> tallies how many layers support each edge. <code class="docutils literal notranslate"><span class="pre">normalize_by=&quot;degree&quot;</span></code> down-weights contributions from denser layers by dividing each layer’s count by that layer’s average node degree, while <code class="docutils literal notranslate"><span class="pre">normalize_by=&quot;raw&quot;</span></code> keeps the unnormalized counts. The resulting aggregated graphs expose weights via the <code class="docutils literal notranslate"><span class="pre">weight</span></code> edge attribute.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Examine edge weights in aggregated networks</span>
 <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">aggregated1</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -173,34 +173,35 @@
 </section>
 <section id="subsetting-multiplex-networks">
 <h2>Subsetting Multiplex Networks<a class="headerlink" href="#subsetting-multiplex-networks" title="Link to this heading"></a></h2>
-<p>Subsetting operates in the same manner as for multilayer networks:</p>
+<p>Subsetting works the same way as for multilayer networks. Choose whether to filter by layers, raw node IDs, or explicit node-layer pairs depending on how much layer specificity you need:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">B</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">)</span>
+<span class="c1"># Edge rows: [src, src_layer, dst, dst_layer, weight]</span>
 <span class="n">B</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
-<span class="c1"># Subset the network by layers</span>
+<span class="c1"># Subset the network by layers (keeps all nodes within layer 2)</span>
 <span class="n">C</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="mi">2</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
 
-<span class="c1"># Subset by node names</span>
+<span class="c1"># Subset by node names (keeps all layers for node 1)</span>
 <span class="n">C</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_names&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
 
-<span class="c1"># Subset by specific node-layer pairs</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span><span class="p">)</span>
+<span class="c1"># Subset by specific node-layer pairs (explicit multiplex entries)</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
 </pre></div>
 </div>
 </section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
-<p>See:</p>
+<p>Related example scripts:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_aggregate.py</span></code> - Network aggregation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_dynamics.py</span></code> - Temporal dynamics</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_community_detection.py</span></code> - Community detection</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_new_multiplex_metrics.py</span></code> - New multiplex centrality and robustness metrics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_aggregate.py</span></code> – Network aggregation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_dynamics.py</span></code> – Temporal dynamics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_community_detection.py</span></code> – Community detection</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_new_multiplex_metrics.py</span></code> – New multiplex centrality and robustness metrics</p></li>
 </ul>
 <p>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
 </section>

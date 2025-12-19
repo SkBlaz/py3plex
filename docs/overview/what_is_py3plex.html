@@ -165,19 +165,20 @@
 <p>py3plex is a Python library for scalable analysis and visualization of multilayer and multiplex networks.</p>
 <section id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<p>Use py3plex when you need to keep relationship types distinct while still running end-to-end analysis and visualization.</p>
 <section id="multilayer-network-structures">
 <h3>Multilayer Network Structures<a class="headerlink" href="#multilayer-network-structures" title="Link to this heading"></a></h3>
 <p>py3plex provides native support for:</p>
 <ul class="simple">
-<li><p><strong>Multiplex networks</strong> — Same nodes across multiple layers (e.g., social networks with friendship, collaboration, and family ties)</p></li>
-<li><p><strong>Heterogeneous networks</strong> — Different node types across layers (e.g., author-paper-venue networks)</p></li>
-<li><p><strong>Temporal networks</strong> — Networks that evolve over time with temporal attributes</p></li>
+<li><p><strong>Multiplex networks</strong> — Same nodes across multiple layers (e.g., social networks with friendship, collaboration, and family ties).</p></li>
+<li><p><strong>Heterogeneous networks</strong> — Different node types across layers (e.g., author-paper-venue networks).</p></li>
+<li><p><strong>Temporal networks</strong> — Networks that evolve over time; edges and nodes can carry timestamps or time windows.</p></li>
 </ul>
 <p>All network types are first-class citizens with consistent APIs.</p>
 </section>
 <section id="sql-like-dsl-for-network-queries">
 <h3>SQL-like DSL for Network Queries<a class="headerlink" href="#sql-like-dsl-for-network-queries" title="Link to this heading"></a></h3>
-<p>Query networks using intuitive SQL-inspired syntax:</p>
+<p>Query networks using SQL-inspired syntax that stays close to plain language:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># String DSL: readable and concise</span>
@@ -187,7 +188,7 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Or use the type-safe builder API:</p>
+<p>Or use the type-safe builder API for IDE autocompletion and refactoring support:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Builder API: with IDE autocompletion</span>
@@ -204,12 +205,12 @@
 </section>
 <section id="comprehensive-algorithm-suite">
 <h3>Comprehensive Algorithm Suite<a class="headerlink" href="#comprehensive-algorithm-suite" title="Link to this heading"></a></h3>
-<p>py3plex includes 17+ multilayer-specific algorithms:</p>
+<p>py3plex includes multilayer-specific algorithms such as:</p>
 <ul class="simple">
-<li><p><strong>Community detection:</strong> Louvain, Infomap, multilayer modularity</p></li>
-<li><p><strong>Centrality measures:</strong> Multilayer PageRank, betweenness, versatility</p></li>
-<li><p><strong>Random walks:</strong> Node2Vec, DeepWalk for network embeddings</p></li>
-<li><p><strong>Dynamics:</strong> SIR/SIS epidemic models, diffusion processes</p></li>
+<li><p><strong>Community detection:</strong> Louvain, Infomap, multilayer modularity.</p></li>
+<li><p><strong>Centrality measures:</strong> Multilayer PageRank, betweenness, versatility.</p></li>
+<li><p><strong>Random walks:</strong> Node2Vec, DeepWalk for network embeddings.</p></li>
+<li><p><strong>Dynamics:</strong> SIR/SIS epidemic models, diffusion processes.</p></li>
 </ul>
 <p>All algorithms handle multilayer structure natively without flattening.</p>
 </section>
@@ -217,18 +218,18 @@
 <h3>Publication-Ready Visualizations<a class="headerlink" href="#publication-ready-visualizations" title="Link to this heading"></a></h3>
 <p>Create professional network diagrams with:</p>
 <ul class="simple">
-<li><p>Automatic multilayer layouts</p></li>
-<li><p>Customizable styling and colors</p></li>
-<li><p>Support for large networks (1000+ nodes)</p></li>
-<li><p>Export to multiple formats (PNG, PDF, SVG)</p></li>
+<li><p>Automatic multilayer layouts that preserve layer separation.</p></li>
+<li><p>Customizable styling and colors.</p></li>
+<li><p>Support for large networks (1000+ nodes).</p></li>
+<li><p>Export to multiple formats (PNG, PDF, SVG).</p></li>
 </ul>
 </section>
 <section id="high-performance-i-o">
 <h3>High-Performance I/O<a class="headerlink" href="#high-performance-i-o" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Apache Arrow/Parquet support for large datasets</p></li>
-<li><p>NetworkX compatibility for easy integration</p></li>
-<li><p>Multiple input formats (edge lists, adjacency matrices, JSON)</p></li>
+<li><p>Apache Arrow/Parquet support for large datasets.</p></li>
+<li><p>NetworkX compatibility for easy integration.</p></li>
+<li><p>Multiple input formats (edge lists, adjacency matrices, JSON) without forcing layer flattening.</p></li>
 </ul>
 </section>
 </section>
@@ -239,17 +240,17 @@
 <p><strong>Node-Layer Pair Abstraction</strong></p>
 <p>py3plex represents multilayer networks using node-layer pairs: a node in layer A is distinct from the same node in layer B. This clean abstraction enables:</p>
 <ul class="simple">
-<li><p>Layer-specific queries</p></li>
-<li><p>Inter-layer and intra-layer edge differentiation</p></li>
-<li><p>Efficient supra-adjacency matrix operations</p></li>
+<li><p>Layer-specific queries.</p></li>
+<li><p>Inter-layer and intra-layer edge differentiation.</p></li>
+<li><p>Efficient supra-adjacency matrix operations.</p></li>
 </ul>
 <p><strong>Production-Ready Design</strong></p>
 <p>py3plex is designed for both research and production:</p>
 <ul class="simple">
-<li><p>Sklearn-style pipelines for reproducible workflows</p></li>
-<li><p>Comprehensive type hints and documentation</p></li>
-<li><p>Extensive test suite (500+ tests)</p></li>
-<li><p>CLI and Docker deployment options</p></li>
+<li><p>Sklearn-style pipelines for reproducible workflows.</p></li>
+<li><p>Comprehensive type hints and documentation.</p></li>
+<li><p>Broad test coverage across core functionality.</p></li>
+<li><p>CLI and Docker deployment options.</p></li>
 </ul>
 </section>
 <section id="when-to-use-py3plex">

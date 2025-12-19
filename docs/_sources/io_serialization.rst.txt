@@ -1,23 +1,24 @@
 I/O and Serialization
-======================
+=====================
 
 py3plex provides a comprehensive I/O system for reading and writing multilayer graphs in various formats. The system is designed to be extensible, efficient, and easy to use.
 
 Supported Formats
 -----------------
 
-The I/O system supports multiple file formats, each with different trade-offs:
+Pick the format that best fits your graph size, performance needs, and toolchain. Arrow and Parquet require the optional ``pyarrow`` dependency.
 
-* **JSON** - Human-readable, widely compatible, good for small to medium networks
-* **JSONL** - Streaming JSON format, efficient for large networks
-* **CSV** - Spreadsheet-compatible, easy to edit manually
-* **Arrow/Feather** - High-performance columnar format (requires pyarrow)
-* **Parquet** - Compressed columnar format, best for storage (requires pyarrow)
+* **JSON** — Human-readable, widely compatible, good for small to medium networks
+* **JSONL** — Streaming JSON format, efficient for large networks
+* **CSV** — Spreadsheet-compatible, easy to edit manually
+* **Arrow/Feather** — High-performance columnar format (fast, uncompressed)
+* **Parquet** — Compressed columnar format, best for storage
 
 Basic Usage
 -----------
 
-The I/O system provides two main functions: ``read()`` and ``write()``.
+The I/O system provides two main functions: ``read()`` and ``write()``. Both return or accept a ``MultiLayerGraph`` object that keeps nodes, layers, and edges consistent.
+Use the same functions for all supported formats so your code stays uniform even when the on-disk format changes.
 
 Reading Graphs
 ~~~~~~~~~~~~~~
@@ -34,6 +35,8 @@ Reading Graphs
     # Or specify format explicitly
     graph = read('myfile.dat', format='json')
 
+``read`` returns a validated ``MultiLayerGraph`` instance regardless of input format.
+
 Writing Graphs
 ~~~~~~~~~~~~~~
 
@@ -49,10 +52,12 @@ Writing Graphs
     # Or specify format explicitly
     write(graph, 'myfile.dat', format='json')
 
+Format detection uses the file extension; pass ``format=`` when writing to streams or unconventional filenames to avoid ambiguity.
+
 Creating Graphs with the Schema API
 ------------------------------------
 
-The modern I/O system uses a schema-based API for creating graphs:
+The modern I/O system uses a schema-based API for creating graphs. Nodes, layers, and edges are explicit objects, which keeps attributes and layer membership clear and consistent across formats:
 
 .. code-block:: python
 
@@ -86,8 +91,10 @@ Apache Arrow Format
 
 Apache Arrow is a high-performance columnar format designed for efficient data interchange. py3plex supports Arrow through two sub-formats:
 
-* **Feather** - Fast, uncompressed format ideal for temporary storage
-* **Parquet** - Compressed format ideal for long-term storage
+* **Feather** — Fast, uncompressed format ideal for temporary storage and intermediate pipeline steps
+* **Parquet** — Compressed format ideal for long-term storage and interchange
+
+Files ending in ``.arrow`` use Feather by default; specify ``format='parquet'`` for compressed Arrow output.
 
 Installing Arrow Support
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,8 +125,8 @@ Using Arrow Format
 Benefits of Arrow Format
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Performance**: Columnar storage enables fast read/write operations
-2. **Compression**: Parquet format provides excellent compression ratios
+1. **Performance**: Columnar storage enables fast read/write operations.
+2. **Compression**: Parquet format provides excellent compression ratios.
 3. **Interoperability**: Arrow is an industry-standard format supported by:
    
    - pandas, polars (Python data analysis)
@@ -127,13 +134,13 @@ Benefits of Arrow Format
    - R, Julia (statistical computing)
    - DuckDB (analytical database)
 
-4. **Type Safety**: Schema preservation with strong typing
-5. **Zero-Copy**: Efficient in-memory representation
+4. **Type Safety**: Schema preservation with strong typing.
+5. **Zero-Copy**: Efficient in-memory representation for fast hand-offs between tools.
 
 Performance Comparison
 ~~~~~~~~~~~~~~~~~~~~~~
 
-For a typical multilayer network with 1000 nodes and ~5000 edges:
+Illustrative timings on a small multilayer network with ~1000 nodes and ~5000 edges (single local run):
 
 +---------+------------+-----------+-------------+
 | Format  | Write Time | Read Time | File Size   |
@@ -145,7 +152,8 @@ For a typical multilayer network with 1000 nodes and ~5000 edges:
 | JSON    | 0.046s     | 0.030s    | 1.09 MB     |
 +---------+------------+-----------+-------------+
 
-Arrow format is **2-3x faster** for writes and provides **2-3x better compression** compared to JSON.
+Arrow formats are typically faster to write and smaller on disk than JSON for multilayer graphs.
+Exact results depend on hardware, compression settings, and graph structure, so treat the table above as a rough guide rather than a benchmark.
 
 When to Use Each Format
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,7 +170,7 @@ When to Use Each Format
 - Long-term storage is important
 - Minimizing storage costs
 - Sharing data across platforms
-- Archiving networks
+- Archiving networks with schema intact
 
 **Use JSON when:**
 
@@ -176,11 +184,12 @@ When to Use Each Format
 - Working with spreadsheet tools (Excel)
 - Simple edge lists
 - Manual data entry/editing
+- You want sidecar files for node and layer attributes
 
 CSV Format with Sidecars
 -------------------------
 
-CSV format supports optional sidecar files for node and layer attributes:
+CSV format supports optional sidecar files for node and layer attributes to keep edge lists clean and avoid repeating metadata in the edge list:
 
 .. code-block:: python
 
@@ -189,16 +198,18 @@ CSV format supports optional sidecar files for node and layer attributes:
     # Write with sidecars
     write(graph, 'edges.csv', format='csv', write_sidecars=True)
     # Creates: edges.csv, nodes.csv, layers.csv
-    
+
     # Read with sidecars
     graph = read('edges.csv', format='csv',
                  nodes_file='nodes.csv',
                  layers_file='layers.csv')
+    
+Use sidecars when you want to keep the primary edge list minimal while still preserving node and layer metadata.
 
 Integration with NetworkX
 --------------------------
 
-Convert between py3plex I/O format and NetworkX:
+Convert between py3plex I/O format and NetworkX. Use ``mode='union'`` for single-layer algorithms and ``mode='multiplex'`` when you need to preserve layer identity:
 
 .. code-block:: python
 
@@ -208,9 +219,8 @@ Convert between py3plex I/O format and NetworkX:
     graph = read('network.json')
     
     # Convert to NetworkX
-    G = to_networkx(graph, mode='union')  # Merge all layers
-    # or
-    G = to_networkx(graph, mode='multiplex')  # Preserve layers as (node, layer)
+    G = to_networkx(graph, mode='union')       # Merge all layers into one graph
+    G = to_networkx(graph, mode='multiplex')   # Preserve layers by using (node, layer) tuples
     
     # Convert back from NetworkX
     graph = from_networkx(G, mode='multiplex')
@@ -282,6 +292,7 @@ You can query which formats are available at runtime:
     print(f"Write formats: {formats['write']}")
 
 This is useful for checking if optional dependencies (like pyarrow) are installed.
+Only formats with all required dependencies will appear in the supported lists.
 
 Schema Validation
 -----------------
@@ -321,7 +332,9 @@ The I/O system is extensible. You can register custom format readers/writers:
 
 .. code-block:: python
 
-    from py3plex.io import register_reader, register_writer
+    from py3plex.io import (
+        register_reader, register_writer, MultiLayerGraph
+    )
     
     def my_reader(filepath, **kwargs):
         # Custom reading logic
@@ -335,9 +348,10 @@ The I/O system is extensible. You can register custom format readers/writers:
             # ... write graph ...
             pass
     
-    # Register
+    # Register with py3plex so read/write can find them
     register_reader('myformat', my_reader)
     register_writer('myformat', my_writer)
+    # Pick a unique format name so you do not shadow built-in formats.
     
     # Now you can use it
     write(graph, 'network.myformat')

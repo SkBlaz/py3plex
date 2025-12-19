@@ -94,24 +94,29 @@
 <li class="toctree-l3"><a class="reference internal" href="#choosing-a-centrality-measure">Choosing a Centrality Measure</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#network-statistics">Network Statistics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#node-ranking-classification">Node Ranking &amp; Classification</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id3">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#approaches">Approaches</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-statistics">Network Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">When to Use</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#statistic-families">Statistic Families</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#random-walks-embeddings">Random Walks &amp; Embeddings</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id4">When to Use</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">Algorithm Families</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Algorithm Families</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#choosing-walk-parameters">Choosing Walk Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#visualization-layout">Visualization &amp; Layout</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id6">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">When to Use</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#layout-families">Layout Families</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#benchmarking-generation">Benchmarking &amp; Generation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id7">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">When to Use</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#generator-families">Generator Families</a></li>
 </ul>
 </li>
@@ -193,10 +198,10 @@
              
   <section id="algorithm-landscape">
 <h1>Algorithm Landscape<a class="headerlink" href="#algorithm-landscape" title="Link to this heading"></a></h1>
-<p>This guide provides a narrative overview of the algorithm families available in py3plex, helping you understand when to use each type of algorithm for multilayer network analysis.</p>
+<p>This guide provides a narrative overview of the algorithm families available in py3plex, highlighting when to use each type of algorithm for multilayer network analysis. It complements the API reference with plain-language guidance, trade-offs, and cues for multilayer specifics.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>py3plex provides algorithms in seven main categories:</p>
+<p>py3plex provides algorithms in seven main categories that work on multilayer graphs encoded as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> pairs:</p>
 <ol class="arabic simple">
 <li><p><strong>Community Detection</strong> - Finding groups of densely connected nodes</p></li>
 <li><p><strong>Centrality &amp; Importance</strong> - Measuring node and edge importance</p></li>
@@ -206,11 +211,11 @@
 <li><p><strong>Visualization &amp; Layout</strong> - Rendering and spatial arrangement</p></li>
 <li><p><strong>Benchmarking &amp; Generation</strong> - Testing and synthetic network creation</p></li>
 </ol>
-<p>For detailed parameter lists and API reference, see <a class="reference internal" href="../reference/algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a>.</p>
+<p>For detailed parameter lists and API reference, see <a class="reference internal" href="../reference/algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a>. Use this page to choose a method family, then dive into the reference for parameters.</p>
 </section>
 <section id="community-detection">
 <h2>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h2>
-<p><strong>Goal:</strong> Identify groups of nodes that are more densely connected to each other than to the rest of the network.</p>
+<p><strong>Goal:</strong> Identify groups of nodes that are more densely connected to each other than to the rest of the network (within or across layers). In multilayer settings, decide whether communities should stay layer-specific or span layers via coupling (<code class="docutils literal notranslate"><span class="pre">omega</span></code> controls inter-layer links; <code class="docutils literal notranslate"><span class="pre">omega</span> <span class="pre">=</span> <span class="pre">0</span></code> means layers do not interact).</p>
 <section id="when-to-use">
 <h3>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h3>
 <p>Use community detection when you want to:</p>
@@ -230,7 +235,7 @@
 <ul class="simple">
 <li><p><strong>Louvain</strong> - Fast, greedy modularity optimization</p></li>
 <li><p><strong>Leiden</strong> - Improved version of Louvain with better stability</p></li>
-<li><p><strong>Multilayer Louvain</strong> - Extends Louvain to multiple layers with inter-layer coupling</p></li>
+<li><p><strong>Multilayer Louvain</strong> - Extends Louvain to multiple layers with inter-layer coupling (set <code class="docutils literal notranslate"><span class="pre">omega</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> when layers should interact; <code class="docutils literal notranslate"><span class="pre">gamma</span></code> tunes community resolution)</p></li>
 </ul>
 <p><em>Trade-offs:</em></p>
 <ul class="simple">
@@ -244,7 +249,7 @@
 <span class="c1"># Single-layer Louvain</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 
-<span class="c1"># Multilayer Louvain</span>
+<span class="c1"># Multilayer Louvain (gamma: resolution, omega: inter-layer coupling)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">louvain_multilayer</span>
 <span class="p">)</span>
@@ -255,8 +260,8 @@
 <p><em>Best for:</em> Finding communities based on information flow</p>
 <p><em>Examples:</em></p>
 <ul class="simple">
-<li><p><strong>Infomap</strong> - Minimizes description length of random walks</p></li>
-<li><p><strong>Walktrap</strong> - Based on random walk distances</p></li>
+<li><p><strong>Infomap</strong> - Minimizes description length of random walks (treat multilayer by adding explicit inter-layer edges or by aggregating first)</p></li>
+<li><p><strong>Walktrap</strong> - Based on random walk distances (single-layer)</p></li>
 </ul>
 <p><em>Trade-offs:</em></p>
 <ul class="simple">
@@ -264,6 +269,7 @@
 <li><p>✓ Finds hierarchical structure</p></li>
 <li><p>✗ Slower than modularity methods</p></li>
 <li><p>✗ May require external binaries</p></li>
+<li><p>✗ Sensitive to how inter-layer edges are weighted (add or scale them explicitly before running on multilayer data)</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_wrapper</span>
 
@@ -278,7 +284,7 @@
 <p><em>Best for:</em> Networks where nodes belong to multiple communities</p>
 <p><em>Examples:</em></p>
 <ul class="simple">
-<li><p><strong>NoRC</strong> - Network of Ranked Communities</p></li>
+<li><p><strong>NoRC</strong> - Network of Ranked Communities (overlapping membership)</p></li>
 <li><p><strong>Clique Percolation</strong> - Based on overlapping cliques</p></li>
 </ul>
 <p><em>Trade-offs:</em></p>
@@ -297,9 +303,9 @@
 </section>
 <section id="choosing-a-community-detection-method">
 <h3>Choosing a Community Detection Method<a class="headerlink" href="#choosing-a-community-detection-method" title="Link to this heading"></a></h3>
-<p>Use this decision tree:</p>
+<p>Use this decision tree (follow the first condition that applies):</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Do you need overlapping communities?
-├─ Yes → NoRC or Clique Percolation
+├─ Yes → NoRC or Clique Percolation (expect overlapping memberships)
 └─ No
    └─ Is your network multilayer?
       ├─ Yes → Multilayer Louvain or Leiden
@@ -307,14 +313,14 @@
          └─ What&#39;s most important?
             ├─ Speed → Louvain
             ├─ Stability → Leiden
-            └─ Theory → Infomap
+            └─ Theory / flow objective → Infomap
 </pre></div>
 </div>
 </section>
 </section>
 <section id="centrality-importance">
 <h2>Centrality &amp; Importance<a class="headerlink" href="#centrality-importance" title="Link to this heading"></a></h2>
-<p><strong>Goal:</strong> Quantify the importance of nodes or edges in the network.</p>
+<p><strong>Goal:</strong> Quantify the importance of nodes or edges in the network, per layer or aggregated. Decide whether to keep <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> pairs separate (preserves context) or to aggregate scores per entity after aligning identifiers.</p>
 <section id="id1">
 <h3>When to Use<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>Use centrality measures when you want to:</p>
@@ -334,13 +340,13 @@
 <ul class="simple">
 <li><p><strong>Degree Centrality</strong> - Number of connections</p></li>
 <li><p><strong>Multilayer Degree</strong> - Degree summed across layers</p></li>
-<li><p><strong>Versatility</strong> - Participation across layers</p></li>
+<li><p><strong>Versatility</strong> - Participation across layers (counts how many layers a node engages with; higher means broader presence)</p></li>
 </ul>
 <p><em>When to use:</em></p>
 <ul class="simple">
 <li><p>Quick assessment of connectivity</p></li>
 <li><p>Identifying hubs</p></li>
-<li><p>Local importance measures</p></li>
+<li><p>Local importance measures; supply <code class="docutils literal notranslate"><span class="pre">weight</span></code> if edge weights matter</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
@@ -356,15 +362,15 @@
 <p><em>Measures:</em> Global position in network</p>
 <p><em>Examples:</em></p>
 <ul class="simple">
-<li><p><strong>Closeness Centrality</strong> - Average distance to all other nodes</p></li>
+<li><p><strong>Closeness Centrality</strong> - Average distance to all other nodes (computed within connected components)</p></li>
 <li><p><strong>Betweenness Centrality</strong> - Fraction of shortest paths through node</p></li>
-<li><p><strong>Harmonic Centrality</strong> - Harmonic mean of distances</p></li>
+<li><p><strong>Harmonic Centrality</strong> - Harmonic mean of distances (stable on disconnected graphs)</p></li>
 </ul>
 <p><em>When to use:</em></p>
 <ul class="simple">
 <li><p>Identifying central nodes</p></li>
 <li><p>Finding information brokers</p></li>
-<li><p>Understanding information flow</p></li>
+<li><p>Understanding information flow (run per connected component if closeness is used, or switch to harmonic variants)</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Betweenness centrality</span>
 <span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
@@ -377,9 +383,9 @@
 <p><em>Measures:</em> Importance based on connections to important nodes</p>
 <p><em>Examples:</em></p>
 <ul class="simple">
-<li><p><strong>Eigenvector Centrality</strong> - First eigenvector of adjacency matrix</p></li>
-<li><p><strong>PageRank</strong> - Google’s ranking algorithm</p></li>
-<li><p><strong>HITS</strong> - Hubs and authorities</p></li>
+<li><p><strong>Eigenvector Centrality</strong> - First eigenvector of adjacency matrix (requires connectivity within each component; compute per component)</p></li>
+<li><p><strong>PageRank</strong> - Google’s ranking algorithm (damping factor controls teleportation)</p></li>
+<li><p><strong>HITS</strong> - Hubs and authorities (use on directed graphs)</p></li>
 </ul>
 <p><em>When to use:</em></p>
 <ul class="simple">
@@ -408,18 +414,44 @@
 <li><p><strong>Network type?</strong>
 - Directed → PageRank or HITS
 - Undirected → Any method
-- Weighted → Use weight-aware versions</p></li>
+- Weighted → Use weight-aware versions (pass <code class="docutils literal notranslate"><span class="pre">weight</span></code> to the function)</p></li>
 <li><p><strong>Computational cost?</strong>
 - Large network → Degree or PageRank (fast)
 - Small network → Betweenness (expensive but informative)</p></li>
+<li><p><strong>Layer handling?</strong>
+- Keep per-layer scores when layer context matters
+- Aggregate across layers only after aligning node identifiers</p></li>
 </ol>
+</section>
+</section>
+<section id="node-ranking-classification">
+<h2>Node Ranking &amp; Classification<a class="headerlink" href="#node-ranking-classification" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Order nodes by importance or predict node labels using network-derived features. In multilayer settings, decide whether to rank per layer or on an aggregated view, and whether to treat layers as features.</p>
+<section id="id3">
+<h3>When to Use<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Use ranking or classification when you want to:</p>
+<ul class="simple">
+<li><p>Prioritize entities (recommendations, audits, interventions)</p></li>
+<li><p>Score candidates for follow-up analysis</p></li>
+<li><p>Train classifiers from structural features (centrality, embeddings)</p></li>
+<li><p>Combine multilayer evidence into a single ordering</p></li>
+</ul>
+</section>
+<section id="approaches">
+<h3>Approaches<a class="headerlink" href="#approaches" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Rank with centrality:</strong> Use degree/PageRank/eigenvector (per layer or aggregated); normalize if layers differ in size.</p></li>
+<li><p><strong>Rank with random walks:</strong> Use multilayer random-walk methods (e.g., MultiXRank) to blend within-layer and cross-layer signals; tune restart probability to control locality.</p></li>
+<li><p><strong>Classify with embeddings:</strong> Generate node embeddings (Node2Vec/DeepWalk/LINE) then train a downstream classifier (e.g., scikit-learn). Include layer ID as a feature if labels depend on layer context.</p></li>
+<li><p><strong>Hybrid scores:</strong> Combine statistical features (degree, clustering, participation coefficient) with embeddings for models that need both local and global cues.</p></li>
+</ul>
 </section>
 </section>
 <section id="network-statistics">
 <h2>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading"></a></h2>
-<p><strong>Goal:</strong> Characterize network structure at the global, layer, or node level.</p>
-<section id="id3">
-<h3>When to Use<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p><strong>Goal:</strong> Characterize network structure at the global, layer, or node level without committing to a specific downstream task. These checks help validate data quality before heavier modeling.</p>
+<section id="id4">
+<h3>When to Use<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <p>Use network statistics when you want to:</p>
 <ul class="simple">
 <li><p>Compare networks quantitatively</p></li>
@@ -436,10 +468,10 @@
 <ul class="simple">
 <li><p>Number of nodes, edges, layers</p></li>
 <li><p>Density, clustering coefficient</p></li>
-<li><p>Average path length</p></li>
+<li><p>Average path length (per connected component unless you use harmonic variants)</p></li>
 <li><p>Degree distribution</p></li>
 </ul>
-<p><em>When to use:</em> Basic network characterization</p>
+<p><em>When to use:</em> Basic network characterization or sanity checks before heavier analysis</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic stats</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
@@ -461,6 +493,7 @@
 <li><p>Inter-layer degree correlation</p></li>
 </ul>
 <p><em>When to use:</em> Comparing layers, understanding layer relationships</p>
+<p>Layer similarity and overlap assume node identifiers are consistent across layers; if they differ, map or relabel before comparing.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="c1"># Layer density</span>
@@ -494,9 +527,9 @@
 </section>
 <section id="random-walks-embeddings">
 <h2>Random Walks &amp; Embeddings<a class="headerlink" href="#random-walks-embeddings" title="Link to this heading"></a></h2>
-<p><strong>Goal:</strong> Generate node representations or sample the network through traversal.</p>
-<section id="id4">
-<h3>When to Use<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p><strong>Goal:</strong> Generate node representations or sample the network through traversal (often as input to downstream ML). Walks operate on the encoded <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> graph, so inter-layer edges and their weights directly influence the sampled context.</p>
+<section id="id5">
+<h3>When to Use<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <p>Use random walks and embeddings when you want to:</p>
 <ul class="simple">
 <li><p>Create low-dimensional node representations for ML</p></li>
@@ -506,13 +539,13 @@
 <li><p>Understand structural equivalence</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>Algorithm Families<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<section id="id6">
+<h3>Algorithm Families<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
 <p><strong>Random Walk Algorithms</strong></p>
 <p><em>Examples:</em></p>
 <ul class="simple">
 <li><p><strong>Basic Random Walk</strong> - Uniform random traversal</p></li>
-<li><p><strong>Node2Vec</strong> - Biased walks (BFS/DFS-like)</p></li>
+<li><p><strong>Node2Vec</strong> - Biased walks (BFS/DFS-like); works on multilayer graphs if inter-layer edges are present</p></li>
 <li><p><strong>DeepWalk</strong> - Uniform random walks for embeddings</p></li>
 </ul>
 <p><em>Parameters:</em></p>
@@ -521,6 +554,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">num_walks</span></code> - Walks per node</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> (Node2Vec) - Return parameter</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">q</span></code> (Node2Vec) - In-out parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">random_seed</span></code> - Set for reproducible walks</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_walks</span><span class="p">,</span> <span class="n">node2vec_walk</span>
 
@@ -548,6 +582,7 @@
 <span class="p">)</span>
 </pre></div>
 </div>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">random_seed</span></code> to <code class="docutils literal notranslate"><span class="pre">generate_walks</span></code> for reproducible samples.</p>
 <p><strong>Embedding Methods</strong></p>
 <p><em>Examples:</em></p>
 <ul class="simple">
@@ -590,9 +625,9 @@
 </ul>
 <p><strong>p (return parameter):</strong></p>
 <ul class="simple">
-<li><p>p &lt; 1: More likely to return to previous node</p></li>
+<li><p>p &lt; 1: More likely to return to previous node (stay local)</p></li>
 <li><p>p = 1: Balanced</p></li>
-<li><p>p &gt; 1: Less likely to return</p></li>
+<li><p>p &gt; 1: Less likely to return (keep exploring)</p></li>
 </ul>
 <p><strong>q (in-out parameter):</strong></p>
 <ul class="simple">
@@ -604,9 +639,9 @@
 </section>
 <section id="visualization-layout">
 <h2>Visualization &amp; Layout<a class="headerlink" href="#visualization-layout" title="Link to this heading"></a></h2>
-<p><strong>Goal:</strong> Create visual representations of multilayer networks.</p>
-<section id="id6">
-<h3>When to Use<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p><strong>Goal:</strong> Create visual representations of multilayer networks for exploration or presentation.</p>
+<section id="id7">
+<h3>When to Use<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <p>Use visualization when you want to:</p>
 <ul class="simple">
 <li><p>Explore network structure</p></li>
@@ -666,9 +701,9 @@
 </section>
 <section id="benchmarking-generation">
 <h2>Benchmarking &amp; Generation<a class="headerlink" href="#benchmarking-generation" title="Link to this heading"></a></h2>
-<p><strong>Goal:</strong> Create synthetic networks for testing and validation.</p>
-<section id="id7">
-<h3>When to Use<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p><strong>Goal:</strong> Create synthetic networks for testing and validation without risking production data.</p>
+<section id="id8">
+<h3>When to Use<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <p>Use synthetic network generation when you want to:</p>
 <ul class="simple">
 <li><p>Test algorithm performance</p></li>
@@ -676,6 +711,7 @@
 <li><p>Create controlled experiments</p></li>
 <li><p>Generate training data</p></li>
 <li><p>Benchmark scalability</p></li>
+<li><p>Produce reproducible baselines (fix <code class="docutils literal notranslate"><span class="pre">random_state</span></code> when available)</p></li>
 </ul>
 </section>
 <section id="generator-families">
@@ -687,6 +723,7 @@
 <li><p><strong>Barabási-Albert</strong> - Preferential attachment (scale-free)</p></li>
 <li><p><strong>Watts-Strogatz</strong> - Small-world networks</p></li>
 </ul>
+<p>Use ER for null models, BA for heavy-tailed degree distributions, and WS when you need clustering with short paths.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_generators</span>
 
 <span class="c1"># Random multilayer ER network</span>
@@ -705,12 +742,14 @@
 <li><p>Configuration model (preserving degree distribution)</p></li>
 <li><p>Block model (with planted partition)</p></li>
 </ul>
+<p>Pick LFR when you need ground truth for community detection, configuration for degree-preserving nulls, and block models for controllable meso-scale structure.</p>
 </section>
 </section>
 <section id="algorithm-combinations">
 <h2>Algorithm Combinations<a class="headerlink" href="#algorithm-combinations" title="Link to this heading"></a></h2>
 <section id="common-workflows">
 <h3>Common Workflows<a class="headerlink" href="#common-workflows" title="Link to this heading"></a></h3>
+<p>Use these as starting patterns; swap in alternative algorithms from the sections above as needed.</p>
 <p><strong>Community Detection + Visualization:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Detect communities</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -756,6 +795,7 @@
 <h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
 <section id="algorithm-complexity">
 <h3>Algorithm Complexity<a class="headerlink" href="#algorithm-complexity" title="Link to this heading"></a></h3>
+<p>Complexity notation: n = number of nodes, m = number of edges, k = walks per node, l = walk length. Complexities are approximate and assume sparse graphs unless stated otherwise.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30.0%" />
@@ -778,12 +818,12 @@
 <td><p>Expensive for large networks</p></td>
 </tr>
 <tr class="row-even"><td><p>Louvain</p></td>
-<td><p>O(n log n)</p></td>
-<td><p>Fast community detection</p></td>
+<td><p>~O(m)</p></td>
+<td><p>Near-linear in practice on sparse graphs</p></td>
 </tr>
 <tr class="row-odd"><td><p>Node2Vec</p></td>
-<td><p>O(k·l·n)</p></td>
-<td><p>k=walks, l=length, n=nodes</p></td>
+<td><p>O(m) to precompute + O(k·l·n) for walk generation</p></td>
+<td><p>Training adds extra cost proportional to walk tokens; tune k and l to control runtime</p></td>
 </tr>
 <tr class="row-even"><td><p>Force Layout</p></td>
 <td><p>O(n²)</p></td>

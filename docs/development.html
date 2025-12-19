@@ -146,24 +146,25 @@
              
   <section id="development-guide">
 <h1>Development Guide<a class="headerlink" href="#development-guide" title="Link to this heading"></a></h1>
-<p>This guide covers <strong>development workflows</strong>, <strong>Makefile commands</strong>, <strong>testing</strong>, and <strong>contributing</strong> to py3plex.</p>
+<p>This guide covers <strong>development workflows</strong>, <strong>Makefile commands</strong>, <strong>testing</strong>, and <strong>contributing</strong> to py3plex. Keep it handy as your single reference while coding, testing, and writing docs.</p>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<p><strong>Clone the repository</strong> and install in <strong>development mode</strong>:</p>
+<p>Clone the repository and install in development mode. Requirements: Python 3.8+ and <code class="docutils literal notranslate"><span class="pre">pip</span></code>; <code class="docutils literal notranslate"><span class="pre">make</span></code> is recommended for the shortcuts below. Keep your virtual environment active so the same interpreter is used for every command.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 
-<span class="c1"># Setup development environment</span>
+<span class="c1"># Setup development environment (creates .venv)</span>
 make<span class="w"> </span>setup
 
 <span class="c1"># Install package in editable mode with dev dependencies</span>
 make<span class="w"> </span>dev-install
 </pre></div>
 </div>
+<p>If you prefer manual setup, create and activate <code class="docutils literal notranslate"><span class="pre">.venv</span></code> yourself, then run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.[dev]</span></code> from the repository root. Whichever path you choose, activate the environment before running any <code class="docutils literal notranslate"><span class="pre">make</span></code> target so the same interpreter is used consistently.</p>
 </section>
 <section id="makefile-commands">
 <h2>Makefile Commands<a class="headerlink" href="#makefile-commands" title="Link to this heading"></a></h2>
-<p>The project includes a <strong>production-grade Makefile</strong> for streamlined development:</p>
+<p>The Makefile provides a streamlined development workflow. Run targets from the repository root with your virtual environment active:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View all available commands</span>
 make<span class="w"> </span><span class="nb">help</span>
 
@@ -188,36 +189,33 @@ make<span class="w"> </span>build<span class="w">          </span><span class="c
 make<span class="w"> </span>publish<span class="w">        </span><span class="c1"># Publish to PyPI</span>
 
 <span class="c1"># CI</span>
-make<span class="w"> </span>ci<span class="w">             </span><span class="c1"># Run full CI checks</span>
+make<span class="w"> </span>ci<span class="w">             </span><span class="c1"># Run full CI checks (format + lint + tests)</span>
 </pre></div>
 </div>
-<p>Key Features:</p>
+<p>Makefile highlights:</p>
 <ul class="simple">
-<li><p><strong>Smart tool detection</strong>: Uses <code class="docutils literal notranslate"><span class="pre">.venv/bin/</span></code> tools if available, otherwise falls back to <strong>global tools</strong></p></li>
-<li><p><strong>Colorized output</strong>: Clear <strong>success/warning/error</strong> messages</p></li>
-<li><p><strong>Cross-platform</strong>: Works on <strong>Linux</strong> and <strong>macOS</strong></p></li>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">.venv/bin/</span></code> tools when available, otherwise falls back to global tools</p></li>
+<li><p>Colorized output with clear <strong>success/warning/error</strong> messages</p></li>
+<li><p>Works on <strong>Linux</strong> and <strong>macOS</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ci</span></code> is the superset; use it before pushing. Use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">format</span></code> / <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> / <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> for quicker local loops during development.</p></li>
 </ul>
 </section>
 <section id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
-<p><strong>Quick testing:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run_tests.py
-</pre></div>
-</div>
-<p><strong>Development testing</strong> with pytest:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
-pytest
-
-<span class="c1"># Run with coverage</span>
-pytest<span class="w"> </span>--cov<span class="o">=</span>py3plex<span class="w"> </span>--cov-report<span class="o">=</span>html
-
-<span class="c1"># Run specific test file</span>
-pytest<span class="w"> </span>tests/test_core.py
-
-<span class="c1"># Using Makefile (recommended)</span>
+<p>Start with the Makefile target, then drill down with pytest as needed. Favor deterministic seeds for generators so results are reproducible. Use narrow targets while iterating, then run the full suite.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Recommended: run all tests with coverage</span>
 make<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Equivalent pytest invocations</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-v
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>--cov<span class="o">=</span>py3plex<span class="w"> </span>--cov-report<span class="o">=</span>html
+
+<span class="c1"># Run a specific test module or node</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_core.py<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;degree&quot;</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_core.py::test_degree<span class="w">  </span><span class="c1"># single test</span>
 </pre></div>
 </div>
+<p>The coverage HTML report is written to <code class="docutils literal notranslate"><span class="pre">htmlcov/index.html</span></code>.</p>
 </section>
 <section id="code-quality">
 <h2>Code Quality<a class="headerlink" href="#code-quality" title="Link to this heading"></a></h2>
@@ -229,23 +227,23 @@ make<span class="w"> </span><span class="nb">test</span>
 <li><p><strong>Mypy</strong>: Type checking</p></li>
 <li><p><strong>Pytest</strong>: Testing with coverage</p></li>
 </ul>
-<p>Before committing:</p>
+<p>Before committing, run the quality loop from an active virtual environment. Reinstall dev dependencies if a tool is missing.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>format<span class="w">  </span><span class="c1"># Auto-format code</span>
 make<span class="w"> </span>lint<span class="w">    </span><span class="c1"># Check code quality</span>
 make<span class="w"> </span><span class="nb">test</span><span class="w">    </span><span class="c1"># Run tests</span>
-make<span class="w"> </span>ci<span class="w">      </span><span class="c1"># Run all checks</span>
+make<span class="w"> </span>ci<span class="w">      </span><span class="c1"># Run all checks (use before pushing)</span>
 </pre></div>
 </div>
 </section>
 <section id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h2>
-<p>We welcome contributions! Here’s how:</p>
+<p>We welcome contributions! Recommended workflow:</p>
 <ol class="arabic simple">
-<li><p>Fork the repository</p></li>
+<li><p>Sync your local <code class="docutils literal notranslate"><span class="pre">main</span></code> with <code class="docutils literal notranslate"><span class="pre">upstream/main</span></code></p></li>
 <li><p>Create a feature branch</p></li>
-<li><p>Make your changes</p></li>
-<li><p>Run tests and linting: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ci</span></code></p></li>
-<li><p>Commit with clear messages</p></li>
+<li><p>Make focused changes with tests and docs</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">format</span></code>, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code>, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> (or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ci</span></code>) from your active environment</p></li>
+<li><p>Commit with clear messages that explain what changed and why</p></li>
 <li><p>Push to your fork</p></li>
 <li><p>Open a Pull Request</p></li>
 </ol>
@@ -261,15 +259,16 @@ make<span class="w"> </span>ci<span class="w">      </span><span class="c1"># Ru
 <section id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h2>
 <p>Build Sphinx documentation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Makefile (recommended)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Makefile (recommended from repository root)</span>
 make<span class="w"> </span>docs
 
-<span class="c1"># Manual build</span>
+<span class="c1"># Manual build from docfiles/</span>
 <span class="nb">cd</span><span class="w"> </span>docfiles
 sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>.<span class="w"> </span>_build/html
 </pre></div>
 </div>
-<p>The built documentation will be in <code class="docutils literal notranslate"><span class="pre">docfiles/_build/html/</span></code>.</p>
+<p>If the build fails because Sphinx is missing, (re)install the development extras in your active virtual environment, then rerun the command.</p>
+<p>Open <code class="docutils literal notranslate"><span class="pre">docfiles/_build/html/index.html</span></code> in your browser to view the output.</p>
 </section>
 <section id="resources">
 <h2>Resources<a class="headerlink" href="#resources" title="Link to this heading"></a></h2>

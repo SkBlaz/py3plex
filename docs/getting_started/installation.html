@@ -58,7 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#which-docs-should-i-use">Which Docs Should I Use?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation-modes">Installation Modes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-installation">Basic Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#install-from-github-recommended">Install from GitHub (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-from-pypi-recommended">Install from PyPI (Recommended)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-from-source">Install from Source</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#docker-installation-alternative">Docker Installation (Alternative)</a></li>
 </ul>
@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#advanced-visualization">Advanced Visualization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#apache-arrow-support">Apache Arrow Support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#multiple-extras">Multiple Extras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#workflow-configuration-support">Workflow Configuration Support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#development-installation">Development Installation</a></li>
 </ul>
 </li>
@@ -218,7 +219,7 @@
 </section>
 <section id="installation-modes">
 <h2>Installation Modes<a class="headerlink" href="#installation-modes" title="Link to this heading"></a></h2>
-<p>Choose the installation method based on your needs:</p>
+<p>Choose the installation method based on your needs. In all cases, prefer a virtual environment to keep dependencies isolated from system Python:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20.0%" />
@@ -233,7 +234,7 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p><strong>User Install</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">py3plex</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">py3plex</span></code></p></td>
 <td><p>Standard usage: running analyses, using the library</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Developer Install</strong></p></td>
@@ -245,10 +246,11 @@
 </section>
 <section id="basic-installation">
 <h2>Basic Installation<a class="headerlink" href="#basic-installation" title="Link to this heading"></a></h2>
-<section id="install-from-github-recommended">
-<h3>Install from GitHub (Recommended)<a class="headerlink" href="#install-from-github-recommended" title="Link to this heading"></a></h3>
-<p>The latest version is always available on GitHub:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
+<section id="install-from-pypi-recommended">
+<h3>Install from PyPI (Recommended)<a class="headerlink" href="#install-from-pypi-recommended" title="Link to this heading"></a></h3>
+<p>The latest stable release is available on PyPI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
 <p>This installs the core py3plex library with all required dependencies.</p>
@@ -258,7 +260,8 @@
 <p>For development or to access the latest features:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag installs in editable mode, so changes to the source code are immediately available.</p>
@@ -273,9 +276,9 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBla
 <span class="c1"># Build the Docker image</span>
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
 
-<span class="c1"># Run py3plex commands</span>
-docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>--version
-docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>selftest
+<span class="c1"># Run py3plex commands (mount local data if needed)</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>--version
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>selftest
 </pre></div>
 </div>
 <p><strong>Benefits of Docker installation:</strong></p>
@@ -297,41 +300,48 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 </section>
 <section id="optional-dependencies">
 <h2>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h2>
-<p>py3plex offers several optional feature sets that can be installed separately:</p>
+<p>py3plex offers several optional feature sets that can be installed separately. Quote extras (<code class="docutils literal notranslate"><span class="pre">&quot;py3plex[extra]&quot;</span></code>) to avoid shell globbing on some terminals.</p>
 <section id="advanced-community-detection">
 <h3>Advanced Community Detection<a class="headerlink" href="#advanced-community-detection" title="Link to this heading"></a></h3>
 <p>Install Infomap for advanced overlapping community detection:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[infomap]&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="additional-algorithms">
 <h3>Additional Algorithms<a class="headerlink" href="#additional-algorithms" title="Link to this heading"></a></h3>
 <p>Install extra community detection algorithms (Louvain, cdlib):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>algos<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[algos]&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="advanced-visualization">
 <h3>Advanced Visualization<a class="headerlink" href="#advanced-visualization" title="Link to this heading"></a></h3>
 <p>Install Plotly and igraph for interactive and advanced visualizations:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[viz]&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="apache-arrow-support">
 <h3>Apache Arrow Support<a class="headerlink" href="#apache-arrow-support" title="Link to this heading"></a></h3>
 <p>Install pyarrow for high-performance I/O with Arrow/Parquet formats:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>arrow<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[arrow]&quot;</span>
 </pre></div>
 </div>
-<p>Arrow format provides 2-3x faster read/write operations and better compression compared to JSON.
+<p>Arrow format typically provides faster read/write operations and better compression than JSON/CSV for large graphs.
 See <a class="reference internal" href="../user_guide/io_and_formats.html"><span class="doc">I/O and Serialization</span></a> for details on using Arrow format.</p>
 </section>
 <section id="multiple-extras">
 <h3>Multiple Extras<a class="headerlink" href="#multiple-extras" title="Link to this heading"></a></h3>
 <p>Install multiple feature sets at once:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>infomap,viz,algos,arrow<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[infomap,viz,algos,arrow]&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="workflow-configuration-support">
+<h3>Workflow Configuration Support<a class="headerlink" href="#workflow-configuration-support" title="Link to this heading"></a></h3>
+<p>Install YAML support for config-driven workflows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[workflows]&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -348,7 +358,8 @@ make<span class="w"> </span>dev-install<span class="w">  </span><span class="c1"
 <p><strong>Alternative (manual):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
 </pre></div>
 </div>
 <p>Both methods install:</p>
@@ -387,25 +398,28 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <p>These are automatically installed with py3plex:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">networkx&gt;=2.5</span></code> - Graph data structures and algorithms</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy&gt;=0.8</span></code> - Numerical computing</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">scipy&gt;=1.1.0</span></code> - Scientific computing and sparse matrices</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy&gt;=1.19.0</span></code> - Numerical computing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scipy&gt;=1.5.0</span></code> - Scientific computing and sparse matrices</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pandas</span></code> - Data manipulation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> - Static visualization</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> - Machine learning utilities</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tqdm</span></code> - Progress bars</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rdflib&gt;=0.1</span></code> - Semantic web support</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">matplotlib&gt;=3.3.0</span></code> - Static visualization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scikit-learn&gt;=0.24.0</span></code> - Machine learning utilities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tqdm&gt;=4.40.0</span></code> - Progress bars</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rdflib&gt;=6.0.0</span></code> - Semantic web support</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">bitarray&gt;=2.0.0</span></code> - Efficient boolean arrays</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gensim&gt;=4.0.0</span></code> - Topic modeling utilities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seaborn&gt;=0.11.0</span></code> - Statistical plotting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cython&gt;=0.29.0</span></code> - Extension compilation support</p></li>
 </ul>
 </section>
 </section>
 <section id="external-binaries-optional">
 <h2>External Binaries (Optional)<a class="headerlink" href="#external-binaries-optional" title="Link to this heading"></a></h2>
-<p><strong>Note:</strong> As of October 2025, py3plex no longer bundles external binaries to reduce repository size and improve licensing clarity.</p>
+<p>py3plex no longer bundles external binaries; install them separately when needed to keep the base package lightweight and licensing clear.</p>
 <section id="infomap-community-detection">
 <h3>Infomap Community Detection<a class="headerlink" href="#infomap-community-detection" title="Link to this heading"></a></h3>
 <p>For advanced community detection using Infomap:</p>
 <p><strong>Option 1:</strong> Use the bundled Python implementation (recommended):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[infomap]&quot;</span>
 </pre></div>
 </div>
 <p><strong>Option 2:</strong> Download the C++ binary from the official source:</p>
@@ -423,11 +437,11 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <h3>Node2Vec Embeddings<a class="headerlink" href="#node2vec-embeddings" title="Link to this heading"></a></h3>
 <p>For Node2Vec node embeddings, use pure Python alternatives:</p>
 <p><strong>Option 1:</strong> Use pecanpy (fast parallel implementation):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pecanpy
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>pecanpy
 </pre></div>
 </div>
 <p><strong>Option 2:</strong> Use node2vec package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>node2vec
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>node2vec
 </pre></div>
 </div>
 <p><strong>Option 3:</strong> Use py3plex’s built-in random walk implementation:</p>
@@ -439,7 +453,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="virtual-environment-setup">
 <h2>Virtual Environment Setup<a class="headerlink" href="#virtual-environment-setup" title="Link to this heading"></a></h2>
-<p>We strongly recommend using a virtual environment:</p>
+<p>We strongly recommend using a virtual environment to prevent dependency conflicts:</p>
 <section id="using-venv">
 <h3>Using venv<a class="headerlink" href="#using-venv" title="Link to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create virtual environment</span>
@@ -451,8 +465,9 @@ python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </
 <span class="c1"># Activate (Windows)</span>
 py3plex-env<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
 
-<span class="c1"># Install py3plex</span>
-pip<span class="w"> </span>install<span class="w"> </span>py3plex
+<span class="c1"># Install py3plex inside the environment</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
 </section>
@@ -465,7 +480,7 @@ conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </
 conda<span class="w"> </span>activate<span class="w"> </span>py3plex
 
 <span class="c1"># Install py3plex</span>
-pip<span class="w"> </span>install<span class="w"> </span>py3plex
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
 </section>
@@ -474,9 +489,9 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <h2>Common Installation Issues<a class="headerlink" href="#common-installation-issues" title="Link to this heading"></a></h2>
 <section id="issue-no-module-named-numpy">
 <h3>Issue: “No module named ‘numpy’”<a class="headerlink" href="#issue-no-module-named-numpy" title="Link to this heading"></a></h3>
-<p><strong>Solution:</strong> Install numpy first:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy
-pip<span class="w"> </span>install<span class="w"> </span>py3plex
+<p><strong>Solution:</strong> Install numpy first (preferably in a virtual environment):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>numpy
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
 </section>
@@ -486,21 +501,28 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <ol class="arabic simple">
 <li><p>Download from: <a class="reference external" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">https://visualstudio.microsoft.com/visual-cpp-build-tools/</a></p></li>
 <li><p>Install “Desktop development with C++”</p></li>
-<li><p>Retry installation</p></li>
+<li><p>Restart your shell, then retry installation</p></li>
 </ol>
 </section>
 <section id="issue-permission-denied-on-linux-macos">
 <h3>Issue: “Permission denied” on Linux/macOS<a class="headerlink" href="#issue-permission-denied-on-linux-macos" title="Link to this heading"></a></h3>
-<p><strong>Solution:</strong> Use pip install with –user flag:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>py3plex
+<p><strong>Solution 1:</strong> Use a virtual environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>py3plex-env
+<span class="nb">source</span><span class="w"> </span>py3plex-env/bin/activate<span class="w">  </span><span class="c1"># On Windows: py3plex-env\Scripts\activate</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
-<p>Or use a virtual environment (recommended).</p>
+<p><strong>Solution 2:</strong> Use the <code class="docutils literal notranslate"><span class="pre">--user</span></code> flag if you cannot use venv:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>py3plex
+</pre></div>
+</div>
 </section>
 <section id="issue-old-version-installed">
 <h3>Issue: Old version installed<a class="headerlink" href="#issue-old-version-installed" title="Link to this heading"></a></h3>
-<p><strong>Solution:</strong> Upgrade to latest version:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>py3plex
+<p><strong>Solution:</strong> Check the installed version and upgrade if needed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>show<span class="w"> </span>py3plex
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>py3plex
 </pre></div>
 </div>
 </section>

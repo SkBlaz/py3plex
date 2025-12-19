@@ -146,7 +146,7 @@
              
   <section id="gui-testing-guide">
 <h1>GUI Testing Guide<a class="headerlink" href="#gui-testing-guide" title="Link to this heading"></a></h1>
-<p>Complete testing guide for the Py3plex GUI, including automated CI tests and manual validation.</p>
+<p>Use this guide to verify the Py3plex GUI before merging or releasing. It covers automated CI runs and manual smoke tests.</p>
 <section id="visual-interface-preview">
 <h2>Visual Interface Preview<a class="headerlink" href="#visual-interface-preview" title="Link to this heading"></a></h2>
 <p>The Py3plex GUI consists of several key pages that work together for network analysis:</p>
@@ -173,7 +173,7 @@
 <h2>Automated Testing (CI)<a class="headerlink" href="#automated-testing-ci" title="Link to this heading"></a></h2>
 <section id="github-actions-workflow">
 <h3>GitHub Actions Workflow<a class="headerlink" href="#github-actions-workflow" title="Link to this heading"></a></h3>
-<p>All GUI tests run automatically on GitHub Actions:</p>
+<p>All GUI tests run automatically on GitHub Actions to prevent regressions in the API, worker, and frontend:</p>
 <p><strong>Workflow</strong>: <code class="docutils literal notranslate"><span class="pre">.github/workflows/gui-tests.yml</span></code></p>
 <p><strong>Triggers</strong>:</p>
 <ul class="simple">
@@ -212,10 +212,11 @@
 </section>
 <section id="running-ci-tests-locally">
 <h3>Running CI Tests Locally<a class="headerlink" href="#running-ci-tests-locally" title="Link to this heading"></a></h3>
-<p>You can run the same tests locally:</p>
+<p>You can run the same tests locally (requires Docker Compose v2 and npm). Stop any existing GUI stack first so ports are free:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
 
 <span class="c1"># API tests</span>
+<span class="c1"># Uses sample data and pytest checks in ci/api-tests/</span>
 docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>api<span class="w"> </span>worker<span class="w"> </span>redis
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>api<span class="w"> </span>worker<span class="w"> </span>redis
 docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>api<span class="w"> </span>pytest<span class="w"> </span>ci/api-tests/<span class="w"> </span>-v
@@ -223,9 +224,9 @@ docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"
 
 <span class="c1"># Integration tests</span>
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--build
-<span class="c1"># Wait for services</span>
+<span class="c1"># Wait for services to become healthy</span>
 curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8080/api/health
-<span class="c1"># Run manual integration tests (see below)</span>
+<span class="c1"># Run manual integration tests (see below) or add automated steps here</span>
 docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"> </span>-v
 
 <span class="c1"># Frontend build</span>
@@ -238,13 +239,14 @@ npm<span class="w"> </span>run<span class="w"> </span>build
 </section>
 <section id="manual-testing-guide">
 <h2>Manual Testing Guide<a class="headerlink" href="#manual-testing-guide" title="Link to this heading"></a></h2>
-<p>Manual testing guide for the Py3plex GUI. Follow these steps to validate the implementation.</p>
+<p>Follow these manual smoke tests after standing up the stack locally. Keep logs open in another terminal so you can capture failures quickly, and only proceed once all services report healthy.</p>
 <section id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Docker and Docker Compose installed</p></li>
 <li><p>At least 4GB RAM available</p></li>
 <li><p>Ports 8080, 5555, 8000, 6379 available</p></li>
+<li><p>Sample file available at <code class="docutils literal notranslate"><span class="pre">gui/toy_network.edgelist</span></code> (included in repo)</p></li>
 </ul>
 </section>
 <section id="setup">
@@ -254,7 +256,7 @@ cp<span class="w"> </span>.env.example<span class="w"> </span>.env
 make<span class="w"> </span>up
 </pre></div>
 </div>
-<p><strong>Expected</strong>: All containers start successfully. Check with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">ps</span></code>.</p>
+<p><strong>Expected</strong>: All containers start successfully. Check with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">ps</span></code> and wait until services report <code class="docutils literal notranslate"><span class="pre">healthy</span></code> before proceeding.</p>
 </section>
 <section id="test-1-health-check">
 <h3>Test 1: Health Check<a class="headerlink" href="#test-1-health-check" title="Link to this heading"></a></h3>
@@ -295,7 +297,7 @@ make<span class="w"> </span>up
 <h3>Test 2: Upload Network<a class="headerlink" href="#test-2-upload-network" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Navigate to <strong>Load Data</strong> page</p></li>
-<li><p>Click “Click to upload” or drag and drop <code class="docutils literal notranslate"><span class="pre">toy_network.edgelist</span></code></p></li>
+<li><p>Click “Click to upload” or drag and drop <code class="docutils literal notranslate"><span class="pre">toy_network.edgelist</span></code> (repo copy lives in <code class="docutils literal notranslate"><span class="pre">gui/toy_network.edgelist</span></code>)</p></li>
 <li><p>Click “Upload &amp; Parse”</p></li>
 </ol>
 <p><strong>Expected</strong>:</p>
@@ -308,6 +310,7 @@ make<span class="w"> </span>up
 <li><p>Nodes: 6</p></li>
 <li><p>Edges: 14</p></li>
 <li><p>Layers: hobby, social, work</p></li>
+<li><p>No error alerts or toast messages</p></li>
 </ul>
 </li>
 </ul>
@@ -321,7 +324,7 @@ make<span class="w"> </span>up
 <ul class="simple">
 <li><p>Page shows three panels: Layers, Network View, Inspect</p></li>
 <li><p>Network View shows placeholder with “Graph with X nodes”</p></li>
-<li><p>No errors in console</p></li>
+<li><p>No errors in browser console</p></li>
 </ul>
 </section>
 <section id="test-4-run-layout-job">
@@ -400,7 +403,7 @@ make<span class="w"> </span>up
 <span class="w">  </span>http://localhost:8080/api/upload
 </pre></div>
 </div>
-<p><strong>Expected</strong>: JSON response with <code class="docutils literal notranslate"><span class="pre">graph_id</span></code></p>
+<p><strong>Expected</strong>: JSON response with <code class="docutils literal notranslate"><span class="pre">graph_id</span></code> (save it for the next steps).</p>
 </section>
 <section id="get-graph-summary">
 <h4>Get Graph Summary<a class="headerlink" href="#get-graph-summary" title="Link to this heading"></a></h4>
@@ -408,7 +411,7 @@ make<span class="w"> </span>up
 curl<span class="w"> </span>http://localhost:8080/api/graphs/<span class="nv">$GRAPH_ID</span>/summary
 </pre></div>
 </div>
-<p><strong>Expected</strong>: JSON with nodes, edges, layers</p>
+<p><strong>Expected</strong>: JSON with node, edge, and layer counts matching the upload.</p>
 </section>
 <section id="start-layout-job">
 <h4>Start Layout Job<a class="headerlink" href="#start-layout-job" title="Link to this heading"></a></h4>
@@ -426,7 +429,7 @@ curl<span class="w"> </span>http://localhost:8080/api/graphs/<span class="nv">$G
 curl<span class="w"> </span>http://localhost:8080/api/jobs/<span class="nv">$JOB_ID</span>
 </pre></div>
 </div>
-<p><strong>Expected</strong>: JSON with status, progress, result</p>
+<p><strong>Expected</strong>: JSON with status, progress, and a <code class="docutils literal notranslate"><span class="pre">result</span></code> payload when complete.</p>
 </section>
 </section>
 <section id="test-9-logs-inspection">
@@ -461,7 +464,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"
 <p><strong>Expected</strong>:</p>
 <ul class="simple">
 <li><p>Uploads work after restart</p></li>
-<li><p>Previous artifacts still in <code class="docutils literal notranslate"><span class="pre">gui/data/</span></code></p></li>
+<li><p>Previous artifacts still in <code class="docutils literal notranslate"><span class="pre">gui/data/</span></code> (verify workspace ZIPs and layout outputs exist)</p></li>
 </ul>
 </section>
 <section id="test-12-multiple-jobs">
@@ -489,7 +492,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"
 <section id="port-already-in-use">
 <h3>Port Already in Use<a class="headerlink" href="#port-already-in-use" title="Link to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find and kill process</span>
-lsof<span class="w"> </span>-ti:8080<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-9
+lsof<span class="w"> </span>-ti:8080<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>-r<span class="w"> </span><span class="nb">kill</span>
 
 <span class="c1"># Or change port in docker-compose.yml</span>
 ports:
@@ -556,7 +559,7 @@ make<span class="w"> </span>clean
 </section>
 <section id="performance-benchmarks">
 <h2>Performance Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Link to this heading"></a></h2>
-<p>For reference, on a typical development machine:</p>
+<p>For reference, on a typical development machine (approximate and hardware-dependent):</p>
 <ul class="simple">
 <li><p><strong>Startup time</strong>: 30-60 seconds (first build: 3-5 minutes)</p></li>
 <li><p><strong>Upload (toy network)</strong>: &lt; 1 second</p></li>
@@ -576,6 +579,7 @@ make<span class="w"> </span>clean
 <li><p>[ ] Setting rate limits</p></li>
 <li><p>[ ] Validating file uploads strictly</p></li>
 </ul>
+<p>These checks are meant for local verification only; harden the deployment before opening any external access.</p>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
@@ -586,6 +590,7 @@ make<span class="w"> </span>clean
 <li><p>Load test with concurrent users</p></li>
 <li><p>Profile memory usage</p></li>
 <li><p>Test edge cases (malformed files, very large files)</p></li>
+<li><p>Capture logs and screenshots for any failing scenario before filing issues</p></li>
 </ol>
 <p>—</p>
 <p><strong>Last Updated</strong>: 2025-11-09</p>

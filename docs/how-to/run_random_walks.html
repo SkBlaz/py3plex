@@ -181,6 +181,7 @@
 <h1>How to Run Random Walk Algorithms<a class="headerlink" href="#how-to-run-random-walk-algorithms" title="Link to this heading"></a></h1>
 <p><strong>Goal:</strong> Generate network embeddings and node representations using random walk algorithms.</p>
 <p><strong>Prerequisites:</strong> A loaded network (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>).</p>
+<p>All embedding helpers in py3plex return a mapping from <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer)</span></code> tuples to dense vectors of length <code class="docutils literal notranslate"><span class="pre">dimensions</span></code>. Single-layer inputs still keep the layer entry so you can tell layers apart in multiplex graphs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Where to find this data</p>
@@ -228,9 +229,10 @@
 </div>
 <p>The <cite>p</cite> and <cite>q</cite> parameters control the walk behavior:</p>
 <ul class="simple">
-<li><p><strong>p</strong> (return parameter): Likelihood of returning to previous node</p></li>
-<li><p><strong>q</strong> (in-out parameter): Likelihood of exploring outward vs. staying local</p></li>
+<li><p><strong>p</strong> (return parameter): Cost of immediately revisiting the previous node (low <code class="docutils literal notranslate"><span class="pre">p</span></code> = easy to backtrack; high <code class="docutils literal notranslate"><span class="pre">p</span></code> = discouraged)</p></li>
+<li><p><strong>q</strong> (in-out parameter): Balance between staying near the previous node versus exploring new territory (<code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> ≈ breadth-first/local, <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">&lt;</span> <span class="pre">1</span></code> ≈ depth-first/outward)</p></li>
 </ul>
+<p>Think of <code class="docutils literal notranslate"><span class="pre">p</span></code> as controlling backtracking and <code class="docutils literal notranslate"><span class="pre">q</span></code> as controlling locality; tune them together to steer walks toward either local neighborhoods or long-range exploration.</p>
 </section>
 <section id="deepwalk-embeddings">
 <h2>DeepWalk Embeddings<a class="headerlink" href="#deepwalk-embeddings" title="Link to this heading"></a></h2>
@@ -249,6 +251,7 @@
 </section>
 <section id="using-embeddings-for-downstream-tasks">
 <h2>Using Embeddings for Downstream Tasks<a class="headerlink" href="#using-embeddings-for-downstream-tasks" title="Link to this heading"></a></h2>
+<p>The following examples assume you already computed <code class="docutils literal notranslate"><span class="pre">embeddings</span></code> with Node2Vec or DeepWalk; adjust names if you generate multiple embedding sets.</p>
 <section id="node-classification">
 <h3>Node Classification<a class="headerlink" href="#node-classification" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
@@ -259,7 +262,7 @@
 <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">embeddings</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">])</span>
 
-<span class="c1"># Assuming you have labels</span>
+<span class="c1"># Replace with your label lookup (one label per (node, layer) tuple)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">get_label</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">])</span>
 
 <span class="c1"># Train classifier</span>
@@ -277,6 +280,7 @@
 </section>
 <section id="link-prediction">
 <h3>Link Prediction<a class="headerlink" href="#link-prediction" title="Link to this heading"></a></h3>
+<p>Embeddings are keyed by <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code>; compare nodes within the same layer when interpreting similarity scores.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
 
 <span class="c1"># Compute similarity between nodes</span>
@@ -384,8 +388,10 @@
 </section>
 <section id="parameter-tuning">
 <h2>Parameter Tuning<a class="headerlink" href="#parameter-tuning" title="Link to this heading"></a></h2>
+<p>Random walk hyperparameters meaningfully change embedding quality. Use small validation loops to pick settings that balance accuracy and runtime, and fix seeds (<code class="docutils literal notranslate"><span class="pre">random_state</span></code> / <code class="docutils literal notranslate"><span class="pre">workers</span></code>) when you want reproducibility across runs.</p>
 <section id="grid-search-for-best-parameters">
 <h3>Grid Search for Best Parameters<a class="headerlink" href="#grid-search-for-best-parameters" title="Link to this heading"></a></h3>
+<p>Training embeddings inside a grid search can be expensive; start with a coarse grid or a small subgraph, then refine around promising regions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_val_score</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -411,7 +417,10 @@
             <span class="p">)</span>
 
             <span class="c1"># Evaluate (assuming you have labels)</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">emb</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_label</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>  <span class="c1"># Provide labels keyed by (node, layer)</span>
             <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">emb</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">])</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
             <span class="n">scores</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span>
                 <span class="n">LogisticRegression</span><span class="p">(),</span>
                 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span>
@@ -588,7 +597,9 @@ Generated embeddings for 105 multilayer nodes
 <section id="combine-embeddings-with-node-attributes">
 <h3>Combine Embeddings with Node Attributes<a class="headerlink" href="#combine-embeddings-with-node-attributes" title="Link to this heading"></a></h3>
 <p><strong>Query embedded nodes with specific properties:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After generating embeddings, attach them as attributes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># After generating embeddings, attach them as attributes</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="c1"># Store embedding norm as an attribute</span>
     <span class="n">embedding_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
@@ -600,7 +611,9 @@ Generated embeddings for 105 multilayer nodes
     <span class="s1">&#39;SELECT nodes WHERE embedding_norm &gt; 10.0&#39;</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes with large embedding norms: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">large_norm_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">norm_matches</span> <span class="o">=</span> <span class="n">large_norm_nodes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
+<span class="n">count</span> <span class="o">=</span> <span class="n">large_norm_nodes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">norm_matches</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes with large embedding norms: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

@@ -211,7 +211,7 @@ This page is a complete reference with all syntax and operators.</p>
 <p>The py3plex DSL provides two interfaces:</p>
 <ol class="arabic simple">
 <li><p><strong>String syntax:</strong> SQL-like queries for quick exploration</p></li>
-<li><p><strong>Builder API:</strong> Type-safe Python interface for production code</p></li>
+<li><p><strong>Builder API:</strong> Type-safe Python interface for production code (autocomputes referenced metrics)</p></li>
 </ol>
 </section>
 <section id="string-syntax-reference">
@@ -219,14 +219,16 @@ This page is a complete reference with all syntax and operators.</p>
 <section id="basic-structure">
 <h3>Basic Structure<a class="headerlink" href="#basic-structure" title="Link to this heading"></a></h3>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SELECT &lt;target&gt; [FROM &lt;layers&gt;] [WHERE &lt;conditions&gt;] [COMPUTE &lt;metrics&gt;] [ORDER BY &lt;field&gt;] [LIMIT &lt;n&gt;]
+[AT &lt;timestamp&gt; | DURING &lt;start&gt; TO &lt;end&gt;]
 </pre></div>
 </div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">AT</span></code> for a single time point and <code class="docutils literal notranslate"><span class="pre">DURING</span></code> for closed intervals (ISO 8601 strings).</p>
 </section>
 <section id="targets">
 <h3>Targets<a class="headerlink" href="#targets" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">nodes</span></code> — Select nodes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">edges</span></code> — Select edges (experimental)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edges</span></code> — Select edges (experimental; limited coverage support)</p></li>
 </ul>
 </section>
 <section id="layer-selection">
@@ -235,6 +237,7 @@ This page is a complete reference with all syntax and operators.</p>
 FROM layers IN (&quot;layer1&quot;, &quot;layer2&quot;)
 </pre></div>
 </div>
+<p>If <code class="docutils literal notranslate"><span class="pre">FROM</span></code> is omitted, all layers are considered.</p>
 </section>
 <section id="conditions">
 <h3>Conditions<a class="headerlink" href="#conditions" title="Link to this heading"></a></h3>
@@ -251,20 +254,23 @@ FROM layers IN (&quot;layer1&quot;, &quot;layer2&quot;)
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">AND</span></code> — Both conditions must be true</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">OR</span></code> — Either condition must be true</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NOT</span></code> — Negate a condition</p></li>
 </ul>
 <p><strong>Examples:</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>WHERE degree &gt; 5
 WHERE layer=&quot;friends&quot; AND degree &gt; 3
 WHERE degree &gt; 5 OR betweenness_centrality &gt; 0.1
+WHERE NOT layer=&quot;spam&quot;
 </pre></div>
 </div>
+<p>String values must be wrapped in double quotes.</p>
 </section>
 <section id="compute-clause">
 <h3>Compute Clause<a class="headerlink" href="#compute-clause" title="Link to this heading"></a></h3>
 <p>Calculate metrics for selected nodes:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>COMPUTE degree
-COMPUTE degree COMPUTE betweenness_centrality
-COMPUTE clustering
+COMPUTE degree betweenness_centrality
+COMPUTE clustering pagerank
 </pre></div>
 </div>
 <p><strong>Available metrics:</strong></p>
@@ -276,7 +282,7 @@ COMPUTE clustering
 <li><p><code class="docutils literal notranslate"><span class="pre">pagerank</span></code> — PageRank score</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">layer_count</span></code> — Number of layers node appears in</p></li>
 </ul>
-<p>See <a class="reference internal" href="algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> for complete metric list.</p>
+<p>Metrics are computed after filtering and layer selection. See <a class="reference internal" href="algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> for the complete metric list.</p>
 </section>
 <section id="order-by">
 <h3>Order By<a class="headerlink" href="#order-by" title="Link to this heading"></a></h3>
@@ -285,6 +291,7 @@ ORDER BY -degree  # Descending (prefix with -)
 ORDER BY betweenness_centrality
 </pre></div>
 </div>
+<p>You can specify multiple keys in sequence; each key may be prefixed with <code class="docutils literal notranslate"><span class="pre">-</span></code> for descending order.</p>
 </section>
 <section id="limit">
 <h3>Limit<a class="headerlink" href="#limit" title="Link to this heading"></a></h3>
@@ -612,25 +619,30 @@ string parsing, named groups, and real-world examples, see:
 <h2>Working with Results<a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
 <section id="result-object">
 <h3>Result Object<a class="headerlink" href="#result-object" title="Link to this heading"></a></h3>
-<p>Query results are dictionaries mapping nodes to their computed attributes:</p>
+<p><code class="docutils literal notranslate"><span class="pre">execute</span></code> returns a <code class="docutils literal notranslate"><span class="pre">QueryResult</span></code> with items, computed attributes, and metadata:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
-<span class="c1"># Access individual node</span>
-<span class="n">node</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)</span>
-<span class="n">degree</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span>
+<span class="c1"># Counts and identifiers</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>    <span class="c1"># -&gt; number of nodes/edges</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nodes</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c1"># first few nodes (use .edges for edge queries)</span>
 
-<span class="c1"># Iterate</span>
-<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Attributes are aligned lists keyed by metric name</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">deg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="n">degrees</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deg</span><span class="p">)</span>
+
+<span class="c1"># Execution metadata (e.g., grouping, ordering)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="convert-to-pandas">
 <h3>Convert to Pandas<a class="headerlink" href="#convert-to-pandas" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">multiindex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_grouping</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
+<p>Set <code class="docutils literal notranslate"><span class="pre">expand_uncertainty=True</span></code> to unpack UQ-aware metrics into multiple columns.</p>
 </section>
 </section>
 <section id="extensibility">

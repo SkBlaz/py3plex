@@ -146,7 +146,8 @@
              
   <section id="repository-layout">
 <h1>Repository Layout<a class="headerlink" href="#repository-layout" title="Link to this heading"></a></h1>
-<p>This document explains the structure of the py3plex repository and what each directory contains.</p>
+<p>Use this guide as a map to the py3plex repository so you can quickly find code, docs, tests, and supporting assets.
+Start with the tree below, then jump to the section that matches what you need.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>py3plex/
@@ -213,15 +214,20 @@
 └── reference/            # API reference
 </pre></div>
 </div>
-<p><strong>Building documentation:</strong></p>
+<p><strong>Building documentation (from repository root with your virtual environment active):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>docs<span class="w">            </span><span class="c1"># Output in docfiles/_build/html/</span>
+</pre></div>
+</div>
+<p>If Sphinx is missing, reinstall the development extras in your active virtual environment and rerun the command.</p>
+<p><strong>Manual build from docfiles/:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docfiles
-make<span class="w"> </span>html<span class="w">  </span><span class="c1"># Output in _build/html/</span>
+sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>.<span class="w"> </span>_build/html<span class="w">  </span><span class="c1"># Output in _build/html/</span>
 </pre></div>
 </div>
 </section>
 <section id="examples-examples">
 <h2>Examples (examples/)<a class="headerlink" href="#examples-examples" title="Link to this heading"></a></h2>
-<p>Executable example scripts demonstrating various features:</p>
+<p>Executable example scripts that you can run directly:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>examples/
 ├── basic/                    # Basic usage
 │   ├── example_load_network.py
@@ -244,14 +250,14 @@ make<span class="w"> </span>html<span class="w">  </span><span class="c1"># Outp
     └── example_format_conversion.py
 </pre></div>
 </div>
-<p><strong>Running examples:</strong></p>
+<p><strong>Running examples (from repository root with an active virtual environment):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/basic/example_load_network.py
 </pre></div>
 </div>
 </section>
 <section id="tests-tests">
 <h2>Tests (tests/)<a class="headerlink" href="#tests-tests" title="Link to this heading"></a></h2>
-<p>Test suite using pytest:</p>
+<p>Test suite powered by pytest:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>tests/
 ├── test_core.py              # Core functionality
 ├── test_algorithms.py        # Algorithm tests
@@ -262,10 +268,11 @@ make<span class="w"> </span>html<span class="w">  </span><span class="c1"># Outp
 └── conftest.py               # Pytest configuration
 </pre></div>
 </div>
-<p><strong>Running tests:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nb">test</span><span class="w">          </span><span class="c1"># Run all tests</span>
-make<span class="w"> </span>test-fast<span class="w">     </span><span class="c1"># Skip slow tests</span>
-make<span class="w"> </span>coverage<span class="w">      </span><span class="c1"># With coverage report</span>
+<p><strong>Running tests (from repository root):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nb">test</span><span class="w">             </span><span class="c1"># Run all tests (default environment)</span>
+make<span class="w"> </span>test-fast<span class="w">        </span><span class="c1"># Skip slow tests</span>
+make<span class="w"> </span>coverage<span class="w">         </span><span class="c1"># With coverage report</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_core.py<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;degree&quot;</span><span class="w">  </span><span class="c1"># Targeted run</span>
 </pre></div>
 </div>
 </section>
@@ -281,7 +288,7 @@ make<span class="w"> </span>coverage<span class="w">      </span><span class="c1
 └── Dockerfile            # Docker container
 </pre></div>
 </div>
-<p><strong>Running GUI:</strong></p>
+<p><strong>Running GUI (from repository root):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>gui/app.py
 </pre></div>
 </div>
@@ -307,7 +314,7 @@ make<span class="w"> </span>coverage<span class="w">      </span><span class="c1
 └── bench_aggregation.py  # Aggregation benchmarks
 </pre></div>
 </div>
-<p><strong>Running benchmarks:</strong></p>
+<p><strong>Running benchmarks (from repository root):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>benchmark
 </pre></div>
 </div>
@@ -329,7 +336,7 @@ make<span class="w"> </span>coverage<span class="w">      </span><span class="c1
 <h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading"></a></h2>
 <p>Root-level configuration:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> - Package metadata, dependencies, build config</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> - Package metadata, dependencies, build configuration</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Makefile</span></code> - Development commands (make test, make docs, etc.)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code> - Project overview and quick start</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> - Git ignore rules</p></li>
@@ -347,8 +354,8 @@ make<span class="w"> </span>coverage<span class="w">      </span><span class="c1
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 
-<span class="c1"># Create virtual environment and install dependencies</span>
-make<span class="w"> </span>setup
+<span class="c1"># Create virtual environment and install dependencies (.venv)</span>
+make<span class="w"> </span>setup<span class="w">  </span><span class="c1"># keeps the venv pinned under .venv/</span>
 
 <span class="c1"># Install package in editable mode with dev dependencies</span>
 make<span class="w"> </span>dev-install
@@ -370,26 +377,21 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="development-workflow">
 <h3>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Make changes to code</span>
-
-<span class="c1"># 2. Format code</span>
-make<span class="w"> </span>format
-
-<span class="c1"># 3. Run linters</span>
-make<span class="w"> </span>lint
-
-<span class="c1"># 4. Run tests</span>
-make<span class="w"> </span><span class="nb">test</span>
-
-<span class="c1"># 5. Build documentation</span>
-make<span class="w"> </span>docs
-
-<span class="c1"># 6. Commit changes</span>
-git<span class="w"> </span>add<span class="w"> </span>.
+<ol class="arabic">
+<li><p>Activate your virtual environment so every command uses the same interpreter.</p></li>
+<li><p>Make focused changes to code or docs.</p></li>
+<li><p>Format: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">format</span></code>.</p></li>
+<li><p>Lint: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code>.</p></li>
+<li><p>Test: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> (or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test-fast</span></code> for quicker feedback).</p></li>
+<li><p>Build docs: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code>.</p></li>
+<li><p>Commit and push with a descriptive message:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
 git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Description&quot;</span>
 git<span class="w"> </span>push
 </pre></div>
 </div>
+</li>
+</ol>
 </section>
 </section>
 <section id="finding-things">

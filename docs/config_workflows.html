@@ -150,49 +150,51 @@
 <p class="topic-title">Table of Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
-<li><p><a class="reference internal" href="#configuration-format" id="id2">Configuration Format</a></p>
+<li><p><a class="reference internal" href="#execution-model" id="id2">Execution Model</a></p></li>
+<li><p><a class="reference internal" href="#configuration-format" id="id3">Configuration Format</a></p>
 <ul>
-<li><p><a class="reference internal" href="#yaml-example" id="id3">YAML Example</a></p></li>
-<li><p><a class="reference internal" href="#json-example" id="id4">JSON Example</a></p></li>
+<li><p><a class="reference internal" href="#yaml-example" id="id4">YAML Example</a></p></li>
+<li><p><a class="reference internal" href="#json-example" id="id5">JSON Example</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#dataset-specification" id="id5">Dataset Specification</a></p>
+<li><p><a class="reference internal" href="#dataset-specification" id="id6">Dataset Specification</a></p>
 <ul>
-<li><p><a class="reference internal" href="#loading-from-file" id="id6">Loading from File</a></p></li>
-<li><p><a class="reference internal" href="#generating-networks" id="id7">Generating Networks</a></p></li>
+<li><p><a class="reference internal" href="#loading-from-file" id="id7">Loading from File</a></p></li>
+<li><p><a class="reference internal" href="#generating-networks" id="id8">Generating Networks</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#available-operations" id="id8">Available Operations</a></p>
+<li><p><a class="reference internal" href="#available-operations" id="id9">Available Operations</a></p>
 <ul>
-<li><p><a class="reference internal" href="#statistics" id="id9">Statistics</a></p></li>
-<li><p><a class="reference internal" href="#community-detection" id="id10">Community Detection</a></p></li>
-<li><p><a class="reference internal" href="#centrality" id="id11">Centrality</a></p></li>
-<li><p><a class="reference internal" href="#visualization" id="id12">Visualization</a></p></li>
-<li><p><a class="reference internal" href="#aggregation" id="id13">Aggregation</a></p></li>
-<li><p><a class="reference internal" href="#conversion" id="id14">Conversion</a></p></li>
+<li><p><a class="reference internal" href="#statistics" id="id10">Statistics</a></p></li>
+<li><p><a class="reference internal" href="#community-detection" id="id11">Community Detection</a></p></li>
+<li><p><a class="reference internal" href="#centrality" id="id12">Centrality</a></p></li>
+<li><p><a class="reference internal" href="#visualization" id="id13">Visualization</a></p></li>
+<li><p><a class="reference internal" href="#aggregation" id="id14">Aggregation</a></p></li>
+<li><p><a class="reference internal" href="#conversion" id="id15">Conversion</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#running-workflows" id="id15">Running Workflows</a></p>
+<li><p><a class="reference internal" href="#output-section" id="id16">Output Section</a></p></li>
+<li><p><a class="reference internal" href="#running-workflows" id="id17">Running Workflows</a></p>
 <ul>
-<li><p><a class="reference internal" href="#command-line" id="id16">Command Line</a></p></li>
-<li><p><a class="reference internal" href="#python-api" id="id17">Python API</a></p></li>
+<li><p><a class="reference internal" href="#command-line" id="id18">Command Line</a></p></li>
+<li><p><a class="reference internal" href="#python-api" id="id19">Python API</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#examples" id="id18">Examples</a></p></li>
-<li><p><a class="reference internal" href="#best-practices" id="id19">Best Practices</a></p>
+<li><p><a class="reference internal" href="#examples" id="id20">Examples</a></p></li>
+<li><p><a class="reference internal" href="#best-practices" id="id21">Best Practices</a></p>
 <ul>
-<li><p><a class="reference internal" href="#version-control" id="id20">Version Control</a></p></li>
-<li><p><a class="reference internal" href="#reproducibility" id="id21">Reproducibility</a></p></li>
-<li><p><a class="reference internal" href="#organization" id="id22">Organization</a></p></li>
+<li><p><a class="reference internal" href="#version-control" id="id22">Version Control</a></p></li>
+<li><p><a class="reference internal" href="#reproducibility" id="id23">Reproducibility</a></p></li>
+<li><p><a class="reference internal" href="#organization" id="id24">Organization</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#troubleshooting" id="id23">Troubleshooting</a></p>
+<li><p><a class="reference internal" href="#troubleshooting" id="id25">Troubleshooting</a></p>
 <ul>
-<li><p><a class="reference internal" href="#yaml-not-available" id="id24">YAML Not Available</a></p></li>
-<li><p><a class="reference internal" href="#validation-errors" id="id25">Validation Errors</a></p></li>
+<li><p><a class="reference internal" href="#yaml-not-available" id="id26">YAML Not Available</a></p></li>
+<li><p><a class="reference internal" href="#validation-errors" id="id27">Validation Errors</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#further-reading" id="id26">Further Reading</a></p></li>
+<li><p><a class="reference internal" href="#further-reading" id="id28">Further Reading</a></p></li>
 </ul>
 </nav>
 <section id="overview">
@@ -205,17 +207,29 @@
 <li><p><strong>Version control</strong> - Track experimental setups alongside code</p></li>
 </ul>
 </section>
+<section id="execution-model">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Execution Model</a><a class="headerlink" href="#execution-model" title="Link to this heading"></a></h2>
+<p>Workflows follow a fixed lifecycle:</p>
+<ul class="simple">
+<li><p>Validate the configuration structure (required fields, supported types)</p></li>
+<li><p>Load or generate all datasets</p></li>
+<li><p>Execute operations in the order listed (each references a dataset by name)</p></li>
+<li><p>Collect results in memory; optionally write them under <code class="docutils literal notranslate"><span class="pre">output.directory</span></code></p></li>
+</ul>
+<p>Results in memory are keyed as <code class="docutils literal notranslate"><span class="pre">&lt;dataset&gt;_&lt;operation&gt;_&lt;index&gt;</span></code> to avoid collisions across repeated operations.</p>
+</section>
 <section id="configuration-format">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Configuration Format</a><a class="headerlink" href="#configuration-format" title="Link to this heading"></a></h2>
-<p>A workflow configuration file consists of three main sections:</p>
-<ol class="arabic simple">
-<li><p><strong>Metadata</strong>: Workflow name and description</p></li>
-<li><p><strong>Datasets</strong>: Networks to load or generate</p></li>
-<li><p><strong>Operations</strong>: Analysis steps to perform</p></li>
-<li><p><strong>Output</strong>: Where to save results</p></li>
-</ol>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Configuration Format</a><a class="headerlink" href="#configuration-format" title="Link to this heading"></a></h2>
+<p>A workflow file always follows the same shape (YAML or JSON):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (required): Workflow identifier. Used in logs and output filenames.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code> (optional): Free-text summary of the workflow intent.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">datasets</span></code> (required): List of inputs to load or generate. Each entry must have a unique <code class="docutils literal notranslate"><span class="pre">name</span></code> so operations can reference it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operations</span></code> (required): Ordered list of steps. Each step has a <code class="docutils literal notranslate"><span class="pre">type</span></code>, a <code class="docutils literal notranslate"><span class="pre">dataset</span></code> to operate on, and optional <code class="docutils literal notranslate"><span class="pre">parameters</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output</span></code> (optional): Where to store results. If omitted, results stay in memory only.</p></li>
+</ul>
 <section id="yaml-example">
-<h3><a class="toc-backref" href="#id3" role="doc-backlink">YAML Example</a><a class="headerlink" href="#yaml-example" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">YAML Example</a><a class="headerlink" href="#yaml-example" title="Link to this heading"></a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Basic</span><span class="nv"> </span><span class="s">Network</span><span class="nv"> </span><span class="s">Analysis&quot;</span>
 <span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Analyze</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">multilayer</span><span class="nv"> </span><span class="s">network&quot;</span>
 
@@ -252,7 +266,7 @@
 </div>
 </section>
 <section id="json-example">
-<h3><a class="toc-backref" href="#id4" role="doc-backlink">JSON Example</a><a class="headerlink" href="#json-example" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">JSON Example</a><a class="headerlink" href="#json-example" title="Link to this heading"></a></h3>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Network Comparison&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Compare two networks&quot;</span><span class="p">,</span>
@@ -290,9 +304,15 @@
 </section>
 </section>
 <section id="dataset-specification">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink">Dataset Specification</a><a class="headerlink" href="#dataset-specification" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Dataset Specification</a><a class="headerlink" href="#dataset-specification" title="Link to this heading"></a></h2>
+<p>Each dataset entry requires a <code class="docutils literal notranslate"><span class="pre">name</span></code> and a <code class="docutils literal notranslate"><span class="pre">type</span></code>. Supported <code class="docutils literal notranslate"><span class="pre">type</span></code> values:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code> — load an existing network file (<code class="docutils literal notranslate"><span class="pre">path</span></code> is required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate</span></code> — create a synthetic network (<code class="docutils literal notranslate"><span class="pre">generator</span></code> is required)</p></li>
+</ul>
+<p>Names must be unique because operations reference datasets by <code class="docutils literal notranslate"><span class="pre">dataset</span></code>. Paths are resolved relative to the current working directory when you run the workflow, not the config file location.</p>
 <section id="loading-from-file">
-<h3><a class="toc-backref" href="#id6" role="doc-backlink">Loading from File</a><a class="headerlink" href="#loading-from-file" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Loading from File</a><a class="headerlink" href="#loading-from-file" title="Link to this heading"></a></h3>
 <p>Load existing network files:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">datasets</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_network&quot;</span>
@@ -306,27 +326,35 @@
 <li><p>GPickle (<code class="docutils literal notranslate"><span class="pre">.gpickle</span></code>)</p></li>
 <li><p>Multiedgelist (<code class="docutils literal notranslate"><span class="pre">.edgelist</span></code>, <code class="docutils literal notranslate"><span class="pre">.txt</span></code>)</p></li>
 </ul>
+<p>The loader preserves the directed/undirected flag stored in the file when available. Multiedgelist input is treated as undirected by default.</p>
 </section>
 <section id="generating-networks">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink">Generating Networks</a><a class="headerlink" href="#generating-networks" title="Link to this heading"></a></h3>
-<p>Generate synthetic networks:</p>
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Generating Networks</a><a class="headerlink" href="#generating-networks" title="Link to this heading"></a></h3>
+<p>Generate synthetic networks with the built-in <code class="docutils literal notranslate"><span class="pre">random</span></code> generator:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">datasets</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;random_network&quot;</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;generate&quot;</span>
-<span class="w">    </span><span class="nt">generator</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;random&quot;</span>
+<span class="w">    </span><span class="nt">generator</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;random&quot;</span><span class="w">   </span><span class="c1"># Currently supported generator</span>
 <span class="w">    </span><span class="nt">parameters</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w">        </span><span class="c1"># Number of nodes</span>
-<span class="w">      </span><span class="nt">layers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">        </span><span class="c1"># Number of layers</span>
-<span class="w">      </span><span class="nt">probability</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.15</span><span class="w"> </span><span class="c1"># Edge probability</span>
-<span class="w">      </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span><span class="w">         </span><span class="c1"># Random seed (optional)</span>
+<span class="w">      </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w">         </span><span class="c1"># Number of nodes (default: 10)</span>
+<span class="w">      </span><span class="nt">layers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">         </span><span class="c1"># Number of layers (default: 2)</span>
+<span class="w">      </span><span class="nt">probability</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.15</span><span class="w"> </span><span class="c1"># Edge probability (default: 0.1)</span>
+<span class="w">      </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span><span class="w">          </span><span class="c1"># Random seed (optional; keeps runs reproducible)</span>
 </pre></div>
 </div>
+<p>Nodes are named <code class="docutils literal notranslate"><span class="pre">node0</span></code> … <code class="docutils literal notranslate"><span class="pre">nodeN</span></code> per layer; layers are named <code class="docutils literal notranslate"><span class="pre">layer1</span></code>, <code class="docutils literal notranslate"><span class="pre">layer2</span></code>, etc.</p>
 </section>
 </section>
 <section id="available-operations">
-<h2><a class="toc-backref" href="#id8" role="doc-backlink">Available Operations</a><a class="headerlink" href="#available-operations" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Available Operations</a><a class="headerlink" href="#available-operations" title="Link to this heading"></a></h2>
+<p>All operations share the same basic shape and are validated against the allowed <code class="docutils literal notranslate"><span class="pre">type</span></code> values:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;operation_name&gt;&quot;</span>
+<span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;dataset_name&gt;&quot;</span>
+<span class="w">  </span><span class="nt">parameters</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="w"> </span><span class="nv">...</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</pre></div>
+</div>
 <section id="statistics">
-<h3><a class="toc-backref" href="#id9" role="doc-backlink">Statistics</a><a class="headerlink" href="#statistics" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Statistics</a><a class="headerlink" href="#statistics" title="Link to this heading"></a></h3>
 <p>Compute network statistics:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;stats&quot;</span>
 <span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_network&quot;</span>
@@ -336,13 +364,13 @@
 <p>Computes:</p>
 <ul class="simple">
 <li><p>Node and edge counts</p></li>
-<li><p>Layer densities</p></li>
-<li><p>Clustering coefficients</p></li>
+<li><p>Layer densities (one density per layer if layers can be inferred from node tuples)</p></li>
 </ul>
+<p>Result keys: <code class="docutils literal notranslate"><span class="pre">nodes</span></code>, <code class="docutils literal notranslate"><span class="pre">edges</span></code>, and optional <code class="docutils literal notranslate"><span class="pre">layer_densities</span></code> (one entry per detected layer).</p>
 </section>
 <section id="community-detection">
-<h3><a class="toc-backref" href="#id10" role="doc-backlink">Community Detection</a><a class="headerlink" href="#community-detection" title="Link to this heading"></a></h3>
-<p>Detect communities:</p>
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Community Detection</a><a class="headerlink" href="#community-detection" title="Link to this heading"></a></h3>
+<p>Detect communities (Louvain):</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;community&quot;</span>
 <span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_network&quot;</span>
 <span class="w">  </span><span class="nt">parameters</span><span class="p">:</span>
@@ -351,11 +379,12 @@
 </div>
 <p>Supported algorithms:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">louvain</span></code> - Louvain method</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">louvain</span></code> - Louvain method for community detection</p></li>
 </ul>
+<p>Directed graphs are converted to undirected for community detection to match the algorithm’s assumptions. Results include <code class="docutils literal notranslate"><span class="pre">algorithm</span></code>, <code class="docutils literal notranslate"><span class="pre">num_communities</span></code>, and a <code class="docutils literal notranslate"><span class="pre">communities</span></code> mapping from stringified node IDs to integer community labels.</p>
 </section>
 <section id="centrality">
-<h3><a class="toc-backref" href="#id11" role="doc-backlink">Centrality</a><a class="headerlink" href="#centrality" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Centrality</a><a class="headerlink" href="#centrality" title="Link to this heading"></a></h3>
 <p>Compute node centrality:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;centrality&quot;</span>
 <span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_network&quot;</span>
@@ -369,15 +398,16 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">betweenness</span></code> - Betweenness centrality</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">closeness</span></code> - Closeness centrality</p></li>
 </ul>
+<p>Directed graphs are converted to undirected before computing measures. Results include <code class="docutils literal notranslate"><span class="pre">measure</span></code> and a <code class="docutils literal notranslate"><span class="pre">centrality</span></code> dictionary keyed by node (as strings).</p>
 </section>
 <section id="visualization">
-<h3><a class="toc-backref" href="#id12" role="doc-backlink">Visualization</a><a class="headerlink" href="#visualization" title="Link to this heading"></a></h3>
-<p>Visualize networks:</p>
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Visualization</a><a class="headerlink" href="#visualization" title="Link to this heading"></a></h3>
+<p>Visualize networks and save a static image:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;visualize&quot;</span>
 <span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_network&quot;</span>
 <span class="w">  </span><span class="nt">parameters</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;network.png&quot;</span><span class="w">  </span><span class="c1"># Output file</span>
-<span class="w">    </span><span class="nt">layout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;spring&quot;</span><span class="w">       </span><span class="c1"># Layout algorithm</span>
+<span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;network.png&quot;</span><span class="w">  </span><span class="c1"># Output file (default: network.png)</span>
+<span class="w">    </span><span class="nt">layout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;spring&quot;</span><span class="w">       </span><span class="c1"># Layout algorithm (default: spring)</span>
 </pre></div>
 </div>
 <p>Supported layouts:</p>
@@ -385,14 +415,15 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">spring</span></code> - Force-directed spring layout</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">circular</span></code> - Circular layout</p></li>
 </ul>
+<p>Visualization always writes an image file (default <code class="docutils literal notranslate"><span class="pre">network.png</span></code>) and returns the output path; node labels are omitted for readability on large graphs.</p>
 </section>
 <section id="aggregation">
-<h3><a class="toc-backref" href="#id13" role="doc-backlink">Aggregation</a><a class="headerlink" href="#aggregation" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Aggregation</a><a class="headerlink" href="#aggregation" title="Link to this heading"></a></h3>
 <p>Aggregate multilayer networks:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;aggregate&quot;</span>
 <span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_network&quot;</span>
 <span class="w">  </span><span class="nt">parameters</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sum&quot;</span><span class="w">  </span><span class="c1"># Aggregation method</span>
+<span class="w">    </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sum&quot;</span><span class="w">  </span><span class="c1"># Aggregation method (default: sum)</span>
 </pre></div>
 </div>
 <p>Supported methods:</p>
@@ -402,9 +433,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">max</span></code> - Maximum edge weight</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">min</span></code> - Minimum edge weight</p></li>
 </ul>
+<p>Aggregation returns an in-memory aggregated network object in the workflow results. To persist it, follow with a <code class="docutils literal notranslate"><span class="pre">convert</span></code> step.</p>
 </section>
 <section id="conversion">
-<h3><a class="toc-backref" href="#id14" role="doc-backlink">Conversion</a><a class="headerlink" href="#conversion" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Conversion</a><a class="headerlink" href="#conversion" title="Link to this heading"></a></h3>
 <p>Convert network formats:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;convert&quot;</span>
 <span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_network&quot;</span>
@@ -412,12 +444,28 @@
 <span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;network.json&quot;</span><span class="w">  </span><span class="c1"># Output file</span>
 </pre></div>
 </div>
+<p>Supported outputs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.graphml</span></code> - Full graph structure (preferred)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.json</span></code> - Node/edge lists without extra attributes</p></li>
+</ul>
+<p>Unsupported extensions raise an error. GraphML preserves attributes and edge multiplicity; the JSON output is a minimal node/edge list.</p>
 </section>
+</section>
+<section id="output-section">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">Output Section</a><a class="headerlink" href="#output-section" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">output</span></code> block controls where results are written:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">output</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">directory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;results&quot;</span><span class="w">    </span><span class="c1"># Created if missing (default: &quot;.&quot;)</span>
+<span class="w">  </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;summary.json&quot;</span><span class="w"> </span><span class="c1"># File containing all operation results (default: summary.json)</span>
+</pre></div>
+</div>
+<p>If the <code class="docutils literal notranslate"><span class="pre">output</span></code> block is omitted, results remain in memory only. The summary file mirrors the in-memory results dictionary.</p>
 </section>
 <section id="running-workflows">
-<h2><a class="toc-backref" href="#id15" role="doc-backlink">Running Workflows</a><a class="headerlink" href="#running-workflows" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Running Workflows</a><a class="headerlink" href="#running-workflows" title="Link to this heading"></a></h2>
 <section id="command-line">
-<h3><a class="toc-backref" href="#id16" role="doc-backlink">Command Line</a><a class="headerlink" href="#command-line" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Command Line</a><a class="headerlink" href="#command-line" title="Link to this heading"></a></h3>
 <p>Run a workflow from the command line:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run workflow</span>
 py3plex<span class="w"> </span>run-config<span class="w"> </span>my_workflow.yaml
@@ -426,9 +474,10 @@ py3plex<span class="w"> </span>run-config<span class="w"> </span>my_workflow.yam
 py3plex<span class="w"> </span>run-config<span class="w"> </span>my_workflow.yaml<span class="w"> </span>--validate-only
 </pre></div>
 </div>
+<p>The runner validates required fields before execution and stops if validation fails. Validation checks dataset names/types, required parameters for each type, and whether operations reference known datasets.</p>
 </section>
 <section id="python-api">
-<h3><a class="toc-backref" href="#id17" role="doc-backlink">Python API</a><a class="headerlink" href="#python-api" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Python API</a><a class="headerlink" href="#python-api" title="Link to this heading"></a></h3>
 <p>Run workflows programmatically:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.workflows</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_workflow</span>
 
@@ -450,10 +499,11 @@ py3plex<span class="w"> </span>run-config<span class="w"> </span>my_workflow.yam
     <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>Results are kept in memory during the run and optionally written to disk based on the <code class="docutils literal notranslate"><span class="pre">output</span></code> section. If <code class="docutils literal notranslate"><span class="pre">output</span></code> is omitted, no files are written. The Python API raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> on validation failure.</p>
 </section>
 </section>
 <section id="examples">
-<h2><a class="toc-backref" href="#id18" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
 <p>See the <code class="docutils literal notranslate"><span class="pre">examples/config_driven/</span></code> directory for complete examples:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">example_config.yaml</span></code> - Basic workflow with generated network</p></li>
@@ -471,36 +521,36 @@ py3plex<span class="w"> </span>run-config<span class="w"> </span>comparison_conf
 </div>
 </section>
 <section id="best-practices">
-<h2><a class="toc-backref" href="#id19" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
 <section id="version-control">
-<h3><a class="toc-backref" href="#id20" role="doc-backlink">Version Control</a><a class="headerlink" href="#version-control" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Version Control</a><a class="headerlink" href="#version-control" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Store config files in version control alongside your code</p></li>
-<li><p>Use descriptive names for workflows</p></li>
-<li><p>Document parameters in comments</p></li>
+<li><p>Store config files in version control alongside your code.</p></li>
+<li><p>Use descriptive names for workflows and datasets to make logs readable.</p></li>
+<li><p>Document non-obvious parameters in comments next to the field.</p></li>
 </ul>
 </section>
 <section id="reproducibility">
-<h3><a class="toc-backref" href="#id21" role="doc-backlink">Reproducibility</a><a class="headerlink" href="#reproducibility" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Reproducibility</a><a class="headerlink" href="#reproducibility" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Always set random seeds for generated networks</p></li>
-<li><p>Document dataset sources and versions</p></li>
-<li><p>Include workflow descriptions</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">seed</span></code> when generating networks to reproduce results.</p></li>
+<li><p>Document dataset sources and versions in <code class="docutils literal notranslate"><span class="pre">description</span></code> or comments.</p></li>
+<li><p>Keep configs and the exact py3plex version together in your repo or summary output.</p></li>
 </ul>
 </section>
 <section id="organization">
-<h3><a class="toc-backref" href="#id22" role="doc-backlink">Organization</a><a class="headerlink" href="#organization" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Organization</a><a class="headerlink" href="#organization" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Use separate configs for different experiments</p></li>
-<li><p>Group related operations together</p></li>
-<li><p>Create reusable config templates</p></li>
+<li><p>Use separate configs for distinct experiments rather than overloading a single file.</p></li>
+<li><p>Group related operations together so results are easy to trace.</p></li>
+<li><p>Start from a template (YAML/JSON) and adjust parameters instead of editing from scratch.</p></li>
 </ul>
 </section>
 </section>
 <section id="troubleshooting">
-<h2><a class="toc-backref" href="#id23" role="doc-backlink">Troubleshooting</a><a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Troubleshooting</a><a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
 <section id="yaml-not-available">
-<h3><a class="toc-backref" href="#id24" role="doc-backlink">YAML Not Available</a><a class="headerlink" href="#yaml-not-available" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">YAML Not Available</a><a class="headerlink" href="#yaml-not-available" title="Link to this heading"></a></h3>
 <p>If you get an error about YAML support:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pyyaml
 </pre></div>
@@ -508,7 +558,7 @@ py3plex<span class="w"> </span>run-config<span class="w"> </span>comparison_conf
 <p>Then use YAML config files. JSON is always supported without extra dependencies.</p>
 </section>
 <section id="validation-errors">
-<h3><a class="toc-backref" href="#id25" role="doc-backlink">Validation Errors</a><a class="headerlink" href="#validation-errors" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Validation Errors</a><a class="headerlink" href="#validation-errors" title="Link to this heading"></a></h3>
 <p>Use <code class="docutils literal notranslate"><span class="pre">--validate-only</span></code> to check configuration:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>run-config<span class="w"> </span>my_workflow.yaml<span class="w"> </span>--validate-only
 </pre></div>
@@ -523,7 +573,7 @@ py3plex<span class="w"> </span>run-config<span class="w"> </span>comparison_conf
 </section>
 </section>
 <section id="further-reading">
-<h2><a class="toc-backref" href="#id26" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">CLI Guide</span></a> - Command-line interface</p></li>
 <li><p><a class="reference internal" href="apidocs.html"><span class="doc">API Documentation</span></a> - Python API reference</p></li>

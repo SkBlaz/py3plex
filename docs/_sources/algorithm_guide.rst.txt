@@ -3,6 +3,18 @@ Algorithm Selection Guide
 
 This guide helps you choose the right algorithms for your multilayer network analysis tasks.
 
+Notation and assumptions
+------------------------
+
+Unless noted otherwise:
+
+* :math:`n` = number of physical nodes; :math:`m` = edges on the graph being analyzed (aggregated by default, supra-graph when explicitly stated)
+* :math:`n_L` = number of state nodes (node-layer pairs), :math:`L` = number of layers; supra-graph algorithms use :math:`n_L` and the corresponding intra- + inter-layer edge count
+* For embeddings and other core-network operations, :math:`n` and :math:`m` refer to the aggregated physical-node graph; supra-adjacency algorithms use :math:`n_L` instead
+* Complexities assume sparse graphs and hide constant factors from iterative solvers
+* Supra-adjacency constructions are assumed sparse; dense forms are only for toy examples
+* Shortest-path-based metrics assume non-negative edge weights; negative weights are unsupported
+
 Community Detection
 -------------------
 
@@ -18,7 +30,7 @@ Best for:
 * Non-overlapping communities
 * Modularity optimization
 
-**Complexity:** :math:`O(n \log n)` where :math:`n` is the number of nodes
+**Complexity:** :math:`O(m \log n)` in typical sparse settings (implementation-dependent)
 
 **Usage:**
 
@@ -45,11 +57,11 @@ Infomap Algorithm
 Best for:
 
 * Flow-based community structure
-* Overlapping communities
 * Hierarchical community detection
 * Information-theoretic optimization
+* Optional overlapping output (link communities mode)
 
-**Complexity:** :math:`O(m \log n)` where :math:`m` is edges, :math:`n` is nodes
+**Complexity:** :math:`O(m \log n)` where :math:`m` is edges, :math:`n` is nodes (average-case)
 
 **Usage:**
 
@@ -63,7 +75,7 @@ Best for:
 
 **Pros:**
 
-* Can detect overlapping communities
+* Can output overlapping communities when configured
 * Flow-based approach (natural for many applications)
 * Hierarchical structure
 
@@ -78,7 +90,7 @@ Label Propagation
 
 Best for:
 
-* Semi-supervised community detection
+* Label-seeded (semi-supervised) community detection
 * Known seed communities
 * Very large sparse networks
 * Linear-time approximate results
@@ -117,7 +129,7 @@ Best for:
 * Layer coupling analysis
 * Research applications
 
-**Complexity:** :math:`O(n^2)` for supra-adjacency construction + Louvain complexity
+**Complexity:** :math:`O(n_L^2)` to build a dense supra-adjacency (sparse: :math:`O(m)`) plus the downstream Louvain optimization (:math:`O(m \log n_L)` in practice on the sparse supra-graph). Prefer sparse supra-adjacency for anything beyond small toy graphs.
 
 **Usage:**
 
@@ -142,6 +154,8 @@ Best for:
 Centrality Measures
 -------------------
 
+Complexities below use :math:`n_L` state nodes and :math:`m` total edges unless noted.
+
 Degree Centrality
 ~~~~~~~~~~~~~~~~~
 
@@ -157,7 +171,7 @@ Best for:
 
 * Layer-specific degree
 * Supra-adjacency degree
-* Overlapping degree (sum across layers)
+* Overlapping degree (sum across layers for each physical node)
 
 **Usage:**
 
@@ -176,7 +190,7 @@ Betweenness Centrality
 * Information flow bottlenecks
 * Critical path analysis
 
-**Complexity:** :math:`O(nm)` for unweighted, :math:`O(nm + n^2 \log n)` for weighted
+**Complexity:** :math:`O(n_L m)` for unweighted, :math:`O(n_L m + n_L^2 \log n_L)` for weighted (Brandes with Dijkstra on the supra-graph)
 
 **Usage:**
 
@@ -185,7 +199,9 @@ Betweenness Centrality
     calc = MultilayerCentrality(network)
     betweenness = calc.multilayer_betweenness_centrality()
 
-**Warning:** Computationally expensive for large networks (>1000 nodes)
+**Warning:** Computationally expensive beyond a few thousand state nodes; use sampling or approximations when possible
+
+**Note:** Runs on the supra-graph; weighted variants rely on Dijkstra and add the :math:`n_L^2 \log n_L` term. Disconnected components yield zero betweenness for unreachable pairs.
 
 Closeness Centrality
 ~~~~~~~~~~~~~~~~~~~~
@@ -196,13 +212,15 @@ Closeness Centrality
 * Average distance to other nodes
 * Central position in network
 
-**Complexity:** :math:`O(nm)` 
+**Complexity:** :math:`O(n_L m)`
 
 **Usage:**
 
 .. code-block:: python
 
     closeness = calc.multilayer_closeness_centrality()
+
+**Note:** Distance is computed on the supra-graph; unreachable node-layers typically produce zero closeness.
 
 Eigenvector Centrality
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -221,6 +239,8 @@ Eigenvector Centrality
 
     eigenvector = calc.multiplex_eigenvector_centrality()
 
+**Note:** Convergence assumes a dominant eigenvalue; disconnected graphs are handled per connected component.
+
 PageRank
 ~~~~~~~~
 
@@ -238,6 +258,8 @@ PageRank
 
     pagerank = calc.pagerank_centrality(alpha=0.85)
 
+**Note:** Damping factor :math:`\alpha` controls teleportation; set higher values (0.85–0.95) for web-like graphs to avoid sink traps.
+
 Versatility Centrality
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -247,7 +269,7 @@ Versatility Centrality
 * Cross-layer influence
 * Multi-context analysis
 
-**Complexity:** :math:`O(m \times L)` where :math:`L` is number of layers
+**Complexity:** :math:`O(m L)` where :math:`L` is number of layers (dominated by the chosen per-layer centrality)
 
 **Usage:**
 
@@ -259,7 +281,7 @@ Versatility Centrality
 New Multiplex Network Metrics
 ------------------------------
 
-The following metrics extend standard network analysis to multiplex networks, accounting for inter-layer couplings and layer-specific structures.
+The following metrics extend standard network analysis to multiplex networks, accounting for inter-layer couplings and layer-specific structures. Unless noted, :math:`n_L` is the number of node-layer pairs and :math:`m` counts both intra- and inter-layer edges; all path-based quantities use the supra-graph.
 
 Multiplex Betweenness Centrality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -270,7 +292,7 @@ Multiplex Betweenness Centrality
 * Finding bottlenecks in multiplex information flow
 * Analyzing paths that traverse inter-layer couplings
 
-**Complexity:** :math:`O(nm)` where :math:`n` is node-layer pairs, :math:`m` is total edges
+**Complexity:** :math:`O(n_L m)` for unweighted supra-graphs
 
 **Usage:**
 
@@ -279,6 +301,8 @@ Multiplex Betweenness Centrality
     from py3plex.algorithms.statistics import multilayer_statistics as mls
     betweenness = mls.multiplex_betweenness_centrality(network, normalized=True)
     top_nodes = sorted(betweenness.items(), key=lambda x: x[1], reverse=True)[:5]
+
+**Definition:** Uses shortest paths on the supra-graph; set inter-layer edge weights to reflect coupling strength and ensure weights are non-negative.
 
 **Reference:** De Domenico et al. (2015), "Structural reducibility of multilayer networks"
 
@@ -291,7 +315,7 @@ Multiplex Closeness Centrality
 * Broadcasting efficiency across layers
 * Central position analysis in multiplex networks
 
-**Complexity:** :math:`O(nm)` where :math:`n` is node-layer pairs
+**Complexity:** :math:`O(n_L m)`
 
 **Usage:**
 
@@ -299,6 +323,8 @@ Multiplex Closeness Centrality
 
     closeness = mls.multiplex_closeness_centrality(network, normalized=True)
     central_nodes = {k: v for k, v in closeness.items() if v > 0.5}
+
+**Note:** Distances are computed on the supra-graph; nodes in disconnected components yield zero closeness.
 
 **Reference:** De Domenico et al. (2015), "Structural reducibility of multilayer networks"
 
@@ -311,19 +337,21 @@ Community Participation Metrics
 * Identifying nodes that bridge different communities
 * Analyzing cross-community connections
 
-**Complexity:** :math:`O(k)` where :math:`k` is node degree
+**Complexity:** :math:`O(k)` per node (overall :math:`O(m)`) where :math:`k` is node degree across all layers
 
 **Usage:**
 
 .. code-block:: python
 
-    # Participation coefficient (Pᵢ = 1 - Σₛ(kᵢₛ/kᵢ)²)
+    # Participation coefficient: P_i = 1 - sum_s (k_is / k_i)**2
     pc = mls.community_participation_coefficient(network, communities, 'Alice')
     
-    # Participation entropy (Hᵢ = -Σₛ(kᵢₛ/kᵢ)log(kᵢₛ/kᵢ))
+    # Participation entropy: H_i = -sum_s (k_is / k_i) * log(k_is / k_i)
     entropy = mls.community_participation_entropy(network, communities, 'Alice')
 
-**Reference:** Guimerà & Amaral (2005), "Functional cartography of complex metabolic networks"
+**Definitions:** :math:`k_{is}` is the number of links from node :math:`i` to community :math:`s` (summing over layers), and :math:`k_i = \sum_s k_{is}`. If :math:`k_i = 0`, both metrics return 0 to avoid undefined values.
+
+**Reference:** Guimera & Amaral (2005), "Functional cartography of complex metabolic networks"
 
 Layer Redundancy Analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -340,11 +368,13 @@ Layer Redundancy Analysis
 
 .. code-block:: python
 
-    # Redundancy coefficient (Rᵅᵝ = |Eᵅ ∩ Eᵝ|/|Eᵅ|)
+    # Redundancy coefficient: R_{alpha,beta} = |E_alpha cap E_beta| / |E_alpha|
     redundancy = mls.layer_redundancy_coefficient(network, 'social', 'work')
     
     # Count unique and redundant edges
     unique, redundant = mls.unique_redundant_edges(network, 'social', 'work')
+
+**Definition:** :math:`E_\alpha` denotes edges in layer :math:`\alpha` (treated as unordered pairs unless your data are directed); :math:`R_{\alpha,\beta}` is asymmetric because it normalizes by :math:`|E_\alpha|`.
 
 **Reference:** Nicosia & Latora (2015), "Measuring and modeling correlations in multiplex networks"
 
@@ -365,6 +395,8 @@ Multiplex Rich-Club Coefficient
 
     rich_club = mls.multiplex_rich_club_coefficient(network, k=10, normalized=True)
 
+**Note:** ``normalized=True`` uses the function's internal null-model rescaling; set it to ``False`` for the raw coefficient.
+
 **Reference:** Extended from Alstott et al. (2014) to multiplex networks
 
 Robustness and Percolation Analysis
@@ -376,7 +408,7 @@ Robustness and Percolation Analysis
 * Critical layer identification
 * Cascade failure analysis
 
-**Complexity:** :math:`O(n \times t)` where :math:`t` is number of trials
+**Complexity:** :math:`O(t (n_L + m))` where :math:`t` is number of trials
 
 **Usage:**
 
@@ -431,6 +463,8 @@ See ``examples/network_analysis/example_new_multiplex_metrics.py`` for a compreh
 Network Statistics
 ------------------
 
+Use these quick calculations to profile the network before running heavier algorithms.
+
 Basic Statistics
 ~~~~~~~~~~~~~~~~
 
@@ -445,31 +479,31 @@ Basic Statistics
 
     network.basic_stats()
     layers = network.get_layers()
-    num_nodes = len(network.get_nodes())
+    num_nodes = network.node_count
 
 Multilayer Statistics
 ~~~~~~~~~~~~~~~~~~~~~
 
-**Layer density** - :math:`O(m_\alpha)` per layer:
+**Layer density** - :math:`O(m_\alpha)` per layer: density of edges within layer :math:`\alpha`
 
 .. code-block:: python
 
     from py3plex.algorithms.statistics import multilayer_statistics as mls
     density = mls.layer_density(network, 'layer1')
 
-**Inter-layer correlation** - :math:`O(n)`:
+**Inter-layer correlation** - :math:`O(n)`: correlation of node degrees across layers (uses only nodes present in both layers)
 
 .. code-block:: python
 
     correlation = mls.inter_layer_degree_correlation(network, 'layer1', 'layer2')
 
-**Edge overlap** - :math:`O(m)`:
+**Edge overlap** - :math:`O(m)`: shared edges across two layers
 
 .. code-block:: python
 
     overlap = mls.edge_overlap(network, 'layer1', 'layer2')
 
-**Versatility centrality** - :math:`O(m \times L)`:
+**Versatility centrality** - :math:`O(m L)`: multilayer importance that mixes centrality across layers
 
 .. code-block:: python
 
@@ -480,14 +514,18 @@ Path-based Measures
 
 **Warning:** These are computationally expensive for large networks
 
-* **Diameter** - :math:`O(nm)` or :math:`O(n^2 \log n)`
-* **Average shortest path** - :math:`O(nm)` or :math:`O(n^2 \log n)`
-* **Betweenness centrality** - :math:`O(nm)` or :math:`O(nm + n^2 \log n)`
+* **Diameter** - :math:`O(n_L m)` or :math:`O(n_L^2 \log n_L)`
+* **Average shortest path** - :math:`O(n_L m)` or :math:`O(n_L^2 \log n_L)`
+* **Betweenness centrality** - :math:`O(n_L m)` or :math:`O(n_L m + n_L^2 \log n_L)`
 
-**Recommendation:** Limit to networks with <5,000 nodes for interactive analysis
+**Recommendation:** For interactive analysis, keep to a few thousand state nodes or use sampling/approximations
+
+**Note:** Distances are computed on the supra-graph; disconnected components yield infinite paths and zero scores for unreachable pairs.
 
 Node Embeddings
 ---------------
+
+Embeddings typically operate on the aggregated graph of physical nodes (``network.core_network``) rather than the full supra-adjacency.
 
 Node2Vec
 ~~~~~~~~
@@ -499,7 +537,7 @@ Node2Vec
 * Node classification
 * Similarity computation
 
-**Complexity:** :math:`O(r \times l \times |V|)` where :math:`r` is walks per node, :math:`l` is walk length
+**Complexity:** :math:`O(r \times l \times n)` where :math:`r` is walks per node, :math:`l` is walk length on the aggregated graph
 
 **Parameters:**
 
@@ -538,7 +576,7 @@ DeepWalk
 * Same as Node2Vec but simpler (uniform random walks)
 * Faster than Node2Vec
 
-**Complexity:** :math:`O(r \times l \times |V|)`
+**Complexity:** :math:`O(r \times l \times n)` on the aggregated graph
 
 **Usage:**
 
@@ -554,6 +592,8 @@ DeepWalk
 Visualization
 -------------
 
+Choose layouts based on graph size and desired interpretation; the scalability notes below are practical heuristics rather than hard limits.
+
 Diagonal Projection Plot
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -563,7 +603,7 @@ Diagonal Projection Plot
 * Clear layer separation
 * Publication-ready figures
 
-**Scalability:** Handles 10,000+ nodes
+**Scalability:** Practical for tens of thousands of nodes in sparse graphs
 
 **Usage:**
 
@@ -581,7 +621,7 @@ Force-Directed Layout
 * Interactive exploration
 * Natural-looking layouts
 
-**Scalability:** Practical up to ~5,000 nodes
+**Scalability:** Practical up to a few thousand nodes
 
 **Usage:**
 
@@ -599,7 +639,7 @@ Matrix Visualization
 * Very large networks
 * Quantitative analysis
 
-**Scalability:** Handles 100,000+ nodes (limited by memory)
+**Scalability:** Memory-bound; scales to very large sparse networks when plotted as matrices
 
 **Usage:**
 
@@ -616,6 +656,8 @@ Performance Guidelines
 
 Network Size Categories
 ~~~~~~~~~~~~~~~~~~~~~~~
+
+Heuristics below refer to physical node counts; for dense supra-adjacency graphs, treat the effective size as :math:`n_L`.
 
 **Small** (< 1,000 nodes):
   * All algorithms are fast
@@ -643,9 +685,9 @@ Memory Considerations
 **Supra-adjacency matrix:**
 
 * Sparse representation: :math:`O(m)` memory
-* Dense representation: :math:`O(n^2)` memory (avoid for large networks)
+* Dense representation: :math:`O(n_L^2)` memory (avoid for large networks)
 
-**Always use sparse matrices for networks with >1,000 nodes**
+**Always use sparse matrices for networks with >1,000 state nodes**
 
 .. code-block:: python
 
@@ -665,7 +707,7 @@ Algorithm Comparison Table
      - License
      - Best Use Case
    * - Louvain
-     - O(n log n)
+     - O(m log n)
      - Large
      - BSD
      - Fast community detection
@@ -680,12 +722,12 @@ Algorithm Comparison Table
      - MIT
      - Semi-supervised, very fast
    * - Degree Centrality
-     - O(n+m)
+     - O(n + m)
      - Very Large
      - MIT
      - Quick importance
    * - Betweenness
-     - O(nm)
+     - O(n_L m)
      - Small
      - MIT
      - Critical paths
@@ -695,7 +737,7 @@ Algorithm Comparison Table
      - MIT
      - Directed networks
    * - Node2Vec
-     - O(r×l×n)
+     - O(r * l * n)
      - Medium
      - MIT
      - Feature learning

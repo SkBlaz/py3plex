@@ -164,17 +164,22 @@
              
   <section id="configuration-environment">
 <h1>Configuration &amp; Environment<a class="headerlink" href="#configuration-environment" title="Link to this heading"></a></h1>
-<p>This page documents configuration options, environment variables, and file formats for py3plex.</p>
+<p>This page collects the practical knobs for running py3plex: configuration files, environment variables, supported I/O formats, and common algorithm parameters.</p>
 <section id="configuration-files">
 <h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading"></a></h2>
-<p>py3plex supports configuration files for reproducible workflows. Configuration can be provided in YAML or JSON format.</p>
+<p>py3plex supports configuration files for reproducible workflows. Provide them as YAML or JSON; omit sections you do not need.</p>
 <p><strong>Network Configuration (YAML):</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># network_config.yaml</span>
 <span class="nt">network</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;data/multilayer.edges&quot;</span>
-<span class="w">  </span><span class="nt">input_type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;multiedgelist&quot;</span>
+<span class="w">  </span><span class="nt">input_type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;multiedgelist&quot;</span><span class="w">  </span><span class="c1"># one of: multiedgelist, edgelist, json, graphml, parquet</span>
 <span class="w">  </span><span class="nt">directed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">weighted</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="c1"># field meanings:</span>
+<span class="c1"># input_file: path to your dataset</span>
+<span class="c1"># input_type: parser to use (match the file format)</span>
+<span class="c1"># directed/weighted: toggle graph properties</span>
 
 <span class="c1"># Load with:</span>
 <span class="c1"># network.load_network(**config[&#39;network&#39;])</span>
@@ -185,25 +190,31 @@
 <span class="nt">community_detection</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;louvain_multilayer&quot;</span>
 <span class="w">  </span><span class="nt">params</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
-<span class="w">    </span><span class="nt">omega</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="w">    </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">          </span><span class="c1"># resolution; higher favors smaller communities</span>
+<span class="w">    </span><span class="nt">omega</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span><span class="w">          </span><span class="c1"># inter-layer coupling strength</span>
 <span class="w">    </span><span class="nt">random_state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
 
 <span class="nt">node2vec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">dimensions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
 <span class="w">  </span><span class="nt">walk_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
 <span class="w">  </span><span class="nt">num_walks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="w">  </span><span class="nt">p</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
-<span class="w">  </span><span class="nt">q</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="w">  </span><span class="nt">p</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">               </span><span class="c1"># return hyperparameter (p &gt; 1 biases against revisiting)</span>
+<span class="w">  </span><span class="nt">q</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">               </span><span class="c1"># in-out hyperparameter (q &lt; 1 encourages outward exploration)</span>
 
 <span class="nt">dynamics</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SIR&quot;</span>
-<span class="w">  </span><span class="nt">beta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.3</span>
-<span class="w">  </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
-<span class="w">  </span><span class="nt">initial_infected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span>
+<span class="w">  </span><span class="nt">beta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.3</span><span class="w">            </span><span class="c1"># infection probability per contact</span>
+<span class="w">  </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w">           </span><span class="c1"># recovery probability</span>
+<span class="w">  </span><span class="nt">initial_infected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w">  </span><span class="c1"># fraction of nodes initially infected (0–1)</span>
 <span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
 </pre></div>
 </div>
+<p>Section meanings:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">community_detection</span></code> — choose algorithm and pass algorithm-specific params</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">node2vec</span></code> — structural embedding hyperparameters (<code class="docutils literal notranslate"><span class="pre">p</span></code>/<code class="docutils literal notranslate"><span class="pre">q</span></code> control walk bias)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dynamics</span></code> — compartmental model parameters; <code class="docutils literal notranslate"><span class="pre">initial_infected</span></code> expects a fraction</p></li>
+</ul>
 <p><strong>Visualization Settings:</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># viz_config.yaml</span>
 <span class="nt">visualization</span><span class="p">:</span>
@@ -236,7 +247,7 @@
 </section>
 <section id="environment-variables">
 <h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
-<p>py3plex respects the following environment variables for customization:</p>
+<p>py3plex respects the following environment variables for customization. Override them in your shell before running scripts or set them in code via <code class="docutils literal notranslate"><span class="pre">os.environ</span></code>.</p>
 <p><strong>Data Directories:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_DATA_DIR</span></code> — Override default data directory location</p>
@@ -254,16 +265,16 @@
 </ul>
 <p><strong>Performance Tuning:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_NUM_WORKERS</span></code> — Number of parallel workers for algorithms</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_NUM_WORKERS</span></code> — Suggested number of parallel workers for algorithms</p>
 <ul>
-<li><p>Default: <code class="docutils literal notranslate"><span class="pre">os.cpu_count()</span></code></p></li>
-<li><p>Used by: Node2Vec, community detection, some centrality computations</p></li>
+<li><p>Default recommendation: <code class="docutils literal notranslate"><span class="pre">os.cpu_count()</span></code> when you wire this through to APIs</p></li>
+<li><p>Effect: only applied by functions/scripts that read the variable</p></li>
 </ul>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_MEMORY_LIMIT</span></code> — Memory limit for large-scale operations (in GB)</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">PY3PLEX_MEMORY_LIMIT</span></code> — Optional memory budget for large-scale operations (in GB)</p>
 <ul>
-<li><p>Default: System memory / 2</p></li>
-<li><p>Used by: Tensor operations, large network processing</p></li>
+<li><p>Default: unset (falls back to library defaults)</p></li>
+<li><p>Effect: honored only by routines that support explicit memory caps</p></li>
 </ul>
 </li>
 </ul>
@@ -297,11 +308,11 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 <h2>Input Formats<a class="headerlink" href="#input-formats" title="Link to this heading"></a></h2>
 <p>Supported file formats:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> — Multilayer edge list format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">edgelist</span></code> — Standard edge list</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> — JSON network format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">graphml</span></code> — GraphML format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">parquet</span></code> — Apache Parquet (high performance)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> — Multilayer edge list format with layer annotations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edgelist</span></code> — Standard edge list (single layer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> — JSON network format produced by py3plex tools</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">graphml</span></code> — GraphML format for interoperability with NetworkX/Gephi</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parquet</span></code> — Apache Parquet for columnar, high-performance I/O</p></li>
 </ul>
 <p>See <a class="reference internal" href="../how-to/load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a> for format details.</p>
 </section>
@@ -319,15 +330,15 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 </section>
 <section id="algorithm-configuration">
 <h2>Algorithm Configuration<a class="headerlink" href="#algorithm-configuration" title="Link to this heading"></a></h2>
-<p>Many algorithms accept configuration parameters:</p>
+<p>Many algorithms accept configuration parameters. The snippets below show common defaults and what each parameter controls.</p>
 <section id="community-detection">
 <h3>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_louvain</span>
 
 <span class="n">communities</span> <span class="o">=</span> <span class="n">multilayer_louvain</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Resolution parameter</span>
-    <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span>        <span class="c1"># Inter-layer coupling</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Higher → more, smaller communities</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span>        <span class="c1"># Inter-layer coupling strength</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -339,11 +350,11 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>      <span class="c1"># Embedding size</span>
-    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>      <span class="c1"># Walk length</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>      <span class="c1"># Steps per walk</span>
     <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>        <span class="c1"># Walks per node</span>
-    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>              <span class="c1"># Return parameter</span>
-    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>              <span class="c1"># In-out parameter</span>
-    <span class="n">workers</span><span class="o">=</span><span class="mi">4</span>           <span class="c1"># Parallel workers</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>               <span class="c1"># Return parameter (larger discourages backtracking)</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>               <span class="c1"># In-out parameter (smaller explores outward)</span>
+    <span class="n">workers</span><span class="o">=</span><span class="mi">4</span>            <span class="c1"># Parallel workers</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -354,9 +365,9 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 
 <span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>           <span class="c1"># Infection rate</span>
-    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>          <span class="c1"># Recovery rate</span>
-    <span class="n">initial_infected</span><span class="o">=</span><span class="mi">5</span>  <span class="c1"># Initial infected count</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>            <span class="c1"># Infection probability per contact</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>           <span class="c1"># Recovery probability per step</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.05</span>  <span class="c1"># Fraction of nodes initially infected (0–1)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -365,7 +376,7 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 </section>
 <section id="visualization-configuration">
 <h2>Visualization Configuration<a class="headerlink" href="#visualization-configuration" title="Link to this heading"></a></h2>
-<p>Customize visualization:</p>
+<p>Customize visualization; adjust node/edge sizes to match network scale. Set <code class="docutils literal notranslate"><span class="pre">show=False</span></code> for headless rendering:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span>
     <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;network.png&#39;</span><span class="p">,</span>
     <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force_directed&#39;</span><span class="p">,</span>
@@ -459,6 +470,12 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 </section>
 <section id="performance-tuning">
 <h2>Performance Tuning<a class="headerlink" href="#performance-tuning" title="Link to this heading"></a></h2>
+<p>Quick levers:</p>
+<ul class="simple">
+<li><p>Match <code class="docutils literal notranslate"><span class="pre">PY3PLEX_NUM_WORKERS</span></code> to available cores when parallelism is supported.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">parquet</span></code> I/O for large networks to reduce load time.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">PY3PLEX_MEMORY_LIMIT</span></code> when supported to avoid oversubscription on shared machines.</p></li>
+</ul>
 <p>See <a class="reference internal" href="../project/benchmarking.html"><span class="doc">Benchmarking &amp; Performance</span></a> for performance optimization strategies.</p>
 </section>
 <section id="next-steps">

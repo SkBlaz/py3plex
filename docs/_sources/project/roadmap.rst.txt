@@ -1,7 +1,7 @@
 Roadmap & Vision
 ================
 
-This page outlines the vision and planned development for py3plex. For the latest updates, see `GitHub Releases <https://github.com/SkBlaz/py3plex/releases>`_ and `GitHub Issues <https://github.com/SkBlaz/py3plex/issues>`_.
+This page outlines the vision and planned development for py3plex. Roadmaps are snapshots and may shift with user feedback. For the latest updates, see `GitHub Releases <https://github.com/SkBlaz/py3plex/releases>`_ and `GitHub Issues <https://github.com/SkBlaz/py3plex/issues>`_.
 
 Long-Term Vision
 ----------------
@@ -10,13 +10,13 @@ py3plex aims to be the go-to Python library for multilayer network analysis with
 
 **Research Goals:**
 
-* Implementing state-of-the-art multilayer network algorithms from research literature
-* Providing a flexible framework for developing new multilayer methods
-* Supporting reproducible research with comprehensive documentation and examples
+* Implementing state-of-the-art multilayer network algorithms from current research
+* Providing a flexible framework for developing and comparing new multilayer methods
+* Supporting reproducible research with clear documentation and runnable examples
 
 **Production Use Cases:**
 
-* Enabling analysis of real-world multilayer networks at scale
+* Enabling analysis of real-world multilayer networks at scale (millions of nodes)
 * Providing robust APIs for integration into production systems
 * Supporting diverse data formats and interoperability with existing tools
 
@@ -33,19 +33,18 @@ Current Focus (v1.0+)
 
 * Core multilayer network data structures and operations
 * DSL (Domain-Specific Language) for declarative network queries
-* Community detection algorithms (Louvain, Infomap, multilayer variants)
+* Community detection (Louvain, Infomap, multilayer variants)
 * Dynamics simulation (SIR, SIS, random walks, custom models)
 * Network embeddings (Node2Vec, DeepWalk)
 * Centrality measures (degree, betweenness, PageRank, multilayer variants)
-* First-class uncertainty quantification
+* Uncertainty quantification utilities
 * Visualization tools (matplotlib, plotly, interactive)
-* CLI tools for common operations
-* Web GUI for interactive exploration
+* CLI tools for common operations and a web GUI for exploration
 
 Planned Enhancements
 --------------------
 
-**Priority areas for future development:**
+Planned work is grouped by expected timeframe. Items may move as priorities change.
 
 Near Term (Next Release)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -173,4 +172,3 @@ Next Steps
 * **Current features:** :doc:`../getting_started/tutorial_10min`
 * **Contribute:** :doc:`contributing`
 * **Report issues:** https://github.com/SkBlaz/py3plex/issues
-

@@ -52,6 +52,8 @@ Quick Start: Your First Pattern
 
 Let's start with a simple example: finding all edges in a network.
 
+**Mental model:** ``Q.pattern()`` binds **variables** (``"a"``, ``"b"``, etc.) to actual node-layer tuples, then checks that every required edge or path between those variables exists. Each match is a complete mapping of variables → node-layer tuples rather than a single node or edge.
+
 .. code-block:: python
 
     from py3plex.core import multinet
@@ -170,6 +172,8 @@ Sugar method for defining sequential connections:
     # Directed path
     Q.pattern().path(["a", "b", "c"], directed=True)
 
+Paths enforce adjacency in the order you list the variables; with ``directed=True`` the edges must follow that direction.
+
 Triangles
 ~~~~~~~~~
 
@@ -221,7 +225,7 @@ Find edges that cross between specific layers:
 Any Layer
 ~~~~~~~~~
 
-Allow edges in any layer (default behavior):
+Allow edges in any layer (default behavior; call it explicitly if you want the query to read clearly):
 
 .. code-block:: python
 
@@ -239,16 +243,17 @@ Example 1: Find Triangles with Weight Constraints
 
     pattern = (
         Q.pattern()
-         .triangle("a", "b", "c")
+         .edge("a", "b").where(weight__gt=1.0)
+         .edge("b", "c").where(weight__gt=1.0)
+         .edge("c", "a").where(weight__gt=1.0)
          .limit(10)
     )
     
     result = pattern.execute(network)
-    
-    # Filter by weight in post-processing
-    # (Edge predicates during matching coming in future version)
     triangles = result.to_pandas()
     print(f"Found {len(triangles)} triangles")
+
+If you prefer the ``triangle()`` sugar, expand it as above to attach edge predicates, or apply the weight filter after executing the simpler triangle pattern.
 
 Example 2: Find 2-Hop Paths in Specific Layer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -332,8 +337,8 @@ Example 4: Cross-Layer Hub Detection
     )
     
     # Find intersection (nodes in both)
-    social_nodes = set(n[0] for n in social_hubs.to_nodes())
-    work_nodes = set(n[0] for n in work_hubs.to_nodes())
+    social_nodes = {n[0] for n in social_hubs.to_nodes(unique=True)}
+    work_nodes = {n[0] for n in work_hubs.to_nodes(unique=True)}
     cross_layer_hubs = social_nodes & work_nodes
     
     print(f"Cross-layer hubs: {cross_layer_hubs}")
@@ -341,7 +346,7 @@ Example 4: Cross-Layer Hub Detection
 Working with Results
 -------------------
 
-The ``PatternQueryResult`` object provides multiple ways to access matches.
+The ``PatternQueryResult`` object provides multiple ways to access matches. Use raw ``rows`` for programmatic iteration, ``to_pandas`` for tabular analysis, and ``to_nodes`` / ``to_edges`` when you want to pass results back into graph algorithms.
 
 Accessing Rows
 ~~~~~~~~~~~~~
@@ -354,6 +359,9 @@ Accessing Rows
     for match in result.rows:
         print(f"Match: {match}")
         # e.g., {'a': ('Alice', 'social'), 'b': ('Bob', 'social')}
+
+``result.count`` is the number of rows returned, equivalent to ``len(result.rows)``.
+Each row maps your variable names to concrete ``(node, layer)`` tuples.
 
 Converting to Pandas
 ~~~~~~~~~~~~~~~~~~~
@@ -368,6 +376,8 @@ Converting to Pandas
     
     # Export to CSV
     df.to_csv("pattern_matches.csv", index=False)
+
+Column order follows the variables you specified with ``.returning(...)``; if you did not set it, all variables are returned in declaration order.
 
 Extracting Nodes
 ~~~~~~~~~~~~~~~
@@ -391,7 +401,7 @@ Extracting Edges
     # Get all matched edges as tuples
     edges = result.to_edges()
     
-    # Each edge is a tuple of node tuples
+    # Each edge is a (source_tuple, target_tuple) pair
     for src, dst in edges:
         print(f"Edge: {src} -> {dst}")
 
@@ -422,6 +432,8 @@ Filtering Results
     # Limit number of results
     limited = result.limit(10)
 
+``filter`` and ``limit`` return new ``PatternQueryResult`` objects; they do not modify the original result.
+
 Query Execution Planning
 -----------------------
 
@@ -450,6 +462,7 @@ Use ``.explain()`` to see how the pattern will be executed:
     Estimated complexity: 1000
 
 The planner chooses ``a`` as the root because it has the most restrictive predicates (``degree__gt=3``), which will generate fewer candidates.
+The ``estimated_complexity`` field is a relative heuristic, useful for comparing different patterns rather than predicting exact runtime.
 
 Performance Tips
 ---------------
@@ -485,6 +498,12 @@ Performance Tips
    .. code-block:: python
    
        Q.pattern().node("a").node("b").edge("a", "b").constraint("a != b")
+
+5. **Return only needed variables:** Reducing the result width lowers serialization overhead.
+
+   .. code-block:: python
+   
+       Q.pattern().path(["a", "b", "c"]).returning("a", "c")
 
 Advanced Features
 ----------------

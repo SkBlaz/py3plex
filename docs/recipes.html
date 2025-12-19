@@ -147,7 +147,8 @@
   <section id="analysis-recipes-workflows">
 <span id="recipes"></span><h1>Analysis Recipes &amp; Workflows<a class="headerlink" href="#analysis-recipes-workflows" title="Link to this heading"></a></h1>
 <p>This guide provides <strong>practical recipes</strong> for <strong>common analysis workflows</strong> in py3plex.
-Each recipe is a <strong>complete, ready-to-use solution</strong> for a real-world task.</p>
+Each recipe is a <strong>complete, ready-to-use solution</strong> for a real-world task.
+Example outputs use small sample networks; expect different values on your data.</p>
 <nav class="contents local" id="recipe-index">
 <p class="topic-title">Recipe Index</p>
 <ul class="simple">
@@ -958,13 +959,15 @@ Unique nodes: 120
 <p><strong>Task:</strong> Process large multilayer networks without running out of memory.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">gc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
-<span class="c1"># === 1. Load network efficiently ===</span>
-<span class="c1"># Use generators instead of loading all at once</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-
-<span class="c1"># For very large files, load in chunks or stream</span>
-<span class="c1"># (This is a conceptual example - actual implementation may vary)</span>
+<span class="c1"># === 1. Load the network efficiently ===</span>
+<span class="c1"># For very large files, prefer streamed loading; here we show standard load</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data/large_network.txt&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
 
 <span class="c1"># === 2. Process layers independently ===</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
@@ -991,14 +994,14 @@ Unique nodes: 120
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;edges&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
 
 <span class="c1"># === 3. Use sparse representations ===</span>
-<span class="c1"># When computing supra-adjacency matrix</span>
+<span class="c1"># Only build the supra-adjacency matrix when needed</span>
 <span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Supra-adjacency matrix: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (sparse)&quot;</span><span class="p">)</span>
+<span class="c1"># Skip this step for extremely large networks if layer-wise analysis is sufficient.</span>
 
 <span class="c1"># === 4. Sample for exploratory analysis ===</span>
 <span class="c1"># For visualization or initial exploration, work with a sample</span>
 <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">sample_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">))</span>
 <span class="n">sampled_nodes</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>

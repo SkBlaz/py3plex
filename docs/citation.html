@@ -146,10 +146,18 @@
              
   <section id="citation-and-references">
 <h1>Citation and References<a class="headerlink" href="#citation-and-references" title="Link to this heading"></a></h1>
-<p>If you use py3plex in your research, please <strong>cite our work</strong>.</p>
+<p>If you use py3plex in your research, please <strong>cite our work</strong>. Always include the primary journal article, add the conference paper when you mention design or scalability, and pair py3plex with the original algorithm papers whenever you rely on specific built-ins.</p>
+<section id="how-to-cite">
+<h2>How to cite<a class="headerlink" href="#how-to-cite" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Always cite the <strong>primary py3plex journal article</strong>.</p></li>
+<li><p>Add the <strong>conference paper</strong> when you describe the algorithmic design, scalability, or evaluation setup.</p></li>
+<li><p>When you use a specific built-in algorithm, <strong>cite both py3plex and the original method</strong> listed below.</p></li>
+</ul>
+</section>
 <section id="primary-citation">
 <h2>Primary Citation<a class="headerlink" href="#primary-citation" title="Link to this heading"></a></h2>
-<p><strong>Recommended citation for py3plex:</strong></p>
+<p><strong>Recommended citation for py3plex (use this for any publication that uses the library, figures, pipelines, or datasets):</strong></p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Skrlj2019</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{{\v{S}}krlj, Bla{\v{z}} and Kralj, Jan and Lavra{\v{c}}, Nada}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="s">{Py3plex toolkit for visualization and analysis of multilayer networks}</span><span class="p">,</span>
@@ -170,7 +178,7 @@
 </section>
 <section id="conference-paper">
 <h2>Conference Paper<a class="headerlink" href="#conference-paper" title="Link to this heading"></a></h2>
-<p>For the <strong>initial algorithmic work</strong>:</p>
+<p>For the <strong>initial algorithmic design and scalability discussion</strong> (cite alongside the primary paper when you reference these contributions):</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@InProceedings</span><span class="p">{</span><span class="nl">Skrlj2019Conference</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{{\v{S}}krlj, Bla{\v{z}} and Kralj, Jan and Lavra{\v{c}}, Nada}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">editor</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{Aiello, Luca Maria and Cherifi, Chantal and Cherifi, Hocine</span>
@@ -189,9 +197,10 @@
 </section>
 <section id="algorithm-specific-citations">
 <h2>Algorithm-Specific Citations<a class="headerlink" href="#algorithm-specific-citations" title="Link to this heading"></a></h2>
-<p>When using <strong>specific algorithms</strong>, please also cite the <strong>original papers</strong>:</p>
+<p>When you rely on a <strong>specific algorithm implementation inside py3plex</strong>, cite <strong>both py3plex</strong> and the <strong>original method</strong> listed below. Use the paper that corresponds to the computation you run (community detection, embeddings, ranking, etc.).</p>
 <section id="multilayer-modularity">
 <h3>Multilayer Modularity<a class="headerlink" href="#multilayer-modularity" title="Link to this heading"></a></h3>
+<p>For multilayer modularity optimization and multilayer community detection:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Mucha2010</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Mucha, Peter J. and Richardson, Thomas and Macon, Kevin</span>
 <span class="s">             and Porter, Mason A. and Onnela, Jukka-Pekka}</span><span class="p">,</span>
@@ -208,6 +217,7 @@
 </section>
 <section id="node2vec">
 <h3>Node2Vec<a class="headerlink" href="#node2vec" title="Link to this heading"></a></h3>
+<p>For node embeddings learned via biased random walks:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@InProceedings</span><span class="p">{</span><span class="nl">Grover2016</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{Grover, Aditya and Leskovec, Jure}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="s">{node2vec: Scalable Feature Learning for Networks}</span><span class="p">,</span>
@@ -222,6 +232,7 @@
 </section>
 <section id="louvain-algorithm">
 <h3>Louvain Algorithm<a class="headerlink" href="#louvain-algorithm" title="Link to this heading"></a></h3>
+<p>For modularity-based community detection on single-layer projections:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Blondel2008</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Blondel, Vincent D. and Guillaume, Jean-Loup and Lambiotte, Renaud</span>
 <span class="s">             and Lefebvre, Etienne}</span><span class="p">,</span>
@@ -238,6 +249,7 @@
 </section>
 <section id="infomap">
 <h3>Infomap<a class="headerlink" href="#infomap" title="Link to this heading"></a></h3>
+<p>For flow-based community detection (information-theoretic objective):</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Rosvall2008</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Rosvall, Martin and Bergstrom, Carl T.}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">   </span><span class="p">=</span><span class="w"> </span><span class="s">{Maps of random walks on complex networks reveal community structure}</span><span class="p">,</span>
@@ -253,6 +265,7 @@
 </section>
 <section id="multixrank">
 <h3>MultiXRank<a class="headerlink" href="#multixrank" title="Link to this heading"></a></h3>
+<p>For multilayer node ranking based on random walk with restart:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Baptista2022</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Baptista, Anthony and Gonzalez, Aur{\&#39;e}lien and Baudot, Ana{\&quot;\i}s}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">   </span><span class="p">=</span><span class="w"> </span><span class="s">{Universal multilayer network exploration by random walk with restart}</span><span class="p">,</span>
@@ -268,6 +281,7 @@
 </section>
 <section id="deepwalk">
 <h3>DeepWalk<a class="headerlink" href="#deepwalk" title="Link to this heading"></a></h3>
+<p>For uniform random-walk node embeddings:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@InProceedings</span><span class="p">{</span><span class="nl">Perozzi2014</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{Perozzi, Bryan and Al-Rfou, Rami and Skiena, Steven}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="s">{DeepWalk: Online Learning of Social Representations}</span><span class="p">,</span>
@@ -282,7 +296,7 @@
 </section>
 <section id="multilayer-network-theory">
 <h3>Multilayer Network Theory<a class="headerlink" href="#multilayer-network-theory" title="Link to this heading"></a></h3>
-<p><strong>Foundational papers</strong> on multilayer networks:</p>
+<p><strong>Foundational papers</strong> on multilayer networks (cite when you discuss the underlying theory, mathematical formulation, or compare with py3plex defaults):</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Kivela2014</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Kivel{\&quot;a}, Mikko and Arenas, Alex and Barthelemy, Marc</span>
 <span class="s">             and Gleeson, James P. and Moreno, Yamir and Porter, Mason A.}</span><span class="p">,</span>
@@ -329,7 +343,7 @@
 </section>
 <section id="complete-citation-list">
 <h2>Complete Citation List<a class="headerlink" href="#complete-citation-list" title="Link to this heading"></a></h2>
-<p>For algorithm citations, see the <a class="reference internal" href="algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> which includes all major algorithms with their original references and DOIs.</p>
+<p>For additional algorithms, see <a class="reference internal" href="algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a>, which lists all major methods with their original references and DOIs.</p>
 </section>
 <section id="acknowledgments">
 <h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Link to this heading"></a></h2>
@@ -363,8 +377,7 @@
 </section>
 <section id="community-acknowledgments">
 <h3>Community Acknowledgments<a class="headerlink" href="#community-acknowledgments" title="Link to this heading"></a></h3>
-<p>We thank all contributors, users, and the broader network science community for their support, feedback, and contributions.</p>
-<p>Special thanks to contributors who have submitted pull requests, reported issues, or provided feedback.</p>
+<p>We thank all contributors, users, and the broader network science community for feedback, pull requests, and issue reports.</p>
 </section>
 </section>
 <section id="license-information">

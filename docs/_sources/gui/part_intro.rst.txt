@@ -7,6 +7,8 @@ GUI: Web Interface for Network Exploration
 
 The py3plex GUI provides a web-based interface for interactive multilayer network exploration.
 
+Use this page to see how the GUI fits into the documentation set and pick a setup path.
+
 **Features:**
 
 * Load networks from various file formats without code
@@ -26,7 +28,14 @@ The py3plex GUI provides a web-based interface for interactive multilayer networ
 Running the GUI Locally
 ------------------------
 
-**Quick start (Docker - Recommended):**
+Prerequisites:
+
+* Docker and Docker Compose installed locally
+* Ports 8080 (GUI), 5555 (Flower), 8000 (API), and 6379 (Redis) are free
+
+Choose one of the following:
+
+**Option 1 — Docker quick start (recommended):**
 
 .. code-block:: bash
 
@@ -37,24 +46,24 @@ Running the GUI Locally
     # Copy environment configuration
     cp .env.example .env
     
-    # Start all services
+    # Start all services (wait for containers to report "healthy")
     make up
     
     # Open browser to http://localhost:8080
 
-**Alternative: Install from source:**
+**Option 2 — Install from source (contributors):**
 
 .. code-block:: bash
 
-    # Install with GUI extras
+    # Install from PyPI with GUI extras
     pip install py3plex[gui]
-    
-    # Or install from source
+
+    # Or develop against source
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
     pip install -e ".[gui]"
     
-    # Navigate to GUI directory and start services
+    # Navigate to GUI directory and start services (uses Docker Compose)
     cd gui
     make up
 
@@ -63,7 +72,7 @@ The GUI will be available at ``http://localhost:8080``. See :doc:`gui_deployment
 GUI Actions vs py3plex APIs
 ----------------------------
 
-The GUI provides a point-and-click interface for common py3plex operations. Here's how GUI actions map to Python API calls:
+The GUI provides a point-and-click interface for common py3plex operations. The examples below show representative Python calls once you have a ``network`` instance loaded:
 
 .. list-table::
    :header-rows: 1
@@ -80,7 +89,7 @@ The GUI provides a point-and-click interface for common py3plex operations. Here
        ``mls.layer_density(network, layer_name)``
    * - **Detect Communities** → Louvain
      - ``from py3plex.algorithms.community_detection import community_louvain`` |br|
-       ``partition = community_louvain.best_partition(network.get_layers()[layer])``
+       ``partition = community_louvain.best_partition(network.core_network)``
    * - **Compute Centrality** → Degree
      - ``from py3plex.algorithms.multilayer_algorithms.centrality import MultilayerCentrality`` |br|
        ``calc = MultilayerCentrality(network)`` |br|

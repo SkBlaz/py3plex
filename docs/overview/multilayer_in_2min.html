@@ -169,7 +169,7 @@
 <li><p>They <strong>attend conferences</strong> together (social network)</p></li>
 <li><p>They may <strong>share funding</strong> (grant network)</p></li>
 </ul>
-<p>A single-layer network can only capture one of these relationships. A multilayer network captures all of them.</p>
+<p>A single-layer network captures only one of these relationships. A multilayer network keeps every relationship type separate while linking the same entity across layers.</p>
 </section>
 <section id="visual-intuition">
 <h2>Visual Intuition<a class="headerlink" href="#visual-intuition" title="Link to this heading"></a></h2>
@@ -198,14 +198,15 @@ Alice in Layer 1 ↔ Alice in Layer 2 (same person)
 </section>
 <section id="key-concepts">
 <h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
-<p><strong>Layers</strong></p>
-<p>Each layer represents a type of relationship (e.g., friendship, collaboration, family).</p>
-<p><strong>Intra-layer edges</strong></p>
-<p>Connections within a single layer (e.g., Alice friends with Bob).</p>
-<p><strong>Inter-layer edges</strong></p>
-<p>Connections between layers, usually representing the same entity across layers (e.g., Alice in the friendship layer is the same person as Alice in the collaboration layer).</p>
-<p><strong>Node-layer pairs</strong></p>
-<p>In py3plex, a node in layer A is conceptually distinct from the same node in layer B. This is the fundamental abstraction that makes multilayer analysis possible.</p>
+<p>Keep these quick definitions in mind while you read the rest.</p>
+<p><strong>Layers</strong>
+Each layer represents one relationship type (e.g., friendship, collaboration, family).</p>
+<p><strong>Node-layer pairs</strong>
+Every node is represented per layer. In py3plex, <code class="docutils literal notranslate"><span class="pre">('Alice',</span> <span class="pre">'friends')</span></code> and <code class="docutils literal notranslate"><span class="pre">('Alice',</span> <span class="pre">'work')</span></code> are distinct node-layer pairs that can be linked. Counts in py3plex statistics refer to these pairs, not just the unique entity names.</p>
+<p><strong>Intra-layer edges</strong>
+Connections within a single layer (e.g., Alice friends with Bob).</p>
+<p><strong>Inter-layer edges</strong>
+Connections between layers, typically tying the same entity across layers (e.g., Alice in the friendship layer ↔ Alice in the collaboration layer). They can also connect different entity types when modeling interactions between layers.</p>
 </section>
 <section id="types-of-multilayer-networks">
 <h2>Types of Multilayer Networks<a class="headerlink" href="#types-of-multilayer-networks" title="Link to this heading"></a></h2>
@@ -239,10 +240,10 @@ Alice in Layer 1 ↔ Alice in Layer 2 (same person)
 <p><strong>New properties emerge</strong></p>
 <p>Multilayer networks have properties that don’t exist in single-layer networks:</p>
 <ul class="simple">
-<li><p><strong>Node versatility:</strong> How many layers does a node participate in?</p></li>
-<li><p><strong>Layer correlation:</strong> Are connections in layer A predictive of layer B?</p></li>
-<li><p><strong>Multilayer communities:</strong> Groups that span multiple relationship types</p></li>
-<li><p><strong>Multiplexity:</strong> Number of different relationship types between two nodes</p></li>
+<li><p><strong>Node versatility:</strong> How many layers a node participates in, and whether its role shifts by layer.</p></li>
+<li><p><strong>Layer correlation:</strong> Whether connections in layer A are predictive of connections in layer B.</p></li>
+<li><p><strong>Multilayer communities:</strong> Groups that span multiple relationship types.</p></li>
+<li><p><strong>Multiplexity:</strong> Number of different relationship types between two nodes.</p></li>
 </ul>
 </section>
 <section id="real-world-impact">
@@ -267,7 +268,7 @@ Alice in Layer 1 ↔ Alice in Layer 2 (same person)
 
 <span class="c1"># Add edges in different layers</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="c1"># Friendship layer</span>
+    <span class="c1"># Friendship layer (source, source_layer, target, target_layer, weight)</span>
     <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
     <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 
@@ -276,7 +277,7 @@ Alice in Layer 1 ↔ Alice in Layer 2 (same person)
     <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
-<span class="c1"># Analyze</span>
+<span class="c1"># Analyze (counts are for node-layer pairs)</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

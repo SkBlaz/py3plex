@@ -146,10 +146,20 @@
              
   <section id="contributing-to-py3plex">
 <h1>Contributing to py3plex<a class="headerlink" href="#contributing-to-py3plex" title="Link to this heading"></a></h1>
-<p>We welcome contributions to py3plex. This guide explains how to contribute effectively.</p>
+<p>We welcome contributions to py3plex. This guide explains how to contribute efficiently and predictably.</p>
+<section id="quick-checklist">
+<h2>Quick Checklist<a class="headerlink" href="#quick-checklist" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use a virtual environment and install <code class="docutils literal notranslate"><span class="pre">.[dev]</span></code> dependencies (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[dev]&quot;</span></code>).</p></li>
+<li><p>Create a feature branch from an up-to-date <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
+<li><p>Write tests alongside code changes and keep them deterministic.</p></li>
+<li><p>Run linters and tests locally before opening a PR.</p></li>
+<li><p>Update documentation when behavior changes or new features land.</p></li>
+</ul>
+</section>
 <section id="ways-to-contribute">
 <h2>Ways to Contribute<a class="headerlink" href="#ways-to-contribute" title="Link to this heading"></a></h2>
-<p>You can contribute in many ways:</p>
+<p>You can contribute in many ways. Pick the path that matches your time and interest:</p>
 <ul class="simple">
 <li><p>Report bugs - Open issues for bugs you encounter</p></li>
 <li><p>Suggest features - Propose new features or improvements</p></li>
@@ -166,22 +176,23 @@
 <h3>Fork and Clone<a class="headerlink" href="#fork-and-clone" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Fork the repository on GitHub</p></li>
-<li><p>Clone your fork:</p></li>
+<li><p>Clone your fork locally:</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/YOUR_USERNAME/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li><p>Add upstream remote:</p></li>
+<li><p>Add upstream remote so you can sync with the main project:</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>upstream<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+git<span class="w"> </span>fetch<span class="w"> </span>upstream
 </pre></div>
 </div>
 </section>
 <section id="development-setup">
 <h3>Development Setup<a class="headerlink" href="#development-setup" title="Link to this heading"></a></h3>
-<p>Install in development mode with all dependencies:</p>
+<p>Install in development mode with all dependencies (use the Python version listed in <code class="docutils literal notranslate"><span class="pre">README</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create virtual environment</span>
 python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
 <span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
@@ -201,10 +212,13 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="development-workflow">
 <h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h2>
+<p>The typical loop is: branch -&gt; change -&gt; test -&gt; lint -&gt; document -&gt; push -&gt; PR. Keep each loop small to make reviews faster.</p>
 <section id="create-a-branch">
 <h3>Create a Branch<a class="headerlink" href="#create-a-branch" title="Link to this heading"></a></h3>
-<p>Always create a new branch for your work:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-new-feature
+<p>Always create a new branch for your work and start from an up-to-date <code class="docutils literal notranslate"><span class="pre">main</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>main
+git<span class="w"> </span>pull<span class="w"> </span>upstream<span class="w"> </span>main
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-new-feature
 <span class="c1"># or</span>
 git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>fix/issue-123
 </pre></div>
@@ -213,10 +227,10 @@ git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </
 <section id="make-changes">
 <h3>Make Changes<a class="headerlink" href="#make-changes" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
-<li><p>Write your code following our coding standards (see below)</p></li>
-<li><p>Add or update tests</p></li>
-<li><p>Update documentation</p></li>
-<li><p>Run linters and tests</p></li>
+<li><p>Write your code following our coding standards (see below).</p></li>
+<li><p>Add or update tests while you build the feature (avoid combining many unrelated changes).</p></li>
+<li><p>Update documentation and examples if behavior changes.</p></li>
+<li><p>Run linters and tests locally before committing; fix warnings rather than silencing them.</p></li>
 </ol>
 </section>
 <section id="run-tests">
@@ -224,8 +238,12 @@ git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
 make<span class="w"> </span><span class="nb">test</span>
 
-<span class="c1"># Or directly with pytest</span>
-python<span class="w"> </span>run_tests.py
+<span class="c1"># Or directly with pytest (same command make calls)</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest
+</pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">-k</span></code> to run a subset when iterating quickly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;my_feature&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -235,23 +253,29 @@ python<span class="w"> </span>run_tests.py
 make<span class="w"> </span>lint
 
 <span class="c1"># Or individual tools</span>
-make<span class="w"> </span>format<span class="w">  </span><span class="c1"># Auto-format code (black, isort)</span>
-ruff<span class="w"> </span>check<span class="w"> </span>.
-mypy<span class="w"> </span>py3plex
+make<span class="w"> </span>format<span class="w">          </span><span class="c1"># Auto-format code (black, isort)</span>
+ruff<span class="w"> </span>check<span class="w"> </span>.<span class="w">         </span><span class="c1"># Lint Python</span>
+mypy<span class="w"> </span>py3plex<span class="w">         </span><span class="c1"># Type checks</span>
+black<span class="w"> </span>--check<span class="w"> </span>.<span class="w">      </span><span class="c1"># Verify formatting when you cannot auto-format</span>
 </pre></div>
 </div>
 </section>
 <section id="commit-changes">
 <h3>Commit Changes<a class="headerlink" href="#commit-changes" title="Link to this heading"></a></h3>
-<p>Write clear, descriptive commit messages:</p>
+<p>Write clear, descriptive commit messages that explain the intent:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add feature X to support Y</span>
-
-<span class="s2">- Implement algorithm for Z</span>
-<span class="s2">- Add tests for edge cases</span>
-<span class="s2">- Update documentation&quot;</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add feature X to support Y&quot;</span>
 </pre></div>
 </div>
+<p>Example message body:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Add feature X to support Y
+
+- Implement algorithm for Z
+- Add tests for edge cases
+- Update documentation
+</pre></div>
+</div>
+<p>Keep the subject line under 72 characters and use the body to capture rationale and scope.</p>
 </section>
 <section id="push-and-create-pr">
 <h3>Push and Create PR<a class="headerlink" href="#push-and-create-pr" title="Link to this heading"></a></h3>
@@ -275,7 +299,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <ul class="simple">
 <li><p>Line length: 100 characters (not 80)</p></li>
 <li><p>Indentation: 4 spaces (no tabs)</p></li>
-<li><p>String quotes: Single quotes preferred (‘text’ not “text”)</p></li>
+<li><p>String quotes: Single quotes preferred (‘text’ not “text”); Black may normalize during formatting</p></li>
 <li><p>Imports: Grouped and sorted (using isort)</p></li>
 </ul>
 <p>Auto-format your code:</p>
@@ -354,6 +378,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
     <span class="k">pass</span>
 </pre></div>
 </div>
+<p>The <code class="docutils literal notranslate"><span class="pre">pass</span></code> above is only a placeholder; implement the described behavior. Keep examples runnable with minimal imports and avoid long-running, network-dependent, or nondeterministic code.</p>
 </section>
 <section id="type-hints">
 <h3>Type Hints<a class="headerlink" href="#type-hints" title="Link to this heading"></a></h3>
@@ -381,6 +406,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <li><p>Integration tests for workflows</p></li>
 <li><p>Edge cases for boundary conditions</p></li>
 <li><p>Documentation tests for examples in docstrings</p></li>
+<li><p>Deterministic behavior (set seeds where randomness is involved and avoid network access)</p></li>
 </ul>
 </section>
 <section id="writing-tests">
@@ -445,13 +471,18 @@ xdg-open<span class="w"> </span>htmlcov/index.html<span class="w">  </span><span
 </section>
 <section id="build-documentation">
 <h3>Build Documentation<a class="headerlink" href="#build-documentation" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docfiles
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># From repo root, strict build</span>
+sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>-n<span class="w"> </span>-W<span class="w"> </span>--keep-going<span class="w"> </span>docfiles<span class="w"> </span>docfiles/_build/html
+
+<span class="c1"># Or use the Makefile from inside docfiles/</span>
+<span class="nb">cd</span><span class="w"> </span>docfiles
 make<span class="w"> </span>html
 
 <span class="c1"># View documentation</span>
 open<span class="w"> </span>_build/html/index.html
 </pre></div>
 </div>
+<p>The strict build flags (<code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">-W</span></code>) are the same ones used in CI; fix warnings locally so CI stays green.</p>
 </section>
 <section id="documentation-style">
 <h3>Documentation Style<a class="headerlink" href="#documentation-style" title="Link to this heading"></a></h3>
@@ -460,6 +491,7 @@ open<span class="w"> </span>_build/html/index.html
 <li><p>Code examples - Include working examples</p></li>
 <li><p>Cross-references - Link to related documentation</p></li>
 <li><p>Visual aids - Add diagrams where helpful</p></li>
+<li><p>Keep examples short, deterministic, and free of external dependencies</p></li>
 </ul>
 </section>
 </section>
@@ -467,23 +499,27 @@ open<span class="w"> </span>_build/html/index.html
 <h2>Pull Request Guidelines<a class="headerlink" href="#pull-request-guidelines" title="Link to this heading"></a></h2>
 <section id="before-submitting">
 <h3>Before Submitting<a class="headerlink" href="#before-submitting" title="Link to this heading"></a></h3>
-<p>[OK] Code follows style guide (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> passes)</p>
-<p>[OK] All tests pass (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> passes)</p>
-<p>[OK] New code has tests</p>
-<p>[OK] Documentation is updated</p>
-<p>[OK] Commit messages are clear</p>
-<p>[OK] Branch is up to date with main</p>
+<p>Make sure each item below is true before opening a PR:</p>
+<ul class="simple">
+<li><p>Code follows style guide (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> passes)</p></li>
+<li><p>All tests pass (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> passes)</p></li>
+<li><p>New code has tests</p></li>
+<li><p>Documentation is updated when behavior changes</p></li>
+<li><p>Commit messages are clear</p></li>
+<li><p>Branch is up to date with <code class="docutils literal notranslate"><span class="pre">main</span></code> (<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">upstream</span> <span class="pre">&amp;&amp;</span> <span class="pre">git</span> <span class="pre">rebase</span> <span class="pre">upstream/main</span></code>)</p></li>
+</ul>
 </section>
 <section id="pr-description">
 <h3>PR Description<a class="headerlink" href="#pr-description" title="Link to this heading"></a></h3>
 <p>Include in your PR description:</p>
 <ul class="simple">
 <li><p>What changed</p></li>
-<li><p>Why the change is needed</p></li>
-<li><p>How you implemented it</p></li>
+<li><p>Why the change is needed (link the issue if one exists)</p></li>
+<li><p>How you implemented it (high-level)</p></li>
 <li><p>Testing done</p></li>
 <li><p>Screenshots for visual changes</p></li>
 <li><p>Breaking changes if any</p></li>
+<li><p>Deployment or migration notes if they exist</p></li>
 </ul>
 <p>Example PR template:</p>
 <div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gu">## Description</span>
@@ -518,7 +554,7 @@ None.
 <h3>Review Process<a class="headerlink" href="#review-process" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Maintainers will review your PR</p></li>
-<li><p>Address any feedback or requested changes</p></li>
+<li><p>Address any feedback or requested changes promptly</p></li>
 <li><p>Once approved, your PR will be merged</p></li>
 <li><p>Your contribution will be in the next release!</p></li>
 </ol>
@@ -537,7 +573,7 @@ None.
 <li><p>Python version (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--version</span></code>)</p></li>
 <li><p>py3plex version</p></li>
 <li><p>Operating system</p></li>
-<li><p>Minimal code example</p></li>
+<li><p>Minimal code example that runs without external data</p></li>
 </ul>
 <p>Example:</p>
 <div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gu">## Bug Description</span>

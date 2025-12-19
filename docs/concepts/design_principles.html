@@ -216,21 +216,22 @@
 <section id="simple-off-the-shelf-functionality">
 <h3>Simple, Off-the-Shelf Functionality<a class="headerlink" href="#simple-off-the-shelf-functionality" title="Link to this heading"></a></h3>
 <p><strong>Principle:</strong> Provide ready-to-use tools that work out of the box with minimal configuration.</p>
-<p><strong>In practice:</strong></p>
+<p><strong>In practice:</strong> keep the first example minimal, without mandatory boilerplate.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Simple, intuitive API</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># List format: [source, source_layer, target, target_layer, weight]</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>  <span class="c1"># Works immediately</span>
 </pre></div>
 </div>
-<p><strong>Rationale:</strong> Researchers and practitioners need tools that are easy to adopt without extensive setup or configuration. py3plex aims to minimize the barrier to entry for multilayer network analysis.</p>
+<p><strong>Rationale:</strong> Researchers and practitioners need tools that are easy to adopt without extensive setup or configuration. py3plex minimizes the barrier to entry for multilayer network analysis by keeping the first run frictionless.</p>
 </section>
 <section id="networkx-compatibility">
 <h3>NetworkX Compatibility<a class="headerlink" href="#networkx-compatibility" title="Link to this heading"></a></h3>
 <p><strong>Principle:</strong> Build on NetworkX rather than reinventing the wheel.</p>
-<p><strong>In practice:</strong></p>
+<p><strong>In practice:</strong> py3plex wraps a NetworkX graph and keeps it accessible.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="c1"># Direct access to NetworkX graph</span>
@@ -245,8 +246,8 @@
 <ul class="simple">
 <li><p>Leverages a mature, well-tested codebase</p></li>
 <li><p>Provides access to hundreds of NetworkX algorithms</p></li>
-<li><p>Ensures interoperability with the broader Python ecosystem</p></li>
-<li><p>Reduces learning curve for users familiar with NetworkX</p></li>
+<li><p>Ensures interoperability with the broader Python ecosystem (e.g., pandas, scipy)</p></li>
+<li><p>Reduces learning curve for users familiar with NetworkX, while adding multilayer semantics</p></li>
 </ul>
 </section>
 <section id="modular-architecture">
@@ -281,11 +282,15 @@
 </section>
 <section id="implementation-principles">
 <h2>Implementation Principles<a class="headerlink" href="#implementation-principles" title="Link to this heading"></a></h2>
+<p>These principles translate the philosophy into everyday coding patterns inside py3plex.</p>
 <section id="flexibility">
 <h3>Flexibility<a class="headerlink" href="#flexibility" title="Link to this heading"></a></h3>
 <p><strong>Principle:</strong> Support multiple ways to accomplish tasks, accommodating different workflows.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Multiple ways to create networks</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Multiple ways to create networks</span>
 
 <span class="c1"># Method 1: Direct edge addition</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
@@ -306,8 +311,8 @@
 </section>
 <section id="lazy-evaluation">
 <h3>Lazy Evaluation<a class="headerlink" href="#lazy-evaluation" title="Link to this heading"></a></h3>
-<p><strong>Principle:</strong> Compute expensive operations only when needed.</p>
-<p><strong>In practice:</strong></p>
+<p><strong>Principle:</strong> Compute expensive operations only when needed, and only once when caching is safe.</p>
+<p><strong>In practice:</strong> defer heavy construction until explicitly requested.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Supra-adjacency matrix is not computed on network creation</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span><span class="o">...</span><span class="p">])</span>  <span class="c1"># Fast</span>
@@ -315,20 +320,21 @@
 <span class="c1"># Matrix is computed only when requested</span>
 <span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>  <span class="c1"># Computed here</span>
 
-<span class="c1"># Subsequent calls may use cached result (where appropriate)</span>
+<span class="c1"># Subsequent calls may reuse cached result unless the graph changes</span>
 </pre></div>
 </div>
-<p><strong>Rationale:</strong> Many multilayer operations (e.g., matrix construction) are computationally expensive. Lazy evaluation:</p>
+<p><strong>Rationale:</strong> Many multilayer operations (e.g., supra-adjacency matrix construction, typically of shape <code class="docutils literal notranslate"><span class="pre">(n·L)×(n·L)</span></code>) are computationally expensive. Lazy evaluation:</p>
 <ul class="simple">
 <li><p>Improves performance for common operations</p></li>
 <li><p>Reduces memory usage</p></li>
 <li><p>Allows working with large networks when full matrices aren’t needed</p></li>
+<li><p>Encourages recomputing expensive results only after meaningful graph changes</p></li>
 </ul>
 </section>
 <section id="graceful-degradation">
 <h3>Graceful Degradation<a class="headerlink" href="#graceful-degradation" title="Link to this heading"></a></h3>
-<p><strong>Principle:</strong> Optional features should fail gracefully, not crash the entire application.</p>
-<p><strong>In practice:</strong></p>
+<p><strong>Principle:</strong> Optional features should fail gracefully, not crash the entire application. Where possible, suggest viable fallbacks.</p>
+<p><strong>In practice:</strong> catch optional-dependency errors and steer users to alternatives.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If Infomap is not installed</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">communities</span> <span class="o">=</span> <span class="n">infomap_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -348,7 +354,7 @@
 <section id="explicit-over-implicit">
 <h3>Explicit Over Implicit<a class="headerlink" href="#explicit-over-implicit" title="Link to this heading"></a></h3>
 <p><strong>Principle:</strong> Make behavior explicit and predictable, avoiding surprising defaults.</p>
-<p><strong>Good examples:</strong></p>
+<p><strong>Good examples:</strong> be clear about formats, directionality, and layer scope.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Explicit parameter names</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="s2">&quot;data.txt&quot;</span><span class="p">,</span>
@@ -364,7 +370,7 @@
 <ul class="simple">
 <li><p>Easier to understand and debug</p></li>
 <li><p>Less prone to errors</p></li>
-<li><p>Self-documenting</p></li>
+<li><p>Self-documenting (intent is visible from the call site)</p></li>
 <li><p>More maintainable</p></li>
 </ul>
 </section>
@@ -382,7 +388,7 @@
 <span class="n">supra_adj_dense</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Rationale:</strong> Real-world networks are typically sparse (few edges relative to potential edges). Sparse representations:</p>
+<p><strong>Rationale:</strong> Real-world networks are typically sparse (few edges relative to potential edges). The supra-adjacency matrix indexes (node, layer) pairs, so sparsity keeps it tractable. Sparse representations:</p>
 <ul class="simple">
 <li><p>Reduce memory usage by orders of magnitude</p></li>
 <li><p>Enable analysis of networks with millions of nodes</p></li>
@@ -394,12 +400,12 @@
 <p><strong>Principle:</strong> Choose appropriate data structures for common operations.</p>
 <p><strong>Examples:</strong></p>
 <ul class="simple">
-<li><p>NetworkX graphs for topology (edge lookups, traversals)</p></li>
+<li><p>NetworkX graphs for topology (edge lookups, traversals; preserves attributes)</p></li>
 <li><p>Dictionaries for layer mappings (O(1) lookups)</p></li>
 <li><p>Sparse matrices for linear algebra</p></li>
 <li><p>Sets for membership testing</p></li>
 </ul>
-<p><strong>Rationale:</strong> The right data structure makes operations fast and memory-efficient.</p>
+<p><strong>Rationale:</strong> The right data structure keeps common operations both fast and memory-efficient.</p>
 </section>
 <section id="algorithmic-defaults">
 <h3>Algorithmic Defaults<a class="headerlink" href="#algorithmic-defaults" title="Link to this heading"></a></h3>
@@ -419,6 +425,7 @@
 <li><p>Make the library easy to use for beginners</p></li>
 <li><p>Reduce parameter tuning overhead</p></li>
 <li><p>Are based on published research and empirical validation</p></li>
+<li><p>Provide a safe baseline before task-specific tuning (adjust <code class="docutils literal notranslate"><span class="pre">gamma</span></code>/<code class="docutils literal notranslate"><span class="pre">omega</span></code> for resolution and coupling as network density changes)</p></li>
 </ul>
 </section>
 </section>
@@ -433,7 +440,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom centrality measure.&quot;&quot;&quot;</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span>
     <span class="c1"># Implement your algorithm</span>
-    <span class="k">return</span> <span class="n">centrality_scores</span>
+    <span class="k">return</span> <span class="n">centrality_scores</span>  <span class="c1"># Dict keyed by (node, layer) tuples</span>
 
 <span class="c1"># Easy to add custom visualizations</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_plot</span><span class="p">(</span><span class="n">ml_network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -448,8 +455,8 @@
 </section>
 <section id="clear-interfaces">
 <h3>Clear Interfaces<a class="headerlink" href="#clear-interfaces" title="Link to this heading"></a></h3>
-<p><strong>Principle:</strong> Define clear, stable APIs for modules.</p>
-<p><strong>In practice:</strong></p>
+<p><strong>Principle:</strong> Define clear, stable APIs for modules so that code using them remains forward-compatible.</p>
+<p><strong>In practice:</strong> similar functions take the same arguments, and return shapes stay stable.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All statistics follow same interface</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
@@ -463,9 +470,9 @@
 <p><strong>Rationale:</strong> Clear interfaces make py3plex:</p>
 <ul class="simple">
 <li><p>Easier to learn (patterns repeat)</p></li>
-<li><p>More predictable</p></li>
+<li><p>More predictable (fewer surprises across modules)</p></li>
 <li><p>More maintainable</p></li>
-<li><p>Easier to extend</p></li>
+<li><p>Easier to extend without breaking callers</p></li>
 </ul>
 </section>
 </section>
@@ -474,12 +481,13 @@
 <section id="comprehensive-documentation">
 <h3>Comprehensive Documentation<a class="headerlink" href="#comprehensive-documentation" title="Link to this heading"></a></h3>
 <p><strong>Principle:</strong> Every feature should be documented with examples.</p>
-<p><strong>In practice:</strong></p>
+<p><strong>In practice:</strong> blend narrative guides with executable snippets.</p>
 <ul class="simple">
 <li><p>Detailed docstrings for all public functions</p></li>
 <li><p>Code examples in documentation</p></li>
 <li><p>Real-world use cases</p></li>
 <li><p>API reference with parameter descriptions</p></li>
+<li><p>Cross-links between conceptual guides and API reference</p></li>
 </ul>
 <p><strong>Rationale:</strong> Good documentation:</p>
 <ul class="simple">
@@ -491,8 +499,8 @@
 </section>
 <section id="extensive-testing">
 <h3>Extensive Testing<a class="headerlink" href="#extensive-testing" title="Link to this heading"></a></h3>
-<p><strong>Principle:</strong> Test all core functionality and edge cases.</p>
-<p><strong>In practice:</strong></p>
+<p><strong>Principle:</strong> Test all core functionality and edge cases, including multilayer specifics.</p>
+<p><strong>In practice:</strong> combine correctness checks with performance guards.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Comprehensive test suite</span>
 make<span class="w"> </span><span class="nb">test</span><span class="w">          </span><span class="c1"># Unit tests</span>
 make<span class="w"> </span>benchmark<span class="w">     </span><span class="c1"># Performance tests</span>
@@ -503,7 +511,7 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
 <ul class="simple">
 <li><p>Code works as intended</p></li>
 <li><p>Changes don’t break existing functionality</p></li>
-<li><p>Edge cases are handled correctly</p></li>
+<li><p>Edge cases are handled correctly (layered vs. aggregated workflows)</p></li>
 <li><p>Performance regressions are caught</p></li>
 </ul>
 </section>
@@ -525,19 +533,19 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
 <ul class="simple">
 <li><p>Data sharing between tools</p></li>
 <li><p>Integration with other software</p></li>
-<li><p>Long-term data preservation</p></li>
+<li><p>Long-term data preservation (avoid lock-in to bespoke formats)</p></li>
 </ul>
 </section>
 <section id="cross-platform-compatibility">
 <h3>Cross-Platform Compatibility<a class="headerlink" href="#cross-platform-compatibility" title="Link to this heading"></a></h3>
 <p><strong>Principle:</strong> Work consistently across operating systems.</p>
-<p><strong>Tested on:</strong></p>
+<p><strong>Regularly exercised on:</strong> (through automated builds and manual checks)</p>
 <ul class="simple">
 <li><p>Linux (Ubuntu 20.04, 22.04)</p></li>
 <li><p>macOS (11, 12, 13)</p></li>
 <li><p>Windows (Server 2019, 2022)</p></li>
 </ul>
-<p><strong>Rationale:</strong> Users work on different platforms. Cross-platform support ensures py3plex works everywhere.</p>
+<p><strong>Rationale:</strong> Users work on different platforms. Cross-platform support keeps behavior consistent and reduces support surprises.</p>
 </section>
 </section>
 <section id="research-oriented-design">
@@ -563,7 +571,7 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
 </section>
 <section id="reproducibility">
 <h3>Reproducibility<a class="headerlink" href="#reproducibility" title="Link to this heading"></a></h3>
-<p><strong>Principle:</strong> Support reproducible research.</p>
+<p><strong>Principle:</strong> Support reproducible research by exposing seed controls wherever randomness is involved.</p>
 <p><strong>In practice:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Random seed parameters for reproducibility</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
@@ -573,6 +581,8 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
 
 <span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># Reproducible walks</span>
 <span class="p">)</span>
 </pre></div>
@@ -586,12 +596,13 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
 </section>
 <section id="validation-and-benchmarking">
 <h3>Validation and Benchmarking<a class="headerlink" href="#validation-and-benchmarking" title="Link to this heading"></a></h3>
-<p><strong>Principle:</strong> Validate algorithms against published results.</p>
-<p><strong>In practice:</strong></p>
+<p><strong>Principle:</strong> Validate algorithms against published results and known properties when possible.</p>
+<p><strong>In practice:</strong> combine qualitative checks (structure) with quantitative ones (scores, timings).</p>
 <ul class="simple">
-<li><p>Benchmark suite comparing to reference implementations</p></li>
-<li><p>Validation against known network properties</p></li>
-<li><p>Performance metrics for large networks</p></li>
+<li><p>Benchmark scripts comparing to reference implementations when available</p></li>
+<li><p>Validation against known network properties (e.g., degree sequences, connectivity)</p></li>
+<li><p>Performance metrics for representative network sizes</p></li>
+<li><p>Recorded assumptions when a formal ground truth is unavailable</p></li>
 </ul>
 <p><strong>Rationale:</strong> Validation ensures:</p>
 <ul class="simple">
@@ -659,9 +670,8 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
 <ul class="simple">
 <li><p>Pure Python (easy installation)</p></li>
 <li><p>Comprehensive algorithm library</p></li>
-<li><p>NetworkX integration</p></li>
-<li><p>Active development</p></li>
-<li><p>Research-backed</p></li>
+<li><p>NetworkX integration (reuse familiar APIs)</p></li>
+<li><p>Active development with research-backed defaults</p></li>
 </ul>
 </section>
 </section>

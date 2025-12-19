@@ -3,7 +3,9 @@ How to Visualize Multilayer Networks
 
 **Goal:** Create publication-ready visualizations of multilayer networks.
 
-**Prerequisites:** A loaded network (see :doc:`load_and_build_networks`).
+**Prerequisites:** A loaded network (see :doc:`load_and_build_networks`). Most
+snippets reuse a ``network`` object created in the quick plot example; swap in
+your own network if you already have one loaded.
 
 Basic Visualization
 -------------------
@@ -14,7 +16,7 @@ Quick Plot
 .. code-block:: python
 
     from py3plex.core import multinet
-    
+
     # Load network
     network = multinet.multi_layer_network()
     network.add_edges([
@@ -22,11 +24,12 @@ Quick Plot
         ['Bob', 'friends', 'Carol', 'friends', 1],
         ['Alice', 'work', 'Carol', 'work', 1],
     ], input_type="list")
-    
+
     # Visualize
     network.visualize_network(show=True)
 
-This opens an interactive window with the network visualization.
+This opens an interactive window with the aggregated multilayer visualization. Set
+``show=False`` for headless environments.
 
 Save to File
 ~~~~~~~~~~~~
@@ -34,7 +37,7 @@ Save to File
 .. code-block:: python
 
     network.visualize_network(
-        output_file='network.png',
+        output_file='network.png',  # png, pdf, svg are supported
         show=False
     )
 
@@ -44,48 +47,82 @@ Customizing Visualizations
 Node Sizes and Colors
 ~~~~~~~~~~~~~~~~~~~~~
 
+The built-in hairball plot draws the aggregated network with layer-based colors.
+You can override sizing and colors explicitly to emphasize node importance:
+
 .. code-block:: python
 
-    from py3plex.visualization import visualize_network_custom
-    
-    # Compute node importance
+    import matplotlib.pyplot as plt
+    from py3plex.visualization import hairball_plot
     from py3plex.dsl import Q
-    result = Q.nodes().compute("degree").execute(network)
-    degrees = {node: data['degree'] for node, data in result.items()}
-    
-    # Visualize with custom node sizes
-    visualize_network_custom(
-        network,
-        node_sizes=degrees,
-        node_color_by_layer=True,
-        output_file='network_sized.png'
+
+    # Compute degrees for sizing
+    degree_data = Q.nodes().compute("degree").execute(network)
+    node_order = list(network.core_network.nodes())
+    node_sizes = [
+        degree_data.get(node, {'degree': 1})['degree'] * 50
+        for node in node_order
+    ]
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+    hairball_plot(
+        network.core_network,
+        ax=ax,
+        node_sizes=node_sizes,
+        legend=True,
+        layout_algorithm="force",
+        alpha_channel=0.6,
     )
+    fig.savefig("network_sized.png", dpi=300, bbox_inches="tight")
 
 Edge Weights
 ~~~~~~~~~~~~
 
 .. code-block:: python
 
-    visualize_network_custom(
-        network,
-        edge_width_by_weight=True,
-        show=True
+    import matplotlib.pyplot as plt
+    import networkx as nx
+
+    # Widths based on stored weight (default to 1); clamp to keep faint edges visible
+    edge_widths = [
+        max(data.get('weight', 1), 0.5)
+        for _, _, data in network.core_network.edges(data=True)
+    ]
+
+    pos = nx.spring_layout(network.core_network, k=0.6)
+    plt.figure(figsize=(8, 8))
+    nx.draw_networkx(
+        network.core_network,
+        pos,
+        with_labels=False,
+        node_size=50,
+        edge_color="gray",
+        width=edge_widths,
+        alpha=0.7,
     )
+    plt.axis("off")
+    plt.tight_layout()
+    plt.show()
 
 Layout Algorithms
 -----------------
+
+Switch layouts to highlight different structures: force-directed for overall
+connectivity, circular for equal treatment of nodes within a layer, or diagonal
+layouts for explicit layer separation.
 
 Force-Directed Layout
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    from py3plex.visualization.multilayer import hairball_plot
-    
+    from py3plex.visualization import hairball_plot
+
     hairball_plot(
-        network,
-        layout_algorithm='force_directed',
-        output_file='force_layout.png'
+        network.core_network,
+        layout_algorithm='force',
+        legend=True,
+        display=False
     )
 
 Circular Layout
@@ -93,10 +130,37 @@ Circular Layout
 
 .. code-block:: python
 
-    hairball_plot(
-        network,
-        layout_algorithm='circular',
-        output_file='circular_layout.png'
+    import matplotlib.pyplot as plt
+    import networkx as nx
+
+    pos = nx.circular_layout(network.core_network)
+
+    plt.figure(figsize=(8, 8))
+    nx.draw_networkx(
+        network.core_network,
+        pos,
+        node_size=80,
+        edge_color='lightgray',
+        with_labels=False,
+        alpha=0.8
+    )
+    plt.axis('off')
+    plt.tight_layout()
+    plt.savefig('circular_layout.png', dpi=300, bbox_inches='tight')
+
+Diagonal Multilayer Layout
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use the built-in diagonal style to keep layer membership explicit (``orientation``
+controls whether layers slope up or down):
+
+.. code-block:: python
+
+    network.visualize_network(
+        style="diagonal",
+        orientation="upper",
+        legend=True,
+        show=True
     )
 
 Layer-Specific Visualization
@@ -108,29 +172,56 @@ Visualize Single Layer
 .. code-block:: python
 
     from py3plex.dsl import Q, L
-    
-    # Extract layer
-    layer_network = Q.edges().from_layers(L["friends"]).execute(network)
-    
-    # Visualize
-    layer_network.visualize_network(
-        output_file='friends_layer.png',
-        show=True
+    import matplotlib.pyplot as plt
+    import networkx as nx
+
+    # Extract nodes belonging to one layer
+    layer_nodes = Q.nodes().from_layers(L["friends"]).execute(network)
+    friends_subgraph = network.core_network.subgraph(layer_nodes.keys())
+
+    pos = nx.spring_layout(friends_subgraph, k=0.6)
+    plt.figure(figsize=(6, 6))
+    nx.draw_networkx(
+        friends_subgraph,
+        pos,
+        node_color='steelblue',
+        edge_color='gray',
+        node_size=150,
+        with_labels=True,
+        alpha=0.8
     )
+    plt.axis('off')
+    plt.tight_layout()
+    plt.savefig('friends_layer.png', dpi=300, bbox_inches='tight')
 
 Side-by-Side Layer Comparison
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
+    import networkx as nx
     import matplotlib.pyplot as plt
+    from py3plex.dsl import Q, L
     
     fig, axes = plt.subplots(1, 3, figsize=(18, 6))
     
     for idx, layer in enumerate(['friends', 'work', 'family']):
-        layer_net = Q.edges().from_layers(L[layer]).execute(network)
-        # Visualize on specific axis
-        visualize_on_axis(layer_net, axes[idx], title=f'Layer: {layer}')
+        layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
+        layer_subgraph = network.core_network.subgraph(layer_nodes.keys())
+        pos = nx.spring_layout(layer_subgraph, k=0.6)
+
+        nx.draw_networkx(
+            layer_subgraph,
+            pos,
+            ax=axes[idx],
+            node_color='lightblue',
+            edge_color='gray',
+            with_labels=False,
+            node_size=120,
+            alpha=0.8
+        )
+        axes[idx].set_title(f'Layer: {layer}')
+        axes[idx].axis('off')
     
     plt.tight_layout()
     plt.savefig('layers_comparison.png', dpi=300)
@@ -140,7 +231,10 @@ DSL-Driven Visualization Workflows
 
 **Goal:** Use DSL queries to select and visualize specific network subsets.
 
-The DSL enables you to create targeted visualizations by filtering nodes and edges before rendering. This is essential for large multilayer networks where visualizing everything is impractical.
+The DSL enables you to create targeted visualizations by filtering nodes and
+edges before rendering. This is essential for large multilayer networks where
+visualizing everything is impractical. Unless otherwise noted, the examples
+below reuse the ``network`` instance built in the basic visualization section.
 
 Visualize High-Degree Subnetwork
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -202,7 +296,7 @@ Visualize High-Degree Subnetwork
     plt.savefig('hub_subnetwork.png', dpi=300, bbox_inches='tight')
     print("Saved: hub_subnetwork.png")
 
-**Expected output:**
+**Example output (counts depend on the dataset):**
 
 .. code-block:: text
 
@@ -217,7 +311,7 @@ Visualize Community Structure with DSL
 .. code-block:: python
 
     from py3plex.algorithms.community_detection.community_wrapper import louvain_communities
-    from py3plex.dsl import Q, execute_query
+    from py3plex.dsl import execute_query
     import matplotlib.pyplot as plt
     import networkx as nx
     
@@ -238,10 +332,11 @@ Visualize Community Structure with DSL
     
     for idx, comm_id in enumerate(sorted(community_ids)[:4]):
         # Query community members
-        comm_nodes = execute_query(
+        comm_nodes_result = execute_query(
             network,
             f'SELECT nodes WHERE community={comm_id}'
         )
+        comm_nodes = comm_nodes_result['nodes']
         
         # Extract community subgraph
         comm_subgraph = network.core_network.subgraph(comm_nodes)
@@ -337,14 +432,13 @@ Layer-Specific Visualizations with DSL
 Visualize Central Nodes
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Highlight nodes by centrality:**
+**Highlight nodes by centrality (betweenness for color, degree for size):**
 
 .. code-block:: python
 
     from py3plex.dsl import Q
     import matplotlib.pyplot as plt
     import networkx as nx
-    import numpy as np
     
     # Compute centrality for all nodes
     centrality_result = (
@@ -460,7 +554,7 @@ Dynamics State Visualization
     plt.savefig('sir_visualization.png', dpi=300, bbox_inches='tight')
     print("Saved: sir_visualization.png")
 
-**Expected output:**
+**Example output (depends on network size and random seed):**
 
 .. code-block:: text
 
@@ -470,7 +564,7 @@ Dynamics State Visualization
 Interactive Visualization with DSL Filtering
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Create interactive plots with Plotly:**
+**Create interactive plots with Plotly (browser-rendered HTML):**
 
 .. code-block:: python
 
@@ -636,7 +730,8 @@ Export to GraphML
     # Export
     nx.write_graphml(G, 'network.graphml')
 
-Then open `network.graphml` in Gephi or Cytoscape for advanced visualization.
+Then open ``network.graphml`` in Gephi or Cytoscape for advanced visualization
+of the aggregated network.
 
 Next Steps
 ----------

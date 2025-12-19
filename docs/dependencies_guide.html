@@ -146,7 +146,12 @@
              
   <section id="dependency-management-and-troubleshooting">
 <h1>Dependency Management and Troubleshooting<a class="headerlink" href="#dependency-management-and-troubleshooting" title="Link to this heading"></a></h1>
-<p>This guide covers dependency installation, optional features, and common troubleshooting scenarios.</p>
+<p>This guide covers dependency installation, optional features, and common troubleshooting scenarios. Install the core package first, then add extras via <code class="docutils literal notranslate"><span class="pre">pip</span></code> only when you need them. If unsure, start with the base package and add one extra at a time:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">py3plex[viz]</span></code> — interactive or advanced visualization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">py3plex[algos]</span></code> — additional community detection algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">py3plex[infomap]</span></code> — Infomap (AGPLv3; see license warning below)</p></li>
+</ul>
 <nav class="contents local" id="table-of-contents">
 <p class="topic-title">Table of Contents</p>
 <ul class="simple">
@@ -192,7 +197,7 @@
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">Core Dependencies</a><a class="headerlink" href="#core-dependencies" title="Link to this heading"></a></h2>
 <section id="automatic-installation">
 <h3><a class="toc-backref" href="#id2" role="doc-backlink">Automatic Installation</a><a class="headerlink" href="#automatic-installation" title="Link to this heading"></a></h3>
-<p>Core dependencies are <strong>automatically installed</strong> when you install Py3plex:</p>
+<p>Core dependencies install with the base package. Use a virtual environment to keep projects isolated:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
@@ -214,7 +219,7 @@
 </section>
 <section id="verifying-installation">
 <h3><a class="toc-backref" href="#id3" role="doc-backlink">Verifying Installation</a><a class="headerlink" href="#verifying-installation" title="Link to this heading"></a></h3>
-<p>Check that Py3plex and dependencies are installed:</p>
+<p>Confirm that Py3plex and core dependencies import correctly. Run this in the same environment where you installed the package. Add optional imports (<code class="docutils literal notranslate"><span class="pre">plotly</span></code>, <code class="docutils literal notranslate"><span class="pre">igraph</span></code>, <code class="docutils literal notranslate"><span class="pre">infomap</span></code>) if you installed those extras:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">py3plex</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Py3plex version: </span><span class="si">{</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -236,7 +241,7 @@
 </section>
 <section id="optional-dependencies">
 <h2><a class="toc-backref" href="#id4" role="doc-backlink">Optional Dependencies</a><a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h2>
-<p>Py3plex offers several optional feature sets. Install only what you need.</p>
+<p>Py3plex exposes optional features through <code class="docutils literal notranslate"><span class="pre">pip</span></code> extras. Install only what you need to keep environments lean and license-compliant. Each extra is independent—add them incrementally and retest after each install.</p>
 <section id="advanced-visualization-recommended">
 <h3><a class="toc-backref" href="#id5" role="doc-backlink">Advanced Visualization (Recommended)</a><a class="headerlink" href="#advanced-visualization-recommended" title="Link to this heading"></a></h3>
 <p>Install Plotly and igraph for interactive and advanced visualizations:</p>
@@ -303,10 +308,8 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">infomap</span> <span class="pre">&gt;=</span> <span class="pre">2.0.0</span></code> - Information flow-based community detection</p></li>
 </ul>
-<p><strong>WARNING️ Important licensing note:</strong></p>
-<p>Infomap is licensed under <strong>AGPLv3</strong> (viral copyleft license). If you use Infomap functions
-in your project, your project may also need to be AGPLv3 licensed.</p>
-<p><strong>For commercial/proprietary projects:</strong> Use alternative algorithms:</p>
+<p><strong>Important licensing note:</strong> Infomap is licensed under <strong>AGPLv3</strong> (copyleft). Using Infomap can extend AGPLv3 obligations to your project.</p>
+<p><strong>For commercial/proprietary projects:</strong> prefer permissive alternatives:</p>
 <ul class="simple">
 <li><p>Louvain (BSD-3-Clause)</p></li>
 <li><p>Label propagation (MIT)</p></li>
@@ -325,7 +328,7 @@ in your project, your project may also need to be AGPLv3 licensed.</p>
 </section>
 <section id="installing-all-optional-features">
 <h3><a class="toc-backref" href="#id8" role="doc-backlink">Installing All Optional Features</a><a class="headerlink" href="#installing-all-optional-features" title="Link to this heading"></a></h3>
-<p>Install everything at once:</p>
+<p>Install everything at once (includes Infomap, which is AGPLv3). Review licenses first if you distribute downstream artifacts:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>viz,algos,infomap<span class="o">]</span>
 </pre></div>
 </div>
@@ -354,62 +357,79 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="dependency-troubleshooting">
 <h2><a class="toc-backref" href="#id10" role="doc-backlink">Dependency Troubleshooting</a><a class="headerlink" href="#dependency-troubleshooting" title="Link to this heading"></a></h2>
+<p>Run troubleshooting steps in the environment where Py3plex is installed. If issues persist, retry in a fresh virtual environment to rule out conflicts.</p>
 <section id="common-installation-issues">
 <h3><a class="toc-backref" href="#id11" role="doc-backlink">Common Installation Issues</a><a class="headerlink" href="#common-installation-issues" title="Link to this heading"></a></h3>
 <section id="issue-could-not-find-a-version-that-satisfies-the-requirement">
 <h4>Issue: “Could not find a version that satisfies the requirement”<a class="headerlink" href="#issue-could-not-find-a-version-that-satisfies-the-requirement" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Python version too old or package unavailable</p>
-<p><strong>Solution 1:</strong> Upgrade Python to 3.8 or higher</p>
+<p><strong>Cause:</strong> Python version too old or package unavailable.</p>
+<p><strong>Fix:</strong></p>
+<ol class="arabic">
+<li><p>Upgrade Python to 3.8 or higher.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>--version<span class="w">  </span><span class="c1"># Check current version</span>
 <span class="c1"># If &lt; 3.8, install Python 3.10 or 3.11</span>
 </pre></div>
 </div>
-<p><strong>Solution 2:</strong> Update pip</p>
+</li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">pip</span></code> and build tools.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
 </pre></div>
 </div>
-<p><strong>Solution 3:</strong> Check PyPI availability</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>search<span class="w"> </span>networkx<span class="w">  </span><span class="c1"># Check if package exists</span>
+</li>
+<li><p>Check PyPI availability.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>index<span class="w"> </span>versions<span class="w"> </span>networkx<span class="w">  </span><span class="c1"># Confirm the package is reachable</span>
 </pre></div>
 </div>
+</li>
+</ol>
 </section>
 <section id="issue-no-matching-distribution-found">
 <h4>Issue: “No matching distribution found”<a class="headerlink" href="#issue-no-matching-distribution-found" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Network issues or package not available for your platform</p>
-<p><strong>Solution 1:</strong> Check internet connection</p>
+<p><strong>Cause:</strong> Network issues or package not available for your platform.</p>
+<p><strong>Fix:</strong></p>
+<ol class="arabic">
+<li><p>Check internet connectivity.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ping<span class="w"> </span>pypi.org
 </pre></div>
 </div>
-<p><strong>Solution 2:</strong> Use alternative index</p>
+</li>
+<li><p>Use the default PyPI index explicitly (helps when mirrors are stale).</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--index-url<span class="w"> </span>https://pypi.org/simple/<span class="w"> </span>py3plex
 </pre></div>
 </div>
-<p><strong>Solution 3:</strong> Check platform compatibility</p>
-<p>Some packages may not be available for all platforms (e.g., Windows ARM, older macOS).</p>
+</li>
+<li><p>Verify platform compatibility; some packages lack builds for certain OS/architecture combinations or Python versions.</p></li>
+</ol>
 </section>
 <section id="issue-failed-building-wheel">
 <h4>Issue: “Failed building wheel”<a class="headerlink" href="#issue-failed-building-wheel" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Missing C compiler or development headers</p>
-<p><strong>Solution (Ubuntu/Debian):</strong></p>
+<p><strong>Cause:</strong> Missing C compiler or development headers.</p>
+<p><strong>Fix:</strong></p>
+<ul>
+<li><p>Ubuntu/Debian:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
 sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3-dev<span class="w"> </span>build-essential
 </pre></div>
 </div>
-<p><strong>Solution (macOS):</strong></p>
+</li>
+<li><p>macOS:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xcode-select<span class="w"> </span>--install
 </pre></div>
 </div>
-<p><strong>Solution (Windows):</strong></p>
+</li>
+<li><p>Windows:</p>
 <ol class="arabic simple">
-<li><p>Download Visual C++ Build Tools</p></li>
-<li><p>Install “Desktop development with C++”</p></li>
-<li><p>Restart and try again</p></li>
+<li><p>Install Visual C++ Build Tools.</p></li>
+<li><p>Select &quot;Desktop development with C++&quot;.</p></li>
+<li><p>Restart and retry.</p></li>
 </ol>
+</li>
+</ul>
 </section>
 <section id="issue-permission-denied">
 <h4>Issue: “Permission denied”<a class="headerlink" href="#issue-permission-denied" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Trying to install in system Python without sudo</p>
-<p><strong>Solution 1:</strong> Use virtual environment (recommended)</p>
+<p><strong>Cause:</strong> Trying to install in system Python without sudo.</p>
+<p><strong>Fix 1 (recommended):</strong> Use a virtual environment.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>py3plex-env
 <span class="nb">source</span><span class="w"> </span>py3plex-env/bin/activate<span class="w">  </span><span class="c1"># Linux/macOS</span>
 <span class="c1"># OR: py3plex-env\Scripts\activate  # Windows</span>
@@ -417,7 +437,7 @@ sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w
 pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
-<p><strong>Solution 2:</strong> User installation</p>
+<p><strong>Fix 2:</strong> Install for the current user.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>py3plex
 </pre></div>
 </div>
@@ -427,7 +447,7 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <h3><a class="toc-backref" href="#id12" role="doc-backlink">Runtime Dependency Issues</a><a class="headerlink" href="#runtime-dependency-issues" title="Link to this heading"></a></h3>
 <section id="issue-no-module-named-plotly">
 <h4>Issue: “No module named ‘plotly’”<a class="headerlink" href="#issue-no-module-named-plotly" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Optional visualization dependency not installed</p>
+<p><strong>Cause:</strong> Optional visualization dependency not installed.</p>
 <p><strong>Solution:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>viz<span class="o">]</span>
 
@@ -435,11 +455,11 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 pip<span class="w"> </span>install<span class="w"> </span>plotly
 </pre></div>
 </div>
-<p><strong>Workaround:</strong> Use matplotlib for visualization (included by default)</p>
+<p><strong>Workaround:</strong> Use matplotlib for visualization (included by default).</p>
 </section>
 <section id="issue-importerror-cannot-import-name-infomap">
 <h4>Issue: “ImportError: cannot import name ‘infomap’”<a class="headerlink" href="#issue-importerror-cannot-import-name-infomap" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Optional Infomap package not installed</p>
+<p><strong>Cause:</strong> Optional Infomap package not installed.</p>
 <p><strong>Solution:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
 </pre></div>
@@ -452,8 +472,8 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 </section>
 <section id="issue-qt-platform-plugin-could-not-be-initialized">
 <h4>Issue: “Qt platform plugin could not be initialized”<a class="headerlink" href="#issue-qt-platform-plugin-could-not-be-initialized" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Matplotlib backend issue (usually on headless servers)</p>
-<p><strong>Solution:</strong> Use non-interactive backend</p>
+<p><strong>Cause:</strong> Matplotlib backend issue (often on headless servers).</p>
+<p><strong>Solution:</strong> Use a non-interactive backend.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -462,9 +482,9 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 </section>
 <section id="issue-memoryerror-with-large-networks">
 <h4>Issue: “MemoryError” with large networks<a class="headerlink" href="#issue-memoryerror-with-large-networks" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Insufficient RAM for dense operations</p>
-<p><strong>Solution 1:</strong> Use sparse matrices (automatic for most operations)</p>
-<p><strong>Solution 2:</strong> Sample network</p>
+<p><strong>Cause:</strong> Insufficient RAM for dense operations.</p>
+<p><strong>Fix 1:</strong> Prefer sparse data structures; many operations use them automatically, but avoid forcing dense adjacency matrices for large graphs.</p>
+<p><strong>Fix 2:</strong> Sample the network.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
 <span class="c1"># Sample 10% of nodes</span>
@@ -475,15 +495,15 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 <span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_subnetwork</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Solution 3:</strong> Increase swap space or use machine with more RAM</p>
+<p><strong>Fix 3:</strong> Increase swap space or use a machine with more RAM.</p>
 </section>
 </section>
 <section id="version-conflicts">
 <h3><a class="toc-backref" href="#id13" role="doc-backlink">Version Conflicts</a><a class="headerlink" href="#version-conflicts" title="Link to this heading"></a></h3>
 <section id="issue-incompatible-versions-of-numpy-and-scipy">
 <h4>Issue: “Incompatible versions of numpy and scipy”<a class="headerlink" href="#issue-incompatible-versions-of-numpy-and-scipy" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> Version mismatch between numerical packages</p>
-<p><strong>Solution:</strong> Reinstall in correct order</p>
+<p><strong>Cause:</strong> Version mismatch between numerical packages.</p>
+<p><strong>Fix:</strong> Reinstall in a clean order.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>uninstall<span class="w"> </span>numpy<span class="w"> </span>scipy
 pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy
 pip<span class="w"> </span>install<span class="w"> </span>py3plex
@@ -492,8 +512,8 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </section>
 <section id="issue-attributeerror-module-networkx-has-no-attribute-x">
 <h4>Issue: “AttributeError: module ‘networkx’ has no attribute ‘X’”<a class="headerlink" href="#issue-attributeerror-module-networkx-has-no-attribute-x" title="Link to this heading"></a></h4>
-<p><strong>Cause:</strong> NetworkX version too old</p>
-<p><strong>Solution:</strong> Upgrade NetworkX</p>
+<p><strong>Cause:</strong> NetworkX version too old.</p>
+<p><strong>Solution:</strong> Upgrade NetworkX.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>networkx
 
 <span class="c1"># Verify version</span>
@@ -540,34 +560,34 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check which dependencies are available.&quot;&quot;&quot;</span>
 
     <span class="n">required</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;networkx&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;scipy&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;matplotlib&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;pandas&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;networkx&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;networkx&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;scipy&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;scipy&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;matplotlib&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;matplotlib&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;pandas&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;pandas&#39;</span><span class="p">),</span>
     <span class="p">}</span>
 
     <span class="n">optional</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;plotly&#39;</span><span class="p">:</span> <span class="s1">&#39;Visualization&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;igraph&#39;</span><span class="p">:</span> <span class="s1">&#39;Visualization&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;infomap&#39;</span><span class="p">:</span> <span class="s1">&#39;Community detection&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;python-louvain&#39;</span><span class="p">:</span> <span class="s1">&#39;Community detection&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;plotly&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Visualization&#39;</span><span class="p">,</span> <span class="s1">&#39;plotly&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;igraph&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Visualization&#39;</span><span class="p">,</span> <span class="s1">&#39;igraph&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;infomap&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Community detection&#39;</span><span class="p">,</span> <span class="s1">&#39;infomap&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;python-louvain&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Community detection&#39;</span><span class="p">,</span> <span class="s1">&#39;community&#39;</span><span class="p">),</span>
     <span class="p">}</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Py3plex Dependency Check ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Required packages:&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">package</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">required</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">package</span><span class="p">,</span> <span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">required</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="nb">__import__</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">))</span>
+            <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [OK] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [X] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">) - MISSING!&quot;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Optional packages:&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">package</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">optional</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">package</span><span class="p">,</span> <span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">optional</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="nb">__import__</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">))</span>
+            <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [OK] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [X] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">) - Not installed&quot;</span><span class="p">)</span>
@@ -612,6 +632,7 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
 <span class="c1"># Avoid: infomap (AGPLv3)</span>
 </pre></div>
 </div>
+<p>Review licenses for optional packages before redistribution (e.g., Infomap is AGPLv3; verify visualization libraries for compatibility).</p>
 </section>
 <section id="virtual-environment-workflow">
 <h3><a class="toc-backref" href="#id19" role="doc-backlink">Virtual Environment Workflow</a><a class="headerlink" href="#virtual-environment-workflow" title="Link to this heading"></a></h3>

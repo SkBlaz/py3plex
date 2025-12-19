@@ -229,6 +229,7 @@
 <li><p>A loaded <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> object (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>)</p></li>
 <li><p>Basic familiarity with multilayer network concepts (nodes, layers, intralayer/interlayer edges)</p></li>
 <li><p>For complete DSL grammar and operator reference, see <a class="reference internal" href="../reference/dsl_reference.html"><span class="doc">DSL Reference</span></a></p></li>
+<li><p>Pick your interface: string syntax for quick experiments, builder API for reusable production code with IDE support</p></li>
 </ul>
 <section id="conceptual-overview">
 <h2>Conceptual Overview<a class="headerlink" href="#conceptual-overview" title="Link to this heading"></a></h2>
@@ -266,6 +267,7 @@
 <li><p><strong>Layer set algebra</strong>: Combine layers with set operations (<code class="docutils literal notranslate"><span class="pre">|</span></code> union, <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> intersection, <code class="docutils literal notranslate"><span class="pre">-</span></code> difference, <code class="docutils literal notranslate"><span class="pre">~</span></code> complement). The new LayerSet algebra enables expressive layer selection like <code class="docutils literal notranslate"><span class="pre">L[&quot;*</span> <span class="pre">-</span> <span class="pre">coupling&quot;]</span></code> or <code class="docutils literal notranslate"><span class="pre">L[&quot;(ppi</span> <span class="pre">|</span> <span class="pre">gene)</span> <span class="pre">&amp;</span> <span class="pre">disease&quot;]</span></code>. See <a class="reference internal" href="../reference/layer_set_algebra.html"><span class="doc">Layer Set Algebra</span></a> for complete documentation.</p></li>
 <li><p><strong>Special predicates</strong>: <code class="docutils literal notranslate"><span class="pre">intralayer=True</span></code> selects edges within a layer; <code class="docutils literal notranslate"><span class="pre">interlayer=(&quot;layer1&quot;,</span> <span class="pre">&quot;layer2&quot;)</span></code> selects edges crossing specific layers.</p></li>
 <li><p><strong>Lazy execution</strong>: Queries are built incrementally and executed only when <code class="docutils literal notranslate"><span class="pre">.execute(network)</span></code> is called.</p></li>
+<li><p><strong>``Q`` and ``L`` helpers</strong>: <code class="docutils literal notranslate"><span class="pre">Q</span></code> builds queries; <code class="docutils literal notranslate"><span class="pre">L</span></code> builds layer expressions. Import both from <code class="docutils literal notranslate"><span class="pre">py3plex.dsl</span></code>.</p></li>
 </ul>
 <p><strong>Comparison to SQL:</strong></p>
 <p>Think of the DSL as SQL for graphs:</p>
@@ -315,32 +317,32 @@
         <span class="k">break</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 6 nodes
+<p><strong>Expected output (will vary with your data):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 7 nodes
   (&#39;alice&#39;, &#39;social&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
   (&#39;bob&#39;, &#39;social&#39;): {&#39;degree&#39;: 2, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
   (&#39;charlie&#39;, &#39;social&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;social&#39;, &#39;layer_count&#39;: 2}
   (&#39;alice&#39;, &#39;work&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 2}
   (&#39;bob&#39;, &#39;work&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 2}
+  (&#39;charlie&#39;, &#39;work&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 2}
+  (&#39;dave&#39;, &#39;work&#39;): {&#39;degree&#39;: 1, &#39;layer&#39;: &#39;work&#39;, &#39;layer_count&#39;: 1}
 </pre></div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Loading from files</p>
 <p>To load from a file in the repository:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Using a file from the datasets/ directory</span>
- <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using a file from the datasets/ directory</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
 
- <span class="c1"># Or using an absolute path</span>
- <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
- <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;datasets&quot;</span><span class="p">,</span> <span class="s2">&quot;multiedgelist.txt&quot;</span><span class="p">)</span>
- <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
-<span class="p">(</span><span class="s1">&#39;diana&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">):</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_count&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
-<span class="p">(</span><span class="s1">&#39;eve&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">):</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_count&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="c1"># Or using an absolute path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;datasets&quot;</span><span class="p">,</span> <span class="s2">&quot;multiedgelist.txt&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p><strong>Note:</strong> Keys are <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> tuples representing node-layer pairs. The <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> attribute indicates how many layers the node appears in across the entire network.</p>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">execute_query</span></code> returns a dict-like result. Keys are <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> tuples representing node-layer pairs. The <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> attribute counts how many distinct layers the node appears in across the entire network. <code class="docutils literal notranslate"><span class="pre">len(result)</span></code> gives the number of returned items, and <code class="docutils literal notranslate"><span class="pre">result.items()</span></code> yields the full (key, value) pairs.</p>
 </section>
 <section id="filter-by-layer">
 <h3>Filter by Layer<a class="headerlink" href="#filter-by-layer" title="Link to this heading"></a></h3>
@@ -358,7 +360,7 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">layer=&quot;friends&quot;</span></code> selects only the node-layer pairs where <code class="docutils literal notranslate"><span class="pre">layer</span> <span class="pre">==</span> <span class="pre">&quot;friends&quot;</span></code></p></li>
 <li><p>This does <strong>not</strong> select all occurrences of nodes across layers—only their representation in the specified layer</p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">layer_count</span> <span class="pre">&gt;=</span> <span class="pre">2</span></code> to find nodes appearing in multiple layers</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">layer_count</span> <span class="pre">&gt;=</span> <span class="pre">2</span></code> to find nodes appearing in multiple layers (<code class="docutils literal notranslate"><span class="pre">layer_count</span></code> is the number of distinct layers for that node)</p></li>
 </ul>
 <p><strong>Example with statistics:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
@@ -371,7 +373,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max degree in &#39;friends&#39;: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
+<p><strong>Expected output (example from a synthetic dataset):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes in &#39;friends&#39;: 42
 Average degree in &#39;friends&#39;: 5.23
 Max degree in &#39;friends&#39;: 15
@@ -398,7 +400,7 @@ Max degree in &#39;friends&#39;: 15
 </div>
 <p><strong>Supported operators:</strong> <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">=</span></code>, <code class="docutils literal notranslate"><span class="pre">!=</span></code></p>
 <p><strong>Multiple conditions</strong> are combined with <code class="docutils literal notranslate"><span class="pre">AND</span></code>. For more complex logic, use the builder API (see below).</p>
-<p><strong>Expected output:</strong></p>
+<p><strong>Expected output (counts will vary with your data):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>High-degree nodes: 34
 High-degree multilayer nodes: 18
 </pre></div>
@@ -424,7 +426,7 @@ High-degree multilayer nodes: 18
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
+<p><strong>Expected output (values depend on the network):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Top nodes by betweenness centrality:
                  id  degree  betweenness_centrality
 0  (alice, social)      12                 0.245
@@ -560,7 +562,7 @@ max       15.000000                0.301000
 <span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
+<p><strong>Expected output (illustrative):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                  id  degree  betweenness_centrality  clustering
 0   (alice, social)      12                 0.245000    0.545455
 1     (bob, social)       8                 0.189000    0.642857
@@ -662,7 +664,7 @@ Top 10 nodes by betweenness centrality:
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  95% CI: [</span><span class="si">{</span><span class="n">ci_low</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ci_high</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
+<p><strong>Expected output (example metrics on a weighted layer):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(&#39;eve&#39;, &#39;social&#39;):
   Betweenness: 0.3010 ± 0.0234
   95% CI: [0.2589, 0.3442]
@@ -729,7 +731,7 @@ Top 10 nodes by betweenness centrality:
 <li><p><code class="docutils literal notranslate"><span class="pre">order_by(&quot;-degree&quot;)</span></code>: descending (high to low)</p></li>
 <li><p>Multiple keys: <code class="docutils literal notranslate"><span class="pre">order_by(&quot;-degree&quot;,</span> <span class="pre">&quot;layer_count&quot;)</span></code>: sort by degree descending, then layer_count ascending</p></li>
 </ul>
-<p><strong>Expected output:</strong></p>
+<p><strong>Expected output (example ranking):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Top 10 highest-degree nodes:
   (&#39;eve&#39;, &#39;social&#39;): degree=15
   (&#39;alice&#39;, &#39;social&#39;): degree=12
@@ -771,7 +773,7 @@ Top 10 nodes by betweenness centrality:
 </ul>
 <p><strong>Result structure for edges:</strong></p>
 <ul class="simple">
-<li><p><strong>Keys</strong>: <code class="docutils literal notranslate"><span class="pre">((source,</span> <span class="pre">source_layer),</span> <span class="pre">(target,</span> <span class="pre">target_layer),</span> <span class="pre">{edge_data})</span></code> tuples</p></li>
+<li><p><strong>Keys</strong>: <code class="docutils literal notranslate"><span class="pre">((source,</span> <span class="pre">source_layer),</span> <span class="pre">(target,</span> <span class="pre">target_layer))</span></code> tuples (interlayer edges include both layer names)</p></li>
 <li><p><strong>Values</strong>: Dictionaries with edge attributes and computed metrics</p></li>
 </ul>
 <p><strong>Expected output:</strong></p>
@@ -890,13 +892,13 @@ High-influence nodes: 8
 <p>This section showcases the DSL’s power for sophisticated multilayer network analysis. These patterns are common in research and can be adapted to your specific needs.</p>
 <section id="multiple-layer-selection">
 <h3>Multiple Layer Selection<a class="headerlink" href="#multiple-layer-selection" title="Link to this heading"></a></h3>
-<p>Use <strong>layer algebra</strong> to combine layers. The <code class="docutils literal notranslate"><span class="pre">L</span></code> object supports set operations:</p>
+<p>Use <strong>layer algebra</strong> to combine layers. The <code class="docutils literal notranslate"><span class="pre">L</span></code> object supports set operations (<code class="docutils literal notranslate"><span class="pre">|</span></code> for union, <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> for intersection, <code class="docutils literal notranslate"><span class="pre">-</span></code> for difference):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Union: nodes/edges from EITHER layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
      <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
@@ -908,7 +910,7 @@ High-influence nodes: 8
 </div>
 <p><strong>Set semantics:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;friends&quot;]</span> <span class="pre">+</span> <span class="pre">L[&quot;work&quot;]</span></code>: <strong>Union</strong> of nodes/edges from both layers (nodes appearing in either layer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;friends&quot;]</span> <span class="pre">|</span> <span class="pre">L[&quot;work&quot;]</span></code>: <strong>Union</strong> of nodes/edges from both layers (nodes appearing in either layer)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;friends&quot;]</span> <span class="pre">&amp;</span> <span class="pre">L[&quot;work&quot;]</span></code>: <strong>Intersection</strong> (see next section)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;friends&quot;]</span> <span class="pre">-</span> <span class="pre">L[&quot;work&quot;]</span></code>: <strong>Difference</strong> (nodes in friends but not work)</p></li>
 </ul>

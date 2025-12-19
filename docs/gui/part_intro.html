@@ -158,6 +158,7 @@
 <p><strong>Development Mode Only:</strong> The GUI is intended for local development and exploration. Do not expose it to the public internet without proper authentication and security hardening. See <a class="reference internal" href="gui_deployment.html"><span class="doc">GUI Deployment Guide</span></a> for production configuration.</p>
 </div>
 <p>The py3plex GUI provides a web-based interface for interactive multilayer network exploration.</p>
+<p>Use this page to see how the GUI fits into the documentation set and pick a setup path.</p>
 <p><strong>Features:</strong></p>
 <ul class="simple">
 <li><p>Load networks from various file formats without code</p></li>
@@ -176,7 +177,13 @@
 </ul>
 <section id="running-the-gui-locally">
 <h2>Running the GUI Locally<a class="headerlink" href="#running-the-gui-locally" title="Link to this heading"></a></h2>
-<p><strong>Quick start (Docker - Recommended):</strong></p>
+<p>Prerequisites:</p>
+<ul class="simple">
+<li><p>Docker and Docker Compose installed locally</p></li>
+<li><p>Ports 8080 (GUI), 5555 (Flower), 8000 (API), and 6379 (Redis) are free</p></li>
+</ul>
+<p>Choose one of the following:</p>
+<p><strong>Option 1 — Docker quick start (recommended):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex/gui
@@ -184,22 +191,22 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBla
 <span class="c1"># Copy environment configuration</span>
 cp<span class="w"> </span>.env.example<span class="w"> </span>.env
 
-<span class="c1"># Start all services</span>
+<span class="c1"># Start all services (wait for containers to report &quot;healthy&quot;)</span>
 make<span class="w"> </span>up
 
 <span class="c1"># Open browser to http://localhost:8080</span>
 </pre></div>
 </div>
-<p><strong>Alternative: Install from source:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install with GUI extras</span>
+<p><strong>Option 2 — Install from source (contributors):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install from PyPI with GUI extras</span>
 pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>gui<span class="o">]</span>
 
-<span class="c1"># Or install from source</span>
+<span class="c1"># Or develop against source</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[gui]&quot;</span>
 
-<span class="c1"># Navigate to GUI directory and start services</span>
+<span class="c1"># Navigate to GUI directory and start services (uses Docker Compose)</span>
 <span class="nb">cd</span><span class="w"> </span>gui
 make<span class="w"> </span>up
 </pre></div>
@@ -208,7 +215,7 @@ make<span class="w"> </span>up
 </section>
 <section id="gui-actions-vs-py3plex-apis">
 <h2>GUI Actions vs py3plex APIs<a class="headerlink" href="#gui-actions-vs-py3plex-apis" title="Link to this heading"></a></h2>
-<p>The GUI provides a point-and-click interface for common py3plex operations. Here’s how GUI actions map to Python API calls:</p>
+<p>The GUI provides a point-and-click interface for common py3plex operations. The examples below show representative Python calls once you have a <code class="docutils literal notranslate"><span class="pre">network</span></code> instance loaded:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30.0%" />
@@ -232,7 +239,7 @@ make<span class="w"> </span>up
 </tr>
 <tr class="row-odd"><td><p><strong>Detect Communities</strong> → Louvain</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.algorithms.community_detection</span> <span class="pre">import</span> <span class="pre">community_louvain</span></code> <br />
-<code class="docutils literal notranslate"><span class="pre">partition</span> <span class="pre">=</span> <span class="pre">community_louvain.best_partition(network.get_layers()[layer])</span></code></p></td>
+<code class="docutils literal notranslate"><span class="pre">partition</span> <span class="pre">=</span> <span class="pre">community_louvain.best_partition(network.core_network)</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Compute Centrality</strong> → Degree</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="pre">import</span> <span class="pre">MultilayerCentrality</span></code> <br />

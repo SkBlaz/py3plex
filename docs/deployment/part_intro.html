@@ -151,7 +151,7 @@
              
   <section id="environments-deployment">
 <h1>Environments &amp; Deployment<a class="headerlink" href="#environments-deployment" title="Link to this heading"></a></h1>
-<p>This section covers running py3plex from the command line, in Docker containers, and at scale.</p>
+<p>Use this section to run py3plex from the command line, inside Docker containers, and at scale—while keeping runs reproducible.</p>
 <p><strong>This section covers:</strong></p>
 <ul class="simple">
 <li><p><a class="reference internal" href="cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> — Command-line interface and containerized deployment</p></li>
@@ -159,26 +159,26 @@
 </ul>
 <section id="when-to-use-this-section">
 <h2>When to Use This Section<a class="headerlink" href="#when-to-use-this-section" title="Link to this heading"></a></h2>
-<p>Read this section when you need to:</p>
+<p>Use these chapters when you want to:</p>
 <ul class="simple">
-<li><p>Automate analyses that currently run interactively</p></li>
+<li><p>Automate analyses that you currently run interactively</p></li>
 <li><p>Process networks too large for a single Python session</p></li>
-<li><p>Share reproducible environments with collaborators</p></li>
-<li><p>Integrate py3plex into a production pipeline</p></li>
+<li><p>Share reproducible environments with collaborators or CI</p></li>
+<li><p>Integrate py3plex into a production data pipeline</p></li>
 </ul>
-<p><strong>CLI</strong> provides a scriptable interface for common operations—no Python required.</p>
-<p><strong>Docker</strong> ensures identical results everywhere, eliminating environment issues.</p>
-<p><strong>Performance</strong> chapter covers memory management and optimization for large networks.</p>
-<p>Start with <a class="reference internal" href="cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> for automation, then <a class="reference internal" href="performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> for optimization.</p>
+<p><strong>CLI</strong> gives you a scriptable interface for common operations—no Python coding required and suitable for headless automation. Start here if you already know the operations you want to run.</p>
+<p><strong>Docker</strong> keeps environments identical across machines, avoiding “works on my machine” issues. Use it when you need the same environment on laptops, CI, and servers.</p>
+<p>The <strong>performance</strong> chapter covers memory management and optimization for large networks once you have a working workflow. It is most useful after you have a repeatable pipeline and want to speed it up or shrink memory use.</p>
+<p>Most readers start with <a class="reference internal" href="cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> to script or containerize workflows, then move to <a class="reference internal" href="performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> to tune runtime and memory as datasets grow.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p><strong>Deployment checklist:</strong></p>
 <ul class="simple">
-<li><p>Version-pin all dependencies</p></li>
-<li><p>Add error handling for edge cases</p></li>
-<li><p>Verify results on test data</p></li>
-<li><p>Set up logging for debugging</p></li>
-<li><p>Test on the target environment</p></li>
+<li><p>Pin dependency versions (requirements.txt or lock file) and set a random seed for reproducibility</p></li>
+<li><p>Handle missing files, empty inputs, and unexpected formats explicitly</p></li>
+<li><p>Validate results on a small test network before scaling up</p></li>
+<li><p>Enable logging for reproducibility and debugging; keep logs with your outputs</p></li>
+<li><p>Run a dry run on the target environment (local, Docker, or cluster) before scheduling large jobs</p></li>
 </ul>
 </div>
 </section>

@@ -146,51 +146,52 @@
              
   <section id="network-construction">
 <h1>Network Construction<a class="headerlink" href="#network-construction" title="Link to this heading"></a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class is the <strong>core data structure</strong> in py3plex.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class is the <strong>core data structure</strong> in py3plex. It keeps layer metadata explicit so you can build, load, and analyze multilayer or multiplex graphs without losing context.</p>
 <section id="basic-usage">
 <h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<p>Start by creating a network, loading data, and inspecting quick stats. The network is undirected by default; set <code class="docutils literal notranslate"><span class="pre">directed=True</span></code> when needed.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
-<span class="c1"># Initialize network</span>
+<span class="c1"># Initialize an empty network (undirected by default)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
-<span class="c1"># Load network</span>
+<span class="c1"># Load a graph from disk; set input_type to match your file format</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.gml&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gml&quot;</span><span class="p">)</span>
 
-<span class="c1"># Basic statistics</span>
+<span class="c1"># Inspect basic statistics (node, edge, and layer counts)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="supported-input-formats">
 <h2>Supported Input Formats<a class="headerlink" href="#supported-input-formats" title="Link to this heading"></a></h2>
-<p>py3plex supports <strong>all NetworkX formats</strong> plus <strong>multilayer-specific formats</strong>:</p>
+<p>py3plex supports <strong>all NetworkX formats</strong> plus <strong>multilayer-specific formats</strong>. Pick the <code class="docutils literal notranslate"><span class="pre">input_type</span></code> that matches your file structure:</p>
 <ul class="simple">
-<li><p><strong>edgelist</strong> - Simple edge lists</p></li>
-<li><p><strong>multiedgelist</strong> - Multilayer edge lists (<strong>node1 layer1 node2 layer2 weight</strong>)</p></li>
-<li><p><strong>multiplex_edges</strong> - Multiplex format (<strong>layer node1 node2 weight</strong>)</p></li>
-<li><p><strong>gml</strong> - <strong>GML format</strong></p></li>
-<li><p><strong>gpickle</strong> - <strong>Compressed NetworkX format</strong></p></li>
-<li><p><strong>graphml</strong> - <strong>GraphML format</strong></p></li>
-<li><p><strong>nx</strong> - <strong>Direct NetworkX object</strong></p></li>
+<li><p><strong>edgelist</strong> - Simple edge lists (one layer or already aggregated).</p></li>
+<li><p><strong>multiedgelist</strong> - Multilayer edge lists (<code class="docutils literal notranslate"><span class="pre">node1</span> <span class="pre">layer1</span> <span class="pre">node2</span> <span class="pre">layer2</span> <span class="pre">weight</span></code>).</p></li>
+<li><p><strong>multiplex_edges</strong> - Multiplex format (<code class="docutils literal notranslate"><span class="pre">layer</span> <span class="pre">node1</span> <span class="pre">node2</span> <span class="pre">weight</span></code>).</p></li>
+<li><p><strong>gml</strong> - GML format.</p></li>
+<li><p><strong>gpickle</strong> - Compressed NetworkX pickle format.</p></li>
+<li><p><strong>graphml</strong> - GraphML format.</p></li>
+<li><p><strong>nx</strong> - Direct NetworkX object (skip disk I/O).</p></li>
 </ul>
 </section>
 <section id="multilayer-conventions">
 <h2>Multilayer Conventions<a class="headerlink" href="#multilayer-conventions" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Nodes and edges can have a <strong>type</strong> flag</p></li>
-<li><p>Edges can have <strong>weights</strong></p></li>
-<li><p>Node labels use <strong>delimiter-separated</strong> classes (e.g., <code class="docutils literal notranslate"><span class="pre">class1---class2</span></code>)</p></li>
-<li><p>Specify delimiter with: <code class="docutils literal notranslate"><span class="pre">load_network(...,</span> <span class="pre">label_delimiter=&quot;---&quot;)</span></code></p></li>
+<li><p>Nodes and edges carry a <code class="docutils literal notranslate"><span class="pre">type</span></code> flag to mark layer membership; keep this consistent across files.</p></li>
+<li><p>Edges can include a <code class="docutils literal notranslate"><span class="pre">weight</span></code> attribute; omit it for unweighted graphs.</p></li>
+<li><p>Node labels can encode multiple classes with a delimiter (e.g., <code class="docutils literal notranslate"><span class="pre">class1---class2</span></code>).</p></li>
+<li><p>When loading, set the delimiter explicitly: <code class="docutils literal notranslate"><span class="pre">load_network(...,</span> <span class="pre">label_delimiter=&quot;---&quot;)</span></code>.</p></li>
 </ul>
 </section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
-<p>For <strong>detailed examples</strong>, see:</p>
+<p>For detailed walkthroughs, see:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_IO.py</span></code> - <strong>Loading and saving networks</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_manipulation.py</span></code> - <strong>Network construction</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_functionality.py</span></code> - <strong>Core operations</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_IO.py</span></code> - Loading and saving networks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_manipulation.py</span></code> - Network construction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_functionality.py</span></code> - Core operations.</p></li>
 </ul>
 <p>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
 </section>

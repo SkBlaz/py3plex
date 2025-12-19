@@ -258,7 +258,7 @@ Average size: 22.8
   (&#39;C1&#39;, &#39;layer2&#39;) → Community 2
 </pre></div>
 </div>
-<p><strong>Note:</strong> The standard <code class="docutils literal notranslate"><span class="pre">louvain_communities</span></code> function flattens the multilayer network into a single-layer graph (projecting all nodes across layers into a unified node set). For layer-aware detection, use <code class="docutils literal notranslate"><span class="pre">louvain_multilayer</span></code> (see next section).</p>
+<p><strong>Note:</strong> The standard <code class="docutils literal notranslate"><span class="pre">louvain_communities</span></code> function flattens the multilayer network into a single-layer graph: each node-layer pair becomes a single node and inter-layer coupling is ignored (layer names remain as part of the node labels). For layer-aware detection, use <code class="docutils literal notranslate"><span class="pre">louvain_multilayer</span></code> (see next section).</p>
 </section>
 <section id="multilayer-specific-multilayer-louvain">
 <h2>Multilayer-Specific: Multilayer Louvain<a class="headerlink" href="#multilayer-specific-multilayer-louvain" title="Link to this heading"></a></h2>
@@ -269,11 +269,14 @@ Average size: 22.8
 <p>where:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(A^\alpha_{ij}\)</span>: adjacency in layer <span class="math notranslate nohighlight">\(\alpha\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(k_i^\alpha\)</span>: degree (or strength) of node <span class="math notranslate nohighlight">\(i\)</span> in layer <span class="math notranslate nohighlight">\(\alpha\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(m_\alpha\)</span>: total edge weight in layer <span class="math notranslate nohighlight">\(\alpha\)</span> (<span class="math notranslate nohighlight">\(2m_\alpha = \sum_{ij} A_{ij}^\alpha\)</span>)</p></li>
 <li><p><span class="math notranslate nohighlight">\(\gamma^\alpha\)</span>: resolution parameter for layer <span class="math notranslate nohighlight">\(\alpha\)</span> (default 1.0)</p></li>
 <li><p><span class="math notranslate nohighlight">\(\omega_{\alpha\beta}\)</span>: inter-layer coupling strength (default 1.0)</p></li>
 <li><p><span class="math notranslate nohighlight">\(\delta_{ij}=1\)</span> if <span class="math notranslate nohighlight">\(i=j\)</span> (inter-layer edges connect same node across layers)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\delta_{\alpha\beta}=1\)</span> if <span class="math notranslate nohighlight">\(\alpha=\beta\)</span> (restricts intra-layer term)</p></li>
 <li><p><span class="math notranslate nohighlight">\(\delta(g_{i\alpha}, g_{j\beta})=1\)</span> if node <span class="math notranslate nohighlight">\(i\)</span> in layer <span class="math notranslate nohighlight">\(\alpha\)</span> and node <span class="math notranslate nohighlight">\(j\)</span> in layer <span class="math notranslate nohighlight">\(\beta\)</span> are in the same community</p></li>
-<li><p><span class="math notranslate nohighlight">\(\mu\)</span>: total weight in supra-network</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mu\)</span>: total weight in the supra-network (<span class="math notranslate nohighlight">\(2\mu = \sum_\alpha 2 m_\alpha + \sum_{\alpha\neq\beta}\omega_{\alpha\beta}\)</span>)</p></li>
 </ul>
 <p><strong>Key insight:</strong> The coupling term <span class="math notranslate nohighlight">\(\omega_{\alpha\beta}\)</span> controls whether communities span layers:</p>
 <ul class="simple">
@@ -1005,11 +1008,14 @@ First few rows:
     <span class="s1">&#39;SELECT nodes WHERE community=0&#39;</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes in community 0: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]:</span>
+<span class="n">nodes_in_comm0</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes in community 0: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_in_comm0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes_in_comm0</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">execute_query</span></code> returns a dictionary; access node matches via <code class="docutils literal notranslate"><span class="pre">result[&quot;nodes&quot;]</span></code> (not the dict length) to avoid counting metadata keys.</p>
 <p><strong>Expected output:</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes in community 0: 18
   (&#39;node1&#39;, &#39;layer1&#39;)
@@ -1070,7 +1076,7 @@ First few rows:
         <span class="n">network</span><span class="p">,</span>
         <span class="sa">f</span><span class="s1">&#39;SELECT nodes WHERE community=</span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Find inter-community edges:</strong></p>
@@ -1098,9 +1104,13 @@ First few rows:
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Intra-community edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">intra_comm_edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-community edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inter_comm_edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ratio: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inter_comm_edges</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">intra_comm_edges</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">intra_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">intra_comm_edges</span><span class="p">)</span>
+<span class="n">inter_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inter_comm_edges</span><span class="p">)</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">inter_len</span> <span class="o">/</span> <span class="n">intra_len</span> <span class="k">if</span> <span class="n">intra_len</span> <span class="k">else</span> <span class="mi">0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Intra-community edges: </span><span class="si">{</span><span class="n">intra_len</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-community edges: </span><span class="si">{</span><span class="n">inter_len</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ratio: </span><span class="si">{</span><span class="n">ratio</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> (inter / intra)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -1124,8 +1134,10 @@ Ratio: 0.159
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community 0 in layer1: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="n">avg_degree</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">/</span><span class="n">count</span> <span class="k">if</span> <span class="n">count</span> <span class="k">else</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community 0 in layer1: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree: </span><span class="si">{</span><span class="n">avg_degree</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Compare community structure across layers:</strong></p>
@@ -1160,10 +1172,12 @@ layer3: 3 communities, 40 nodes
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
 <span class="c1"># Extract community 0</span>
-<span class="n">comm_0_nodes</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+<span class="n">comm_0_result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="s1">&#39;SELECT nodes WHERE community=0&#39;</span>
 <span class="p">)</span>
+
+<span class="n">comm_0_nodes</span> <span class="o">=</span> <span class="n">comm_0_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
 
 <span class="c1"># Get induced subgraph</span>
 <span class="n">subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">comm_0_nodes</span><span class="p">)</span>
@@ -1739,7 +1753,7 @@ Louvain (multilayer) vs Label Propagation     0.2789
         <span class="k">continue</span>
 
     <span class="c1"># Are the community IDs consistent?</span>
-    <span class="c1"># (This is a simplified measure - in reality, IDs may differ but structure may be same)</span>
+    <span class="c1"># (Community IDs are arbitrary per layer; align by overlap before using this beyond a quick heuristic.)</span>
     <span class="n">comm_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">assignments</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
     <span class="n">is_stable</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">comm_ids</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span>  <span class="c1"># All same community ID</span>
 
@@ -1787,6 +1801,7 @@ Node-level stability:
     E9: {&#39;layer1&#39;: 3, &#39;layer2&#39;: 1, &#39;layer3&#39;: 1}
 </pre></div>
 </div>
+<p><strong>Note:</strong> Community labels from independent layer runs are arbitrary; align them (e.g., by maximizing overlap or NMI) before treating numeric IDs as comparable. The simple stability rate above is a heuristic sanity check, not a formal alignment.</p>
 <p><strong>Visualization - Alluvial diagram:</strong></p>
 <p>Show how community membership flows across layers (requires external tools or manual construction):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -2167,7 +2182,7 @@ Community-level connectivity:
 </pre></div>
 </div>
 <p><strong>Modularity resolution:</strong></p>
-<p>Modularity has a <strong>resolution limit</strong>: it cannot detect communities smaller than <span class="math notranslate nohighlight">\(\sqrt{m}\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is the number of edges. The resolution parameter <span class="math notranslate nohighlight">\(\gamma\)</span> can help:</p>
+<p>Modularity has a <strong>resolution limit</strong>: in undirected graphs it struggles to detect communities much smaller than roughly <span class="math notranslate nohighlight">\(\sqrt{2m}\)</span> (with <span class="math notranslate nohighlight">\(m\)</span> edges). The resolution parameter <span class="math notranslate nohighlight">\(\gamma\)</span> can help:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test different resolution parameters</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Modularity vs. resolution:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;γ&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;#Comm&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Q&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Avg Size&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -2258,6 +2273,7 @@ Community-level connectivity:
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Performance: 0.7456
 </pre></div>
 </div>
+<p><strong>Tip:</strong> The double loop is <span class="math notranslate nohighlight">\(O(n^2)\)</span> over nodes; use it on moderate-size graphs or sample nodes when the network is huge.</p>
 <p><strong>3. Conductance</strong> (quality of community boundaries):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_conductance</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="n">comm_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Conductance of a specific community (lower is better).&quot;&quot;&quot;</span>

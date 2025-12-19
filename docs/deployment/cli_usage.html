@@ -146,10 +146,10 @@
              
   <section id="command-line-interface-cli-tutorial">
 <h1>Command-Line Interface (CLI) Tutorial<a class="headerlink" href="#command-line-interface-cli-tutorial" title="Link to this heading"></a></h1>
-<p>Py3plex includes a comprehensive command-line interface that provides access to all main algorithms and functionality directly from the terminal. This is useful for quick analysis, scripting, and automation workflows.</p>
+<p>Py3plex includes a comprehensive command-line interface that provides access to all main algorithms and functionality directly from the terminal. This is useful for quick analysis, scripting, and automation workflows without writing Python code.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
-<p>The CLI tool is automatically available after installing py3plex:</p>
+<p>The CLI tool is available immediately after installing py3plex:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
@@ -158,7 +158,7 @@
 </pre></div>
 </div>
 <p><strong>Alternative: Using Docker</strong></p>
-<p>If you prefer Docker, the CLI is also available via the Docker container:</p>
+<p>If you prefer Docker, the CLI is also available via the Docker container. Mount a host directory to <code class="docutils literal notranslate"><span class="pre">/data</span></code> when you want outputs to persist:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the Docker image</span>
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
 
@@ -216,6 +216,7 @@ py3plex<span class="w"> </span>centrality<span class="w"> </span>--help
 <li><p><code class="docutils literal notranslate"><span class="pre">visualize</span></code> - Create network visualizations</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">aggregate</span></code> - Aggregate multilayer networks into single layer</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">convert</span></code> - Convert between network formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run-config</span></code> - Run YAML/JSON workflow definitions</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">help</span></code> - Show detailed help information</p></li>
 </ul>
 <section id="quick-reference">
@@ -242,6 +243,12 @@ py3plex<span class="w"> </span>visualize<span class="w"> </span>net.graphml<span
 py3plex<span class="w"> </span>community<span class="w"> </span>net.graphml<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--output<span class="w"> </span>communities.json
 </pre></div>
 </div>
+<p><strong>Defaults and conventions:</strong></p>
+<ul class="simple">
+<li><p>Input format is auto-detected by file extension; override with <code class="docutils literal notranslate"><span class="pre">--input-type</span></code> when necessary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--output</span></code> writes to a file and infers format from the extension; omit it to print to stdout where supported.</p></li>
+<li><p>Commands return non-zero exit codes on validation or runtime errors, making them safe to chain in scripts and CI.</p></li>
+</ul>
 </section>
 </section>
 <section id="unix-piping-and-stdin-support">
@@ -257,10 +264,11 @@ cat<span class="w"> </span>network.edgelist<span class="w"> </span><span class="
 cat<span class="w"> </span>network.edgelist<span class="w"> </span><span class="p">|</span><span class="w"> </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span>
 </pre></div>
 </div>
+<p>When reading from stdin, set <code class="docutils literal notranslate"><span class="pre">--input-type</span></code> if the format cannot be inferred from a filename (for example when piping raw CSV or JSON).</p>
 </section>
 <section id="piping-between-commands">
 <h3>Piping Between Commands<a class="headerlink" href="#piping-between-commands" title="Link to this heading"></a></h3>
-<p>Chain py3plex commands together without intermediate files:</p>
+<p>Chain py3plex commands together without intermediate files. Commands write logs to stderr, so piping stdout keeps data clean:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a network and immediately query it</span>
 py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>-o<span class="w"> </span>/dev/stdout<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>table
@@ -285,7 +293,7 @@ py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<spa
 py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span>
 
 <span class="c1"># Multiple computations</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree, betweenness_centrality&quot;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree betweenness_centrality&quot;</span>
 </pre></div>
 </div>
 <p><strong>Python DSL Builder Syntax (use ``–dsl`` flag):</strong></p>
@@ -315,10 +323,12 @@ py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<spa
 py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>table
 </pre></div>
 </div>
+<p>Default output is JSON. Use <code class="docutils literal notranslate"><span class="pre">table</span></code> for on-screen inspection and <code class="docutils literal notranslate"><span class="pre">csv</span></code> when you want a spreadsheet-friendly file.</p>
 </section>
 <section id="combining-with-unix-tools">
 <h3>Combining with Unix Tools<a class="headerlink" href="#combining-with-unix-tools" title="Link to this heading"></a></h3>
 <p>Combine py3plex output with standard Unix tools for powerful data processing:</p>
+<p>Explicitly set <code class="docutils literal notranslate"><span class="pre">--format</span></code> when piping into other tools so output shape stays stable.</p>
 <p><strong>With jq (JSON processing):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top 5 nodes by degree</span>
 py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
@@ -379,6 +389,7 @@ py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class=
 <span class="w">    </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s1">&#39;Q.nodes().compute(&quot;degree&quot;).order_by(&quot;-degree&quot;).limit(5)&#39;</span><span class="w"> </span>--dsl
 </pre></div>
 </div>
+<p>For long pipelines, prefer explicit <code class="docutils literal notranslate"><span class="pre">--format</span></code> choices to keep output predictable for downstream tools.</p>
 </section>
 <section id="tips-for-piping-workflows">
 <h3>Tips for Piping Workflows<a class="headerlink" href="#tips-for-piping-workflows" title="Link to this heading"></a></h3>
@@ -395,7 +406,7 @@ py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class=
 <p>Before loading network data, you can validate file format and data integrity using the <code class="docutils literal notranslate"><span class="pre">check</span></code> command. This helps catch common issues early and provides actionable suggestions for fixing problems.</p>
 <section id="basic-validation">
 <h3>Basic Validation<a class="headerlink" href="#basic-validation" title="Link to this heading"></a></h3>
-<p>Validate a graph data file (auto-detects format):</p>
+<p>Validate a graph data file (auto-detects format). The command returns exit code 0 when no errors are found:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>check<span class="w"> </span>network.csv
 </pre></div>
 </div>
@@ -443,7 +454,7 @@ Linting results:
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>check<span class="w"> </span>network.csv<span class="w"> </span>--strict
 </pre></div>
 </div>
-<p>With strict mode enabled, the command exits with error code 1 if any warnings are found, making it suitable for automated validation in scripts.</p>
+<p>With strict mode enabled, the command exits with error code 1 if any warnings are found, making it suitable for automated validation in scripts. Successful validation still returns 0.</p>
 </section>
 <section id="validation-checks">
 <h3>Validation Checks<a class="headerlink" href="#validation-checks" title="Link to this heading"></a></h3>
@@ -503,10 +514,11 @@ py3plex<span class="w"> </span>load<span class="w"> </span>network.csv<span clas
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>--output<span class="w"> </span>network.graphml<span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span>
 </pre></div>
 </div>
-<p>This creates a network with 100 nodes per layer and 3 layers, saving it to <code class="docutils literal notranslate"><span class="pre">network.graphml</span></code>.</p>
+<p>This creates a network with 100 nodes across 3 layers and saves it to <code class="docutils literal notranslate"><span class="pre">network.graphml</span></code>.</p>
 </section>
 <section id="network-generation-models">
 <h3>Network Generation Models<a class="headerlink" href="#network-generation-models" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create</span></code> command supports multiple random graph models. The <code class="docutils literal notranslate"><span class="pre">--probability</span></code> flag controls density or rewiring, depending on the model; use <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">create</span> <span class="pre">--help</span></code> for the exact parameter meaning before launching large jobs. Set <code class="docutils literal notranslate"><span class="pre">--seed</span></code> for reproducible output and reduce <code class="docutils literal notranslate"><span class="pre">--probability</span></code> if graphs become too dense for your machine.</p>
 <p><strong>Erdős-Rényi Random Graphs:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--type<span class="w"> </span>er<span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.15<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--output<span class="w"> </span>er_network.graphml<span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span>
@@ -619,7 +631,7 @@ py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<
 </section>
 <section id="infomap-optional">
 <h3>Infomap (Optional)<a class="headerlink" href="#infomap-optional" title="Link to this heading"></a></h3>
-<p>If Infomap is installed, use it for overlapping community detection:</p>
+<p>If Infomap is installed as an optional dependency, you can run it directly:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>infomap<span class="w"> </span>--output<span class="w"> </span>communities.json
 </pre></div>
 </div>
@@ -644,6 +656,7 @@ Top 10 nodes by degree centrality:
   ...
 </pre></div>
 </div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--top</span></code> to limit printed entries; pair with <code class="docutils literal notranslate"><span class="pre">--output</span></code> to save all scores.</p>
 </section>
 <section id="save-results">
 <h3>Save Results<a class="headerlink" href="#save-results" title="Link to this heading"></a></h3>
@@ -680,6 +693,7 @@ Top 10 nodes by degree centrality:
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>stats<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span>--output<span class="w"> </span>stats.json
 </pre></div>
 </div>
+<p>Statistics can be verbose; prefer <code class="docutils literal notranslate"><span class="pre">--output</span></code> to capture them as JSON.</p>
 <p><strong>Output includes:</strong></p>
 <ul class="simple">
 <li><p>Layer densities for each layer</p></li>
@@ -750,6 +764,7 @@ Top 10 nodes by degree centrality:
 <section id="network-aggregation">
 <h2>Network Aggregation<a class="headerlink" href="#network-aggregation" title="Link to this heading"></a></h2>
 <p>Aggregate multiple layers into a single layer using different methods:</p>
+<p>Output format is inferred from the extension (<code class="docutils literal notranslate"><span class="pre">.graphml</span></code> in the examples below).</p>
 <section id="sum-aggregation">
 <h3>Sum Aggregation<a class="headerlink" href="#sum-aggregation" title="Link to this heading"></a></h3>
 <p>Sum edge weights across layers:</p>
@@ -777,6 +792,7 @@ Top 10 nodes by degree centrality:
 <section id="convert-between-formats">
 <h3>Convert Between Formats<a class="headerlink" href="#convert-between-formats" title="Link to this heading"></a></h3>
 <p>Convert networks between different file formats:</p>
+<p>Format detection relies on file extensions; pass <code class="docutils literal notranslate"><span class="pre">--input-type</span></code> when converting from stdin or extensionless files.</p>
 <p><strong>To GEXF (for Gephi):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>convert<span class="w"> </span>network.graphml<span class="w"> </span>--output<span class="w"> </span>network.gexf
 </pre></div>
@@ -870,38 +886,33 @@ py3plex<span class="w"> </span>visualize<span class="w"> </span>external_data.cs
 </section>
 <section id="tips-and-best-practices">
 <h2>Tips and Best Practices<a class="headerlink" href="#tips-and-best-practices" title="Link to this heading"></a></h2>
-<ol class="arabic">
-<li><p><strong>Validate Data Files First</strong>: Always run <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">check</span></code> on external data files before analysis to catch format issues early.</p></li>
-<li><p><strong>Use Seeds for Reproducibility</strong>: Always use <code class="docutils literal notranslate"><span class="pre">--seed</span></code> when creating networks for reproducible results.</p></li>
-<li><p><strong>JSON Output for Scripting</strong>: Use <code class="docutils literal notranslate"><span class="pre">--output</span></code> to save results as JSON for post-processing with other tools.</p></li>
-<li><p><strong>Check Help for Each Command</strong>: Each command has detailed help with examples:</p>
+<ul>
+<li><p><strong>Validate data first</strong>: Run <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">check</span></code> on external files before analysis to catch format issues early.</p></li>
+<li><p><strong>Use seeds for reproducibility</strong>: Pass <code class="docutils literal notranslate"><span class="pre">--seed</span></code> when creating networks so results are repeatable.</p></li>
+<li><p><strong>Save structured output</strong>: Use <code class="docutils literal notranslate"><span class="pre">--output</span></code> (often with JSON) for results you plan to post-process.</p></li>
+<li><p><strong>Consult per-command help</strong>: Each command ships with examples:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>&lt;command&gt;<span class="w"> </span>--help
 </pre></div>
 </div>
 </li>
-</ol>
-<ol class="arabic simple" start="4">
-<li><p><strong>Format Auto-Detection</strong>: The CLI automatically detects file formats from extensions, so use appropriate extensions (.graphml, .gexf, .json, .gpickle).</p></li>
-<li><p><strong>Large Networks</strong>: For large networks (&gt;1000 nodes), prefer:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">spring</span></code> or <code class="docutils literal notranslate"><span class="pre">circular</span></code> layouts for visualization</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">louvain</span></code> for community detection (faster than infomap)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">degree</span></code> centrality for quick analysis</p></li>
+<li><p><strong>Rely on extensions for format detection</strong>: Use meaningful extensions (<code class="docutils literal notranslate"><span class="pre">.graphml</span></code>, <code class="docutils literal notranslate"><span class="pre">.gexf</span></code>, <code class="docutils literal notranslate"><span class="pre">.json</span></code>, <code class="docutils literal notranslate"><span class="pre">.gpickle</span></code>) so the CLI auto-detects formats correctly.</p></li>
+<li><p><strong>Handling large networks (&gt;1000 nodes)</strong>:
+* Prefer <code class="docutils literal notranslate"><span class="pre">spring</span></code> or <code class="docutils literal notranslate"><span class="pre">circular</span></code> layouts for quicker visualization
+* Use <code class="docutils literal notranslate"><span class="pre">louvain</span></code> for community detection (typically faster than <code class="docutils literal notranslate"><span class="pre">infomap</span></code>)
+* Start with <code class="docutils literal notranslate"><span class="pre">degree</span></code> centrality for quick scans</p></li>
+<li><p><strong>Batch processing</strong>: Combine CLI commands with shell scripts to process many networks consistently.</p></li>
 </ul>
-</li>
-<li><p><strong>Batch Processing</strong>: Combine CLI commands with shell scripts for batch processing multiple networks.</p></li>
-</ol>
 </section>
 <section id="common-issues-and-solutions">
 <h2>Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Link to this heading"></a></h2>
 <p><strong>Issue: “Infomap not available”</strong></p>
-<p>Solution: Infomap requires separate installation. Use <code class="docutils literal notranslate"><span class="pre">louvain</span></code> or <code class="docutils literal notranslate"><span class="pre">label_prop</span></code> instead.</p>
+<p>Solution: Infomap is an optional dependency. Install it if you need that algorithm, or choose <code class="docutils literal notranslate"><span class="pre">louvain</span></code>/<code class="docutils literal notranslate"><span class="pre">label_prop</span></code> instead.</p>
 <p><strong>Issue: “Eigenvector centrality failed”</strong></p>
-<p>Solution: Some networks don’t converge for eigenvector centrality. The CLI automatically falls back to degree centrality.</p>
+<p>Solution: Eigenvector centrality may not converge on disconnected or poorly conditioned graphs. Run it on a connected subgraph or switch to <code class="docutils literal notranslate"><span class="pre">degree</span></code> centrality.</p>
 <p><strong>Issue: Visualization too slow</strong></p>
-<p>Solution: Use simpler layouts (<code class="docutils literal notranslate"><span class="pre">circular</span></code>) or reduce figure size (<code class="docutils literal notranslate"><span class="pre">--width</span> <span class="pre">8</span> <span class="pre">--height</span> <span class="pre">6</span></code>).</p>
+<p>Solution: Use simpler layouts (<code class="docutils literal notranslate"><span class="pre">circular</span></code>), reduce figure size (<code class="docutils literal notranslate"><span class="pre">--width</span> <span class="pre">8</span> <span class="pre">--height</span> <span class="pre">6</span></code>), or sample a subgraph before plotting.</p>
 <p><strong>Issue: Memory errors with large networks</strong></p>
-<p>Solution: Use aggregation to reduce network size before visualization, or compute statistics without visualization.</p>
+<p>Solution: Aggregate layers to shrink the graph, or stick to text-based stats instead of visualization.</p>
 </section>
 <section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>

@@ -159,10 +159,14 @@
              
   <section id="key-use-cases">
 <h1>Key Use Cases<a class="headerlink" href="#key-use-cases" title="Link to this heading"></a></h1>
-<p>py3plex is used across multiple domains for analyzing complex systems with multiple relationship types.</p>
+<p>py3plex models systems where the same entities interact through many
+relationship types (layers). Each node may appear in multiple layers, and
+interlayer edges let you model transfers or couplings between contexts. Below
+are common domains, what the layers represent, and the kinds of questions you
+can answer.</p>
 <section id="social-networks">
 <h2>Social Networks<a class="headerlink" href="#social-networks" title="Link to this heading"></a></h2>
-<p><strong>Multiplex social networks</strong> capture different types of social relationships:</p>
+<p>Layers represent communication channels or contexts for the same people:</p>
 <ul class="simple">
 <li><p>Friendship, family, and professional connections</p></li>
 <li><p>Online interactions: mentions, retweets, replies</p></li>
@@ -174,27 +178,28 @@
 <li><p>Detecting communities that span different relationship types</p></li>
 <li><p>Predicting information diffusion through multiple channels</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Multi-platform social network</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Example: Multi-platform social network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># List input: [source, source_layer, target, target_layer, weight]</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
     <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
     <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
     <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
-<span class="c1"># Find users active across platforms</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
-<span class="n">active_users</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer_count__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Present in multiple layers</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="c1"># Find users present in more than one layer</span>
+<span class="n">layer_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="n">active_users</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">layer_counts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">active_users</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="biological-networks">
 <h2>Biological Networks<a class="headerlink" href="#biological-networks" title="Link to this heading"></a></h2>
-<p><strong>Molecular interaction networks</strong> with multiple relationship types:</p>
+<p>Layers capture different biological interaction types:</p>
 <ul class="simple">
 <li><p>Protein-protein interactions (physical binding)</p></li>
 <li><p>Gene regulatory networks (transcriptional control)</p></li>
@@ -209,6 +214,9 @@
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Multi-omics biological network</span>
 <span class="c1"># Protein-protein interactions + gene regulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="c1"># Physical interactions</span>
@@ -217,17 +225,17 @@
 <span class="c1"># Regulatory interactions</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;TP53&#39;</span><span class="p">,</span> <span class="s1">&#39;regulation&#39;</span><span class="p">,</span> <span class="s1">&#39;CDKN1A&#39;</span><span class="p">,</span> <span class="s1">&#39;regulation&#39;</span><span class="p">)</span>
 
-<span class="c1"># Find key regulators with multiple interaction types</span>
+<span class="c1"># Compute centrality within the regulatory layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes WHERE layer_count &gt; 1 &#39;</span>
-    <span class="s1">&#39;COMPUTE degree COMPUTE betweenness_centrality&#39;</span>
+    <span class="s1">&#39;SELECT nodes WHERE layer=&quot;regulation&quot; &#39;</span>
+    <span class="s1">&#39;COMPUTE betweenness_centrality&#39;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="transportation-networks">
 <h2>Transportation Networks<a class="headerlink" href="#transportation-networks" title="Link to this heading"></a></h2>
-<p><strong>Multimodal transportation</strong> with different travel modes:</p>
+<p>Layers represent travel modes and transfers between them:</p>
 <ul class="simple">
 <li><p>Road networks</p></li>
 <li><p>Public transit (bus, metro, train)</p></li>
@@ -241,6 +249,8 @@
 <li><p>Analyzing resilience to disruptions</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Multimodal city transportation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="c1"># Different transportation modes</span>
@@ -251,16 +261,24 @@
 <span class="c1"># Inter-layer connections (transfers)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;StationA&#39;</span><span class="p">,</span> <span class="s1">&#39;metro&#39;</span><span class="p">,</span> <span class="s1">&#39;StationA&#39;</span><span class="p">,</span> <span class="s1">&#39;bus&#39;</span><span class="p">,</span>
                  <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;interlayer&#39;</span><span class="p">)</span>
+
+<span class="c1"># Identify busy transfer points (degree &gt; 2 across all modes)</span>
+<span class="n">busy_stations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span>
+<span class="p">]</span>
 </pre></div>
 </div>
 </section>
 <section id="knowledge-graphs">
 <h2>Knowledge Graphs<a class="headerlink" href="#knowledge-graphs" title="Link to this heading"></a></h2>
-<p><strong>Heterogeneous knowledge networks</strong> with different entity and relation types:</p>
+<p>Layers separate relation types between entities:</p>
 <ul class="simple">
 <li><p>Entity types: people, organizations, locations, concepts</p></li>
 <li><p>Relation types: employment, location, authorship, citation</p></li>
 </ul>
+<p>Keeping relations in distinct layers preserves meaning (employment vs. location)
+while still allowing cross-layer queries.</p>
 <p><strong>Example applications:</strong></p>
 <ul class="simple">
 <li><p>Entity linking and disambiguation</p></li>
@@ -270,7 +288,7 @@
 </section>
 <section id="scientific-collaboration">
 <h2>Scientific Collaboration<a class="headerlink" href="#scientific-collaboration" title="Link to this heading"></a></h2>
-<p><strong>Co-authorship networks</strong> across disciplines:</p>
+<p>Layers represent collaboration contexts:</p>
 <ul class="simple">
 <li><p>Joint publications</p></li>
 <li><p>Grant collaborations</p></li>
@@ -283,10 +301,12 @@
 <li><p>Detecting emerging research communities</p></li>
 <li><p>Predicting future collaborations</p></li>
 </ul>
+<p>Layered collaboration data keeps formal publications separate from informal
+interactions while still letting you track cross-context teams.</p>
 </section>
 <section id="epidemic-modeling">
 <h2>Epidemic Modeling<a class="headerlink" href="#epidemic-modeling" title="Link to this heading"></a></h2>
-<p><strong>Disease transmission</strong> through multiple contact types:</p>
+<p>Layers represent contact types with different transmission risks:</p>
 <ul class="simple">
 <li><p>Household contacts</p></li>
 <li><p>Workplace interactions</p></li>
@@ -299,11 +319,13 @@
 <li><p>Evaluating intervention strategies</p></li>
 <li><p>Identifying super-spreader events</p></li>
 </ul>
+<p>Assign layer-specific transmission probabilities to model different risks (e.g.,
+household vs. workplace).</p>
 <p>See <a class="reference internal" href="../how-to/simulate_dynamics.html"><span class="doc">How to Simulate Multilayer Dynamics</span></a> for epidemic modeling how-tos.</p>
 </section>
 <section id="communication-networks">
 <h2>Communication Networks<a class="headerlink" href="#communication-networks" title="Link to this heading"></a></h2>
-<p><strong>Enterprise communication</strong> across channels:</p>
+<p>Layers capture organizational communication channels:</p>
 <ul class="simple">
 <li><p>Email correspondence</p></li>
 <li><p>Instant messaging</p></li>
@@ -316,10 +338,12 @@
 <li><p>Information flow optimization</p></li>
 <li><p>Team effectiveness measurement</p></li>
 </ul>
+<p>Layered communication captures channel preferences without losing the underlying
+person identifiers.</p>
 </section>
 <section id="financial-networks">
 <h2>Financial Networks<a class="headerlink" href="#financial-networks" title="Link to this heading"></a></h2>
-<p><strong>Economic relationships</strong> at multiple scales:</p>
+<p>Layers distinguish financial instruments and ownership ties:</p>
 <ul class="simple">
 <li><p>Trade networks (goods, services)</p></li>
 <li><p>Financial flows (investments, loans)</p></li>
@@ -335,7 +359,7 @@
 </ul>
 <p><strong>Example: Multi-layer financial network</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Build financial network with multiple relationship types</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -360,49 +384,33 @@
     <span class="p">[</span><span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
 <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
-<span class="c1"># Identify systemically important institutions</span>
-<span class="c1"># (high degree across multiple relationship types)</span>
-<span class="n">systemic_nodes</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="c1"># Identify systemically important institutions using DSL</span>
+<span class="c1"># (unweighted betweenness across all layers; pass weight=&#39;weight&#39; to include amounts)</span>
+<span class="n">centrality</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="s1">&#39;SELECT nodes COMPUTE betweenness_centrality&#39;</span>
+<span class="p">)[</span><span class="s1">&#39;computed&#39;</span><span class="p">][</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Systemically Important Institutions:&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">systemic_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">5</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: degree=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
-          <span class="sa">f</span><span class="s2">&quot;betweenness=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">top_3</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+    <span class="n">centrality</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
 
-<span class="c1"># Analyze risk propagation</span>
-<span class="c1"># Find institutions connected across multiple layers</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top betweenness nodes (node, betweenness):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_3</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Find institutions represented in multiple layers</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
-<span class="n">node_layer_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
-    <span class="n">node_layer_count</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="n">node_layer_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="n">multi_layer_nodes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">node_layer_count</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+<span class="p">]</span>
 
-<span class="n">highly_connected</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">node</span><span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">node_layer_count</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span>  <span class="c1"># Present in 2+ layers</span>
-<span class="p">}</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Institutions with multiple relationship types: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">highly_connected</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">highly_connected</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
-                          <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> relationship types&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Systemically Important Institutions:
-  (&#39;BankA&#39;, &#39;trade&#39;): degree=4, betweenness=0.1234
-  (&#39;BankB&#39;, &#39;lending&#39;): degree=4, betweenness=0.1156
-  (&#39;BankC&#39;, &#39;trade&#39;): degree=3, betweenness=0.0987
-
-Institutions with multiple relationship types: 3
-  BankA: 3 relationship types
-  BankB: 3 relationship types
-  BankC: 2 relationship types
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Institutions with multiple relationship types: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">multi_layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">multi_layer_nodes</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Use cases for financial network analysis:</strong></p>

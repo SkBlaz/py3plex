@@ -90,7 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="layer_set_algebra.html">Layer Set Algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uncertainty_first_statistics.html">Uncertainty-First Statistics</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.core.multinet">Core Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core-modules">Core Modules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.multinet.ensure"><code class="docutils literal notranslate"><span class="pre">ensure()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.multinet.invariant"><code class="docutils literal notranslate"><span class="pre">invariant()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network"><code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code></a></li>
@@ -145,10 +145,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.nx_compat.nx_to_scipy_sparse_matrix"><code class="docutils literal notranslate"><span class="pre">nx_to_scipy_sparse_matrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.nx_compat.nx_write_gpickle"><code class="docutils literal notranslate"><span class="pre">nx_write_gpickle()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.nx_compat.require"><code class="docutils literal notranslate"><span class="pre">require()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-py3plex.core.HINMINE.decomposition">HINMINE Network Decomposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hinmine-network-decomposition">HINMINE Network Decomposition</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.config">Configuration and Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-and-utilities">Configuration and Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.config.get_color_palette"><code class="docutils literal notranslate"><span class="pre">get_color_palette()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.config.reset_to_defaults"><code class="docutils literal notranslate"><span class="pre">reset_to_defaults()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.utils.deprecated"><code class="docutils literal notranslate"><span class="pre">deprecated()</span></code></a></li>
@@ -184,7 +184,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.exceptions.VisualizationError"><code class="docutils literal notranslate"><span class="pre">VisualizationError</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.dsl">Domain-Specific Language (DSL)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#domain-specific-language-dsl">Domain-Specific Language (DSL)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.AttrType"><code class="docutils literal notranslate"><span class="pre">AttrType</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.BooleanExpression"><code class="docutils literal notranslate"><span class="pre">BooleanExpression</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.C"><code class="docutils literal notranslate"><span class="pre">C</span></code></a></li>
@@ -290,7 +290,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.unregister_operator"><code class="docutils literal notranslate"><span class="pre">unregister_operator()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.uncertainty">Uncertainty Quantification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#uncertainty-quantification">Uncertainty Quantification</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.uncertainty.CommunityStats"><code class="docutils literal notranslate"><span class="pre">CommunityStats</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.uncertainty.ResamplingStrategy"><code class="docutils literal notranslate"><span class="pre">ResamplingStrategy</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.uncertainty.StatMatrix"><code class="docutils literal notranslate"><span class="pre">StatMatrix</span></code></a></li>
@@ -318,14 +318,14 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#algorithms">Algorithms</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-py3plex.algorithms.community_detection.community_wrapper">Community Detection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-py3plex.algorithms.statistics.multilayer_statistics">Statistics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-py3plex.algorithms.multilayer_algorithms.centrality">Multilayer Algorithms</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-py3plex.algorithms.general.walkers">General Algorithms</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-py3plex.algorithms.node_ranking.node_ranking">Node Ranking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#statistics">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-algorithms">Multilayer Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#general-algorithms">General Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node-ranking">Node Ranking</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#network-classification">Network Classification</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.visualization.multilayer">Visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#visualization">Visualization</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.multilayer.draw_multiedges"><code class="docutils literal notranslate"><span class="pre">draw_multiedges()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.multilayer.draw_multilayer_default"><code class="docutils literal notranslate"><span class="pre">draw_multilayer_default()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.multilayer.draw_multilayer_flow"><code class="docutils literal notranslate"><span class="pre">draw_multilayer_flow()</span></code></a></li>
@@ -380,20 +380,21 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.benchmark_visualizations.table_to_latex"><code class="docutils literal notranslate"><span class="pre">table_to_latex()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.wrappers.benchmark_nodes">Wrappers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#wrappers">Wrappers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.TopKRanker"><code class="docutils literal notranslate"><span class="pre">TopKRanker</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.benchmark_node_classification"><code class="docutils literal notranslate"><span class="pre">benchmark_node_classification()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.sparse2graph"><code class="docutils literal notranslate"><span class="pre">sparse2graph()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#i-o-operations">I/O Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#i-o-operations">I/O Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aggregation-and-network-operations">Aggregation and Network Operations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.multinet.aggregation.aggregate_layers"><code class="docutils literal notranslate"><span class="pre">aggregate_layers()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.multinet.aggregation.ensure"><code class="docutils literal notranslate"><span class="pre">ensure()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.multinet.aggregation.require"><code class="docutils literal notranslate"><span class="pre">require()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.profiling">Profiling Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#profiling-utilities">Profiling Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.profiling.PerformanceMonitor"><code class="docutils literal notranslate"><span class="pre">PerformanceMonitor</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.profiling.benchmark"><code class="docutils literal notranslate"><span class="pre">benchmark()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.profiling.get_monitor"><code class="docutils literal notranslate"><span class="pre">get_monitor()</span></code></a></li>
@@ -401,7 +402,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.profiling.timed_section"><code class="docutils literal notranslate"><span class="pre">timed_section()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.logging_config">Logging Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#logging-configuration">Logging Configuration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.logging_config.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.logging_config.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
 </ul>
@@ -416,7 +417,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.io.api.write"><code class="docutils literal notranslate"><span class="pre">write()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.algorithms.hedwig">Hedwig Rule Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hedwig-rule-learning">Hedwig Rule Learning</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.build_graph"><code class="docutils literal notranslate"><span class="pre">build_graph()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.generate_rules_report"><code class="docutils literal notranslate"><span class="pre">generate_rules_report()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.rule_kernel"><code class="docutils literal notranslate"><span class="pre">rule_kernel()</span></code></a></li>
@@ -429,7 +430,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.core.rule.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.visualization.fa2.forceatlas2">Force Atlas 2 Visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#force-atlas-2-visualization">Force Atlas 2 Visualization</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.fa2.forceatlas2.ForceAtlas2"><code class="docutils literal notranslate"><span class="pre">ForceAtlas2</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.fa2.forceatlas2.Timer"><code class="docutils literal notranslate"><span class="pre">Timer</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.fa2.fa2util.Edge"><code class="docutils literal notranslate"><span class="pre">Edge</span></code></a></li>
@@ -446,12 +447,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.fa2.fa2util.strongGravity"><code class="docutils literal notranslate"><span class="pre">strongGravity()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.visualization.embedding_visualization.embedding_visualization">Embedding Visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#embedding-visualization">Embedding Visualization</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.embedding_visualization.embedding_visualization.visualize_embedding"><code class="docutils literal notranslate"><span class="pre">visualize_embedding()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#network-generation-and-benchmarking">Network Generation and Benchmarking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.algorithms.statistics.bayesiantests">Additional Statistics and Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#additional-statistics-and-analysis">Additional Statistics and Analysis</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.statistics.bayesiantests.correlated_ttest"><code class="docutils literal notranslate"><span class="pre">correlated_ttest()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.statistics.bayesiantests.correlated_ttest_MC"><code class="docutils literal notranslate"><span class="pre">correlated_ttest_MC()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.statistics.bayesiantests.heaviside"><code class="docutils literal notranslate"><span class="pre">heaviside()</span></code></a></li>
@@ -465,7 +466,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.statistics.bayesiantests.signtest_MC"><code class="docutils literal notranslate"><span class="pre">signtest_MC()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.algorithms.community_detection.NoRC">Community Detection Advanced</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#community-detection-advanced">Community Detection Advanced</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.community_detection.NoRC.NoRC_communities_main"><code class="docutils literal notranslate"><span class="pre">NoRC_communities_main()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.community_detection.NoRC.page_rank_kernel"><code class="docutils literal notranslate"><span class="pre">page_rank_kernel()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.community_detection.community_ranking.create_tree"><code class="docutils literal notranslate"><span class="pre">create_tree()</span></code></a></li>
@@ -473,7 +474,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.community_detection.community_ranking.return_infomap_communities"><code class="docutils literal notranslate"><span class="pre">return_infomap_communities()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.algorithms.node_ranking">Node Ranking and Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#node-ranking-and-classification">Node Ranking and Classification</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.node_ranking.authority_matrix"><code class="docutils literal notranslate"><span class="pre">authority_matrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.node_ranking.damping_hyper"><code class="docutils literal notranslate"><span class="pre">damping_hyper</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.node_ranking.hub_matrix"><code class="docutils literal notranslate"><span class="pre">hub_matrix()</span></code></a></li>
@@ -494,19 +495,19 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.network_classification.validate_label_propagation"><code class="docutils literal notranslate"><span class="pre">validate_label_propagation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.wrappers.train_node2vec_embedding">Embeddings and Wrappers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#embeddings-and-wrappers">Embeddings and Wrappers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary"><code class="docutils literal notranslate"><span class="pre">call_node2vec_binary()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.train_node2vec_embedding.learn_embedding"><code class="docutils literal notranslate"><span class="pre">learn_embedding()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.train_node2vec_embedding.n2v_embedding"><code class="docutils literal notranslate"><span class="pre">n2v_embedding()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#network-motifs-and-patterns">Network Motifs and Patterns</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.core.HINMINE.dataStructures">HINMINE Data Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hinmine-data-structures">HINMINE Data Structures</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.HINMINE.dataStructures.Class"><code class="docutils literal notranslate"><span class="pre">Class</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork"><code class="docutils literal notranslate"><span class="pre">HeterogeneousInformationNetwork</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.cli">Command-Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-interface">Command-Line Interface</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.cli.cmd_aggregate"><code class="docutils literal notranslate"><span class="pre">cmd_aggregate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.cli.cmd_centrality"><code class="docutils literal notranslate"><span class="pre">cmd_centrality()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.cli.cmd_check"><code class="docutils literal notranslate"><span class="pre">cmd_check()</span></code></a></li>
@@ -527,7 +528,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.validation">Validation Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#validation-utilities">Validation Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.validation.validate_csv_columns"><code class="docutils literal notranslate"><span class="pre">validate_csv_columns()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.validation.validate_edgelist_format"><code class="docutils literal notranslate"><span class="pre">validate_edgelist_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.validation.validate_file_exists"><code class="docutils literal notranslate"><span class="pre">validate_file_exists()</span></code></a></li>
@@ -537,13 +538,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#network-comparison-and-testing">Network Comparison and Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.algorithms.hedwig.learners.learner">Hedwig Learning Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hedwig-learning-algorithms">Hedwig Learning Algorithms</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.learners.learner.Learner"><code class="docutils literal notranslate"><span class="pre">Learner</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner"><code class="docutils literal notranslate"><span class="pre">BottomUpLearner</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.learners.optimal.OptimalLearner"><code class="docutils literal notranslate"><span class="pre">OptimalLearner</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.algorithms.hedwig.stats.scorefunctions">Hedwig Statistics and Scoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hedwig-statistics-and-scoring">Hedwig Statistics and Scoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.stats.scorefunctions.chisq"><code class="docutils literal notranslate"><span class="pre">chisq()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.stats.scorefunctions.enrichment_score"><code class="docutils literal notranslate"><span class="pre">enrichment_score()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.stats.scorefunctions.interesting"><code class="docutils literal notranslate"><span class="pre">interesting()</span></code></a></li>
@@ -557,7 +558,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.stats.validate.Validate"><code class="docutils literal notranslate"><span class="pre">Validate</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.algorithms.hedwig.core.converters">Hedwig Core Components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hedwig-core-components">Hedwig Core Components</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.core.converters.convert_mapping_to_rdf"><code class="docutils literal notranslate"><span class="pre">convert_mapping_to_rdf()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.core.converters.obo2n3"><code class="docutils literal notranslate"><span class="pre">obo2n3()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB"><code class="docutils literal notranslate"><span class="pre">ExperimentKB</span></code></a></li>
@@ -565,7 +566,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#time-series-and-temporal-analysis">Time Series and Temporal Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-py3plex.visualization.sankey">Advanced Visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-visualization">Advanced Visualization</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.sankey.draw_multilayer_sankey"><code class="docutils literal notranslate"><span class="pre">draw_multilayer_sankey()</span></code></a></li>
 </ul>
 </li>
@@ -630,20 +631,22 @@
              
   <section id="api-documentation">
 <h1>API Documentation<a class="headerlink" href="#api-documentation" title="Link to this heading"></a></h1>
-<p>This section contains the complete API documentation for py3plex, automatically generated from docstrings.</p>
+<p>This page indexes the auto-generated API documentation for py3plex. Use it as a map to find module-level details after building the docs.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p><strong>Looking for algorithm documentation?</strong> Visit <a class="reference internal" href="algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> for a conceptual overview of all algorithms organized by category with working examples. Then come back here for detailed API signatures.</p>
 </div>
-<p>For auto-generated module documentation, run:</p>
+<p>How to (re)generate the API pages:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docfiles</span>
 <span class="n">sphinx</span><span class="o">-</span><span class="n">apidoc</span> <span class="o">-</span><span class="n">o</span> <span class="n">AUTOGEN_results</span> <span class="o">-</span><span class="n">f</span> <span class="o">../</span><span class="n">py3plex</span>
 <span class="n">make</span> <span class="n">html</span>
 </pre></div>
 </div>
-<section id="module-py3plex.core.multinet">
-<span id="core-modules"></span><h2>Core Modules<a class="headerlink" href="#module-py3plex.core.multinet" title="Link to this heading"></a></h2>
-<dl class="py function">
+<p>You will find the generated RST sources under <code class="docutils literal notranslate"><span class="pre">docfiles/AUTOGEN_results</span></code> and the rendered HTML under <code class="docutils literal notranslate"><span class="pre">docfiles/_build</span></code>.</p>
+<section id="core-modules">
+<h2>Core Modules<a class="headerlink" href="#core-modules" title="Link to this heading"></a></h2>
+<p>Core data structures and helpers for loading, converting, and working with multilayer networks.</p>
+<dl class="py function" id="module-py3plex.core.multinet">
 <dt class="sig sig-object py" id="py3plex.core.multinet.ensure">
 <span class="sig-prename descclassname"><span class="pre">py3plex.core.multinet.</span></span><span class="sig-name descname"><span class="pre">ensure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.ensure" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -702,14 +705,14 @@ more than two nodes). For hypergraph-like structures, consider:
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add nodes to different layers</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;email&#39;</span><span class="p">}</span>  <span class="c1"># Same node, different layer</span>
 <span class="gp">... </span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add edges (intra-layer and inter-layer)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
 <span class="gp">... </span>     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
@@ -898,7 +901,7 @@ they belong to. This method adds nodes using a dict-based format.</p>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;entity2&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}</span>
 <span class="gp">... </span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">multi_layer_nodes</span><span class="p">)</span>
-<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=9, edges=0, layers=5&gt;</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=9, edges=0, layers=4&gt;</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
@@ -942,7 +945,7 @@ computes community-level statistics.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">partition</span> <span class="o">=</span> <span class="p">{(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">assign_partition</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">community_sizes</span><span class="p">)</span>
@@ -1010,7 +1013,7 @@ curvatures:
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
@@ -1074,7 +1077,7 @@ applied:
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
@@ -1102,7 +1105,7 @@ applied:
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">edge_count</span>
 <span class="go">1</span>
@@ -1198,8 +1201,8 @@ net.execute_query(‘MATCH (a)-[e]-&gt;(b) IN LAYER “ppi” WHERE a.degree &gt
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="s1">&#39;SELECT nodes WHERE layer=&quot;layer1&quot;&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span>
@@ -1507,7 +1510,7 @@ multiplex_edges=False, coupling edges are excluded.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">set_node_attribute</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">get_node_attribute</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">))</span>
 <span class="go">42.0</span>
@@ -1556,7 +1559,7 @@ multiplex_edges=False, coupling edges are excluded.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">partition</span> <span class="o">=</span> <span class="p">{(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">assign_partition</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">get_partition</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">))</span>
@@ -1610,8 +1613,10 @@ useful for mathematical analysis and matrix-based algorithms.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L0&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tensor</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">get_tensor</span><span class="p">(</span><span class="n">sparsity_type</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(2, 2)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1665,7 +1670,7 @@ but with control over the specific sparse format used.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">is_empty</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">is_empty</span>
 <span class="go">False</span>
 </pre></div>
@@ -1686,7 +1691,7 @@ but with control over the specific sparse format used.</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
 <span class="gp">... </span><span class="p">])</span>
@@ -1710,7 +1715,7 @@ but with control over the specific sparse format used.</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">}</span>
 <span class="gp">... </span><span class="p">])</span>
@@ -1879,7 +1884,7 @@ centralities = network.monoplex_nx_wrapper(“betweenness_centrality”,</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">node_count</span>
 <span class="go">1</span>
 </pre></div>
@@ -1973,8 +1978,8 @@ for persistence, sharing, or use with other tools.</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s1">&#39;network.txt&#39;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;multiedgelist&#39;</span><span class="p">)</span>
 </pre></div>
@@ -2068,7 +2073,7 @@ save_network: Alternative serialization method</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">set_node_attribute</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">get_node_attribute</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">))</span>
 <span class="go">42.0</span>
@@ -2124,8 +2129,8 @@ save_network: Alternative serialization method</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stats</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network has </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;Nodes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes and </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;Edges&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
@@ -2207,7 +2212,7 @@ multilayer networks (where nodes are typically (node_id, layer) tuples).</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nx_graph</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">to_networkx</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">))</span>
 <span class="go">&lt;class &#39;networkx.classes.multigraph.MultiGraph&#39;&gt;</span>
@@ -3419,9 +3424,10 @@ This module provides compatibility functions for different NetworkX versions.</p
 <span class="sig-prename descclassname"><span class="pre">py3plex.core.nx_compat.</span></span><span class="sig-name descname"><span class="pre">require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.nx_compat.require" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<section id="module-py3plex.core.HINMINE.decomposition">
-<span id="hinmine-network-decomposition"></span><h3>HINMINE Network Decomposition<a class="headerlink" href="#module-py3plex.core.HINMINE.decomposition" title="Link to this heading"></a></h3>
-<dl class="py function">
+<section id="hinmine-network-decomposition">
+<h3>HINMINE Network Decomposition<a class="headerlink" href="#hinmine-network-decomposition" title="Link to this heading"></a></h3>
+<p>Modules for heterogeneous information network (HINMINE) decomposition, including I/O helpers.</p>
+<dl class="py function" id="module-py3plex.core.HINMINE.decomposition">
 <dt class="sig sig-object py" id="py3plex.core.HINMINE.decomposition.aggregate_sum">
 <span class="sig-prename descclassname"><span class="pre">py3plex.core.HINMINE.decomposition.</span></span><span class="sig-name descname"><span class="pre">aggregate_sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_thing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">universal_set</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.HINMINE.decomposition.aggregate_sum" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -3580,9 +3586,10 @@ This module provides compatibility functions for different NetworkX versions.</p
 
 </section>
 </section>
-<section id="module-py3plex.config">
-<span id="configuration-and-utilities"></span><h2>Configuration and Utilities<a class="headerlink" href="#module-py3plex.config" title="Link to this heading"></a></h2>
-<p>Centralized configuration for py3plex.</p>
+<section id="configuration-and-utilities">
+<h2>Configuration and Utilities<a class="headerlink" href="#configuration-and-utilities" title="Link to this heading"></a></h2>
+<p>Global configuration objects, shared utilities, and base exceptions.</p>
+<p id="module-py3plex.config">Centralized configuration for py3plex.</p>
 <p>This module provides default settings for visualization, layout algorithms,
 and other configurable aspects of the library. Users can override these
 settings by modifying the values after import.</p>
@@ -4251,9 +4258,10 @@ and enable better error handling throughout the library.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.dsl">
-<span id="domain-specific-language-dsl"></span><h2>Domain-Specific Language (DSL)<a class="headerlink" href="#module-py3plex.dsl" title="Link to this heading"></a></h2>
-<p>DSL v2 for Multilayer Network Queries.</p>
+<section id="domain-specific-language-dsl">
+<h2>Domain-Specific Language (DSL)<a class="headerlink" href="#domain-specific-language-dsl" title="Link to this heading"></a></h2>
+<p>SQL-like query language for selecting and computing properties on multilayer networks.</p>
+<p id="module-py3plex.dsl">DSL v2 for Multilayer Network Queries.</p>
 <p>This module provides a Domain-Specific Language (DSL) version 2 for querying and
 analyzing multilayer networks. DSL v2 introduces:</p>
 <ol class="arabic simple">
@@ -4281,17 +4289,17 @@ analyzing multilayer networks. DSL v2 introduces:</p>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Execute the query</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>  
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compare two networks</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">comparison</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="s2">&quot;baseline&quot;</span><span class="p">,</span> <span class="s2">&quot;treatment&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">using</span><span class="p">(</span><span class="s2">&quot;multiplex_jaccard&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">networks</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">comparison</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="s2">&quot;baseline&quot;</span><span class="p">,</span> <span class="s2">&quot;treatment&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">using</span><span class="p">(</span><span class="s2">&quot;multiplex_jaccard&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">networks</span><span class="p">)</span>  
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate null models</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">nullmodels</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">configuration</span><span class="p">()</span><span class="o">.</span><span class="n">samples</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nullmodels</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">configuration</span><span class="p">()</span><span class="o">.</span><span class="n">samples</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>  
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Find paths</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">shortest</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">crossing_layers</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">shortest</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">crossing_layers</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>  
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Define custom operators</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nd">@dsl_operator</span><span class="p">(</span><span class="s2">&quot;my_measure&quot;</span><span class="p">)</span>
@@ -11114,9 +11122,12 @@ overridden on a per-metric basis.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">describe_operator</span><span class="p">(</span><span class="s2">&quot;layer_resilience&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">])</span>
-<span class="go">Compute resilience score for current layers.</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@dsl_operator</span><span class="p">(</span><span class="s2">&quot;layer_resilience&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Compute resilience score for current layers.&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">layer_resilience_op</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">DSLExecutionContext</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="mf">42.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">describe_operator</span><span class="p">(</span><span class="s2">&quot;layer_resilience&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+<span class="go">&#39;Compute resilience score for current layers.&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -11184,7 +11195,7 @@ as its first argument, followed by any keyword arguments.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@dsl_operator</span><span class="p">(</span><span class="s2">&quot;layer_resilience&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s2">&quot;dynamics&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@dsl_operator</span><span class="p">(</span><span class="s2">&quot;layer_resilience&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s2">&quot;dynamics&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">layer_resilience_op</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">DSLExecutionContext</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">):</span>
 <span class="gp">... </span><span class="w">    </span><span class="sd">&#39;&#39;&#39;Compute resilience score for current layers.&#39;&#39;&#39;</span>
 <span class="gp">... </span>    <span class="c1"># Access context.graph, context.current_layers, etc.</span>
@@ -11573,7 +11584,7 @@ into a tabular format and dispatches to format-specific writers.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.dsl.register_operator">
-<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">register_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.dsl.register_operator" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">register_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.register_operator" title="Link to this definition"></a></dt>
 <dd><p>Register a DSL operator with the global registry.</p>
 <p>This is a convenience function that delegates to operator_registry.register().</p>
 <dl class="field-list simple">
@@ -11638,9 +11649,10 @@ Primarily useful for testing and cleanup.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.uncertainty">
-<span id="uncertainty-quantification"></span><h2>Uncertainty Quantification<a class="headerlink" href="#module-py3plex.uncertainty" title="Link to this heading"></a></h2>
-<p>First-class uncertainty support for py3plex.</p>
+<section id="uncertainty-quantification">
+<h2>Uncertainty Quantification<a class="headerlink" href="#uncertainty-quantification" title="Link to this heading"></a></h2>
+<p>Uncertainty estimation tools and supporting types for ranking and inference tasks.</p>
+<p id="module-py3plex.uncertainty">First-class uncertainty support for py3plex.</p>
 <p>This module provides types and utilities for representing statistics with
 uncertainty information. The core idea is that every statistic is an object
 that can carry a distribution:</p>
@@ -13062,6 +13074,7 @@ The returned object has mean, std, and quantiles populated.</p>
 </section>
 <section id="algorithms">
 <h2>Algorithms<a class="headerlink" href="#algorithms" title="Link to this heading"></a></h2>
+<p>Algorithm implementations grouped by task.</p>
 <section id="module-py3plex.algorithms.community_detection.community_wrapper">
 <span id="community-detection"></span><h3>Community Detection<a class="headerlink" href="#module-py3plex.algorithms.community_detection.community_wrapper" title="Link to this heading"></a></h3>
 <dl class="py function">
@@ -13782,9 +13795,10 @@ intra- and inter-community connection probabilities.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.statistics.multilayer_statistics">
-<span id="statistics"></span><h3>Statistics<a class="headerlink" href="#module-py3plex.algorithms.statistics.multilayer_statistics" title="Link to this heading"></a></h3>
-<p>Multilayer Network Statistics</p>
+<section id="statistics">
+<h3>Statistics<a class="headerlink" href="#statistics" title="Link to this heading"></a></h3>
+<p>Network statistics, enrichment tests, and topology utilities.</p>
+<p id="module-py3plex.algorithms.statistics.multilayer_statistics">Multilayer Network Statistics</p>
 <p>This module implements various statistics for multilayer and multiplex networks,
 following standard definitions from multilayer network analysis literature.</p>
 <p class="rubric">References</p>
@@ -15158,9 +15172,10 @@ Cᵢᵅ = centrality of node i in layer α (can be degree, betweenness, closenes
 <dd></dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.multilayer_algorithms.centrality">
-<span id="multilayer-algorithms"></span><h3>Multilayer Algorithms<a class="headerlink" href="#module-py3plex.algorithms.multilayer_algorithms.centrality" title="Link to this heading"></a></h3>
-<p>Multilayer/Multiplex Network Centrality Measures</p>
+<section id="multilayer-algorithms">
+<h3>Multilayer Algorithms<a class="headerlink" href="#multilayer-algorithms" title="Link to this heading"></a></h3>
+<p>Algorithms designed for multilayer graphs, including centrality and entanglement measures.</p>
+<p id="module-py3plex.algorithms.multilayer_algorithms.centrality">Multilayer/Multiplex Network Centrality Measures</p>
 <p>This module implements various centrality measures for multilayer and multiplex networks,
 following standard definitions from multilayer network analysis literature.</p>
 <section id="weight-handling-notes">
@@ -16965,9 +16980,10 @@ DOI: 10.1007/s11227-025-07197-8</p></li>
 <dd></dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.general.walkers">
-<span id="general-algorithms"></span><h3>General Algorithms<a class="headerlink" href="#module-py3plex.algorithms.general.walkers" title="Link to this heading"></a></h3>
-<p>Random walk primitives for graph-based algorithms.</p>
+<section id="general-algorithms">
+<h3>General Algorithms<a class="headerlink" href="#general-algorithms" title="Link to this heading"></a></h3>
+<p>General-purpose algorithms such as random walkers and benchmarking helpers.</p>
+<p id="module-py3plex.algorithms.general.walkers">Random walk primitives for graph-based algorithms.</p>
 <p>This module provides foundation for higher-level algorithms like Node2Vec,
 DeepWalk, and diffusion processes. Implements both basic and second-order
 (biased) random walks with proper edge weight handling and multilayer support.</p>
@@ -17247,9 +17263,10 @@ number of labels.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.node_ranking.node_ranking">
-<span id="node-ranking"></span><h3>Node Ranking<a class="headerlink" href="#module-py3plex.algorithms.node_ranking.node_ranking" title="Link to this heading"></a></h3>
-<dl class="py function">
+<section id="node-ranking">
+<h3>Node Ranking<a class="headerlink" href="#node-ranking" title="Link to this heading"></a></h3>
+<p>Node ranking routines for multilayer and single-layer graphs.</p>
+<dl class="py function" id="module-py3plex.algorithms.node_ranking.node_ranking">
 <dt class="sig sig-object py" id="py3plex.algorithms.node_ranking.node_ranking.authority_matrix">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">authority_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">spmatrix</span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.authority_matrix" title="Link to this definition"></a></dt>
 <dd><p>Get the authority matrix of a graph.</p>
@@ -17380,6 +17397,7 @@ It’s designed for use with multiprocessing.Pool.map().</p>
 </section>
 <section id="network-classification">
 <h3>Network Classification<a class="headerlink" href="#network-classification" title="Link to this heading"></a></h3>
+<p>Label propagation and related network classification helpers.</p>
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.network_classification.label_propagation.</span></span><span class="sig-name descname"><span class="pre">label_propagation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'freq'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span></dt>
@@ -17503,9 +17521,10 @@ It’s designed for use with multiprocessing.Pool.map().</p>
 
 </section>
 </section>
-<section id="module-py3plex.visualization.multilayer">
-<span id="visualization"></span><h2>Visualization<a class="headerlink" href="#module-py3plex.visualization.multilayer" title="Link to this heading"></a></h2>
-<dl class="py function">
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h2>
+<p>Plotting utilities for multilayer networks and layouts.</p>
+<dl class="py function" id="module-py3plex.visualization.multilayer">
 <dt class="sig sig-object py" id="py3plex.visualization.multilayer.draw_multiedges">
 <span class="sig-prename descclassname"><span class="pre">py3plex.visualization.multilayer.</span></span><span class="sig-name descname"><span class="pre">draw_multiedges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Graph</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Graph</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_edge_tuple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'nodes'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linepoints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'-.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphachannel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linecolor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'curve2_bezier'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linmod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'both'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#py3plex.visualization.multilayer.draw_multiedges" title="Link to this definition"></a></dt>
 <dd><p>Draw edges connecting multiple layers.</p>
@@ -18710,9 +18729,10 @@ faster layouts (circular, random, spectral) or matrix visualization.</p>
 <dd></dd></dl>
 
 </section>
-<section id="module-py3plex.wrappers.benchmark_nodes">
-<span id="wrappers"></span><h2>Wrappers<a class="headerlink" href="#module-py3plex.wrappers.benchmark_nodes" title="Link to this heading"></a></h2>
-<dl class="py class">
+<section id="wrappers">
+<h2>Wrappers<a class="headerlink" href="#wrappers" title="Link to this heading"></a></h2>
+<p>Convenience wrappers for embedding and benchmarking workflows.</p>
+<dl class="py class" id="module-py3plex.wrappers.benchmark_nodes">
 <dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.TopKRanker">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.benchmark_nodes.</span></span><span class="sig-name descname"><span class="pre">TopKRanker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.TopKRanker" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">OneVsRestClassifier</span></code></p>
@@ -18881,9 +18901,11 @@ parameters and not others.</p>
 </section>
 <section id="i-o-operations">
 <h2>I/O Operations<a class="headerlink" href="#i-o-operations" title="Link to this heading"></a></h2>
-<p>For the complete auto-generated API documentation, see the AUTOGEN_results directory after building the docs.
-Aggregation and Network Operations
-———————————-</p>
+<p>File readers, writers, and related helpers.</p>
+</section>
+<section id="aggregation-and-network-operations">
+<h2>Aggregation and Network Operations<a class="headerlink" href="#aggregation-and-network-operations" title="Link to this heading"></a></h2>
+<p>Layer aggregation and network-level transformations.</p>
 <p id="module-py3plex.multinet.aggregation">Vectorized multiplex aggregation for multilayer networks.</p>
 <p>This module provides optimized implementations for aggregating edges across
 multiple layers using vectorized NumPy and SciPy sparse operations, replacing
@@ -18979,9 +19001,10 @@ Shape is (N, N) where N is the maximum node ID + 1.</p>
 <dd></dd></dl>
 
 </section>
-<section id="module-py3plex.profiling">
-<span id="profiling-utilities"></span><h2>Profiling Utilities<a class="headerlink" href="#module-py3plex.profiling" title="Link to this heading"></a></h2>
-<p>Performance profiling utilities for py3plex.</p>
+<section id="profiling-utilities">
+<h2>Profiling Utilities<a class="headerlink" href="#profiling-utilities" title="Link to this heading"></a></h2>
+<p>Timing and profiling utilities for performance analysis.</p>
+<p id="module-py3plex.profiling">Performance profiling utilities for py3plex.</p>
 <p>This module provides decorators and utilities for tracking function execution time,
 memory usage, and performance metrics. These tools enable performance regression
 detection and optimization efforts.</p>
@@ -19183,9 +19206,10 @@ Use it only when investigating memory issues.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.logging_config">
-<span id="logging-configuration"></span><h2>Logging Configuration<a class="headerlink" href="#module-py3plex.logging_config" title="Link to this heading"></a></h2>
-<p>Logging configuration for py3plex.</p>
+<section id="logging-configuration">
+<h2>Logging Configuration<a class="headerlink" href="#logging-configuration" title="Link to this heading"></a></h2>
+<p>Default logging setup for py3plex.</p>
+<p id="module-py3plex.logging_config">Logging configuration for py3plex.</p>
 <p>This module provides centralized logging configuration for the py3plex library.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.logging_config.get_logger">
@@ -19235,6 +19259,7 @@ Use it only when investigating memory issues.</p>
 </section>
 <section id="i-o-schema-and-validation">
 <h2>I/O Schema and Validation<a class="headerlink" href="#i-o-schema-and-validation" title="Link to this heading"></a></h2>
+<p>Schema definitions and validation helpers for I/O routines.</p>
 <p>Schema definitions for multilayer graphs using dataclasses.</p>
 <p>This module provides dataclass representations of multilayer graph components
 with built-in validation and serialization support.</p>
@@ -19818,9 +19843,10 @@ format detection and a registry system for extensibility.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.hedwig">
-<span id="hedwig-rule-learning"></span><h2>Hedwig Rule Learning<a class="headerlink" href="#module-py3plex.algorithms.hedwig" title="Link to this heading"></a></h2>
-<dl class="py function">
+<section id="hedwig-rule-learning">
+<h2>Hedwig Rule Learning<a class="headerlink" href="#hedwig-rule-learning" title="Link to this heading"></a></h2>
+<p>Hedwig inductive logic programming components and helpers.</p>
+<dl class="py function" id="module-py3plex.algorithms.hedwig">
 <dt class="sig sig-object py" id="py3plex.algorithms.hedwig.build_graph">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.hedwig.</span></span><span class="sig-name descname"><span class="pre">build_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#py3plex.algorithms.hedwig.build_graph" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -19977,9 +20003,10 @@ is appended to the rule.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.visualization.fa2.forceatlas2">
-<span id="force-atlas-2-visualization"></span><h2>Force Atlas 2 Visualization<a class="headerlink" href="#module-py3plex.visualization.fa2.forceatlas2" title="Link to this heading"></a></h2>
-<dl class="py class">
+<section id="force-atlas-2-visualization">
+<h2>Force Atlas 2 Visualization<a class="headerlink" href="#force-atlas-2-visualization" title="Link to this heading"></a></h2>
+<p>ForceAtlas2 layout implementation and utilities.</p>
+<dl class="py class" id="module-py3plex.visualization.fa2.forceatlas2">
 <dt class="sig sig-object py" id="py3plex.visualization.fa2.forceatlas2.ForceAtlas2">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.visualization.fa2.forceatlas2.</span></span><span class="sig-name descname"><span class="pre">ForceAtlas2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outboundAttractionDistribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linLogMode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjustSizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgeWeightInfluence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitterTolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barnesHutOptimize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barnesHutTheta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiThreaded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalingRatio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strongGravityMode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gravity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.ForceAtlas2" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -20110,9 +20137,10 @@ is appended to the rule.</p>
 <dd></dd></dl>
 
 </section>
-<section id="module-py3plex.visualization.embedding_visualization.embedding_visualization">
-<span id="embedding-visualization"></span><h2>Embedding Visualization<a class="headerlink" href="#module-py3plex.visualization.embedding_visualization.embedding_visualization" title="Link to this heading"></a></h2>
-<dl class="py function">
+<section id="embedding-visualization">
+<h2>Embedding Visualization<a class="headerlink" href="#embedding-visualization" title="Link to this heading"></a></h2>
+<p>Helpers for visualizing graph embeddings.</p>
+<dl class="py function" id="module-py3plex.visualization.embedding_visualization.embedding_visualization">
 <dt class="sig sig-object py" id="py3plex.visualization.embedding_visualization.embedding_visualization.visualize_embedding">
 <span class="sig-prename descclassname"><span class="pre">py3plex.visualization.embedding_visualization.embedding_visualization.</span></span><span class="sig-name descname"><span class="pre">visualize_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multinet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.embedding_visualization.embedding_visualization.visualize_embedding" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -20120,10 +20148,12 @@ is appended to the rule.</p>
 </section>
 <section id="network-generation-and-benchmarking">
 <h2>Network Generation and Benchmarking<a class="headerlink" href="#network-generation-and-benchmarking" title="Link to this heading"></a></h2>
+<p>Synthetic network generation and benchmarking utilities.</p>
 </section>
-<section id="module-py3plex.algorithms.statistics.bayesiantests">
-<span id="additional-statistics-and-analysis"></span><h2>Additional Statistics and Analysis<a class="headerlink" href="#module-py3plex.algorithms.statistics.bayesiantests" title="Link to this heading"></a></h2>
-<dl class="py function">
+<section id="additional-statistics-and-analysis">
+<h2>Additional Statistics and Analysis<a class="headerlink" href="#additional-statistics-and-analysis" title="Link to this heading"></a></h2>
+<p>Supplementary statistical tests and information-theoretic utilities.</p>
+<dl class="py function" id="module-py3plex.algorithms.statistics.bayesiantests">
 <dt class="sig sig-object py" id="py3plex.algorithms.statistics.bayesiantests.correlated_ttest">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.statistics.bayesiantests.</span></span><span class="sig-name descname"><span class="pre">correlated_ttest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('C1',</span> <span class="pre">'C2')</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.correlated_ttest" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -20387,9 +20417,10 @@ probabilities <cite>[p_left, p_rope, p_right]</cite></p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.community_detection.NoRC">
-<span id="community-detection-advanced"></span><h2>Community Detection Advanced<a class="headerlink" href="#module-py3plex.algorithms.community_detection.NoRC" title="Link to this heading"></a></h2>
-<p>Node Ranking and Clustering (NoRC) module for community detection.</p>
+<section id="community-detection-advanced">
+<h2>Community Detection Advanced<a class="headerlink" href="#community-detection-advanced" title="Link to this heading"></a></h2>
+<p>Additional community detection and ranking algorithms.</p>
+<p id="module-py3plex.algorithms.community_detection.NoRC">Node Ranking and Clustering (NoRC) module for community detection.</p>
 <p>This module implements algorithms for node ranking and hierarchical clustering
 in networks, including parallel PageRank computation and hierarchical merging.</p>
 <dl class="py function">
@@ -20430,9 +20461,10 @@ communities using PageRank-based metrics and hierarchical clustering.</p>
 <dd></dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.node_ranking">
-<span id="node-ranking-and-classification"></span><h2>Node Ranking and Classification<a class="headerlink" href="#module-py3plex.algorithms.node_ranking" title="Link to this heading"></a></h2>
-<p>Node ranking algorithms for multilayer networks.</p>
+<section id="node-ranking-and-classification">
+<h2>Node Ranking and Classification<a class="headerlink" href="#node-ranking-and-classification" title="Link to this heading"></a></h2>
+<p>Combined node ranking and classification utilities.</p>
+<p id="module-py3plex.algorithms.node_ranking">Node ranking algorithms for multilayer networks.</p>
 <p>This module provides various node ranking algorithms including PageRank variants,
 HITS (Hubs and Authorities), and personalized PageRank (PPR) for network analysis.</p>
 <dl class="simple">
@@ -20881,9 +20913,10 @@ This normalization is required for PageRank-style random walk algorithms.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.wrappers.train_node2vec_embedding">
-<span id="embeddings-and-wrappers"></span><h2>Embeddings and Wrappers<a class="headerlink" href="#module-py3plex.wrappers.train_node2vec_embedding" title="Link to this heading"></a></h2>
-<dl class="py function">
+<section id="embeddings-and-wrappers">
+<h2>Embeddings and Wrappers<a class="headerlink" href="#embeddings-and-wrappers" title="Link to this heading"></a></h2>
+<p>Utilities for training embeddings and wrapper scripts.</p>
+<dl class="py function" id="module-py3plex.wrappers.train_node2vec_embedding">
 <dt class="sig sig-object py" id="py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary">
 <span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.train_node2vec_embedding.</span></span><span class="sig-name descname"><span class="pre">call_node2vec_binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary" title="Link to this definition"></a></dt>
 <dd><p>Call the Node2Vec C++ binary with specified parameters.</p>
@@ -20957,10 +20990,12 @@ This normalization is required for PageRank-style random walk algorithms.</p>
 </section>
 <section id="network-motifs-and-patterns">
 <h2>Network Motifs and Patterns<a class="headerlink" href="#network-motifs-and-patterns" title="Link to this heading"></a></h2>
+<p>Motif detection and pattern discovery tools.</p>
 </section>
-<section id="module-py3plex.core.HINMINE.dataStructures">
-<span id="hinmine-data-structures"></span><h2>HINMINE Data Structures<a class="headerlink" href="#module-py3plex.core.HINMINE.dataStructures" title="Link to this heading"></a></h2>
-<dl class="py class">
+<section id="hinmine-data-structures">
+<h2>HINMINE Data Structures<a class="headerlink" href="#hinmine-data-structures" title="Link to this heading"></a></h2>
+<p>Typed data structures used by HINMINE components.</p>
+<dl class="py class" id="module-py3plex.core.HINMINE.dataStructures">
 <dt class="sig sig-object py" id="py3plex.core.HINMINE.dataStructures.Class">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.core.HINMINE.dataStructures.</span></span><span class="sig-name descname"><span class="pre">Class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lab_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">members</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.HINMINE.dataStructures.Class" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -21018,9 +21053,10 @@ This normalization is required for PageRank-style random walk algorithms.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.cli">
-<span id="command-line-interface"></span><h2>Command-Line Interface<a class="headerlink" href="#module-py3plex.cli" title="Link to this heading"></a></h2>
-<p>Command-line interface for py3plex.</p>
+<section id="command-line-interface">
+<h2>Command-Line Interface<a class="headerlink" href="#command-line-interface" title="Link to this heading"></a></h2>
+<p>CLI entry points and argument parsing.</p>
+<p id="module-py3plex.cli">Command-line interface for py3plex.</p>
 <p>This module provides a comprehensive CLI tool for multilayer network analysis
 with full coverage of main algorithms.</p>
 <dl class="py function">
@@ -21273,9 +21309,10 @@ with full coverage of main algorithms.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.validation">
-<span id="validation-utilities"></span><h2>Validation Utilities<a class="headerlink" href="#module-py3plex.validation" title="Link to this heading"></a></h2>
-<p>Input validation utilities for Py3plex.</p>
+<section id="validation-utilities">
+<h2>Validation Utilities<a class="headerlink" href="#validation-utilities" title="Link to this heading"></a></h2>
+<p>Validation helpers for input data and configuration.</p>
+<p id="module-py3plex.validation">Input validation utilities for Py3plex.</p>
 <p>This module provides pre-validation functions to catch common input errors
 early and provide clear, actionable error messages to users.</p>
 <dl class="py function">
@@ -21424,10 +21461,12 @@ validation based on the input type.</p>
 </section>
 <section id="network-comparison-and-testing">
 <h2>Network Comparison and Testing<a class="headerlink" href="#network-comparison-and-testing" title="Link to this heading"></a></h2>
+<p>Network distance measures, slicing, and comparison helpers.</p>
 </section>
-<section id="module-py3plex.algorithms.hedwig.learners.learner">
-<span id="hedwig-learning-algorithms"></span><h2>Hedwig Learning Algorithms<a class="headerlink" href="#module-py3plex.algorithms.hedwig.learners.learner" title="Link to this heading"></a></h2>
-<p>Main learner class.</p>
+<section id="hedwig-learning-algorithms">
+<h2>Hedwig Learning Algorithms<a class="headerlink" href="#hedwig-learning-algorithms" title="Link to this heading"></a></h2>
+<p>Learning strategies within the Hedwig framework.</p>
+<p id="module-py3plex.algorithms.hedwig.learners.learner">Main learner class.</p>
 <p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="py3plex.algorithms.hedwig.learners.learner.Learner">
@@ -21588,9 +21627,10 @@ to the rules contained in ‘rules’.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.hedwig.stats.scorefunctions">
-<span id="hedwig-statistics-and-scoring"></span><h2>Hedwig Statistics and Scoring<a class="headerlink" href="#module-py3plex.algorithms.hedwig.stats.scorefunctions" title="Link to this heading"></a></h2>
-<p>Score function definitions.</p>
+<section id="hedwig-statistics-and-scoring">
+<h2>Hedwig Statistics and Scoring<a class="headerlink" href="#hedwig-statistics-and-scoring" title="Link to this heading"></a></h2>
+<p>Scoring functions and validation routines for Hedwig learners.</p>
+<p id="module-py3plex.algorithms.hedwig.stats.scorefunctions">Score function definitions.</p>
 <p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.hedwig.stats.scorefunctions.chisq">
@@ -21658,9 +21698,10 @@ to the rules contained in ‘rules’.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.algorithms.hedwig.core.converters">
-<span id="hedwig-core-components"></span><h2>Hedwig Core Components<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.converters" title="Link to this heading"></a></h2>
-<dl class="py function">
+<section id="hedwig-core-components">
+<h2>Hedwig Core Components<a class="headerlink" href="#hedwig-core-components" title="Link to this heading"></a></h2>
+<p>Core converters, knowledge base structures, and settings used by Hedwig.</p>
+<dl class="py function" id="module-py3plex.algorithms.hedwig.core.converters">
 <dt class="sig sig-object py" id="py3plex.algorithms.hedwig.core.converters.convert_mapping_to_rdf">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.hedwig.core.converters.</span></span><span class="sig-name descname"><span class="pre">convert_mapping_to_rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_mapping_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extract_subnode_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_node_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniprotkb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_mapping_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'test.gaf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">go_identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'GO:'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepend_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.converters.convert_mapping_to_rdf" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -21882,10 +21923,12 @@ either as a bitset or a set of ids.</p>
 </section>
 <section id="time-series-and-temporal-analysis">
 <h2>Time Series and Temporal Analysis<a class="headerlink" href="#time-series-and-temporal-analysis" title="Link to this heading"></a></h2>
+<p>Temporal analysis utilities.</p>
 </section>
-<section id="module-py3plex.visualization.sankey">
-<span id="advanced-visualization"></span><h2>Advanced Visualization<a class="headerlink" href="#module-py3plex.visualization.sankey" title="Link to this heading"></a></h2>
-<p>Sankey diagram visualization for multilayer networks.</p>
+<section id="advanced-visualization">
+<h2>Advanced Visualization<a class="headerlink" href="#advanced-visualization" title="Link to this heading"></a></h2>
+<p>Specialized visualizations such as hairball and Sankey diagrams.</p>
+<p id="module-py3plex.visualization.sankey">Sankey diagram visualization for multilayer networks.</p>
 <p>This module provides inter-layer flow visualization to show connection strength
 between layers in multilayer networks. The visualization displays flows as arrows
 with widths proportional to the number of inter-layer connections.</p>
@@ -21938,6 +21981,7 @@ The implementation uses a simplified flow visualization approach.</p>
 </section>
 <section id="link-prediction">
 <h2>Link Prediction<a class="headerlink" href="#link-prediction" title="Link to this heading"></a></h2>
+<p>Link prediction algorithms.</p>
 </section>
 </section>
 

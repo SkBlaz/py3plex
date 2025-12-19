@@ -1,8 +1,8 @@
 NetworkX Interoperability Guide
 ================================
 
-This guide covers converting between Py3plex and NetworkX formats, preserving attributes,
-and integrating with external tools.
+This guide covers converting between Py3plex and NetworkX formats, preserving
+attributes, and integrating with external tools without losing layer context.
 
 .. contents:: Table of Contents
    :local:
@@ -18,13 +18,21 @@ Py3plex uses NetworkX as its underlying graph backend, which provides:
 * **Integration** with scientific Python ecosystem (NumPy, SciPy, pandas)
 * **Standard formats** (GraphML, GEXF, GML, etc.)
 
+Throughout this guide, nodes are addressed by their canonical Py3plex form
+``(node_id, layer_name)``. When serialized to text formats, this tuple is
+stringified using the configured label delimiter (default ``---``); adjust the
+delimiter if you need file-level compatibility with other tools.
+
 Export to NetworkX
 -------------------
 
 Basic Export
 ~~~~~~~~~~~~
 
-Convert Py3plex multilayer network to NetworkX graph:
+Convert a Py3plex multilayer network to a NetworkX graph. The returned object is
+the same ``MultiGraph`` or ``MultiDiGraph`` held inside Py3plex, so edits made
+via NetworkX are reflected in Py3plex and vice versa. Use ``network.core_network.copy()``
+if you want an isolated copy:
 
 .. code-block:: python
 
@@ -33,11 +41,11 @@ Convert Py3plex multilayer network to NetworkX graph:
     # Load multilayer network
     network = multinet.multi_layer_network()
     network.load_network("data.csv", input_type="multiedgelist")
-    
+
     # Export to NetworkX MultiGraph
-    nx_graph = network.core_network  # Direct access
+    nx_graph = network.core_network  # Direct access to underlying MultiGraph/MultiDiGraph
     
-    # OR use conversion method (equivalent)
+    # OR use conversion method (returns the same object)
     nx_graph = network.to_nx_network()
     
     print(f"NetworkX graph: {nx_graph.number_of_nodes()} nodes, "
@@ -46,17 +54,20 @@ Convert Py3plex multilayer network to NetworkX graph:
 What Gets Exported
 ~~~~~~~~~~~~~~~~~~
 
-When exporting to NetworkX, **all attributes are preserved**:
+When exporting to NetworkX, **all attributes are preserved**, and the graph type
+is retained (undirected → ``MultiGraph``, directed → ``MultiDiGraph``). Layer
+membership is always explicit on tuple nodes, so you do not need to parse
+stringified labels to recover it:
 
-**Node attributes:**
+**Node attributes (examples):**
 
-* ``type`` - Layer name
+* ``type`` - Layer name (identical to ``node[1]`` for tuple nodes)
 * Custom attributes added via ``add_nodes()``
 
-**Edge attributes:**
+**Edge attributes (examples):**
 
 * ``weight`` - Edge weight (default 1.0)
-* ``type`` - Edge type (e.g., 'coupling' for inter-layer edges)
+* ``type`` - Edge type (for multiplex coupling edges this is set to ``'coupling'``)
 * Custom attributes added via ``add_edges()``
 
 **Example:**
@@ -84,12 +95,13 @@ Attribute Preservation
 Layer Information
 ~~~~~~~~~~~~~~~~~
 
-Layer information is encoded in node tuples:
+Layer information is encoded in node tuples, making layer access explicit without
+parsing strings:
 
 .. code-block:: python
 
     # Py3plex stores nodes as tuples: (node_id, layer_name)
-    
+    #
     # Example node: ('A', 'layer1')
     # - node_id: 'A'
     # - layer_name: 'layer1'
@@ -98,7 +110,7 @@ Layer information is encoded in node tuples:
     nx_graph = network.core_network
     
     for node in nx_graph.nodes():
-        node_id, layer = node  # Unpack tuple
+        node_id, layer = node  # Unpack tuple directly
         node_type = nx_graph.nodes[node]['type']  # Should equal layer
         
         print(f"Node {node_id} in layer {layer} (type={node_type})")
@@ -147,7 +159,10 @@ Any custom attributes you add are preserved:
 Using NetworkX Algorithms
 --------------------------
 
-All NetworkX algorithms work directly on Py3plex networks:
+Most NetworkX algorithms that support ``MultiGraph``/``MultiDiGraph`` operate
+directly on Py3plex networks. Algorithms that expect simple graphs should be
+applied on a collapsed view, for example ``nx.Graph(network.core_network)`` to
+drop parallel edges:
 
 Shortest Paths
 ~~~~~~~~~~~~~~
@@ -194,14 +209,14 @@ Centrality Measures
     for node, centrality in top_nodes:
         print(f"  {node}: {centrality:.3f}")
     
-    # Betweenness centrality
-    between_cent = nx.betweenness_centrality(network.core_network)
+    # Betweenness centrality (use weight='weight' for weighted paths)
+    between_cent = nx.betweenness_centrality(network.core_network, weight='weight')
     
     # Closeness centrality
-    close_cent = nx.closeness_centrality(network.core_network)
+    close_cent = nx.closeness_centrality(network.core_network, distance='weight')
     
-    # PageRank
-    pagerank = nx.pagerank(network.core_network)
+    # PageRank (edge weights respected by default)
+    pagerank = nx.pagerank(network.core_network, weight='weight')
 
 Community Detection
 ~~~~~~~~~~~~~~~~~~~
@@ -225,14 +240,16 @@ Connectivity
 
     import networkx as nx
     
-    # Check if network is connected
-    if nx.is_connected(network.core_network.to_undirected()):
+    # Collapse to a simple, undirected view for connectivity checks
+    G_simple = nx.Graph(network.core_network)
+    
+    if nx.is_connected(G_simple):
         print("Network is connected")
     else:
         print("Network has multiple components")
         
         # Find connected components
-        components = list(nx.connected_components(network.core_network.to_undirected()))
+        components = list(nx.connected_components(G_simple))
         print(f"Number of components: {len(components)}")
         for i, comp in enumerate(components):
             print(f"  Component {i}: {len(comp)} nodes")
@@ -251,6 +268,7 @@ Gephi is a popular network visualization tool. Export Py3plex networks to GEXF f
     
     # Export to GEXF (Gephi format)
     nx_graph = network.core_network
+    # Tuple nodes are stringified (e.g., ('A', 'layer1') -> 'A---layer1') in the output file
     nx.write_gexf(nx_graph, "network_for_gephi.gexf")
     
     print("[OK] Exported to network_for_gephi.gexf")
@@ -267,6 +285,7 @@ Cytoscape is a bioinformatics network analysis tool. Export to GraphML:
     
     # Export to GraphML (Cytoscape format)
     nx_graph = network.core_network
+    # Node identifiers are stringified when written to GraphML
     nx.write_graphml(nx_graph, "network_for_cytoscape.graphml")
     
     print("[OK] Exported to network_for_cytoscape.graphml")
@@ -275,7 +294,9 @@ Cytoscape is a bioinformatics network analysis tool. Export to GraphML:
 Convert to igraph
 ~~~~~~~~~~~~~~~~~
 
-igraph is a fast C-based network analysis library:
+igraph is a fast C-based network analysis library. When converting from a
+``MultiGraph``/``MultiDiGraph``, parallel edges are collapsed in the simple
+``Graph`` created below; attach weights if you need to preserve multiplicity:
 
 .. code-block:: python
 
@@ -315,7 +336,9 @@ Py3plex → NetworkX → TensorLy
 Complete Workflow
 ~~~~~~~~~~~~~~~~~
 
-Convert multilayer network to tensor representation for tensor decomposition:
+Convert a multilayer network to a dense tensor representation suitable for tensor
+decomposition workflows. Axes are ordered as ``(source_node_id, layer, target_node_id)``,
+so node identifiers are shared across layers and the layer axis carries context:
 
 .. code-block:: python
 
@@ -346,7 +369,7 @@ Convert multilayer network to tensor representation for tensor decomposition:
     node_to_idx = {node: i for i, node in enumerate(nodes)}
     layer_to_idx = {layer: i for i, layer in enumerate(layers)}
     
-    # Fill tensor
+    # Fill tensor with intra-layer edges only; inter-layer edges are skipped here
     for (u_id, u_layer), (v_id, v_layer), data in nx_graph.edges(data=True):
         if u_layer == v_layer:  # Intra-layer edge
             i = node_to_idx[u_id]
@@ -354,8 +377,10 @@ Convert multilayer network to tensor representation for tensor decomposition:
             k = layer_to_idx[u_layer]
             weight = data.get('weight', 1.0)
             
-            tensor[i, k, j] = weight
-            tensor[j, k, i] = weight  # Undirected
+            # Accumulate in case multiple edges exist between the same pair
+            tensor[i, k, j] += weight
+            if not nx_graph.is_directed():
+                tensor[j, k, i] += weight  # Mirror for undirected graphs
     
     print(f"Tensor shape: {tensor.shape}")
     print(f"Non-zero entries: {np.count_nonzero(tensor)}")
@@ -383,14 +408,15 @@ Convert multilayer network to tensor representation for tensor decomposition:
 Supra-Adjacency Matrix
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Convert to supra-adjacency matrix for tensor analysis:
+Convert to supra-adjacency matrix for tensor analysis. The row/column ordering
+matches ``network.get_nodes()``, so indices are aligned with tuple-based nodes:
 
 .. code-block:: python
 
     import numpy as np
     from scipy.sparse import lil_matrix
     
-    # Get supra-adjacency matrix
+    # Get supra-adjacency matrix (number of rows = node-layer pairs)
     supra_adj = network.get_supra_adjacency_matrix(sparse=True)
     
     print(f"Supra-adjacency matrix: {supra_adj.shape}")
@@ -403,12 +429,19 @@ Convert to supra-adjacency matrix for tensor analysis:
         # Use for analysis
         eigenvalues = np.linalg.eigvals(dense_supra)
         print(f"Largest eigenvalue: {max(eigenvalues):.3f}")
+    else:
+        print("Matrix too large for safe dense conversion; keep sparse.")
 
 Import from NetworkX
 ---------------------
 
 Create Py3plex Network from NetworkX
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can initialize a Py3plex network from an existing NetworkX graph. Nodes
+should already carry layer information (either as tuple ``(node, layer)`` or
+stringified with the configured delimiter), and any existing edge attributes are
+kept:
 
 .. code-block:: python
 
@@ -447,24 +480,27 @@ Example 1: Network Statistics Pipeline
     # Get NetworkX graph
     G = network.core_network
     
+    # Collapse multiedges if your metrics assume a simple graph
+    G_simple = nx.Graph(G)
+    
     # Compute various statistics
     print("=== Network Statistics ===")
-    print(f"Nodes: {G.number_of_nodes()}")
-    print(f"Edges: {G.number_of_edges()}")
-    print(f"Density: {nx.density(G):.4f}")
+    print(f"Nodes: {G_simple.number_of_nodes()}")
+    print(f"Edges: {G_simple.number_of_edges()}")
+    print(f"Density: {nx.density(G_simple):.4f}")
     
     # Degree statistics
-    degrees = dict(G.degree())
+    degrees = dict(G_simple.degree())
     print(f"Average degree: {sum(degrees.values()) / len(degrees):.2f}")
     print(f"Max degree: {max(degrees.values())}")
     
     # Clustering
-    clustering = nx.clustering(G.to_undirected())
+    clustering = nx.clustering(G_simple)
     print(f"Average clustering: {sum(clustering.values()) / len(clustering):.4f}")
     
     # Connected components
-    if not nx.is_directed(G):
-        components = list(nx.connected_components(G))
+    if not nx.is_directed(G_simple):
+        components = list(nx.connected_components(G_simple))
         print(f"Connected components: {len(components)}")
 
 Example 2: Multilayer PageRank

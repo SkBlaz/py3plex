@@ -406,10 +406,10 @@
 </section>
 <section id="supra-adjacency-matrix">
 <h2>Supra-Adjacency Matrix<a class="headerlink" href="#supra-adjacency-matrix" title="Link to this heading"></a></h2>
-<p>The supra-adjacency matrix is a block matrix representation that encodes the entire multilayer network structure.</p>
+<p>The supra-adjacency matrix is a block matrix representation that encodes the entire multilayer network structure in one object. It respects the ordering of node-layer pairs (by layer, then by node within each layer), so always check your node ordering before interpreting row or column indices.</p>
 <section id="mathematical-definition">
 <h3>Mathematical Definition<a class="headerlink" href="#mathematical-definition" title="Link to this heading"></a></h3>
-<p>For a multilayer network with <span class="math notranslate nohighlight">\(L\)</span> layers, the supra-adjacency matrix <span class="math notranslate nohighlight">\(\mathbf{S}\)</span> is:</p>
+<p>For a multilayer network with <span class="math notranslate nohighlight">\(L\)</span> layers and <span class="math notranslate nohighlight">\(n_\alpha\)</span> nodes in layer <span class="math notranslate nohighlight">\(\alpha\)</span>, the supra-adjacency matrix <span class="math notranslate nohighlight">\(\mathbf{S}\)</span> stacks the intra-layer adjacency blocks with the inter-layer coupling blocks. With layer-major ordering of node-layer pairs, it has the block form:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\mathbf{S} = \begin{bmatrix}
 A_1 &amp; C_{12} &amp; \cdots &amp; C_{1L} \\
@@ -419,9 +419,12 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 \end{bmatrix}\end{split}\]</div>
 <p>Where:</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(A_\alpha\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\alpha\)</span> (intra-layer connections)</p></li>
-<li><p><span class="math notranslate nohighlight">\(C_{\alpha\beta}\)</span> is the coupling matrix between layers <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> (inter-layer connections)</p></li>
+<li><p><span class="math notranslate nohighlight">\(A_\alpha \in \mathbb{R}^{n_\alpha \times n_\alpha}\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\alpha\)</span> (intra-layer connections)</p></li>
+<li><p><span class="math notranslate nohighlight">\(C_{\alpha\beta} \in \mathbb{R}^{n_\alpha \times n_\beta}\)</span> is the coupling matrix between layers <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> (inter-layer connections)</p></li>
+<li><p><span class="math notranslate nohighlight">\(n_\text{total} = \sum_{\alpha=1}^L n_\alpha\)</span> is the total number of node-layer pairs across all layers</p></li>
+<li><p>The full matrix has size <span class="math notranslate nohighlight">\(n_\text{total} \times n_\text{total}\)</span></p></li>
 </ul>
+<p>In multiplex networks, <span class="math notranslate nohighlight">\(n_\alpha\)</span> is typically the same for all layers, so <span class="math notranslate nohighlight">\(\mathbf{S}\)</span> becomes an <span class="math notranslate nohighlight">\((N \cdot L) \times (N \cdot L)\)</span> matrix. For undirected networks, <span class="math notranslate nohighlight">\(A_\alpha = A_\alpha^\top\)</span> and <span class="math notranslate nohighlight">\(C_{\alpha\beta} = C_{\beta\alpha}^\top\)</span>; for directed networks these blocks can be asymmetric. Identity coupling corresponds to <span class="math notranslate nohighlight">\(C_{\alpha\beta} = \omega I\)</span> (with coupling weight <span class="math notranslate nohighlight">\(\omega\)</span>) when layers share node identities.</p>
 </section>
 <section id="numeric-example">
 <h3>Numeric Example<a class="headerlink" href="#numeric-example" title="Link to this heading"></a></h3>
@@ -448,7 +451,7 @@ C [  0   1   0 ]
 </pre></div>
 </div>
 <p><strong>Inter-layer coupling blocks (C₁₂ and C₂₁):</strong></p>
-<p>In a multiplex network, we typically add identity coupling—each node connects to itself across layers:</p>
+<p>In a multiplex network, we typically add identity coupling—each node connects to itself across layers with the chosen coupling weight (here 1.0):</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C₁₂ = C₂₁ᵀ =
      A   B   C
 A [  1   0   0 ]
@@ -497,13 +500,14 @@ L2  A [ 1    0    0      |  0    0    0 ]
 </section>
 <section id="memory-implications">
 <h3>Memory Implications<a class="headerlink" href="#memory-implications" title="Link to this heading"></a></h3>
-<p>The supra-adjacency matrix has size (N×L)² where N is nodes per layer and L is layers:</p>
+<p>Let <span class="math notranslate nohighlight">\(n_\text{total} = \sum_{\alpha=1}^L n_\alpha\)</span> (the number of node-layer pairs). The supra-adjacency matrix is <span class="math notranslate nohighlight">\(n_\text{total} \times n_\text{total}\)</span>. If every layer has <span class="math notranslate nohighlight">\(N\)</span> nodes, then <span class="math notranslate nohighlight">\(n_\text{total} = N \cdot L\)</span>.</p>
+<p>Worked estimates (assuming equal nodes per layer and 8-byte floats, ignoring library overhead):</p>
 <ul class="simple">
 <li><p><strong>Small network (100 nodes, 3 layers):</strong> 300×300 = 90,000 entries → ~720 KB dense</p></li>
 <li><p><strong>Medium network (1,000 nodes, 5 layers):</strong> 5,000×5,000 = 25 million entries → ~200 MB dense</p></li>
-<li><p><strong>Large network (10,000 nodes, 10 layers):</strong> 100,000×100,000 = 10 billion entries → impossible dense</p></li>
+<li><p><strong>Large network (10,000 nodes, 10 layers):</strong> 100,000×100,000 = 10 billion entries → ~80 GB dense (impractical)</p></li>
 </ul>
-<p><strong>Always use sparse=True</strong> for networks with more than ~1,000 total node-layer pairs. Sparse matrices only store non-zero entries, reducing memory from O(N²L²) to O(edges + coupling).</p>
+<p><strong>Always use sparse=True</strong> for networks with more than ~1,000 total node-layer pairs. Sparse matrices only store non-zero entries, reducing memory from <span class="math notranslate nohighlight">\(O(n_\text{total}^2)\)</span> potential entries to roughly <span class="math notranslate nohighlight">\(O(\text{edges} + \text{coupling edges})\)</span> actual non-zeros.</p>
 </section>
 <section id="visualization">
 <h3>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h3>
@@ -927,7 +931,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 </section>
 <section id="tensor-like-indexing">
 <h3>Tensor-Like Indexing<a class="headerlink" href="#tensor-like-indexing" title="Link to this heading"></a></h3>
-<p>You can access nodes and edges using tensor-like notation:</p>
+<p>You can access neighbors and edge attribute dictionaries using tensor-like notation on the underlying NetworkX graph:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
 
 <span class="c1"># Create a network</span>
@@ -937,12 +941,16 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="n">some_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
 <span class="n">some_edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">())[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
 
-<span class="c1"># Access node directly (returns node attributes)</span>
-<span class="n">node_data</span> <span class="o">=</span> <span class="n">network</span><span class="p">[</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> data: </span><span class="si">{</span><span class="n">node_data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Access adjacency view for a node (neighbors and edge dictionaries)</span>
+<span class="n">adjacency_view</span> <span class="o">=</span> <span class="n">network</span><span class="p">[</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Neighbors of </span><span class="si">{</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">adjacency_view</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Access edge (returns edge attributes)</span>
-<span class="n">edge_data</span> <span class="o">=</span> <span class="n">network</span><span class="p">[</span><span class="n">some_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]][</span><span class="n">some_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+<span class="c1"># Access node attributes explicitly</span>
+<span class="n">node_attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node attributes for </span><span class="si">{</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">node_attrs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Access edge data (adjacency dict keyed by edge IDs in a MultiGraph)</span>
+<span class="n">edge_data</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">[</span><span class="n">some_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]][</span><span class="n">some_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge data: </span><span class="si">{</span><span class="n">edge_data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -966,18 +974,11 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <h2>Comparison with Other Representations<a class="headerlink" href="#comparison-with-other-representations" title="Link to this heading"></a></h2>
 <section id="why-node-layer-pairs">
 <h3>Why Node-Layer Pairs?<a class="headerlink" href="#why-node-layer-pairs" title="Link to this heading"></a></h3>
-<p>Alternative representations exist, but py3plex’s node-layer pair approach offers key advantages:</p>
-<p><strong>Alternative: Separate graphs per layer</strong></p>
-<p><em>Drawback:</em> Loses inter-layer information, requires manual bookkeeping for cross-layer operations.</p>
-<p><strong>Alternative: Single graph with edge type attributes</strong></p>
-<p><em>Drawback:</em> Cannot distinguish node context across layers, loses layer-specific node attributes.</p>
-<p><strong>py3plex approach: Node-layer pairs</strong></p>
-<p><em>Advantages:</em></p>
+<p>Alternative representations exist, but py3plex’s node-layer pair approach offers key advantages over the two common options:</p>
 <ul class="simple">
-<li><p>Preserves both intra-layer and inter-layer structure</p></li>
-<li><p>Allows layer-specific node attributes</p></li>
-<li><p>Compatible with NetworkX algorithms</p></li>
-<li><p>Efficient for multilayer-specific operations</p></li>
+<li><p><strong>Separate graphs per layer:</strong> Simple, but loses inter-layer information and requires manual bookkeeping for cross-layer operations.</p></li>
+<li><p><strong>Single graph with edge type attributes:</strong> Keeps everything in one graph, but cannot distinguish node context across layers or attach layer-specific node attributes.</p></li>
+<li><p><strong>Node-layer pairs (py3plex):</strong> Preserves both intra-layer and inter-layer structure, supports layer-specific attributes, and stays compatible with NetworkX algorithms while enabling multilayer-specific operations.</p></li>
 </ul>
 </section>
 </section>

@@ -1,28 +1,30 @@
 Development Guide
 ==================
 
-This guide covers **development workflows**, **Makefile commands**, **testing**, and **contributing** to py3plex.
+This guide covers **development workflows**, **Makefile commands**, **testing**, and **contributing** to py3plex. Keep it handy as your single reference while coding, testing, and writing docs.
 
 Getting Started
 ---------------
 
-**Clone the repository** and install in **development mode**:
+Clone the repository and install in development mode. Requirements: Python 3.8+ and ``pip``; ``make`` is recommended for the shortcuts below. Keep your virtual environment active so ``make`` uses the same interpreter every time.
 
 .. code-block:: bash
 
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
     
-    # Setup development environment
+    # Setup development environment (creates .venv)
     make setup
     
     # Install package in editable mode with dev dependencies
     make dev-install
 
+If you prefer manual setup, create and activate ``.venv`` yourself, then run ``pip install -e .[dev]`` from the repository root. Whichever path you choose, activate the environment before running any ``make`` target so the same interpreter is used consistently.
+
 Makefile Commands
 -----------------
 
-The project includes a **production-grade Makefile** for streamlined development:
+The Makefile provides a streamlined development workflow. Run targets from the repository root with your virtual environment active:
 
 .. code-block:: bash
 
@@ -50,38 +52,34 @@ The project includes a **production-grade Makefile** for streamlined development
     make publish        # Publish to PyPI
     
     # CI
-    make ci             # Run full CI checks
+    make ci             # Run full CI checks (format + lint + tests)
 
-Key Features:
+Makefile highlights:
 
-- **Smart tool detection**: Uses ``.venv/bin/`` tools if available, otherwise falls back to **global tools**
-- **Colorized output**: Clear **success/warning/error** messages
-- **Cross-platform**: Works on **Linux** and **macOS**
+- Uses ``.venv/bin/`` tools when available, otherwise falls back to global tools
+- Colorized output with clear **success/warning/error** messages
+- Works on **Linux** and **macOS**
+- ``make ci`` is the superset; use it before pushing. Use ``make format`` / ``make lint`` / ``make test`` for quicker local loops during development.
 
 Testing
 -------
 
-**Quick testing:**
+Start with the Makefile target, then drill down with pytest as needed. Favor deterministic seeds for generators so results are reproducible. Use narrow targets while iterating, then run the full suite.
 
 .. code-block:: bash
 
-    python run_tests.py
-
-**Development testing** with pytest:
-
-.. code-block:: bash
-
-    # Run all tests
-    pytest
-    
-    # Run with coverage
-    pytest --cov=py3plex --cov-report=html
-    
-    # Run specific test file
-    pytest tests/test_core.py
-    
-    # Using Makefile (recommended)
+    # Recommended: run all tests with coverage
     make test
+    
+    # Equivalent pytest invocations
+    python -m pytest tests/ -v
+    python -m pytest tests/ --cov=py3plex --cov-report=html
+    
+    # Run a specific test module or node
+    python -m pytest tests/test_core.py -k "degree"
+    python -m pytest tests/test_core.py::test_degree  # single test
+
+The coverage HTML report is written to ``htmlcov/index.html``.
 
 Code Quality
 ------------
@@ -94,25 +92,25 @@ Tools configured in ``pyproject.toml``:
 - **Mypy**: Type checking
 - **Pytest**: Testing with coverage
 
-Before committing:
+Before committing, run the quality loop from an active virtual environment. Reinstall dev dependencies if a tool is missing.
 
 .. code-block:: bash
 
     make format  # Auto-format code
     make lint    # Check code quality
     make test    # Run tests
-    make ci      # Run all checks
+    make ci      # Run all checks (use before pushing)
 
 Contributing
 ------------
 
-We welcome contributions! Here's how:
+We welcome contributions! Recommended workflow:
 
-1. Fork the repository
+1. Sync your local ``main`` with ``upstream/main``
 2. Create a feature branch
-3. Make your changes
-4. Run tests and linting: ``make ci``
-5. Commit with clear messages
+3. Make focused changes with tests and docs
+4. Run ``make format``, ``make lint``, ``make test`` (or ``make ci``) from your active environment
+5. Commit with clear messages that explain what changed and why
 6. Push to your fork
 7. Open a Pull Request
 
@@ -131,14 +129,16 @@ Build Sphinx documentation:
 
 .. code-block:: bash
 
-    # Using Makefile (recommended)
+    # Using Makefile (recommended from repository root)
     make docs
     
-    # Manual build
+    # Manual build from docfiles/
     cd docfiles
     sphinx-build -b html . _build/html
 
-The built documentation will be in ``docfiles/_build/html/``.
+If the build fails because Sphinx is missing, (re)install the development extras in your active virtual environment, then rerun the command.
+
+Open ``docfiles/_build/html/index.html`` in your browser to view the output.
 
 Documentation Style Guide
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -156,7 +156,7 @@ When contributing to documentation, follow these conventions for consistency:
 * Write first paragraphs that directly explain why the reader is on this page
 * Avoid boilerplate like "This chapter will introduce..." or "In this section, you will learn..."
 * Start with concrete examples rather than abstract explanations
-* Provide 2-3 explicit reading paths for different audiences (new users, experienced users, advanced users)
+* When relevant, point readers to clear paths for different audiences (new users, experienced users, advanced users) so they can skip to what they need
 
 **Code Examples:**
 
@@ -208,6 +208,11 @@ Use warning directives for experimental or unstable features:
 * Link to algorithm details using ``:ref:`` for labeled sections
 * When documenting algorithms, link to the Algorithm Roadmap as the conceptual entry point
 
+**Output accuracy:**
+
+* Use real outputs from the current version of py3plex (no placeholders)
+* Include the smallest network or dataset needed to reproduce the output
+
 **Version Labels:**
 
 * Use consistent version strings throughout (e.g., "py3plex 1.0.0 documentation")
@@ -220,5 +225,3 @@ Resources
 - **Documentation**: https://skblaz.github.io/py3plex/
 - **Issues**: https://github.com/SkBlaz/py3plex/issues
 - **Examples**: https://github.com/SkBlaz/Py3Plex/tree/master/examples
-
-

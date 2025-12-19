@@ -243,6 +243,7 @@
 <section id="quick-start-your-first-pattern">
 <h2>Quick Start: Your First Pattern<a class="headerlink" href="#quick-start-your-first-pattern" title="Link to this heading"></a></h2>
 <p>Let’s start with a simple example: finding all edges in a network.</p>
+<p><strong>Mental model:</strong> <code class="docutils literal notranslate"><span class="pre">Q.pattern()</span></code> binds <strong>variables</strong> (<code class="docutils literal notranslate"><span class="pre">&quot;a&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;b&quot;</span></code>, etc.) to actual node-layer tuples, then checks that every required edge or path between those variables exists. Each match is a complete mapping of variables → node-layer tuples rather than a single node or edge.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
@@ -348,6 +349,7 @@
 <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Paths enforce adjacency in the order you list the variables; with <code class="docutils literal notranslate"><span class="pre">directed=True</span></code> the edges must follow that direction.</p>
 </section>
 <section id="triangles">
 <h3>Triangles<a class="headerlink" href="#triangles" title="Link to this heading"></a></h3>
@@ -392,7 +394,7 @@
 </section>
 <section id="any-layer">
 <h3>Any Layer<a class="headerlink" href="#any-layer" title="Link to this heading"></a></h3>
-<p>Allow edges in any layer (default behavior):</p>
+<p>Allow edges in any layer (default behavior; call it explicitly if you want the query to read clearly):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">any_layer</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -405,18 +407,18 @@
 <p><strong>Problem:</strong> Find triangles where all edges have weight &gt; 1.0.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">triangle</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-
-<span class="c1"># Filter by weight in post-processing</span>
-<span class="c1"># (Edge predicates during matching coming in future version)</span>
 <span class="n">triangles</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">triangles</span><span class="p">)</span><span class="si">}</span><span class="s2"> triangles&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>If you prefer the <code class="docutils literal notranslate"><span class="pre">triangle()</span></code> sugar, expand it as above to attach edge predicates, or apply the weight filter after executing the simpler triangle pattern.</p>
 </section>
 <section id="example-2-find-2-hop-paths-in-specific-layer">
 <h3>Example 2: Find 2-Hop Paths in Specific Layer<a class="headerlink" href="#example-2-find-2-hop-paths-in-specific-layer" title="Link to this heading"></a></h3>
@@ -490,8 +492,8 @@
 <span class="p">)</span>
 
 <span class="c1"># Find intersection (nodes in both)</span>
-<span class="n">social_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">social_hubs</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">())</span>
-<span class="n">work_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">work_hubs</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">())</span>
+<span class="n">social_nodes</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">social_hubs</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)}</span>
+<span class="n">work_nodes</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">work_hubs</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)}</span>
 <span class="n">cross_layer_hubs</span> <span class="o">=</span> <span class="n">social_nodes</span> <span class="o">&amp;</span> <span class="n">work_nodes</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cross-layer hubs: </span><span class="si">{</span><span class="n">cross_layer_hubs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -501,7 +503,7 @@
 </section>
 <section id="working-with-results">
 <h2>Working with Results<a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">PatternQueryResult</span></code> object provides multiple ways to access matches.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">PatternQueryResult</span></code> object provides multiple ways to access matches. Use raw <code class="docutils literal notranslate"><span class="pre">rows</span></code> for programmatic iteration, <code class="docutils literal notranslate"><span class="pre">to_pandas</span></code> for tabular analysis, and <code class="docutils literal notranslate"><span class="pre">to_nodes</span></code> / <code class="docutils literal notranslate"><span class="pre">to_edges</span></code> when you want to pass results back into graph algorithms.</p>
 <section id="accessing-rows">
 <h3>Accessing Rows<a class="headerlink" href="#accessing-rows" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -512,6 +514,8 @@
     <span class="c1"># e.g., {&#39;a&#39;: (&#39;Alice&#39;, &#39;social&#39;), &#39;b&#39;: (&#39;Bob&#39;, &#39;social&#39;)}</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">result.count</span></code> is the number of rows returned, equivalent to <code class="docutils literal notranslate"><span class="pre">len(result.rows)</span></code>.
+Each row maps your variable names to concrete <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> tuples.</p>
 </section>
 <section id="converting-to-pandas">
 <h3>Converting to Pandas<a class="headerlink" href="#converting-to-pandas" title="Link to this heading"></a></h3>
@@ -525,6 +529,7 @@
 <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;pattern_matches.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Column order follows the variables you specified with <code class="docutils literal notranslate"><span class="pre">.returning(...)</span></code>; if you did not set it, all variables are returned in declaration order.</p>
 </section>
 <section id="extracting-nodes">
 <h3>Extracting Nodes<a class="headerlink" href="#extracting-nodes" title="Link to this heading"></a></h3>
@@ -544,7 +549,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all matched edges as tuples</span>
 <span class="n">edges</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_edges</span><span class="p">()</span>
 
-<span class="c1"># Each edge is a tuple of node tuples</span>
+<span class="c1"># Each edge is a (source_tuple, target_tuple) pair</span>
 <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge: </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -574,6 +579,7 @@
 <span class="n">limited</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">filter</span></code> and <code class="docutils literal notranslate"><span class="pre">limit</span></code> return new <code class="docutils literal notranslate"><span class="pre">PatternQueryResult</span></code> objects; they do not modify the original result.</p>
 </section>
 </section>
 <section id="query-execution-planning">
@@ -598,7 +604,8 @@ Join order: [&#39;a&#39;, &#39;b&#39;]
 Estimated complexity: 1000
 </pre></div>
 </div>
-<p>The planner chooses <code class="docutils literal notranslate"><span class="pre">a</span></code> as the root because it has the most restrictive predicates (<code class="docutils literal notranslate"><span class="pre">degree__gt=3</span></code>), which will generate fewer candidates.</p>
+<p>The planner chooses <code class="docutils literal notranslate"><span class="pre">a</span></code> as the root because it has the most restrictive predicates (<code class="docutils literal notranslate"><span class="pre">degree__gt=3</span></code>), which will generate fewer candidates.
+The <code class="docutils literal notranslate"><span class="pre">estimated_complexity</span></code> field is a relative heuristic, useful for comparing different patterns rather than predicting exact runtime.</p>
 </section>
 <section id="performance-tips">
 <h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h2>
@@ -628,6 +635,11 @@ Estimated complexity: 1000
 </li>
 <li><p><strong>Use Constraints:</strong> Add <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">!=</span> <span class="pre">b</span></code> constraints to avoid self-loops if not needed.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">&quot;a != b&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Return only needed variables:</strong> Reducing the result width lowers serialization overhead.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>

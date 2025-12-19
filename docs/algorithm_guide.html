@@ -148,6 +148,18 @@
   <section id="algorithm-selection-guide">
 <h1>Algorithm Selection Guide<a class="headerlink" href="#algorithm-selection-guide" title="Link to this heading"></a></h1>
 <p>This guide helps you choose the right algorithms for your multilayer network analysis tasks.</p>
+<section id="notation-and-assumptions">
+<h2>Notation and assumptions<a class="headerlink" href="#notation-and-assumptions" title="Link to this heading"></a></h2>
+<p>Unless noted otherwise:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(n\)</span> = number of physical nodes; <span class="math notranslate nohighlight">\(m\)</span> = edges on the graph being analyzed (aggregated by default, supra-graph when explicitly stated)</p></li>
+<li><p><span class="math notranslate nohighlight">\(n_L\)</span> = number of state nodes (node-layer pairs), <span class="math notranslate nohighlight">\(L\)</span> = number of layers; supra-graph algorithms use <span class="math notranslate nohighlight">\(n_L\)</span> and the corresponding intra- + inter-layer edge count</p></li>
+<li><p>For embeddings and other core-network operations, <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(m\)</span> refer to the aggregated physical-node graph; supra-adjacency algorithms use <span class="math notranslate nohighlight">\(n_L\)</span> instead</p></li>
+<li><p>Complexities assume sparse graphs and hide constant factors from iterative solvers</p></li>
+<li><p>Supra-adjacency constructions are assumed sparse; dense forms are only for toy examples</p></li>
+<li><p>Shortest-path-based metrics assume non-negative edge weights; negative weights are unsupported</p></li>
+</ul>
+</section>
 <section id="community-detection">
 <h2>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h2>
 <p>Choose based on your network characteristics and requirements:</p>
@@ -160,7 +172,7 @@
 <li><p>Non-overlapping communities</p></li>
 <li><p>Modularity optimization</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n \log n)\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is the number of nodes</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m \log n)\)</span> in typical sparse settings (implementation-dependent)</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
@@ -184,11 +196,11 @@
 <p>Best for:</p>
 <ul class="simple">
 <li><p>Flow-based community structure</p></li>
-<li><p>Overlapping communities</p></li>
 <li><p>Hierarchical community detection</p></li>
 <li><p>Information-theoretic optimization</p></li>
+<li><p>Optional overlapping output (link communities mode)</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m \log n)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges, <span class="math notranslate nohighlight">\(n\)</span> is nodes</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m \log n)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges, <span class="math notranslate nohighlight">\(n\)</span> is nodes (average-case)</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_wrapper</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
@@ -199,7 +211,7 @@
 </div>
 <p><strong>Pros:</strong></p>
 <ul class="simple">
-<li><p>Can detect overlapping communities</p></li>
+<li><p>Can output overlapping communities when configured</p></li>
 <li><p>Flow-based approach (natural for many applications)</p></li>
 <li><p>Hierarchical structure</p></li>
 </ul>
@@ -214,7 +226,7 @@
 <h3>Label Propagation<a class="headerlink" href="#label-propagation" title="Link to this heading"></a></h3>
 <p>Best for:</p>
 <ul class="simple">
-<li><p>Semi-supervised community detection</p></li>
+<li><p>Label-seeded (semi-supervised) community detection</p></li>
 <li><p>Known seed communities</p></li>
 <li><p>Very large sparse networks</p></li>
 <li><p>Linear-time approximate results</p></li>
@@ -250,7 +262,7 @@
 <li><p>Layer coupling analysis</p></li>
 <li><p>Research applications</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n^2)\)</span> for supra-adjacency construction + Louvain complexity</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n_L^2)\)</span> to build a dense supra-adjacency (sparse: <span class="math notranslate nohighlight">\(O(m)\)</span>) plus the downstream Louvain optimization (<span class="math notranslate nohighlight">\(O(m \log n_L)\)</span> in practice on the sparse supra-graph). Prefer sparse supra-adjacency for anything beyond small toy graphs.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_modularity</span> <span class="k">as</span> <span class="n">mlm</span>
 <span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
@@ -273,6 +285,7 @@
 </section>
 <section id="centrality-measures">
 <h2>Centrality Measures<a class="headerlink" href="#centrality-measures" title="Link to this heading"></a></h2>
+<p>Complexities below use <span class="math notranslate nohighlight">\(n_L\)</span> state nodes and <span class="math notranslate nohighlight">\(m\)</span> total edges unless noted.</p>
 <section id="degree-centrality">
 <h3>Degree Centrality<a class="headerlink" href="#degree-centrality" title="Link to this heading"></a></h3>
 <p>Best for:</p>
@@ -286,7 +299,7 @@
 <ul class="simple">
 <li><p>Layer-specific degree</p></li>
 <li><p>Supra-adjacency degree</p></li>
-<li><p>Overlapping degree (sum across layers)</p></li>
+<li><p>Overlapping degree (sum across layers for each physical node)</p></li>
 </ul>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultilayerCentrality</span>
@@ -303,13 +316,14 @@
 <li><p>Information flow bottlenecks</p></li>
 <li><p>Critical path analysis</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(nm)\)</span> for unweighted, <span class="math notranslate nohighlight">\(O(nm + n^2 \log n)\)</span> for weighted</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n_L m)\)</span> for unweighted, <span class="math notranslate nohighlight">\(O(n_L m + n_L^2 \log n_L)\)</span> for weighted (Brandes with Dijkstra on the supra-graph)</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="n">betweenness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_betweenness_centrality</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Warning:</strong> Computationally expensive for large networks (&gt;1000 nodes)</p>
+<p><strong>Warning:</strong> Computationally expensive beyond a few thousand state nodes; use sampling or approximations when possible</p>
+<p><strong>Note:</strong> Runs on the supra-graph; weighted variants rely on Dijkstra and add the <span class="math notranslate nohighlight">\(n_L^2 \log n_L\)</span> term. Disconnected components yield zero betweenness for unreachable pairs.</p>
 </section>
 <section id="closeness-centrality">
 <h3>Closeness Centrality<a class="headerlink" href="#closeness-centrality" title="Link to this heading"></a></h3>
@@ -319,11 +333,12 @@
 <li><p>Average distance to other nodes</p></li>
 <li><p>Central position in network</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(nm)\)</span></p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n_L m)\)</span></p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">closeness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_closeness_centrality</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Distance is computed on the supra-graph; unreachable node-layers typically produce zero closeness.</p>
 </section>
 <section id="eigenvector-centrality">
 <h3>Eigenvector Centrality<a class="headerlink" href="#eigenvector-centrality" title="Link to this heading"></a></h3>
@@ -338,6 +353,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eigenvector</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multiplex_eigenvector_centrality</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Convergence assumes a dominant eigenvalue; disconnected graphs are handled per connected component.</p>
 </section>
 <section id="pagerank">
 <h3>PageRank<a class="headerlink" href="#pagerank" title="Link to this heading"></a></h3>
@@ -352,6 +368,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pagerank</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">pagerank_centrality</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Damping factor <span class="math notranslate nohighlight">\(\alpha\)</span> controls teleportation; set higher values (0.85–0.95) for web-like graphs to avoid sink traps.</p>
 </section>
 <section id="versatility-centrality">
 <h3>Versatility Centrality<a class="headerlink" href="#versatility-centrality" title="Link to this heading"></a></h3>
@@ -361,7 +378,7 @@
 <li><p>Cross-layer influence</p></li>
 <li><p>Multi-context analysis</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m \times L)\)</span> where <span class="math notranslate nohighlight">\(L\)</span> is number of layers</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m L)\)</span> where <span class="math notranslate nohighlight">\(L\)</span> is number of layers (dominated by the chosen per-layer centrality)</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 <span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
@@ -371,7 +388,7 @@
 </section>
 <section id="new-multiplex-network-metrics">
 <h2>New Multiplex Network Metrics<a class="headerlink" href="#new-multiplex-network-metrics" title="Link to this heading"></a></h2>
-<p>The following metrics extend standard network analysis to multiplex networks, accounting for inter-layer couplings and layer-specific structures.</p>
+<p>The following metrics extend standard network analysis to multiplex networks, accounting for inter-layer couplings and layer-specific structures. Unless noted, <span class="math notranslate nohighlight">\(n_L\)</span> is the number of node-layer pairs and <span class="math notranslate nohighlight">\(m\)</span> counts both intra- and inter-layer edges; all path-based quantities use the supra-graph.</p>
 <section id="multiplex-betweenness-centrality">
 <h3>Multiplex Betweenness Centrality<a class="headerlink" href="#multiplex-betweenness-centrality" title="Link to this heading"></a></h3>
 <p><strong>Best for:</strong></p>
@@ -380,13 +397,14 @@
 <li><p>Finding bottlenecks in multiplex information flow</p></li>
 <li><p>Analyzing paths that traverse inter-layer couplings</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(nm)\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is node-layer pairs, <span class="math notranslate nohighlight">\(m\)</span> is total edges</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n_L m)\)</span> for unweighted supra-graphs</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 <span class="n">betweenness</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multiplex_betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">betweenness</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
 </pre></div>
 </div>
+<p><strong>Definition:</strong> Uses shortest paths on the supra-graph; set inter-layer edge weights to reflect coupling strength and ensure weights are non-negative.</p>
 <p><strong>Reference:</strong> De Domenico et al. (2015), “Structural reducibility of multilayer networks”</p>
 </section>
 <section id="multiplex-closeness-centrality">
@@ -397,12 +415,13 @@
 <li><p>Broadcasting efficiency across layers</p></li>
 <li><p>Central position analysis in multiplex networks</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(nm)\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is node-layer pairs</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n_L m)\)</span></p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">closeness</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multiplex_closeness_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">central_nodes</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">closeness</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Distances are computed on the supra-graph; nodes in disconnected components yield zero closeness.</p>
 <p><strong>Reference:</strong> De Domenico et al. (2015), “Structural reducibility of multilayer networks”</p>
 </section>
 <section id="community-participation-metrics">
@@ -413,16 +432,17 @@
 <li><p>Identifying nodes that bridge different communities</p></li>
 <li><p>Analyzing cross-community connections</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(k)\)</span> where <span class="math notranslate nohighlight">\(k\)</span> is node degree</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(k)\)</span> per node (overall <span class="math notranslate nohighlight">\(O(m)\)</span>) where <span class="math notranslate nohighlight">\(k\)</span> is node degree across all layers</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Participation coefficient (Pᵢ = 1 - Σₛ(kᵢₛ/kᵢ)²)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Participation coefficient: P_i = 1 - sum_s (k_is / k_i)**2</span>
 <span class="n">pc</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">)</span>
 
-<span class="c1"># Participation entropy (Hᵢ = -Σₛ(kᵢₛ/kᵢ)log(kᵢₛ/kᵢ))</span>
+<span class="c1"># Participation entropy: H_i = -sum_s (k_is / k_i) * log(k_is / k_i)</span>
 <span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Reference:</strong> Guimerà &amp; Amaral (2005), “Functional cartography of complex metabolic networks”</p>
+<p><strong>Definitions:</strong> <span class="math notranslate nohighlight">\(k_{is}\)</span> is the number of links from node <span class="math notranslate nohighlight">\(i\)</span> to community <span class="math notranslate nohighlight">\(s\)</span> (summing over layers), and <span class="math notranslate nohighlight">\(k_i = \sum_s k_{is}\)</span>. If <span class="math notranslate nohighlight">\(k_i = 0\)</span>, both metrics return 0 to avoid undefined values.</p>
+<p><strong>Reference:</strong> Guimera &amp; Amaral (2005), “Functional cartography of complex metabolic networks”</p>
 </section>
 <section id="layer-redundancy-analysis">
 <h3>Layer Redundancy Analysis<a class="headerlink" href="#layer-redundancy-analysis" title="Link to this heading"></a></h3>
@@ -434,13 +454,14 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Redundancy coefficient (Rᵅᵝ = |Eᵅ ∩ Eᵝ|/|Eᵅ|)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Redundancy coefficient: R_{alpha,beta} = |E_alpha cap E_beta| / |E_alpha|</span>
 <span class="n">redundancy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_redundancy_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">)</span>
 
 <span class="c1"># Count unique and redundant edges</span>
 <span class="n">unique</span><span class="p">,</span> <span class="n">redundant</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">unique_redundant_edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Definition:</strong> <span class="math notranslate nohighlight">\(E_\alpha\)</span> denotes edges in layer <span class="math notranslate nohighlight">\(\alpha\)</span> (treated as unordered pairs unless your data are directed); <span class="math notranslate nohighlight">\(R_{\alpha,\beta}\)</span> is asymmetric because it normalizes by <span class="math notranslate nohighlight">\(|E_\alpha|\)</span>.</p>
 <p><strong>Reference:</strong> Nicosia &amp; Latora (2015), “Measuring and modeling correlations in multiplex networks”</p>
 </section>
 <section id="multiplex-rich-club-coefficient">
@@ -456,6 +477,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rich_club</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multiplex_rich_club_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">normalized=True</span></code> uses the function’s internal null-model rescaling; set it to <code class="docutils literal notranslate"><span class="pre">False</span></code> for the raw coefficient.</p>
 <p><strong>Reference:</strong> Extended from Alstott et al. (2014) to multiplex networks</p>
 </section>
 <section id="robustness-and-percolation-analysis">
@@ -466,7 +488,7 @@
 <li><p>Critical layer identification</p></li>
 <li><p>Cascade failure analysis</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n \times t)\)</span> where <span class="math notranslate nohighlight">\(t\)</span> is number of trials</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(t (n_L + m))\)</span> where <span class="math notranslate nohighlight">\(t\)</span> is number of trials</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Estimate percolation threshold</span>
 <span class="n">threshold</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">percolation_threshold</span><span class="p">(</span>
@@ -513,6 +535,7 @@
 </section>
 <section id="network-statistics">
 <h2>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading"></a></h2>
+<p>Use these quick calculations to profile the network before running heavier algorithms.</p>
 <section id="basic-statistics">
 <h3>Basic Statistics<a class="headerlink" href="#basic-statistics" title="Link to this heading"></a></h3>
 <p><strong>Fast operations</strong> (suitable for large networks):</p>
@@ -524,26 +547,26 @@
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
-<span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="n">num_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">node_count</span>
 </pre></div>
 </div>
 </section>
 <section id="multilayer-statistics">
 <h3>Multilayer Statistics<a class="headerlink" href="#multilayer-statistics" title="Link to this heading"></a></h3>
-<p><strong>Layer density</strong> - <span class="math notranslate nohighlight">\(O(m_\alpha)\)</span> per layer:</p>
+<p><strong>Layer density</strong> - <span class="math notranslate nohighlight">\(O(m_\alpha)\)</span> per layer: density of edges within layer <span class="math notranslate nohighlight">\(\alpha\)</span></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Inter-layer correlation</strong> - <span class="math notranslate nohighlight">\(O(n)\)</span>:</p>
+<p><strong>Inter-layer correlation</strong> - <span class="math notranslate nohighlight">\(O(n)\)</span>: correlation of node degrees across layers (uses only nodes present in both layers)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Edge overlap</strong> - <span class="math notranslate nohighlight">\(O(m)\)</span>:</p>
+<p><strong>Edge overlap</strong> - <span class="math notranslate nohighlight">\(O(m)\)</span>: shared edges across two layers</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Versatility centrality</strong> - <span class="math notranslate nohighlight">\(O(m \times L)\)</span>:</p>
+<p><strong>Versatility centrality</strong> - <span class="math notranslate nohighlight">\(O(m L)\)</span>: multilayer importance that mixes centrality across layers</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;betweenness&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -552,15 +575,17 @@
 <h3>Path-based Measures<a class="headerlink" href="#path-based-measures" title="Link to this heading"></a></h3>
 <p><strong>Warning:</strong> These are computationally expensive for large networks</p>
 <ul class="simple">
-<li><p><strong>Diameter</strong> - <span class="math notranslate nohighlight">\(O(nm)\)</span> or <span class="math notranslate nohighlight">\(O(n^2 \log n)\)</span></p></li>
-<li><p><strong>Average shortest path</strong> - <span class="math notranslate nohighlight">\(O(nm)\)</span> or <span class="math notranslate nohighlight">\(O(n^2 \log n)\)</span></p></li>
-<li><p><strong>Betweenness centrality</strong> - <span class="math notranslate nohighlight">\(O(nm)\)</span> or <span class="math notranslate nohighlight">\(O(nm + n^2 \log n)\)</span></p></li>
+<li><p><strong>Diameter</strong> - <span class="math notranslate nohighlight">\(O(n_L m)\)</span> or <span class="math notranslate nohighlight">\(O(n_L^2 \log n_L)\)</span></p></li>
+<li><p><strong>Average shortest path</strong> - <span class="math notranslate nohighlight">\(O(n_L m)\)</span> or <span class="math notranslate nohighlight">\(O(n_L^2 \log n_L)\)</span></p></li>
+<li><p><strong>Betweenness centrality</strong> - <span class="math notranslate nohighlight">\(O(n_L m)\)</span> or <span class="math notranslate nohighlight">\(O(n_L m + n_L^2 \log n_L)\)</span></p></li>
 </ul>
-<p><strong>Recommendation:</strong> Limit to networks with &lt;5,000 nodes for interactive analysis</p>
+<p><strong>Recommendation:</strong> For interactive analysis, keep to a few thousand state nodes or use sampling/approximations</p>
+<p><strong>Note:</strong> Distances are computed on the supra-graph; disconnected components yield infinite paths and zero scores for unreachable pairs.</p>
 </section>
 </section>
 <section id="node-embeddings">
 <h2>Node Embeddings<a class="headerlink" href="#node-embeddings" title="Link to this heading"></a></h2>
+<p>Embeddings typically operate on the aggregated graph of physical nodes (<code class="docutils literal notranslate"><span class="pre">network.core_network</span></code>) rather than the full supra-adjacency.</p>
 <section id="node2vec">
 <h3>Node2Vec<a class="headerlink" href="#node2vec" title="Link to this heading"></a></h3>
 <p><strong>Best for:</strong></p>
@@ -570,7 +595,7 @@
 <li><p>Node classification</p></li>
 <li><p>Similarity computation</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(r \times l \times |V|)\)</span> where <span class="math notranslate nohighlight">\(r\)</span> is walks per node, <span class="math notranslate nohighlight">\(l\)</span> is walk length</p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(r \times l \times n)\)</span> where <span class="math notranslate nohighlight">\(r\)</span> is walks per node, <span class="math notranslate nohighlight">\(l\)</span> is walk length on the aggregated graph</p>
 <p><strong>Parameters:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">dimensions</span></code>: Embedding dimensions (default: 128)</p></li>
@@ -606,7 +631,7 @@
 <li><p>Same as Node2Vec but simpler (uniform random walks)</p></li>
 <li><p>Faster than Node2Vec</p></li>
 </ul>
-<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(r \times l \times |V|)\)</span></p>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(r \times l \times n)\)</span> on the aggregated graph</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># DeepWalk is Node2Vec with p=1, q=1</span>
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span>
@@ -620,6 +645,7 @@
 </section>
 <section id="visualization">
 <h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h2>
+<p>Choose layouts based on graph size and desired interpretation; the scalability notes below are practical heuristics rather than hard limits.</p>
 <section id="diagonal-projection-plot">
 <h3>Diagonal Projection Plot<a class="headerlink" href="#diagonal-projection-plot" title="Link to this heading"></a></h3>
 <p><strong>Best for:</strong></p>
@@ -628,7 +654,7 @@
 <li><p>Clear layer separation</p></li>
 <li><p>Publication-ready figures</p></li>
 </ul>
-<p><strong>Scalability:</strong> Handles 10,000+ nodes</p>
+<p><strong>Scalability:</strong> Practical for tens of thousands of nodes in sparse graphs</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
 <span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout_style</span><span class="o">=</span><span class="s1">&#39;diagonal&#39;</span><span class="p">)</span>
@@ -643,7 +669,7 @@
 <li><p>Interactive exploration</p></li>
 <li><p>Natural-looking layouts</p></li>
 </ul>
-<p><strong>Scalability:</strong> Practical up to ~5,000 nodes</p>
+<p><strong>Scalability:</strong> Practical up to a few thousand nodes</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
 <span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force&#39;</span><span class="p">)</span>
@@ -658,7 +684,7 @@
 <li><p>Very large networks</p></li>
 <li><p>Quantitative analysis</p></li>
 </ul>
-<p><strong>Scalability:</strong> Handles 100,000+ nodes (limited by memory)</p>
+<p><strong>Scalability:</strong> Memory-bound; scales to very large sparse networks when plotted as matrices</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
@@ -673,6 +699,7 @@
 <h2>Performance Guidelines<a class="headerlink" href="#performance-guidelines" title="Link to this heading"></a></h2>
 <section id="network-size-categories">
 <h3>Network Size Categories<a class="headerlink" href="#network-size-categories" title="Link to this heading"></a></h3>
+<p>Heuristics below refer to physical node counts; for dense supra-adjacency graphs, treat the effective size as <span class="math notranslate nohighlight">\(n_L\)</span>.</p>
 <dl class="simple">
 <dt><strong>Small</strong> (&lt; 1,000 nodes):</dt><dd><ul class="simple">
 <li><p>All algorithms are fast</p></li>
@@ -705,9 +732,9 @@
 <p><strong>Supra-adjacency matrix:</strong></p>
 <ul class="simple">
 <li><p>Sparse representation: <span class="math notranslate nohighlight">\(O(m)\)</span> memory</p></li>
-<li><p>Dense representation: <span class="math notranslate nohighlight">\(O(n^2)\)</span> memory (avoid for large networks)</p></li>
+<li><p>Dense representation: <span class="math notranslate nohighlight">\(O(n_L^2)\)</span> memory (avoid for large networks)</p></li>
 </ul>
-<p><strong>Always use sparse matrices for networks with &gt;1,000 nodes</strong></p>
+<p><strong>Always use sparse matrices for networks with &gt;1,000 state nodes</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure sparse representation</span>
 <span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -734,7 +761,7 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Louvain</p></td>
-<td><p>O(n log n)</p></td>
+<td><p>O(m log n)</p></td>
 <td><p>Large</p></td>
 <td><p>BSD</p></td>
 <td><p>Fast community detection</p></td>
@@ -752,13 +779,13 @@
 <td><p>Semi-supervised, very fast</p></td>
 </tr>
 <tr class="row-odd"><td><p>Degree Centrality</p></td>
-<td><p>O(n+m)</p></td>
+<td><p>O(n + m)</p></td>
 <td><p>Very Large</p></td>
 <td><p>MIT</p></td>
 <td><p>Quick importance</p></td>
 </tr>
 <tr class="row-even"><td><p>Betweenness</p></td>
-<td><p>O(nm)</p></td>
+<td><p>O(n_L m)</p></td>
 <td><p>Small</p></td>
 <td><p>MIT</p></td>
 <td><p>Critical paths</p></td>
@@ -770,7 +797,7 @@
 <td><p>Directed networks</p></td>
 </tr>
 <tr class="row-even"><td><p>Node2Vec</p></td>
-<td><p>O(r×l×n)</p></td>
+<td><p>O(r * l * n)</p></td>
 <td><p>Medium</p></td>
 <td><p>MIT</p></td>
 <td><p>Feature learning</p></td>

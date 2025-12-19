@@ -164,7 +164,7 @@
              
   <section id="multilayer-networks-101">
 <h1>Multilayer Networks 101<a class="headerlink" href="#multilayer-networks-101" title="Link to this heading"></a></h1>
-<p>This chapter explains what multilayer networks are, when to use them, and how to choose the right type for your data.</p>
+<p>This chapter explains what multilayer networks are, when to use them, and how to choose the right type for your data—without flattening away important structure.</p>
 <p><strong>You will learn:</strong></p>
 <ul class="simple">
 <li><p>What distinguishes multilayer from single-layer networks</p></li>
@@ -172,9 +172,15 @@
 <li><p>When to use multilayer modeling</p></li>
 <li><p>Common pitfalls to avoid</p></li>
 </ul>
+<p>Key ideas to keep in mind:</p>
+<ul class="simple">
+<li><p>A <strong>layer</strong> labels the context of an interaction (relationship type, time slice, modality).</p></li>
+<li><p>A <strong>node-layer pair</strong> <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> is the atomic unit; the same node can appear in multiple layers.</p></li>
+<li><p><strong>Coupling</strong> uses inter-layer edges that link the same entity across layers, with a weight controlling how strongly layers influence each other. When the weight is 0, layers are independent; higher weights make layers behave more coherently.</p></li>
+</ul>
 <section id="what-are-multilayer-networks">
 <h2>What are Multilayer Networks?<a class="headerlink" href="#what-are-multilayer-networks" title="Link to this heading"></a></h2>
-<p>A <strong>multilayer network</strong> models systems with multiple types of relationships, node types, or interaction contexts.</p>
+<p>A <strong>multilayer network</strong> models systems with multiple types of relationships, node types, or interaction contexts while keeping each interaction labeled by its layer. Each edge carries both endpoints <em>and</em> the layer context, so interactions remain distinguishable.</p>
 <p><strong>Example:</strong> A researcher’s social world includes coauthors, colleagues, students, and Twitter followers. These are different relationship types with different meanings. A multilayer network keeps them as separate <strong>layers</strong> rather than flattening into one graph.</p>
 <p><strong>Traditional vs. Multilayer:</strong></p>
 <table class="docutils align-default">
@@ -206,9 +212,10 @@
 </section>
 <section id="types-of-multilayer-networks">
 <h2>Types of Multilayer Networks<a class="headerlink" href="#types-of-multilayer-networks" title="Link to this heading"></a></h2>
+<p>The examples below use simple edge lists to show how different modeling choices map to different layer structures. Choose the structure that matches (a) whether node identities repeat across layers and (b) whether relationships are interchangeable or context-specific.</p>
 <section id="multiplex-networks">
 <h3>Multiplex Networks<a class="headerlink" href="#multiplex-networks" title="Link to this heading"></a></h3>
-<p><strong>Same nodes, different relationship types.</strong></p>
+<p><strong>Same nodes, different relationship types.</strong> Use when the <em>entities</em> are the same everywhere, but interactions mean different things per layer.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">)</span>
@@ -221,10 +228,11 @@
 </pre></div>
 </div>
 <p><strong>Examples:</strong> Social networks across platforms, transportation via air/rail/road, communication via email/phone/chat.</p>
+<p><strong>Tip:</strong> Inter-layer edges typically connect identical nodes across layers to model the idea that “Alice in friends” is still Alice in “colleagues.”</p>
 </section>
 <section id="heterogeneous-information-networks">
 <h3>Heterogeneous Information Networks<a class="headerlink" href="#heterogeneous-information-networks" title="Link to this heading"></a></h3>
-<p><strong>Different node types with type-specific relationships.</strong></p>
+<p><strong>Different node types with type-specific relationships.</strong> Use when layers hold different entity types or schemas, not just interaction labels.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
     <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
@@ -233,10 +241,11 @@
 </pre></div>
 </div>
 <p><strong>Examples:</strong> Academic networks (authors, papers, venues), e-commerce (users, products, sellers), biomedical (drugs, diseases, targets).</p>
+<p><strong>Tip:</strong> Keep node identifiers disjoint across types (e.g., <code class="docutils literal notranslate"><span class="pre">P1</span></code> is always a paper) to avoid accidental coupling.</p>
 </section>
 <section id="temporal-networks">
 <h3>Temporal Networks<a class="headerlink" href="#temporal-networks" title="Link to this heading"></a></h3>
-<p><strong>Networks that evolve over time, with time-sliced layers.</strong></p>
+<p><strong>Networks that evolve over time, with time-sliced layers.</strong> Use when order and timing change interpretation (e.g., diffusion, cascades).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
     <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
@@ -246,57 +255,63 @@
 </pre></div>
 </div>
 <p><strong>Examples:</strong> Communication over time, social dynamics, disease spread.</p>
+<p><strong>Tip:</strong> Choose time-slice granularity that matches the process of interest—too coarse hides dynamics, too fine yields sparse noise. Adjacent slices can be coupled with inter-layer edges to allow information to move through time.</p>
 </section>
 <section id="interdependent-networks">
 <h3>Interdependent Networks<a class="headerlink" href="#interdependent-networks" title="Link to this heading"></a></h3>
-<p><strong>Multiple networks where nodes depend on each other.</strong></p>
+<p><strong>Multiple networks where nodes depend on each other rather than sharing identity.</strong> Dependencies capture “if X fails in layer A, Y fails in layer B,” not “X is the same as Y.”</p>
 <p><strong>Examples:</strong> Power grid depends on communication network, supply chains, cyber-physical systems.</p>
+<p><strong>Tip:</strong> Model dependencies explicitly with inter-layer edges that indicate which nodes fail together or require coordination; these edges can connect different node IDs across layers and often have direction (who depends on whom).</p>
 </section>
 </section>
 <section id="when-to-use-multilayer-networks">
 <h2>When to Use Multilayer Networks<a class="headerlink" href="#when-to-use-multilayer-networks" title="Link to this heading"></a></h2>
 <p>Use multilayer modeling when:</p>
 <ol class="arabic simple">
-<li><p><strong>Multiple relationship types matter</strong> — Friendship and professional connections behave differently</p></li>
-<li><p><strong>Node roles vary by context</strong> — A hub in work network may be peripheral in hobby network</p></li>
-<li><p><strong>Layer interactions are important</strong> — Transportation failures in one mode affect others</p></li>
-<li><p><strong>Temporal evolution matters</strong> — Relationships change over time</p></li>
-<li><p><strong>System-level properties emerge</strong> — Cross-layer dependencies affect resilience</p></li>
+<li><p><strong>Multiple relationship types matter</strong> — Friendship and professional connections behave differently.</p></li>
+<li><p><strong>Node roles vary by context</strong> — A hub in work may be peripheral in hobbies.</p></li>
+<li><p><strong>Layer interactions are important</strong> — Transportation failures in one mode affect others.</p></li>
+<li><p><strong>Temporal evolution matters</strong> — Relationships change over time and order matters.</p></li>
+<li><p><strong>System-level properties emerge</strong> — Cross-layer dependencies affect resilience, spreading, or coordination.</p></li>
 </ol>
 </section>
 <section id="choosing-a-modeling-approach">
 <h2>Choosing a Modeling Approach<a class="headerlink" href="#choosing-a-modeling-approach" title="Link to this heading"></a></h2>
 <p>Ask these questions:</p>
 <ol class="arabic simple">
-<li><p><strong>Layers vs. attributes?</strong> If relationships have different <em>types</em> → use layers. If they vary only in <em>weight</em> → use edge attributes.</p></li>
-<li><p><strong>Same or different nodes?</strong> Same entities in all layers → multiplex. Different entity types → heterogeneous.</p></li>
-<li><p><strong>Coupling strength?</strong> Identity coupling only → <code class="docutils literal notranslate"><span class="pre">omega=1.0</span></code>. Nodes can differ → lower omega.</p></li>
-<li><p><strong>Temporal structure?</strong> Yes → time-sliced layers. No → aggregate into static network.</p></li>
+<li><p><strong>Layers vs. attributes?</strong> If relationships differ in <em>kind</em> (email vs. meeting), use layers. If they differ only in <em>intensity</em> (weight, frequency), keep one layer and add attributes.</p></li>
+<li><p><strong>Same or different nodes?</strong> Same entities in all layers → multiplex. Different entity types → heterogeneous (avoid forcing identity coupling).</p></li>
+<li><p><strong>Coupling strength?</strong> When identities repeat across layers, set an inter-layer weight <code class="docutils literal notranslate"><span class="pre">omega</span> <span class="pre">≥</span> <span class="pre">0</span></code> to control how tightly node copies move together (e.g., start with <code class="docutils literal notranslate"><span class="pre">omega=1.0</span></code> for identity coupling; reduce it if layers should diverge).</p></li>
+<li><p><strong>Temporal structure?</strong> If order matters, use time-sliced layers with optional coupling between adjacent slices; only aggregate into a static network when chronology is irrelevant.</p></li>
 </ol>
 </section>
 <section id="what-goes-wrong-when-you-flatten">
 <h2>What Goes Wrong When You Flatten<a class="headerlink" href="#what-goes-wrong-when-you-flatten" title="Link to this heading"></a></h2>
+<p>Flattening throws away layer information. Typical failure modes include:</p>
 <p><strong>Community structure destroyed:</strong> Flattening can create spurious bridges between groups that are distinct in the layer structure.</p>
-<p><strong>Centrality becomes misleading:</strong> A researcher with 2 coauthors and 500 Twitter followers has degree 502 when flattened, but academic influence is only 2.</p>
-<p><strong>Path analysis fails:</strong> Email → meeting transitions matter for information flow but are invisible in a flattened network.</p>
+<p><strong>Centrality becomes misleading:</strong> A researcher with 2 coauthors and 500 Twitter followers has degree 502 when flattened, but academic influence is only 2. Centrality scores mix incomparable interaction modes.</p>
+<p><strong>Path analysis fails:</strong> Email → meeting transitions matter for information flow but are invisible in a flattened network, so path-based predictions over- or under-estimate reachability.</p>
+<p><strong>Layer semantics disappear:</strong> Once layers are merged, you can no longer tell which mode of interaction drove a result.</p>
 </section>
 <section id="common-pitfalls">
 <h2>Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Over-aggregating</strong> — Combining layers that should stay separate</p></li>
-<li><p><strong>Under-aggregating</strong> — Too many sparse layers (use edge weights instead)</p></li>
-<li><p><strong>Ignoring coupling</strong> — Treating layers as independent when nodes correspond</p></li>
-<li><p><strong>Wrong coupling strength</strong> — Too high forces artificial consistency; too low loses information</p></li>
-<li><p><strong>Mismatched identifiers</strong> — Same entity must have same ID across layers</p></li>
+<li><p><strong>Over-aggregating</strong> — Combining layers that should stay separate; prefer explicit layers when semantics differ.</p></li>
+<li><p><strong>Under-aggregating</strong> — Too many ultra-sparse layers; use edge weights or coarser bins instead.</p></li>
+<li><p><strong>Ignoring coupling</strong> — Treating layers as independent when nodes correspond; set <code class="docutils literal notranslate"><span class="pre">omega</span></code> explicitly.</p></li>
+<li><p><strong>Wrong coupling strength</strong> — Too high forces artificial consistency; too low loses cross-layer information.</p></li>
+<li><p><strong>Mismatched identifiers</strong> — Same entity must have the same ID across layers for identity coupling to work.</p></li>
+<li><p><strong>Inconsistent time slicing</strong> — Changing window sizes mid-analysis hides or invents trends; keep cadence consistent.</p></li>
 </ul>
 </section>
 <section id="key-terminology">
 <h2>Key Terminology<a class="headerlink" href="#key-terminology" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Intra-layer edges</strong> — Within a single layer</p></li>
-<li><p><strong>Inter-layer edges</strong> — Between layers (often identity edges connecting same node)</p></li>
-<li><p><strong>Node-layer pairs</strong> — <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> tuples, the fundamental unit</p></li>
-<li><p><strong>Supra-adjacency matrix</strong> — Block matrix encoding both intra- and inter-layer connections</p></li>
+<li><p><strong>Intra-layer edges</strong> — Within a single layer (same layer ID on both endpoints)</p></li>
+<li><p><strong>Inter-layer edges</strong> — Between layers (often identity edges connecting the same node across layers)</p></li>
+<li><p><strong>Node-layer pairs</strong> — <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> tuples, the fundamental unit for most algorithms</p></li>
+<li><p><strong>Supra-adjacency matrix</strong> — Block matrix encoding both intra- and inter-layer connections; shape is <code class="docutils literal notranslate"><span class="pre">(n·L)</span> <span class="pre">×</span> <span class="pre">(n·L)</span></code> for <code class="docutils literal notranslate"><span class="pre">n</span></code> nodes appearing in <code class="docutils literal notranslate"><span class="pre">L</span></code> layers</p></li>
+<li><p><strong>Coupling</strong> — Strength of inter-layer edges (often <code class="docutils literal notranslate"><span class="pre">omega</span></code>); controls how strongly layers influence one another</p></li>
 </ul>
 </section>
 <section id="next-steps">

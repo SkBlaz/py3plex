@@ -1,12 +1,16 @@
 Citation and References
 =======================
 
-If you use py3plex in your research, please **cite our work**.
+If you use py3plex in your research, please **cite our work**. The quickest recipe:
+
+* Always cite the primary journal article for general usage (analysis, visualization, CLI, DSL).
+* Add algorithm-specific citations when you rely on a particular method (community detection, embedding, ranking).
+* Where possible, include the DOI to keep references unambiguous.
 
 Primary Citation
 ----------------
 
-**Recommended citation for py3plex:**
+**Recommended citation for py3plex (general use of the library and DSL):**
 
 .. code-block:: bibtex
 
@@ -29,7 +33,7 @@ Primary Citation
 Conference Paper
 ----------------
 
-For the **initial algorithmic work**:
+For the **initial algorithmic work and early benchmarks**, add this citation alongside the primary one:
 
 .. code-block:: bibtex
 
@@ -50,10 +54,12 @@ For the **initial algorithmic work**:
 Algorithm-Specific Citations
 -----------------------------
 
-When using **specific algorithms**, please also cite the **original papers**:
+When using **specific algorithms**, please also cite the **original papers** in addition to the primary py3plex article. Cite only the methods you actively use.
 
 Multilayer Modularity
 ~~~~~~~~~~~~~~~~~~~~~
+
+Use when reporting multilayer modularity community detection results.
 
 .. code-block:: bibtex
 
@@ -72,6 +78,8 @@ Multilayer Modularity
 Node2Vec
 ~~~~~~~~
 
+Use when generating node embeddings with Node2Vec.
+
 .. code-block:: bibtex
 
     @InProceedings{Grover2016,
@@ -86,6 +94,8 @@ Node2Vec
 
 Louvain Algorithm
 ~~~~~~~~~~~~~~~~~
+
+Use when computing Louvain community detection results.
 
 .. code-block:: bibtex
 
@@ -104,6 +114,8 @@ Louvain Algorithm
 Infomap
 ~~~~~~~
 
+Use when computing Infomap community detection results.
+
 .. code-block:: bibtex
 
     @Article{Rosvall2008,
@@ -119,6 +131,8 @@ Infomap
 
 MultiXRank
 ~~~~~~~~~~
+
+Use when running MultiXRank for multilayer ranking.
 
 .. code-block:: bibtex
 
@@ -136,6 +150,8 @@ MultiXRank
 DeepWalk
 ~~~~~~~~
 
+Use when generating DeepWalk embeddings.
+
 .. code-block:: bibtex
 
     @InProceedings{Perozzi2014,
@@ -151,7 +167,7 @@ DeepWalk
 Multilayer Network Theory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Foundational papers** on multilayer networks:
+**Foundational papers** on multilayer networks. Cite when you rely on formal multilayer definitions or theoretical background.
 
 .. code-block:: bibtex
 
@@ -201,7 +217,7 @@ Multilayer Network Theory
 Complete Citation List
 ----------------------
 
-For algorithm citations, see the :doc:`../algorithm_guide` which includes all major algorithms with their original references and DOIs.
+For algorithm citations, see the :doc:`../algorithm_guide`, which includes all major algorithms with their original references and DOIs.
 
 Acknowledgments
 ---------------
@@ -226,7 +242,7 @@ This work has been **supported by**:
 External Libraries
 ~~~~~~~~~~~~~~~~~~
 
-py3plex builds upon **excellent open-source libraries**:
+py3plex builds upon **excellent open-source libraries** (please cite them when their capabilities are central to your results):
 
 * **NetworkX** - Graph data structures and algorithms
 * **NumPy** - Numerical computing
@@ -275,7 +291,7 @@ py3plex is released under the **MIT License**.
 * Infomap community detection code: **AGPLv3**
 * Louvain community detection: **BSD-3-Clause**
 
-See ``LICENSE`` file in the repository for detailed license compatibility information.
+See ``LICENSE`` in the repository for license compatibility details, especially if redistributing binaries that package third-party implementations.
 
 Contact
 -------
@@ -289,7 +305,7 @@ For questions about citing py3plex or collaboration opportunities:
 Related Work
 ------------
 
-Other tools and libraries for multilayer network analysis:
+Other tools and libraries for multilayer network analysis (for context and comparison):
 
 * **muxViz** - Multilayer network visualization (R)
 * **pymnet** - Multilayer networks in Python
@@ -304,10 +320,10 @@ Usage in Publications
 If you've used py3plex in your research and would like to be listed here, please:
 
 1. Open an issue or pull request
-2. Provide citation to your paper
-3. Brief description of how py3plex was used
+2. Provide the citation to your paper (with DOI if available)
+3. Add a brief description of how py3plex was used (e.g., DSL queries, community detection, embeddings)
 
-We maintain a list of publications using py3plex to showcase applications and build community.
+We maintain a list of publications using py3plex to showcase applications and build community. New additions are welcome.
 
 See Also
 --------

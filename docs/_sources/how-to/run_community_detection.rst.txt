@@ -95,7 +95,7 @@ where :math:`A_{ij}` is the adjacency matrix, :math:`k_i` is node degree, :math:
       ('B2', 'layer2') → Community 1
       ('C1', 'layer2') → Community 2
 
-**Note:** The standard ``louvain_communities`` function flattens the multilayer network into a single-layer graph (projecting all nodes across layers into a unified node set). For layer-aware detection, use ``louvain_multilayer`` (see next section).
+**Note:** The standard ``louvain_communities`` function flattens the multilayer network into a single-layer graph: each node-layer pair becomes a single node and inter-layer coupling is ignored (layer names remain as part of the node labels). For layer-aware detection, use ``louvain_multilayer`` (see next section).
 
 Multilayer-Specific: Multilayer Louvain
 ----------------------------------------
@@ -111,11 +111,14 @@ Standard Louvain treats a multilayer network as a single flattened graph, losing
 where:
 
 * :math:`A^\alpha_{ij}`: adjacency in layer :math:`\alpha`
+* :math:`k_i^\alpha`: degree (or strength) of node :math:`i` in layer :math:`\alpha`
+* :math:`m_\alpha`: total edge weight in layer :math:`\alpha` (:math:`2m_\alpha = \sum_{ij} A_{ij}^\alpha`)
 * :math:`\gamma^\alpha`: resolution parameter for layer :math:`\alpha` (default 1.0)
 * :math:`\omega_{\alpha\beta}`: inter-layer coupling strength (default 1.0)
 * :math:`\delta_{ij}=1` if :math:`i=j` (inter-layer edges connect same node across layers)
+* :math:`\delta_{\alpha\beta}=1` if :math:`\alpha=\beta` (restricts intra-layer term)
 * :math:`\delta(g_{i\alpha}, g_{j\beta})=1` if node :math:`i` in layer :math:`\alpha` and node :math:`j` in layer :math:`\beta` are in the same community
-* :math:`\mu`: total weight in supra-network
+* :math:`\mu`: total weight in the supra-network (:math:`2\mu = \sum_\alpha 2 m_\alpha + \sum_{\alpha\neq\beta}\omega_{\alpha\beta}`)
 
 **Key insight:** The coupling term :math:`\omega_{\alpha\beta}` controls whether communities span layers:
 
@@ -909,9 +912,13 @@ DSL Basics for Communities
         'SELECT nodes WHERE community=0'
     )
     
-    print(f"Nodes in community 0: {len(result)}")
-    for node in list(result)[:5]:
+    nodes_in_comm0 = result.get("nodes", [])
+    
+    print(f"Nodes in community 0: {len(nodes_in_comm0)}")
+    for node in nodes_in_comm0[:5]:
         print(f"  {node}")
+
+**Note:** ``execute_query`` returns a dictionary; access node matches via ``result["nodes"]`` (not the dict length) to avoid counting metadata keys.
 
 **Expected output:**
 
@@ -982,7 +989,7 @@ Community-Level Queries
             network,
             f'SELECT nodes WHERE community={comm_id}'
         )
-        print(f"Community {comm_id}: {len(result)} nodes")
+        print(f"Community {comm_id}: {result.get('count', 0)} nodes")
 
 **Find inter-community edges:**
 
@@ -1012,9 +1019,13 @@ Community-Level Queries
          .execute(network)
     )
     
-    print(f"Intra-community edges: {len(intra_comm_edges)}")
-    print(f"Inter-community edges: {len(inter_comm_edges)}")
-    print(f"Ratio: {len(inter_comm_edges)/len(intra_comm_edges):.3f}")
+    intra_len = len(intra_comm_edges)
+    inter_len = len(inter_comm_edges)
+    ratio = inter_len / intra_len if intra_len else 0
+    
+    print(f"Intra-community edges: {intra_len}")
+    print(f"Inter-community edges: {inter_len}")
+    print(f"Ratio: {ratio:.3f} (inter / intra)")
 
 **Expected output:**
 
@@ -1042,8 +1053,10 @@ Layer-Specific Community Queries
          .execute(network)
     )
     
-    print(f"Community 0 in layer1: {len(result)} nodes")
-    print(f"Average degree: {sum(d['degree'] for d in result.values())/len(result):.2f}")
+    count = len(result)
+    avg_degree = sum(d['degree'] for d in result.values())/count if count else 0
+    print(f"Community 0 in layer1: {count} nodes")
+    print(f"Average degree: {avg_degree:.2f}")
 
 **Compare community structure across layers:**
 
@@ -1084,10 +1097,12 @@ Extract Community Subnetworks
     from py3plex.dsl import Q
     
     # Extract community 0
-    comm_0_nodes = execute_query(
+    comm_0_result = execute_query(
         network,
         'SELECT nodes WHERE community=0'
     )
+    
+    comm_0_nodes = comm_0_result.get("nodes", [])
     
     # Get induced subgraph
     subgraph = network.core_network.subgraph(comm_0_nodes)
@@ -1688,7 +1703,7 @@ Check how consistently nodes are grouped across layers:
             continue
         
         # Are the community IDs consistent?
-        # (This is a simplified measure - in reality, IDs may differ but structure may be same)
+        # (Community IDs are arbitrary per layer; align by overlap before using this beyond a quick heuristic.)
         comm_ids = list(assignments.values())
         is_stable = len(set(comm_ids)) == 1  # All same community ID
         
@@ -1736,6 +1751,8 @@ Check how consistently nodes are grouped across layers:
         C3: {'layer1': 1, 'layer2': 0, 'layer3': 2}
         D7: {'layer1': 0, 'layer2': 2}
         E9: {'layer1': 3, 'layer2': 1, 'layer3': 1}
+
+**Note:** Community labels from independent layer runs are arbitrary; align them (e.g., by maximizing overlap or NMI) before treating numeric IDs as comparable. The simple stability rate above is a heuristic sanity check, not a formal alignment.
 
 **Visualization - Alluvial diagram:**
 
@@ -2150,7 +2167,7 @@ For multilayer networks, use the generalized modularity that accounts for inter-
 
 **Modularity resolution:**
 
-Modularity has a **resolution limit**: it cannot detect communities smaller than :math:`\sqrt{m}` where :math:`m` is the number of edges. The resolution parameter :math:`\gamma` can help:
+Modularity has a **resolution limit**: in undirected graphs it struggles to detect communities much smaller than roughly :math:`\sqrt{2m}` (with :math:`m` edges). The resolution parameter :math:`\gamma` can help:
 
 .. code-block:: python
 
@@ -2252,6 +2269,8 @@ Additional Quality Metrics
 .. code-block:: text
 
     Performance: 0.7456
+
+**Tip:** The double loop is :math:`O(n^2)` over nodes; use it on moderate-size graphs or sample nodes when the network is huge.
 
 **3. Conductance** (quality of community boundaries):
 

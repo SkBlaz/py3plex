@@ -175,10 +175,15 @@
              
   <section id="citation-and-references">
 <h1>Citation and References<a class="headerlink" href="#citation-and-references" title="Link to this heading"></a></h1>
-<p>If you use py3plex in your research, please <strong>cite our work</strong>.</p>
+<p>If you use py3plex in your research, please <strong>cite our work</strong>. The quickest recipe:</p>
+<ul class="simple">
+<li><p>Always cite the primary journal article for general usage (analysis, visualization, CLI, DSL).</p></li>
+<li><p>Add algorithm-specific citations when you rely on a particular method (community detection, embedding, ranking).</p></li>
+<li><p>Where possible, include the DOI to keep references unambiguous.</p></li>
+</ul>
 <section id="primary-citation">
 <h2>Primary Citation<a class="headerlink" href="#primary-citation" title="Link to this heading"></a></h2>
-<p><strong>Recommended citation for py3plex:</strong></p>
+<p><strong>Recommended citation for py3plex (general use of the library and DSL):</strong></p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Skrlj2019</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{{\v{S}}krlj, Bla{\v{z}} and Kralj, Jan and Lavra{\v{c}}, Nada}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="s">{Py3plex toolkit for visualization and analysis of multilayer networks}</span><span class="p">,</span>
@@ -199,7 +204,7 @@
 </section>
 <section id="conference-paper">
 <h2>Conference Paper<a class="headerlink" href="#conference-paper" title="Link to this heading"></a></h2>
-<p>For the <strong>initial algorithmic work</strong>:</p>
+<p>For the <strong>initial algorithmic work and early benchmarks</strong>, add this citation alongside the primary one:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@InProceedings</span><span class="p">{</span><span class="nl">Skrlj2019Conference</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{{\v{S}}krlj, Bla{\v{z}} and Kralj, Jan and Lavra{\v{c}}, Nada}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">editor</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{Aiello, Luca Maria and Cherifi, Chantal and Cherifi, Hocine</span>
@@ -218,9 +223,10 @@
 </section>
 <section id="algorithm-specific-citations">
 <h2>Algorithm-Specific Citations<a class="headerlink" href="#algorithm-specific-citations" title="Link to this heading"></a></h2>
-<p>When using <strong>specific algorithms</strong>, please also cite the <strong>original papers</strong>:</p>
+<p>When using <strong>specific algorithms</strong>, please also cite the <strong>original papers</strong> in addition to the primary py3plex article. Cite only the methods you actively use.</p>
 <section id="multilayer-modularity">
 <h3>Multilayer Modularity<a class="headerlink" href="#multilayer-modularity" title="Link to this heading"></a></h3>
+<p>Use when reporting multilayer modularity community detection results.</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Mucha2010</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Mucha, Peter J. and Richardson, Thomas and Macon, Kevin</span>
 <span class="s">             and Porter, Mason A. and Onnela, Jukka-Pekka}</span><span class="p">,</span>
@@ -237,6 +243,7 @@
 </section>
 <section id="node2vec">
 <h3>Node2Vec<a class="headerlink" href="#node2vec" title="Link to this heading"></a></h3>
+<p>Use when generating node embeddings with Node2Vec.</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@InProceedings</span><span class="p">{</span><span class="nl">Grover2016</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{Grover, Aditya and Leskovec, Jure}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="s">{node2vec: Scalable Feature Learning for Networks}</span><span class="p">,</span>
@@ -251,6 +258,7 @@
 </section>
 <section id="louvain-algorithm">
 <h3>Louvain Algorithm<a class="headerlink" href="#louvain-algorithm" title="Link to this heading"></a></h3>
+<p>Use when computing Louvain community detection results.</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Blondel2008</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Blondel, Vincent D. and Guillaume, Jean-Loup and Lambiotte, Renaud</span>
 <span class="s">             and Lefebvre, Etienne}</span><span class="p">,</span>
@@ -267,6 +275,7 @@
 </section>
 <section id="infomap">
 <h3>Infomap<a class="headerlink" href="#infomap" title="Link to this heading"></a></h3>
+<p>Use when computing Infomap community detection results.</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Rosvall2008</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Rosvall, Martin and Bergstrom, Carl T.}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">   </span><span class="p">=</span><span class="w"> </span><span class="s">{Maps of random walks on complex networks reveal community structure}</span><span class="p">,</span>
@@ -282,6 +291,7 @@
 </section>
 <section id="multixrank">
 <h3>MultiXRank<a class="headerlink" href="#multixrank" title="Link to this heading"></a></h3>
+<p>Use when running MultiXRank for multilayer ranking.</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Baptista2022</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Baptista, Anthony and Gonzalez, Aur{\&#39;e}lien and Baudot, Ana{\&quot;\i}s}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">   </span><span class="p">=</span><span class="w"> </span><span class="s">{Universal multilayer network exploration by random walk with restart}</span><span class="p">,</span>
@@ -297,6 +307,7 @@
 </section>
 <section id="deepwalk">
 <h3>DeepWalk<a class="headerlink" href="#deepwalk" title="Link to this heading"></a></h3>
+<p>Use when generating DeepWalk embeddings.</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@InProceedings</span><span class="p">{</span><span class="nl">Perozzi2014</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{Perozzi, Bryan and Al-Rfou, Rami and Skiena, Steven}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="s">{DeepWalk: Online Learning of Social Representations}</span><span class="p">,</span>
@@ -311,7 +322,7 @@
 </section>
 <section id="multilayer-network-theory">
 <h3>Multilayer Network Theory<a class="headerlink" href="#multilayer-network-theory" title="Link to this heading"></a></h3>
-<p><strong>Foundational papers</strong> on multilayer networks:</p>
+<p><strong>Foundational papers</strong> on multilayer networks. Cite when you rely on formal multilayer definitions or theoretical background.</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Kivela2014</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="s">{Kivel{\&quot;a}, Mikko and Arenas, Alex and Barthelemy, Marc</span>
 <span class="s">             and Gleeson, James P. and Moreno, Yamir and Porter, Mason A.}</span><span class="p">,</span>
@@ -358,7 +369,7 @@
 </section>
 <section id="complete-citation-list">
 <h2>Complete Citation List<a class="headerlink" href="#complete-citation-list" title="Link to this heading"></a></h2>
-<p>For algorithm citations, see the <a class="reference internal" href="../algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> which includes all major algorithms with their original references and DOIs.</p>
+<p>For algorithm citations, see the <a class="reference internal" href="../algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a>, which includes all major algorithms with their original references and DOIs.</p>
 </section>
 <section id="acknowledgments">
 <h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Link to this heading"></a></h2>
@@ -381,7 +392,7 @@
 </section>
 <section id="external-libraries">
 <h3>External Libraries<a class="headerlink" href="#external-libraries" title="Link to this heading"></a></h3>
-<p>py3plex builds upon <strong>excellent open-source libraries</strong>:</p>
+<p>py3plex builds upon <strong>excellent open-source libraries</strong> (please cite them when their capabilities are central to your results):</p>
 <ul class="simple">
 <li><p><strong>NetworkX</strong> - Graph data structures and algorithms</p></li>
 <li><p><strong>NumPy</strong> - Numerical computing</p></li>
@@ -427,7 +438,7 @@ SOFTWARE.
 <li><p>Infomap community detection code: <strong>AGPLv3</strong></p></li>
 <li><p>Louvain community detection: <strong>BSD-3-Clause</strong></p></li>
 </ul>
-<p>See <code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> file in the repository for detailed license compatibility information.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> in the repository for license compatibility details, especially if redistributing binaries that package third-party implementations.</p>
 </section>
 <section id="contact">
 <h2>Contact<a class="headerlink" href="#contact" title="Link to this heading"></a></h2>
@@ -440,7 +451,7 @@ SOFTWARE.
 </section>
 <section id="related-work">
 <h2>Related Work<a class="headerlink" href="#related-work" title="Link to this heading"></a></h2>
-<p>Other tools and libraries for multilayer network analysis:</p>
+<p>Other tools and libraries for multilayer network analysis (for context and comparison):</p>
 <ul class="simple">
 <li><p><strong>muxViz</strong> - Multilayer network visualization (R)</p></li>
 <li><p><strong>pymnet</strong> - Multilayer networks in Python</p></li>
@@ -454,10 +465,10 @@ SOFTWARE.
 <p>If you’ve used py3plex in your research and would like to be listed here, please:</p>
 <ol class="arabic simple">
 <li><p>Open an issue or pull request</p></li>
-<li><p>Provide citation to your paper</p></li>
-<li><p>Brief description of how py3plex was used</p></li>
+<li><p>Provide the citation to your paper (with DOI if available)</p></li>
+<li><p>Add a brief description of how py3plex was used (e.g., DSL queries, community detection, embeddings)</p></li>
 </ol>
-<p>We maintain a list of publications using py3plex to showcase applications and build community.</p>
+<p>We maintain a list of publications using py3plex to showcase applications and build community. New additions are welcome.</p>
 </section>
 <section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>

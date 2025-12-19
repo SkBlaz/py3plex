@@ -190,50 +190,54 @@
              
   <section id="common-issues-and-troubleshooting">
 <h1>Common Issues and Troubleshooting<a class="headerlink" href="#common-issues-and-troubleshooting" title="Link to this heading"></a></h1>
-<p>This guide helps you troubleshoot common problems when getting started with py3plex.</p>
+<p>Quick fixes for frequent issues when getting started with py3plex. Work through the sections in order (installation → data loading → visualization → performance → algorithms). Apply one fix at a time, then rerun your script before trying the next so you know which change helped.</p>
 <section id="installation-issues">
 <h2>Installation Issues<a class="headerlink" href="#installation-issues" title="Link to this heading"></a></h2>
 <section id="no-module-named-numpy">
 <h3>“No module named ‘numpy’”<a class="headerlink" href="#no-module-named-numpy" title="Link to this heading"></a></h3>
-<p><strong>Problem:</strong> Import error when trying to use py3plex.</p>
-<p><strong>Solution:</strong> Install numpy first:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy
-pip<span class="w"> </span>install<span class="w"> </span>py3plex
+<p><strong>Problem:</strong> Import error when trying to use py3plex (<code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError</span></code>).</p>
+<p><strong>Solution:</strong> Install numpy first (preferably in a virtual environment to avoid system-wide changes). Upgrading pip often avoids build warnings:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>numpy
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
 </section>
 <section id="compilation-errors-on-windows">
 <h3>Compilation Errors on Windows<a class="headerlink" href="#compilation-errors-on-windows" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> C++ compilation errors during installation on Windows.</p>
-<p><strong>Solution:</strong> Install Visual C++ Build Tools:</p>
+<p><strong>Solution:</strong> Install Visual C++ Build Tools, then reinstall:</p>
 <ol class="arabic simple">
 <li><p>Download from: <a class="reference external" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">https://visualstudio.microsoft.com/visual-cpp-build-tools/</a></p></li>
 <li><p>Install “Desktop development with C++”</p></li>
-<li><p>Retry installation</p></li>
+<li><p>Restart your shell, then retry installation</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
 </section>
 <section id="permission-denied-on-linux-macos">
 <h3>“Permission denied” on Linux/macOS<a class="headerlink" href="#permission-denied-on-linux-macos" title="Link to this heading"></a></h3>
-<p><strong>Problem:</strong> Permission errors during pip install.</p>
-<p><strong>Solution 1:</strong> Use pip install with –user flag:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>py3plex
-</pre></div>
-</div>
-<p><strong>Solution 2:</strong> Use a virtual environment (recommended):</p>
+<p><strong>Problem:</strong> Permission errors during pip install (for example, <code class="docutils literal notranslate"><span class="pre">[Errno</span> <span class="pre">13]</span> <span class="pre">Permission</span> <span class="pre">denied</span></code> or <code class="docutils literal notranslate"><span class="pre">EACCES</span></code>).</p>
+<p><strong>Solution 1:</strong> Use a virtual environment (recommended; keeps dependencies isolated):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>py3plex-env
 <span class="nb">source</span><span class="w"> </span>py3plex-env/bin/activate<span class="w">  </span><span class="c1"># On Windows: py3plex-env\Scripts\activate</span>
-pip<span class="w"> </span>install<span class="w"> </span>py3plex
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> Use pip install with –user flag (if you cannot use venv):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>py3plex
 </pre></div>
 </div>
 </section>
 <section id="old-version-installed">
 <h3>Old Version Installed<a class="headerlink" href="#old-version-installed" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Changes not reflecting or documentation mentions newer features.</p>
-<p><strong>Solution:</strong> Upgrade to the latest version:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>py3plex
+<p><strong>Solution:</strong> Verify the installed version, then upgrade to the latest release:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>show<span class="w"> </span>py3plex
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>py3plex
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>show<span class="w"> </span>py3plex<span class="w">  </span><span class="c1"># Confirm the version changed</span>
 </pre></div>
 </div>
 </section>
@@ -243,37 +247,35 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <section id="file-not-found-errors">
 <h3>File Not Found Errors<a class="headerlink" href="#file-not-found-errors" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> <code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code> when loading networks.</p>
-<p><strong>Solution 1:</strong> Use absolute paths:</p>
+<p><strong>Solution 1:</strong> Confirm the file exists and your working directory is correct (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code> often differs from the script directory):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="n">network_path</span> <span class="o">=</span> <span class="s2">&quot;/absolute/path/to/data.edgelist&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current directory:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File exists:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;data.edgelist&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> Use an absolute path to avoid ambiguity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network_path</span> <span class="o">=</span> <span class="s2">&quot;/absolute/path/to/data.edgelist&quot;</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="n">network_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Solution 2:</strong> Ensure you’re running from the correct directory:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-
-<span class="c1"># Check current directory</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current directory:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
-
-<span class="c1"># List files</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Files:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
-</pre></div>
-</div>
-<p><strong>Solution 3:</strong> Use paths relative to script location:</p>
+<p><strong>Solution 3:</strong> Build a path relative to the script location (avoids brittle working-directory assumptions):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;network.edgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="n">data_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="empty-or-malformed-networks">
 <h3>Empty or Malformed Networks<a class="headerlink" href="#empty-or-malformed-networks" title="Link to this heading"></a></h3>
-<p><strong>Problem:</strong> Network loads but has no nodes or edges.</p>
-<p><strong>Solution:</strong> Check file format matches input_type:</p>
+<p><strong>Problem:</strong> Network loads but has no nodes or edges (zero counts).</p>
+<p><strong>Solution:</strong> Confirm the file contents and chosen <code class="docutils literal notranslate"><span class="pre">input_type</span></code> match. Pick the loader that matches your columns and delimiter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For simple edge lists (source target)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
 
@@ -284,18 +286,24 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>If counts are still zero:</p>
+<ul class="simple">
+<li><p>Inspect the first few lines for the expected number of columns and delimiters.</p></li>
+<li><p>Ensure header rows are skipped or removed before loading.</p></li>
+<li><p>Check that the file is not empty (<code class="docutils literal notranslate"><span class="pre">os.path.getsize</span></code>).</p></li>
+</ul>
 </section>
 </section>
 <section id="visualization-issues">
 <h2>Visualization Issues<a class="headerlink" href="#visualization-issues" title="Link to this heading"></a></h2>
 <section id="visualization-not-showing">
 <h3>Visualization Not Showing<a class="headerlink" href="#visualization-not-showing" title="Link to this heading"></a></h3>
-<p><strong>Problem:</strong> No window appears when calling visualization functions.</p>
-<p><strong>Solution 1:</strong> For Jupyter notebooks, add at the top:</p>
+<p><strong>Problem:</strong> No window appears when calling visualization functions (plots silently finish).</p>
+<p><strong>Solution 1:</strong> For Jupyter notebooks, enable inline plots:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 </pre></div>
 </div>
-<p><strong>Solution 2:</strong> For scripts, explicitly show the plot:</p>
+<p><strong>Solution 2:</strong> For scripts, explicitly show the plot or set <code class="docutils literal notranslate"><span class="pre">display=True</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Your visualization code</span>
@@ -319,7 +327,7 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <section id="no-display-found-error">
 <h3>“No Display Found” Error<a class="headerlink" href="#no-display-found-error" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Error on headless servers or SSH sessions without X11.</p>
-<p><strong>Solution:</strong> Use Agg backend for matplotlib:</p>
+<p><strong>Solution:</strong> Use Agg backend for matplotlib so plots are rendered to files:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -334,19 +342,20 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <section id="blurry-or-low-quality-plots">
 <h3>Blurry or Low-Quality Plots<a class="headerlink" href="#blurry-or-low-quality-plots" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Plots look pixelated or blurry.</p>
-<p><strong>Solution:</strong> Increase DPI when saving:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<p><strong>Solution:</strong> Increase DPI and tighten bounding boxes when saving:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="missing-dependencies">
 <h2>Missing Dependencies<a class="headerlink" href="#missing-dependencies" title="Link to this heading"></a></h2>
+<p><strong>Tip:</strong> Feature-specific extras are optional; install only what you need.</p>
 <section id="no-module-named-plotly">
 <h3>“No module named ‘plotly’”<a class="headerlink" href="#no-module-named-plotly" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Interactive visualization features not working.</p>
-<p><strong>Solution:</strong> Install visualization extras:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+<p><strong>Solution:</strong> Install visualization extras (plotly and related dependencies):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[viz]&quot;</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
 </pre></div>
 </div>
 </section>
@@ -354,10 +363,10 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <h3>“No module named ‘infomap’”<a class="headerlink" href="#no-module-named-infomap" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Infomap community detection not working.</p>
 <p><strong>Solution:</strong> Install Infomap support:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[infomap]&quot;</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
 </pre></div>
 </div>
-<p>Or use alternative community detection methods:</p>
+<p>Or use alternative community detection methods if you cannot install the extra:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 </pre></div>
@@ -369,9 +378,9 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <section id="very-slow-loading">
 <h3>Very Slow Loading<a class="headerlink" href="#very-slow-loading" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Loading large networks takes too long.</p>
-<p><strong>Solution 1:</strong> Use Arrow/Parquet format for large networks:</p>
+<p><strong>Solution 1:</strong> Prefer Arrow/Parquet for large networks to speed up I/O:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Arrow support</span>
-pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>arrow<span class="o">]</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[arrow]&quot;</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
@@ -379,11 +388,11 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
 <span class="c1"># Save in efficient format</span>
 <span class="n">write</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s2">&quot;network.arrow&quot;</span><span class="p">)</span>
 
-<span class="c1"># Load much faster</span>
+<span class="c1"># Load faster from Arrow</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;network.arrow&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Solution 2:</strong> Process in chunks or use subnetworks:</p>
+<p><strong>Solution 2:</strong> Process in chunks or use subnetworks for testing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract a single layer for testing</span>
 <span class="n">layer_1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;layer1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
 
@@ -408,8 +417,8 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
 <h2>Algorithm Issues<a class="headerlink" href="#algorithm-issues" title="Link to this heading"></a></h2>
 <section id="community-detection-returns-trivial-results">
 <h3>Community Detection Returns Trivial Results<a class="headerlink" href="#community-detection-returns-trivial-results" title="Link to this heading"></a></h3>
-<p><strong>Problem:</strong> Each node in its own community or all nodes in one community.</p>
-<p><strong>Solution:</strong> Adjust algorithm parameters:</p>
+<p><strong>Problem:</strong> Each node in its own community or all nodes in one community (degenerate partition).</p>
+<p><strong>Solution:</strong> Adjust algorithm parameters and randomness, then compare partitions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">louvain_multilayer</span>
 <span class="p">)</span>
@@ -427,7 +436,7 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
 <section id="random-walk-or-embedding-errors">
 <h3>Random Walk or Embedding Errors<a class="headerlink" href="#random-walk-or-embedding-errors" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Random walk or Node2Vec functions fail.</p>
-<p><strong>Solution:</strong> Ensure network is connected:</p>
+<p><strong>Solution:</strong> Ensure the graph is connected before running walks:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="c1"># Check connectivity</span>
@@ -443,6 +452,7 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
     <span class="n">subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">largest</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Use the subgraph for embedding or random walk routines if the full network is disconnected. Re-attach results to the full graph only after inspecting coverage.</p>
 </section>
 </section>
 <section id="docker-issues">
@@ -450,7 +460,7 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
 <section id="docker-build-fails">
 <h3>Docker Build Fails<a class="headerlink" href="#docker-build-fails" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Docker build fails or takes very long.</p>
-<p><strong>Solution:</strong> Clear Docker cache and rebuild:</p>
+<p><strong>Solution:</strong> Clear Docker cache (removes all unused images and build layers) and rebuild:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"> </span>-a
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
 </pre></div>
@@ -459,7 +469,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <section id="cannot-access-files-in-docker">
 <h3>Cannot Access Files in Docker<a class="headerlink" href="#cannot-access-files-in-docker" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Docker container can’t see your data files.</p>
-<p><strong>Solution:</strong> Mount volumes correctly:</p>
+<p><strong>Solution:</strong> Mount volumes correctly so container paths resolve:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mount current directory</span>
 docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>/data/network.edgelist
 
@@ -467,6 +477,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </sp
 docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>/data/network.edgelist
 </pre></div>
 </div>
+<p>Adjust the command after the image name to match your workflow (for example, <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">load</span> <span class="pre">/data/network.edgelist</span> <span class="pre">--info</span></code>).</p>
 <p>See <a class="reference internal" href="../deployment/cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation.</p>
 </section>
 </section>
@@ -480,10 +491,10 @@ docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </sp
 </ol>
 <p>When reporting issues, include:
 * Python version (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--version</span></code>)
-* py3plex version (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">show</span> <span class="pre">py3plex</span></code>)
+* py3plex version (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">show</span> <span class="pre">py3plex</span></code>)
 * Operating system
 * Full error traceback
-* Minimal code to reproduce the problem</p>
+* Minimal code to reproduce the problem (or a link to the example you ran)</p>
 </section>
 <section id="related-pages">
 <h2>Related Pages<a class="headerlink" href="#related-pages" title="Link to this heading"></a></h2>

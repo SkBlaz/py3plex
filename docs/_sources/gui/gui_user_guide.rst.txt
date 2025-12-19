@@ -2,7 +2,7 @@
 Py3plex GUI
 ********************
 
-A production-ready web-based GUI for **py3plex** multilayer network analysis, running locally via Docker Compose.
+A production-ready web-based GUI for **py3plex** multilayer network analysis, running locally via Docker Compose. Upload multilayer graphs, explore them visually, and run common analytics from your browser.
 
 .. image:: https://img.shields.io/badge/license-BSD--3--Clause-blue
    :alt: License
@@ -24,8 +24,18 @@ The Py3plex GUI provides an intuitive web interface for multilayer network analy
 
 |
 
+Prerequisites
+=============
+
+- Docker (>= 20.10)
+- Docker Compose (>= 2.0)
+- 4GB RAM minimum
+- Ports available: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)
+
 Quickstart
 ===========
+
+Use this sequence after the prerequisites above are installed and ports are free:
 
 .. code-block:: bash
 
@@ -43,6 +53,7 @@ Quickstart
     # Data Job Monitor (Flower): http://localhost:5555
 
 **First time?** The build takes ~3-5 minutes. Subsequent starts are instant.
+Wait for containers to report ``healthy`` before using the UI.
 
 That's it! The application will be running with:
 
@@ -51,14 +62,6 @@ That's it! The application will be running with:
 - Celery workers for async jobs
 - Redis broker
 - Nginx reverse proxy
-
-Prerequisites
-=============
-
-- Docker (>= 20.10)
-- Docker Compose (>= 2.0)
-- 4GB RAM minimum
-- Ports available: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)
 
 Architecture
 ============
@@ -174,16 +177,15 @@ Export
 Workspace Bundles
 -----------------
 
-Save and restore complete analysis sessions:
+Save and restore complete analysis sessions. A bundle includes:
 
-.. code-block:: python
+- Original network file
+- Computed layouts
+- Centrality results
+- Community assignments
+- UI view state
 
-    # Bundle includes:
-    # - Original network file
-    # - Computed layouts
-    # - Centrality results
-    # - Community assignments
-    # - UI view state
+Export a bundle from the **Export** page and re-import it later to restore the exact session state.
 
 Job Monitoring
 --------------
@@ -345,6 +347,8 @@ Accepted Input Formats
     B C
     C D
 
+Use whitespace-separated columns. Include the layer column for multilayer graphs; omit it for single-layer files. Weights are optional and default to 1.0 if absent.
+
 **2. GML (.gml)**
 
 - Graph Modeling Language
@@ -358,7 +362,7 @@ Accepted Input Formats
 Example Dataset
 ---------------
 
-Try the included toy network:
+Try the included toy network (6 nodes, 14 edges, 3 layers):
 
 .. code-block:: bash
 
@@ -373,7 +377,7 @@ Testing
 Continuous Integration
 ----------------------
 
-GUI tests run automatically on GitHub Actions for any changes to the ``gui/`` directory:
+GUI tests run automatically on GitHub Actions for any changes to the ``gui/`` directory. Pushes and pull requests that touch GUI files trigger the workflow:
 
 .. code-block:: yaml
 
@@ -411,14 +415,16 @@ API Tests
 Integration Tests
 -----------------
 
-The CI workflow runs full integration tests:
+The CI workflow runs full integration tests (Docker Compose brings up the full stack and exercises uploads + analysis):
 
 .. code-block:: bash
 
-    # Upload and analyze a network
+    # With the stack running (`make up`):
     cd gui
+    # Upload the sample network
     curl -F "file=@toy_network.edgelist" http://localhost:8080/api/upload
-    # Run layout, centrality, and community detection jobs
+    # Kick off layout, centrality, and community detection jobs
+    # Verify each job reaches status=completed and returns results
 
 Frontend Tests (WIP)
 --------------------
@@ -431,15 +437,17 @@ Frontend Tests (WIP)
 Manual Testing Workflow
 -----------------------
 
+For a step-by-step manual checklist, see ``docfiles/gui/gui_testing.rst``. Quick smoke flow:
+
 1. **Upload** ``toy_network.edgelist`` via Web UI
-2. **Visualize** the network (6 nodes, 14 edges, 3 layers)
+2. **Visualize** the network (expect 6 nodes, 14 edges, 3 layers)
 3. **Analyze**:
    
    - Run Spring Layout
    - Compute Centrality (degree + betweenness)
    - Detect Communities (Louvain)
 
-4. **Monitor** jobs at http://localhost:5555 (Flower)
+4. **Monitor** jobs at http://localhost:5555 (Flower) and confirm they transition to ``completed`` without errors
 5. **Export** workspace bundle
 
 Production Deployment
@@ -448,7 +456,7 @@ Production Deployment
 Static Build (Recommended)
 --------------------------
 
-For production, serve pre-built frontend assets:
+For production, serve pre-built frontend assets instead of the Vite dev server:
 
 .. code-block:: dockerfile
 
@@ -482,7 +490,7 @@ Security Considerations
 - Set resource limits per user/job
 - Enable Celery task rate limiting
 
-**Current Status**: Development mode - suitable for local use only. Do not expose to public internet without proper security hardening.
+**Current Status**: Development mode - suitable for local use only. Do not expose to the public internet without proper security hardening.
 
 Troubleshooting
 ===============
@@ -493,7 +501,7 @@ Issue: Port already in use
 .. code-block:: bash
 
     # Find process using port 8080
-    lsof -ti:8080 | xargs kill -9
+    lsof -ti:8080 | xargs -r kill
 
     # Or change port in docker-compose.yml
     ports:

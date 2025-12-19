@@ -21,7 +21,7 @@ Simple, Off-the-Shelf Functionality
 
 **Principle:** Provide ready-to-use tools that work out of the box with minimal configuration.
 
-**In practice:**
+**In practice:** keep the first example minimal, without mandatory boilerplate.
 
 .. code-block:: python
 
@@ -29,17 +29,18 @@ Simple, Off-the-Shelf Functionality
     
     # Simple, intuitive API
     network = multinet.multi_layer_network()
+    # List format: [source, source_layer, target, target_layer, weight]
     network.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type="list")
     network.basic_stats()  # Works immediately
 
-**Rationale:** Researchers and practitioners need tools that are easy to adopt without extensive setup or configuration. py3plex aims to minimize the barrier to entry for multilayer network analysis.
+**Rationale:** Researchers and practitioners need tools that are easy to adopt without extensive setup or configuration. py3plex minimizes the barrier to entry for multilayer network analysis by keeping the first run frictionless.
 
 NetworkX Compatibility
 ~~~~~~~~~~~~~~~~~~~~~~
 
 **Principle:** Build on NetworkX rather than reinventing the wheel.
 
-**In practice:**
+**In practice:** py3plex wraps a NetworkX graph and keeps it accessible.
 
 .. code-block:: python
 
@@ -56,8 +57,8 @@ NetworkX Compatibility
 
 * Leverages a mature, well-tested codebase
 * Provides access to hundreds of NetworkX algorithms
-* Ensures interoperability with the broader Python ecosystem
-* Reduces learning curve for users familiar with NetworkX
+* Ensures interoperability with the broader Python ecosystem (e.g., pandas, scipy)
+* Reduces learning curve for users familiar with NetworkX, while adding multilayer semantics
 
 Modular Architecture
 ~~~~~~~~~~~~~~~~~~~~
@@ -96,6 +97,8 @@ Modular Architecture
 Implementation Principles
 -------------------------
 
+These principles translate the philosophy into everyday coding patterns inside py3plex.
+
 Flexibility
 ~~~~~~~~~~~
 
@@ -104,6 +107,9 @@ Flexibility
 **Examples:**
 
 .. code-block:: python
+
+    from py3plex.core import multinet
+    network = multinet.multi_layer_network()
 
     # Multiple ways to create networks
     
@@ -126,9 +132,9 @@ Flexibility
 Lazy Evaluation
 ~~~~~~~~~~~~~~~
 
-**Principle:** Compute expensive operations only when needed.
+**Principle:** Compute expensive operations only when needed, and only once when caching is safe.
 
-**In practice:**
+**In practice:** defer heavy construction until explicitly requested.
 
 .. code-block:: python
 
@@ -139,20 +145,21 @@ Lazy Evaluation
     # Matrix is computed only when requested
     supra_adj = network.get_supra_adjacency_matrix()  # Computed here
     
-    # Subsequent calls may use cached result (where appropriate)
+    # Subsequent calls may reuse cached result unless the graph changes
 
-**Rationale:** Many multilayer operations (e.g., matrix construction) are computationally expensive. Lazy evaluation:
+**Rationale:** Many multilayer operations (e.g., supra-adjacency matrix construction, typically of shape ``(n·L)×(n·L)``) are computationally expensive. Lazy evaluation:
 
 * Improves performance for common operations
 * Reduces memory usage
 * Allows working with large networks when full matrices aren't needed
+* Encourages recomputing expensive results only after meaningful graph changes
 
 Graceful Degradation
 ~~~~~~~~~~~~~~~~~~~~
 
-**Principle:** Optional features should fail gracefully, not crash the entire application.
+**Principle:** Optional features should fail gracefully, not crash the entire application. Where possible, suggest viable fallbacks.
 
-**In practice:**
+**In practice:** catch optional-dependency errors and steer users to alternatives.
 
 .. code-block:: python
 
@@ -175,7 +182,7 @@ Explicit Over Implicit
 
 **Principle:** Make behavior explicit and predictable, avoiding surprising defaults.
 
-**Good examples:**
+**Good examples:** be clear about formats, directionality, and layer scope.
 
 .. code-block:: python
 
@@ -193,7 +200,7 @@ Explicit Over Implicit
 
 * Easier to understand and debug
 * Less prone to errors
-* Self-documenting
+* Self-documenting (intent is visible from the call site)
 * More maintainable
 
 Performance Considerations
@@ -214,7 +221,7 @@ Sparse Representations
     # Dense only for small networks or specific algorithms
     supra_adj_dense = network.get_supra_adjacency_matrix(sparse=False)
 
-**Rationale:** Real-world networks are typically sparse (few edges relative to potential edges). Sparse representations:
+**Rationale:** Real-world networks are typically sparse (few edges relative to potential edges). The supra-adjacency matrix indexes (node, layer) pairs, so sparsity keeps it tractable. Sparse representations:
 
 * Reduce memory usage by orders of magnitude
 * Enable analysis of networks with millions of nodes
@@ -227,12 +234,12 @@ Efficient Data Structures
 
 **Examples:**
 
-* NetworkX graphs for topology (edge lookups, traversals)
+* NetworkX graphs for topology (edge lookups, traversals; preserves attributes)
 * Dictionaries for layer mappings (O(1) lookups)
 * Sparse matrices for linear algebra
 * Sets for membership testing
 
-**Rationale:** The right data structure makes operations fast and memory-efficient.
+**Rationale:** The right data structure keeps common operations both fast and memory-efficient.
 
 Algorithmic Defaults
 ~~~~~~~~~~~~~~~~~~~~
@@ -256,6 +263,7 @@ Algorithmic Defaults
 * Make the library easy to use for beginners
 * Reduce parameter tuning overhead
 * Are based on published research and empirical validation
+* Provide a safe baseline before task-specific tuning (adjust ``gamma``/``omega`` for resolution and coupling as network density changes)
 
 Extensibility
 -------------
@@ -274,7 +282,7 @@ Plugin-Friendly Architecture
         """Custom centrality measure."""
         G = ml_network.core_network
         # Implement your algorithm
-        return centrality_scores
+        return centrality_scores  # Dict keyed by (node, layer) tuples
     
     # Easy to add custom visualizations
     def my_plot(ml_network, **kwargs):
@@ -289,9 +297,9 @@ Plugin-Friendly Architecture
 Clear Interfaces
 ~~~~~~~~~~~~~~~~
 
-**Principle:** Define clear, stable APIs for modules.
+**Principle:** Define clear, stable APIs for modules so that code using them remains forward-compatible.
 
-**In practice:**
+**In practice:** similar functions take the same arguments, and return shapes stay stable.
 
 .. code-block:: python
 
@@ -307,9 +315,9 @@ Clear Interfaces
 **Rationale:** Clear interfaces make py3plex:
 
 * Easier to learn (patterns repeat)
-* More predictable
+* More predictable (fewer surprises across modules)
 * More maintainable
-* Easier to extend
+* Easier to extend without breaking callers
 
 Documentation and Testing
 -------------------------
@@ -319,12 +327,13 @@ Comprehensive Documentation
 
 **Principle:** Every feature should be documented with examples.
 
-**In practice:**
+**In practice:** blend narrative guides with executable snippets.
 
 * Detailed docstrings for all public functions
 * Code examples in documentation
 * Real-world use cases
 * API reference with parameter descriptions
+* Cross-links between conceptual guides and API reference
 
 **Rationale:** Good documentation:
 
@@ -336,9 +345,9 @@ Comprehensive Documentation
 Extensive Testing
 ~~~~~~~~~~~~~~~~~
 
-**Principle:** Test all core functionality and edge cases.
+**Principle:** Test all core functionality and edge cases, including multilayer specifics.
 
-**In practice:**
+**In practice:** combine correctness checks with performance guards.
 
 .. code-block:: bash
 
@@ -351,7 +360,7 @@ Extensive Testing
 
 * Code works as intended
 * Changes don't break existing functionality
-* Edge cases are handled correctly
+* Edge cases are handled correctly (layered vs. aggregated workflows)
 * Performance regressions are caught
 
 Interoperability
@@ -374,20 +383,20 @@ Standard Formats
 
 * Data sharing between tools
 * Integration with other software
-* Long-term data preservation
+* Long-term data preservation (avoid lock-in to bespoke formats)
 
 Cross-Platform Compatibility
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Principle:** Work consistently across operating systems.
 
-**Tested on:**
+**Regularly exercised on:** (through automated builds and manual checks)
 
 * Linux (Ubuntu 20.04, 22.04)
 * macOS (11, 12, 13)
 * Windows (Server 2019, 2022)
 
-**Rationale:** Users work on different platforms. Cross-platform support ensures py3plex works everywhere.
+**Rationale:** Users work on different platforms. Cross-platform support keeps behavior consistent and reduces support surprises.
 
 Research-Oriented Design
 ------------------------
@@ -418,7 +427,7 @@ Citation and Attribution
 Reproducibility
 ~~~~~~~~~~~~~~~
 
-**Principle:** Support reproducible research.
+**Principle:** Support reproducible research by exposing seed controls wherever randomness is involved.
 
 **In practice:**
 
@@ -432,6 +441,8 @@ Reproducibility
     
     walks = generate_walks(
         network,
+        num_walks=5,
+        walk_length=10,
         seed=42  # Reproducible walks
     )
 
@@ -444,13 +455,14 @@ Reproducibility
 Validation and Benchmarking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Principle:** Validate algorithms against published results.
+**Principle:** Validate algorithms against published results and known properties when possible.
 
-**In practice:**
+**In practice:** combine qualitative checks (structure) with quantitative ones (scores, timings).
 
-* Benchmark suite comparing to reference implementations
-* Validation against known network properties
-* Performance metrics for large networks
+* Benchmark scripts comparing to reference implementations when available
+* Validation against known network properties (e.g., degree sequences, connectivity)
+* Performance metrics for representative network sizes
+* Recorded assumptions when a formal ground truth is unavailable
 
 **Rationale:** Validation ensures:
 
@@ -519,9 +531,8 @@ py3plex vs. Other Multilayer Tools
 
 * Pure Python (easy installation)
 * Comprehensive algorithm library
-* NetworkX integration
-* Active development
-* Research-backed
+* NetworkX integration (reuse familiar APIs)
+* Active development with research-backed defaults
 
 What You Learned
 ----------------
