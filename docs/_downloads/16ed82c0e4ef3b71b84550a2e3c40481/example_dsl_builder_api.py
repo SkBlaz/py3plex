@@ -159,7 +159,17 @@ print("Sample results (first 5):")
 for node in result.items[:5]:
     degree = result.attributes.get('degree', {}).get(node, 'N/A')
     clustering = result.attributes.get('clustering', {}).get(node, 'N/A')
-    print(f"  {node}: degree={degree}, clustering={clustering:.3f}" if clustering != 'N/A' else f"  {node}: degree={degree}")
+
+    if isinstance(clustering, (int, float)):
+        clustering_display = f"{clustering:.3f}"
+    else:
+        clustering_display = clustering
+
+    print(
+        f"  {node}: degree={degree}, clustering={clustering_display}"
+        if clustering != 'N/A'
+        else f"  {node}: degree={degree}"
+    )
 
 # Example 9: Compute with alias
 print("\n" + "=" * 80)
@@ -172,7 +182,8 @@ result = Q.nodes().compute("betweenness_centrality", alias="bc").execute(network
 print("Top 5 nodes by betweenness centrality:")
 for node in result.items[:5]:
     bc = result.attributes.get('bc', {}).get(node, 0)
-    print(f"  {node}: {bc:.4f}")
+    bc_display = f"{bc:.4f}" if isinstance(bc, (int, float)) else bc
+    print(f"  {node}: {bc_display}")
 
 # Example 10: ORDER BY ascending
 print("\n" + "=" * 80)
@@ -303,7 +314,8 @@ result = (
 print("Top 5 influential nodes (social + work layers, degree > 1):")
 for node in result.items:
     bc = result.attributes.get('bc', {}).get(node, 0)
-    print(f"  {node}: betweenness={bc:.4f}")
+    bc_display = f"{bc:.4f}" if isinstance(bc, (int, float)) else bc
+    print(f"  {node}: betweenness={bc_display}")
 
 # Example 18: Error handling with suggestions
 print("\n" + "=" * 80)

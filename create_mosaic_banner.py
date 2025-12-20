@@ -13,6 +13,10 @@ import numpy as np
 from PIL import Image
 
 
+# Default location of example images used when no override is provided
+DEFAULT_BASE_DIR = "/home/runner/work/py3plex/py3plex/example_images"
+
+
 def load_and_resize_image(image_path, target_height=None, target_width=None):
     """Load and optionally resize an image."""
     try:
@@ -35,10 +39,8 @@ def load_and_resize_image(image_path, target_height=None, target_width=None):
         return None
 
 
-def create_mosaic_banner():
+def create_mosaic_banner(base_dir=DEFAULT_BASE_DIR):
     """Create a mosaic banner from existing example images."""
-    
-    base_dir = "/home/runner/work/py3plex/py3plex/example_images"
     
     # Select the most representative and attractive visualizations
     # These showcase different visualization types
@@ -121,10 +123,8 @@ def create_mosaic_banner():
     return output_path
 
 
-def create_compact_banner():
+def create_compact_banner(base_dir=DEFAULT_BASE_DIR):
     """Create a more compact horizontal banner for README header."""
-    
-    base_dir = "/home/runner/work/py3plex/py3plex/example_images"
     
     # Select 5-6 most visually striking images for a compact banner
     selected_images = [
@@ -172,10 +172,8 @@ def create_compact_banner():
     return output_path
 
 
-def create_showcase_collage():
+def create_showcase_collage(base_dir=DEFAULT_BASE_DIR):
     """Create a showcase collage with uniform tiles, no spacing, black borders, and descriptions."""
-    
-    base_dir = "/home/runner/work/py3plex/py3plex/example_images"
     
     # Create a figure with white background
     fig = plt.figure(figsize=(24, 9), facecolor='white')
