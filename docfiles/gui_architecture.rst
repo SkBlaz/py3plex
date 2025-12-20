@@ -473,7 +473,7 @@ Production Hardening
 Deployment Variants
 ===================
 
-Pick a docker-compose variant based on available hardware and intended use.
+Pick a Docker Compose configuration variant based on available hardware and intended use.
 
 Local Development (Current)
 ---------------------------
