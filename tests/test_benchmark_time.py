@@ -170,9 +170,13 @@ def test_main_path_runs_with_stubbed_models_and_writes_csv(monkeypatch):
 
     # Stub numpy and itertools to keep combinations small
     fake_numpy = types.ModuleType("numpy")
-    fake_numpy.arange = lambda *a, **k: type("FakeRange", (list,), {"tolist": lambda self: list(self)})(
-        [1]
-    )
+
+    FakeRange = type("FakeRange", (list,), {"tolist": lambda self: list(self)})
+
+    def fake_arange(*a, **k):
+        return FakeRange([1])
+
+    fake_numpy.arange = fake_arange
     monkeypatch.setitem(sys.modules, "numpy", fake_numpy)
 
     import itertools as real_itertools
