@@ -31,7 +31,7 @@ Plugin Types:
     - MetricPlugin: Custom network metrics
 
 For plugin development guide, see documentation at:
-https://py3plex.readthedocs.io/en/latest/plugin_development.html
+https://skblaz.github.io/py3plex/
 """
 
 from py3plex.plugins.base import (
