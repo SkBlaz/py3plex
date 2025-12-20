@@ -325,4 +325,4 @@ Planned features:
 
 For questions or issues:
 - GitHub Issues: https://github.com/SkBlaz/py3plex/issues
-- Documentation: https://py3plex.readthedocs.io/
+- Documentation: https://skblaz.github.io/py3plex/

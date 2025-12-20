@@ -602,7 +602,7 @@ discover_plugins
 Support
 -------
 
-* **Documentation**: https://py3plex.readthedocs.io
+* **Documentation**: https://skblaz.github.io/py3plex/
 * **Issues**: https://github.com/SkBlaz/py3plex/issues
 * **Discussions**: https://github.com/SkBlaz/py3plex/discussions
 

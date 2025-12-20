@@ -8,7 +8,7 @@ This guide covers all aspects of installing py3plex and setting up your environm
 Which Docs Should I Use?
 -------------------------
 
-**Most users should use these docs (py3plex 1.x)**, which you're reading now. They cover:
+**Most users should use these docs (py3plex 1.x)**, which you're reading now at https://skblaz.github.io/py3plex/. They cover:
 
 * The current stable version with modern features (DSL v2, pipelines, workflows)
 * All new APIs, including the SQL-like query DSL and dplyr-style operations
@@ -19,7 +19,7 @@ Which Docs Should I Use?
 * You're maintaining old code that depends on py3plex 0.8x specifically
 * You need features that were removed in the 1.x rewrite (very rare)
 
-The legacy docs are available at https://py3plex.readthedocs.io but are **not updated** and may have broken examples. We strongly recommend upgrading to 1.x for new projects.
+The legacy docs are available at https://py3plex.readthedocs.io but are **no longer maintained or updated** and may have broken examples. We strongly recommend upgrading to 1.x for new projects.
 
 Installation Modes
 ------------------

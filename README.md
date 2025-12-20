@@ -74,6 +74,12 @@ Found 287 communities, modularity = 0.649
 * **Technical Book (PDF):** [Practical Multilayer Network Analysis with Py3plex](docs/py3plex_book.pdf) - Complete handbook (106 pages)
 * **Examples:** [examples/](examples/) - 50+ example scripts demonstrating usage
 
+## License
+
+Py3plex is released under the [MIT License](LICENSE).
+
+**Note on licensing:** Prior to version 1.0, the project was distributed under the BSD-3-Clause license. Starting with version 1.0, the license was changed to MIT to better align with the broader Python scientific ecosystem and simplify contribution and reuse. Both licenses are permissive and OSI-approved.
+
 # Citations
 ```
 @Article{Skrlj2019,
