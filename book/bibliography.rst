@@ -97,7 +97,7 @@ Transportation Networks
 Software and Tools
 ------------------
 
-.. [NetworkX] Hagberg, A., Swart, P., & S Chult, D. (2008). Exploring network structure, dynamics, and function using NetworkX. *Los Alamos National Lab.(LANL), Los Alamos, NM (United States)*.
+.. [NetworkX] Hagberg, A., Swart, P., & Schult, D. A. (2008). Exploring network structure, dynamics, and function using NetworkX. *Los Alamos National Lab.(LANL), Los Alamos, NM (United States)*.
    
    NetworkX documentation: https://networkx.org/
 

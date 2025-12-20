@@ -80,6 +80,8 @@ latex_elements = {
     'figure_align': 'htbp',
     # Set proper table of contents depth for PDF
     'extraclassoptions': 'openany,oneside',
+    # Prevent "(continues on next page)" markers in code blocks and tables
+    'sphinxsetup': 'verbatimhintsturnover=false',
 }
 
 latex_documents = [

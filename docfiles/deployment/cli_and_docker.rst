@@ -66,8 +66,7 @@ If you prefer Compose, use the included ``docker-compose.yml`` from the reposito
     # Force rebuild
     docker compose build --no-cache
 
-    # If you only have docker-compose v1 installed:
-    # docker-compose build
+    # Note: On older Docker versions, use: docker-compose build
 
 Running Commands
 ----------------
@@ -107,8 +106,7 @@ Compose commands are slightly more verbose but easier to repeat. Use ``docker co
     # Show help
     docker compose run --rm py3plex help
 
-    # If you only have docker-compose v1 installed, swap the command name:
-    # docker-compose run --rm py3plex help
+    # Note: On older Docker versions, use: docker-compose run --rm py3plex help
 
 Working with Files
 ------------------

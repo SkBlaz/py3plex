@@ -83,7 +83,7 @@ The recommended way to run the GUI locally is using Docker Compose:
     cd gui
     
     # Start all services (API, frontend, Redis, worker)
-    docker-compose up -d
+    docker compose up -d
     
     # Access the GUI at http://localhost:8080
     # API available at http://localhost:8000
