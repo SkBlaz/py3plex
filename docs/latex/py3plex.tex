@@ -76303,13 +76303,19 @@ Docker installed and running (\sphinxcode{\sphinxupquote{docker ps}} should work
 
 \item {} 
 \sphinxAtStartPar
-Optional: Docker Compose (\sphinxcode{\sphinxupquote{docker compose}} or \sphinxcode{\sphinxupquote{docker\sphinxhyphen{}compose}}) if you prefer compose workflows.
+Optional: Docker Compose (\sphinxcode{\sphinxupquote{docker compose}}) if you prefer compose workflows.
 
 \item {} 
 \sphinxAtStartPar
 Run commands from the repository root unless a command explicitly sets another path (the \sphinxcode{\sphinxupquote{docker\sphinxhyphen{}compose.yml}} lives here).
 
 \end{itemize}
+
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+This guide uses the modern \sphinxcode{\sphinxupquote{docker compose}} command (Docker Compose v2+, included with Docker Desktop).
+If using older standalone Docker Compose v1, replace \sphinxcode{\sphinxupquote{docker compose}} with \sphinxcode{\sphinxupquote{docker\sphinxhyphen{}compose}} (hyphenated).
+\end{sphinxadmonition}
 
 
 \subsubsection{Quickstart}
@@ -76356,16 +76362,14 @@ docker\PYG{+w}{ }build\PYG{+w}{ }\PYGZhy{}\PYGZhy{}no\PYGZhy{}cache\PYG{+w}{ }\P
 \paragraph{Using Docker Compose}
 \label{\detokenize{deployment/cli_and_docker:using-docker-compose}}
 \sphinxAtStartPar
-If you prefer Compose, use the included \sphinxcode{\sphinxupquote{docker\sphinxhyphen{}compose.yml}} from the repository root. Modern Docker installs prefer \sphinxcode{\sphinxupquote{docker compose}}; older installs use \sphinxcode{\sphinxupquote{docker\sphinxhyphen{}compose}}:
+If you prefer Compose, use the included \sphinxcode{\sphinxupquote{docker\sphinxhyphen{}compose.yml}} from the repository root:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{c+c1}{\PYGZsh{} Build using Compose (preferred syntax)}
+\PYG{c+c1}{\PYGZsh{} Build using Compose}
 docker\PYG{+w}{ }compose\PYG{+w}{ }build
 
 \PYG{c+c1}{\PYGZsh{} Force rebuild}
 docker\PYG{+w}{ }compose\PYG{+w}{ }build\PYG{+w}{ }\PYGZhy{}\PYGZhy{}no\PYGZhy{}cache
-
-\PYG{c+c1}{\PYGZsh{} Note: On older Docker versions, use: docker\PYGZhy{}compose build}
 \end{sphinxVerbatim}
 
 
@@ -76395,7 +76399,7 @@ docker\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}\PYGZhy{}rm\PYG{+w}{ }py3plex:latest\PYG
 \paragraph{Using Docker Compose}
 \label{\detokenize{deployment/cli_and_docker:id1}}
 \sphinxAtStartPar
-Compose commands are slightly more verbose but easier to repeat. Use \sphinxcode{\sphinxupquote{docker compose}} if available; fall back to \sphinxcode{\sphinxupquote{docker\sphinxhyphen{}compose}} (v1) on older setups:
+Compose commands are slightly more verbose but easier to repeat:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{c+c1}{\PYGZsh{} Show version}
@@ -76406,8 +76410,6 @@ docker\PYG{+w}{ }compose\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}\PYGZhy{}rm\PYG{+w}{ }
 
 \PYG{c+c1}{\PYGZsh{} Show help}
 docker\PYG{+w}{ }compose\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}\PYGZhy{}rm\PYG{+w}{ }py3plex\PYG{+w}{ }\PYG{n+nb}{help}
-
-\PYG{c+c1}{\PYGZsh{} Note: On older Docker versions, use: docker\PYGZhy{}compose run \PYGZhy{}\PYGZhy{}rm py3plex help}
 \end{sphinxVerbatim}
 
 
