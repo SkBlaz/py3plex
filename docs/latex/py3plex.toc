@@ -46,7 +46,7 @@
 \contentsline {paragraph}{Install from PyPI (Recommended)}{18}{paragraph*.39}%
 \contentsline {paragraph}{Install from Source}{19}{paragraph*.40}%
 \contentsline {paragraph}{Docker Installation (Alternative)}{19}{paragraph*.41}%
-\contentsline {subsubsection}{Optional Dependencies}{19}{subsubsection*.42}%
+\contentsline {subsubsection}{Optional Dependencies}{20}{subsubsection*.42}%
 \contentsline {paragraph}{Advanced Community Detection}{20}{paragraph*.43}%
 \contentsline {paragraph}{Additional Algorithms}{20}{paragraph*.44}%
 \contentsline {paragraph}{Advanced Visualization}{20}{paragraph*.45}%
@@ -62,7 +62,7 @@
 \contentsline {paragraph}{Infomap Community Detection}{22}{paragraph*.55}%
 \contentsline {paragraph}{Node2Vec Embeddings}{22}{paragraph*.56}%
 \contentsline {subsubsection}{Virtual Environment Setup}{22}{subsubsection*.57}%
-\contentsline {paragraph}{Using venv}{22}{paragraph*.58}%
+\contentsline {paragraph}{Using venv}{23}{paragraph*.58}%
 \contentsline {paragraph}{Using conda}{23}{paragraph*.59}%
 \contentsline {subsubsection}{Common Installation Issues}{23}{subsubsection*.60}%
 \contentsline {paragraph}{Issue: “No module named ‘numpy’”}{23}{paragraph*.61}%
