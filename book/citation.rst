@@ -69,7 +69,7 @@ If you specifically reference this book (rather than the software), please cite:
 
 .. code-block:: text
 
-    Škrlj, B. (2025). *Practical Multilayer Network Analysis with Py3plex* (Version 1.0).
+    Škrlj, B. (2025). *Practical Multilayer Network Analysis with Py3plex* (Version 1.0.2).
     Available at: https://github.com/SkBlaz/py3plex
 
 BibTeX for This Book
@@ -81,7 +81,7 @@ BibTeX for This Book
       author = {Škrlj, Blaž},
       title = {Practical Multilayer Network Analysis with Py3plex},
       year = {2025},
-      version = {1.0},
+      version = {1.0.2},
       url = {https://github.com/SkBlaz/py3plex}
     }
 

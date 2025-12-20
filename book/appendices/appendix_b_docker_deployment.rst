@@ -50,8 +50,8 @@ Building the Image
     # Build with specific Python version
     docker build --build-arg PYTHON_VERSION=3.11 -t py3plex:3.11 .
     
-    # Build with tag
-    docker build -t py3plex:1.0 .
+    # Build with version tag matching book release
+    docker build -t py3plex:1.0.2 .
 
 Running Containers
 ~~~~~~~~~~~~~~~~~~
@@ -194,7 +194,7 @@ Nginx Reverse Proxy
     
     http {
         upstream gui {
-            server gui:5000;
+            server gui:8000;
         }
         
         server {
@@ -312,7 +312,7 @@ Monitoring
     services:
       gui:
         healthcheck:
-          test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+          test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
           interval: 30s
           timeout: 10s
           retries: 3
@@ -349,7 +349,7 @@ Azure Deployment
         --name py3plex-gui \
         --image py3plex:latest \
         --cpu 2 --memory 4 \
-        --ports 5000
+        --ports 8000
 
 GCP Deployment
 ~~~~~~~~~~~~~~
