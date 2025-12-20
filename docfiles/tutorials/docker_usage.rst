@@ -421,7 +421,7 @@ Best Practices
 2. **Use --rm Flag**: Remove containers after execution with ``--rm`` to save space
 3. **Tag Images**: Use specific tags (e.g., ``py3plex:0.95a``) for reproducibility
 4. **Keep Data Separate**: Store network files in the mounted ``data`` directory
-5. **Use Docker Compose**: For repeated operations, docker-compose simplifies commands
+5. **Use Docker Compose**: For repeated operations, Docker Compose simplifies commands
 6. **Regular Updates**: Rebuild the image periodically to get latest py3plex updates
 
 Practical Examples

@@ -32,6 +32,12 @@ jobs:
         python3 check_doc_coverage.py --json ../doc-coverage.json
       timeout-minutes: 3
     
+    - name: Check documentation quality
+      run: |
+        cd docfiles
+        python3 check_doc_quality.py
+      timeout-minutes: 2
+    
     - name: Display coverage
       run: |
         echo "Documentation Coverage Results:"

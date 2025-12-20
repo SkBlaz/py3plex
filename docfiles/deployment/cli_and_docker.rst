@@ -11,8 +11,12 @@ Prerequisites
 -------------
 
 * Docker installed and running (``docker ps`` should work).
-* Optional: Docker Compose (``docker compose`` or ``docker-compose``) if you prefer compose workflows.
+* Optional: Docker Compose (``docker compose``) if you prefer compose workflows.
 * Run commands from the repository root unless a command explicitly sets another path (the ``docker-compose.yml`` lives here).
+
+.. note::
+   This guide uses the modern ``docker compose`` command (Docker Compose v2+, included with Docker Desktop).
+   If using older standalone Docker Compose v1, replace ``docker compose`` with ``docker-compose`` (hyphenated).
 
 Quickstart
 -----------
@@ -56,17 +60,15 @@ Build directly from the repository root:
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
-If you prefer Compose, use the included ``docker-compose.yml`` from the repository root. Modern Docker installs prefer ``docker compose``; older installs use ``docker-compose``:
+If you prefer Compose, use the included ``docker-compose.yml`` from the repository root:
 
 .. code-block:: bash
 
-    # Build using Compose (preferred syntax)
+    # Build using Compose
     docker compose build
 
     # Force rebuild
     docker compose build --no-cache
-
-    # Note: On older Docker versions, use: docker-compose build
 
 Running Commands
 ----------------
@@ -93,7 +95,7 @@ The image sets ``py3plex`` as the entrypoint, so you can run CLI commands direct
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
-Compose commands are slightly more verbose but easier to repeat. Use ``docker compose`` if available; fall back to ``docker-compose`` (v1) on older setups:
+Compose commands are slightly more verbose but easier to repeat:
 
 .. code-block:: bash
 
@@ -105,8 +107,6 @@ Compose commands are slightly more verbose but easier to repeat. Use ``docker co
 
     # Show help
     docker compose run --rm py3plex help
-
-    # Note: On older Docker versions, use: docker-compose run --rm py3plex help
 
 Working with Files
 ------------------
