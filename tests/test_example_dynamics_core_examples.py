@@ -5,7 +5,6 @@ import types
 from pathlib import Path
 
 import networkx as nx
-import pytest
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "examples" / "advanced" / "example_dynamics_core.py"
