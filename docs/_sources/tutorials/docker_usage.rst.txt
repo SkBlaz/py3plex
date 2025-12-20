@@ -49,11 +49,11 @@ Using Docker Compose
 
 .. code-block:: bash
 
-    # Build using docker-compose
-    docker-compose build
+    # Build using docker compose
+    docker compose build
 
     # Force rebuild
-    docker-compose build --no-cache
+    docker compose build --no-cache
 
 Running Commands
 ----------------
@@ -80,18 +80,18 @@ The Docker container is set up with ``py3plex`` as the entrypoint, so you can ru
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
-With docker-compose, commands are slightly more verbose but easier to manage:
+With docker compose, commands are slightly more verbose but easier to manage:
 
 .. code-block:: bash
 
     # Show version
-    docker-compose run --rm py3plex --version
+    docker compose run --rm py3plex --version
 
     # Run self-test
-    docker-compose run --rm py3plex selftest -v
+    docker compose run --rm py3plex selftest -v
 
     # Show help
-    docker-compose run --rm py3plex help
+    docker compose run --rm py3plex help
 
 Working with Files
 ------------------
@@ -122,13 +122,13 @@ Mounting Volumes
     # On Windows (CMD)
     docker run --rm -v %cd%/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
 
-**With docker-compose:**
+**With docker compose:**
 
 The ``docker-compose.yml`` file already configures volume mounting from ``./data`` to ``/data``, so you can simply:
 
 .. code-block:: bash
 
-    docker-compose run --rm py3plex create --nodes 100 --layers 3 --output /data/network.edgelist
+    docker compose run --rm py3plex create --nodes 100 --layers 3 --output /data/network.edgelist
 
 Complete Workflow Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~

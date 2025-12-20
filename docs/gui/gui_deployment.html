@@ -243,10 +243,10 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <span class="nb">export</span><span class="w"> </span><span class="nv">SECRET_KEY</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import secrets; print(secrets.token_hex(32))&#39;</span><span class="k">)</span>
 
 <span class="c1"># Start services</span>
-docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 
 <span class="c1"># Check logs</span>
-docker-compose<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>gui
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>gui
 </pre></div>
 </div>
 </section>

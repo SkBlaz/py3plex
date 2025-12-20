@@ -44,7 +44,7 @@
 
 \usepackage[Bjarne]{fncychap}
 \usepackage{sphinx}
-
+\sphinxsetup{verbatimhintsturnover=false}
 \fvset{fontsize=auto}
 \usepackage{geometry}
 
@@ -71,7 +71,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Dec 19, 2025}
+\date{Dec 20, 2025}
 \release{1.0.2}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -76365,8 +76365,7 @@ docker\PYG{+w}{ }compose\PYG{+w}{ }build
 \PYG{c+c1}{\PYGZsh{} Force rebuild}
 docker\PYG{+w}{ }compose\PYG{+w}{ }build\PYG{+w}{ }\PYGZhy{}\PYGZhy{}no\PYGZhy{}cache
 
-\PYG{c+c1}{\PYGZsh{} If you only have docker\PYGZhy{}compose v1 installed:}
-\PYG{c+c1}{\PYGZsh{} docker\PYGZhy{}compose build}
+\PYG{c+c1}{\PYGZsh{} Note: On older Docker versions, use: docker\PYGZhy{}compose build}
 \end{sphinxVerbatim}
 
 
@@ -76408,8 +76407,7 @@ docker\PYG{+w}{ }compose\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}\PYGZhy{}rm\PYG{+w}{ }
 \PYG{c+c1}{\PYGZsh{} Show help}
 docker\PYG{+w}{ }compose\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}\PYGZhy{}rm\PYG{+w}{ }py3plex\PYG{+w}{ }\PYG{n+nb}{help}
 
-\PYG{c+c1}{\PYGZsh{} If you only have docker\PYGZhy{}compose v1 installed, swap the command name:}
-\PYG{c+c1}{\PYGZsh{} docker\PYGZhy{}compose run \PYGZhy{}\PYGZhy{}rm py3plex help}
+\PYG{c+c1}{\PYGZsh{} Note: On older Docker versions, use: docker\PYGZhy{}compose run \PYGZhy{}\PYGZhy{}rm py3plex help}
 \end{sphinxVerbatim}
 
 
