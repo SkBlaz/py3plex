@@ -19,11 +19,11 @@ Fixing PDF generation artifacts and Docker chapter inconsistencies as specified 
 
 **Changes:**
 - Added `verbatimwrapslines=false` to Sphinx LaTeX setup
-  - **Effect:** Disables line wrapping in code blocks, preventing "˓→" wrap continuation markers
+  - **Effect:** Disables line wrapping in code blocks, preventing wrap continuation markers (U+02D3 U+2192)
 - Added `verbatimvisiblespace=false` to Sphinx LaTeX setup
-  - **Effect:** Prevents visible-space markers "␣" from appearing in code blocks
+  - **Effect:** Prevents visible-space markers (U+2423) from appearing in code blocks
 - Existing setting `verbatimhintsturnover=false` retained
-  - **Effect:** Removes "(continues on next page)" markers from code blocks and tables
+  - **Effect:** Removes page continuation markers from code blocks and tables
 
 **Impact:** All 293 code blocks across the book (Python, bash, text, BibTeX, YAML, Dockerfile, nginx) will now render without wrap markers or visible-space indicators in the PDF.
 
@@ -38,9 +38,9 @@ Fixing PDF generation artifacts and Docker chapter inconsistencies as specified 
 - Added `\usepackage{fancyvrb}` to LaTeX preamble
   - **Effect:** Better control over verbatim environments, disabling hyphenation in code blocks
 - Added `\DeclareUnicodeCharacter{FFFE}{}` to LaTeX preamble
-  - **Effect:** Handles Unicode soft-hyphen character U+FFFE to prevent "￾" artifacts in extracted text
+  - **Effect:** Handles Unicode soft-hyphen character U+FFFE to prevent artifacts in extracted text
 
-**Impact:** Eliminates soft-hyphen and invisible-break artifacts that show up as "￾" in PDF text layer.
+**Impact:** Eliminates soft-hyphen and invisible-break artifacts that show up in PDF text layer.
 
 ---
 
@@ -159,10 +159,10 @@ To verify these fixes:
 3. **Verify artifacts eliminated:**
    - Extract PDF text layer: `pdftotext _build/latex/py3plex_book.pdf`
    - Check for absence of:
-     - "˓→" (wrap continuation markers)
-     - "␣" (visible-space markers)
-     - "￾" (soft-hyphen artifacts)
-     - Unwanted "(continues on next page)" in code blocks
+     - Wrap continuation markers (U+02D3 U+2192)
+     - Visible-space markers (U+2423)
+     - Soft-hyphen artifacts (U+FFFE)
+     - Unwanted page continuation text in code blocks
 
 4. **Verify Docker chapter consistency:**
    - Check all port references are 8000 (not 5000)
@@ -173,7 +173,7 @@ To verify these fixes:
 
 ## Notes
 
-- **"(continues on next page)" markers:** These have been disabled for code blocks and tables. If they are needed elsewhere, the setting can be refined.
+- **Page continuation markers:** These have been disabled for code blocks and tables. If they are needed elsewhere, the setting can be refined.
 - **Docker Compose v2 vs v1:** The book correctly uses v2 (`docker compose`) with an explanatory note for users with older Docker versions.
 - **Line wrapping in code:** Disabled to prevent markers. Long lines in code blocks will now extend beyond margins or require manual breaking in the source.
 
@@ -184,7 +184,7 @@ To verify these fixes:
 All requested fixes have been applied:
 - ✅ Code-wrap artifacts eliminated
 - ✅ Soft-hyphen artifacts handled
-- ✅ "(continues on next page)" markers removed from code
+- ✅ Page continuation markers removed from code
 - ✅ Docker Compose command consistency verified (already correct)
 - ✅ Version tag consistency fixed
 - ✅ GUI/nginx port mismatch resolved
