@@ -76,12 +76,19 @@ latex_elements = {
     'preamble': r'''
         \usepackage{amsmath}
         \usepackage{amssymb}
+        % Disable hyphenation in verbatim/code blocks to prevent soft-hyphen artifacts
+        \usepackage{fancyvrb}
+        % Ensure proper UTF-8 handling to prevent ￾ artifacts
+        \DeclareUnicodeCharacter{FFFE}{}
     ''',
     'figure_align': 'htbp',
     # Set proper table of contents depth for PDF
     'extraclassoptions': 'openany,oneside',
-    # Prevent "(continues on next page)" markers in code blocks and tables
-    'sphinxsetup': 'verbatimhintsturnover=false',
+    # Prevent "(continues on next page)" markers and wrap indicators in code blocks and tables
+    # verbatimhintsturnover=false: removes "(continues on next page)"
+    # verbatimwrapslines=false: disables line wrapping (prevents ˓→ markers)
+    # verbatimvisiblespace=false: prevents ␣ visible-space markers
+    'sphinxsetup': 'verbatimhintsturnover=false, verbatimwrapslines=false, verbatimvisiblespace=false',
 }
 
 latex_documents = [
