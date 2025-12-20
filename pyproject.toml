@@ -99,7 +99,7 @@ arrow = [
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"
-Documentation = "https://py3plex.readthedocs.io"
+Documentation = "https://skblaz.github.io/py3plex/"
 Repository = "https://github.com/SkBlaz/py3plex"
 "Bug Tracker" = "https://github.com/SkBlaz/py3plex/issues"
 

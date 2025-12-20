@@ -47,7 +47,7 @@ Quick Start:
     ...     .to_pandas()
     ... )
 
-For detailed documentation, see: https://py3plex.readthedocs.io
+For detailed documentation, see: https://skblaz.github.io/py3plex/
 """
 
 # Version information

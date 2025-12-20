@@ -16,7 +16,7 @@ Overview of the py3plex project, with pointers on how to contribute, cite, and s
 * GitHub repository: https://github.com/SkBlaz/py3plex
 * Issue tracker: https://github.com/SkBlaz/py3plex/issues
 * PyPI package: https://pypi.org/project/py3plex/
-* Documentation: https://py3plex.readthedocs.io/
+* Documentation: https://skblaz.github.io/py3plex/
 
 Getting Involved
 ----------------
