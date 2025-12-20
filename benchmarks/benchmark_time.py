@@ -1,9 +1,14 @@
 #from pymnet import *
-from py3plex.visualization.multilayer import draw, draw_multiedges, draw_multilayer_default, models
+from py3plex.visualization.multilayer import draw_multiedges, draw_multilayer_default
+from py3plex.visualization.drawing_machinery import draw
 from py3plex.visualization.colors import colors_default
 from py3plex.core import multinet
 import time
 import matplotlib.pyplot as plt
+try:
+    from py3plex.visualization import multilayer_models as models
+except ImportError:
+    models = None
 
 
 def py3plex_visualization(network):
@@ -56,6 +61,9 @@ if __name__ == "__main__":
     import numpy as np
     import itertools
     import pandas as pd
+
+    if models is None:
+        raise ImportError("Visualization multilayer models are not available")
 
     number_of_nodes = np.arange(5, 200, 15).tolist()
     number_of_edges = reversed([x + 1 for x in list(range(8))])
