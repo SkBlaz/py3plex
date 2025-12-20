@@ -202,7 +202,7 @@ def test_main_path_runs_with_stubbed_models_and_writes_csv(monkeypatch):
 
     # Execute the module as a script
     monkeypatch.delitem(sys.modules, "benchmarks.benchmark_time", raising=False)
-    ns = runpy.run_module("benchmarks.benchmark_time", run_name="__main__")
+    runpy.run_module("benchmarks.benchmark_time", run_name="__main__")
 
     # Two combinations produced, one datapoint per combination
     assert calls["frames"] and len(calls["frames"][0]) == 2
