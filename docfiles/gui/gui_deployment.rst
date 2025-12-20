@@ -114,10 +114,10 @@ Start with:
     export SECRET_KEY=$(python -c 'import secrets; print(secrets.token_hex(32))')
 
     # Start services
-    docker-compose up -d
+    docker compose up -d
 
     # Check logs
-    docker-compose logs -f gui
+    docker compose logs -f gui
 
 Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~

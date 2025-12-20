@@ -73,6 +73,13 @@ Running Containers
 Docker Compose
 --------------
 
+.. note::
+   
+   **Docker Compose Command:**
+   This book uses the modern ``docker compose`` command (Docker CLI plugin, available since Docker 20.10).
+   If you have an older Docker version, you may need to use the legacy ``docker-compose`` command instead.
+   The configuration file is always named ``docker-compose.yml`` regardless of which command you use.
+
 GUI Deployment
 ~~~~~~~~~~~~~~
 
@@ -437,7 +444,7 @@ Fix permissions safely by matching container user to host user:
     # If container runs as user 1000:1000 (typical)
     sudo chown -R 1000:1000 ./data
 
-**Method 3: Use docker-compose with user mapping**
+**Method 3: Use docker compose with user mapping**
 
 .. code-block:: yaml
 
@@ -447,7 +454,7 @@ Fix permissions safely by matching container user to host user:
         volumes:
           - ./data:/data
 
-Then run: ``UID=$(id -u) GID=$(id -g) docker-compose up``
+Then run: ``UID=$(id -u) GID=$(id -g) docker compose up``
 
 .. warning::
    
