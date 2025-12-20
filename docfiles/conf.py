@@ -146,6 +146,9 @@ latex_elements = {
 
     # Use htbp for more flexible figure placement (H can cause issues)
     'figure_align': 'htbp',
+    
+    # Prevent "(continues on next page)" markers in code blocks and tables
+    'sphinxsetup': 'verbatimhintsturnover=false',
 }
 
 # Show URLs as footnotes for cleaner appearance
