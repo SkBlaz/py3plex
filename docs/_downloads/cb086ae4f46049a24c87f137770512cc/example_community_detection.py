@@ -12,6 +12,10 @@ Prerequisites:
 - Optional: Infomap binary on PATH for the Infomap section
 - Optional: matplotlib for saving plots (Agg backend is used)
 
+Quickstart (from repo root):
+- python -m pip install -e ".[dev]"            # install py3plex + optional extras
+- python docs/_downloads/cb086ae4f46049a24c87f137770512cc/example_community_detection.py --skip_infomap
+
 SKIP_CI: external_deps - Requires specific dataset files (cora.mat)
 """
 

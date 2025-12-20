@@ -621,6 +621,17 @@
 └── test_utils.py                   # Utility function tests
 </pre></div>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Quick dev loop (repo root)</p>
+<p>Run these once you have Python 3.8+ available; they stick to the pyproject defaults and avoid the slower property/slow markers until you opt in.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install -e <span class="s2">&quot;.[dev]&quot;</span>  <span class="c1"># editable install + pytest/ruff</span>
+python -m compileall -q py3plex      <span class="c1"># import smoke check</span>
+pytest tests/test_algorithms_init.py tests/test_utils.py --maxfail<span class="o">=</span><span class="m">1</span>
+ruff check py3plex tests             <span class="c1"># uses tool.ruff config</span>
+</pre></div>
+</div>
+<p>Full suite? Install extras (e.g., <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[dev,tests,algos]&quot;</span></code>) so community-detection and property tests have their optional deps. Use markers (<code class="docutils literal notranslate"><span class="pre">-m</span> <span class="pre">&quot;not</span> <span class="pre">slow&quot;</span></code>) if you want to keep runtimes predictable.</p>
+</div>
 </section>
 <section id="test-patterns">
 <h3>Test Patterns<a class="headerlink" href="#test-patterns" title="Link to this heading"></a></h3>

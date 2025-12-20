@@ -147,6 +147,20 @@
   <section id="citation-and-references">
 <h1>Citation and References<a class="headerlink" href="#citation-and-references" title="Link to this heading"></a></h1>
 <p>If you use py3plex in your research, please <strong>cite our work</strong>. Always include the primary journal article, add the conference paper when you mention design or scalability, and pair py3plex with the original algorithm papers whenever you rely on specific built-ins.</p>
+<div class="admonition tip">
+<p class="admonition-title">Copy/paste fast</p>
+<p>Need the BibTeX without scrolling? From the repository root:</p>
+<pre><code>pip install cffconvert
+cffconvert -f bibtex -o -              # emits BibTeX for the primary paper
+cffconvert -f apa -o -                 # emits formatted APA text
+python - &lt;&lt;'PY'                        # quick plain-text citation (no extra deps)
+print("Škrlj, B., Kralj, J., &amp; Lavrač, N. (2019). Py3plex toolkit for visualization "
+      "and analysis of multilayer networks. Applied Network Science, 4(1), 94. "
+      "https://doi.org/10.1007/s41109-019-0203-7")
+PY
+</code></pre>
+<p><code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code> lives in the repository root for automation (CI, Zenodo, paper templates).</p>
+</div>
 <section id="how-to-cite">
 <h2>How to cite<a class="headerlink" href="#how-to-cite" title="Link to this heading"></a></h2>
 <ul class="simple">

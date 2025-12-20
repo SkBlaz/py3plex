@@ -188,13 +188,17 @@
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex/gui
 
-<span class="c1"># Copy environment configuration</span>
-cp<span class="w"> </span>.env.example<span class="w"> </span>.env
-
-<span class="c1"># Start all services (wait for containers to report &quot;healthy&quot;)</span>
+<span class="c1"># Start all services (creates .env if missing; wait for &quot;healthy&quot;)</span>
 make<span class="w"> </span>up
 
-<span class="c1"># Open browser to http://localhost:8080</span>
+<span class="c1"># Quick health check</span>
+curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8080/api/health
+
+<span class="c1"># Watch logs (optional, helps spot readiness/errors)</span>
+make<span class="w"> </span>logs
+
+<span class="c1"># Stop services when finished</span>
+make<span class="w"> </span>down
 </pre></div>
 </div>
 <p><strong>Option 2 — Install from source (contributors):</strong></p>
@@ -211,7 +215,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 make<span class="w"> </span>up
 </pre></div>
 </div>
-<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>. See <a class="reference internal" href="gui_deployment.html"><span class="doc">GUI Deployment Guide</span></a> for detailed setup instructions and troubleshooting.</p>
+<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>. For custom environment values, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">setup</span></code> once to copy <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> to <code class="docutils literal notranslate"><span class="pre">.env</span></code> before <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">up</span></code>. See <a class="reference internal" href="gui_deployment.html"><span class="doc">GUI Deployment Guide</span></a> for detailed setup instructions and troubleshooting.</p>
 </section>
 <section id="gui-actions-vs-py3plex-apis">
 <h2>GUI Actions vs py3plex APIs<a class="headerlink" href="#gui-actions-vs-py3plex-apis" title="Link to this heading"></a></h2>

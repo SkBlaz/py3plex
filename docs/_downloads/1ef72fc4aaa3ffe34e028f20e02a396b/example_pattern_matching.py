@@ -7,6 +7,10 @@ graph motifs, paths, and subgraph patterns in multilayer networks.
 
 The pattern matching API enables declarative specification of structural
 patterns that should be found in the network.
+
+Quickstart (from repo root):
+- python -m pip install -e ".[dev]"   # install DSL + dependencies
+- python docs/_downloads/1ef72fc4aaa3ffe34e028f20e02a396b/example_pattern_matching.py
 """
 
 from py3plex.core import multinet
@@ -242,7 +246,7 @@ def example_result_projections():
     print(f"   Edges: {subgraph.number_of_edges()}")
 
 
-if __name__ == "__main__":
+def main():
     print("\n" + "=" * 60)
     print("Pattern Matching API Examples")
     print("=" * 60)
@@ -260,3 +264,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("All Examples Completed!")
     print("=" * 60)
+
+
+if __name__ == "__main__":
+    main()

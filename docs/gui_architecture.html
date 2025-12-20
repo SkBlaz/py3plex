@@ -225,6 +225,25 @@
 </pre></div>
 </div>
 </section>
+<section id="local-dev-quickstart">
+<h2>Local Dev Quickstart<a class="headerlink" href="#local-dev-quickstart" title="Link to this heading"></a></h2>
+<p>Run the full GUI stack (frontend + API + worker + Redis + nginx) locally with Docker Compose and the provided Makefile wrappers.</p>
+<ol class="arabic simple">
+<li><p>From the repository root: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">gui</span></code>.</p></li>
+<li><p>Start everything (creates <code class="docutils literal notranslate"><span class="pre">.env</span></code> from the example on first run):</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>up
+</pre></div>
+</div>
+<p>Open <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code> for the UI and <code class="docutils literal notranslate"><span class="pre">http://localhost:5555</span></code> for Flower. Tail logs with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">logs</span></code>; stop/clean with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">down</span></code> (volumes removed) or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code> (also clears <code class="docutils literal notranslate"><span class="pre">data/</span></code> uploads/artifacts).</p>
+<div class="admonition tip">
+<p class="admonition-title">Sanity checks</p>
+<ul class="simple">
+<li><p>Verify API health from the host: <code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">http://localhost:8080/api/health</span></code>.</p></li>
+<li><p>Run backend tests inside the stack: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test-api</span></code>.</p></li>
+</ul>
+</div>
+</section>
 <section id="data-flow">
 <h2>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading"></a></h2>
 <p>Two primary flows drive the application: uploading/parsing graphs and dispatching analysis jobs to Celery workers. Each flow returns an identifier (<code class="docutils literal notranslate"><span class="pre">graph_id</span></code> or <code class="docutils literal notranslate"><span class="pre">job_id</span></code>) so the frontend can poll for status and fetch artifacts without keeping state client-side.</p>

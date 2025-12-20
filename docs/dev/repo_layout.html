@@ -141,13 +141,24 @@
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
   <section id="repository-layout">
 <h1>Repository Layout<a class="headerlink" href="#repository-layout" title="Link to this heading"></a></h1>
 <p>Use this guide as a map to the py3plex repository so you can quickly find code, docs, tests, and supporting assets.
 Start with the tree below, then jump to the section that matches what you need.</p>
+<div class="admonition tip">
+<p class="admonition-title">Fast orientation for contributors</p>
+<p>From a clean checkout in the repo root:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>help<span class="w">             </span><span class="c1"># list available dev tasks</span>
+make<span class="w"> </span>setup<span class="w">            </span><span class="c1"># create .venv and base deps</span>
+make<span class="w"> </span>dev-install<span class="w">       </span><span class="c1"># editable install with dev extras</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_algorithms_init.py<span class="w"> </span>tests/test_utils.py<span class="w"> </span>--maxfail<span class="o">=</span><span class="m">1</span><span class="w"> </span>-q<span class="w">  </span><span class="c1"># quick smoke</span>
+</pre></div>
+</div>
+<p>Need docs? Use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code> (outputs under <code class="docutils literal notranslate"><span class="pre">docfiles/_build/html</span></code>).</p>
+</div>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>py3plex/
@@ -270,8 +281,8 @@ sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w
 </div>
 <p><strong>Running tests (from repository root):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nb">test</span><span class="w">             </span><span class="c1"># Run all tests (default environment)</span>
-make<span class="w"> </span>test-fast<span class="w">        </span><span class="c1"># Skip slow tests</span>
 make<span class="w"> </span>coverage<span class="w">         </span><span class="c1"># With coverage report</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_algorithms_init.py<span class="w"> </span>tests/test_utils.py<span class="w"> </span>--maxfail<span class="o">=</span><span class="m">1</span><span class="w"> </span>-q<span class="w">  </span><span class="c1"># Fast smoke subset</span>
 python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_core.py<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;degree&quot;</span><span class="w">  </span><span class="c1"># Targeted run</span>
 </pre></div>
 </div>

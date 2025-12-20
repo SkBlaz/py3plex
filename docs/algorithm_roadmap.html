@@ -149,6 +149,16 @@
 <h1>Algorithm Roadmap<a class="headerlink" href="#algorithm-roadmap" title="Link to this heading"></a></h1>
 <p>This page provides a <strong>comprehensive overview</strong> of all algorithms implemented in py3plex, organized by category and showing relationships between different methods.</p>
 <p><strong>Purpose:</strong> Help you quickly find the right algorithm for your multilayer network analysis task.</p>
+<div class="admonition tip">
+<p class="admonition-title">Reproduce locally</p>
+<p>Rebuild this page and browse the algorithm listings locally in a few steps:</p>
+<pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"  # installs docs + dev tooling
+make docs  # regenerates docs/algorithm_roadmap.html from docfiles/algorithm_roadmap.rst
+</code></pre>
+<p>Runtime only: <code>pip install py3plex</code>. Need Infomap? Point <code>binary_path</code> to your Infomap binary when using the wrapper.</p>
+</div>
 <section id="notation-and-assumptions">
 <h2>Notation and assumptions<a class="headerlink" href="#notation-and-assumptions" title="Link to this heading"></a></h2>
 <p>Unless otherwise specified:</p>

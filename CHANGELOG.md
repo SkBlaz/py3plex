@@ -53,3 +53,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All placeholder brackets `[...]` removed from reader-facing content
 - No broken Sphinx references remaining
 
+### Developer Experience
+
+#### Added
+- **Contributor Quickstart**: Added ready-to-run local commands so new contributors can get productive fast
+  - `make setup` to create `.venv` and install the project in editable mode
+  - `make lint` for ruff + isort + black + mypy (uses venv tools when present)
+  - `make test` for pytest with HTML coverage report
+  - `make docs` / `make docs-pdf` for HTML/PDF builds from `docfiles/`
+- **CI Parity Entrypoints**: Documented `make ci` (lint + tests) and `make test-all` (lint + tests + benchmarks) as single commands to mirror CI locally

@@ -141,12 +141,22 @@
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
   <section id="api-documentation">
 <h1>API Documentation<a class="headerlink" href="#api-documentation" title="Link to this heading"></a></h1>
 <p>This section contains the complete API documentation for py3plex, automatically generated from docstrings. The modules listed below anchor high-traffic entry points; the full tree produced by <code class="docutils literal notranslate"><span class="pre">sphinx-apidoc</span></code> lives under <code class="docutils literal notranslate"><span class="pre">AUTOGEN_results</span></code> after a build. Keep the order stable so cross-references into the generated tree remain predictable, and avoid hand-editing anything under <code class="docutils literal notranslate"><span class="pre">AUTOGEN_results</span></code> because it is overwritten on regeneration.</p>
+<div class="admonition tip">
+<p class="admonition-title">Fast path</p>
+<p>Build and browse the API docs locally without memorizing Sphinx flags:</p>
+<pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"  # pulls in Sphinx + extensions
+make docs  # writes HTML to docfiles/_build/html
+</code></pre>
+<p>Need to refresh only the API stubs? Run <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">docfiles</span> <span class="pre">&amp;&amp;</span> <span class="pre">sphinx-apidoc</span> <span class="pre">-o</span> <span class="pre">AUTOGEN_results</span> <span class="pre">-f</span> <span class="pre">../py3plex</span></code>, then rebuild.</p>
+</div>
 <section id="how-to-regenerate">
 <h2>How to regenerate<a class="headerlink" href="#how-to-regenerate" title="Link to this heading"></a></h2>
 <p>Prerequisites: py3plex importable in the current environment and <code class="docutils literal notranslate"><span class="pre">sphinx</span></code>/<code class="docutils literal notranslate"><span class="pre">sphinx-apidoc</span></code> available on <code class="docutils literal notranslate"><span class="pre">PATH</span></code> (e.g., in an activated virtual environment).</p>

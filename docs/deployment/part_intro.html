@@ -170,6 +170,29 @@
 <p><strong>Docker</strong> keeps environments identical across machines, avoiding “works on my machine” issues. Use it when you need the same environment on laptops, CI, and servers.</p>
 <p>The <strong>performance</strong> chapter covers memory management and optimization for large networks once you have a working workflow. It is most useful after you have a repeatable pipeline and want to speed it up or shrink memory use.</p>
 <p>Most readers start with <a class="reference internal" href="cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> to script or containerize workflows, then move to <a class="reference internal" href="performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> to tune runtime and memory as datasets grow.</p>
+<div class="admonition note">
+<p class="admonition-title">Pick a path (copy/paste ready)</p>
+<ul class="simple">
+<li><p><strong>Local dev</strong> (editable install, tests, lint): use the block below to stand up a venv once and reuse it.</p></li>
+<li><p><strong>Minimal CLI</strong> (no dev extras): <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">py3plex</span></code> then run the same smoke checks.</p></li>
+<li><p><strong>Containers</strong>: jump to <a class="reference internal" href="cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> for a zero-setup, reproducible environment.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Editable install with dev tools + quick smoke</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span><span class="w"> </span><span class="c1"># CLI + pytest/ruff/mypy</span>
+
+<span class="nv">DATA_DIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/data&quot;</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DATA_DIR</span>
+
+py3plex<span class="w"> </span>selftest
+py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">30</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA_DIR</span><span class="s2">/demo.edgelist&quot;</span>
+py3plex<span class="w"> </span>stats<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA_DIR</span><span class="s2">/demo.edgelist&quot;</span><span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA_DIR</span><span class="s2">/demo-stats.json&quot;</span>
+</pre></div>
+</div>
+<p>Keep outputs in <code class="docutils literal notranslate"><span class="pre">$DATA_DIR</span></code> to avoid permission issues and to reuse the same folder across repeated runs or Docker mounts.</p>
+</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p><strong>Deployment checklist:</strong></p>

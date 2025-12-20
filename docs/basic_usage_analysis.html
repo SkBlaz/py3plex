@@ -147,6 +147,20 @@
   <section id="network-analysis">
 <h1>Network Analysis<a class="headerlink" href="#network-analysis" title="Link to this heading"></a></h1>
 <p>This guide shows how to inspect multilayer networks, extract subnetworks, and reuse NetworkX algorithms on the encoded node-layer graph. Begin with the encoding conventions, then iterate, subset, and analyze.</p>
+<div class="admonition tip">
+<p class="admonition-title">Fast start (copy/paste)</p>
+<p>Bring up a reproducible shell, install editable deps, and sanity-check the bundled dataset in one block:</p>
+<pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+python - &lt;&lt;'PY'
+from py3plex.datasets import load_aarhus_cs
+net = load_aarhus_cs()
+net.basic_stats()  # prints node/edge counts and layers
+PY
+</code></pre>
+<p>If you are running examples outside the repo root, build dataset paths via <code class="docutils literal notranslate"><span class="pre">py3plex.datasets.get_data_dir()</span></code> instead of relying on relative paths.</p>
+</div>
 <section id="understanding-the-data-model">
 <h2>Understanding the Data Model<a class="headerlink" href="#understanding-the-data-model" title="Link to this heading"></a></h2>
 <p>Before running algorithms, know how py3plex encodes multilayer graphs:</p>
@@ -162,10 +176,13 @@
 <h3>Basic Iteration<a class="headerlink" href="#basic-iteration" title="Link to this heading"></a></h3>
 <p>Iterating over nodes and edges is the foundation of most analysis tasks. The example loads the bundled multilayer edgelist, then walks through edges and nodes to reveal how tuples and attributes appear in practice:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_dir</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="c1"># Load a multilayer network (ships with the repository)</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_data_dir</span><span class="p">(),</span> <span class="s2">&quot;multiedgelist.txt&quot;</span><span class="p">)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;../datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">data_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Iterate over all edges</span>
 <span class="c1"># Each edge is a tuple: (source_node, target_node, attributes_dict)</span>
@@ -285,10 +302,13 @@ Node: (&#39;6&#39;, &#39;2&#39;), Layer: 2
 <p>Here’s a complete workflow for analyzing a multilayer network end-to-end:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_dir</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="c1"># 1. Load and inspect</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_data_dir</span><span class="p">(),</span> <span class="s2">&quot;multiedgelist.txt&quot;</span><span class="p">)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;../datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">data_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>  <span class="c1"># prints node/edge counts and layer summary</span>
 
 <span class="c1"># 2. Extract and compare layers (names aligned with returned graphs)</span>

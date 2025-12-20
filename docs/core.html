@@ -162,6 +162,15 @@
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Quickstart (copy-paste)</p>
+<ol class="arabic simple">
+<li><p>Install from the repo root so the CLI is available: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> (or <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[dev]&quot;</span></code> if you want tests/linters).</p></li>
+<li><p>Generate a small multilayer sample: <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">create</span> <span class="pre">--nodes</span> <span class="pre">50</span> <span class="pre">--layers</span> <span class="pre">3</span> <span class="pre">--output</span> <span class="pre">sample.edgelist</span></code>.</p></li>
+<li><p>Sanity-check the file before loading: <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">check</span> <span class="pre">sample.edgelist</span></code>, then inspect: <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">load</span> <span class="pre">sample.edgelist</span> <span class="pre">--info</span> <span class="pre">--stats</span></code>.</p></li>
+</ol>
+<p>No sample file? Swap in the bundled dataset to skip I/O: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.datasets</span> <span class="pre">import</span> <span class="pre">load_aarhus_cs;</span> <span class="pre">network</span> <span class="pre">=</span> <span class="pre">load_aarhus_cs()</span></code>.</p>
+</div>
 </section>
 <section id="supported-input-formats">
 <h2>Supported Input Formats<a class="headerlink" href="#supported-input-formats" title="Link to this heading"></a></h2>

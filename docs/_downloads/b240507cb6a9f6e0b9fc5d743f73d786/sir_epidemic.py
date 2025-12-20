@@ -5,6 +5,10 @@ Shows how to create a small multilayer network, configure `SIRDynamics`, run a
 reproducible simulation, and visualize prevalence curves. Prerequisites:
 py3plex installed with dynamics extras, plus numpy, networkx; matplotlib is
 optional for plots (Agg backend).
+
+Quickstart (from repo root):
+- python -m pip install -e ".[dev]"        # install py3plex + dependencies
+- python docs/_downloads/b240507cb6a9f6e0b9fc5d743f73d786/sir_epidemic.py
 """
 
 from __future__ import annotations

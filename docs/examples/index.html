@@ -500,6 +500,12 @@ python<span class="w"> </span>examples/case_studies/transportation_networks.py
 </section>
 <section id="running-examples">
 <h2>Running Examples<a class="headerlink" href="#running-examples" title="Link to this heading"></a></h2>
+<p><strong>Quickstart (from repo root)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span><span class="w"> </span><span class="c1"># install py3plex + example deps</span>
+python<span class="w"> </span>examples/getting_started/tutorial_10min.py<span class="w">   </span><span class="c1"># smoke-test the install</span>
+</pre></div>
+</div>
+<p>If you want headless plots, set <code class="docutils literal notranslate"><span class="pre">MPLBACKEND=Agg</span></code> (most examples already do this). All paths below are relative to the repository root:</p>
 <p>All examples can be run directly with Python from the repository root (paths below are relative to that root and assume an active virtual environment):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run DSL builder API examples (recommended starting point)</span>
 python<span class="w"> </span>examples/network_analysis/example_dsl_builder_api.py

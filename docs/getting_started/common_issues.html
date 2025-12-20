@@ -188,9 +188,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="common-issues-and-troubleshooting">
+<section id="common-issues-and-troubleshooting">
 <h1>Common Issues and Troubleshooting<a class="headerlink" href="#common-issues-and-troubleshooting" title="Link to this heading"></a></h1>
 <p>Quick fixes for frequent issues when getting started with py3plex. Work through the sections in order (installation → data loading → visualization → performance → algorithms). Apply one fix at a time, then rerun your script before trying the next so you know which change helped.</p>
+<section id="quick-sanity-checks-try-these-first">
+<h2>Quick Sanity Checks (try these first)<a class="headerlink" href="#quick-sanity-checks-try-these-first" title="Link to this heading"></a></h2>
+<p>Before deep debugging, run these from a fresh shell to catch missing dependencies or environment issues fast:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w">                 </span><span class="c1"># recent pip avoids many build errors</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>show<span class="w"> </span>py3plex<span class="w">                  </span><span class="c1"># confirm version/path</span>
+py3plex<span class="w"> </span>--version<span class="w">                           </span><span class="c1"># verify CLI entrypoint is on PATH</span>
+py3plex<span class="w"> </span>selftest<span class="w">                            </span><span class="c1"># built-in smoke test surfaces missing extras</span>
+</pre></div>
+</div>
+<p>Headless/CI runners: set <code class="docutils literal notranslate"><span class="pre">MPLBACKEND=Agg</span></code> before running examples or docs to avoid GUI/display errors.</p>
+</section>
 <section id="installation-issues">
 <h2>Installation Issues<a class="headerlink" href="#installation-issues" title="Link to this heading"></a></h2>
 <section id="no-module-named-numpy">

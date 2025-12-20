@@ -144,9 +144,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="multiplex-network-analysis">
+<section id="multiplex-network-analysis">
 <h1>Multiplex Network Analysis<a class="headerlink" href="#multiplex-network-analysis" title="Link to this heading"></a></h1>
 <p>Multiplex networks share the same node set across layers (e.g., friendship, collaboration, transport). Typical workflows either (a) aggregate information across layers into a single weighted projection or (b) operate only on selected layers or nodes where the layer context matters.</p>
+<div class="admonition tip">
+<p class="admonition-title">Fast start (copy/paste)</p>
+<p>Bring up an isolated env and smoke-test multiplex aggregation without chasing paths:</p>
+<pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+python - &lt;&lt;'PY'
+from py3plex.core import random_generators
+net = random_generators.random_multiplex_ER(n=50, l=3, p=0.1, directed=False)
+aggregated = net.aggregate_edges(metric="count", normalize_by="raw")
+print(f"aggregated edges: {aggregated.number_of_edges()}")
+PY
+</code></pre>
+<p>Run example scripts from the repository root so their relative paths resolve cleanly.</p>
+</div>
 <section id="network-aggregation">
 <h2>Network Aggregation<a class="headerlink" href="#network-aggregation" title="Link to this heading"></a></h2>
 <p>Aggregate edges across layers to obtain a single weighted network of base nodes. The example below builds a random multiplex graph, aggregates it twice with different normalization choices, and then inspects the resulting edge weights.</p>
@@ -203,7 +218,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_community_detection.py</span></code> – Community detection</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">example_new_multiplex_metrics.py</span></code> – New multiplex centrality and robustness metrics</p></li>
 </ul>
-<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
+<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">https://github.com/SkBlaz/py3plex/tree/master/examples</a></p>
 </section>
 </section>
 

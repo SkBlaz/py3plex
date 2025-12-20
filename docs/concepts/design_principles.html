@@ -211,6 +211,26 @@
 <li><p><strong>Debug unexpected behavior</strong> — understand why things work the way they do</p></li>
 <li><p><strong>Extend the library</strong> — add your own algorithms that fit naturally</p></li>
 </ul>
+<div class="admonition tip">
+<p class="admonition-title">Developer quickstart (copy/paste)</p>
+<ol class="arabic simple">
+<li><p>Install from the repo root so CLI and imports resolve correctly: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code></p></li>
+<li><p>Sanity-check the install with a bundled dataset (no external binaries required):</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python - &lt;&lt;<span class="s1">&#39;PY&#39;</span>
+from py3plex.datasets import load_aarhus_cs
+
+net = load_aarhus_cs()
+print(f<span class="s2">&quot;Design sanity check: nodes={net.node_count}, layers={net.layer_count}&quot;</span>)
+print(<span class="s2">&quot;First layer preview:&quot;</span>, net.layers[:2])
+PY
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>CLI head check (after editable install): <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">--help</span></code></p></li>
+</ol>
+<p>Tip: if you rely on algorithms that shell out to optional binaries (e.g., Infomap), pass their paths explicitly to avoid silent fallback.</p>
+</div>
 <section id="core-philosophy">
 <h2>Core Philosophy<a class="headerlink" href="#core-philosophy" title="Link to this heading"></a></h2>
 <section id="simple-off-the-shelf-functionality">

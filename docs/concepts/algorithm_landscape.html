@@ -196,9 +196,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="algorithm-landscape">
+<section id="algorithm-landscape">
 <h1>Algorithm Landscape<a class="headerlink" href="#algorithm-landscape" title="Link to this heading"></a></h1>
 <p>This guide provides a narrative overview of the algorithm families available in py3plex, highlighting when to use each type of algorithm for multilayer network analysis. It complements the API reference with plain-language guidance, trade-offs, and cues for multilayer specifics.</p>
+<div class="admonition tip">
+<p class="admonition-title">Quickstart (copy/paste)</p>
+<ol class="arabic simple">
+<li><p>Install from the repo root (gets CLI + deps): <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code></p></li>
+<li><p>Run a safe default (no external binaries, uses bundled data):</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python - &lt;&lt;<span class="s1">&#39;PY&#39;</span>
+from py3plex.datasets import load_aarhus_cs
+from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
+
+net = load_aarhus_cs()
+partition = louvain_multilayer(net, gamma=1.0, omega=0.5)
+
+print(f<span class="s2">&quot;Nodes: {net.node_count}, edges: {net.edge_count}, layers: {net.layer_count}&quot;</span>)
+print(<span class="s2">&quot;First 5 communities:&quot;</span>, list(partition.items())[:5])
+PY
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>CLI alternative (works after editable install): <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">community</span> <span class="pre">--help</span></code></p></li>
+</ol>
+<p>If you use algorithms that depend on external binaries (e.g., Infomap), pass the path explicitly to avoid silent fallback.</p>
+</div>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>py3plex provides algorithms in seven main categories that work on multilayer graphs encoded as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> pairs:</p>

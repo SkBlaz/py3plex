@@ -175,6 +175,16 @@
 <p><strong>Goal:</strong> Create multilayer networks from scratch or load them from files.</p>
 <p><strong>Prerequisites:</strong> Basic Python knowledge. For conceptual background, see <a class="reference internal" href="../concepts/py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a>.</p>
 <p>Start from the format you already have: add edges directly if you are prototyping, or load from files/dataframes when your data is already tabular. The examples below always build a <code class="docutils literal notranslate"><span class="pre">network</span></code> object you can reuse in later steps.</p>
+<div class="admonition tip">
+<p class="admonition-title">Copy/paste quickstart (no files needed)</p>
+<p>Get a ready-to-use network in one line so you can try any snippet immediately:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>  <span class="c1"># bundled dataset; no downloads</span>
+</pre></div>
+</div>
+<p>Prefer a tiny synthetic example? Use <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.datasets</span> <span class="pre">import</span> <span class="pre">make_random_multilayer</span></code> then <code class="docutils literal notranslate"><span class="pre">make_random_multilayer(n_nodes=20,</span> <span class="pre">n_layers=2,</span> <span class="pre">p=0.1)</span></code>.</p>
+</div>
 <section id="creating-networks-from-scratch">
 <h2>Creating Networks from Scratch<a class="headerlink" href="#creating-networks-from-scratch" title="Link to this heading"></a></h2>
 <p>Use these options when you want to assemble a small network interactively or generate synthetic structures.</p>
@@ -272,7 +282,7 @@ Nodes per layer:
 <h3>Load Edge Lists<a class="headerlink" href="#load-edge-lists" title="Link to this heading"></a></h3>
 <p>Most common format: one edge per line. The <code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> loader expects
 <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">source_layer</span> <span class="pre">target</span> <span class="pre">target_layer</span> <span class="pre">weight</span></code> (weight defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code> if omitted).</p>
-<p><strong>File format (stored as datasets/simple_multiplex.txt in the repository):</strong></p>
+<p><strong>File format</strong> (stored as <code class="docutils literal notranslate"><span class="pre">datasets/simple_multiplex.txt</span></code> in the repository root; copy this path or use your own file):</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Alice friends Bob friends 1.0
 Bob friends Carol friends 1.0
 Alice colleagues Bob colleagues 1.0
@@ -335,6 +345,7 @@ Alice colleagues Bob colleagues 1.0
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><strong>Dependency:</strong> requires <code class="docutils literal notranslate"><span class="pre">pandas</span></code>. Install if needed: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pandas</span></code>.</p>
 </section>
 <section id="load-from-json">
 <h3>Load from JSON<a class="headerlink" href="#load-from-json" title="Link to this heading"></a></h3>
@@ -384,6 +395,7 @@ arguments.</p>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Dependency:</strong> requires <code class="docutils literal notranslate"><span class="pre">networkx</span></code>. Install if needed: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">networkx</span></code>.</p>
 </section>
 <section id="loading-with-inter-layer-edges">
 <h3>Loading with Inter-layer Edges<a class="headerlink" href="#loading-with-inter-layer-edges" title="Link to this heading"></a></h3>

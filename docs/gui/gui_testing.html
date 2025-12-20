@@ -144,9 +144,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="gui-testing-guide">
+<section id="gui-testing-guide">
 <h1>GUI Testing Guide<a class="headerlink" href="#gui-testing-guide" title="Link to this heading"></a></h1>
 <p>Use this guide to verify the Py3plex GUI before merging or releasing. It covers automated CI runs and manual smoke tests.</p>
+<section id="minute-smoke-test">
+<h2>60-Second Smoke Test (fastest path)<a class="headerlink" href="#minute-smoke-test" title="Link to this heading"></a></h2>
+<p>Need a quick confidence check before pushing a PR? Run this minimal loop that mirrors CI defaults:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
+make<span class="w"> </span>up<span class="w"> </span><span class="c1"># creates .env automatically, builds, and starts the stack</span>
+curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8080/api/health
+make<span class="w"> </span>test-api<span class="w"> </span><span class="c1"># runs API pytest suite inside the container</span>
+make<span class="w"> </span>logs<span class="w"> </span><span class="c1"># tail if you need to debug failures</span>
+make<span class="w"> </span>down
+</pre></div>
+</div>
+<p><strong>Tip</strong>: Keep <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">logs</span></code> running in a split terminal for faster feedback while iterating.</p>
+</section>
 <section id="visual-interface-preview">
 <h2>Visual Interface Preview<a class="headerlink" href="#visual-interface-preview" title="Link to this heading"></a></h2>
 <p>The Py3plex GUI consists of several key pages that work together for network analysis:</p>
@@ -212,7 +225,15 @@
 </section>
 <section id="running-ci-tests-locally">
 <h3>Running CI Tests Locally<a class="headerlink" href="#running-ci-tests-locally" title="Link to this heading"></a></h3>
-<p>You can run the same tests locally (requires Docker Compose v2 and npm). Stop any existing GUI stack first so ports are free:</p>
+<p>You can run the same tests locally (requires Docker Compose v2 and npm). Stop any existing GUI stack first so ports are free. Prefer the <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> wrappers for repeatable commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
+make<span class="w"> </span>up<span class="w"> </span><span class="c1"># build + start all services</span>
+make<span class="w"> </span>test-api<span class="w"> </span><span class="c1"># mirrors CI API pytest run</span>
+make<span class="w"> </span>logs<span class="w"> </span><span class="c1"># optional: tail logs if something fails</span>
+make<span class="w"> </span>down
+</pre></div>
+</div>
+<p>If you need the exact CI steps instead of the wrappers:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
 
 <span class="c1"># API tests</span>

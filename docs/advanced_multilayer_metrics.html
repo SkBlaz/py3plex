@@ -199,6 +199,16 @@ Mutual information: 0.500
 Layer influence: 1.000
 </pre></div>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Reproduce locally</p>
+<p>To run these examples or rebuild this page from source:</p>
+<pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"  # ensures metrics and docs deps
+make docs  # regenerates HTML from docfiles/advanced_multilayer_metrics.rst
+</code></pre>
+<p>If you only need the library and metrics at runtime: <code>pip install py3plex</code> installs the core package; add <code>[dev]</code> for tests/docs tooling.</p>
+</div>
 </section>
 <section id="entropy-based-complexity-measures">
 <h2>Entropy-based Complexity Measures<a class="headerlink" href="#entropy-based-complexity-measures" title="Link to this heading"></a></h2>

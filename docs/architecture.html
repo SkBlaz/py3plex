@@ -147,6 +147,19 @@
   <section id="architecture-and-design">
 <h1>Architecture and Design<a class="headerlink" href="#architecture-and-design" title="Link to this heading"></a></h1>
 <p>This document describes the <strong>system architecture</strong>, <strong>design patterns</strong>, and <strong>extension points</strong> of py3plex. It is a map of how the layers fit together, what invariants each layer keeps, and where to extend the library safely without breaking caller expectations.</p>
+<div class="admonition tip">
+<p class="admonition-title">Developer fast path</p>
+<p>Spin up an architecture-ready shell and run a quick sanity check without hunting for commands:</p>
+<pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"  # editable install with dev tools
+python -m compileall py3plex  # fast syntax check before deeper edits
+</code></pre>
+<p>Map the layers to files quickly when onboarding:</p>
+<pre><code>ls py3plex/core py3plex/algorithms py3plex/visualization py3plex/wrappers
+rg "multi_layer_network" py3plex/core/multinet.py
+</code></pre>
+</div>
 <section id="system-overview">
 <h2>System Overview<a class="headerlink" href="#system-overview" title="Link to this heading"></a></h2>
 <p>py3plex is built as a <strong>modular, layered architecture</strong> with clear separation of concerns. Each layer depends only on the one below it, which keeps algorithm code focused on logic instead of plumbing. All layers operate on <strong>encoded node-layer identifiers</strong> supplied by the core layer so that layer membership is always explicit.</p>

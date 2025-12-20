@@ -152,6 +152,17 @@
 <li><p><strong>Louvain algorithm:</strong> Initial implementation incorporated with permission from Thomas Aynaud.</p></li>
 <li><p><strong>Community contributors:</strong> Additional improvements and fixes from Jan Kralj and Nika Erzen.</p></li>
 </ul>
+<div class="admonition tip">
+<p class="admonition-title">Developer quickstart</p>
+<p>Want to rebuild these docs or run tests locally?</p>
+<pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+make test
+make docs  # builds from docfiles/ into docfiles/_build/html
+</code></pre>
+<p>See <a class="reference internal" href="dev/development_guide.html"><span class="doc">Developer &amp; Contributor Docs</span></a> for more tips (pre-commit, linting, and CI commands).</p>
+</div>
 </section>
 
 

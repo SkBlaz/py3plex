@@ -206,6 +206,17 @@
 </ul>
 <p>For reproducibility, we’ll create networks from scratch in most examples.</p>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Try it now (no files needed)</p>
+<p>Use a bundled dataset to run the guide’s snippets without downloading anything:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>  <span class="c1"># ships with py3plex; no extra files required</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then plug <code class="docutils literal notranslate"><span class="pre">network</span></code> into the sections below (e.g., <code class="docutils literal notranslate"><span class="pre">Q.nodes().compute(...).execute(network)</span></code>) to get real outputs immediately.</p>
+</div>
 <section id="quick-statistics">
 <h2>Quick Statistics<a class="headerlink" href="#quick-statistics" title="Link to this heading"></a></h2>
 <p>Get a fast overview (total nodes, edges, layers):</p>
@@ -359,6 +370,7 @@ layer3: avg degree = 4.12
 </pre></div>
 </div>
 </section>
+<p><strong>Fast feedback:</strong> cache expensive metrics once (export below) and reload them in notebooks instead of recomputing centrality each run.</p>
 </section>
 <section id="multilayer-specific-statistics">
 <h2>Multilayer-Specific Statistics<a class="headerlink" href="#multilayer-specific-statistics" title="Link to this heading"></a></h2>
@@ -435,6 +447,7 @@ layer3: avg degree = 4.12
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average path length: </span><span class="si">{</span><span class="n">apl</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Avoid surprises:</strong> if the graph is disconnected, run this on the largest connected component (or per layer) to prevent infinite/NaN results.</p>
 </section>
 </section>
 <section id="exporting-statistics">

@@ -171,21 +171,22 @@
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h2>
 <p>Install the prerequisites above and ensure the listed ports are free, then:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Navigate to the gui directory</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># From the repo root</span>
 <span class="nb">cd</span><span class="w"> </span>gui
 
-<span class="c1"># Copy environment configuration</span>
-cp<span class="w"> </span>.env.example<span class="w"> </span>.env
-
-<span class="c1"># Start all services (builds automatically; wait for containers to report &quot;healthy&quot;)</span>
+<span class="c1"># Fast path: builds, starts, and creates .env if missing</span>
 make<span class="w"> </span>up
 
-<span class="c1"># Open in browser</span>
-<span class="c1">#  Application: http://localhost:8080</span>
-<span class="c1"># Data Job Monitor (Flower): http://localhost:5555</span>
+<span class="c1"># Quick health check once containers are healthy</span>
+curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8080/api/health
+
+<span class="c1"># Stop services when finished</span>
+make<span class="w"> </span>down
 </pre></div>
 </div>
-<p><strong>First time?</strong> The build takes ~3-5 minutes because images are built and dependencies downloaded. Subsequent starts are instant.</p>
+<p><strong>Tip</strong>: Keep <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">logs</span></code> running in a split terminal to watch readiness and catch errors early.</p>
+<p><strong>First time?</strong> The build takes ~3-5 minutes because images are built and dependencies downloaded. Subsequent starts are instant. Wait for containers to report <code class="docutils literal notranslate"><span class="pre">healthy</span></code> before using the UI.</p>
+<p><strong>Need custom env?</strong> Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">setup</span></code> once, edit <code class="docutils literal notranslate"><span class="pre">.env</span></code>, then rerun <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">up</span></code>.</p>
 <p>That’s it! The application will be running with:</p>
 <ul class="simple">
 <li><p>React + TypeScript frontend with hot reload</p></li>

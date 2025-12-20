@@ -1,7 +1,6 @@
 # Git and version control
 .git
 .gitignore
-.github
 
 # Python artifacts
 __pycache__
@@ -80,13 +79,11 @@ files.txt
 fuzzing/
 background_knowledge/
 
-# CI/CD
+# CI tooling (kept so dev/test workflows and hooks work in the container)
+# .github/        # Uncomment to slim image if CI configs not needed
 .pre-commit-config.yaml
 
-# Documentation source (included but can be excluded if needed)
-# LLM.md
-
-# Tests (excluded from production container)
-tests/
-run_tests.py
-validate_*.py
+# Tests (kept for in-container dev; uncomment to slim production-only image)
+# tests/
+# run_tests.py
+# validate_*.py

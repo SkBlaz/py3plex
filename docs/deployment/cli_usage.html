@@ -163,6 +163,7 @@
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
 
 <span class="c1"># Run CLI commands</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data<span class="w"> </span><span class="c1"># ensure host directory exists and stays user-writable</span>
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>--help
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--output<span class="w"> </span>/data/network.edgelist
 </pre></div>
@@ -186,6 +187,19 @@ py3plex<span class="w"> </span>--help
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">quickstart</span></code> command creates a small demo multilayer network, computes statistics, generates a visualization, and shows you next steps. It’s the fastest way to see py3plex in action!</p>
+<div class="admonition tip">
+<p class="admonition-title">60-second smoke test (copy/paste)</p>
+<p>Keep outputs together and immediately verify the CLI end-to-end. Re-run safely in the same shell.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA_DIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/data&quot;</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DATA_DIR</span>
+
+py3plex<span class="w"> </span>selftest
+py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">30</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA_DIR</span><span class="s2">/demo.edgelist&quot;</span>
+py3plex<span class="w"> </span>stats<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA_DIR</span><span class="s2">/demo.edgelist&quot;</span><span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA_DIR</span><span class="s2">/demo-stats.json&quot;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA_DIR</span><span class="s2">/demo.edgelist&quot;</span><span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>table<span class="w"> </span><span class="p">|</span><span class="w"> </span>head
+</pre></div>
+</div>
+</div>
 </section>
 <section id="getting-help">
 <h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>

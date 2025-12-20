@@ -529,7 +529,19 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 </section>
 <section id="verifying-installation">
 <h2>Verifying Installation<a class="headerlink" href="#verifying-installation" title="Link to this heading"></a></h2>
-<p>Test that py3plex is correctly installed:</p>
+<p>Run these quick checks right after installation to confirm your environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>--version<span class="w">           </span><span class="c1"># confirms CLI entrypoint is on PATH</span>
+py3plex<span class="w"> </span>selftest<span class="w">            </span><span class="c1"># built-in smoke test for common dependencies</span>
+python<span class="w"> </span>- <span class="s">&lt;&lt;&#39;PY&#39;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span><span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;demo&#39;</span><span class="p">}</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;py3plex import + basic network OK&quot;</span><span class="p">)</span>
+<span class="s">PY</span>
+</pre></div>
+</div>
+<p>Headless/CI runners: set <code class="docutils literal notranslate"><span class="pre">MPLBACKEND=Agg</span></code> before running examples to avoid GUI/display errors.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">py3plex</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 
@@ -538,13 +550,16 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;py3plex installed successfully!&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Run the test suite:</p>
+<p><strong>From source / contributors:</strong> install dev extras and run the tests:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone repository (if not already)</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 
-<span class="c1"># Run tests</span>
-python<span class="w"> </span>run_tests.py
+<span class="c1"># Install development dependencies + run tests</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>-q
+<span class="c1"># or use the Makefile helper</span>
+make<span class="w"> </span>test
 </pre></div>
 </div>
 </section>

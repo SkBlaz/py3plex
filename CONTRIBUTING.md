@@ -4,18 +4,28 @@ Thank you for your interest in contributing to py3plex! This guide covers both h
 
 ## Quick Start
 
+Recommended (uses the repo Makefile so you get the right tools and paths):
+
 ```bash
-# Clone and install
 git clone https://github.com/SkBlaz/py3plex.git
 cd py3plex
+
+# One-time setup (creates .venv and installs editable package + dev deps)
+make setup
+
+# Fast feedback loops
+make lint   # ruff + isort --check + black --check + mypy
+make test   # pytest with HTML coverage (htmlcov/index.html)
+```
+
+Manual fallback (if you can’t use `make`):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-
-# Run tests
 python -m pytest tests/
-
-# Lint code
-black py3plex/
-ruff check py3plex/
+ruff check py3plex/ && black --check py3plex/
 ```
 
 ## Development Setup
@@ -27,17 +37,10 @@ ruff check py3plex/
 
 ### Installation
 
-```bash
-# Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install with development dependencies
-pip install -e ".[dev,tests]"
-
-# Install pre-commit hooks
-pre-commit install
-```
+- Preferred: `make setup` (creates `.venv`, installs editable package + dev extras). Activate with `source .venv/bin/activate`.
+- If you already have a venv: `pip install -e ".[dev]"`.
+- Install pre-commit hooks: `pre-commit install` (optional but recommended).
+- Need help? `make help` lists every supported task.
 
 ## Code Style
 
@@ -82,7 +85,10 @@ def compute_centrality(
 ### Running Tests
 
 ```bash
-# All tests
+# CI-parity (recommended)
+make test     # pytest -v --cov + HTML report
+
+# All tests manually
 python -m pytest tests/
 
 # Specific test file
@@ -129,9 +135,10 @@ class TestMyFeature:
 ### Before Submitting
 
 1. **Update tests**: Add or update tests for your changes
-2. **Run the test suite**: `python -m pytest tests/`
-3. **Lint your code**: `black py3plex/ && ruff check py3plex/`
+2. **Run the test suite**: `make test` (or `python -m pytest tests/`)
+3. **Lint your code**: `make lint` (or `black --check py3plex/ && ruff check py3plex/`)
 4. **Update documentation**: If changing public API
+5. **Optional**: `make format` to auto-fix style before pushing
 
 ### PR Guidelines
 
@@ -220,6 +227,12 @@ If you're an AI assistant contributing to this project:
 - **Issues**: Open an issue on GitHub
 - **Documentation**: https://skblaz.github.io/py3plex/
 - **Examples**: See `examples/` directory
+
+## Common Footguns
+
+- **Forgot to activate the venv**: Run `source .venv/bin/activate` (or create it with `make setup`).
+- **Docs build fails**: Ensure Sphinx is installed (`pip install -e ".[dev]"`) and LaTeX is available for `make docs-pdf`.
+- **Slow feedback**: Use `make lint` and `make test` for the fastest local parity with CI. `make ci` mirrors CI’s lint+test pipeline; `make test-all` also runs benchmarks.
 
 ## License
 

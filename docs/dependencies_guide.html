@@ -144,9 +144,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dependency-management-and-troubleshooting">
+<section id="dependency-management-and-troubleshooting">
 <h1>Dependency Management and Troubleshooting<a class="headerlink" href="#dependency-management-and-troubleshooting" title="Link to this heading"></a></h1>
 <p>This guide covers dependency installation, optional features, and common troubleshooting scenarios. Install the core package first, then add extras via <code class="docutils literal notranslate"><span class="pre">pip</span></code> only when you need them. If unsure, start with the base package and add one extra at a time:</p>
+<div class="admonition tip">
+<p class="admonition-title">Fast path (copy/paste)</p>
+<ol class="arabic simple">
+<li><p>Create an isolated env: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">.venv</span></code> and activate it.</p></li>
+<li><p>Editable install from the repo root so CLI/tests work: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">\".[dev]\"</span></code> (drop <code class="docutils literal notranslate"><span class="pre">[dev]</span></code> if you only need the library).</p></li>
+<li><p>Smoke-test dependencies without writing files: <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">selftest</span></code> or <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">quickstart</span></code>.</p></li>
+<li><p>Need visualization or extra algorithms? Install them explicitly when prompted by an ImportError instead of preloading everything.</p></li>
+</ol>
+<p>Use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span></code> rather than bare <code class="docutils literal notranslate"><span class="pre">pip</span></code> to avoid mixing interpreters.</p>
+</div>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">py3plex[viz]</span></code> — interactive or advanced visualization</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">py3plex[algos]</span></code> — additional community detection algorithms</p></li>

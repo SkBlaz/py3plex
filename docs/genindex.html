@@ -145,6 +145,15 @@
 
 <h1 id="index">Index</h1>
 
+<p><strong>Fast local docs/dev loop (from repo root)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span><span class="w"> </span><span class="c1"># deps for docs, tests, linters</span>
+pytest<span class="w"> </span>-q<span class="w">                               </span><span class="c1"># fast test sweep</span>
+ruff<span class="w"> </span>check<span class="w"> </span>.<span class="w">                           </span><span class="c1"># lint</span>
+make<span class="w"> </span>html<span class="w">                                </span><span class="c1"># rebuild Sphinx docs locally</span>
+</pre></div>
+</div>
+<p>If building docs or examples on CI/servers, set <code class="docutils literal notranslate"><span class="pre">MPLBACKEND=Agg</span></code> to avoid GUI issues.</p>
+
 <div class="genindex-jumpbox">
  <a href="#_"><strong>_</strong></a>
  | <a href="#A"><strong>A</strong></a>

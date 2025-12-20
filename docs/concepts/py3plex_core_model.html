@@ -223,6 +223,27 @@
 <li><p>Scale to large networks (when should I use sparse matrices? how much memory will this take?)</p></li>
 <li><p>Extend py3plex (how do I add my own algorithms?)</p></li>
 </ul>
+<div class="admonition tip">
+<p class="admonition-title">90-second sanity check</p>
+<ol class="arabic simple">
+<li><p>From the repo root: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> so both the Python API and <code class="docutils literal notranslate"><span class="pre">py3plex</span></code> CLI resolve locally.</p></li>
+<li><p>Validate the node-layer ordering and supra-adjacency shape:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python - &lt;&lt;<span class="s1">&#39;PY&#39;</span>
+from py3plex.datasets import load_synthetic_multilayer
+
+net = load_synthetic_multilayer()
+pairs = list(net.get_nodes())
+supra = net.get_supra_adjacency_matrix(sparse=True)
+print(f<span class="s2">&quot;Node-layer pairs={len(pairs)}, layers={net.layer_count}, supra shape={supra.shape}&quot;</span>)
+print(<span class="s2">&quot;First node-layer pair:&quot;</span>, pairs[0])
+PY
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Working with multiplex data? Call <code class="docutils literal notranslate"><span class="pre">get_edges(multiplex_edges=False)</span></code> to avoid double-counting auto-created coupling edges when sanity-checking degrees.</p></li>
+</ol>
+</div>
 <section id="network-types-multilayer-vs-multiplex">
 <h2>Network Types: Multilayer vs Multiplex<a class="headerlink" href="#network-types-multilayer-vs-multiplex" title="Link to this heading"></a></h2>
 <p>py3plex supports two network types that determine how layers and inter-layer connections are handled:</p>

@@ -5,6 +5,10 @@ Runs through network creation, loading, analysis, community detection, and
 visualization in one script. Prerequisites: py3plex installed with optional
 matplotlib for plots; uses bundled `datasets/synthetic_multilayer.txt`.
 
+Quickstart (from repo root):
+- python -m pip install -e ".[dev]"   # for tutorial + optional matplotlib
+- python docs/_downloads/896b3638d484addf6b5766d377915175/tutorial_10min.py
+
 SKIP_CI: slow - This tutorial takes more than 10 seconds to complete
 """
 

@@ -192,10 +192,25 @@
     <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span>
     <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
     <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><strong>Run without local files:</strong> use bundled data so the pipeline works out-of-the-box:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>  <span class="c1"># ships with py3plex; no downloads needed</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;lunch&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">normalized_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;normalized_degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -286,7 +301,7 @@
 <h2>Complex Pipelines<a class="headerlink" href="#complex-pipelines" title="Link to this heading"></a></h2>
 <section id="multi-step-analysis">
 <h3>Multi-Step Analysis<a class="headerlink" href="#multi-step-analysis" title="Link to this heading"></a></h3>
-<p>Combine several verbs to narrow down to the most active nodes. This example assumes <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> and <code class="docutils literal notranslate"><span class="pre">degree</span></code> columns already exist (e.g., after computing node statistics):</p>
+<p>Combine several verbs to narrow down to the most active nodes. <strong>Prepare columns once</strong> before chaining: run <code class="docutils literal notranslate"><span class="pre">ComputeStats</span></code> (pipeline) or add columns with <code class="docutils literal notranslate"><span class="pre">mutate</span></code> so fields like <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> are present and you avoid runtime KeyErrors.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="c1"># Step 1: Filter active nodes</span>
@@ -417,6 +432,7 @@
 </div>
 </section>
 </section>
+<p><strong>Fast feedback tips:</strong> limit layers with <code class="docutils literal notranslate"><span class="pre">nodes(network,</span> <span class="pre">layers=[...])</span></code> to cut computation, and use <code class="docutils literal notranslate"><span class="pre">.head()</span></code> before <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code> to keep previews snappy.</p>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <ul class="simple">

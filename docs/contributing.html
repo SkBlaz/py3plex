@@ -157,6 +157,16 @@
 <li><p>Update documentation when behavior changes or new features land.</p></li>
 </ul>
 </section>
+<div class="admonition tip">
+<p class="admonition-title">Contributor quickstart (fast path)</p>
+<ol class="arabic simple">
+<li><p>Python 3.8+ recommended; create and activate a virtual environment.</p></li>
+<li><p>Install with dev extras so tools like pytest/ruff are available: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[dev]&quot;</span></code> (or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">setup</span></code> then <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dev-install</span></code>).</p></li>
+<li><p>Sanity-check your environment: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> (or <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pytest</span> <span class="pre">-q</span></code> when iterating).</p></li>
+<li><p>Verify the CLI resolves: <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">--help</span></code>.</p></li>
+</ol>
+<p>If you see <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError</span></code> for pytest/ruff, reinstall using the <code class="docutils literal notranslate"><span class="pre">.[dev]</span></code> extra or rerun the Make targets above.</p>
+</div>
 <section id="ways-to-contribute">
 <h2>Ways to Contribute<a class="headerlink" href="#ways-to-contribute" title="Link to this heading"></a></h2>
 <p>You can contribute in many ways. Pick the path that matches your time and interest:</p>

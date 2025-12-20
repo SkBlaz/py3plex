@@ -154,6 +154,15 @@
 <li><p>Visualization-ready: layer-aware layouts and rendering designed for multiplex views.</p></li>
 <li><p>Reproducible: configuration-driven workflows and deterministic utilities (set seeds when randomness is involved).</p></li>
 </ul>
+<div class="admonition tip">
+<p class="admonition-title">Fast path (copy/paste)</p>
+<ol class="arabic simple">
+<li><p>Install from the repo root so the CLI is available: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> (or <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[dev]&quot;</span></code> to get tests/linters).</p></li>
+<li><p>Smoke-test the CLI without writing files: <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">quickstart</span></code> (interactive) or <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">selftest</span></code> (automated).</p></li>
+<li><p>Create and validate a sample graph: <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">create</span> <span class="pre">--nodes</span> <span class="pre">50</span> <span class="pre">--layers</span> <span class="pre">3</span> <span class="pre">--output</span> <span class="pre">sample.edgelist</span></code>, then <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">check</span> <span class="pre">sample.edgelist</span></code> and <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">load</span> <span class="pre">sample.edgelist</span> <span class="pre">--info</span> <span class="pre">--stats</span></code>.</p></li>
+</ol>
+<p>No local file? Skip I/O with the bundled dataset: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.datasets</span> <span class="pre">import</span> <span class="pre">load_aarhus_cs;</span> <span class="pre">network</span> <span class="pre">=</span> <span class="pre">load_aarhus_cs()</span></code>.</p>
+</div>
 <section id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
 <ul class="simple">

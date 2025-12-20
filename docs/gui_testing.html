@@ -216,24 +216,23 @@ Use this document to (a) understand what CI covers and (b) run the same checks l
 <p>You can run the same tests locally (Docker and Node required). Run the following from <code class="docutils literal notranslate"><span class="pre">gui/</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
 
-<span class="c1"># API tests</span>
-docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>api<span class="w"> </span>worker<span class="w"> </span>redis
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>api<span class="w"> </span>worker<span class="w"> </span>redis
-<span class="c1"># wait for health: curl -f http://localhost:8080/api/health</span>
-docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>api<span class="w"> </span>pytest<span class="w"> </span>ci/api-tests/<span class="w"> </span>-v
-docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"> </span>-v
+<span class="c1"># Start stack (creates .env via make setup, builds if needed)</span>
+make<span class="w"> </span>up
 
-<span class="c1"># Integration tests</span>
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--build
-<span class="c1"># Wait for services</span>
+<span class="c1"># Quick health check</span>
 curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8080/api/health
-<span class="c1"># Run manual integration tests (see below) to mirror CI expectations</span>
-docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"> </span>-v
 
-<span class="c1"># Frontend build</span>
+<span class="c1"># API tests (same suite CI uses)</span>
+docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>api<span class="w"> </span>pytest<span class="w"> </span>ci/api-tests/<span class="w"> </span>-v
+
+<span class="c1"># Frontend build (matches CI build step)</span>
 <span class="nb">cd</span><span class="w"> </span>frontend
 npm<span class="w"> </span>ci
 npm<span class="w"> </span>run<span class="w"> </span>build
+
+<span class="c1"># Stop services once finished</span>
+<span class="nb">cd</span><span class="w"> </span>..
+make<span class="w"> </span>down
 </pre></div>
 </div>
 </section>
@@ -253,11 +252,11 @@ npm<span class="w"> </span>run<span class="w"> </span>build
 <h3>Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h3>
 <p>Use a clean working tree so logs are easy to read. All paths below are relative to <code class="docutils literal notranslate"><span class="pre">gui/</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
-cp<span class="w"> </span>.env.example<span class="w"> </span>.env
 make<span class="w"> </span>up
+curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8080/api/health
 </pre></div>
 </div>
-<p><strong>Expected</strong>: All containers start successfully; <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">ps</span></code> shows services marked <code class="docutils literal notranslate"><span class="pre">healthy</span></code>.</p>
+<p><strong>Expected</strong>: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">up</span></code> copies <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> if missing and starts containers; <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">ps</span></code> shows services marked <code class="docutils literal notranslate"><span class="pre">healthy</span></code>; health endpoint returns 200.</p>
 </section>
 <section id="test-1-health-check">
 <h3>Test 1: Health Check<a class="headerlink" href="#test-1-health-check" title="Link to this heading"></a></h3>
@@ -600,7 +599,7 @@ make<span class="w"> </span>clean
 <li><p>Test edge cases (malformed files, very large files)</p></li>
 </ol>
 <p>—</p>
-<p><strong>Last Reviewed</strong>: 2025-11-09 (update this stamp when content changes)</p>
+<p><strong>Last Reviewed</strong>: 2025-03-01 (update this stamp when content changes)</p>
 <p><strong>Version</strong>: 0.1.0</p>
 </section>
 </section>

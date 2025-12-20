@@ -188,6 +188,16 @@
 interoperable edge lists, and analysis-ready formats.</p>
 <p><strong>Prerequisites:</strong> A network to export (see <a class="reference internal" href="load_and_build_networks.html"><span class="doc">How to Load and Build Networks</span></a>). All
 examples assume an in-memory <code class="docutils literal notranslate"><span class="pre">network</span></code> instance.</p>
+<div class="admonition tip">
+<p class="admonition-title">Try it now (no files needed)</p>
+<p>Use a bundled dataset to run every example immediately:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>  <span class="c1"># ships with py3plex; no downloads needed</span>
+</pre></div>
+</div>
+<p>This gives you an in-memory network so you can copy/paste the snippets below.</p>
+</div>
 <section id="quick-save-and-load">
 <h2>Quick Save and Load<a class="headerlink" href="#quick-save-and-load" title="Link to this heading"></a></h2>
 <section id="using-pickle-recommended">
@@ -243,7 +253,7 @@ follows <code class="docutils literal notranslate"><span class="pre">source</spa
         <span class="n">attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
         <span class="n">weight</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">source_node</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">source_layer</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_node</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_layer</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">source_node</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">source_layer</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_node</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_layer</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -274,6 +284,7 @@ CSV is easier to load in spreadsheets and dataframes than the plain text format.
 <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;network_edges.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Dependency:</strong> requires <code class="docutils literal notranslate"><span class="pre">pandas</span></code>. Install if needed: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pandas</span></code>.</p>
 </section>
 </section>
 <section id="export-as-json">
@@ -408,6 +419,7 @@ the same ID across layers.</p>
 <p>Use columnar storage (Arrow/Parquet) to handle large edge lists efficiently.
 These formats preserve data types, compress well, and load quickly for analytics
 workloads.</p>
+<p><strong>Dependencies:</strong> needs <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> (and <code class="docutils literal notranslate"><span class="pre">pandas</span></code> if converting to DataFrames). Install on demand with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pyarrow</span> <span class="pre">pandas</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.parquet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pq</span>
 

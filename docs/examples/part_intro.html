@@ -170,7 +170,12 @@
 <li><p><strong>Refer:</strong> Jump to a specific topic when you need a quick reminder.</p></li>
 <li><p><strong>Validate:</strong> Run an example after installing py3plex to confirm your setup.</p></li>
 </ul>
-<p>Run scripts from the repository root with your virtual environment activated so relative paths resolve correctly:</p>
+<p><strong>Quickstart (from repo root)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span><span class="w"> </span><span class="c1"># install py3plex + example deps</span>
+python<span class="w"> </span>examples/getting_started/tutorial_10min.py<span class="w">   </span><span class="c1"># quick smoke test</span>
+</pre></div>
+</div>
+<p>If you need headless plots (e.g., CI or servers), set <code class="docutils literal notranslate"><span class="pre">MPLBACKEND=Agg</span></code> before running examples. Run scripts from the repository root with your virtual environment activated so relative paths resolve correctly:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/&lt;category&gt;/&lt;filename&gt;.py
 </pre></div>
 </div>
