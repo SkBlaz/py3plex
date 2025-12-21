@@ -18,6 +18,7 @@ Main components:
 """
 
 from .convert import convert
+from .equality import ir_diff, ir_equals
 from .exceptions import CompatibilityError, SchemaError
 from .ir import EdgeTable, GraphIR, GraphMeta, NodeTable, from_ir, to_ir
 from .schema import GraphSchema, infer_schema, validate_against_schema
@@ -36,6 +37,9 @@ __all__ = [
     "validate_against_schema",
     # Conversion
     "convert",
+    # Equality
+    "ir_equals",
+    "ir_diff",
     # Exceptions
     "CompatibilityError",
     "SchemaError",
