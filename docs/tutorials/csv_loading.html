@@ -209,7 +209,7 @@ C,D,collaboration,0.9
 </section>
 <section id="loading-multilayer-csv">
 <h3><a class="toc-backref" href="#id3" role="doc-backlink">Loading Multilayer CSV</a><a class="headerlink" href="#loading-multilayer-csv" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create network object</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -252,7 +252,7 @@ D,A,0.9
 </section>
 <section id="loading-simple-csv">
 <h3><a class="toc-backref" href="#id5" role="doc-backlink">Loading Simple CSV</a><a class="headerlink" href="#loading-simple-csv" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
@@ -273,8 +273,8 @@ D,A,0.9
 <section id="building-network-from-existing-data">
 <h3><a class="toc-backref" href="#id7" role="doc-backlink">Building Network from Existing Data</a><a class="headerlink" href="#building-network-from-existing-data" title="Link to this heading"></a></h3>
 <p>If you have data in a Pandas DataFrame, convert it to CSV format:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create sample data</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
@@ -328,7 +328,7 @@ B layer2 D layer2 0.6
 <h3><a class="toc-backref" href="#id11" role="doc-backlink">Issue: “Layer name missing” error</a><a class="headerlink" href="#issue-layer-name-missing-error" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> CSV is missing the ‘layer’ column</p>
 <p><strong>Solution 1:</strong> Add layer column to CSV</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Read CSV without layer</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;network.csv&#39;</span><span class="p">)</span>
@@ -354,7 +354,7 @@ B layer2 D layer2 0.6
 <h3><a class="toc-backref" href="#id12" role="doc-backlink">Issue: “Could not load network” error</a><a class="headerlink" href="#issue-could-not-load-network-error" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> CSV format doesn’t match expected schema</p>
 <p><strong>Solution:</strong> Verify CSV structure</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Check CSV columns</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;network.csv&#39;</span><span class="p">)</span>
@@ -377,7 +377,7 @@ B layer2 D layer2 0.6
 <h3><a class="toc-backref" href="#id13" role="doc-backlink">Issue: Encoding errors with special characters</a><a class="headerlink" href="#issue-encoding-errors-with-special-characters" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> CSV contains non-ASCII characters (é, ñ, 中文, etc.)</p>
 <p><strong>Solution:</strong> Specify encoding when creating CSV</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Save with UTF-8 encoding</span>
 <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;network.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
@@ -392,11 +392,11 @@ B layer2 D layer2 0.6
 <h2><a class="toc-backref" href="#id14" role="doc-backlink">Complete Example Workflow</a><a class="headerlink" href="#complete-example-workflow" title="Link to this heading"></a></h2>
 <section id="end-to-end-pipeline-csv-analysis-visualization">
 <h3><a class="toc-backref" href="#id15" role="doc-backlink">End-to-End Pipeline: CSV → Analysis → Visualization</a><a class="headerlink" href="#end-to-end-pipeline-csv-analysis-visualization" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Step 1: Create sample CSV data</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
@@ -421,7 +421,7 @@ B layer2 D layer2 0.6
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
 
 <span class="c1"># Step 5: Centrality analysis</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">basic_statistics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">basic_statistics</span>
 <span class="n">hubs</span> <span class="o">=</span> <span class="n">basic_statistics</span><span class="o">.</span><span class="n">identify_n_hubs</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 3 hub nodes:&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">degree</span> <span class="ow">in</span> <span class="n">hubs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -474,7 +474,7 @@ Top 3 hub nodes:
 <section id="pre-validate-csv-format">
 <h3><a class="toc-backref" href="#id17" role="doc-backlink">Pre-validate CSV Format</a><a class="headerlink" href="#pre-validate-csv-format" title="Link to this heading"></a></h3>
 <p>Use the validation module to check CSV format before loading:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.validation</span> <span class="kn">import</span> <span class="n">validate_network_data</span><span class="p">,</span> <span class="n">ParsingError</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_network_data</span><span class="p">,</span> <span class="n">ParsingError</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># Validate before loading</span>
@@ -509,7 +509,7 @@ Top 3 hub nodes:
 <li><p><strong>Normalize weights</strong> if needed (e.g., scale to [0, 1] range)</p></li>
 <li><p><strong>Handle missing values</strong> appropriately:</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Load CSV and handle missing values</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;network.csv&#39;</span><span class="p">)</span>

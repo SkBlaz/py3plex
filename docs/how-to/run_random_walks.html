@@ -195,8 +195,8 @@
 <section id="node2vec-embeddings">
 <h2>Node2Vec Embeddings<a class="headerlink" href="#node2vec-embeddings" title="Link to this heading"></a></h2>
 <p>Node2Vec generates vector representations of nodes by simulating biased random walks:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.wrappers</span> <span class="kn">import</span> <span class="n">train_node2vec</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_node2vec</span>
 
 <span class="c1"># Create a sample network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -237,7 +237,7 @@
 <section id="deepwalk-embeddings">
 <h2>DeepWalk Embeddings<a class="headerlink" href="#deepwalk-embeddings" title="Link to this heading"></a></h2>
 <p>DeepWalk is a special case of Node2Vec with <code class="docutils literal notranslate"><span class="pre">p=1,</span> <span class="pre">q=1</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.wrappers</span> <span class="kn">import</span> <span class="n">train_deepwalk</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_deepwalk</span>
 
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">train_deepwalk</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
@@ -254,9 +254,9 @@
 <p>The following examples assume you already computed <code class="docutils literal notranslate"><span class="pre">embeddings</span></code> with Node2Vec or DeepWalk; adjust names if you generate multiple embedding sets.</p>
 <section id="node-classification">
 <h3>Node Classification<a class="headerlink" href="#node-classification" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Prepare data</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -281,7 +281,7 @@
 <section id="link-prediction">
 <h3>Link Prediction<a class="headerlink" href="#link-prediction" title="Link to this heading"></a></h3>
 <p>Embeddings are keyed by <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code>; compare nodes within the same layer when interpreting similarity scores.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics.pairwise</span> <span class="kn">import</span> <span class="n">cosine_similarity</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
 
 <span class="c1"># Compute similarity between nodes</span>
 <span class="n">node1</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)</span>
@@ -302,7 +302,7 @@
 </section>
 <section id="node-clustering">
 <h3>Node Clustering<a class="headerlink" href="#node-clustering" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
 
 <span class="c1"># Cluster nodes based on embeddings</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -324,8 +324,8 @@
 <section id="visualizing-embeddings">
 <h2>Visualizing Embeddings<a class="headerlink" href="#visualizing-embeddings" title="Link to this heading"></a></h2>
 <p>Use dimensionality reduction to visualize:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.manifold</span> <span class="kn">import</span> <span class="n">TSNE</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="n">TSNE</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Reduce to 2D</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">embeddings</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -356,7 +356,7 @@
 <h2>Saving and Loading Embeddings<a class="headerlink" href="#saving-and-loading-embeddings" title="Link to this heading"></a></h2>
 <section id="save-to-file">
 <h3>Save to File<a class="headerlink" href="#save-to-file" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pickle</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
 
 <span class="c1"># Save embeddings</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;embeddings.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -370,7 +370,7 @@
 </section>
 <section id="export-to-csv">
 <h3>Export to CSV<a class="headerlink" href="#export-to-csv" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Convert to DataFrame</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -392,9 +392,9 @@
 <section id="grid-search-for-best-parameters">
 <h3>Grid Search for Best Parameters<a class="headerlink" href="#grid-search-for-best-parameters" title="Link to this heading"></a></h3>
 <p>Training embeddings inside a grid search can be expensive; start with a coarse grid or a small subgraph, then refine around promising regions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_score</span>
-<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_val_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;dimensions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">],</span>
@@ -444,7 +444,7 @@
 <section id="layer-specific-embeddings">
 <h2>Layer-Specific Embeddings<a class="headerlink" href="#layer-specific-embeddings" title="Link to this heading"></a></h2>
 <p>Generate embeddings for individual layers:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="n">layer_embeddings</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -467,9 +467,9 @@
 <section id="filter-high-degree-nodes">
 <h3>Filter High-Degree Nodes<a class="headerlink" href="#filter-high-degree-nodes" title="Link to this heading"></a></h3>
 <p><strong>Generate embeddings only for hub nodes:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.wrappers</span> <span class="kn">import</span> <span class="n">train_node2vec</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_node2vec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -514,8 +514,8 @@ Generated embeddings for 15 hubs
 <section id="layer-specific-node-selection">
 <h3>Layer-Specific Node Selection<a class="headerlink" href="#layer-specific-node-selection" title="Link to this heading"></a></h3>
 <p><strong>Generate embeddings for nodes active in multiple layers:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="c1"># Count layer participation for each node</span>
 <span class="n">node_layers</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
@@ -557,7 +557,7 @@ Generated embeddings for 105 multilayer nodes
 <section id="query-nodes-by-centrality">
 <h3>Query Nodes by Centrality<a class="headerlink" href="#query-nodes-by-centrality" title="Link to this heading"></a></h3>
 <p><strong>Focus embeddings on central nodes:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
 <span class="c1"># Find nodes with high betweenness centrality</span>
 <span class="n">central_nodes</span> <span class="o">=</span> <span class="p">(</span>
@@ -582,8 +582,8 @@ Generated embeddings for 105 multilayer nodes
 <span class="p">)</span>
 
 <span class="c1"># Compare embedding similarity for central nodes</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics.pairwise</span> <span class="kn">import</span> <span class="n">cosine_similarity</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">node_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">central_embeddings</span><span class="o">.</span><span class="n">keys</span><span class="p">())[:</span><span class="mi">5</span><span class="p">]</span>
 <span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">central_embeddings</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">])</span>
@@ -597,7 +597,7 @@ Generated embeddings for 105 multilayer nodes
 <section id="combine-embeddings-with-node-attributes">
 <h3>Combine Embeddings with Node Attributes<a class="headerlink" href="#combine-embeddings-with-node-attributes" title="Link to this heading"></a></h3>
 <p><strong>Query embedded nodes with specific properties:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># After generating embeddings, attach them as attributes</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -620,7 +620,7 @@ Generated embeddings for 105 multilayer nodes
 <section id="layer-specific-embedding-analysis">
 <h3>Layer-Specific Embedding Analysis<a class="headerlink" href="#layer-specific-embedding-analysis" title="Link to this heading"></a></h3>
 <p><strong>Compare embeddings across layers:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Generate embeddings per layer</span>
 <span class="n">layer_embeddings</span> <span class="o">=</span> <span class="p">{}</span>
@@ -698,8 +698,8 @@ Layer: layer3
 <section id="export-embeddings-with-metadata-using-dsl">
 <h3>Export Embeddings with Metadata Using DSL<a class="headerlink" href="#export-embeddings-with-metadata-using-dsl" title="Link to this heading"></a></h3>
 <p><strong>Create analysis-ready embedding exports:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
 <span class="c1"># Compute node metrics</span>
 <span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span>

@@ -302,7 +302,7 @@ LIMIT 100
 </section>
 <section id="complete-examples">
 <h3>Complete Examples<a class="headerlink" href="#complete-examples" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Get high-degree nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
@@ -327,7 +327,7 @@ LIMIT 100
 <h2>Builder API Reference<a class="headerlink" href="#builder-api-reference" title="Link to this heading"></a></h2>
 <section id="import">
 <h3>Import<a class="headerlink" href="#import" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 </pre></div>
 </div>
 </section>
@@ -364,7 +364,7 @@ LIMIT 100
 <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;(social | work) &amp; ~bots&quot;</span><span class="p">])</span>
 
 <span class="c1"># Named groups for reuse</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">LayerSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayerSet</span>
 <span class="n">LayerSet</span><span class="o">.</span><span class="n">define_group</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">,</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;ppi&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;gene&quot;</span><span class="p">))</span>
 <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">))</span>
 </pre></div>
@@ -650,10 +650,10 @@ string parsing, named groups, and real-world examples, see:
 <section id="custom-operators">
 <h3>Custom Operators<a class="headerlink" href="#custom-operators" title="Link to this heading"></a></h3>
 <p>Register custom DSL operators:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">register_operator</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_operator</span>
 
 <span class="nd">@register_operator</span><span class="p">(</span><span class="s1">&#39;my_metric&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_custom_metric</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_custom_metric</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute custom metric for a node.&quot;&quot;&quot;</span>
     <span class="c1"># Your implementation</span>
     <span class="k">return</span> <span class="n">value</span>

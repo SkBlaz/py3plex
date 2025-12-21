@@ -294,7 +294,7 @@
 </pre></div>
 </div>
 <p>Execute workflow:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.workflows</span> <span class="kn">import</span> <span class="n">execute_workflow</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.workflows</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_workflow</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">&quot;workflow_config.yaml&quot;</span><span class="p">)</span>
 </pre></div>
@@ -309,8 +309,8 @@
 <section id="basic-dsl-workflow-pattern">
 <h3>Basic DSL Workflow Pattern<a class="headerlink" href="#basic-dsl-workflow-pattern" title="Link to this heading"></a></h3>
 <p><strong>Template for DSL-first analysis:</strong> Keep the pipeline linear—load, query, refine, export—so each step can be repeated with different parameters.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">execute_query</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">execute_query</span>
 
 <span class="c1"># 1. Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -337,7 +337,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Edges: </span><span class="si">{</span><span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># 5. Export results</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
     <span class="p">{</span>
         <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -360,9 +360,9 @@
 <section id="multilayer-exploration-workflow">
 <h3>Multilayer Exploration Workflow<a class="headerlink" href="#multilayer-exploration-workflow" title="Link to this heading"></a></h3>
 <p><strong>Systematic multilayer network analysis:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -404,7 +404,7 @@
 
 <span class="c1"># Step 2: Find versatile nodes (present in multiple layers)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Versatile Nodes (multilayer presence):&quot;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="n">node_layer_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
@@ -446,7 +446,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Hub nodes (degree &gt; 7): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_metrics</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Group hubs by base node ID</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="n">hub_layers</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">all_metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -497,9 +497,9 @@
 <section id="community-detection-dsl-workflow">
 <h3>Community Detection + DSL Workflow<a class="headerlink" href="#community-detection-dsl-workflow" title="Link to this heading"></a></h3>
 <p><strong>Combine community detection with DSL queries:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.community_wrapper</span> <span class="kn">import</span> <span class="n">louvain_communities</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.community_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">execute_query</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="c1"># Detect communities</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -552,9 +552,9 @@
 <section id="dynamics-dsl-workflow">
 <h3>Dynamics + DSL Workflow<a class="headerlink" href="#dynamics-dsl-workflow" title="Link to this heading"></a></h3>
 <p><strong>Epidemic simulation with DSL-based analysis:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">SIRDynamics</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="c1"># Run SIR simulation</span>
 <span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
@@ -585,7 +585,7 @@
 
     <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">pct</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pct</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">count</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">if</span> <span class="n">total</span> <span class="k">else</span> <span class="mi">0</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
@@ -613,9 +613,9 @@
 <section id="reusable-dsl-query-functions">
 <h3>Reusable DSL Query Functions<a class="headerlink" href="#reusable-dsl-query-functions" title="Link to this heading"></a></h3>
 <p><strong>Create reusable query templates:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">degree_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">degree_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get high-degree nodes in a specific layer.&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
@@ -626,9 +626,9 @@
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">get_versatile_nodes</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">min_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_versatile_nodes</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">min_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get nodes present in multiple layers.&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 
     <span class="n">node_layer_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
@@ -639,10 +639,10 @@
         <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="n">min_layers</span>
     <span class="p">}</span>
 
-<span class="k">def</span> <span class="nf">compare_layer_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_layer_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare centrality distributions between two layers.&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
     <span class="n">result1</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
@@ -695,8 +695,8 @@
 <section id="batch-processing">
 <h2>Batch Processing<a class="headerlink" href="#batch-processing" title="Link to this heading"></a></h2>
 <p>Process multiple networks:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 

@@ -151,7 +151,7 @@
 <div class="dsl-example admonition">
 <p class="admonition-title">DSL for Quick Statistics</p>
 <p>Compute statistics efficiently with the DSL:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Compute degree and clustering for all nodes</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="p">(</span>
@@ -195,7 +195,7 @@
 <section id="quick-stats">
 <h3>Quick Stats<a class="headerlink" href="#quick-stats" title="Link to this heading"></a></h3>
 <p>The fastest way to get basic information:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
@@ -242,7 +242,7 @@ Nodes per layer:
 <section id="layer-specific-statistics">
 <h2>Layer-Specific Statistics<a class="headerlink" href="#layer-specific-statistics" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">multilayer_statistics</span></code> module provides comprehensive statistics:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 </pre></div>
 </div>
 <section id="layer-density">
@@ -384,7 +384,7 @@ Nodes per layer:
 <h3>Participation Coefficient<a class="headerlink" href="#participation-coefficient" title="Link to this heading"></a></h3>
 <p><strong>Definition:</strong> Measures how evenly a node’s connections are distributed across layers.</p>
 <p><strong>Use case:</strong> Identify nodes that bridge different layers.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">louvain_multilayer</span>
 <span class="p">)</span>
 
@@ -461,7 +461,7 @@ Nodes per layer:
 <p>Since py3plex networks are NetworkX graphs, you can use any NetworkX statistic:</p>
 <section id="basic-networkx-metrics">
 <h3>Basic NetworkX Metrics<a class="headerlink" href="#basic-networkx-metrics" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 
@@ -481,8 +481,8 @@ Nodes per layer:
 </section>
 <section id="degree-distribution">
 <h3>Degree Distribution<a class="headerlink" href="#degree-distribution" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 
@@ -501,7 +501,7 @@ Nodes per layer:
 </section>
 <section id="path-based-statistics">
 <h3>Path-Based Statistics<a class="headerlink" href="#path-based-statistics" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 
@@ -530,8 +530,8 @@ Nodes per layer:
 <section id="comparing-networks">
 <h3>Comparing Networks<a class="headerlink" href="#comparing-networks" title="Link to this heading"></a></h3>
 <p>Compare two multilayer networks:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="c1"># Load two networks</span>
 <span class="n">network1</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data1.multiedgelist&quot;</span><span class="p">)</span>
@@ -556,8 +556,8 @@ Nodes per layer:
 <section id="layer-by-layer-analysis">
 <h3>Layer-by-Layer Analysis<a class="headerlink" href="#layer-by-layer-analysis" title="Link to this heading"></a></h3>
 <p>Systematic comparison of all layers:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="c1"># Collect stats for each layer</span>
 <span class="n">layer_stats</span> <span class="o">=</span> <span class="p">[]</span>
@@ -595,7 +595,7 @@ Nodes per layer:
 <h2>Exporting Statistics<a class="headerlink" href="#exporting-statistics" title="Link to this heading"></a></h2>
 <section id="save-to-csv">
 <h3>Save to CSV<a class="headerlink" href="#save-to-csv" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Collect node statistics</span>
 <span class="n">node_stats</span> <span class="o">=</span> <span class="p">[]</span>
@@ -616,7 +616,7 @@ Nodes per layer:
 </section>
 <section id="save-to-json">
 <h3>Save to JSON<a class="headerlink" href="#save-to-json" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 
 <span class="c1"># Collect statistics</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
@@ -679,9 +679,9 @@ Nodes per layer:
 </section>
 <section id="complete-example">
 <h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>

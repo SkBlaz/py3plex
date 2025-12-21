@@ -395,7 +395,6 @@ INPUT /usr/share/texmf/tex/latex/lm/ts1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/ts1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/ts1lmr.fd
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ts1-lmr10.tfm
-INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmtt8.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmtk10.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmtti10.tfm
@@ -403,6 +402,7 @@ INPUT /usr/share/texmf/tex/latex/lm/ts1lmtt.fd
 INPUT /usr/share/texmf/tex/latex/lm/ts1lmtt.fd
 INPUT /usr/share/texmf/tex/latex/lm/ts1lmtt.fd
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ts1-lmtt10.tfm
+INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmri10.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr12.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmss12.tfm

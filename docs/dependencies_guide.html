@@ -220,14 +220,14 @@
 <section id="verifying-installation">
 <h3><a class="toc-backref" href="#id3" role="doc-backlink">Verifying Installation</a><a class="headerlink" href="#verifying-installation" title="Link to this heading"></a></h3>
 <p>Confirm that Py3plex and core dependencies import correctly. Run this in the same environment where you installed the package. Add optional imports (<code class="docutils literal notranslate"><span class="pre">plotly</span></code>, <code class="docutils literal notranslate"><span class="pre">igraph</span></code>, <code class="docutils literal notranslate"><span class="pre">infomap</span></code>) if you installed those extras:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3plex</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">py3plex</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Py3plex version: </span><span class="si">{</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Check key dependencies</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NetworkX: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NumPy: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -263,8 +263,8 @@
 <p><strong>Example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if available</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">plotly</span>
-    <span class="kn">import</span> <span class="nn">igraph</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">plotly</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">igraph</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[OK] Advanced visualization available&quot;</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[X] Install with: pip install py3plex[viz]&quot;</span><span class="p">)</span>
@@ -291,7 +291,7 @@
 </ul>
 <p><strong>Example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Louvain algorithm</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
 
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
@@ -318,7 +318,7 @@
 <p><strong>Example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if available</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">infomap</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">infomap</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[OK] Infomap available&quot;</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[X] Install with: pip install py3plex[infomap]&quot;</span><span class="p">)</span>
@@ -465,7 +465,7 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 </pre></div>
 </div>
 <p><strong>Alternative:</strong> Use Louvain algorithm instead:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -474,9 +474,9 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 <h4>Issue: “Qt platform plugin could not be initialized”<a class="headerlink" href="#issue-qt-platform-plugin-could-not-be-initialized" title="Link to this heading"></a></h4>
 <p><strong>Cause:</strong> Matplotlib backend issue (often on headless servers).</p>
 <p><strong>Solution:</strong> Use a non-interactive backend.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 </pre></div>
 </div>
 </section>
@@ -485,7 +485,7 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 <p><strong>Cause:</strong> Insufficient RAM for dense operations.</p>
 <p><strong>Fix 1:</strong> Prefer sparse data structures; many operations use them automatically, but avoid forcing dense adjacency matrices for large graphs.</p>
 <p><strong>Fix 2:</strong> Sample the network.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
 <span class="c1"># Sample 10% of nodes</span>
 <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
@@ -556,7 +556,7 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
 <p>Provide users with this diagnostic script:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Check Py3plex dependencies.&quot;&quot;&quot;</span>
 
-<span class="k">def</span> <span class="nf">check_dependencies</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_dependencies</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check which dependencies are available.&quot;&quot;&quot;</span>
 
     <span class="n">required</span> <span class="o">=</span> <span class="p">{</span>

@@ -354,7 +354,7 @@ Betweenness centrality:
 <span class="n">edges</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">export_edgelist</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">include_attributes</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
 
 <span class="c1"># Convert to R data frame</span>
-<span class="n">edges_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="n">edges_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span>
 <span class="w">    </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="o">$</span><span class="n">src</span><span class="p">,</span>
 <span class="w">    </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="o">$</span><span class="n">dst</span><span class="p">,</span>
@@ -378,7 +378,7 @@ Betweenness centrality:
 <span class="n">nodes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">export_nodelist</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">include_attributes</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
 
 <span class="c1"># Convert to R data frame</span>
-<span class="n">nodes_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="n">nodes_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
 <span class="p">}))</span>
 
@@ -435,7 +435,7 @@ Betweenness centrality:
 <span class="n">layers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">get_layer_names</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 
 <span class="c1"># Analyze each layer</span>
-<span class="nf">for </span><span class="p">(</span><span class="n">layer</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">layers</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">layer</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">layers</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\n=== Layer: %s ===\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="p">))</span>
 
 <span class="w">  </span><span class="c1"># Extract layer-specific graph</span>
@@ -512,7 +512,7 @@ Betweenness centrality:
 <span class="n">time_points</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;2020&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2021&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2022&quot;</span><span class="p">)</span>
 <span class="n">networks</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">()</span>
 
-<span class="nf">for </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">time_points</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">time_points</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1"># Load or create network for this time point</span>
 <span class="w">  </span><span class="n">net</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">py3plex</span><span class="o">$</span><span class="nf">multi_layer_network</span><span class="p">()</span>
 <span class="w">  </span><span class="c1"># ... load data for time t ...</span>
@@ -586,7 +586,7 @@ Betweenness centrality:
 <span class="c1"># Export layer-by-layer for MLnet compatibility</span>
 <span class="n">layers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">get_layer_names</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 
-<span class="nf">for </span><span class="p">(</span><span class="n">layer</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">layers</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">layer</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">layers</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1"># Get igraph for this layer</span>
 <span class="w">  </span><span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
 

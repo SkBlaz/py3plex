@@ -174,7 +174,7 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m \log n)\)</span> in typical sparse settings (implementation-dependent)</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -202,7 +202,7 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m \log n)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges, <span class="math notranslate nohighlight">\(n\)</span> is nodes (average-case)</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_wrapper</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_wrapper</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
     <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/infomap&quot;</span>
@@ -233,7 +233,7 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> linear in number of edges</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">label_propagation</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">label_propagation</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
     <span class="n">seed_labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;node1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;node2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
@@ -264,7 +264,7 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n_L^2)\)</span> to build a dense supra-adjacency (sparse: <span class="math notranslate nohighlight">\(O(m)\)</span>) plus the downstream Louvain optimization (<span class="math notranslate nohighlight">\(O(m \log n_L)\)</span> in practice on the sparse supra-graph). Prefer sparse supra-adjacency for anything beyond small toy graphs.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">multilayer_modularity</span> <span class="k">as</span> <span class="n">mlm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_modularity</span> <span class="k">as</span> <span class="n">mlm</span>
 <span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">mlm</span><span class="o">.</span><span class="n">multilayer_louvain</span><span class="p">(</span><span class="n">supra_adj</span><span class="p">)</span>
 </pre></div>
@@ -302,7 +302,7 @@
 <li><p>Overlapping degree (sum across layers for each physical node)</p></li>
 </ul>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">MultilayerCentrality</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultilayerCentrality</span>
 <span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="n">degrees</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">overlapping_degree_centrality</span><span class="p">()</span>
 </pre></div>
@@ -380,7 +380,7 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m L)\)</span> where <span class="math notranslate nohighlight">\(L\)</span> is number of layers (dominated by the chosen per-layer centrality)</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 <span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -399,7 +399,7 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n_L m)\)</span> for unweighted supra-graphs</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 <span class="n">betweenness</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multiplex_betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">betweenness</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
 </pre></div>
@@ -554,7 +554,7 @@
 <section id="multilayer-statistics">
 <h3>Multilayer Statistics<a class="headerlink" href="#multilayer-statistics" title="Link to this heading"></a></h3>
 <p><strong>Layer density</strong> - <span class="math notranslate nohighlight">\(O(m_\alpha)\)</span> per layer: density of edges within layer <span class="math notranslate nohighlight">\(\alpha\)</span></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -605,7 +605,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">q</span></code>: In-out parameter (default: 1.0)</p></li>
 </ul>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.wrappers</span> <span class="kn">import</span> <span class="n">node2vec_embedding</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">node2vec_embedding</span>
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
@@ -656,7 +656,7 @@
 </ul>
 <p><strong>Scalability:</strong> Practical for tens of thousands of nodes in sparse graphs</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
 <span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout_style</span><span class="o">=</span><span class="s1">&#39;diagonal&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -671,7 +671,7 @@
 </ul>
 <p><strong>Scalability:</strong> Practical up to a few thousand nodes</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">hairball_plot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
 <span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -686,7 +686,7 @@
 </ul>
 <p><strong>Scalability:</strong> Memory-bound; scales to very large sparse networks when plotted as matrices</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="s1">&#39;toarray&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">adj</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>

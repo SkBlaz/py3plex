@@ -294,8 +294,8 @@
 </ul>
 <p>For this example, we’ll create a simple network programmatically:</p>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Create a simple multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -336,7 +336,7 @@
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
 
 <span class="c1"># Or using an absolute path</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;datasets&quot;</span><span class="p">,</span> <span class="s2">&quot;multiedgelist.txt&quot;</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
 </pre></div>
@@ -464,7 +464,7 @@ max       15.000000                0.301000
 <section id="basic-queries">
 <h3>Basic Queries<a class="headerlink" href="#basic-queries" title="Link to this heading"></a></h3>
 <p>Create and execute queries using the <code class="docutils literal notranslate"><span class="pre">Q</span></code> and <code class="docutils literal notranslate"><span class="pre">L</span></code> imports:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Get all nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -893,7 +893,7 @@ High-influence nodes: 8
 <section id="multiple-layer-selection">
 <h3>Multiple Layer Selection<a class="headerlink" href="#multiple-layer-selection" title="Link to this heading"></a></h3>
 <p>Use <strong>layer algebra</strong> to combine layers. The <code class="docutils literal notranslate"><span class="pre">L</span></code> object supports set operations (<code class="docutils literal notranslate"><span class="pre">|</span></code> for union, <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> for intersection, <code class="docutils literal notranslate"><span class="pre">-</span></code> for difference):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Union: nodes/edges from EITHER layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
@@ -1039,7 +1039,7 @@ Mean edge betweenness: 0.028
 <section id="auto-computing-centrality-metrics">
 <h3>Auto-Computing Centrality Metrics<a class="headerlink" href="#auto-computing-centrality-metrics" title="Link to this heading"></a></h3>
 <p>When you reference a centrality metric in operations like <code class="docutils literal notranslate"><span class="pre">top_k()</span></code>, <code class="docutils literal notranslate"><span class="pre">order_by()</span></code>, or other ranking operations, the DSL will automatically compute it if not already present:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># The DSL auto-computes betweenness_centrality when needed</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
@@ -1168,7 +1168,7 @@ Known attributes: betweenness, betweenness_centrality, closeness, closeness_cent
 <section id="grouping-requirements-and-clear-errors">
 <h3>Grouping Requirements and Clear Errors<a class="headerlink" href="#grouping-requirements-and-clear-errors" title="Link to this heading"></a></h3>
 <p>Some operations require <strong>active grouping</strong> (via <code class="docutils literal notranslate"><span class="pre">per_layer()</span></code> or <code class="docutils literal notranslate"><span class="pre">group_by()</span></code>). The DSL raises <code class="docutils literal notranslate"><span class="pre">GroupingError</span></code> with clear guidance when these operations are used incorrectly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.errors</span> <span class="kn">import</span> <span class="n">GroupingError</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">GroupingError</span>
 
 <span class="c1"># This will raise GroupingError</span>
 <span class="k">try</span><span class="p">:</span>
@@ -1511,7 +1511,7 @@ Network became denser
 <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;influential_nodes.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Visualize</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">],</span>
             <span class="n">s</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;layer_count&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
@@ -1568,7 +1568,7 @@ Network became denser
           <span class="sa">f</span><span class="s2">&quot;avg clustering=</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Create comparison DataFrame</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="n">comparison</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">layer_stats</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layer comparison:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">comparison</span><span class="p">)</span>
@@ -1624,8 +1624,8 @@ Layer comparison:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subnetwork mean betweenness: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Export for visualization or further analysis</span>
-<span class="kn">from</span> <span class="nn">py3plex.visualization</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">subnetwork</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1669,15 +1669,15 @@ Subnetwork mean betweenness: 0.0892
 <span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">core_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
 <span class="c1"># 2. Run community detection on subnetwork</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.community_wrapper</span> <span class="kn">import</span> <span class="n">louvain_communities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.community_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">subnetwork</span><span class="p">)</span>
 
 <span class="c1"># 3. Analyze communities</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
 
 <span class="c1"># 4. Visualize or export</span>
-<span class="kn">from</span> <span class="nn">py3plex.visualization</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="c1"># Note: communities dict can be used for node coloring if the visualization function supports it</span>
@@ -1712,8 +1712,8 @@ Subnetwork mean betweenness: 0.0892
 </div>
 <p><strong>The Solution: Grouping and Coverage API</strong></p>
 <p>The new DSL supports per-layer operations in a single query:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_generators</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Generate example network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1860,8 +1860,8 @@ Layer specialists (exactly 1): 15
 <section id="queryresult-to-pandas-workflow">
 <h3>QueryResult to pandas Workflow<a class="headerlink" href="#queryresult-to-pandas-workflow" title="Link to this heading"></a></h3>
 <p>The recommended pattern for combining DSL queries with data transformations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a sample network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -1973,7 +1973,7 @@ Layer specialists (exactly 1): 15
 <section id="example-combined-workflow">
 <h3>Example: Combined Workflow<a class="headerlink" href="#example-combined-workflow" title="Link to this heading"></a></h3>
 <p>A realistic workflow combining both DSL and pandas operations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Scenario: Find influential nodes in social network, normalize scores,</span>
 <span class="c1">#           rank within communities, export for visualization</span>
