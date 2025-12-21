@@ -17,7 +17,6 @@
       <script src="_static/documentation_options.js?v=1ed6394b"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -154,20 +153,6 @@
 <a class="reference external image-reference" href="https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml"><img alt="Code Quality" src="https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg" />
 </a>
 <hr class="docutils" />
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><strong>⚠️ LEGACY DOCUMENTATION – NO LONGER UPDATED</strong></p>
-<p>You are viewing the <strong>legacy ReadTheDocs documentation</strong> for py3plex. This documentation is no longer maintained and may contain outdated information.</p>
-<p><strong>➡️ Please visit the official documentation at https://skblaz.github.io/py3plex/ for up-to-date guides, tutorials, and API references.</strong></p>
-<p>The legacy documentation is kept online for historical reference only.</p>
-</div>
-<hr class="docutils" />
-<div class="note admonition">
-<p class="admonition-title">Documentation Versions</p>
-<p><strong>Current Documentation (1.x):</strong> You are viewing the documentation for py3plex 1.x, the current stable version. These docs are actively maintained and updated at <strong>https://skblaz.github.io/py3plex/</strong> (GitHub Pages).</p>
-<p><strong>Legacy Documentation (0.8x):</strong> The legacy documentation for py3plex 0.8x remains available at <a class="reference external" href="https://py3plex.readthedocs.io">https://py3plex.readthedocs.io</a> for historical reference only. It is no longer maintained and may contain outdated information. Most users should use the 1.x documentation you’re reading now.</p>
-</div>
-<hr class="docutils" />
 <p>py3plex provides scalable analysis and visualization of multilayer and multiplex networks in Python.</p>
 <p><strong>Key features at a glance:</strong></p>
 <ul class="simple">
@@ -183,7 +168,7 @@
 <div class="dsl-example admonition">
 <p class="admonition-title">DSL: Query Networks Like SQL</p>
 <p>The py3plex DSL lets you query networks using intuitive SQL-like syntax or a type-safe Python builder API. Both return the same results; pick the style that fits your workflow.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># String DSL: Simple and readable</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span>
@@ -220,7 +205,7 @@
 </pre></div>
 </div>
 <p>Step 2 — Create a multilayer network</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>

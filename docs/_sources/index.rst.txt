@@ -15,26 +15,6 @@ Py3plex: Multilayer Network Analysis
 
 ----
 
-.. warning::
-   **⚠️ LEGACY DOCUMENTATION – NO LONGER UPDATED**
-   
-   You are viewing the **legacy ReadTheDocs documentation** for py3plex. This documentation is no longer maintained and may contain outdated information.
-   
-   **➡️ Please visit the official documentation at https://skblaz.github.io/py3plex/ for up-to-date guides, tutorials, and API references.**
-   
-   The legacy documentation is kept online for historical reference only.
-
-----
-
-.. admonition:: Documentation Versions
-   :class: note
-
-   **Current Documentation (1.x):** You are viewing the documentation for py3plex 1.x, the current stable version. These docs are actively maintained and updated at **https://skblaz.github.io/py3plex/** (GitHub Pages).
-
-   **Legacy Documentation (0.8x):** The legacy documentation for py3plex 0.8x remains available at https://py3plex.readthedocs.io for historical reference only. It is no longer maintained and may contain outdated information. Most users should use the 1.x documentation you're reading now.
-
-----
-
 py3plex provides scalable analysis and visualization of multilayer and multiplex networks in Python.
 
 **Key features at a glance:**
