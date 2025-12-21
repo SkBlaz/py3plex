@@ -12,6 +12,7 @@ Network Operations
 
 * :doc:`load_and_build_networks` — Create networks from scratch or load from files
 * :doc:`export_serialize` — Save networks in various formats
+* :doc:`compat_conversions` — Convert between py3plex and other graph libraries
 
 Analysis Tasks
 --------------
@@ -64,6 +65,7 @@ Quick Navigation
 
 * Load data → :doc:`load_and_build_networks`
 * Export or serialize data → :doc:`export_serialize`
+* Convert to/from NetworkX, SciPy, igraph → :doc:`compat_conversions`
 * Measure network properties → :doc:`compute_statistics`
 * Find communities → :doc:`run_community_detection`
 * Create visualizations → :doc:`visualize_networks`

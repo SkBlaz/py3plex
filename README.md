@@ -95,7 +95,7 @@ restored = convert(nx_graph, "py3plex")
 - ✓ Schema validation and compatibility checking
 - ✓ Support for NetworkX, SciPy sparse, igraph, PyG (planned), DGL (planned)
 
-See [docs/compat/overview.md](docs/compat/overview.md) for complete documentation.
+See [documentation](https://skblaz.github.io/py3plex/) for complete interoperability guide.
 
 ## Getting Started
 

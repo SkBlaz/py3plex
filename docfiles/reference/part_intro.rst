@@ -10,6 +10,7 @@ Python API Reference
 
 * :doc:`api_index` — Full API documentation for all modules and classes
 * :doc:`algorithm_reference` — Complete algorithm reference with parameters and examples
+* :doc:`compat` — Compatibility layer API for cross-ecosystem conversions
 
 DSL & Query Reference
 ---------------------
