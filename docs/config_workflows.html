@@ -479,13 +479,13 @@ py3plex<span class="w"> </span>run-config<span class="w"> </span>my_workflow.yam
 <section id="python-api">
 <h3><a class="toc-backref" href="#id19" role="doc-backlink">Python API</a><a class="headerlink" href="#python-api" title="Link to this heading"></a></h3>
 <p>Run workflows programmatically:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.workflows</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_workflow</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.workflows</span> <span class="kn">import</span> <span class="n">run_workflow</span>
 
 <span class="c1"># Run workflow from config file</span>
 <span class="n">run_workflow</span><span class="p">(</span><span class="s2">&quot;my_workflow.yaml&quot;</span><span class="p">)</span>
 
 <span class="c1"># Or use the full API</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.workflows</span><span class="w"> </span><span class="kn">import</span> <span class="n">WorkflowConfig</span><span class="p">,</span> <span class="n">WorkflowRunner</span>
+<span class="kn">from</span> <span class="nn">py3plex.workflows</span> <span class="kn">import</span> <span class="n">WorkflowConfig</span><span class="p">,</span> <span class="n">WorkflowRunner</span>
 
 <span class="n">config</span> <span class="o">=</span> <span class="n">WorkflowConfig</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;my_workflow.yaml&quot;</span><span class="p">)</span>
 

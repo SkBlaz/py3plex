@@ -194,8 +194,8 @@ examples assume an in-memory <code class="docutils literal notranslate"><span cl
 <h3>Using Pickle (Recommended)<a class="headerlink" href="#using-pickle-recommended" title="Link to this heading"></a></h3>
 <p>Pickle is the quickest way to persist a network within Python environments when
 you do not need cross-language compatibility.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
 
 <span class="c1"># Create or load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -251,7 +251,7 @@ follows <code class="docutils literal notranslate"><span class="pre">source</spa
 <h3>CSV Format<a class="headerlink" href="#csv-format" title="Link to this heading"></a></h3>
 <p>Create a CSV edge list with explicit columns for nodes, layers, and weights.
 CSV is easier to load in spreadsheets and dataframes than the plain text format.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1"># Convert to DataFrame</span>
 <span class="n">edges_data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -283,7 +283,7 @@ CSV is easier to load in spreadsheets and dataframes than the plain text format.
 <p>Capture nodes, layers, edge endpoints, and their attributes in a single JSON
 document for easy round-tripping. JSON keeps attribute dictionaries intact and
 readable.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 
 <span class="c1"># Build JSON structure</span>
 <span class="n">network_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -326,8 +326,8 @@ readable.</p>
 <section id="load-from-json">
 <h3>Load from JSON<a class="headerlink" href="#load-from-json" title="Link to this heading"></a></h3>
 <p>Recreate a multilayer network from the exported JSON representation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load JSON</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -356,7 +356,7 @@ readable.</p>
 <p>Flatten multilayer data into a single NetworkX graph, keeping the layer as a
 node attribute. This drops parallel edges between layers and merges nodes with
 the same ID across layers.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 
 <span class="c1"># Flatten to single layer</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
@@ -382,8 +382,8 @@ the same ID across layers.</p>
 <section id="export-specific-layer">
 <h3>Export Specific Layer<a class="headerlink" href="#export-specific-layer" title="Link to this heading"></a></h3>
 <p>Persist just one layer to a simpler graph file.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Extract single layer</span>
 <span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;friends&#39;</span>
@@ -408,8 +408,8 @@ the same ID across layers.</p>
 <p>Use columnar storage (Arrow/Parquet) to handle large edge lists efficiently.
 These formats preserve data types, compress well, and load quickly for analytics
 workloads.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.parquet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pq</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="k">as</span> <span class="nn">pq</span>
 
 <span class="c1"># Convert edges to table</span>
 <span class="n">edges_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -444,8 +444,8 @@ workloads.</p>
 <section id="load-from-parquet">
 <h3>Load from Parquet<a class="headerlink" href="#load-from-parquet" title="Link to this heading"></a></h3>
 <p>Rebuild a network from a Parquet edge list. Ensure <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> is installed.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.parquet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pq</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="k">as</span> <span class="nn">pq</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load table</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">pq</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
@@ -472,7 +472,7 @@ workloads.</p>
 <h3>Save Analysis Results<a class="headerlink" href="#save-analysis-results" title="Link to this heading"></a></h3>
 <p>Persist computed metrics (via DSL) for later inspection or sharing with
 colleagues.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span>
 
 <span class="c1"># Compute statistics</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
@@ -491,8 +491,8 @@ colleagues.</p>
 <h3>Save Communities<a class="headerlink" href="#save-communities" title="Link to this heading"></a></h3>
 <p>Store detected communities alongside node and layer IDs for downstream
 visualization or comparison.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_communities</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">louvain_communities</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1"># Detect communities</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -518,13 +518,13 @@ visualization or comparison.</p>
 <h3>Export Multiple Formats<a class="headerlink" href="#export-multiple-formats" title="Link to this heading"></a></h3>
 <p>Create a small export bundle so you can hand off the same network in different
 formats.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1"># Prepare reusable structures</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">edges_to_df</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">edges_to_df</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
     <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
         <span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src_layer</span><span class="p">),</span> <span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">dst_layer</span><span class="p">)</span> <span class="o">=</span> <span class="n">edge</span>

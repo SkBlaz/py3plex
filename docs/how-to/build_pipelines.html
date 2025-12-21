@@ -180,8 +180,8 @@
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h2>
 <p>Filter → add a column → sort → convert to pandas:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.graph_ops</span> <span class="kn">import</span> <span class="n">nodes</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
@@ -311,8 +311,8 @@
 <section id="combining-with-dsl">
 <h2>Combining with DSL<a class="headerlink" href="#combining-with-dsl" title="Link to this heading"></a></h2>
 <p>Mix dplyr-style operations with DSL queries to narrow down candidates, then enrich them:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
+<span class="kn">from</span> <span class="nn">py3plex.graph_ops</span> <span class="kn">import</span> <span class="n">nodes</span>
 
 <span class="c1"># Use the same network as above</span>
 <span class="c1"># Use DSL to select nodes and compute measures once</span>
@@ -340,7 +340,7 @@
 <section id="scikit-learn-style-pipelines">
 <h2>Scikit-learn-style Pipelines<a class="headerlink" href="#scikit-learn-style-pipelines" title="Link to this heading"></a></h2>
 <p>Use the built-in <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code> to chain reusable steps (each step implements <code class="docutils literal notranslate"><span class="pre">transform</span></code> and receives the previous output). The first step should handle <code class="docutils literal notranslate"><span class="pre">None</span></code> input (<code class="docutils literal notranslate"><span class="pre">LoadStep</span></code> does). Replace or extend steps with your own <code class="docutils literal notranslate"><span class="pre">PipelineStep</span></code> subclasses when needed.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">,</span> <span class="n">ComputeStats</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">,</span> <span class="n">ComputeStats</span>
 
 <span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
     <span class="p">(</span><span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)),</span>
@@ -359,7 +359,7 @@
 <section id="persist-step-settings">
 <h3>Persist Step Settings<a class="headerlink" href="#persist-step-settings" title="Link to this heading"></a></h3>
 <p>Store the parameters you passed to each step so you can recreate the pipeline later:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 
 <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;steps&quot;</span><span class="p">:</span> <span class="p">[</span>
@@ -377,8 +377,8 @@
 <section id="reload-and-rebuild">
 <h3>Reload and Rebuild<a class="headerlink" href="#reload-and-rebuild" title="Link to this heading"></a></h3>
 <p>Recreate the pipeline by instantiating the same steps with saved parameters:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">,</span> <span class="n">ComputeStats</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">py3plex.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">,</span> <span class="n">ComputeStats</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;pipeline.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -400,7 +400,7 @@
 <h2>Reusable Pipelines<a class="headerlink" href="#reusable-pipelines" title="Link to this heading"></a></h2>
 <section id="create-pipeline-functions">
 <h3>Create Pipeline Functions<a class="headerlink" href="#create-pipeline-functions" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">identify_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">identify_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reusable pipeline to identify hub nodes.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>

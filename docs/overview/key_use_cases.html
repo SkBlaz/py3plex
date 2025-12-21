@@ -178,8 +178,8 @@ can answer.</p>
 <li><p>Detecting communities that span different relationship types</p></li>
 <li><p>Predicting information diffusion through multiple channels</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Example: Multi-platform social network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -214,8 +214,8 @@ can answer.</p>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Multi-omics biological network</span>
 <span class="c1"># Protein-protein interactions + gene regulation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
@@ -249,7 +249,7 @@ can answer.</p>
 <li><p>Analyzing resilience to disruptions</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Multimodal city transportation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
@@ -358,8 +358,8 @@ person identifiers.</p>
 <li><p>Regulatory network analysis</p></li>
 </ul>
 <p><strong>Example: Multi-layer financial network</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Build financial network with multiple relationship types</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -402,7 +402,7 @@ person identifiers.</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Find institutions represented in multiple layers</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="n">node_layer_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
 <span class="n">multi_layer_nodes</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">node_layer_count</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span>

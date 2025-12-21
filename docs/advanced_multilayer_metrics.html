@@ -171,8 +171,8 @@
 </section>
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -371,8 +371,8 @@ Rows follow the returned <code class="docutils literal notranslate"><span class=
 <span class="p">)</span>
 
 <span class="c1"># Visualize as heatmap</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.3f&#39;</span><span class="p">,</span>
@@ -423,8 +423,8 @@ Eve      0.000   0.000   0.000
 <span class="n">corr_matrix</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">interlayer_degree_correlation_matrix</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="c1"># Visualize</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.3f&#39;</span><span class="p">,</span>
@@ -452,9 +452,9 @@ L3         -0.250    0.000    1.000
 <section id="complete-example">
 <h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
 <p>This example demonstrates all advanced metrics on a social-professional network:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># Create 3-layer social-professional network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -733,8 +733,8 @@ k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|\]</div>
 <section id="usage-examples">
 <h3>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h3>
 <p><strong>Basic Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_clustering</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_clustering</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_clustering</span> <span class="kn">import</span> <span class="n">multilayer_clustering</span>
 
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
