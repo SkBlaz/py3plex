@@ -96,6 +96,26 @@ workflows = [
 arrow = [
     "pyarrow>=10.0.0",
 ]
+# Optional: Cross-compatibility conversion layer
+compat = [
+    "networkx>=2.5",
+    "scipy>=1.5.0",
+    "pandas>=1.2.0",
+    "pyarrow>=10.0.0",  # For parquet sidecar format
+]
+# Optional: igraph support for compat layer
+igraph = [
+    "python-igraph>=0.10.0",
+]
+# Optional: PyTorch Geometric support for compat layer
+pyg = [
+    "torch>=1.10.0",
+    "torch-geometric>=2.0.0",
+]
+# Optional: DGL support for compat layer
+dgl_compat = [
+    "dgl>=0.9.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"
