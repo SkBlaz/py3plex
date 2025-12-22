@@ -131,12 +131,14 @@ class TestNetworkXRoundtripProperties:
         """Property: NetworkX roundtrip preserves node IDs."""
         assume(len(graph.nodes) > 0)
         
-        original_ids = {node.id for node in graph.nodes}
+        # graph.nodes is a dict, so get keys (node IDs) directly
+        original_ids = set(graph.nodes.keys())
         
         nx_graph = convert(graph, "networkx")
         restored = convert(nx_graph, "multilayer_graph")
         
-        restored_ids = {node.id for node in restored.nodes}
+        # restored.nodes is also a dict
+        restored_ids = set(restored.nodes.keys())
         assert restored_ids == original_ids
     
     @settings(max_examples=20, deadline=5000, suppress_health_check=[HealthCheck.too_slow, HealthCheck.large_base_example])
@@ -261,7 +263,8 @@ class TestScipySparseProperties:
         assume(len(graph.nodes) > 0)
         
         # If graph has node or edge attributes, strict mode should fail
-        has_node_attrs = any(node.attributes for node in graph.nodes)
+        # graph.nodes is a dict, iterate over values to get Node objects
+        has_node_attrs = any(node.attributes for node in graph.nodes.values())
         has_edge_attrs = any(edge.attributes for edge in graph.edges)
         
         if has_node_attrs or has_edge_attrs:
