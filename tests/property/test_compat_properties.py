@@ -74,11 +74,24 @@ def simple_graphs(draw, directed=None, min_nodes=0, max_nodes=5):
     # Generate edges (ensure valid endpoints) - limit to smaller number
     if n_nodes >= 2:
         n_edges = draw(st.integers(min_value=0, max_value=min(8, n_nodes * 2)))
-        for _ in range(n_edges):
+        used_edge_tuples = set()
+        
+        # Try to generate n_edges unique edges, with extra attempts in case of duplicates
+        for _ in range(n_edges * 3):  # Extra attempts to handle duplicates
+            if len(used_edge_tuples) >= n_edges:
+                break
+            
             src = draw(st.sampled_from(node_id_list))
             dst = draw(st.sampled_from(node_id_list))
+            key = 0  # Default key for simple graphs
+            edge_tuple = (src, dst, "L1", "L1", key)
             
-            # Avoid creating the same edge multiple times for simple graphs
+            # Skip if this edge already exists
+            if edge_tuple in used_edge_tuples:
+                continue
+            
+            used_edge_tuples.add(edge_tuple)
+            
             edge_attrs = draw(simple_attributes())
             if "weight" not in edge_attrs:
                 edge_attrs["weight"] = draw(st.floats(min_value=0.1, max_value=10.0, allow_nan=False))
@@ -86,6 +99,7 @@ def simple_graphs(draw, directed=None, min_nodes=0, max_nodes=5):
             graph.add_edge(Edge(
                 src=src, dst=dst,
                 src_layer="L1", dst_layer="L1",
+                key=key,
                 attributes=edge_attrs
             ))
     
