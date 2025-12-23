@@ -17,15 +17,26 @@ from py3plex.io.schema import MultiLayerGraph, Node, Layer, Edge
 
 # Hypothesis strategies for generating test graphs
 @st.composite
-def node_ids(draw):
-    """Generate valid node IDs (str or int)."""
-    return draw(st.one_of(
-        st.integers(min_value=0, max_value=100),
-        st.text(min_size=1, max_size=10, alphabet=st.characters(
+def node_ids(draw, id_type=None):
+    """Generate valid node IDs (all str or all int per-graph).
+    
+    Args:
+        draw: Hypothesis draw function
+        id_type: Optional type ('int' or 'str'). If None, randomly choose per-graph.
+    
+    Returns:
+        Node ID of consistent type within a graph
+    """
+    if id_type is None:
+        id_type = draw(st.sampled_from(['int', 'str']))
+    
+    if id_type == 'int':
+        return draw(st.integers(min_value=0, max_value=100))
+    else:
+        return draw(st.text(min_size=1, max_size=10, alphabet=st.characters(
             whitelist_categories=('Lu', 'Ll', 'Nd'),
             min_codepoint=65, max_codepoint=122
-        ))
-    ))
+        )))
 
 
 @st.composite
@@ -56,16 +67,19 @@ def simple_graphs(draw, directed=None, min_nodes=0, max_nodes=5):
     is_directed = draw(st.booleans()) if directed is None else directed
     n_nodes = draw(st.integers(min_value=min_nodes, max_value=max_nodes))
     
+    # Choose consistent node ID type for this entire graph (all int or all str)
+    id_type = draw(st.sampled_from(['int', 'str']))
+    
     graph = MultiLayerGraph(directed=is_directed)
     graph.add_layer(Layer(id="L1"))
     
-    # Generate nodes
+    # Generate nodes with consistent ID type
     node_id_list = []
     for i in range(n_nodes):
-        node_id = draw(node_ids())
+        node_id = draw(node_ids(id_type=id_type))
         # Ensure unique node IDs
         while node_id in node_id_list:
-            node_id = draw(node_ids())
+            node_id = draw(node_ids(id_type=id_type))
         node_id_list.append(node_id)
         
         attrs = draw(simple_attributes())
