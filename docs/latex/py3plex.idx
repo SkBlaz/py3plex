@@ -3,21 +3,21 @@
 \indexentry{ensure() (in module py3plex.core.multinet)@\spxentry{ensure()}\spxextra{in module py3plex.core.multinet}|hyperpage}{344}
 \indexentry{invariant() (in module py3plex.core.multinet)@\spxentry{invariant()}\spxextra{in module py3plex.core.multinet}|hyperpage}{344}
 \indexentry{multi\_layer\_network (class in py3plex.core.multinet)@\spxentry{multi\_layer\_network}\spxextra{class in py3plex.core.multinet}|hyperpage}{344}
-\indexentry{add\_dummy\_layers() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{add\_dummy\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{345}
-\indexentry{add\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{add\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{345}
+\indexentry{add\_dummy\_layers() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{add\_dummy\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{346}
+\indexentry{add\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{add\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{346}
 \indexentry{add\_nodes() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{add\_nodes()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{347}
-\indexentry{aggregate\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{aggregate\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{348}
+\indexentry{aggregate\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{aggregate\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{349}
 \indexentry{assign\_partition() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{assign\_partition()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{349}
 \indexentry{basic\_stats() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{basic\_stats()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{349}
 \indexentry{compute\_ollivier\_ricci() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{compute\_ollivier\_ricci()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{349}
-\indexentry{compute\_ollivier\_ricci\_flow() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{compute\_ollivier\_ricci\_flow()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{350}
+\indexentry{compute\_ollivier\_ricci\_flow() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{compute\_ollivier\_ricci\_flow()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{351}
 \indexentry{edge\_count (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{edge\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{352}
 \indexentry{edges\_from\_temporal\_table() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{edges\_from\_temporal\_table()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{352}
 \indexentry{execute\_query() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{execute\_query()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{353}
 \indexentry{fill\_tmp\_with\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{fill\_tmp\_with\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{354}
 \indexentry{from\_edges() (py3plex.core.multinet.multi\_layer\_network class method)@\spxentry{from\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network class method}|hyperpage}{355}
 \indexentry{from\_homogeneous\_hypergraph() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{from\_homogeneous\_hypergraph()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{356}
-\indexentry{from\_networkx() (py3plex.core.multinet.multi\_layer\_network class method)@\spxentry{from\_networkx()}\spxextra{py3plex.core.multinet.multi\_layer\_network class method}|hyperpage}{356}
+\indexentry{from\_networkx() (py3plex.core.multinet.multi\_layer\_network class method)@\spxentry{from\_networkx()}\spxextra{py3plex.core.multinet.multi\_layer\_network class method}|hyperpage}{357}
 \indexentry{get\_decomposition() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_decomposition()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{357}
 \indexentry{get\_decomposition\_cycles() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_decomposition\_cycles()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{357}
 \indexentry{get\_degrees() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_degrees()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{357}
@@ -25,17 +25,17 @@
 \indexentry{get\_label\_matrix() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_label\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{358}
 \indexentry{get\_layers() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{358}
 \indexentry{get\_neighbors() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_neighbors()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{358}
-\indexentry{get\_node\_attribute() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_node\_attribute()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{358}
+\indexentry{get\_node\_attribute() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_node\_attribute()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{359}
 \indexentry{get\_nodes() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_nodes()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{359}
 \indexentry{get\_nx\_object() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_nx\_object()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{359}
 \indexentry{get\_partition() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_partition()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{359}
-\indexentry{get\_supra\_adjacency\_matrix() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_supra\_adjacency\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{359}
+\indexentry{get\_supra\_adjacency\_matrix() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_supra\_adjacency\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{360}
 \indexentry{get\_tensor() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_tensor()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{360}
-\indexentry{get\_unique\_entity\_counts() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_unique\_entity\_counts()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{360}
-\indexentry{invert() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{invert()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{360}
-\indexentry{is\_empty (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{is\_empty}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{360}
+\indexentry{get\_unique\_entity\_counts() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{get\_unique\_entity\_counts()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{361}
+\indexentry{invert() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{invert()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{361}
+\indexentry{is\_empty (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{is\_empty}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{361}
 \indexentry{layer\_count (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{layer\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{361}
-\indexentry{layers (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{layers}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{361}
+\indexentry{layers (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{layers}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{362}
 \indexentry{load\_embedding() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{load\_embedding()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{362}
 \indexentry{load\_layer\_name\_mapping() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{load\_layer\_name\_mapping()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{362}
 \indexentry{load\_network() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{load\_network()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{362}
@@ -47,7 +47,7 @@
 \indexentry{node\_count (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{node\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{364}
 \indexentry{read\_ground\_truth\_communities() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{read\_ground\_truth\_communities()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{364}
 \indexentry{remove\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{remove\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{364}
-\indexentry{remove\_layer\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{remove\_layer\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{364}
+\indexentry{remove\_layer\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{remove\_layer\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{365}
 \indexentry{remove\_nodes() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{remove\_nodes()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{365}
 \indexentry{save\_network() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{save\_network()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{365}
 \indexentry{serialize\_to\_edgelist() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{serialize\_to\_edgelist()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{366}
@@ -55,16 +55,16 @@
 \indexentry{sparse\_to\_px() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{sparse\_to\_px()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{367}
 \indexentry{split\_to\_layers() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{split\_to\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{367}
 \indexentry{subnetwork() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{subnetwork()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{367}
-\indexentry{summary() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{summary()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{367}
+\indexentry{summary() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{summary()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{368}
 \indexentry{test\_scale\_free() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{test\_scale\_free()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{368}
 \indexentry{to\_homogeneous\_hypergraph() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{to\_homogeneous\_hypergraph()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{368}
 \indexentry{to\_json() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{to\_json()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{369}
 \indexentry{to\_networkx() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{to\_networkx()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{369}
-\indexentry{to\_sparse\_matrix() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{to\_sparse\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{369}
-\indexentry{visualize\_matrix() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{visualize\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{369}
-\indexentry{visualize\_network() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{visualize\_network()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{369}
+\indexentry{to\_sparse\_matrix() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{to\_sparse\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{370}
+\indexentry{visualize\_matrix() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{visualize\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{370}
+\indexentry{visualize\_network() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{visualize\_network()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{370}
 \indexentry{visualize\_ricci\_core() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{visualize\_ricci\_core()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{371}
-\indexentry{visualize\_ricci\_layers() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{visualize\_ricci\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{371}
+\indexentry{visualize\_ricci\_layers() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{visualize\_ricci\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{372}
 \indexentry{visualize\_ricci\_supra() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{visualize\_ricci\_supra()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{372}
 \indexentry{require() (in module py3plex.core.multinet)@\spxentry{require()}\spxextra{in module py3plex.core.multinet}|hyperpage}{373}
 \indexentry{module@\spxentry{module}!py3plex.core.parsers@\spxentry{py3plex.core.parsers}|hyperpage}{373}
@@ -77,34 +77,34 @@
 \indexentry{parse\_edgelist\_multi\_types() (in module py3plex.core.parsers)@\spxentry{parse\_edgelist\_multi\_types()}\spxextra{in module py3plex.core.parsers}|hyperpage}{373}
 \indexentry{parse\_embedding() (in module py3plex.core.parsers)@\spxentry{parse\_embedding()}\spxextra{in module py3plex.core.parsers}|hyperpage}{374}
 \indexentry{parse\_gml() (in module py3plex.core.parsers)@\spxentry{parse\_gml()}\spxextra{in module py3plex.core.parsers}|hyperpage}{374}
-\indexentry{parse\_gpickle() (in module py3plex.core.parsers)@\spxentry{parse\_gpickle()}\spxextra{in module py3plex.core.parsers}|hyperpage}{374}
+\indexentry{parse\_gpickle() (in module py3plex.core.parsers)@\spxentry{parse\_gpickle()}\spxextra{in module py3plex.core.parsers}|hyperpage}{375}
 \indexentry{parse\_gpickle\_biomine() (in module py3plex.core.parsers)@\spxentry{parse\_gpickle\_biomine()}\spxextra{in module py3plex.core.parsers}|hyperpage}{375}
 \indexentry{parse\_matrix() (in module py3plex.core.parsers)@\spxentry{parse\_matrix()}\spxextra{in module py3plex.core.parsers}|hyperpage}{375}
 \indexentry{parse\_matrix\_to\_nx() (in module py3plex.core.parsers)@\spxentry{parse\_matrix\_to\_nx()}\spxextra{in module py3plex.core.parsers}|hyperpage}{375}
-\indexentry{parse\_multi\_edgelist() (in module py3plex.core.parsers)@\spxentry{parse\_multi\_edgelist()}\spxextra{in module py3plex.core.parsers}|hyperpage}{375}
-\indexentry{parse\_multiedge\_tuple\_list() (in module py3plex.core.parsers)@\spxentry{parse\_multiedge\_tuple\_list()}\spxextra{in module py3plex.core.parsers}|hyperpage}{375}
+\indexentry{parse\_multi\_edgelist() (in module py3plex.core.parsers)@\spxentry{parse\_multi\_edgelist()}\spxextra{in module py3plex.core.parsers}|hyperpage}{376}
+\indexentry{parse\_multiedge\_tuple\_list() (in module py3plex.core.parsers)@\spxentry{parse\_multiedge\_tuple\_list()}\spxextra{in module py3plex.core.parsers}|hyperpage}{376}
 \indexentry{parse\_multiplex\_edges() (in module py3plex.core.parsers)@\spxentry{parse\_multiplex\_edges()}\spxextra{in module py3plex.core.parsers}|hyperpage}{376}
-\indexentry{parse\_multiplex\_folder() (in module py3plex.core.parsers)@\spxentry{parse\_multiplex\_folder()}\spxextra{in module py3plex.core.parsers}|hyperpage}{376}
+\indexentry{parse\_multiplex\_folder() (in module py3plex.core.parsers)@\spxentry{parse\_multiplex\_folder()}\spxextra{in module py3plex.core.parsers}|hyperpage}{377}
 \indexentry{parse\_network() (in module py3plex.core.parsers)@\spxentry{parse\_network()}\spxextra{in module py3plex.core.parsers}|hyperpage}{377}
-\indexentry{parse\_nx() (in module py3plex.core.parsers)@\spxentry{parse\_nx()}\spxextra{in module py3plex.core.parsers}|hyperpage}{377}
+\indexentry{parse\_nx() (in module py3plex.core.parsers)@\spxentry{parse\_nx()}\spxextra{in module py3plex.core.parsers}|hyperpage}{378}
 \indexentry{parse\_simple\_edgelist() (in module py3plex.core.parsers)@\spxentry{parse\_simple\_edgelist()}\spxextra{in module py3plex.core.parsers}|hyperpage}{378}
 \indexentry{parse\_spin\_edgelist() (in module py3plex.core.parsers)@\spxentry{parse\_spin\_edgelist()}\spxextra{in module py3plex.core.parsers}|hyperpage}{378}
-\indexentry{require() (in module py3plex.core.parsers)@\spxentry{require()}\spxextra{in module py3plex.core.parsers}|hyperpage}{378}
-\indexentry{save\_edgelist() (in module py3plex.core.parsers)@\spxentry{save\_edgelist()}\spxextra{in module py3plex.core.parsers}|hyperpage}{378}
+\indexentry{require() (in module py3plex.core.parsers)@\spxentry{require()}\spxextra{in module py3plex.core.parsers}|hyperpage}{379}
+\indexentry{save\_edgelist() (in module py3plex.core.parsers)@\spxentry{save\_edgelist()}\spxextra{in module py3plex.core.parsers}|hyperpage}{379}
 \indexentry{save\_gpickle() (in module py3plex.core.parsers)@\spxentry{save\_gpickle()}\spxextra{in module py3plex.core.parsers}|hyperpage}{379}
 \indexentry{save\_multiedgelist() (in module py3plex.core.parsers)@\spxentry{save\_multiedgelist()}\spxextra{in module py3plex.core.parsers}|hyperpage}{379}
 \indexentry{module@\spxentry{module}!py3plex.core.converters@\spxentry{py3plex.core.converters}|hyperpage}{379}
 \indexentry{py3plex.core.converters@\spxentry{py3plex.core.converters}!module@\spxentry{module}|hyperpage}{379}
 \indexentry{compute\_layout() (in module py3plex.core.converters)@\spxentry{compute\_layout()}\spxextra{in module py3plex.core.converters}|hyperpage}{379}
-\indexentry{ensure() (in module py3plex.core.converters)@\spxentry{ensure()}\spxextra{in module py3plex.core.converters}|hyperpage}{379}
-\indexentry{prepare\_for\_parsing() (in module py3plex.core.converters)@\spxentry{prepare\_for\_parsing()}\spxextra{in module py3plex.core.converters}|hyperpage}{379}
-\indexentry{prepare\_for\_visualization() (in module py3plex.core.converters)@\spxentry{prepare\_for\_visualization()}\spxextra{in module py3plex.core.converters}|hyperpage}{379}
+\indexentry{ensure() (in module py3plex.core.converters)@\spxentry{ensure()}\spxextra{in module py3plex.core.converters}|hyperpage}{380}
+\indexentry{prepare\_for\_parsing() (in module py3plex.core.converters)@\spxentry{prepare\_for\_parsing()}\spxextra{in module py3plex.core.converters}|hyperpage}{380}
+\indexentry{prepare\_for\_visualization() (in module py3plex.core.converters)@\spxentry{prepare\_for\_visualization()}\spxextra{in module py3plex.core.converters}|hyperpage}{380}
 \indexentry{prepare\_for\_visualization\_hairball() (in module py3plex.core.converters)@\spxentry{prepare\_for\_visualization\_hairball()}\spxextra{in module py3plex.core.converters}|hyperpage}{380}
-\indexentry{require() (in module py3plex.core.converters)@\spxentry{require()}\spxextra{in module py3plex.core.converters}|hyperpage}{380}
-\indexentry{module@\spxentry{module}!py3plex.core.random\_generators@\spxentry{py3plex.core.random\_generators}|hyperpage}{380}
-\indexentry{py3plex.core.random\_generators@\spxentry{py3plex.core.random\_generators}!module@\spxentry{module}|hyperpage}{380}
-\indexentry{SBMMetadata (class in py3plex.core.random\_generators)@\spxentry{SBMMetadata}\spxextra{class in py3plex.core.random\_generators}|hyperpage}{380}
-\indexentry{block\_memberships (py3plex.core.random\_generators.SBMMetadata attribute)@\spxentry{block\_memberships}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}|hyperpage}{380}
+\indexentry{require() (in module py3plex.core.converters)@\spxentry{require()}\spxextra{in module py3plex.core.converters}|hyperpage}{381}
+\indexentry{module@\spxentry{module}!py3plex.core.random\_generators@\spxentry{py3plex.core.random\_generators}|hyperpage}{381}
+\indexentry{py3plex.core.random\_generators@\spxentry{py3plex.core.random\_generators}!module@\spxentry{module}|hyperpage}{381}
+\indexentry{SBMMetadata (class in py3plex.core.random\_generators)@\spxentry{SBMMetadata}\spxextra{class in py3plex.core.random\_generators}|hyperpage}{381}
+\indexentry{block\_memberships (py3plex.core.random\_generators.SBMMetadata attribute)@\spxentry{block\_memberships}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}|hyperpage}{381}
 \indexentry{block\_matrix (py3plex.core.random\_generators.SBMMetadata attribute)@\spxentry{block\_matrix}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}|hyperpage}{381}
 \indexentry{node\_ids (py3plex.core.random\_generators.SBMMetadata attribute)@\spxentry{node\_ids}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}|hyperpage}{381}
 \indexentry{layer\_names (py3plex.core.random\_generators.SBMMetadata attribute)@\spxentry{layer\_names}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}|hyperpage}{381}
@@ -114,26 +114,26 @@
 \indexentry{node\_ids (py3plex.core.random\_generators.SBMMetadata attribute)@\spxentry{node\_ids}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}|hyperpage}{381}
 \indexentry{ensure() (in module py3plex.core.random\_generators)@\spxentry{ensure()}\spxextra{in module py3plex.core.random\_generators}|hyperpage}{381}
 \indexentry{random\_multilayer\_ER() (in module py3plex.core.random\_generators)@\spxentry{random\_multilayer\_ER()}\spxextra{in module py3plex.core.random\_generators}|hyperpage}{381}
-\indexentry{random\_multilayer\_SBM() (in module py3plex.core.random\_generators)@\spxentry{random\_multilayer\_SBM()}\spxextra{in module py3plex.core.random\_generators}|hyperpage}{381}
+\indexentry{random\_multilayer\_SBM() (in module py3plex.core.random\_generators)@\spxentry{random\_multilayer\_SBM()}\spxextra{in module py3plex.core.random\_generators}|hyperpage}{382}
 \indexentry{random\_multiplex\_ER() (in module py3plex.core.random\_generators)@\spxentry{random\_multiplex\_ER()}\spxextra{in module py3plex.core.random\_generators}|hyperpage}{383}
 \indexentry{random\_multiplex\_generator() (in module py3plex.core.random\_generators)@\spxentry{random\_multiplex\_generator()}\spxextra{in module py3plex.core.random\_generators}|hyperpage}{383}
-\indexentry{require() (in module py3plex.core.random\_generators)@\spxentry{require()}\spxextra{in module py3plex.core.random\_generators}|hyperpage}{383}
-\indexentry{module@\spxentry{module}!py3plex.core.supporting@\spxentry{py3plex.core.supporting}|hyperpage}{383}
-\indexentry{py3plex.core.supporting@\spxentry{py3plex.core.supporting}!module@\spxentry{module}|hyperpage}{383}
+\indexentry{require() (in module py3plex.core.random\_generators)@\spxentry{require()}\spxextra{in module py3plex.core.random\_generators}|hyperpage}{384}
+\indexentry{module@\spxentry{module}!py3plex.core.supporting@\spxentry{py3plex.core.supporting}|hyperpage}{384}
+\indexentry{py3plex.core.supporting@\spxentry{py3plex.core.supporting}!module@\spxentry{module}|hyperpage}{384}
 \indexentry{add\_mpx\_edges() (in module py3plex.core.supporting)@\spxentry{add\_mpx\_edges()}\spxextra{in module py3plex.core.supporting}|hyperpage}{384}
 \indexentry{ensure() (in module py3plex.core.supporting)@\spxentry{ensure()}\spxextra{in module py3plex.core.supporting}|hyperpage}{384}
 \indexentry{parse\_gaf\_to\_uniprot\_GO() (in module py3plex.core.supporting)@\spxentry{parse\_gaf\_to\_uniprot\_GO()}\spxextra{in module py3plex.core.supporting}|hyperpage}{384}
-\indexentry{require() (in module py3plex.core.supporting)@\spxentry{require()}\spxextra{in module py3plex.core.supporting}|hyperpage}{384}
-\indexentry{split\_to\_layers() (in module py3plex.core.supporting)@\spxentry{split\_to\_layers()}\spxextra{in module py3plex.core.supporting}|hyperpage}{384}
+\indexentry{require() (in module py3plex.core.supporting)@\spxentry{require()}\spxextra{in module py3plex.core.supporting}|hyperpage}{385}
+\indexentry{split\_to\_layers() (in module py3plex.core.supporting)@\spxentry{split\_to\_layers()}\spxextra{in module py3plex.core.supporting}|hyperpage}{385}
 \indexentry{module@\spxentry{module}!py3plex.core.nx\_compat@\spxentry{py3plex.core.nx\_compat}|hyperpage}{385}
 \indexentry{py3plex.core.nx\_compat@\spxentry{py3plex.core.nx\_compat}!module@\spxentry{module}|hyperpage}{385}
 \indexentry{ensure() (in module py3plex.core.nx\_compat)@\spxentry{ensure()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{385}
 \indexentry{is\_string\_like() (in module py3plex.core.nx\_compat)@\spxentry{is\_string\_like()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{385}
 \indexentry{nx\_from\_scipy\_sparse\_matrix() (in module py3plex.core.nx\_compat)@\spxentry{nx\_from\_scipy\_sparse\_matrix()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{385}
-\indexentry{nx\_info() (in module py3plex.core.nx\_compat)@\spxentry{nx\_info()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{385}
+\indexentry{nx\_info() (in module py3plex.core.nx\_compat)@\spxentry{nx\_info()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{386}
 \indexentry{nx\_read\_gpickle() (in module py3plex.core.nx\_compat)@\spxentry{nx\_read\_gpickle()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{386}
 \indexentry{nx\_to\_scipy\_sparse\_matrix() (in module py3plex.core.nx\_compat)@\spxentry{nx\_to\_scipy\_sparse\_matrix()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{386}
-\indexentry{nx\_write\_gpickle() (in module py3plex.core.nx\_compat)@\spxentry{nx\_write\_gpickle()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{386}
+\indexentry{nx\_write\_gpickle() (in module py3plex.core.nx\_compat)@\spxentry{nx\_write\_gpickle()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{387}
 \indexentry{require() (in module py3plex.core.nx\_compat)@\spxentry{require()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{387}
 \indexentry{module@\spxentry{module}!py3plex.core.HINMINE.decomposition@\spxentry{py3plex.core.HINMINE.decomposition}|hyperpage}{387}
 \indexentry{py3plex.core.HINMINE.decomposition@\spxentry{py3plex.core.HINMINE.decomposition}!module@\spxentry{module}|hyperpage}{387}
@@ -142,19 +142,19 @@
 \indexentry{calculate\_importance\_chi() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_chi()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{387}
 \indexentry{calculate\_importance\_delta() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_delta()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{387}
 \indexentry{calculate\_importance\_gr() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_gr()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{387}
-\indexentry{calculate\_importance\_idf() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_idf()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{387}
+\indexentry{calculate\_importance\_idf() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_idf()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
 \indexentry{calculate\_importance\_ig() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_ig()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
 \indexentry{calculate\_importance\_okapi() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_okapi()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
 \indexentry{calculate\_importance\_rf() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_rf()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
 \indexentry{calculate\_importance\_tf() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_tf()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
 \indexentry{calculate\_importance\_w2w() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_w2w()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
 \indexentry{calculate\_importances() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importances()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
-\indexentry{chi\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{chi\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
-\indexentry{get\_aggregation\_method() (in module py3plex.core.HINMINE.decomposition)@\spxentry{get\_aggregation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
-\indexentry{get\_calculation\_method() (in module py3plex.core.HINMINE.decomposition)@\spxentry{get\_calculation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
-\indexentry{gr\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{gr\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
-\indexentry{hinmine\_decompose() (in module py3plex.core.HINMINE.decomposition)@\spxentry{hinmine\_decompose()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
-\indexentry{hinmine\_get\_cycles() (in module py3plex.core.HINMINE.decomposition)@\spxentry{hinmine\_get\_cycles()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{388}
+\indexentry{chi\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{chi\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
+\indexentry{get\_aggregation\_method() (in module py3plex.core.HINMINE.decomposition)@\spxentry{get\_aggregation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
+\indexentry{get\_calculation\_method() (in module py3plex.core.HINMINE.decomposition)@\spxentry{get\_calculation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
+\indexentry{gr\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{gr\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
+\indexentry{hinmine\_decompose() (in module py3plex.core.HINMINE.decomposition)@\spxentry{hinmine\_decompose()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
+\indexentry{hinmine\_get\_cycles() (in module py3plex.core.HINMINE.decomposition)@\spxentry{hinmine\_get\_cycles()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
 \indexentry{ig\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{ig\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
 \indexentry{np\_calculate\_importance\_chi() (in module py3plex.core.HINMINE.decomposition)@\spxentry{np\_calculate\_importance\_chi()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
 \indexentry{np\_calculate\_importance\_tf() (in module py3plex.core.HINMINE.decomposition)@\spxentry{np\_calculate\_importance\_tf()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{389}
@@ -165,20 +165,20 @@
 \indexentry{module@\spxentry{module}!py3plex.config@\spxentry{py3plex.config}|hyperpage}{389}
 \indexentry{py3plex.config@\spxentry{py3plex.config}!module@\spxentry{module}|hyperpage}{389}
 \indexentry{get\_color\_palette() (in module py3plex.config)@\spxentry{get\_color\_palette()}\spxextra{in module py3plex.config}|hyperpage}{389}
-\indexentry{reset\_to\_defaults() (in module py3plex.config)@\spxentry{reset\_to\_defaults()}\spxextra{in module py3plex.config}|hyperpage}{389}
+\indexentry{reset\_to\_defaults() (in module py3plex.config)@\spxentry{reset\_to\_defaults()}\spxextra{in module py3plex.config}|hyperpage}{390}
 \indexentry{module@\spxentry{module}!py3plex.utils@\spxentry{py3plex.utils}|hyperpage}{390}
 \indexentry{py3plex.utils@\spxentry{py3plex.utils}!module@\spxentry{module}|hyperpage}{390}
 \indexentry{deprecated() (in module py3plex.utils)@\spxentry{deprecated()}\spxextra{in module py3plex.utils}|hyperpage}{390}
 \indexentry{ensure() (in module py3plex.utils)@\spxentry{ensure()}\spxextra{in module py3plex.utils}|hyperpage}{390}
 \indexentry{get\_background\_knowledge\_dir() (in module py3plex.utils)@\spxentry{get\_background\_knowledge\_dir()}\spxextra{in module py3plex.utils}|hyperpage}{390}
-\indexentry{get\_background\_knowledge\_path() (in module py3plex.utils)@\spxentry{get\_background\_knowledge\_path()}\spxextra{in module py3plex.utils}|hyperpage}{390}
+\indexentry{get\_background\_knowledge\_path() (in module py3plex.utils)@\spxentry{get\_background\_knowledge\_path()}\spxextra{in module py3plex.utils}|hyperpage}{391}
 \indexentry{get\_data\_path() (in module py3plex.utils)@\spxentry{get\_data\_path()}\spxextra{in module py3plex.utils}|hyperpage}{391}
 \indexentry{get\_dataset\_path() (in module py3plex.utils)@\spxentry{get\_dataset\_path()}\spxextra{in module py3plex.utils}|hyperpage}{392}
 \indexentry{get\_example\_image\_path() (in module py3plex.utils)@\spxentry{get\_example\_image\_path()}\spxextra{in module py3plex.utils}|hyperpage}{392}
 \indexentry{get\_multilayer\_dataset\_path() (in module py3plex.utils)@\spxentry{get\_multilayer\_dataset\_path()}\spxextra{in module py3plex.utils}|hyperpage}{392}
 \indexentry{get\_rng() (in module py3plex.utils)@\spxentry{get\_rng()}\spxextra{in module py3plex.utils}|hyperpage}{393}
-\indexentry{require() (in module py3plex.utils)@\spxentry{require()}\spxextra{in module py3plex.utils}|hyperpage}{393}
-\indexentry{validate\_multilayer\_input() (in module py3plex.utils)@\spxentry{validate\_multilayer\_input()}\spxextra{in module py3plex.utils}|hyperpage}{393}
+\indexentry{require() (in module py3plex.utils)@\spxentry{require()}\spxextra{in module py3plex.utils}|hyperpage}{394}
+\indexentry{validate\_multilayer\_input() (in module py3plex.utils)@\spxentry{validate\_multilayer\_input()}\spxextra{in module py3plex.utils}|hyperpage}{394}
 \indexentry{warn\_if\_deprecated() (in module py3plex.utils)@\spxentry{warn\_if\_deprecated()}\spxextra{in module py3plex.utils}|hyperpage}{394}
 \indexentry{module@\spxentry{module}!py3plex.exceptions@\spxentry{py3plex.exceptions}|hyperpage}{394}
 \indexentry{py3plex.exceptions@\spxentry{py3plex.exceptions}!module@\spxentry{module}|hyperpage}{394}
@@ -189,8 +189,8 @@
 \indexentry{CommunityDetectionError@\spxentry{CommunityDetectionError}|hyperpage}{395}
 \indexentry{default\_code (py3plex.exceptions.CommunityDetectionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.CommunityDetectionError attribute}|hyperpage}{395}
 \indexentry{ConversionError@\spxentry{ConversionError}|hyperpage}{395}
-\indexentry{default\_code (py3plex.exceptions.ConversionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ConversionError attribute}|hyperpage}{395}
-\indexentry{DecompositionError@\spxentry{DecompositionError}|hyperpage}{395}
+\indexentry{default\_code (py3plex.exceptions.ConversionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ConversionError attribute}|hyperpage}{396}
+\indexentry{DecompositionError@\spxentry{DecompositionError}|hyperpage}{396}
 \indexentry{default\_code (py3plex.exceptions.DecompositionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.DecompositionError attribute}|hyperpage}{396}
 \indexentry{EmbeddingError@\spxentry{EmbeddingError}|hyperpage}{396}
 \indexentry{default\_code (py3plex.exceptions.EmbeddingError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.EmbeddingError attribute}|hyperpage}{396}
@@ -199,16 +199,16 @@
 \indexentry{IncompatibleNetworkError@\spxentry{IncompatibleNetworkError}|hyperpage}{396}
 \indexentry{default\_code (py3plex.exceptions.IncompatibleNetworkError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.IncompatibleNetworkError attribute}|hyperpage}{396}
 \indexentry{InvalidEdgeError@\spxentry{InvalidEdgeError}|hyperpage}{396}
-\indexentry{default\_code (py3plex.exceptions.InvalidEdgeError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.InvalidEdgeError attribute}|hyperpage}{396}
-\indexentry{InvalidLayerError@\spxentry{InvalidLayerError}|hyperpage}{396}
+\indexentry{default\_code (py3plex.exceptions.InvalidEdgeError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.InvalidEdgeError attribute}|hyperpage}{397}
+\indexentry{InvalidLayerError@\spxentry{InvalidLayerError}|hyperpage}{397}
 \indexentry{default\_code (py3plex.exceptions.InvalidLayerError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.InvalidLayerError attribute}|hyperpage}{397}
 \indexentry{InvalidNodeError@\spxentry{InvalidNodeError}|hyperpage}{397}
 \indexentry{default\_code (py3plex.exceptions.InvalidNodeError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.InvalidNodeError attribute}|hyperpage}{397}
 \indexentry{NetworkConstructionError@\spxentry{NetworkConstructionError}|hyperpage}{397}
 \indexentry{default\_code (py3plex.exceptions.NetworkConstructionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.NetworkConstructionError attribute}|hyperpage}{397}
 \indexentry{ParsingError@\spxentry{ParsingError}|hyperpage}{397}
-\indexentry{default\_code (py3plex.exceptions.ParsingError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ParsingError attribute}|hyperpage}{397}
-\indexentry{Py3plexException@\spxentry{Py3plexException}|hyperpage}{397}
+\indexentry{default\_code (py3plex.exceptions.ParsingError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ParsingError attribute}|hyperpage}{398}
+\indexentry{Py3plexException@\spxentry{Py3plexException}|hyperpage}{398}
 \indexentry{code (py3plex.exceptions.Py3plexException attribute)@\spxentry{code}\spxextra{py3plex.exceptions.Py3plexException attribute}|hyperpage}{398}
 \indexentry{suggestions (py3plex.exceptions.Py3plexException attribute)@\spxentry{suggestions}\spxextra{py3plex.exceptions.Py3plexException attribute}|hyperpage}{398}
 \indexentry{notes (py3plex.exceptions.Py3plexException attribute)@\spxentry{notes}\spxextra{py3plex.exceptions.Py3plexException attribute}|hyperpage}{398}
@@ -218,21 +218,21 @@
 \indexentry{Py3plexFormatError@\spxentry{Py3plexFormatError}|hyperpage}{398}
 \indexentry{default\_code (py3plex.exceptions.Py3plexFormatError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexFormatError attribute}|hyperpage}{398}
 \indexentry{Py3plexIOError@\spxentry{Py3plexIOError}|hyperpage}{398}
-\indexentry{default\_code (py3plex.exceptions.Py3plexIOError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexIOError attribute}|hyperpage}{398}
-\indexentry{Py3plexLayoutError@\spxentry{Py3plexLayoutError}|hyperpage}{398}
+\indexentry{default\_code (py3plex.exceptions.Py3plexIOError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexIOError attribute}|hyperpage}{399}
+\indexentry{Py3plexLayoutError@\spxentry{Py3plexLayoutError}|hyperpage}{399}
 \indexentry{default\_code (py3plex.exceptions.Py3plexLayoutError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexLayoutError attribute}|hyperpage}{399}
 \indexentry{Py3plexMatrixError@\spxentry{Py3plexMatrixError}|hyperpage}{399}
 \indexentry{default\_code (py3plex.exceptions.Py3plexMatrixError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexMatrixError attribute}|hyperpage}{399}
 \indexentry{VisualizationError@\spxentry{VisualizationError}|hyperpage}{399}
 \indexentry{default\_code (py3plex.exceptions.VisualizationError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.VisualizationError attribute}|hyperpage}{399}
-\indexentry{module@\spxentry{module}!py3plex.dsl@\spxentry{py3plex.dsl}|hyperpage}{399}
-\indexentry{py3plex.dsl@\spxentry{py3plex.dsl}!module@\spxentry{module}|hyperpage}{399}
-\indexentry{AttrType (class in py3plex.dsl)@\spxentry{AttrType}\spxextra{class in py3plex.dsl}|hyperpage}{400}
-\indexentry{BOOLEAN (py3plex.dsl.AttrType attribute)@\spxentry{BOOLEAN}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{400}
-\indexentry{CATEGORICAL (py3plex.dsl.AttrType attribute)@\spxentry{CATEGORICAL}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{400}
-\indexentry{DATETIME (py3plex.dsl.AttrType attribute)@\spxentry{DATETIME}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{400}
-\indexentry{EDGE\_REF (py3plex.dsl.AttrType attribute)@\spxentry{EDGE\_REF}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{400}
-\indexentry{LAYER\_REF (py3plex.dsl.AttrType attribute)@\spxentry{LAYER\_REF}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{400}
+\indexentry{module@\spxentry{module}!py3plex.dsl@\spxentry{py3plex.dsl}|hyperpage}{400}
+\indexentry{py3plex.dsl@\spxentry{py3plex.dsl}!module@\spxentry{module}|hyperpage}{400}
+\indexentry{AttrType (class in py3plex.dsl)@\spxentry{AttrType}\spxextra{class in py3plex.dsl}|hyperpage}{401}
+\indexentry{BOOLEAN (py3plex.dsl.AttrType attribute)@\spxentry{BOOLEAN}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{401}
+\indexentry{CATEGORICAL (py3plex.dsl.AttrType attribute)@\spxentry{CATEGORICAL}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{401}
+\indexentry{DATETIME (py3plex.dsl.AttrType attribute)@\spxentry{DATETIME}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{401}
+\indexentry{EDGE\_REF (py3plex.dsl.AttrType attribute)@\spxentry{EDGE\_REF}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{401}
+\indexentry{LAYER\_REF (py3plex.dsl.AttrType attribute)@\spxentry{LAYER\_REF}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{401}
 \indexentry{NODE\_REF (py3plex.dsl.AttrType attribute)@\spxentry{NODE\_REF}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{401}
 \indexentry{NUMERIC (py3plex.dsl.AttrType attribute)@\spxentry{NUMERIC}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{401}
 \indexentry{UNKNOWN (py3plex.dsl.AttrType attribute)@\spxentry{UNKNOWN}\spxextra{py3plex.dsl.AttrType attribute}|hyperpage}{401}
@@ -243,29 +243,29 @@
 \indexentry{\_negated (py3plex.dsl.BooleanExpression attribute)@\spxentry{\_negated}\spxextra{py3plex.dsl.BooleanExpression attribute}|hyperpage}{401}
 \indexentry{to\_condition\_expr() (py3plex.dsl.BooleanExpression method)@\spxentry{to\_condition\_expr()}\spxextra{py3plex.dsl.BooleanExpression method}|hyperpage}{401}
 \indexentry{C (class in py3plex.dsl)@\spxentry{C}\spxextra{class in py3plex.dsl}|hyperpage}{401}
-\indexentry{compare() (py3plex.dsl.C static method)@\spxentry{compare()}\spxextra{py3plex.dsl.C static method}|hyperpage}{401}
-\indexentry{CompareBuilder (class in py3plex.dsl)@\spxentry{CompareBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{401}
+\indexentry{compare() (py3plex.dsl.C static method)@\spxentry{compare()}\spxextra{py3plex.dsl.C static method}|hyperpage}{402}
+\indexentry{CompareBuilder (class in py3plex.dsl)@\spxentry{CompareBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{402}
 \indexentry{execute() (py3plex.dsl.CompareBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.CompareBuilder method}|hyperpage}{402}
 \indexentry{measure() (py3plex.dsl.CompareBuilder method)@\spxentry{measure()}\spxextra{py3plex.dsl.CompareBuilder method}|hyperpage}{402}
 \indexentry{on\_layers() (py3plex.dsl.CompareBuilder method)@\spxentry{on\_layers()}\spxextra{py3plex.dsl.CompareBuilder method}|hyperpage}{402}
 \indexentry{to() (py3plex.dsl.CompareBuilder method)@\spxentry{to()}\spxextra{py3plex.dsl.CompareBuilder method}|hyperpage}{402}
-\indexentry{to\_ast() (py3plex.dsl.CompareBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.CompareBuilder method}|hyperpage}{402}
-\indexentry{using() (py3plex.dsl.CompareBuilder method)@\spxentry{using()}\spxextra{py3plex.dsl.CompareBuilder method}|hyperpage}{402}
-\indexentry{CompareStmt (class in py3plex.dsl)@\spxentry{CompareStmt}\spxextra{class in py3plex.dsl}|hyperpage}{402}
+\indexentry{to\_ast() (py3plex.dsl.CompareBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.CompareBuilder method}|hyperpage}{403}
+\indexentry{using() (py3plex.dsl.CompareBuilder method)@\spxentry{using()}\spxextra{py3plex.dsl.CompareBuilder method}|hyperpage}{403}
+\indexentry{CompareStmt (class in py3plex.dsl)@\spxentry{CompareStmt}\spxextra{class in py3plex.dsl}|hyperpage}{403}
 \indexentry{network\_a (py3plex.dsl.CompareStmt attribute)@\spxentry{network\_a}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
 \indexentry{network\_b (py3plex.dsl.CompareStmt attribute)@\spxentry{network\_b}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
 \indexentry{metric\_name (py3plex.dsl.CompareStmt attribute)@\spxentry{metric\_name}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
 \indexentry{layer\_expr (py3plex.dsl.CompareStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
 \indexentry{measures (py3plex.dsl.CompareStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
 \indexentry{export\_target (py3plex.dsl.CompareStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
-\indexentry{export\_target (py3plex.dsl.CompareStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
-\indexentry{layer\_expr (py3plex.dsl.CompareStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
-\indexentry{measures (py3plex.dsl.CompareStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
-\indexentry{metric\_name (py3plex.dsl.CompareStmt attribute)@\spxentry{metric\_name}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
-\indexentry{network\_a (py3plex.dsl.CompareStmt attribute)@\spxentry{network\_a}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
-\indexentry{network\_b (py3plex.dsl.CompareStmt attribute)@\spxentry{network\_b}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{403}
-\indexentry{Comparison (class in py3plex.dsl)@\spxentry{Comparison}\spxextra{class in py3plex.dsl}|hyperpage}{403}
-\indexentry{left (py3plex.dsl.Comparison attribute)@\spxentry{left}\spxextra{py3plex.dsl.Comparison attribute}|hyperpage}{403}
+\indexentry{export\_target (py3plex.dsl.CompareStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{404}
+\indexentry{layer\_expr (py3plex.dsl.CompareStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{404}
+\indexentry{measures (py3plex.dsl.CompareStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{404}
+\indexentry{metric\_name (py3plex.dsl.CompareStmt attribute)@\spxentry{metric\_name}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{404}
+\indexentry{network\_a (py3plex.dsl.CompareStmt attribute)@\spxentry{network\_a}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{404}
+\indexentry{network\_b (py3plex.dsl.CompareStmt attribute)@\spxentry{network\_b}\spxextra{py3plex.dsl.CompareStmt attribute}|hyperpage}{404}
+\indexentry{Comparison (class in py3plex.dsl)@\spxentry{Comparison}\spxextra{class in py3plex.dsl}|hyperpage}{404}
+\indexentry{left (py3plex.dsl.Comparison attribute)@\spxentry{left}\spxextra{py3plex.dsl.Comparison attribute}|hyperpage}{404}
 \indexentry{op (py3plex.dsl.Comparison attribute)@\spxentry{op}\spxextra{py3plex.dsl.Comparison attribute}|hyperpage}{404}
 \indexentry{right (py3plex.dsl.Comparison attribute)@\spxentry{right}\spxextra{py3plex.dsl.Comparison attribute}|hyperpage}{404}
 \indexentry{left (py3plex.dsl.Comparison attribute)@\spxentry{left}\spxextra{py3plex.dsl.Comparison attribute}|hyperpage}{404}
@@ -274,10 +274,10 @@
 \indexentry{ComputeItem (class in py3plex.dsl)@\spxentry{ComputeItem}\spxextra{class in py3plex.dsl}|hyperpage}{404}
 \indexentry{name (py3plex.dsl.ComputeItem attribute)@\spxentry{name}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{404}
 \indexentry{alias (py3plex.dsl.ComputeItem attribute)@\spxentry{alias}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{404}
-\indexentry{uncertainty (py3plex.dsl.ComputeItem attribute)@\spxentry{uncertainty}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{404}
-\indexentry{method (py3plex.dsl.ComputeItem attribute)@\spxentry{method}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{404}
-\indexentry{n\_samples (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{404}
-\indexentry{ci (py3plex.dsl.ComputeItem attribute)@\spxentry{ci}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{404}
+\indexentry{uncertainty (py3plex.dsl.ComputeItem attribute)@\spxentry{uncertainty}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
+\indexentry{method (py3plex.dsl.ComputeItem attribute)@\spxentry{method}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
+\indexentry{n\_samples (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
+\indexentry{ci (py3plex.dsl.ComputeItem attribute)@\spxentry{ci}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
 \indexentry{bootstrap\_unit (py3plex.dsl.ComputeItem attribute)@\spxentry{bootstrap\_unit}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
 \indexentry{bootstrap\_mode (py3plex.dsl.ComputeItem attribute)@\spxentry{bootstrap\_mode}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
 \indexentry{n\_null (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_null}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
@@ -286,16 +286,16 @@
 \indexentry{alias (py3plex.dsl.ComputeItem attribute)@\spxentry{alias}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
 \indexentry{bootstrap\_mode (py3plex.dsl.ComputeItem attribute)@\spxentry{bootstrap\_mode}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
 \indexentry{bootstrap\_unit (py3plex.dsl.ComputeItem attribute)@\spxentry{bootstrap\_unit}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{ci (py3plex.dsl.ComputeItem attribute)@\spxentry{ci}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{method (py3plex.dsl.ComputeItem attribute)@\spxentry{method}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{n\_null (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_null}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{n\_samples (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{name (py3plex.dsl.ComputeItem attribute)@\spxentry{name}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{null\_model (py3plex.dsl.ComputeItem attribute)@\spxentry{null\_model}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{random\_state (py3plex.dsl.ComputeItem attribute)@\spxentry{random\_state}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{result\_name (py3plex.dsl.ComputeItem property)@\spxentry{result\_name}\spxextra{py3plex.dsl.ComputeItem property}|hyperpage}{405}
-\indexentry{uncertainty (py3plex.dsl.ComputeItem attribute)@\spxentry{uncertainty}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{405}
-\indexentry{ConditionAtom (class in py3plex.dsl)@\spxentry{ConditionAtom}\spxextra{class in py3plex.dsl}|hyperpage}{405}
+\indexentry{ci (py3plex.dsl.ComputeItem attribute)@\spxentry{ci}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{406}
+\indexentry{method (py3plex.dsl.ComputeItem attribute)@\spxentry{method}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{406}
+\indexentry{n\_null (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_null}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{406}
+\indexentry{n\_samples (py3plex.dsl.ComputeItem attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{406}
+\indexentry{name (py3plex.dsl.ComputeItem attribute)@\spxentry{name}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{406}
+\indexentry{null\_model (py3plex.dsl.ComputeItem attribute)@\spxentry{null\_model}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{406}
+\indexentry{random\_state (py3plex.dsl.ComputeItem attribute)@\spxentry{random\_state}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{406}
+\indexentry{result\_name (py3plex.dsl.ComputeItem property)@\spxentry{result\_name}\spxextra{py3plex.dsl.ComputeItem property}|hyperpage}{406}
+\indexentry{uncertainty (py3plex.dsl.ComputeItem attribute)@\spxentry{uncertainty}\spxextra{py3plex.dsl.ComputeItem attribute}|hyperpage}{406}
+\indexentry{ConditionAtom (class in py3plex.dsl)@\spxentry{ConditionAtom}\spxextra{class in py3plex.dsl}|hyperpage}{406}
 \indexentry{comparison (py3plex.dsl.ConditionAtom attribute)@\spxentry{comparison}\spxextra{py3plex.dsl.ConditionAtom attribute}|hyperpage}{406}
 \indexentry{function (py3plex.dsl.ConditionAtom attribute)@\spxentry{function}\spxextra{py3plex.dsl.ConditionAtom attribute}|hyperpage}{406}
 \indexentry{special (py3plex.dsl.ConditionAtom attribute)@\spxentry{special}\spxextra{py3plex.dsl.ConditionAtom attribute}|hyperpage}{406}
@@ -306,11 +306,11 @@
 \indexentry{is\_special (py3plex.dsl.ConditionAtom property)@\spxentry{is\_special}\spxextra{py3plex.dsl.ConditionAtom property}|hyperpage}{406}
 \indexentry{special (py3plex.dsl.ConditionAtom attribute)@\spxentry{special}\spxextra{py3plex.dsl.ConditionAtom attribute}|hyperpage}{406}
 \indexentry{ConditionExpr (class in py3plex.dsl)@\spxentry{ConditionExpr}\spxextra{class in py3plex.dsl}|hyperpage}{406}
-\indexentry{atoms (py3plex.dsl.ConditionExpr attribute)@\spxentry{atoms}\spxextra{py3plex.dsl.ConditionExpr attribute}|hyperpage}{406}
-\indexentry{ops (py3plex.dsl.ConditionExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.ConditionExpr attribute}|hyperpage}{406}
-\indexentry{atoms (py3plex.dsl.ConditionExpr attribute)@\spxentry{atoms}\spxextra{py3plex.dsl.ConditionExpr attribute}|hyperpage}{406}
-\indexentry{ops (py3plex.dsl.ConditionExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.ConditionExpr attribute}|hyperpage}{406}
-\indexentry{DSLExecutionContext (class in py3plex.dsl)@\spxentry{DSLExecutionContext}\spxextra{class in py3plex.dsl}|hyperpage}{406}
+\indexentry{atoms (py3plex.dsl.ConditionExpr attribute)@\spxentry{atoms}\spxextra{py3plex.dsl.ConditionExpr attribute}|hyperpage}{407}
+\indexentry{ops (py3plex.dsl.ConditionExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.ConditionExpr attribute}|hyperpage}{407}
+\indexentry{atoms (py3plex.dsl.ConditionExpr attribute)@\spxentry{atoms}\spxextra{py3plex.dsl.ConditionExpr attribute}|hyperpage}{407}
+\indexentry{ops (py3plex.dsl.ConditionExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.ConditionExpr attribute}|hyperpage}{407}
+\indexentry{DSLExecutionContext (class in py3plex.dsl)@\spxentry{DSLExecutionContext}\spxextra{class in py3plex.dsl}|hyperpage}{407}
 \indexentry{graph (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{graph}\spxextra{py3plex.dsl.DSLExecutionContext attribute}|hyperpage}{407}
 \indexentry{current\_layers (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{current\_layers}\spxextra{py3plex.dsl.DSLExecutionContext attribute}|hyperpage}{407}
 \indexentry{current\_nodes (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{current\_nodes}\spxextra{py3plex.dsl.DSLExecutionContext attribute}|hyperpage}{407}
@@ -319,10 +319,10 @@
 \indexentry{current\_nodes (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{current\_nodes}\spxextra{py3plex.dsl.DSLExecutionContext attribute}|hyperpage}{407}
 \indexentry{graph (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{graph}\spxextra{py3plex.dsl.DSLExecutionContext attribute}|hyperpage}{407}
 \indexentry{params (py3plex.dsl.DSLExecutionContext attribute)@\spxentry{params}\spxextra{py3plex.dsl.DSLExecutionContext attribute}|hyperpage}{407}
-\indexentry{DSLExecutionError@\spxentry{DSLExecutionError}|hyperpage}{407}
-\indexentry{DSLOperator (class in py3plex.dsl)@\spxentry{DSLOperator}\spxextra{class in py3plex.dsl}|hyperpage}{407}
-\indexentry{name (py3plex.dsl.DSLOperator attribute)@\spxentry{name}\spxextra{py3plex.dsl.DSLOperator attribute}|hyperpage}{407}
-\indexentry{func (py3plex.dsl.DSLOperator attribute)@\spxentry{func}\spxextra{py3plex.dsl.DSLOperator attribute}|hyperpage}{407}
+\indexentry{DSLExecutionError@\spxentry{DSLExecutionError}|hyperpage}{408}
+\indexentry{DSLOperator (class in py3plex.dsl)@\spxentry{DSLOperator}\spxextra{class in py3plex.dsl}|hyperpage}{408}
+\indexentry{name (py3plex.dsl.DSLOperator attribute)@\spxentry{name}\spxextra{py3plex.dsl.DSLOperator attribute}|hyperpage}{408}
+\indexentry{func (py3plex.dsl.DSLOperator attribute)@\spxentry{func}\spxextra{py3plex.dsl.DSLOperator attribute}|hyperpage}{408}
 \indexentry{description (py3plex.dsl.DSLOperator attribute)@\spxentry{description}\spxextra{py3plex.dsl.DSLOperator attribute}|hyperpage}{408}
 \indexentry{category (py3plex.dsl.DSLOperator attribute)@\spxentry{category}\spxextra{py3plex.dsl.DSLOperator attribute}|hyperpage}{408}
 \indexentry{category (py3plex.dsl.DSLOperator attribute)@\spxentry{category}\spxextra{py3plex.dsl.DSLOperator attribute}|hyperpage}{408}
@@ -333,9 +333,9 @@
 \indexentry{Diagnostic (class in py3plex.dsl)@\spxentry{Diagnostic}\spxextra{class in py3plex.dsl}|hyperpage}{408}
 \indexentry{code (py3plex.dsl.Diagnostic attribute)@\spxentry{code}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{408}
 \indexentry{severity (py3plex.dsl.Diagnostic attribute)@\spxentry{severity}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{408}
-\indexentry{message (py3plex.dsl.Diagnostic attribute)@\spxentry{message}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{408}
-\indexentry{span (py3plex.dsl.Diagnostic attribute)@\spxentry{span}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{408}
-\indexentry{suggested\_fix (py3plex.dsl.Diagnostic attribute)@\spxentry{suggested\_fix}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{408}
+\indexentry{message (py3plex.dsl.Diagnostic attribute)@\spxentry{message}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{409}
+\indexentry{span (py3plex.dsl.Diagnostic attribute)@\spxentry{span}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{409}
+\indexentry{suggested\_fix (py3plex.dsl.Diagnostic attribute)@\spxentry{suggested\_fix}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{409}
 \indexentry{code (py3plex.dsl.Diagnostic attribute)@\spxentry{code}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{409}
 \indexentry{message (py3plex.dsl.Diagnostic attribute)@\spxentry{message}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{409}
 \indexentry{severity (py3plex.dsl.Diagnostic attribute)@\spxentry{severity}\spxextra{py3plex.dsl.Diagnostic attribute}|hyperpage}{409}
@@ -345,27 +345,27 @@
 \indexentry{format\_message() (py3plex.dsl.DslError method)@\spxentry{format\_message()}\spxextra{py3plex.dsl.DslError method}|hyperpage}{409}
 \indexentry{DslExecutionError@\spxentry{DslExecutionError}|hyperpage}{409}
 \indexentry{DslMissingMetricError@\spxentry{DslMissingMetricError}|hyperpage}{409}
-\indexentry{metric (py3plex.dsl.DslMissingMetricError attribute)@\spxentry{metric}\spxextra{py3plex.dsl.DslMissingMetricError attribute}|hyperpage}{409}
-\indexentry{required\_by (py3plex.dsl.DslMissingMetricError attribute)@\spxentry{required\_by}\spxextra{py3plex.dsl.DslMissingMetricError attribute}|hyperpage}{409}
-\indexentry{autocompute\_enabled (py3plex.dsl.DslMissingMetricError attribute)@\spxentry{autocompute\_enabled}\spxextra{py3plex.dsl.DslMissingMetricError attribute}|hyperpage}{409}
-\indexentry{DslSyntaxError@\spxentry{DslSyntaxError}|hyperpage}{409}
-\indexentry{DynamicsBuilder (class in py3plex.dsl)@\spxentry{DynamicsBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{409}
+\indexentry{metric (py3plex.dsl.DslMissingMetricError attribute)@\spxentry{metric}\spxextra{py3plex.dsl.DslMissingMetricError attribute}|hyperpage}{410}
+\indexentry{required\_by (py3plex.dsl.DslMissingMetricError attribute)@\spxentry{required\_by}\spxextra{py3plex.dsl.DslMissingMetricError attribute}|hyperpage}{410}
+\indexentry{autocompute\_enabled (py3plex.dsl.DslMissingMetricError attribute)@\spxentry{autocompute\_enabled}\spxextra{py3plex.dsl.DslMissingMetricError attribute}|hyperpage}{410}
+\indexentry{DslSyntaxError@\spxentry{DslSyntaxError}|hyperpage}{410}
+\indexentry{DynamicsBuilder (class in py3plex.dsl)@\spxentry{DynamicsBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{410}
 \indexentry{execute() (py3plex.dsl.DynamicsBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{410}
 \indexentry{on\_layers() (py3plex.dsl.DynamicsBuilder method)@\spxentry{on\_layers()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{410}
 \indexentry{parameters\_per\_layer() (py3plex.dsl.DynamicsBuilder method)@\spxentry{parameters\_per\_layer()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{410}
-\indexentry{random\_seed() (py3plex.dsl.DynamicsBuilder method)@\spxentry{random\_seed()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{410}
+\indexentry{random\_seed() (py3plex.dsl.DynamicsBuilder method)@\spxentry{random\_seed()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{411}
 \indexentry{run() (py3plex.dsl.DynamicsBuilder method)@\spxentry{run()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{411}
 \indexentry{seed() (py3plex.dsl.DynamicsBuilder method)@\spxentry{seed()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{411}
 \indexentry{to() (py3plex.dsl.DynamicsBuilder method)@\spxentry{to()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{411}
-\indexentry{to\_ast() (py3plex.dsl.DynamicsBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{411}
-\indexentry{with\_states() (py3plex.dsl.DynamicsBuilder method)@\spxentry{with\_states()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{411}
+\indexentry{to\_ast() (py3plex.dsl.DynamicsBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{412}
+\indexentry{with\_states() (py3plex.dsl.DynamicsBuilder method)@\spxentry{with\_states()}\spxextra{py3plex.dsl.DynamicsBuilder method}|hyperpage}{412}
 \indexentry{DynamicsStmt (class in py3plex.dsl)@\spxentry{DynamicsStmt}\spxextra{class in py3plex.dsl}|hyperpage}{412}
 \indexentry{process\_name (py3plex.dsl.DynamicsStmt attribute)@\spxentry{process\_name}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{412}
 \indexentry{params (py3plex.dsl.DynamicsStmt attribute)@\spxentry{params}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{412}
 \indexentry{layer\_expr (py3plex.dsl.DynamicsStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{412}
-\indexentry{seed\_query (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_query}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{412}
-\indexentry{seed\_fraction (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_fraction}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{412}
-\indexentry{layer\_params (py3plex.dsl.DynamicsStmt attribute)@\spxentry{layer\_params}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{412}
+\indexentry{seed\_query (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_query}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
+\indexentry{seed\_fraction (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_fraction}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
+\indexentry{layer\_params (py3plex.dsl.DynamicsStmt attribute)@\spxentry{layer\_params}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
 \indexentry{steps (py3plex.dsl.DynamicsStmt attribute)@\spxentry{steps}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
 \indexentry{replicates (py3plex.dsl.DynamicsStmt attribute)@\spxentry{replicates}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
 \indexentry{track (py3plex.dsl.DynamicsStmt attribute)@\spxentry{track}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
@@ -378,12 +378,12 @@
 \indexentry{process\_name (py3plex.dsl.DynamicsStmt attribute)@\spxentry{process\_name}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
 \indexentry{replicates (py3plex.dsl.DynamicsStmt attribute)@\spxentry{replicates}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
 \indexentry{seed (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
-\indexentry{seed\_fraction (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_fraction}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
-\indexentry{seed\_query (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_query}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
-\indexentry{steps (py3plex.dsl.DynamicsStmt attribute)@\spxentry{steps}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
-\indexentry{track (py3plex.dsl.DynamicsStmt attribute)@\spxentry{track}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{413}
-\indexentry{EdgeLayerConstraint (class in py3plex.dsl)@\spxentry{EdgeLayerConstraint}\spxextra{class in py3plex.dsl}|hyperpage}{413}
-\indexentry{kind (py3plex.dsl.EdgeLayerConstraint attribute)@\spxentry{kind}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}|hyperpage}{413}
+\indexentry{seed\_fraction (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_fraction}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{414}
+\indexentry{seed\_query (py3plex.dsl.DynamicsStmt attribute)@\spxentry{seed\_query}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{414}
+\indexentry{steps (py3plex.dsl.DynamicsStmt attribute)@\spxentry{steps}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{414}
+\indexentry{track (py3plex.dsl.DynamicsStmt attribute)@\spxentry{track}\spxextra{py3plex.dsl.DynamicsStmt attribute}|hyperpage}{414}
+\indexentry{EdgeLayerConstraint (class in py3plex.dsl)@\spxentry{EdgeLayerConstraint}\spxextra{class in py3plex.dsl}|hyperpage}{414}
+\indexentry{kind (py3plex.dsl.EdgeLayerConstraint attribute)@\spxentry{kind}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}|hyperpage}{414}
 \indexentry{src\_layer (py3plex.dsl.EdgeLayerConstraint attribute)@\spxentry{src\_layer}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}|hyperpage}{414}
 \indexentry{dst\_layer (py3plex.dsl.EdgeLayerConstraint attribute)@\spxentry{dst\_layer}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}|hyperpage}{414}
 \indexentry{layer (py3plex.dsl.EdgeLayerConstraint attribute)@\spxentry{layer}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}|hyperpage}{414}
@@ -396,9 +396,9 @@
 \indexentry{src\_layer (py3plex.dsl.EdgeLayerConstraint attribute)@\spxentry{src\_layer}\spxextra{py3plex.dsl.EdgeLayerConstraint attribute}|hyperpage}{414}
 \indexentry{to\_dict() (py3plex.dsl.EdgeLayerConstraint method)@\spxentry{to\_dict()}\spxextra{py3plex.dsl.EdgeLayerConstraint method}|hyperpage}{414}
 \indexentry{within() (py3plex.dsl.EdgeLayerConstraint static method)@\spxentry{within()}\spxextra{py3plex.dsl.EdgeLayerConstraint static method}|hyperpage}{414}
-\indexentry{EntityRef (class in py3plex.dsl)@\spxentry{EntityRef}\spxextra{class in py3plex.dsl}|hyperpage}{414}
-\indexentry{ExecutionPlan (class in py3plex.dsl)@\spxentry{ExecutionPlan}\spxextra{class in py3plex.dsl}|hyperpage}{414}
-\indexentry{steps (py3plex.dsl.ExecutionPlan attribute)@\spxentry{steps}\spxextra{py3plex.dsl.ExecutionPlan attribute}|hyperpage}{414}
+\indexentry{EntityRef (class in py3plex.dsl)@\spxentry{EntityRef}\spxextra{class in py3plex.dsl}|hyperpage}{415}
+\indexentry{ExecutionPlan (class in py3plex.dsl)@\spxentry{ExecutionPlan}\spxextra{class in py3plex.dsl}|hyperpage}{415}
+\indexentry{steps (py3plex.dsl.ExecutionPlan attribute)@\spxentry{steps}\spxextra{py3plex.dsl.ExecutionPlan attribute}|hyperpage}{415}
 \indexentry{warnings (py3plex.dsl.ExecutionPlan attribute)@\spxentry{warnings}\spxextra{py3plex.dsl.ExecutionPlan attribute}|hyperpage}{415}
 \indexentry{steps (py3plex.dsl.ExecutionPlan attribute)@\spxentry{steps}\spxextra{py3plex.dsl.ExecutionPlan attribute}|hyperpage}{415}
 \indexentry{warnings (py3plex.dsl.ExecutionPlan attribute)@\spxentry{warnings}\spxextra{py3plex.dsl.ExecutionPlan attribute}|hyperpage}{415}
@@ -407,13 +407,13 @@
 \indexentry{type\_info (py3plex.dsl.ExplainResult attribute)@\spxentry{type\_info}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
 \indexentry{cost\_estimate (py3plex.dsl.ExplainResult attribute)@\spxentry{cost\_estimate}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
 \indexentry{diagnostics (py3plex.dsl.ExplainResult attribute)@\spxentry{diagnostics}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
-\indexentry{plan\_steps (py3plex.dsl.ExplainResult attribute)@\spxentry{plan\_steps}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
-\indexentry{ast\_summary (py3plex.dsl.ExplainResult attribute)@\spxentry{ast\_summary}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
-\indexentry{cost\_estimate (py3plex.dsl.ExplainResult attribute)@\spxentry{cost\_estimate}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
-\indexentry{diagnostics (py3plex.dsl.ExplainResult attribute)@\spxentry{diagnostics}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
-\indexentry{plan\_steps (py3plex.dsl.ExplainResult attribute)@\spxentry{plan\_steps}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
-\indexentry{type\_info (py3plex.dsl.ExplainResult attribute)@\spxentry{type\_info}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{415}
-\indexentry{ExportSpec (class in py3plex.dsl)@\spxentry{ExportSpec}\spxextra{class in py3plex.dsl}|hyperpage}{415}
+\indexentry{plan\_steps (py3plex.dsl.ExplainResult attribute)@\spxentry{plan\_steps}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{416}
+\indexentry{ast\_summary (py3plex.dsl.ExplainResult attribute)@\spxentry{ast\_summary}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{416}
+\indexentry{cost\_estimate (py3plex.dsl.ExplainResult attribute)@\spxentry{cost\_estimate}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{416}
+\indexentry{diagnostics (py3plex.dsl.ExplainResult attribute)@\spxentry{diagnostics}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{416}
+\indexentry{plan\_steps (py3plex.dsl.ExplainResult attribute)@\spxentry{plan\_steps}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{416}
+\indexentry{type\_info (py3plex.dsl.ExplainResult attribute)@\spxentry{type\_info}\spxextra{py3plex.dsl.ExplainResult attribute}|hyperpage}{416}
+\indexentry{ExportSpec (class in py3plex.dsl)@\spxentry{ExportSpec}\spxextra{class in py3plex.dsl}|hyperpage}{416}
 \indexentry{path (py3plex.dsl.ExportSpec attribute)@\spxentry{path}\spxextra{py3plex.dsl.ExportSpec attribute}|hyperpage}{416}
 \indexentry{fmt (py3plex.dsl.ExportSpec attribute)@\spxentry{fmt}\spxextra{py3plex.dsl.ExportSpec attribute}|hyperpage}{416}
 \indexentry{columns (py3plex.dsl.ExportSpec attribute)@\spxentry{columns}\spxextra{py3plex.dsl.ExportSpec attribute}|hyperpage}{416}
@@ -423,10 +423,10 @@
 \indexentry{options (py3plex.dsl.ExportSpec attribute)@\spxentry{options}\spxextra{py3plex.dsl.ExportSpec attribute}|hyperpage}{416}
 \indexentry{path (py3plex.dsl.ExportSpec attribute)@\spxentry{path}\spxextra{py3plex.dsl.ExportSpec attribute}|hyperpage}{416}
 \indexentry{ExportTarget (class in py3plex.dsl)@\spxentry{ExportTarget}\spxextra{class in py3plex.dsl}|hyperpage}{416}
-\indexentry{ARROW (py3plex.dsl.ExportTarget attribute)@\spxentry{ARROW}\spxextra{py3plex.dsl.ExportTarget attribute}|hyperpage}{416}
-\indexentry{NETWORKX (py3plex.dsl.ExportTarget attribute)@\spxentry{NETWORKX}\spxextra{py3plex.dsl.ExportTarget attribute}|hyperpage}{416}
-\indexentry{PANDAS (py3plex.dsl.ExportTarget attribute)@\spxentry{PANDAS}\spxextra{py3plex.dsl.ExportTarget attribute}|hyperpage}{416}
-\indexentry{ExtendedQuery (class in py3plex.dsl)@\spxentry{ExtendedQuery}\spxextra{class in py3plex.dsl}|hyperpage}{416}
+\indexentry{ARROW (py3plex.dsl.ExportTarget attribute)@\spxentry{ARROW}\spxextra{py3plex.dsl.ExportTarget attribute}|hyperpage}{417}
+\indexentry{NETWORKX (py3plex.dsl.ExportTarget attribute)@\spxentry{NETWORKX}\spxextra{py3plex.dsl.ExportTarget attribute}|hyperpage}{417}
+\indexentry{PANDAS (py3plex.dsl.ExportTarget attribute)@\spxentry{PANDAS}\spxextra{py3plex.dsl.ExportTarget attribute}|hyperpage}{417}
+\indexentry{ExtendedQuery (class in py3plex.dsl)@\spxentry{ExtendedQuery}\spxextra{class in py3plex.dsl}|hyperpage}{417}
 \indexentry{kind (py3plex.dsl.ExtendedQuery attribute)@\spxentry{kind}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
 \indexentry{explain (py3plex.dsl.ExtendedQuery attribute)@\spxentry{explain}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
 \indexentry{select (py3plex.dsl.ExtendedQuery attribute)@\spxentry{select}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
@@ -434,9 +434,9 @@
 \indexentry{nullmodel (py3plex.dsl.ExtendedQuery attribute)@\spxentry{nullmodel}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
 \indexentry{path (py3plex.dsl.ExtendedQuery attribute)@\spxentry{path}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
 \indexentry{dynamics (py3plex.dsl.ExtendedQuery attribute)@\spxentry{dynamics}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
-\indexentry{trajectories (py3plex.dsl.ExtendedQuery attribute)@\spxentry{trajectories}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
-\indexentry{dsl\_version (py3plex.dsl.ExtendedQuery attribute)@\spxentry{dsl\_version}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
-\indexentry{compare (py3plex.dsl.ExtendedQuery attribute)@\spxentry{compare}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{417}
+\indexentry{trajectories (py3plex.dsl.ExtendedQuery attribute)@\spxentry{trajectories}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{418}
+\indexentry{dsl\_version (py3plex.dsl.ExtendedQuery attribute)@\spxentry{dsl\_version}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{418}
+\indexentry{compare (py3plex.dsl.ExtendedQuery attribute)@\spxentry{compare}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{418}
 \indexentry{dsl\_version (py3plex.dsl.ExtendedQuery attribute)@\spxentry{dsl\_version}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{418}
 \indexentry{dynamics (py3plex.dsl.ExtendedQuery attribute)@\spxentry{dynamics}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{418}
 \indexentry{explain (py3plex.dsl.ExtendedQuery attribute)@\spxentry{explain}\spxextra{py3plex.dsl.ExtendedQuery attribute}|hyperpage}{418}
@@ -450,10 +450,10 @@
 \indexentry{FieldProxy (class in py3plex.dsl)@\spxentry{FieldProxy}\spxextra{class in py3plex.dsl}|hyperpage}{418}
 \indexentry{FunctionCall (class in py3plex.dsl)@\spxentry{FunctionCall}\spxextra{class in py3plex.dsl}|hyperpage}{418}
 \indexentry{name (py3plex.dsl.FunctionCall attribute)@\spxentry{name}\spxextra{py3plex.dsl.FunctionCall attribute}|hyperpage}{418}
-\indexentry{args (py3plex.dsl.FunctionCall attribute)@\spxentry{args}\spxextra{py3plex.dsl.FunctionCall attribute}|hyperpage}{418}
-\indexentry{args (py3plex.dsl.FunctionCall attribute)@\spxentry{args}\spxextra{py3plex.dsl.FunctionCall attribute}|hyperpage}{418}
-\indexentry{name (py3plex.dsl.FunctionCall attribute)@\spxentry{name}\spxextra{py3plex.dsl.FunctionCall attribute}|hyperpage}{418}
-\indexentry{GroupingError@\spxentry{GroupingError}|hyperpage}{418}
+\indexentry{args (py3plex.dsl.FunctionCall attribute)@\spxentry{args}\spxextra{py3plex.dsl.FunctionCall attribute}|hyperpage}{419}
+\indexentry{args (py3plex.dsl.FunctionCall attribute)@\spxentry{args}\spxextra{py3plex.dsl.FunctionCall attribute}|hyperpage}{419}
+\indexentry{name (py3plex.dsl.FunctionCall attribute)@\spxentry{name}\spxextra{py3plex.dsl.FunctionCall attribute}|hyperpage}{419}
+\indexentry{GroupingError@\spxentry{GroupingError}|hyperpage}{419}
 \indexentry{LayerConstraint (class in py3plex.dsl)@\spxentry{LayerConstraint}\spxextra{class in py3plex.dsl}|hyperpage}{419}
 \indexentry{kind (py3plex.dsl.LayerConstraint attribute)@\spxentry{kind}\spxextra{py3plex.dsl.LayerConstraint attribute}|hyperpage}{419}
 \indexentry{value (py3plex.dsl.LayerConstraint attribute)@\spxentry{value}\spxextra{py3plex.dsl.LayerConstraint attribute}|hyperpage}{419}
@@ -465,8 +465,8 @@
 \indexentry{value (py3plex.dsl.LayerConstraint attribute)@\spxentry{value}\spxextra{py3plex.dsl.LayerConstraint attribute}|hyperpage}{419}
 \indexentry{wildcard() (py3plex.dsl.LayerConstraint static method)@\spxentry{wildcard()}\spxextra{py3plex.dsl.LayerConstraint static method}|hyperpage}{419}
 \indexentry{LayerExpr (class in py3plex.dsl)@\spxentry{LayerExpr}\spxextra{class in py3plex.dsl}|hyperpage}{419}
-\indexentry{terms (py3plex.dsl.LayerExpr attribute)@\spxentry{terms}\spxextra{py3plex.dsl.LayerExpr attribute}|hyperpage}{419}
-\indexentry{ops (py3plex.dsl.LayerExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.LayerExpr attribute}|hyperpage}{419}
+\indexentry{terms (py3plex.dsl.LayerExpr attribute)@\spxentry{terms}\spxextra{py3plex.dsl.LayerExpr attribute}|hyperpage}{420}
+\indexentry{ops (py3plex.dsl.LayerExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.LayerExpr attribute}|hyperpage}{420}
 \indexentry{get\_layer\_names() (py3plex.dsl.LayerExpr method)@\spxentry{get\_layer\_names()}\spxextra{py3plex.dsl.LayerExpr method}|hyperpage}{420}
 \indexentry{ops (py3plex.dsl.LayerExpr attribute)@\spxentry{ops}\spxextra{py3plex.dsl.LayerExpr attribute}|hyperpage}{420}
 \indexentry{terms (py3plex.dsl.LayerExpr attribute)@\spxentry{terms}\spxextra{py3plex.dsl.LayerExpr attribute}|hyperpage}{420}
@@ -479,7 +479,7 @@
 \indexentry{expr (py3plex.dsl.LayerSet attribute)@\spxentry{expr}\spxextra{py3plex.dsl.LayerSet attribute}|hyperpage}{421}
 \indexentry{clear\_groups() (py3plex.dsl.LayerSet static method)@\spxentry{clear\_groups()}\spxextra{py3plex.dsl.LayerSet static method}|hyperpage}{421}
 \indexentry{define\_group() (py3plex.dsl.LayerSet static method)@\spxentry{define\_group()}\spxextra{py3plex.dsl.LayerSet static method}|hyperpage}{421}
-\indexentry{explain() (py3plex.dsl.LayerSet method)@\spxentry{explain()}\spxextra{py3plex.dsl.LayerSet method}|hyperpage}{421}
+\indexentry{explain() (py3plex.dsl.LayerSet method)@\spxentry{explain()}\spxextra{py3plex.dsl.LayerSet method}|hyperpage}{422}
 \indexentry{list\_groups() (py3plex.dsl.LayerSet static method)@\spxentry{list\_groups()}\spxextra{py3plex.dsl.LayerSet static method}|hyperpage}{422}
 \indexentry{parse() (py3plex.dsl.LayerSet static method)@\spxentry{parse()}\spxextra{py3plex.dsl.LayerSet static method}|hyperpage}{422}
 \indexentry{resolve() (py3plex.dsl.LayerSet method)@\spxentry{resolve()}\spxextra{py3plex.dsl.LayerSet method}|hyperpage}{423}
@@ -488,8 +488,8 @@
 \indexentry{name (py3plex.dsl.LayerTerm attribute)@\spxentry{name}\spxextra{py3plex.dsl.LayerTerm attribute}|hyperpage}{423}
 \indexentry{name (py3plex.dsl.LayerTerm attribute)@\spxentry{name}\spxextra{py3plex.dsl.LayerTerm attribute}|hyperpage}{423}
 \indexentry{MatchRow (class in py3plex.dsl)@\spxentry{MatchRow}\spxextra{class in py3plex.dsl}|hyperpage}{423}
-\indexentry{bindings (py3plex.dsl.MatchRow attribute)@\spxentry{bindings}\spxextra{py3plex.dsl.MatchRow attribute}|hyperpage}{423}
-\indexentry{edge\_bindings (py3plex.dsl.MatchRow attribute)@\spxentry{edge\_bindings}\spxextra{py3plex.dsl.MatchRow attribute}|hyperpage}{423}
+\indexentry{bindings (py3plex.dsl.MatchRow attribute)@\spxentry{bindings}\spxextra{py3plex.dsl.MatchRow attribute}|hyperpage}{424}
+\indexentry{edge\_bindings (py3plex.dsl.MatchRow attribute)@\spxentry{edge\_bindings}\spxextra{py3plex.dsl.MatchRow attribute}|hyperpage}{424}
 \indexentry{bindings (py3plex.dsl.MatchRow attribute)@\spxentry{bindings}\spxextra{py3plex.dsl.MatchRow attribute}|hyperpage}{424}
 \indexentry{edge\_bindings (py3plex.dsl.MatchRow attribute)@\spxentry{edge\_bindings}\spxextra{py3plex.dsl.MatchRow attribute}|hyperpage}{424}
 \indexentry{to\_dict() (py3plex.dsl.MatchRow method)@\spxentry{to\_dict()}\spxextra{py3plex.dsl.MatchRow method}|hyperpage}{424}
@@ -503,15 +503,15 @@
 \indexentry{get\_attribute\_type() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{get\_attribute\_type()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{424}
 \indexentry{get\_edge\_count() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{get\_edge\_count()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{424}
 \indexentry{get\_node\_count() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{get\_node\_count()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{424}
-\indexentry{list\_edge\_types() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{list\_edge\_types()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{424}
-\indexentry{list\_layers() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{list\_layers()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{424}
-\indexentry{list\_node\_types() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{list\_node\_types()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{424}
-\indexentry{NullModelBuilder (class in py3plex.dsl)@\spxentry{NullModelBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{424}
+\indexentry{list\_edge\_types() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{list\_edge\_types()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{425}
+\indexentry{list\_layers() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{list\_layers()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{425}
+\indexentry{list\_node\_types() (py3plex.dsl.NetworkSchemaProvider method)@\spxentry{list\_node\_types()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}|hyperpage}{425}
+\indexentry{NullModelBuilder (class in py3plex.dsl)@\spxentry{NullModelBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{425}
 \indexentry{execute() (py3plex.dsl.NullModelBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.NullModelBuilder method}|hyperpage}{425}
 \indexentry{on\_layers() (py3plex.dsl.NullModelBuilder method)@\spxentry{on\_layers()}\spxextra{py3plex.dsl.NullModelBuilder method}|hyperpage}{425}
 \indexentry{samples() (py3plex.dsl.NullModelBuilder method)@\spxentry{samples()}\spxextra{py3plex.dsl.NullModelBuilder method}|hyperpage}{425}
 \indexentry{seed() (py3plex.dsl.NullModelBuilder method)@\spxentry{seed()}\spxextra{py3plex.dsl.NullModelBuilder method}|hyperpage}{425}
-\indexentry{to() (py3plex.dsl.NullModelBuilder method)@\spxentry{to()}\spxextra{py3plex.dsl.NullModelBuilder method}|hyperpage}{425}
+\indexentry{to() (py3plex.dsl.NullModelBuilder method)@\spxentry{to()}\spxextra{py3plex.dsl.NullModelBuilder method}|hyperpage}{426}
 \indexentry{to\_ast() (py3plex.dsl.NullModelBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.NullModelBuilder method}|hyperpage}{426}
 \indexentry{with\_params() (py3plex.dsl.NullModelBuilder method)@\spxentry{with\_params()}\spxextra{py3plex.dsl.NullModelBuilder method}|hyperpage}{426}
 \indexentry{NullModelStmt (class in py3plex.dsl)@\spxentry{NullModelStmt}\spxextra{class in py3plex.dsl}|hyperpage}{426}
@@ -519,8 +519,8 @@
 \indexentry{layer\_expr (py3plex.dsl.NullModelStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{426}
 \indexentry{params (py3plex.dsl.NullModelStmt attribute)@\spxentry{params}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{426}
 \indexentry{num\_samples (py3plex.dsl.NullModelStmt attribute)@\spxentry{num\_samples}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{426}
-\indexentry{seed (py3plex.dsl.NullModelStmt attribute)@\spxentry{seed}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{426}
-\indexentry{export\_target (py3plex.dsl.NullModelStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{426}
+\indexentry{seed (py3plex.dsl.NullModelStmt attribute)@\spxentry{seed}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{427}
+\indexentry{export\_target (py3plex.dsl.NullModelStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{427}
 \indexentry{export\_target (py3plex.dsl.NullModelStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{427}
 \indexentry{layer\_expr (py3plex.dsl.NullModelStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{427}
 \indexentry{model\_type (py3plex.dsl.NullModelStmt attribute)@\spxentry{model\_type}\spxextra{py3plex.dsl.NullModelStmt attribute}|hyperpage}{427}
@@ -534,10 +534,10 @@
 \indexentry{key (py3plex.dsl.OrderItem attribute)@\spxentry{key}\spxextra{py3plex.dsl.OrderItem attribute}|hyperpage}{427}
 \indexentry{P (class in py3plex.dsl)@\spxentry{P}\spxextra{class in py3plex.dsl}|hyperpage}{427}
 \indexentry{all\_paths() (py3plex.dsl.P static method)@\spxentry{all\_paths()}\spxextra{py3plex.dsl.P static method}|hyperpage}{427}
-\indexentry{flow() (py3plex.dsl.P static method)@\spxentry{flow()}\spxextra{py3plex.dsl.P static method}|hyperpage}{427}
-\indexentry{random\_walk() (py3plex.dsl.P static method)@\spxentry{random\_walk()}\spxextra{py3plex.dsl.P static method}|hyperpage}{427}
-\indexentry{shortest() (py3plex.dsl.P static method)@\spxentry{shortest()}\spxextra{py3plex.dsl.P static method}|hyperpage}{427}
-\indexentry{Param (class in py3plex.dsl)@\spxentry{Param}\spxextra{class in py3plex.dsl}|hyperpage}{427}
+\indexentry{flow() (py3plex.dsl.P static method)@\spxentry{flow()}\spxextra{py3plex.dsl.P static method}|hyperpage}{428}
+\indexentry{random\_walk() (py3plex.dsl.P static method)@\spxentry{random\_walk()}\spxextra{py3plex.dsl.P static method}|hyperpage}{428}
+\indexentry{shortest() (py3plex.dsl.P static method)@\spxentry{shortest()}\spxextra{py3plex.dsl.P static method}|hyperpage}{428}
+\indexentry{Param (class in py3plex.dsl)@\spxentry{Param}\spxextra{class in py3plex.dsl}|hyperpage}{428}
 \indexentry{float() (py3plex.dsl.Param static method)@\spxentry{float()}\spxextra{py3plex.dsl.Param static method}|hyperpage}{428}
 \indexentry{int() (py3plex.dsl.Param static method)@\spxentry{int()}\spxextra{py3plex.dsl.Param static method}|hyperpage}{428}
 \indexentry{ref() (py3plex.dsl.Param static method)@\spxentry{ref()}\spxextra{py3plex.dsl.Param static method}|hyperpage}{428}
@@ -548,24 +548,24 @@
 \indexentry{name (py3plex.dsl.ParamRef attribute)@\spxentry{name}\spxextra{py3plex.dsl.ParamRef attribute}|hyperpage}{428}
 \indexentry{type\_hint (py3plex.dsl.ParamRef attribute)@\spxentry{type\_hint}\spxextra{py3plex.dsl.ParamRef attribute}|hyperpage}{428}
 \indexentry{ParameterMissingError@\spxentry{ParameterMissingError}|hyperpage}{428}
-\indexentry{parameter (py3plex.dsl.ParameterMissingError attribute)@\spxentry{parameter}\spxextra{py3plex.dsl.ParameterMissingError attribute}|hyperpage}{428}
-\indexentry{provided\_params (py3plex.dsl.ParameterMissingError attribute)@\spxentry{provided\_params}\spxextra{py3plex.dsl.ParameterMissingError attribute}|hyperpage}{428}
-\indexentry{PathBuilder (class in py3plex.dsl)@\spxentry{PathBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{428}
+\indexentry{parameter (py3plex.dsl.ParameterMissingError attribute)@\spxentry{parameter}\spxextra{py3plex.dsl.ParameterMissingError attribute}|hyperpage}{429}
+\indexentry{provided\_params (py3plex.dsl.ParameterMissingError attribute)@\spxentry{provided\_params}\spxextra{py3plex.dsl.ParameterMissingError attribute}|hyperpage}{429}
+\indexentry{PathBuilder (class in py3plex.dsl)@\spxentry{PathBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{429}
 \indexentry{crossing\_layers() (py3plex.dsl.PathBuilder method)@\spxentry{crossing\_layers()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{429}
 \indexentry{execute() (py3plex.dsl.PathBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{429}
 \indexentry{limit() (py3plex.dsl.PathBuilder method)@\spxentry{limit()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{429}
 \indexentry{on\_layers() (py3plex.dsl.PathBuilder method)@\spxentry{on\_layers()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{429}
-\indexentry{to() (py3plex.dsl.PathBuilder method)@\spxentry{to()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{429}
-\indexentry{to\_ast() (py3plex.dsl.PathBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{429}
+\indexentry{to() (py3plex.dsl.PathBuilder method)@\spxentry{to()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{430}
+\indexentry{to\_ast() (py3plex.dsl.PathBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{430}
 \indexentry{with\_params() (py3plex.dsl.PathBuilder method)@\spxentry{with\_params()}\spxextra{py3plex.dsl.PathBuilder method}|hyperpage}{430}
 \indexentry{PathStmt (class in py3plex.dsl)@\spxentry{PathStmt}\spxextra{class in py3plex.dsl}|hyperpage}{430}
 \indexentry{path\_type (py3plex.dsl.PathStmt attribute)@\spxentry{path\_type}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{430}
 \indexentry{source (py3plex.dsl.PathStmt attribute)@\spxentry{source}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{430}
 \indexentry{target (py3plex.dsl.PathStmt attribute)@\spxentry{target}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{430}
 \indexentry{layer\_expr (py3plex.dsl.PathStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{430}
-\indexentry{cross\_layer (py3plex.dsl.PathStmt attribute)@\spxentry{cross\_layer}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{430}
-\indexentry{params (py3plex.dsl.PathStmt attribute)@\spxentry{params}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{430}
-\indexentry{limit (py3plex.dsl.PathStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{430}
+\indexentry{cross\_layer (py3plex.dsl.PathStmt attribute)@\spxentry{cross\_layer}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{431}
+\indexentry{params (py3plex.dsl.PathStmt attribute)@\spxentry{params}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{431}
+\indexentry{limit (py3plex.dsl.PathStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{431}
 \indexentry{export\_target (py3plex.dsl.PathStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{431}
 \indexentry{cross\_layer (py3plex.dsl.PathStmt attribute)@\spxentry{cross\_layer}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{431}
 \indexentry{export\_target (py3plex.dsl.PathStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.PathStmt attribute}|hyperpage}{431}
@@ -578,9 +578,9 @@
 \indexentry{PatternEdge (class in py3plex.dsl)@\spxentry{PatternEdge}\spxextra{class in py3plex.dsl}|hyperpage}{431}
 \indexentry{src (py3plex.dsl.PatternEdge attribute)@\spxentry{src}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{431}
 \indexentry{dst (py3plex.dsl.PatternEdge attribute)@\spxentry{dst}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{431}
-\indexentry{directed (py3plex.dsl.PatternEdge attribute)@\spxentry{directed}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{431}
-\indexentry{etype (py3plex.dsl.PatternEdge attribute)@\spxentry{etype}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{431}
-\indexentry{predicates (py3plex.dsl.PatternEdge attribute)@\spxentry{predicates}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{431}
+\indexentry{directed (py3plex.dsl.PatternEdge attribute)@\spxentry{directed}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{432}
+\indexentry{etype (py3plex.dsl.PatternEdge attribute)@\spxentry{etype}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{432}
+\indexentry{predicates (py3plex.dsl.PatternEdge attribute)@\spxentry{predicates}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{432}
 \indexentry{layer\_constraint (py3plex.dsl.PatternEdge attribute)@\spxentry{layer\_constraint}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{432}
 \indexentry{directed (py3plex.dsl.PatternEdge attribute)@\spxentry{directed}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{432}
 \indexentry{dst (py3plex.dsl.PatternEdge attribute)@\spxentry{dst}\spxextra{py3plex.dsl.PatternEdge attribute}|hyperpage}{432}
@@ -592,21 +592,21 @@
 \indexentry{PatternEdgeBuilder (class in py3plex.dsl)@\spxentry{PatternEdgeBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{432}
 \indexentry{any\_layer() (py3plex.dsl.PatternEdgeBuilder method)@\spxentry{any\_layer()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}|hyperpage}{432}
 \indexentry{between\_layers() (py3plex.dsl.PatternEdgeBuilder method)@\spxentry{between\_layers()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}|hyperpage}{432}
-\indexentry{where() (py3plex.dsl.PatternEdgeBuilder method)@\spxentry{where()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}|hyperpage}{432}
-\indexentry{within\_layer() (py3plex.dsl.PatternEdgeBuilder method)@\spxentry{within\_layer()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}|hyperpage}{432}
+\indexentry{where() (py3plex.dsl.PatternEdgeBuilder method)@\spxentry{where()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}|hyperpage}{433}
+\indexentry{within\_layer() (py3plex.dsl.PatternEdgeBuilder method)@\spxentry{within\_layer()}\spxextra{py3plex.dsl.PatternEdgeBuilder method}|hyperpage}{433}
 \indexentry{PatternGraph (class in py3plex.dsl)@\spxentry{PatternGraph}\spxextra{class in py3plex.dsl}|hyperpage}{433}
 \indexentry{nodes (py3plex.dsl.PatternGraph attribute)@\spxentry{nodes}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{433}
 \indexentry{edges (py3plex.dsl.PatternGraph attribute)@\spxentry{edges}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{433}
 \indexentry{constraints (py3plex.dsl.PatternGraph attribute)@\spxentry{constraints}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{433}
 \indexentry{return\_vars (py3plex.dsl.PatternGraph attribute)@\spxentry{return\_vars}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{433}
 \indexentry{add\_constraint() (py3plex.dsl.PatternGraph method)@\spxentry{add\_constraint()}\spxextra{py3plex.dsl.PatternGraph method}|hyperpage}{433}
-\indexentry{add\_edge() (py3plex.dsl.PatternGraph method)@\spxentry{add\_edge()}\spxextra{py3plex.dsl.PatternGraph method}|hyperpage}{433}
-\indexentry{add\_node() (py3plex.dsl.PatternGraph method)@\spxentry{add\_node()}\spxextra{py3plex.dsl.PatternGraph method}|hyperpage}{433}
-\indexentry{constraints (py3plex.dsl.PatternGraph attribute)@\spxentry{constraints}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{433}
-\indexentry{edges (py3plex.dsl.PatternGraph attribute)@\spxentry{edges}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{433}
-\indexentry{get\_return\_vars() (py3plex.dsl.PatternGraph method)@\spxentry{get\_return\_vars()}\spxextra{py3plex.dsl.PatternGraph method}|hyperpage}{433}
-\indexentry{nodes (py3plex.dsl.PatternGraph attribute)@\spxentry{nodes}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{433}
-\indexentry{return\_vars (py3plex.dsl.PatternGraph attribute)@\spxentry{return\_vars}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{433}
+\indexentry{add\_edge() (py3plex.dsl.PatternGraph method)@\spxentry{add\_edge()}\spxextra{py3plex.dsl.PatternGraph method}|hyperpage}{434}
+\indexentry{add\_node() (py3plex.dsl.PatternGraph method)@\spxentry{add\_node()}\spxextra{py3plex.dsl.PatternGraph method}|hyperpage}{434}
+\indexentry{constraints (py3plex.dsl.PatternGraph attribute)@\spxentry{constraints}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{434}
+\indexentry{edges (py3plex.dsl.PatternGraph attribute)@\spxentry{edges}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{434}
+\indexentry{get\_return\_vars() (py3plex.dsl.PatternGraph method)@\spxentry{get\_return\_vars()}\spxextra{py3plex.dsl.PatternGraph method}|hyperpage}{434}
+\indexentry{nodes (py3plex.dsl.PatternGraph attribute)@\spxentry{nodes}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{434}
+\indexentry{return\_vars (py3plex.dsl.PatternGraph attribute)@\spxentry{return\_vars}\spxextra{py3plex.dsl.PatternGraph attribute}|hyperpage}{434}
 \indexentry{to\_dict() (py3plex.dsl.PatternGraph method)@\spxentry{to\_dict()}\spxextra{py3plex.dsl.PatternGraph method}|hyperpage}{434}
 \indexentry{PatternNode (class in py3plex.dsl)@\spxentry{PatternNode}\spxextra{class in py3plex.dsl}|hyperpage}{434}
 \indexentry{var (py3plex.dsl.PatternNode attribute)@\spxentry{var}\spxextra{py3plex.dsl.PatternNode attribute}|hyperpage}{434}
@@ -618,15 +618,15 @@
 \indexentry{predicates (py3plex.dsl.PatternNode attribute)@\spxentry{predicates}\spxextra{py3plex.dsl.PatternNode attribute}|hyperpage}{434}
 \indexentry{to\_dict() (py3plex.dsl.PatternNode method)@\spxentry{to\_dict()}\spxextra{py3plex.dsl.PatternNode method}|hyperpage}{434}
 \indexentry{var (py3plex.dsl.PatternNode attribute)@\spxentry{var}\spxextra{py3plex.dsl.PatternNode attribute}|hyperpage}{434}
-\indexentry{PatternNodeBuilder (class in py3plex.dsl)@\spxentry{PatternNodeBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{434}
-\indexentry{in\_layers() (py3plex.dsl.PatternNodeBuilder method)@\spxentry{in\_layers()}\spxextra{py3plex.dsl.PatternNodeBuilder method}|hyperpage}{434}
+\indexentry{PatternNodeBuilder (class in py3plex.dsl)@\spxentry{PatternNodeBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{435}
+\indexentry{in\_layers() (py3plex.dsl.PatternNodeBuilder method)@\spxentry{in\_layers()}\spxextra{py3plex.dsl.PatternNodeBuilder method}|hyperpage}{435}
 \indexentry{label() (py3plex.dsl.PatternNodeBuilder method)@\spxentry{label()}\spxextra{py3plex.dsl.PatternNodeBuilder method}|hyperpage}{435}
 \indexentry{where() (py3plex.dsl.PatternNodeBuilder method)@\spxentry{where()}\spxextra{py3plex.dsl.PatternNodeBuilder method}|hyperpage}{435}
 \indexentry{PatternPlan (class in py3plex.dsl)@\spxentry{PatternPlan}\spxextra{class in py3plex.dsl}|hyperpage}{435}
 \indexentry{pattern (py3plex.dsl.PatternPlan attribute)@\spxentry{pattern}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{435}
-\indexentry{root\_var (py3plex.dsl.PatternPlan attribute)@\spxentry{root\_var}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{435}
-\indexentry{join\_order (py3plex.dsl.PatternPlan attribute)@\spxentry{join\_order}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{435}
-\indexentry{variable\_plans (py3plex.dsl.PatternPlan attribute)@\spxentry{variable\_plans}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{435}
+\indexentry{root\_var (py3plex.dsl.PatternPlan attribute)@\spxentry{root\_var}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{436}
+\indexentry{join\_order (py3plex.dsl.PatternPlan attribute)@\spxentry{join\_order}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{436}
+\indexentry{variable\_plans (py3plex.dsl.PatternPlan attribute)@\spxentry{variable\_plans}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{436}
 \indexentry{estimated\_complexity (py3plex.dsl.PatternPlan attribute)@\spxentry{estimated\_complexity}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{436}
 \indexentry{estimated\_complexity (py3plex.dsl.PatternPlan attribute)@\spxentry{estimated\_complexity}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{436}
 \indexentry{join\_order (py3plex.dsl.PatternPlan attribute)@\spxentry{join\_order}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{436}
@@ -636,26 +636,26 @@
 \indexentry{variable\_plans (py3plex.dsl.PatternPlan attribute)@\spxentry{variable\_plans}\spxextra{py3plex.dsl.PatternPlan attribute}|hyperpage}{436}
 \indexentry{PatternQueryBuilder (class in py3plex.dsl)@\spxentry{PatternQueryBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{436}
 \indexentry{constraint() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{constraint()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{436}
-\indexentry{edge() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{edge()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{436}
+\indexentry{edge() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{edge()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{437}
 \indexentry{execute() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{437}
 \indexentry{explain() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{explain()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{437}
 \indexentry{limit() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{limit()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{437}
 \indexentry{node() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{node()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{437}
-\indexentry{order\_by() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{order\_by()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{437}
+\indexentry{order\_by() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{order\_by()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{438}
 \indexentry{path() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{path()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{438}
 \indexentry{returning() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{returning()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{438}
 \indexentry{triangle() (py3plex.dsl.PatternQueryBuilder method)@\spxentry{triangle()}\spxextra{py3plex.dsl.PatternQueryBuilder method}|hyperpage}{438}
-\indexentry{PatternQueryResult (class in py3plex.dsl)@\spxentry{PatternQueryResult}\spxextra{class in py3plex.dsl}|hyperpage}{438}
-\indexentry{pattern (py3plex.dsl.PatternQueryResult attribute)@\spxentry{pattern}\spxextra{py3plex.dsl.PatternQueryResult attribute}|hyperpage}{438}
-\indexentry{matches (py3plex.dsl.PatternQueryResult attribute)@\spxentry{matches}\spxextra{py3plex.dsl.PatternQueryResult attribute}|hyperpage}{438}
+\indexentry{PatternQueryResult (class in py3plex.dsl)@\spxentry{PatternQueryResult}\spxextra{class in py3plex.dsl}|hyperpage}{439}
+\indexentry{pattern (py3plex.dsl.PatternQueryResult attribute)@\spxentry{pattern}\spxextra{py3plex.dsl.PatternQueryResult attribute}|hyperpage}{439}
+\indexentry{matches (py3plex.dsl.PatternQueryResult attribute)@\spxentry{matches}\spxextra{py3plex.dsl.PatternQueryResult attribute}|hyperpage}{439}
 \indexentry{meta (py3plex.dsl.PatternQueryResult attribute)@\spxentry{meta}\spxextra{py3plex.dsl.PatternQueryResult attribute}|hyperpage}{439}
 \indexentry{count (py3plex.dsl.PatternQueryResult property)@\spxentry{count}\spxextra{py3plex.dsl.PatternQueryResult property}|hyperpage}{439}
 \indexentry{filter() (py3plex.dsl.PatternQueryResult method)@\spxentry{filter()}\spxextra{py3plex.dsl.PatternQueryResult method}|hyperpage}{439}
 \indexentry{limit() (py3plex.dsl.PatternQueryResult method)@\spxentry{limit()}\spxextra{py3plex.dsl.PatternQueryResult method}|hyperpage}{439}
 \indexentry{rows (py3plex.dsl.PatternQueryResult property)@\spxentry{rows}\spxextra{py3plex.dsl.PatternQueryResult property}|hyperpage}{439}
 \indexentry{to\_edges() (py3plex.dsl.PatternQueryResult method)@\spxentry{to\_edges()}\spxextra{py3plex.dsl.PatternQueryResult method}|hyperpage}{439}
-\indexentry{to\_nodes() (py3plex.dsl.PatternQueryResult method)@\spxentry{to\_nodes()}\spxextra{py3plex.dsl.PatternQueryResult method}|hyperpage}{439}
-\indexentry{to\_pandas() (py3plex.dsl.PatternQueryResult method)@\spxentry{to\_pandas()}\spxextra{py3plex.dsl.PatternQueryResult method}|hyperpage}{439}
+\indexentry{to\_nodes() (py3plex.dsl.PatternQueryResult method)@\spxentry{to\_nodes()}\spxextra{py3plex.dsl.PatternQueryResult method}|hyperpage}{440}
+\indexentry{to\_pandas() (py3plex.dsl.PatternQueryResult method)@\spxentry{to\_pandas()}\spxextra{py3plex.dsl.PatternQueryResult method}|hyperpage}{440}
 \indexentry{to\_subgraph() (py3plex.dsl.PatternQueryResult method)@\spxentry{to\_subgraph()}\spxextra{py3plex.dsl.PatternQueryResult method}|hyperpage}{440}
 \indexentry{PlanStep (class in py3plex.dsl)@\spxentry{PlanStep}\spxextra{class in py3plex.dsl}|hyperpage}{440}
 \indexentry{description (py3plex.dsl.PlanStep attribute)@\spxentry{description}\spxextra{py3plex.dsl.PlanStep attribute}|hyperpage}{440}
@@ -664,21 +664,21 @@
 \indexentry{estimated\_complexity (py3plex.dsl.PlanStep attribute)@\spxentry{estimated\_complexity}\spxextra{py3plex.dsl.PlanStep attribute}|hyperpage}{440}
 \indexentry{Predicate (class in py3plex.dsl)@\spxentry{Predicate}\spxextra{class in py3plex.dsl}|hyperpage}{440}
 \indexentry{attr (py3plex.dsl.Predicate attribute)@\spxentry{attr}\spxextra{py3plex.dsl.Predicate attribute}|hyperpage}{440}
-\indexentry{op (py3plex.dsl.Predicate attribute)@\spxentry{op}\spxextra{py3plex.dsl.Predicate attribute}|hyperpage}{440}
-\indexentry{value (py3plex.dsl.Predicate attribute)@\spxentry{value}\spxextra{py3plex.dsl.Predicate attribute}|hyperpage}{440}
+\indexentry{op (py3plex.dsl.Predicate attribute)@\spxentry{op}\spxextra{py3plex.dsl.Predicate attribute}|hyperpage}{441}
+\indexentry{value (py3plex.dsl.Predicate attribute)@\spxentry{value}\spxextra{py3plex.dsl.Predicate attribute}|hyperpage}{441}
 \indexentry{attr (py3plex.dsl.Predicate attribute)@\spxentry{attr}\spxextra{py3plex.dsl.Predicate attribute}|hyperpage}{441}
 \indexentry{op (py3plex.dsl.Predicate attribute)@\spxentry{op}\spxextra{py3plex.dsl.Predicate attribute}|hyperpage}{441}
 \indexentry{to\_dict() (py3plex.dsl.Predicate method)@\spxentry{to\_dict()}\spxextra{py3plex.dsl.Predicate method}|hyperpage}{441}
 \indexentry{value (py3plex.dsl.Predicate attribute)@\spxentry{value}\spxextra{py3plex.dsl.Predicate attribute}|hyperpage}{441}
 \indexentry{Q (class in py3plex.dsl)@\spxentry{Q}\spxextra{class in py3plex.dsl}|hyperpage}{441}
 \indexentry{dynamics() (py3plex.dsl.Q static method)@\spxentry{dynamics()}\spxextra{py3plex.dsl.Q static method}|hyperpage}{441}
-\indexentry{edges() (py3plex.dsl.Q static method)@\spxentry{edges()}\spxextra{py3plex.dsl.Q static method}|hyperpage}{441}
-\indexentry{nodes() (py3plex.dsl.Q static method)@\spxentry{nodes()}\spxextra{py3plex.dsl.Q static method}|hyperpage}{441}
+\indexentry{edges() (py3plex.dsl.Q static method)@\spxentry{edges()}\spxextra{py3plex.dsl.Q static method}|hyperpage}{442}
+\indexentry{nodes() (py3plex.dsl.Q static method)@\spxentry{nodes()}\spxextra{py3plex.dsl.Q static method}|hyperpage}{442}
 \indexentry{pattern() (py3plex.dsl.Q static method)@\spxentry{pattern()}\spxextra{py3plex.dsl.Q static method}|hyperpage}{442}
 \indexentry{trajectories() (py3plex.dsl.Q static method)@\spxentry{trajectories()}\spxextra{py3plex.dsl.Q static method}|hyperpage}{442}
-\indexentry{Q.uncertainty (class in py3plex.dsl)@\spxentry{Q.uncertainty}\spxextra{class in py3plex.dsl}|hyperpage}{442}
+\indexentry{Q.uncertainty (class in py3plex.dsl)@\spxentry{Q.uncertainty}\spxextra{class in py3plex.dsl}|hyperpage}{443}
 \indexentry{defaults() (py3plex.dsl.Q.uncertainty class method)@\spxentry{defaults()}\spxextra{py3plex.dsl.Q.uncertainty class method}|hyperpage}{443}
-\indexentry{get() (py3plex.dsl.Q.uncertainty class method)@\spxentry{get()}\spxextra{py3plex.dsl.Q.uncertainty class method}|hyperpage}{443}
+\indexentry{get() (py3plex.dsl.Q.uncertainty class method)@\spxentry{get()}\spxextra{py3plex.dsl.Q.uncertainty class method}|hyperpage}{444}
 \indexentry{get\_all() (py3plex.dsl.Q.uncertainty class method)@\spxentry{get\_all()}\spxextra{py3plex.dsl.Q.uncertainty class method}|hyperpage}{444}
 \indexentry{reset() (py3plex.dsl.Q.uncertainty class method)@\spxentry{reset()}\spxextra{py3plex.dsl.Q.uncertainty class method}|hyperpage}{444}
 \indexentry{Query (class in py3plex.dsl)@\spxentry{Query}\spxextra{class in py3plex.dsl}|hyperpage}{444}
@@ -688,74 +688,74 @@
 \indexentry{dsl\_version (py3plex.dsl.Query attribute)@\spxentry{dsl\_version}\spxextra{py3plex.dsl.Query attribute}|hyperpage}{444}
 \indexentry{explain (py3plex.dsl.Query attribute)@\spxentry{explain}\spxextra{py3plex.dsl.Query attribute}|hyperpage}{444}
 \indexentry{select (py3plex.dsl.Query attribute)@\spxentry{select}\spxextra{py3plex.dsl.Query attribute}|hyperpage}{444}
-\indexentry{QueryBuilder (class in py3plex.dsl)@\spxentry{QueryBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{444}
-\indexentry{after() (py3plex.dsl.QueryBuilder method)@\spxentry{after()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{444}
+\indexentry{QueryBuilder (class in py3plex.dsl)@\spxentry{QueryBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{445}
+\indexentry{after() (py3plex.dsl.QueryBuilder method)@\spxentry{after()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{445}
 \indexentry{aggregate() (py3plex.dsl.QueryBuilder method)@\spxentry{aggregate()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{445}
-\indexentry{arrange() (py3plex.dsl.QueryBuilder method)@\spxentry{arrange()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{445}
+\indexentry{arrange() (py3plex.dsl.QueryBuilder method)@\spxentry{arrange()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{446}
 \indexentry{at() (py3plex.dsl.QueryBuilder method)@\spxentry{at()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{446}
 \indexentry{before() (py3plex.dsl.QueryBuilder method)@\spxentry{before()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{446}
-\indexentry{centrality() (py3plex.dsl.QueryBuilder method)@\spxentry{centrality()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{446}
+\indexentry{centrality() (py3plex.dsl.QueryBuilder method)@\spxentry{centrality()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{447}
 \indexentry{compute() (py3plex.dsl.QueryBuilder method)@\spxentry{compute()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{447}
 \indexentry{coverage() (py3plex.dsl.QueryBuilder method)@\spxentry{coverage()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{448}
 \indexentry{distinct() (py3plex.dsl.QueryBuilder method)@\spxentry{distinct()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{449}
-\indexentry{drop() (py3plex.dsl.QueryBuilder method)@\spxentry{drop()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{449}
+\indexentry{drop() (py3plex.dsl.QueryBuilder method)@\spxentry{drop()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{450}
 \indexentry{during() (py3plex.dsl.QueryBuilder method)@\spxentry{during()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{450}
 \indexentry{end\_grouping() (py3plex.dsl.QueryBuilder method)@\spxentry{end\_grouping()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{450}
-\indexentry{execute() (py3plex.dsl.QueryBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{450}
+\indexentry{execute() (py3plex.dsl.QueryBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{451}
 \indexentry{explain() (py3plex.dsl.QueryBuilder method)@\spxentry{explain()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{451}
 \indexentry{export() (py3plex.dsl.QueryBuilder method)@\spxentry{export()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{451}
-\indexentry{export\_csv() (py3plex.dsl.QueryBuilder method)@\spxentry{export\_csv()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{451}
+\indexentry{export\_csv() (py3plex.dsl.QueryBuilder method)@\spxentry{export\_csv()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{452}
 \indexentry{export\_json() (py3plex.dsl.QueryBuilder method)@\spxentry{export\_json()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{452}
 \indexentry{from\_layers() (py3plex.dsl.QueryBuilder method)@\spxentry{from\_layers()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{452}
-\indexentry{group\_by() (py3plex.dsl.QueryBuilder method)@\spxentry{group\_by()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{452}
+\indexentry{group\_by() (py3plex.dsl.QueryBuilder method)@\spxentry{group\_by()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{453}
 \indexentry{has\_community() (py3plex.dsl.QueryBuilder method)@\spxentry{has\_community()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{453}
 \indexentry{limit() (py3plex.dsl.QueryBuilder method)@\spxentry{limit()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{453}
-\indexentry{node\_type() (py3plex.dsl.QueryBuilder method)@\spxentry{node\_type()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{453}
-\indexentry{order\_by() (py3plex.dsl.QueryBuilder method)@\spxentry{order\_by()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{453}
+\indexentry{node\_type() (py3plex.dsl.QueryBuilder method)@\spxentry{node\_type()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{454}
+\indexentry{order\_by() (py3plex.dsl.QueryBuilder method)@\spxentry{order\_by()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{454}
 \indexentry{per\_community() (py3plex.dsl.QueryBuilder method)@\spxentry{per\_community()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{454}
 \indexentry{per\_layer() (py3plex.dsl.QueryBuilder method)@\spxentry{per\_layer()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{454}
-\indexentry{per\_layer\_pair() (py3plex.dsl.QueryBuilder method)@\spxentry{per\_layer\_pair()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{454}
-\indexentry{rank\_by() (py3plex.dsl.QueryBuilder method)@\spxentry{rank\_by()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{454}
+\indexentry{per\_layer\_pair() (py3plex.dsl.QueryBuilder method)@\spxentry{per\_layer\_pair()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{455}
+\indexentry{rank\_by() (py3plex.dsl.QueryBuilder method)@\spxentry{rank\_by()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{455}
 \indexentry{rename() (py3plex.dsl.QueryBuilder method)@\spxentry{rename()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{455}
-\indexentry{select() (py3plex.dsl.QueryBuilder method)@\spxentry{select()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{455}
+\indexentry{select() (py3plex.dsl.QueryBuilder method)@\spxentry{select()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{456}
 \indexentry{sort() (py3plex.dsl.QueryBuilder method)@\spxentry{sort()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{456}
 \indexentry{summarize() (py3plex.dsl.QueryBuilder method)@\spxentry{summarize()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{456}
 \indexentry{to() (py3plex.dsl.QueryBuilder method)@\spxentry{to()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{457}
 \indexentry{to\_ast() (py3plex.dsl.QueryBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{457}
 \indexentry{to\_dsl() (py3plex.dsl.QueryBuilder method)@\spxentry{to\_dsl()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{457}
 \indexentry{top\_k() (py3plex.dsl.QueryBuilder method)@\spxentry{top\_k()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{457}
-\indexentry{uncertainty() (py3plex.dsl.QueryBuilder method)@\spxentry{uncertainty()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{457}
-\indexentry{uq() (py3plex.dsl.QueryBuilder method)@\spxentry{uq()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{457}
+\indexentry{uncertainty() (py3plex.dsl.QueryBuilder method)@\spxentry{uncertainty()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{458}
+\indexentry{uq() (py3plex.dsl.QueryBuilder method)@\spxentry{uq()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{458}
 \indexentry{where() (py3plex.dsl.QueryBuilder method)@\spxentry{where()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{458}
 \indexentry{window() (py3plex.dsl.QueryBuilder method)@\spxentry{window()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{459}
 \indexentry{zscore() (py3plex.dsl.QueryBuilder method)@\spxentry{zscore()}\spxextra{py3plex.dsl.QueryBuilder method}|hyperpage}{460}
 \indexentry{QueryResult (class in py3plex.dsl)@\spxentry{QueryResult}\spxextra{class in py3plex.dsl}|hyperpage}{460}
 \indexentry{target (py3plex.dsl.QueryResult attribute)@\spxentry{target}\spxextra{py3plex.dsl.QueryResult attribute}|hyperpage}{460}
 \indexentry{items (py3plex.dsl.QueryResult attribute)@\spxentry{items}\spxextra{py3plex.dsl.QueryResult attribute}|hyperpage}{460}
-\indexentry{attributes (py3plex.dsl.QueryResult attribute)@\spxentry{attributes}\spxextra{py3plex.dsl.QueryResult attribute}|hyperpage}{460}
-\indexentry{meta (py3plex.dsl.QueryResult attribute)@\spxentry{meta}\spxextra{py3plex.dsl.QueryResult attribute}|hyperpage}{460}
-\indexentry{computed\_metrics (py3plex.dsl.QueryResult attribute)@\spxentry{computed\_metrics}\spxextra{py3plex.dsl.QueryResult attribute}|hyperpage}{460}
-\indexentry{count (py3plex.dsl.QueryResult property)@\spxentry{count}\spxextra{py3plex.dsl.QueryResult property}|hyperpage}{460}
-\indexentry{edges (py3plex.dsl.QueryResult property)@\spxentry{edges}\spxextra{py3plex.dsl.QueryResult property}|hyperpage}{460}
+\indexentry{attributes (py3plex.dsl.QueryResult attribute)@\spxentry{attributes}\spxextra{py3plex.dsl.QueryResult attribute}|hyperpage}{461}
+\indexentry{meta (py3plex.dsl.QueryResult attribute)@\spxentry{meta}\spxextra{py3plex.dsl.QueryResult attribute}|hyperpage}{461}
+\indexentry{computed\_metrics (py3plex.dsl.QueryResult attribute)@\spxentry{computed\_metrics}\spxextra{py3plex.dsl.QueryResult attribute}|hyperpage}{461}
+\indexentry{count (py3plex.dsl.QueryResult property)@\spxentry{count}\spxextra{py3plex.dsl.QueryResult property}|hyperpage}{461}
+\indexentry{edges (py3plex.dsl.QueryResult property)@\spxentry{edges}\spxextra{py3plex.dsl.QueryResult property}|hyperpage}{461}
 \indexentry{group\_summary() (py3plex.dsl.QueryResult method)@\spxentry{group\_summary()}\spxextra{py3plex.dsl.QueryResult method}|hyperpage}{461}
 \indexentry{nodes (py3plex.dsl.QueryResult property)@\spxentry{nodes}\spxextra{py3plex.dsl.QueryResult property}|hyperpage}{461}
 \indexentry{to\_arrow() (py3plex.dsl.QueryResult method)@\spxentry{to\_arrow()}\spxextra{py3plex.dsl.QueryResult method}|hyperpage}{461}
 \indexentry{to\_dict() (py3plex.dsl.QueryResult method)@\spxentry{to\_dict()}\spxextra{py3plex.dsl.QueryResult method}|hyperpage}{461}
 \indexentry{to\_networkx() (py3plex.dsl.QueryResult method)@\spxentry{to\_networkx()}\spxextra{py3plex.dsl.QueryResult method}|hyperpage}{461}
-\indexentry{to\_pandas() (py3plex.dsl.QueryResult method)@\spxentry{to\_pandas()}\spxextra{py3plex.dsl.QueryResult method}|hyperpage}{461}
+\indexentry{to\_pandas() (py3plex.dsl.QueryResult method)@\spxentry{to\_pandas()}\spxextra{py3plex.dsl.QueryResult method}|hyperpage}{462}
 \indexentry{SchemaProvider (class in py3plex.dsl)@\spxentry{SchemaProvider}\spxextra{class in py3plex.dsl}|hyperpage}{462}
 \indexentry{get\_attribute\_type() (py3plex.dsl.SchemaProvider method)@\spxentry{get\_attribute\_type()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{462}
-\indexentry{get\_edge\_count() (py3plex.dsl.SchemaProvider method)@\spxentry{get\_edge\_count()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{462}
-\indexentry{get\_node\_count() (py3plex.dsl.SchemaProvider method)@\spxentry{get\_node\_count()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{462}
-\indexentry{list\_edge\_types() (py3plex.dsl.SchemaProvider method)@\spxentry{list\_edge\_types()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{462}
-\indexentry{list\_layers() (py3plex.dsl.SchemaProvider method)@\spxentry{list\_layers()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{462}
-\indexentry{list\_node\_types() (py3plex.dsl.SchemaProvider method)@\spxentry{list\_node\_types()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{462}
+\indexentry{get\_edge\_count() (py3plex.dsl.SchemaProvider method)@\spxentry{get\_edge\_count()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{463}
+\indexentry{get\_node\_count() (py3plex.dsl.SchemaProvider method)@\spxentry{get\_node\_count()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{463}
+\indexentry{list\_edge\_types() (py3plex.dsl.SchemaProvider method)@\spxentry{list\_edge\_types()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{463}
+\indexentry{list\_layers() (py3plex.dsl.SchemaProvider method)@\spxentry{list\_layers()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{463}
+\indexentry{list\_node\_types() (py3plex.dsl.SchemaProvider method)@\spxentry{list\_node\_types()}\spxextra{py3plex.dsl.SchemaProvider method}|hyperpage}{463}
 \indexentry{SelectStmt (class in py3plex.dsl)@\spxentry{SelectStmt}\spxextra{class in py3plex.dsl}|hyperpage}{463}
 \indexentry{target (py3plex.dsl.SelectStmt attribute)@\spxentry{target}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{463}
 \indexentry{layer\_expr (py3plex.dsl.SelectStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{463}
-\indexentry{where (py3plex.dsl.SelectStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{463}
-\indexentry{compute (py3plex.dsl.SelectStmt attribute)@\spxentry{compute}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{463}
-\indexentry{order\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{463}
+\indexentry{where (py3plex.dsl.SelectStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
+\indexentry{compute (py3plex.dsl.SelectStmt attribute)@\spxentry{compute}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
+\indexentry{order\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
 \indexentry{limit (py3plex.dsl.SelectStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
 \indexentry{export (py3plex.dsl.SelectStmt attribute)@\spxentry{export}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
 \indexentry{file\_export (py3plex.dsl.SelectStmt attribute)@\spxentry{file\_export}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
@@ -763,9 +763,9 @@
 \indexentry{window\_spec (py3plex.dsl.SelectStmt attribute)@\spxentry{window\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
 \indexentry{group\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{group\_by}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
 \indexentry{limit\_per\_group (py3plex.dsl.SelectStmt attribute)@\spxentry{limit\_per\_group}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
-\indexentry{coverage\_mode (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_mode}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
-\indexentry{coverage\_k (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_k}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
-\indexentry{coverage\_p (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_p}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{464}
+\indexentry{coverage\_mode (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_mode}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
+\indexentry{coverage\_k (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_k}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
+\indexentry{coverage\_p (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_p}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
 \indexentry{coverage\_group (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_group}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
 \indexentry{coverage\_id\_field (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_id\_field}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
 \indexentry{select\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{select\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
@@ -774,9 +774,9 @@
 \indexentry{summarize\_aggs (py3plex.dsl.SelectStmt attribute)@\spxentry{summarize\_aggs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
 \indexentry{distinct\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{distinct\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
 \indexentry{rank\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{rank\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
-\indexentry{zscore\_attrs (py3plex.dsl.SelectStmt attribute)@\spxentry{zscore\_attrs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
-\indexentry{post\_filters (py3plex.dsl.SelectStmt attribute)@\spxentry{post\_filters}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
-\indexentry{aggregate\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{aggregate\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{465}
+\indexentry{zscore\_attrs (py3plex.dsl.SelectStmt attribute)@\spxentry{zscore\_attrs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
+\indexentry{post\_filters (py3plex.dsl.SelectStmt attribute)@\spxentry{post\_filters}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
+\indexentry{aggregate\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{aggregate\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
 \indexentry{autocompute (py3plex.dsl.SelectStmt attribute)@\spxentry{autocompute}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
 \indexentry{uq\_config (py3plex.dsl.SelectStmt attribute)@\spxentry{uq\_config}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
 \indexentry{aggregate\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{aggregate\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
@@ -795,15 +795,15 @@
 \indexentry{layer\_expr (py3plex.dsl.SelectStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
 \indexentry{layer\_set (py3plex.dsl.SelectStmt attribute)@\spxentry{layer\_set}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
 \indexentry{limit (py3plex.dsl.SelectStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{limit\_per\_group (py3plex.dsl.SelectStmt attribute)@\spxentry{limit\_per\_group}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{order\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{post\_filters (py3plex.dsl.SelectStmt attribute)@\spxentry{post\_filters}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{rank\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{rank\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{rename\_map (py3plex.dsl.SelectStmt attribute)@\spxentry{rename\_map}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{select\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{select\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{summarize\_aggs (py3plex.dsl.SelectStmt attribute)@\spxentry{summarize\_aggs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{target (py3plex.dsl.SelectStmt attribute)@\spxentry{target}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
-\indexentry{temporal\_context (py3plex.dsl.SelectStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{466}
+\indexentry{limit\_per\_group (py3plex.dsl.SelectStmt attribute)@\spxentry{limit\_per\_group}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
+\indexentry{order\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
+\indexentry{post\_filters (py3plex.dsl.SelectStmt attribute)@\spxentry{post\_filters}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
+\indexentry{rank\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{rank\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
+\indexentry{rename\_map (py3plex.dsl.SelectStmt attribute)@\spxentry{rename\_map}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
+\indexentry{select\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{select\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
+\indexentry{summarize\_aggs (py3plex.dsl.SelectStmt attribute)@\spxentry{summarize\_aggs}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
+\indexentry{target (py3plex.dsl.SelectStmt attribute)@\spxentry{target}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
+\indexentry{temporal\_context (py3plex.dsl.SelectStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
 \indexentry{uq\_config (py3plex.dsl.SelectStmt attribute)@\spxentry{uq\_config}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
 \indexentry{where (py3plex.dsl.SelectStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
 \indexentry{window\_spec (py3plex.dsl.SelectStmt attribute)@\spxentry{window\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}|hyperpage}{467}
@@ -815,10 +815,10 @@
 \indexentry{params (py3plex.dsl.SpecialPredicate attribute)@\spxentry{params}\spxextra{py3plex.dsl.SpecialPredicate attribute}|hyperpage}{467}
 \indexentry{SuggestedFix (class in py3plex.dsl)@\spxentry{SuggestedFix}\spxextra{class in py3plex.dsl}|hyperpage}{467}
 \indexentry{replacement (py3plex.dsl.SuggestedFix attribute)@\spxentry{replacement}\spxextra{py3plex.dsl.SuggestedFix attribute}|hyperpage}{467}
-\indexentry{span (py3plex.dsl.SuggestedFix attribute)@\spxentry{span}\spxextra{py3plex.dsl.SuggestedFix attribute}|hyperpage}{467}
-\indexentry{replacement (py3plex.dsl.SuggestedFix attribute)@\spxentry{replacement}\spxextra{py3plex.dsl.SuggestedFix attribute}|hyperpage}{467}
-\indexentry{span (py3plex.dsl.SuggestedFix attribute)@\spxentry{span}\spxextra{py3plex.dsl.SuggestedFix attribute}|hyperpage}{467}
-\indexentry{Target (class in py3plex.dsl)@\spxentry{Target}\spxextra{class in py3plex.dsl}|hyperpage}{467}
+\indexentry{span (py3plex.dsl.SuggestedFix attribute)@\spxentry{span}\spxextra{py3plex.dsl.SuggestedFix attribute}|hyperpage}{468}
+\indexentry{replacement (py3plex.dsl.SuggestedFix attribute)@\spxentry{replacement}\spxextra{py3plex.dsl.SuggestedFix attribute}|hyperpage}{468}
+\indexentry{span (py3plex.dsl.SuggestedFix attribute)@\spxentry{span}\spxextra{py3plex.dsl.SuggestedFix attribute}|hyperpage}{468}
+\indexentry{Target (class in py3plex.dsl)@\spxentry{Target}\spxextra{class in py3plex.dsl}|hyperpage}{468}
 \indexentry{EDGES (py3plex.dsl.Target attribute)@\spxentry{EDGES}\spxextra{py3plex.dsl.Target attribute}|hyperpage}{468}
 \indexentry{NODES (py3plex.dsl.Target attribute)@\spxentry{NODES}\spxextra{py3plex.dsl.Target attribute}|hyperpage}{468}
 \indexentry{TemporalContext (class in py3plex.dsl)@\spxentry{TemporalContext}\spxextra{class in py3plex.dsl}|hyperpage}{468}
@@ -826,38 +826,38 @@
 \indexentry{t0 (py3plex.dsl.TemporalContext attribute)@\spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{468}
 \indexentry{t1 (py3plex.dsl.TemporalContext attribute)@\spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{468}
 \indexentry{range\_name (py3plex.dsl.TemporalContext attribute)@\spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{468}
-\indexentry{kind (py3plex.dsl.TemporalContext attribute)@\spxentry{kind}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{468}
-\indexentry{range\_name (py3plex.dsl.TemporalContext attribute)@\spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{468}
-\indexentry{t0 (py3plex.dsl.TemporalContext attribute)@\spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{468}
-\indexentry{t1 (py3plex.dsl.TemporalContext attribute)@\spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{468}
+\indexentry{kind (py3plex.dsl.TemporalContext attribute)@\spxentry{kind}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{469}
+\indexentry{range\_name (py3plex.dsl.TemporalContext attribute)@\spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{469}
+\indexentry{t0 (py3plex.dsl.TemporalContext attribute)@\spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{469}
+\indexentry{t1 (py3plex.dsl.TemporalContext attribute)@\spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}|hyperpage}{469}
 \indexentry{TrajectoriesBuilder (class in py3plex.dsl)@\spxentry{TrajectoriesBuilder}\spxextra{class in py3plex.dsl}|hyperpage}{469}
 \indexentry{at() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{at()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{469}
 \indexentry{during() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{during()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{469}
-\indexentry{execute() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{469}
-\indexentry{limit() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{limit()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{469}
-\indexentry{measure() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{measure()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{469}
+\indexentry{execute() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{execute()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{470}
+\indexentry{limit() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{limit()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{470}
+\indexentry{measure() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{measure()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{470}
 \indexentry{order\_by() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{order\_by()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{470}
 \indexentry{to() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{to()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{470}
 \indexentry{to\_ast() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{to\_ast()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{470}
 \indexentry{where() (py3plex.dsl.TrajectoriesBuilder method)@\spxentry{where()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}|hyperpage}{470}
 \indexentry{TrajectoriesStmt (class in py3plex.dsl)@\spxentry{TrajectoriesStmt}\spxextra{class in py3plex.dsl}|hyperpage}{470}
-\indexentry{process\_ref (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{process\_ref}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{470}
-\indexentry{where (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{temporal\_context (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{measures (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{order\_by (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{limit (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{export\_target (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{export\_target (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{limit (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{measures (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{order\_by (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
 \indexentry{process\_ref (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{process\_ref}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{temporal\_context (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
 \indexentry{where (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
-\indexentry{TypeEnvironment (class in py3plex.dsl)@\spxentry{TypeEnvironment}\spxextra{class in py3plex.dsl}|hyperpage}{471}
-\indexentry{add\_layer() (py3plex.dsl.TypeEnvironment method)@\spxentry{add\_layer()}\spxextra{py3plex.dsl.TypeEnvironment method}|hyperpage}{471}
-\indexentry{get\_attribute\_type() (py3plex.dsl.TypeEnvironment method)@\spxentry{get\_attribute\_type()}\spxextra{py3plex.dsl.TypeEnvironment method}|hyperpage}{471}
+\indexentry{temporal\_context (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
+\indexentry{measures (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
+\indexentry{order\_by (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
+\indexentry{limit (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
+\indexentry{export\_target (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
+\indexentry{export\_target (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
+\indexentry{limit (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{471}
+\indexentry{measures (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{472}
+\indexentry{order\_by (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{472}
+\indexentry{process\_ref (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{process\_ref}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{472}
+\indexentry{temporal\_context (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{472}
+\indexentry{where (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}|hyperpage}{472}
+\indexentry{TypeEnvironment (class in py3plex.dsl)@\spxentry{TypeEnvironment}\spxextra{class in py3plex.dsl}|hyperpage}{472}
+\indexentry{add\_layer() (py3plex.dsl.TypeEnvironment method)@\spxentry{add\_layer()}\spxextra{py3plex.dsl.TypeEnvironment method}|hyperpage}{472}
+\indexentry{get\_attribute\_type() (py3plex.dsl.TypeEnvironment method)@\spxentry{get\_attribute\_type()}\spxextra{py3plex.dsl.TypeEnvironment method}|hyperpage}{472}
 \indexentry{get\_computed\_type() (py3plex.dsl.TypeEnvironment method)@\spxentry{get\_computed\_type()}\spxextra{py3plex.dsl.TypeEnvironment method}|hyperpage}{472}
 \indexentry{has\_layer() (py3plex.dsl.TypeEnvironment method)@\spxentry{has\_layer()}\spxextra{py3plex.dsl.TypeEnvironment method}|hyperpage}{472}
 \indexentry{set\_attribute\_type() (py3plex.dsl.TypeEnvironment method)@\spxentry{set\_attribute\_type()}\spxextra{py3plex.dsl.TypeEnvironment method}|hyperpage}{472}
@@ -867,23 +867,23 @@
 \indexentry{expected\_type (py3plex.dsl.TypeMismatchError attribute)@\spxentry{expected\_type}\spxextra{py3plex.dsl.TypeMismatchError attribute}|hyperpage}{472}
 \indexentry{actual\_type (py3plex.dsl.TypeMismatchError attribute)@\spxentry{actual\_type}\spxextra{py3plex.dsl.TypeMismatchError attribute}|hyperpage}{472}
 \indexentry{UQ (class in py3plex.dsl)@\spxentry{UQ}\spxextra{class in py3plex.dsl}|hyperpage}{472}
-\indexentry{default() (py3plex.dsl.UQ static method)@\spxentry{default()}\spxextra{py3plex.dsl.UQ static method}|hyperpage}{472}
+\indexentry{default() (py3plex.dsl.UQ static method)@\spxentry{default()}\spxextra{py3plex.dsl.UQ static method}|hyperpage}{473}
 \indexentry{fast() (py3plex.dsl.UQ static method)@\spxentry{fast()}\spxextra{py3plex.dsl.UQ static method}|hyperpage}{473}
 \indexentry{paper() (py3plex.dsl.UQ static method)@\spxentry{paper()}\spxextra{py3plex.dsl.UQ static method}|hyperpage}{473}
-\indexentry{UQConfig (class in py3plex.dsl)@\spxentry{UQConfig}\spxextra{class in py3plex.dsl}|hyperpage}{473}
-\indexentry{method (py3plex.dsl.UQConfig attribute)@\spxentry{method}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{473}
-\indexentry{n\_samples (py3plex.dsl.UQConfig attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
-\indexentry{ci (py3plex.dsl.UQConfig attribute)@\spxentry{ci}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
-\indexentry{seed (py3plex.dsl.UQConfig attribute)@\spxentry{seed}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
-\indexentry{kwargs (py3plex.dsl.UQConfig attribute)@\spxentry{kwargs}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
-\indexentry{ci (py3plex.dsl.UQConfig attribute)@\spxentry{ci}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
-\indexentry{kwargs (py3plex.dsl.UQConfig attribute)@\spxentry{kwargs}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
+\indexentry{UQConfig (class in py3plex.dsl)@\spxentry{UQConfig}\spxextra{class in py3plex.dsl}|hyperpage}{474}
 \indexentry{method (py3plex.dsl.UQConfig attribute)@\spxentry{method}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
 \indexentry{n\_samples (py3plex.dsl.UQConfig attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
+\indexentry{ci (py3plex.dsl.UQConfig attribute)@\spxentry{ci}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
 \indexentry{seed (py3plex.dsl.UQConfig attribute)@\spxentry{seed}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
-\indexentry{UnknownAttributeError@\spxentry{UnknownAttributeError}|hyperpage}{474}
-\indexentry{attribute (py3plex.dsl.UnknownAttributeError attribute)@\spxentry{attribute}\spxextra{py3plex.dsl.UnknownAttributeError attribute}|hyperpage}{474}
-\indexentry{known\_attributes (py3plex.dsl.UnknownAttributeError attribute)@\spxentry{known\_attributes}\spxextra{py3plex.dsl.UnknownAttributeError attribute}|hyperpage}{474}
+\indexentry{kwargs (py3plex.dsl.UQConfig attribute)@\spxentry{kwargs}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
+\indexentry{ci (py3plex.dsl.UQConfig attribute)@\spxentry{ci}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{474}
+\indexentry{kwargs (py3plex.dsl.UQConfig attribute)@\spxentry{kwargs}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{475}
+\indexentry{method (py3plex.dsl.UQConfig attribute)@\spxentry{method}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{475}
+\indexentry{n\_samples (py3plex.dsl.UQConfig attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{475}
+\indexentry{seed (py3plex.dsl.UQConfig attribute)@\spxentry{seed}\spxextra{py3plex.dsl.UQConfig attribute}|hyperpage}{475}
+\indexentry{UnknownAttributeError@\spxentry{UnknownAttributeError}|hyperpage}{475}
+\indexentry{attribute (py3plex.dsl.UnknownAttributeError attribute)@\spxentry{attribute}\spxextra{py3plex.dsl.UnknownAttributeError attribute}|hyperpage}{475}
+\indexentry{known\_attributes (py3plex.dsl.UnknownAttributeError attribute)@\spxentry{known\_attributes}\spxextra{py3plex.dsl.UnknownAttributeError attribute}|hyperpage}{475}
 \indexentry{suggestion (py3plex.dsl.UnknownAttributeError attribute)@\spxentry{suggestion}\spxextra{py3plex.dsl.UnknownAttributeError attribute}|hyperpage}{475}
 \indexentry{UnknownLayerError@\spxentry{UnknownLayerError}|hyperpage}{475}
 \indexentry{layer (py3plex.dsl.UnknownLayerError attribute)@\spxentry{layer}\spxextra{py3plex.dsl.UnknownLayerError attribute}|hyperpage}{475}
@@ -894,42 +894,42 @@
 \indexentry{known\_measures (py3plex.dsl.UnknownMeasureError attribute)@\spxentry{known\_measures}\spxextra{py3plex.dsl.UnknownMeasureError attribute}|hyperpage}{475}
 \indexentry{suggestion (py3plex.dsl.UnknownMeasureError attribute)@\spxentry{suggestion}\spxextra{py3plex.dsl.UnknownMeasureError attribute}|hyperpage}{475}
 \indexentry{compile\_pattern() (in module py3plex.dsl)@\spxentry{compile\_pattern()}\spxextra{in module py3plex.dsl}|hyperpage}{475}
-\indexentry{compute\_centrality\_for\_layer() (in module py3plex.dsl)@\spxentry{compute\_centrality\_for\_layer()}\spxextra{in module py3plex.dsl}|hyperpage}{475}
+\indexentry{compute\_centrality\_for\_layer() (in module py3plex.dsl)@\spxentry{compute\_centrality\_for\_layer()}\spxextra{in module py3plex.dsl}|hyperpage}{476}
 \indexentry{describe\_operator() (in module py3plex.dsl)@\spxentry{describe\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{476}
 \indexentry{detect\_communities() (in module py3plex.dsl)@\spxentry{detect\_communities()}\spxextra{in module py3plex.dsl}|hyperpage}{476}
 \indexentry{dsl\_operator() (in module py3plex.dsl)@\spxentry{dsl\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{477}
-\indexentry{execute\_ast() (in module py3plex.dsl)@\spxentry{execute\_ast()}\spxextra{in module py3plex.dsl}|hyperpage}{477}
+\indexentry{execute\_ast() (in module py3plex.dsl)@\spxentry{execute\_ast()}\spxextra{in module py3plex.dsl}|hyperpage}{478}
 \indexentry{execute\_query() (in module py3plex.dsl)@\spxentry{execute\_query()}\spxextra{in module py3plex.dsl}|hyperpage}{478}
 \indexentry{explain() (in module py3plex.dsl)@\spxentry{explain()}\spxextra{in module py3plex.dsl}|hyperpage}{479}
-\indexentry{export\_result() (in module py3plex.dsl)@\spxentry{export\_result()}\spxextra{in module py3plex.dsl}|hyperpage}{479}
-\indexentry{format\_result() (in module py3plex.dsl)@\spxentry{format\_result()}\spxextra{in module py3plex.dsl}|hyperpage}{479}
+\indexentry{export\_result() (in module py3plex.dsl)@\spxentry{export\_result()}\spxextra{in module py3plex.dsl}|hyperpage}{480}
+\indexentry{format\_result() (in module py3plex.dsl)@\spxentry{format\_result()}\spxextra{in module py3plex.dsl}|hyperpage}{480}
 \indexentry{get\_biggest\_community() (in module py3plex.dsl)@\spxentry{get\_biggest\_community()}\spxextra{in module py3plex.dsl}|hyperpage}{480}
 \indexentry{get\_community\_partition() (in module py3plex.dsl)@\spxentry{get\_community\_partition()}\spxextra{in module py3plex.dsl}|hyperpage}{480}
-\indexentry{get\_community\_size\_distribution() (in module py3plex.dsl)@\spxentry{get\_community\_size\_distribution()}\spxextra{in module py3plex.dsl}|hyperpage}{480}
+\indexentry{get\_community\_size\_distribution() (in module py3plex.dsl)@\spxentry{get\_community\_size\_distribution()}\spxextra{in module py3plex.dsl}|hyperpage}{481}
 \indexentry{get\_community\_sizes() (in module py3plex.dsl)@\spxentry{get\_community\_sizes()}\spxextra{in module py3plex.dsl}|hyperpage}{481}
 \indexentry{get\_num\_communities() (in module py3plex.dsl)@\spxentry{get\_num\_communities()}\spxextra{in module py3plex.dsl}|hyperpage}{481}
-\indexentry{get\_operator() (in module py3plex.dsl)@\spxentry{get\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{481}
-\indexentry{get\_smallest\_community() (in module py3plex.dsl)@\spxentry{get\_smallest\_community()}\spxextra{in module py3plex.dsl}|hyperpage}{481}
+\indexentry{get\_operator() (in module py3plex.dsl)@\spxentry{get\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{482}
+\indexentry{get\_smallest\_community() (in module py3plex.dsl)@\spxentry{get\_smallest\_community()}\spxextra{in module py3plex.dsl}|hyperpage}{482}
 \indexentry{lint() (in module py3plex.dsl)@\spxentry{lint()}\spxextra{in module py3plex.dsl}|hyperpage}{482}
-\indexentry{list\_operators() (in module py3plex.dsl)@\spxentry{list\_operators()}\spxextra{in module py3plex.dsl}|hyperpage}{482}
-\indexentry{match\_pattern() (in module py3plex.dsl)@\spxentry{match\_pattern()}\spxextra{in module py3plex.dsl}|hyperpage}{482}
+\indexentry{list\_operators() (in module py3plex.dsl)@\spxentry{list\_operators()}\spxextra{in module py3plex.dsl}|hyperpage}{483}
+\indexentry{match\_pattern() (in module py3plex.dsl)@\spxentry{match\_pattern()}\spxextra{in module py3plex.dsl}|hyperpage}{483}
 \indexentry{register\_operator() (in module py3plex.dsl)@\spxentry{register\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{483}
 \indexentry{select\_high\_degree\_nodes() (in module py3plex.dsl)@\spxentry{select\_high\_degree\_nodes()}\spxextra{in module py3plex.dsl}|hyperpage}{483}
-\indexentry{select\_nodes\_by\_layer() (in module py3plex.dsl)@\spxentry{select\_nodes\_by\_layer()}\spxextra{in module py3plex.dsl}|hyperpage}{483}
-\indexentry{unregister\_operator() (in module py3plex.dsl)@\spxentry{unregister\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{483}
+\indexentry{select\_nodes\_by\_layer() (in module py3plex.dsl)@\spxentry{select\_nodes\_by\_layer()}\spxextra{in module py3plex.dsl}|hyperpage}{484}
+\indexentry{unregister\_operator() (in module py3plex.dsl)@\spxentry{unregister\_operator()}\spxextra{in module py3plex.dsl}|hyperpage}{484}
 \indexentry{module@\spxentry{module}!py3plex.uncertainty@\spxentry{py3plex.uncertainty}|hyperpage}{484}
 \indexentry{py3plex.uncertainty@\spxentry{py3plex.uncertainty}!module@\spxentry{module}|hyperpage}{484}
-\indexentry{CommunityStats (class in py3plex.uncertainty)@\spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty}|hyperpage}{484}
-\indexentry{certainty (py3plex.uncertainty.CommunityStats property)@\spxentry{certainty}\spxextra{py3plex.uncertainty.CommunityStats property}|hyperpage}{485}
-\indexentry{coassoc (py3plex.uncertainty.CommunityStats attribute)@\spxentry{coassoc}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{485}
-\indexentry{is\_deterministic (py3plex.uncertainty.CommunityStats property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.CommunityStats property}|hyperpage}{485}
-\indexentry{labels (py3plex.uncertainty.CommunityStats attribute)@\spxentry{labels}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{485}
-\indexentry{meta (py3plex.uncertainty.CommunityStats attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{485}
-\indexentry{modularity (py3plex.uncertainty.CommunityStats attribute)@\spxentry{modularity}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{485}
-\indexentry{modularity\_std (py3plex.uncertainty.CommunityStats attribute)@\spxentry{modularity\_std}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{485}
-\indexentry{n\_communities (py3plex.uncertainty.CommunityStats attribute)@\spxentry{n\_communities}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{485}
-\indexentry{stability (py3plex.uncertainty.CommunityStats attribute)@\spxentry{stability}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{485}
-\indexentry{ResamplingStrategy (class in py3plex.uncertainty)@\spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty}|hyperpage}{485}
+\indexentry{CommunityStats (class in py3plex.uncertainty)@\spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty}|hyperpage}{485}
+\indexentry{certainty (py3plex.uncertainty.CommunityStats property)@\spxentry{certainty}\spxextra{py3plex.uncertainty.CommunityStats property}|hyperpage}{486}
+\indexentry{coassoc (py3plex.uncertainty.CommunityStats attribute)@\spxentry{coassoc}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{486}
+\indexentry{is\_deterministic (py3plex.uncertainty.CommunityStats property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.CommunityStats property}|hyperpage}{486}
+\indexentry{labels (py3plex.uncertainty.CommunityStats attribute)@\spxentry{labels}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{486}
+\indexentry{meta (py3plex.uncertainty.CommunityStats attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{486}
+\indexentry{modularity (py3plex.uncertainty.CommunityStats attribute)@\spxentry{modularity}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{486}
+\indexentry{modularity\_std (py3plex.uncertainty.CommunityStats attribute)@\spxentry{modularity\_std}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{486}
+\indexentry{n\_communities (py3plex.uncertainty.CommunityStats attribute)@\spxentry{n\_communities}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{486}
+\indexentry{stability (py3plex.uncertainty.CommunityStats attribute)@\spxentry{stability}\spxextra{py3plex.uncertainty.CommunityStats attribute}|hyperpage}{486}
+\indexentry{ResamplingStrategy (class in py3plex.uncertainty)@\spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty}|hyperpage}{486}
 \indexentry{SEED (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{486}
 \indexentry{BOOTSTRAP (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{486}
 \indexentry{JACKKNIFE (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{486}
@@ -938,7 +938,7 @@
 \indexentry{JACKKNIFE (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{486}
 \indexentry{PERTURBATION (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{486}
 \indexentry{SEED (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}|hyperpage}{486}
-\indexentry{StatMatrix (class in py3plex.uncertainty)@\spxentry{StatMatrix}\spxextra{class in py3plex.uncertainty}|hyperpage}{486}
+\indexentry{StatMatrix (class in py3plex.uncertainty)@\spxentry{StatMatrix}\spxextra{class in py3plex.uncertainty}|hyperpage}{487}
 \indexentry{certainty (py3plex.uncertainty.StatMatrix property)@\spxentry{certainty}\spxextra{py3plex.uncertainty.StatMatrix property}|hyperpage}{487}
 \indexentry{index (py3plex.uncertainty.StatMatrix attribute)@\spxentry{index}\spxextra{py3plex.uncertainty.StatMatrix attribute}|hyperpage}{487}
 \indexentry{is\_deterministic (py3plex.uncertainty.StatMatrix property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.StatMatrix property}|hyperpage}{487}
@@ -947,48 +947,48 @@
 \indexentry{quantiles (py3plex.uncertainty.StatMatrix attribute)@\spxentry{quantiles}\spxextra{py3plex.uncertainty.StatMatrix attribute}|hyperpage}{487}
 \indexentry{std (py3plex.uncertainty.StatMatrix attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.StatMatrix attribute}|hyperpage}{487}
 \indexentry{StatSeries (class in py3plex.uncertainty)@\spxentry{StatSeries}\spxextra{class in py3plex.uncertainty}|hyperpage}{487}
-\indexentry{certainty (py3plex.uncertainty.StatSeries property)@\spxentry{certainty}\spxextra{py3plex.uncertainty.StatSeries property}|hyperpage}{488}
-\indexentry{index (py3plex.uncertainty.StatSeries attribute)@\spxentry{index}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{488}
-\indexentry{is\_deterministic (py3plex.uncertainty.StatSeries property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.StatSeries property}|hyperpage}{488}
-\indexentry{mean (py3plex.uncertainty.StatSeries attribute)@\spxentry{mean}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{488}
-\indexentry{meta (py3plex.uncertainty.StatSeries attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{488}
-\indexentry{quantiles (py3plex.uncertainty.StatSeries attribute)@\spxentry{quantiles}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{488}
-\indexentry{std (py3plex.uncertainty.StatSeries attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{488}
-\indexentry{to\_dict() (py3plex.uncertainty.StatSeries method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.StatSeries method}|hyperpage}{488}
+\indexentry{certainty (py3plex.uncertainty.StatSeries property)@\spxentry{certainty}\spxextra{py3plex.uncertainty.StatSeries property}|hyperpage}{489}
+\indexentry{index (py3plex.uncertainty.StatSeries attribute)@\spxentry{index}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{489}
+\indexentry{is\_deterministic (py3plex.uncertainty.StatSeries property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.StatSeries property}|hyperpage}{489}
+\indexentry{mean (py3plex.uncertainty.StatSeries attribute)@\spxentry{mean}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{489}
+\indexentry{meta (py3plex.uncertainty.StatSeries attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{489}
+\indexentry{quantiles (py3plex.uncertainty.StatSeries attribute)@\spxentry{quantiles}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{489}
+\indexentry{std (py3plex.uncertainty.StatSeries attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.StatSeries attribute}|hyperpage}{489}
+\indexentry{to\_dict() (py3plex.uncertainty.StatSeries method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.StatSeries method}|hyperpage}{489}
 \indexentry{UncertaintyConfig (class in py3plex.uncertainty)@\spxentry{UncertaintyConfig}\spxextra{class in py3plex.uncertainty}|hyperpage}{489}
 \indexentry{mode (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{489}
 \indexentry{default\_n\_runs (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{489}
 \indexentry{default\_resampling (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{489}
-\indexentry{default\_n\_runs (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{489}
-\indexentry{default\_resampling (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{489}
-\indexentry{mode (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{489}
-\indexentry{UncertaintyMode (class in py3plex.uncertainty)@\spxentry{UncertaintyMode}\spxextra{class in py3plex.uncertainty}|hyperpage}{489}
-\indexentry{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{489}
-\indexentry{ON (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{489}
-\indexentry{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{489}
-\indexentry{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{489}
-\indexentry{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{489}
+\indexentry{default\_n\_runs (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{490}
+\indexentry{default\_resampling (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{490}
+\indexentry{mode (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}|hyperpage}{490}
+\indexentry{UncertaintyMode (class in py3plex.uncertainty)@\spxentry{UncertaintyMode}\spxextra{class in py3plex.uncertainty}|hyperpage}{490}
+\indexentry{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{490}
+\indexentry{ON (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{490}
+\indexentry{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{490}
+\indexentry{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{490}
+\indexentry{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{490}
 \indexentry{ON (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}|hyperpage}{490}
 \indexentry{bootstrap\_metric() (in module py3plex.uncertainty)@\spxentry{bootstrap\_metric()}\spxextra{in module py3plex.uncertainty}|hyperpage}{490}
 \indexentry{estimate\_uncertainty() (in module py3plex.uncertainty)@\spxentry{estimate\_uncertainty()}\spxextra{in module py3plex.uncertainty}|hyperpage}{491}
-\indexentry{get\_uncertainty\_config() (in module py3plex.uncertainty)@\spxentry{get\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty}|hyperpage}{492}
+\indexentry{get\_uncertainty\_config() (in module py3plex.uncertainty)@\spxentry{get\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty}|hyperpage}{493}
 \indexentry{null\_model\_metric() (in module py3plex.uncertainty)@\spxentry{null\_model\_metric()}\spxextra{in module py3plex.uncertainty}|hyperpage}{493}
 \indexentry{set\_uncertainty\_config() (in module py3plex.uncertainty)@\spxentry{set\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty}|hyperpage}{494}
-\indexentry{uncertainty\_enabled() (in module py3plex.uncertainty)@\spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty}|hyperpage}{494}
-\indexentry{module@\spxentry{module}!py3plex.uncertainty.types@\spxentry{py3plex.uncertainty.types}|hyperpage}{495}
-\indexentry{py3plex.uncertainty.types@\spxentry{py3plex.uncertainty.types}!module@\spxentry{module}|hyperpage}{495}
-\indexentry{CommunityStats (class in py3plex.uncertainty.types)@\spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{495}
+\indexentry{uncertainty\_enabled() (in module py3plex.uncertainty)@\spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty}|hyperpage}{495}
+\indexentry{module@\spxentry{module}!py3plex.uncertainty.types@\spxentry{py3plex.uncertainty.types}|hyperpage}{496}
+\indexentry{py3plex.uncertainty.types@\spxentry{py3plex.uncertainty.types}!module@\spxentry{module}|hyperpage}{496}
+\indexentry{CommunityStats (class in py3plex.uncertainty.types)@\spxentry{CommunityStats}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{496}
 \indexentry{certainty (py3plex.uncertainty.types.CommunityStats property)@\spxentry{certainty}\spxextra{py3plex.uncertainty.types.CommunityStats property}|hyperpage}{496}
-\indexentry{coassoc (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{coassoc}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{496}
-\indexentry{is\_deterministic (py3plex.uncertainty.types.CommunityStats property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.CommunityStats property}|hyperpage}{496}
-\indexentry{labels (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{labels}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{496}
-\indexentry{meta (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{496}
-\indexentry{modularity (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{modularity}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{496}
-\indexentry{modularity\_std (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{modularity\_std}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{496}
-\indexentry{n\_communities (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{n\_communities}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{496}
-\indexentry{stability (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{stability}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{496}
-\indexentry{ResamplingStrategy (class in py3plex.uncertainty.types)@\spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{496}
-\indexentry{SEED (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{496}
+\indexentry{coassoc (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{coassoc}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{497}
+\indexentry{is\_deterministic (py3plex.uncertainty.types.CommunityStats property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.CommunityStats property}|hyperpage}{497}
+\indexentry{labels (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{labels}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{497}
+\indexentry{meta (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{497}
+\indexentry{modularity (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{modularity}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{497}
+\indexentry{modularity\_std (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{modularity\_std}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{497}
+\indexentry{n\_communities (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{n\_communities}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{497}
+\indexentry{stability (py3plex.uncertainty.types.CommunityStats attribute)@\spxentry{stability}\spxextra{py3plex.uncertainty.types.CommunityStats attribute}|hyperpage}{497}
+\indexentry{ResamplingStrategy (class in py3plex.uncertainty.types)@\spxentry{ResamplingStrategy}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{497}
+\indexentry{SEED (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{497}
 \indexentry{BOOTSTRAP (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{497}
 \indexentry{JACKKNIFE (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{497}
 \indexentry{PERTURBATION (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}|hyperpage}{497}
@@ -1006,13 +1006,13 @@
 \indexentry{std (py3plex.uncertainty.types.StatMatrix attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.types.StatMatrix attribute}|hyperpage}{498}
 \indexentry{StatSeries (class in py3plex.uncertainty.types)@\spxentry{StatSeries}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{498}
 \indexentry{certainty (py3plex.uncertainty.types.StatSeries property)@\spxentry{certainty}\spxextra{py3plex.uncertainty.types.StatSeries property}|hyperpage}{499}
-\indexentry{index (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{index}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{499}
-\indexentry{is\_deterministic (py3plex.uncertainty.types.StatSeries property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.StatSeries property}|hyperpage}{499}
-\indexentry{mean (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{mean}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{499}
-\indexentry{meta (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{499}
-\indexentry{quantiles (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{quantiles}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{499}
-\indexentry{std (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{499}
-\indexentry{to\_dict() (py3plex.uncertainty.types.StatSeries method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.types.StatSeries method}|hyperpage}{499}
+\indexentry{index (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{index}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{500}
+\indexentry{is\_deterministic (py3plex.uncertainty.types.StatSeries property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.types.StatSeries property}|hyperpage}{500}
+\indexentry{mean (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{mean}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{500}
+\indexentry{meta (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{500}
+\indexentry{quantiles (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{quantiles}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{500}
+\indexentry{std (py3plex.uncertainty.types.StatSeries attribute)@\spxentry{std}\spxextra{py3plex.uncertainty.types.StatSeries attribute}|hyperpage}{500}
+\indexentry{to\_dict() (py3plex.uncertainty.types.StatSeries method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.types.StatSeries method}|hyperpage}{500}
 \indexentry{UncertaintyConfig (class in py3plex.uncertainty.types)@\spxentry{UncertaintyConfig}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{500}
 \indexentry{mode (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}|hyperpage}{500}
 \indexentry{default\_n\_runs (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}|hyperpage}{500}
@@ -1021,17 +1021,17 @@
 \indexentry{default\_resampling (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}|hyperpage}{500}
 \indexentry{mode (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}|hyperpage}{500}
 \indexentry{UncertaintyMode (class in py3plex.uncertainty.types)@\spxentry{UncertaintyMode}\spxextra{class in py3plex.uncertainty.types}|hyperpage}{500}
-\indexentry{OFF (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{500}
-\indexentry{ON (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{500}
-\indexentry{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{500}
-\indexentry{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{500}
+\indexentry{OFF (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{501}
+\indexentry{ON (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{501}
+\indexentry{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{501}
+\indexentry{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{501}
 \indexentry{OFF (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{501}
 \indexentry{ON (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}|hyperpage}{501}
 \indexentry{module@\spxentry{module}!py3plex.uncertainty.context@\spxentry{py3plex.uncertainty.context}|hyperpage}{501}
 \indexentry{py3plex.uncertainty.context@\spxentry{py3plex.uncertainty.context}!module@\spxentry{module}|hyperpage}{501}
 \indexentry{get\_uncertainty\_config() (in module py3plex.uncertainty.context)@\spxentry{get\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{501}
 \indexentry{set\_uncertainty\_config() (in module py3plex.uncertainty.context)@\spxentry{set\_uncertainty\_config()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{501}
-\indexentry{uncertainty\_disabled() (in module py3plex.uncertainty.context)@\spxentry{uncertainty\_disabled()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{501}
+\indexentry{uncertainty\_disabled() (in module py3plex.uncertainty.context)@\spxentry{uncertainty\_disabled()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{502}
 \indexentry{uncertainty\_enabled() (in module py3plex.uncertainty.context)@\spxentry{uncertainty\_enabled()}\spxextra{in module py3plex.uncertainty.context}|hyperpage}{502}
 \indexentry{module@\spxentry{module}!py3plex.uncertainty.estimation@\spxentry{py3plex.uncertainty.estimation}|hyperpage}{503}
 \indexentry{py3plex.uncertainty.estimation@\spxentry{py3plex.uncertainty.estimation}!module@\spxentry{module}|hyperpage}{503}

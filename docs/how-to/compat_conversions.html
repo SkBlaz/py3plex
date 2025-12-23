@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cross-Ecosystem Compatibility &mdash; py3plex 1.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=baaebd52"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_zoo.html">Query Zoo: DSL Gallery for Multilayer Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_patterns.html">How to Find Graph Patterns and Motifs with the Pattern Matching API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/layer_set_algebra.html">Layer Set Algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/uncertainty_first_statistics.html">Uncertainty-First Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cross-Ecosystem Compatibility</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/how-to/compat_conversions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cross-ecosystem-compatibility">
+<h1>Cross-Ecosystem Compatibility<a class="headerlink" href="#cross-ecosystem-compatibility" title="Link to this heading"></a></h1>
+<p>The py3plex compatibility layer provides <strong>lossless conversion</strong> between py3plex multilayer networks and common graph libraries.</p>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p>Basic conversion between py3plex and NetworkX:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Edge</span>
+
+<span class="c1"># Create a py3plex graph</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s2">&quot;Bob&quot;</span><span class="p">,</span>
+                   <span class="n">src_layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">dst_layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span>
+                   <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}))</span>
+
+<span class="c1"># Convert to NetworkX</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;networkx&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert back to py3plex</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="supported-formats">
+<h2>Supported Formats<a class="headerlink" href="#supported-formats" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">convert()</span></code> function supports the following targets:</p>
+<ul class="simple">
+<li><p><strong>networkx</strong> — NetworkX graphs (MultiGraph, DiGraph, etc.)</p></li>
+<li><p><strong>scipy_sparse</strong> — SciPy sparse matrices (CSR, CSC, COO, etc.)</p></li>
+<li><p><strong>igraph</strong> — igraph Graph objects (requires <code class="docutils literal notranslate"><span class="pre">python-igraph</span></code>)</p></li>
+<li><p><strong>pyg</strong> — PyTorch Geometric Data (stub, coming soon)</p></li>
+<li><p><strong>dgl</strong> — DGL graphs (stub, coming soon)</p></li>
+</ul>
+</section>
+<section id="conversion-modes">
+<h2>Conversion Modes<a class="headerlink" href="#conversion-modes" title="Link to this heading"></a></h2>
+<dl>
+<dt><strong>Strict Mode</strong> (default)</dt><dd><p>Raises <code class="docutils literal notranslate"><span class="pre">CompatibilityError</span></code> if target cannot represent all data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompatibilityError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># SciPy sparse can&#39;t store attributes</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">CompatibilityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">suggestion</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Compatibility Mode</strong></dt><dd><p>Uses sidecar bundles to preserve data that target format can’t represent:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert with sidecar for attributes</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span>
+                <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;graph_data&quot;</span><span class="p">)</span>
+
+<span class="c1"># Later: restore with all attributes</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">,</span>
+                  <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;graph_data&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="networkx-conversions">
+<h2>NetworkX Conversions<a class="headerlink" href="#networkx-conversions" title="Link to this heading"></a></h2>
+<p>NetworkX is the most feature-complete target, supporting:</p>
+<ul class="simple">
+<li><p>Directed and undirected graphs</p></li>
+<li><p>Multigraphs (parallel edges)</p></li>
+<li><p>All node and edge attributes</p></li>
+<li><p>Self-loops</p></li>
+</ul>
+<p>Example with NetworkX algorithms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert</span>
+
+<span class="c1"># Convert to NetworkX</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3plex_graph</span><span class="p">,</span> <span class="s2">&quot;networkx&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use NetworkX algorithms</span>
+<span class="n">centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">)</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">greedy_modularity_communities</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">)</span>
+
+<span class="c1"># Convert back</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="scipy-sparse-conversions">
+<h2>SciPy Sparse Conversions<a class="headerlink" href="#scipy-sparse-conversions" title="Link to this heading"></a></h2>
+<p>Sparse matrices are useful for large graphs and linear algebra operations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span>
+
+<span class="c1"># Convert to sparse matrix (compat mode for attributes)</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span>
+                <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;bundle&quot;</span><span class="p">,</span>
+                <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compute eigenvalues</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigs</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Restore graph with attributes</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;bundle&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Important:</strong> Sparse matrices cannot represent:</p>
+<ul class="simple">
+<li><p>Node/edge attributes (use sidecar in compat mode)</p></li>
+<li><p>Multigraphs/parallel edges (use sidecar or aggregate)</p></li>
+<li><p>Non-numeric edge weights</p></li>
+</ul>
+</section>
+<section id="igraph-conversions">
+<h2>igraph Conversions<a class="headerlink" href="#igraph-conversions" title="Link to this heading"></a></h2>
+<p>igraph provides high-performance graph algorithms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Requires: pip install python-igraph</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">ig_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3plex_graph</span><span class="p">,</span> <span class="s2">&quot;igraph&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Use igraph algorithms</span>
+    <span class="n">communities</span> <span class="o">=</span> <span class="n">ig_graph</span><span class="o">.</span><span class="n">community_multilevel</span><span class="p">()</span>
+    <span class="n">betweenness</span> <span class="o">=</span> <span class="n">ig_graph</span><span class="o">.</span><span class="n">betweenness</span><span class="p">()</span>
+
+    <span class="c1"># Convert back</span>
+    <span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ig_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">ConversionNotSupportedError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Install igraph: pip install python-igraph&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="schema-validation">
+<h2>Schema Validation<a class="headerlink" href="#schema-validation" title="Link to this heading"></a></h2>
+<p>Validate graph compatibility before conversion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_ir</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">infer_schema</span>
+
+<span class="c1"># Convert to intermediate representation</span>
+<span class="n">ir</span> <span class="o">=</span> <span class="n">to_ir</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+<span class="c1"># Infer and check schema</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">infer_schema</span><span class="p">(</span><span class="n">ir</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node ID type: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">node_id_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directed: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">directed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multi: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">multi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attributes: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">node_attr_types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check for incompatibilities</span>
+<span class="k">if</span> <span class="n">schema</span><span class="o">.</span><span class="n">multi</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Multigraph - SciPy sparse won&#39;t work in strict mode&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sidecar-bundles">
+<h2>Sidecar Bundles<a class="headerlink" href="#sidecar-bundles" title="Link to this heading"></a></h2>
+<p>Sidecar bundles preserve complete graph data when target format is lossy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.sidecar</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_sidecar</span><span class="p">,</span> <span class="n">import_sidecar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_ir</span>
+
+<span class="c1"># Export complete graph data</span>
+<span class="n">ir</span> <span class="o">=</span> <span class="n">to_ir</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+<span class="n">export_sidecar</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">&quot;my_graph&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json+parquet&quot;</span><span class="p">)</span>
+
+<span class="c1"># Bundle structure:</span>
+<span class="c1"># my_graph/</span>
+<span class="c1">#   ├── meta.json          # Graph metadata</span>
+<span class="c1">#   ├── nodes.parquet      # Node table</span>
+<span class="c1">#   └── edges.parquet      # Edge table</span>
+
+<span class="c1"># Import later</span>
+<span class="n">restored_ir</span> <span class="o">=</span> <span class="n">import_sidecar</span><span class="p">(</span><span class="s2">&quot;my_graph&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="intermediate-representation">
+<h2>Intermediate Representation<a class="headerlink" href="#intermediate-representation" title="Link to this heading"></a></h2>
+<p>All conversions use a canonical intermediate representation (IR):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_ir</span><span class="p">,</span> <span class="n">from_ir</span>
+
+<span class="c1"># Convert to IR</span>
+<span class="n">ir</span> <span class="o">=</span> <span class="n">to_ir</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+<span class="c1"># IR structure:</span>
+<span class="c1"># - ir.nodes: NodeTable (node_id, node_order, attrs, layer)</span>
+<span class="c1"># - ir.edges: EdgeTable (edge_id, src, dst, edge_order, attrs)</span>
+<span class="c1"># - ir.meta: GraphMeta (directed, multi, layers, global_attrs)</span>
+
+<span class="c1"># Convert IR to any format</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">&quot;networkx&quot;</span><span class="p">)</span>
+<span class="n">scipy_matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Convert back from IR</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">from_ir</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">target_type</span><span class="o">=</span><span class="s2">&quot;multilayer_graph&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>Three specialized exceptions with actionable messages:</p>
+<dl>
+<dt><strong>CompatibilityError</strong></dt><dd><p>Target cannot represent data (strict mode):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompatibilityError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">convert</span><span class="p">(</span><span class="n">multigraph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">CompatibilityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reason: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Suggestions:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>SchemaError</strong></dt><dd><p>Schema validation failure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">validate_against_schema</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">expected_schema</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">SchemaError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field &#39;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>ConversionNotSupportedError</strong></dt><dd><p>Missing optional dependencies:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConversionNotSupportedError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;igraph&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">ConversionNotSupportedError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>  <span class="c1"># Clear install instructions</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="common-patterns">
+<h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h2>
+<p><strong>NetworkX to py3plex</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+<span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>py3plex to SciPy sparse with attributes</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span>
+                <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;/tmp/bundle&quot;</span><span class="p">)</span>
+<span class="c1"># Use matrix for computation</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;/tmp/bundle&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Format-to-format via py3plex</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># NetworkX → py3plex → igraph</span>
+<span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">ig_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3_graph</span><span class="p">,</span> <span class="s2">&quot;igraph&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Basic compatibility layer (NetworkX + SciPy):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>compat<span class="o">]</span>
+</pre></div>
+</div>
+<p>With optional dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># igraph support</span>
+pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>igraph<span class="o">]</span>
+
+<span class="c1"># PyTorch Geometric (coming soon)</span>
+pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>pyg<span class="o">]</span>
+
+<span class="c1"># DGL (coming soon)</span>
+pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>dgl_compat<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>Complete examples are available in <code class="docutils literal notranslate"><span class="pre">examples/io_and_data/example_compat_conversion.py</span></code>.</p>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../reference/compat.html"><span class="doc">Compatibility Layer API</span></a> — API reference</p></li>
+<li><p><a class="reference internal" href="export_serialize.html"><span class="doc">How to Export and Serialize Networks</span></a> — I/O and serialization guide</p></li>
+<li><p><a class="reference internal" href="../networkx_interop.html"><span class="doc">NetworkX Interoperability Guide</span></a> — NetworkX compatibility</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
