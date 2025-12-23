@@ -98,6 +98,13 @@ def simple_graphs(draw, directed=None, min_nodes=0, max_nodes=5):
             src = draw(st.sampled_from(node_id_list))
             dst = draw(st.sampled_from(node_id_list))
             key = 0  # Default key for simple graphs
+            
+            # For undirected graphs, normalize edge tuple to avoid (u,v) vs (v,u) duplicates
+            # Use canonical ordering: smaller value first (works for both int and str)
+            if not is_directed:
+                if (src, dst) > (dst, src):  # Lexicographic comparison
+                    src, dst = dst, src
+            
             edge_tuple = (src, dst, "L1", "L1", key)
             
             # Skip if this edge already exists
