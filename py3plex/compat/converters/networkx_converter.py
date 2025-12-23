@@ -80,6 +80,9 @@ def to_networkx_from_ir(
         G.add_node(node_id, **attrs)
     
     # Add edges with attributes
+    # Track edge keys per (src, dst) pair to ensure uniqueness in NetworkX
+    edge_key_counter = {}
+    
     for idx in range(len(ir.edges.edge_id)):
         src = ir.edges.src[idx]
         dst = ir.edges.dst[idx]
@@ -101,13 +104,21 @@ def to_networkx_from_ir(
         if ir.edges.dst_layer and ir.edges.dst_layer[idx] is not None and preserve_layers:
             attrs["_py3plex_dst_layer"] = ir.edges.dst_layer[idx]
         
-        # Preserve key for multigraph edge uniqueness
-        if ir.edges.key and ir.edges.key[idx] is not None:
-            attrs["_py3plex_key"] = ir.edges.key[idx]
+        # Preserve original key from MultiLayerGraph
+        original_key = ir.edges.key[idx] if ir.edges.key else 0
+        attrs["_py3plex_key"] = original_key
         
         if ir.meta.multi:
-            # For multigraphs, use the stored key or edge_id as NetworkX key
-            nx_key = ir.edges.key[idx] if ir.edges.key else edge_id
+            # For multigraphs, ensure unique NetworkX keys even if original keys collide
+            # Track how many edges we've seen for each (src, dst, original_key) combination
+            edge_pair = (src, dst, original_key)
+            if edge_pair not in edge_key_counter:
+                edge_key_counter[edge_pair] = 0
+            else:
+                edge_key_counter[edge_pair] += 1
+            
+            # Use counter to create unique NetworkX key
+            nx_key = edge_key_counter[edge_pair]
             G.add_edge(src, dst, key=nx_key, **attrs)
         else:
             G.add_edge(src, dst, **attrs)
