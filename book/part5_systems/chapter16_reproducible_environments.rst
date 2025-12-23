@@ -84,7 +84,7 @@ Lock exact package versions to ensure reproducibility:
        pip-compile requirements.in --output-file requirements.txt
        
        # This creates entries like:
-       # py3plex==1.0.2
+       # py3plex==1.0.3
        # numpy==1.24.3
        # networkx==3.1
        # matplotlib==3.7.1
@@ -126,7 +126,7 @@ Lock exact package versions to ensure reproducibility:
 .. code-block:: text
 
     # Core dependencies (exact versions)
-    py3plex==1.0.2
+    py3plex==1.0.3
     numpy==1.24.3
     scipy==1.10.1
     networkx==3.1
