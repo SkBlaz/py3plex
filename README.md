@@ -68,15 +68,6 @@ Found 287 communities, modularity = 0.649
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
-**Key features:**
-- ✓ Preserves graph structure, node/edge IDs, and all attributes
-- ✓ Explicit failure modes with clear error messages (strict mode)
-- ✓ Sidecar bundles for lossy target formats (compat mode)
-- ✓ Schema validation and compatibility checking
-- ✓ Support for NetworkX, SciPy sparse, igraph, PyG (planned), DGL (planned)
-
-See [documentation](https://skblaz.github.io/py3plex/) for complete interoperability guide.
-
 ## Getting Started
 
 * **Documentation:** [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
