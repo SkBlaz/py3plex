@@ -101,9 +101,14 @@ def to_networkx_from_ir(
         if ir.edges.dst_layer and ir.edges.dst_layer[idx] is not None and preserve_layers:
             attrs["_py3plex_dst_layer"] = ir.edges.dst_layer[idx]
         
+        # Preserve key for multigraph edge uniqueness
+        if ir.edges.key and ir.edges.key[idx] is not None:
+            attrs["_py3plex_key"] = ir.edges.key[idx]
+        
         if ir.meta.multi:
-            # For multigraphs, use edge_id as the key
-            G.add_edge(src, dst, key=edge_id, **attrs)
+            # For multigraphs, use the stored key or edge_id as NetworkX key
+            nx_key = ir.edges.key[idx] if ir.edges.key else edge_id
+            G.add_edge(src, dst, key=nx_key, **attrs)
         else:
             G.add_edge(src, dst, **attrs)
     
@@ -163,16 +168,18 @@ def from_networkx_to_ir(G: nx.Graph) -> GraphIR:
     edge_attrs_records = []
     src_layer_list = []
     dst_layer_list = []
+    key_list = []
     has_edge_layer_info = False
     
     if multi:
         # MultiGraph: edges have keys
         for u, v, key, data in G.edges(keys=True, data=True):
             # Extract edge ID (or use key)
-            edge_id = data.pop("_py3plex_edge_id", key)
+            edge_id = data.pop("_py3plex_edge_id", f"{u}_{v}_{key}")
             edge_order = data.pop("_py3plex_edge_order", len(edge_id_list))
             src_layer = data.pop("_py3plex_src_layer", None)
             dst_layer = data.pop("_py3plex_dst_layer", None)
+            stored_key = data.pop("_py3plex_key", key)  # Extract and preserve key
             
             if src_layer or dst_layer:
                 has_edge_layer_info = True
@@ -183,6 +190,7 @@ def from_networkx_to_ir(G: nx.Graph) -> GraphIR:
             edge_order_list.append(edge_order)
             src_layer_list.append(src_layer)
             dst_layer_list.append(dst_layer)
+            key_list.append(stored_key)
             edge_attrs_records.append(data.copy() if data else {})
     else:
         # Simple graph
@@ -191,6 +199,7 @@ def from_networkx_to_ir(G: nx.Graph) -> GraphIR:
             edge_order = data.pop("_py3plex_edge_order", len(edge_id_list))
             src_layer = data.pop("_py3plex_src_layer", None)
             dst_layer = data.pop("_py3plex_dst_layer", None)
+            stored_key = data.pop("_py3plex_key", 0)  # Default key for simple graphs
             
             if src_layer or dst_layer:
                 has_edge_layer_info = True
@@ -201,6 +210,7 @@ def from_networkx_to_ir(G: nx.Graph) -> GraphIR:
             edge_order_list.append(edge_order)
             src_layer_list.append(src_layer)
             dst_layer_list.append(dst_layer)
+            key_list.append(stored_key)
             edge_attrs_records.append(data.copy() if data else {})
     
     edge_attrs_df = pd.DataFrame(edge_attrs_records) if edge_attrs_records else None
@@ -222,6 +232,7 @@ def from_networkx_to_ir(G: nx.Graph) -> GraphIR:
         attrs=edge_attrs_df,
         src_layer=src_layer_list if has_edge_layer_info else None,
         dst_layer=dst_layer_list if has_edge_layer_info else None,
+        key=key_list if key_list else None,  # Include key list
     )
     
     # Extract graph attributes

@@ -111,6 +111,7 @@ class EdgeTable:
         attrs: DataFrame of edge attributes (or dict mapping edge_id to attrs)
         src_layer: Optional source layer for multilayer networks
         dst_layer: Optional destination layer for multilayer networks
+        key: Optional list of edge keys for multigraph support (default: 0 for each edge)
     """
     
     edge_id: List[Hashable]
@@ -120,6 +121,7 @@ class EdgeTable:
     attrs: Optional[pd.DataFrame] = None
     src_layer: Optional[List[str]] = None
     dst_layer: Optional[List[str]] = None
+    key: Optional[List[int]] = None
     
     def __post_init__(self):
         """Validate edge table after initialization."""
@@ -150,6 +152,12 @@ class EdgeTable:
                 "dst_layer must have same length as edge_id",
                 field="dst_layer",
             )
+        
+        if self.key is not None and len(self.key) != len(self.edge_id):
+            raise SchemaError(
+                "key must have same length as edge_id",
+                field="key",
+            )
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
@@ -168,6 +176,8 @@ class EdgeTable:
             result["src_layer"] = self.src_layer
         if self.dst_layer is not None:
             result["dst_layer"] = self.dst_layer
+        if self.key is not None:
+            result["key"] = self.key
         return result
     
     @classmethod
@@ -185,6 +195,7 @@ class EdgeTable:
             attrs=attrs,
             src_layer=data.get("src_layer"),
             dst_layer=data.get("dst_layer"),
+            key=data.get("key"),
         )
 
 
@@ -368,6 +379,7 @@ def _multilayer_graph_to_ir(graph) -> GraphIR:
     edge_order_list = []
     src_layer_list = []
     dst_layer_list = []
+    key_list = []
     edge_attrs_records = []
     
     for idx, edge in enumerate(graph.edges):
@@ -377,6 +389,7 @@ def _multilayer_graph_to_ir(graph) -> GraphIR:
         edge_order_list.append(idx)
         src_layer_list.append(edge.src_layer)
         dst_layer_list.append(edge.dst_layer)
+        key_list.append(edge.key)  # Preserve the edge key
         edge_attrs_records.append(edge.attributes.copy() if edge.attributes else {})
     
     edge_attrs_df = pd.DataFrame(edge_attrs_records) if edge_attrs_records else None
@@ -398,6 +411,7 @@ def _multilayer_graph_to_ir(graph) -> GraphIR:
         attrs=edge_attrs_df,
         src_layer=src_layer_list if src_layer_list else None,
         dst_layer=dst_layer_list if dst_layer_list else None,
+        key=key_list if key_list else None,  # Include key list
     )
     
     # Extract layers - graph.layers is Dict[LayerID, Layer], iterate over .values()
@@ -566,6 +580,7 @@ def _ir_to_multilayer_graph(ir: GraphIR):
         
         src_layer = ir.edges.src_layer[idx] if ir.edges.src_layer else "default"
         dst_layer = ir.edges.dst_layer[idx] if ir.edges.dst_layer else "default"
+        key = ir.edges.key[idx] if ir.edges.key else 0  # Use stored key or default to 0
         
         graph.add_edge(
             Edge(
@@ -573,6 +588,7 @@ def _ir_to_multilayer_graph(ir: GraphIR):
                 dst=dst,
                 src_layer=src_layer,
                 dst_layer=dst_layer,
+                key=key,  # Pass the key parameter
                 attributes=attrs,
             )
         )
