@@ -342,15 +342,15 @@ def _multilayer_graph_to_ir(graph) -> GraphIR:
     """Convert MultiLayerGraph to GraphIR."""
     from py3plex.io.schema import MultiLayerGraph
     
-    # Extract nodes
-    node_id_list = [node.id for node in graph.nodes]
+    # Extract nodes - graph.nodes is Dict[NodeID, Node], iterate over .values()
+    node_id_list = [node.id for node in graph.nodes.values()]
     node_order_list = list(range(len(node_id_list)))
     
     # Build node attributes DataFrame
     if graph.nodes:
         node_attrs_records = []
         node_layers = []
-        for node in graph.nodes:
+        for node in graph.nodes.values():  # Iterate over Node objects, not keys
             node_attrs_records.append(node.attributes.copy() if node.attributes else {})
             # For MultiLayerGraph, nodes can be in multiple layers
             # We'll track the primary layer if available
@@ -400,8 +400,8 @@ def _multilayer_graph_to_ir(graph) -> GraphIR:
         dst_layer=dst_layer_list if dst_layer_list else None,
     )
     
-    # Extract layers
-    layers = [layer.id for layer in graph.layers] if graph.layers else None
+    # Extract layers - graph.layers is Dict[LayerID, Layer], iterate over .values()
+    layers = [layer.id for layer in graph.layers.values()] if graph.layers else None
     
     # Build metadata
     meta = GraphMeta(
