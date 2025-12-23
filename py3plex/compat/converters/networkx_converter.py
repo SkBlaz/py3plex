@@ -111,7 +111,13 @@ def to_networkx_from_ir(
         if ir.meta.multi:
             # For multigraphs, ensure unique NetworkX keys even if original keys collide
             # Track how many edges we've seen for each (src, dst, original_key) combination
-            edge_pair = (src, dst, original_key)
+            # For undirected graphs, normalize edge pair to avoid (u,v) and (v,u) collisions
+            if not ir.meta.directed:
+                # Normalize: always use (min, max) order for undirected edges
+                edge_pair = (min(src, dst), max(src, dst), original_key)
+            else:
+                edge_pair = (src, dst, original_key)
+            
             if edge_pair not in edge_key_counter:
                 edge_key_counter[edge_pair] = 0
             else:
