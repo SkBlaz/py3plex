@@ -68,6 +68,35 @@ Found 287 communities, modularity = 0.649
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
+## Cross-Ecosystem Interoperability
+
+Py3plex provides **lossless conversion** to and from common graph ecosystems:
+
+```python
+from py3plex.compat import convert
+
+# Convert to NetworkX
+nx_graph = convert(network, "networkx")
+
+# Convert to SciPy sparse matrix (with sidecar for attributes)
+matrix = convert(network, "scipy_sparse", strict=False, sidecar="graph_data")
+
+# Convert to igraph (optional: pip install python-igraph)
+ig_graph = convert(network, "igraph")
+
+# Convert back to py3plex
+restored = convert(nx_graph, "py3plex")
+```
+
+**Key features:**
+- ✓ Preserves graph structure, node/edge IDs, and all attributes
+- ✓ Explicit failure modes with clear error messages (strict mode)
+- ✓ Sidecar bundles for lossy target formats (compat mode)
+- ✓ Schema validation and compatibility checking
+- ✓ Support for NetworkX, SciPy sparse, igraph, PyG (planned), DGL (planned)
+
+See [documentation](https://skblaz.github.io/py3plex/) for complete interoperability guide.
+
 ## Getting Started
 
 * **Documentation:** [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
