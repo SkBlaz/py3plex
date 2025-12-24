@@ -5,7 +5,7 @@ A curated gallery of multilayer network analysis queries using the py3plex DSL.
 ## Overview
 
 The Query Zoo demonstrates the expressiveness and power of the py3plex DSL through
-7 comprehensive examples covering common multilayer analysis tasks:
+10 comprehensive examples covering common multilayer analysis tasks:
 
 1. **Basic Multilayer Exploration** — Layer statistics and structure
 2. **Cross-Layer Hubs** — Nodes important across multiple layers
@@ -14,12 +14,15 @@ The Query Zoo demonstrates the expressiveness and power of the py3plex DSL throu
 5. **Multiplex PageRank** — Multilayer-aware centrality computation
 6. **Robustness Analysis** — Network resilience to layer failures
 7. **Advanced Centrality Comparison** — Versatile vs specialized hubs
+8. **Null Model Comparison** — Statistical significance testing (NEW)
+9. **Bootstrap Confidence Intervals** — Cross-layer variability analysis (NEW)
+10. **Uncertainty-Aware Ranking** — Variability-aware node ranking (NEW)
 
 Each query:
 - Solves a real multilayer analysis problem
 - Uses idiomatic DSL patterns
 - Produces reproducible outputs
-- Is fully tested (40 passing tests)
+- Is fully tested (50+ passing tests)
 
 ## Quick Start
 
@@ -61,7 +64,9 @@ pytest tests/test_dsl_query_zoo.py -v
   - `create_communication_network()` — 10 people across email/chat/phone layers
   - `create_transport_network()` — 8 locations across bus/metro/walking layers
 
-- **`queries.py`** — 7 example query functions with full documentation
+- **`queries.py`** — 10 example query functions with full documentation
+  - 7 original queries covering standard multilayer analysis
+  - 3 new queries demonstrating uncertainty quantification (NEW)
 
 - **`run_all.py`** — Script to execute all queries and generate outputs
 
@@ -127,6 +132,60 @@ The Query Zoo follows these principles:
 - **Clarity**: Code is self-documenting with comprehensive docstrings
 - **Realism**: Examples solve actual multilayer analysis problems
 - **Testability**: Every query has comprehensive tests
+
+## New: Uncertainty Quantification (v1.1+)
+
+Recent additions include three queries demonstrating uncertainty quantification in multilayer network analysis:
+
+### 8. Null Model Comparison
+
+Compare observed network properties against null model baselines to identify statistically significant patterns:
+
+```python
+from examples.dsl_query_zoo.queries import query_null_model_comparison
+
+result = query_null_model_comparison(network)
+# Returns: observed vs expected degree, z-scores, significance flags
+```
+
+Uses configuration model to test if observed hub structure is statistically significant or random.
+
+### 9. Bootstrap Confidence Intervals
+
+Estimate uncertainty in centrality measures using cross-layer variability:
+
+```python
+from examples.dsl_query_zoo.queries import query_bootstrap_confidence_intervals
+
+result = query_bootstrap_confidence_intervals(network, metric="degree")
+# Returns: mean, std, relative_variability across layers
+```
+
+Identifies which nodes have stable vs variable importance across different layers.
+
+### 10. Uncertainty-Aware Ranking
+
+Rank nodes considering measurement uncertainty rather than just point estimates:
+
+```python
+from examples.dsl_query_zoo.queries import query_uncertainty_aware_ranking
+
+result = query_uncertainty_aware_ranking(network)
+# Returns: multiple ranking strategies (by max, mean, consistency)
+```
+
+Shows how uncertainty changes node rankings and decision-making.
+
+### Why Uncertainty Matters
+
+Traditional network analysis produces point estimates without confidence intervals. The new uncertainty queries demonstrate:
+
+- **Statistical rigor**: Establish baselines with null models
+- **Robustness**: Identify which findings are stable vs fragile
+- **Decision quality**: Make informed choices under uncertainty
+- **Multilayer insights**: Quantify variability across layers
+
+All uncertainty queries run in <3 seconds and are suitable for CI/CD pipelines.
 
 ## License
 

@@ -27,6 +27,9 @@ from examples.dsl_query_zoo.queries import (
     query_robustness_analysis,
     query_advanced_centrality_comparison,
     query_edge_grouping_and_coverage,
+    query_null_model_comparison,
+    query_bootstrap_confidence_intervals,
+    query_uncertainty_aware_ranking,
 )
 
 
@@ -394,6 +397,74 @@ class TestEdgeGroupingAndCoverage:
             assert all(summary['n_items'] <= 2)
 
 
+class TestNullModelComparison:
+    """Test null model comparison query."""
+    
+    def test_returns_dataframe(self, social_work_network):
+        """Test query returns a DataFrame."""
+        result = query_null_model_comparison(social_work_network)
+        assert isinstance(result, pd.DataFrame)
+    
+    def test_has_expected_columns(self, social_work_network):
+        """Test DataFrame has expected columns."""
+        result = query_null_model_comparison(social_work_network)
+        expected_cols = ['id', 'layer', 'degree', 'expected_degree', 'z_score', 'is_significant']
+        assert list(result.columns) == expected_cols
+    
+    def test_z_scores_are_numeric(self, social_work_network):
+        """Test z_scores are numeric values."""
+        result = query_null_model_comparison(social_work_network)
+        assert pd.api.types.is_numeric_dtype(result['z_score'])
+    
+    def test_is_significant_is_boolean(self, social_work_network):
+        """Test is_significant is boolean."""
+        result = query_null_model_comparison(social_work_network)
+        assert result['is_significant'].dtype == bool
+
+
+class TestBootstrapConfidenceIntervals:
+    """Test bootstrap confidence intervals query."""
+    
+    def test_returns_dataframe(self, communication_network):
+        """Test query returns a DataFrame."""
+        result = query_bootstrap_confidence_intervals(communication_network)
+        assert isinstance(result, pd.DataFrame)
+    
+    def test_has_expected_columns(self, communication_network):
+        """Test DataFrame has expected columns."""
+        result = query_bootstrap_confidence_intervals(communication_network)
+        assert 'id' in result.columns
+        assert 'mean' in result.columns
+        assert 'std' in result.columns
+        assert 'relative_variability' in result.columns
+    
+    def test_variability_positive(self, communication_network):
+        """Test variability metrics are non-negative."""
+        result = query_bootstrap_confidence_intervals(communication_network)
+        assert (result['relative_variability'] >= 0).all()
+
+
+class TestUncertaintyAwareRanking:
+    """Test uncertainty-aware ranking query."""
+    
+    def test_returns_dataframe(self, transport_network):
+        """Test query returns a DataFrame."""
+        result = query_uncertainty_aware_ranking(transport_network)
+        assert isinstance(result, pd.DataFrame)
+    
+    def test_has_ranking_columns(self, transport_network):
+        """Test DataFrame has ranking columns."""
+        result = query_uncertainty_aware_ranking(transport_network)
+        assert 'rank_by_max' in result.columns
+        assert 'rank_by_mean' in result.columns
+        assert 'rank_by_consistency' in result.columns
+    
+    def test_ranks_are_positive(self, transport_network):
+        """Test rank values are positive integers."""
+        result = query_uncertainty_aware_ranking(transport_network)
+        assert (result['rank_by_mean'] > 0).all()
+
+
 # Integration test
 class TestQueryZooIntegration:
     """Integration tests for the full Query Zoo."""
@@ -415,6 +486,9 @@ class TestQueryZooIntegration:
             query_robustness_analysis,
             query_advanced_centrality_comparison,
             lambda net: query_edge_grouping_and_coverage(net, k=3),
+            query_null_model_comparison,
+            query_bootstrap_confidence_intervals,
+            query_uncertainty_aware_ranking,
         ]
         
         for dataset_name, network in datasets.items():

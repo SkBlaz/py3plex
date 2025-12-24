@@ -6,6 +6,8 @@ This directory contains examples for complete analysis workflows, configuration-
 
 ### Config-Driven Workflows
 - **`example_config_workflow.py`** - Drive analysis using configuration files
+- **`example_uncertainty_workflow.py`** - Uncertainty-aware network analysis workflow (NEW)
+- **`example_nullmodels_showcase.py`** - Comprehensive null models demonstration (NEW)
 
 ### Plugin System
 - **`example_plugin_usage.py`** - Create and use custom algorithms via the plugin system
@@ -20,6 +22,7 @@ Example configuration files for workflows:
 - `load_from_file.yaml` - Load network from file and analyze (YAML)
 - `load_and_compare.json` - Compare file-loaded vs generated networks (JSON)
 - `comparison_config.json` - Multi-dataset comparison workflow (JSON)
+- `uncertainty_analysis.yaml` - Uncertainty-aware analysis workflow (NEW)
 
 ### Sample Data
 - `sample_network.graphml` - Sample multilayer network file for examples
@@ -120,6 +123,68 @@ Supported formats:
 - `visualize` - Create network visualizations
 - `aggregate` - Aggregate multilayer networks
 - `convert` - Convert between formats
+
+## Uncertainty Analysis (NEW)
+
+Recent additions include comprehensive support for uncertainty quantification in network analysis:
+
+### Null Model Comparison
+
+Compare observed network properties against statistical null models to identify significant patterns:
+
+```python
+from py3plex.nullmodels import generate_null_model
+
+# Generate null model samples
+null_result = generate_null_model(
+    network,
+    model="configuration",
+    num_samples=100,
+    preserve_layers=True
+)
+
+# Compare observed vs expected
+for null_network in null_result.samples:
+    # Compute metrics on null samples
+    pass
+```
+
+Available null models:
+- **Configuration model**: Preserves degree distribution
+- **Erdős-Rényi model**: Uniform random connections
+- **Layer shuffle model**: Randomizes layer assignments
+- **Edge swap model**: Degree-preserving rewiring
+
+### Example: Uncertainty Workflow
+
+Run the comprehensive uncertainty analysis example:
+
+```bash
+python example_uncertainty_workflow.py
+```
+
+This demonstrates:
+1. Null model comparison for statistical significance
+2. Cross-layer variability quantification
+3. Uncertainty-aware decision making
+4. Integration with py3plex workflows and DSL
+
+### Example: Null Models Showcase
+
+Run the null models showcase to see all available models:
+
+```bash
+python example_nullmodels_showcase.py
+```
+
+This demonstrates:
+1. Configuration model (degree-preserving)
+2. Erdős-Rényi model (uniform random)
+3. Layer shuffle model (randomized layers)
+4. Edge swap model (rewiring)
+5. Batch generation for statistical tests
+
+Both examples are marked as **Runtime: FAST** and execute in <3 seconds, making them suitable for CI/CD pipelines.
 
 ## Plugin System
 
