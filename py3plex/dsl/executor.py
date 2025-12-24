@@ -789,6 +789,60 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     if select.post_filters:
         items = _apply_post_filters(items, select.post_filters, network, G)
     
+    # Optimization: Early LIMIT when ORDER BY uses existing attributes
+    # This reduces the number of items before expensive compute operations
+    early_limit_applied = False
+    if (select.limit is not None and 
+        select.order_by and 
+        not select.group_by and  # Only works for non-grouped queries
+        select.compute):  # Only beneficial when we have compute operations
+        
+        # Check if all ORDER BY keys are available without computing
+        # (i.e., they're not in the COMPUTE list)
+        compute_names = {c.result_name for c in select.compute}
+        order_keys_to_check = []
+        for o in select.order_by:
+            # Extract base key, handling "-degree" prefix and "__mean" suffix
+            key = o.key.lstrip('-').split('__')[0]
+            order_keys_to_check.append(key)
+        
+        # If ordering attributes are not being computed, check if they're available
+        can_apply_early_limit = True
+        if not set(order_keys_to_check).intersection(compute_names):
+            # Check if attributes exist (e.g., "degree" from graph structure)
+            for key in order_keys_to_check:
+                # Check if this is a graph attribute that exists
+                attr_available = False
+                
+                if select.target == Target.NODES and len(items) > 0:
+                    # Check if it's a node attribute
+                    first_item = items[0]
+                    if first_item in G:
+                        # Check node data
+                        if key in G.nodes[first_item]:
+                            attr_available = True
+                        # Check if it's a special attribute like "layer" or "degree"
+                        elif key == "layer" or key == "degree":
+                            attr_available = True
+                elif select.target == Target.EDGES and len(items) > 0:
+                    # Check if it's an edge attribute
+                    if isinstance(items[0], tuple) and len(items[0]) >= 3 and isinstance(items[0][2], dict):
+                        if key in items[0][2]:
+                            attr_available = True
+                    # Check special edge attributes
+                    elif key in ["source_layer", "target_layer", "layer", "weight"]:
+                        attr_available = True
+                
+                if not attr_available:
+                    can_apply_early_limit = False
+                    break
+            
+            # If all ordering attributes are available, apply early limit
+            if can_apply_early_limit:
+                items = _apply_ordering(items, select.order_by, {})
+                items = items[:select.limit]
+                early_limit_applied = True
+    
     # Step 4: Compute measures
     attributes: Dict[str, Dict] = {}
     if select.compute:
@@ -900,8 +954,8 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         )
         # Skip global ORDER BY when grouping is used (ordering is per-group)
     else:
-        # Step 5: Apply global ORDER BY (only when not grouping)
-        if select.order_by:
+        # Step 5: Apply global ORDER BY (only when not grouping and not already ordered)
+        if select.order_by and not early_limit_applied:
             # Smart defaults: Ensure attributes exist before ordering
             for order_item in select.order_by:
                 # Skip validation for attributes that will be created by summarize
@@ -935,8 +989,8 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             G=G,
         )
     
-    # Step 6: Apply global LIMIT
-    if select.limit is not None:
+    # Step 6: Apply global LIMIT (if not already applied early)
+    if select.limit is not None and not early_limit_applied:
         items = items[:select.limit]
     
     # Create result
