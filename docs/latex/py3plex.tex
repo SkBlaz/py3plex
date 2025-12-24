@@ -16775,6 +16775,115 @@ Now that you understand the DSL, explore these related resources:
 \sphinxAtStartPar
 \sphinxstylestrong{Temporal queries} require timestamped edges/nodes but unlock time\sphinxhyphen{}series network analysis.
 
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Query optimization}: When ordering by existing attributes with LIMIT, the DSL automatically applies the limit early to reduce computation on expensive measures.
+
+\end{enumerate}
+
+
+\paragraph{Automatic Query Optimization}
+\label{\detokenize{how-to/query_with_dsl:automatic-query-optimization}}
+\sphinxAtStartPar
+The DSL automatically optimizes query execution order to minimize computation:
+
+\sphinxAtStartPar
+\sphinxstylestrong{Early LIMIT Optimization:}
+
+\sphinxAtStartPar
+When your query includes:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+A \sphinxcode{\sphinxupquote{LIMIT}} clause
+
+\item {} 
+\sphinxAtStartPar
+An \sphinxcode{\sphinxupquote{ORDER BY}} clause
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{COMPUTE}} operations
+
+\item {} 
+\sphinxAtStartPar
+Ordering by an \sphinxstylestrong{existing} attribute (not being computed)
+
+\end{itemize}
+
+\sphinxAtStartPar
+The executor applies \sphinxcode{\sphinxupquote{ORDER BY}} and \sphinxcode{\sphinxupquote{LIMIT}} \sphinxstylestrong{before} computing expensive measures, dramatically reducing computation time.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Find top 10 highest\PYGZhy{}degree nodes, then compute betweenness}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Expensive operation}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}                \PYG{c+c1}{\PYGZsh{} Degree already exists}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Optimized execution:}
+\PYG{c+c1}{\PYGZsh{} 1. Order all nodes by degree (fast \PYGZhy{} degree already available)}
+\PYG{c+c1}{\PYGZsh{} 2. Take top 10 nodes (reduces set size)}
+\PYG{c+c1}{\PYGZsh{} 3. Compute betweenness on those 10 nodes only (huge speedup!)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Without optimization:} Computes betweenness on all nodes, then takes top 10.
+
+\sphinxAtStartPar
+\sphinxstylestrong{With optimization:} Takes top 10 by degree first, then computes betweenness on only those 10 nodes.
+
+\sphinxAtStartPar
+For networks with 1000+ nodes, this can provide \sphinxstylestrong{100x speedup} when computing expensive centrality measures.
+
+\sphinxAtStartPar
+\sphinxstylestrong{When optimization does NOT apply:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Ordering by a computed attribute (must compute all first):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Must compute betweenness on all nodes to find top 10}
+\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\item {} 
+\sphinxAtStartPar
+No ORDER BY clause (limit is arbitrary)
+
+\item {} 
+\sphinxAtStartPar
+Grouping is active (\sphinxcode{\sphinxupquote{per\_layer()}} uses per\sphinxhyphen{}group limits)
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Best practices for performance:}
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+Use existing attributes for ordering when possible (\sphinxcode{\sphinxupquote{degree}}, \sphinxcode{\sphinxupquote{layer}})
+
+\item {} 
+\sphinxAtStartPar
+Apply \sphinxcode{\sphinxupquote{where()}} filters early to reduce dataset size
+
+\item {} 
+\sphinxAtStartPar
+Order by pre\sphinxhyphen{}computed attributes before computing expensive measures
+
+\item {} 
+\sphinxAtStartPar
+Use \sphinxcode{\sphinxupquote{per\_layer().top\_k()}} for efficient per\sphinxhyphen{}layer operations
+
 \end{enumerate}
 \begin{itemize}
 \item {} 

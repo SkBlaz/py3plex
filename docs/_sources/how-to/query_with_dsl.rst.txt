@@ -2021,6 +2021,68 @@ Now that you understand the DSL, explore these related resources:
 3. **Embrace pandas**: Use ``.to_pandas()`` for result analysis—it integrates seamlessly with the scientific Python stack.
 4. **Layer algebra is powerful**: ``L["a"] + L["b"]`` (union), ``L["a"] & L["b"]`` (intersection) enable sophisticated multilayer queries.
 5. **Temporal queries** require timestamped edges/nodes but unlock time-series network analysis.
+6. **Query optimization**: When ordering by existing attributes with LIMIT, the DSL automatically applies the limit early to reduce computation on expensive measures.
+
+Automatic Query Optimization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DSL automatically optimizes query execution order to minimize computation:
+
+**Early LIMIT Optimization:**
+
+When your query includes:
+
+* A ``LIMIT`` clause
+* An ``ORDER BY`` clause
+* ``COMPUTE`` operations
+* Ordering by an **existing** attribute (not being computed)
+
+The executor applies ``ORDER BY`` and ``LIMIT`` **before** computing expensive measures, dramatically reducing computation time.
+
+**Example:**
+
+.. code-block:: python
+
+    # Find top 10 highest-degree nodes, then compute betweenness
+    result = (
+        Q.nodes()
+         .compute("betweenness_centrality")  # Expensive operation
+         .order_by("-degree")                # Degree already exists
+         .limit(10)
+         .execute(network)
+    )
+    
+    # Optimized execution:
+    # 1. Order all nodes by degree (fast - degree already available)
+    # 2. Take top 10 nodes (reduces set size)
+    # 3. Compute betweenness on those 10 nodes only (huge speedup!)
+
+**Without optimization:** Computes betweenness on all nodes, then takes top 10.
+
+**With optimization:** Takes top 10 by degree first, then computes betweenness on only those 10 nodes.
+
+For networks with 1000+ nodes, this can provide **100x speedup** when computing expensive centrality measures.
+
+**When optimization does NOT apply:**
+
+* Ordering by a computed attribute (must compute all first):
+  
+  .. code-block:: python
+  
+      # Must compute betweenness on all nodes to find top 10
+      Q.nodes().compute("betweenness").order_by("-betweenness").limit(10)
+
+* No ORDER BY clause (limit is arbitrary)
+* Grouping is active (``per_layer()`` uses per-group limits)
+
+**Best practices for performance:**
+
+1. Use existing attributes for ordering when possible (``degree``, ``layer``)
+2. Apply ``where()`` filters early to reduce dataset size
+3. Order by pre-computed attributes before computing expensive measures
+4. Use ``per_layer().top_k()`` for efficient per-layer operations
+
+
 
 * **Community and Support:**
 

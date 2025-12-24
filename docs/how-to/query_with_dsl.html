@@ -127,7 +127,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#example-combined-workflow">Example: Combined Workflow</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#automatic-query-optimization">Automatic Query Optimization</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#further-reading-the-py3plex-book">Further Reading: The Py3plex Book</a></li>
 </ul>
 </li>
@@ -2065,6 +2068,56 @@ community
 <li><p><strong>Embrace pandas</strong>: Use <code class="docutils literal notranslate"><span class="pre">.to_pandas()</span></code> for result analysis—it integrates seamlessly with the scientific Python stack.</p></li>
 <li><p><strong>Layer algebra is powerful</strong>: <code class="docutils literal notranslate"><span class="pre">L[&quot;a&quot;]</span> <span class="pre">+</span> <span class="pre">L[&quot;b&quot;]</span></code> (union), <code class="docutils literal notranslate"><span class="pre">L[&quot;a&quot;]</span> <span class="pre">&amp;</span> <span class="pre">L[&quot;b&quot;]</span></code> (intersection) enable sophisticated multilayer queries.</p></li>
 <li><p><strong>Temporal queries</strong> require timestamped edges/nodes but unlock time-series network analysis.</p></li>
+<li><p><strong>Query optimization</strong>: When ordering by existing attributes with LIMIT, the DSL automatically applies the limit early to reduce computation on expensive measures.</p></li>
+</ol>
+<section id="automatic-query-optimization">
+<h3>Automatic Query Optimization<a class="headerlink" href="#automatic-query-optimization" title="Link to this heading"></a></h3>
+<p>The DSL automatically optimizes query execution order to minimize computation:</p>
+<p><strong>Early LIMIT Optimization:</strong></p>
+<p>When your query includes:</p>
+<ul class="simple">
+<li><p>A <code class="docutils literal notranslate"><span class="pre">LIMIT</span></code> clause</p></li>
+<li><p>An <code class="docutils literal notranslate"><span class="pre">ORDER</span> <span class="pre">BY</span></code> clause</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">COMPUTE</span></code> operations</p></li>
+<li><p>Ordering by an <strong>existing</strong> attribute (not being computed)</p></li>
+</ul>
+<p>The executor applies <code class="docutils literal notranslate"><span class="pre">ORDER</span> <span class="pre">BY</span></code> and <code class="docutils literal notranslate"><span class="pre">LIMIT</span></code> <strong>before</strong> computing expensive measures, dramatically reducing computation time.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find top 10 highest-degree nodes, then compute betweenness</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># Expensive operation</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">)</span>                <span class="c1"># Degree already exists</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Optimized execution:</span>
+<span class="c1"># 1. Order all nodes by degree (fast - degree already available)</span>
+<span class="c1"># 2. Take top 10 nodes (reduces set size)</span>
+<span class="c1"># 3. Compute betweenness on those 10 nodes only (huge speedup!)</span>
+</pre></div>
+</div>
+<p><strong>Without optimization:</strong> Computes betweenness on all nodes, then takes top 10.</p>
+<p><strong>With optimization:</strong> Takes top 10 by degree first, then computes betweenness on only those 10 nodes.</p>
+<p>For networks with 1000+ nodes, this can provide <strong>100x speedup</strong> when computing expensive centrality measures.</p>
+<p><strong>When optimization does NOT apply:</strong></p>
+<ul>
+<li><p>Ordering by a computed attribute (must compute all first):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Must compute betweenness on all nodes to find top 10</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>No ORDER BY clause (limit is arbitrary)</p></li>
+<li><p>Grouping is active (<code class="docutils literal notranslate"><span class="pre">per_layer()</span></code> uses per-group limits)</p></li>
+</ul>
+<p><strong>Best practices for performance:</strong></p>
+<ol class="arabic simple">
+<li><p>Use existing attributes for ordering when possible (<code class="docutils literal notranslate"><span class="pre">degree</span></code>, <code class="docutils literal notranslate"><span class="pre">layer</span></code>)</p></li>
+<li><p>Apply <code class="docutils literal notranslate"><span class="pre">where()</span></code> filters early to reduce dataset size</p></li>
+<li><p>Order by pre-computed attributes before computing expensive measures</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">per_layer().top_k()</span></code> for efficient per-layer operations</p></li>
 </ol>
 <ul class="simple">
 <li><p><strong>Community and Support:</strong></p></li>
@@ -2072,6 +2125,7 @@ community
 <li><p>Example notebooks: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/main/examples">https://github.com/SkBlaz/py3plex/tree/main/examples</a></p></li>
 <li><p>py3plex documentation: <a class="reference external" href="https://skblaz.github.io/py3plex/">https://skblaz.github.io/py3plex/</a></p></li>
 </ul>
+</section>
 </section>
 <section id="further-reading-the-py3plex-book">
 <h2>Further Reading: The Py3plex Book<a class="headerlink" href="#further-reading-the-py3plex-book" title="Link to this heading"></a></h2>
