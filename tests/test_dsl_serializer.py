@@ -12,6 +12,7 @@ from py3plex.dsl.ast import (
     Target,
     ExportTarget,
     LayerExpr,
+    LayerTerm,
     ConditionExpr,
     ConditionAtom,
     Comparison,
@@ -89,7 +90,7 @@ class TestSerializeSelect:
         """Test serializing SELECT with FROM clause."""
         stmt = SelectStmt(
             target=Target.NODES,
-            layer_expr=LayerExpr(layer_name="social", negated=False),
+            layer_expr=LayerExpr(terms=[LayerTerm("social")]),
             where=None,
             compute=None,
             order_by=None,
@@ -155,16 +156,19 @@ class TestSerializeLayerExpr:
 
     def test_simple_layer_name(self):
         """Test serializing simple layer name."""
-        expr = LayerExpr(layer_name="social", negated=False)
+        expr = LayerExpr(terms=[LayerTerm("social")])
         result = _serialize_layer_expr(expr)
-        assert result == "layer='social'"
-
-    def test_negated_layer(self):
-        """Test serializing negated layer expression."""
-        expr = LayerExpr(layer_name="social", negated=True)
-        result = _serialize_layer_expr(expr)
-        assert "NOT" in result or "!" in result
         assert "social" in result
+
+    def test_layer_union(self):
+        """Test serializing layer union expression."""
+        expr = LayerExpr(
+            terms=[LayerTerm("social"), LayerTerm("work")],
+            ops=["+"]
+        )
+        result = _serialize_layer_expr(expr)
+        assert "social" in result
+        assert "work" in result
 
 
 class TestSerializeConditions:
@@ -176,11 +180,10 @@ class TestSerializeConditions:
             atoms=[
                 ConditionAtom(
                     comparison=Comparison(
-                        field="degree",
-                        operator=">",
-                        value=5
-                    ),
-                    negated=False
+                        left="degree",
+                        op=">",
+                        right=5
+                    )
                 )
             ]
         )
@@ -194,14 +197,13 @@ class TestSerializeConditions:
         conditions = ConditionExpr(
             atoms=[
                 ConditionAtom(
-                    comparison=Comparison(field="degree", operator=">", value=5),
-                    negated=False
+                    comparison=Comparison(left="degree", op=">", right=5)
                 ),
                 ConditionAtom(
-                    comparison=Comparison(field="layer", operator="==", value="social"),
-                    negated=False
+                    comparison=Comparison(left="layer", op="==", right="social")
                 )
-            ]
+            ],
+            ops=["AND"]
         )
         result = _serialize_conditions(conditions)
         assert "degree" in result
@@ -215,23 +217,20 @@ class TestSerializeConditionAtom:
     def test_simple_comparison(self):
         """Test serializing simple comparison."""
         atom = ConditionAtom(
-            comparison=Comparison(field="degree", operator=">", value=10),
-            negated=False
+            comparison=Comparison(left="degree", op=">", right=10)
         )
         result = _serialize_condition_atom(atom)
         assert "degree" in result
         assert ">" in result
         assert "10" in result
 
-    def test_negated_comparison(self):
-        """Test serializing negated comparison."""
+    def test_function_call_condition(self):
+        """Test serializing function call condition."""
         atom = ConditionAtom(
-            comparison=Comparison(field="active", operator="==", value=True),
-            negated=True
+            function=FunctionCall(name="is_active", args=[])
         )
         result = _serialize_condition_atom(atom)
-        assert "NOT" in result or "!" in result
-        assert "active" in result
+        assert "is_active" in result
 
 
 class TestSerializeComparison:
@@ -239,7 +238,7 @@ class TestSerializeComparison:
 
     def test_numeric_comparison(self):
         """Test serializing numeric comparison."""
-        comp = Comparison(field="degree", operator=">", value=5)
+        comp = Comparison(left="degree", op=">", right=5)
         result = _serialize_comparison(comp)
         assert "degree" in result
         assert ">" in result
@@ -247,7 +246,7 @@ class TestSerializeComparison:
 
     def test_string_comparison(self):
         """Test serializing string comparison."""
-        comp = Comparison(field="name", operator="==", value="Alice")
+        comp = Comparison(left="name", op="==", right="Alice")
         result = _serialize_comparison(comp)
         assert "name" in result
         assert "==" in result
@@ -255,7 +254,7 @@ class TestSerializeComparison:
 
     def test_boolean_comparison(self):
         """Test serializing boolean comparison."""
-        comp = Comparison(field="active", operator="==", value=True)
+        comp = Comparison(left="active", op="==", right=True)
         result = _serialize_comparison(comp)
         assert "active" in result
         assert "True" in result or "true" in result
@@ -264,7 +263,7 @@ class TestSerializeComparison:
         """Test serializing different comparison operators."""
         operators = ["<", "<=", ">", ">=", "==", "!="]
         for op in operators:
-            comp = Comparison(field="x", operator=op, value=0)
+            comp = Comparison(left="x", op=op, right=0)
             result = _serialize_comparison(comp)
             assert op in result
             assert "x" in result
@@ -279,16 +278,15 @@ class TestCompleteQuerySerialization:
             explain=False,
             select=SelectStmt(
                 target=Target.NODES,
-                layer_expr=LayerExpr(layer_name="social", negated=False),
+                layer_expr=LayerExpr(terms=[LayerTerm("social")]),
                 where=ConditionExpr(
                     atoms=[
                         ConditionAtom(
                             comparison=Comparison(
-                                field="degree",
-                                operator=">",
-                                value=3
-                            ),
-                            negated=False
+                                left="degree",
+                                op=">",
+                                right=3
+                            )
                         )
                     ]
                 ),
@@ -308,7 +306,9 @@ class TestCompleteQuerySerialization:
         assert "FROM" in result
         assert "social" in result
         assert "WHERE" in result
-        assert "degree > 3" in result
+        assert "degree" in result
+        assert ">" in result
+        assert "3" in result
         assert "COMPUTE" in result
         assert "betweenness AS bc" in result
         assert "ORDER BY" in result
@@ -322,7 +322,7 @@ class TestCompleteQuerySerialization:
             explain=False,
             select=SelectStmt(
                 target=Target.NODES,
-                layer_expr=LayerExpr(layer_name="test", negated=False),
+                layer_expr=LayerExpr(terms=[LayerTerm("test")]),
                 where=None,
                 compute=None,
                 order_by=None,

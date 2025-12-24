@@ -8,10 +8,11 @@ import pytest
 
 from py3plex.dsl.errors import (
     DslError,
+    DslSyntaxError,
+    DslExecutionError,
     UnknownLayerError,
-    UnknownOperatorError,
-    InvalidFilterError,
-    InvalidComputeError,
+    UnknownAttributeError,
+    UnknownMeasureError,
     _levenshtein_distance,
     _suggest_similar,
 )
@@ -116,9 +117,9 @@ class TestDslError:
         error = DslError("Test error", query="SELECT nodes WHERE layer='test'")
         assert "Test error" in str(error)
 
-    def test_dsl_error_with_position(self):
-        """Test DslError with position information."""
-        error = DslError("Test error", position=10)
+    def test_dsl_error_with_column(self):
+        """Test DslError with column information."""
+        error = DslError("Test error", column=10, line=1)
         assert "Test error" in str(error)
 
 
@@ -133,8 +134,8 @@ class TestUnknownLayerError:
 
     def test_unknown_layer_error_with_suggestions(self):
         """Test UnknownLayerError with layer suggestions."""
-        available = ["social", "work", "family"]
-        error = UnknownLayerError("socail", available_layers=available)
+        known = ["social", "work", "family"]
+        error = UnknownLayerError("socail", known_layers=known)
         error_msg = str(error)
         assert "socail" in error_msg
         # Should suggest "social" as it's similar
@@ -142,67 +143,88 @@ class TestUnknownLayerError:
 
     def test_unknown_layer_error_no_suggestions(self):
         """Test UnknownLayerError when no similar layers exist."""
-        available = ["layer1", "layer2"]
-        error = UnknownLayerError("xyz", available_layers=available)
+        known = ["layer1", "layer2"]
+        error = UnknownLayerError("xyz", known_layers=known)
         error_msg = str(error)
         assert "xyz" in error_msg
 
 
-class TestUnknownOperatorError:
-    """Test the UnknownOperatorError exception."""
+class TestUnknownMeasureError:
+    """Test the UnknownMeasureError exception."""
 
-    def test_unknown_operator_error_basic(self):
-        """Test basic UnknownOperatorError."""
-        error = UnknownOperatorError("invalid_op")
+    def test_unknown_measure_error_basic(self):
+        """Test basic UnknownMeasureError."""
+        error = UnknownMeasureError("invalid_measure")
         assert isinstance(error, DslError)
-        assert "invalid_op" in str(error)
+        assert "invalid_measure" in str(error)
 
-    def test_unknown_operator_error_with_suggestions(self):
-        """Test UnknownOperatorError with operator suggestions."""
-        available = ["degree", "betweenness", "closeness"]
-        error = UnknownOperatorError("betweeness", available_operators=available)
+    def test_unknown_measure_error_with_suggestions(self):
+        """Test UnknownMeasureError with measure suggestions."""
+        known = ["degree", "betweenness", "closeness"]
+        error = UnknownMeasureError("betweeness", known_measures=known)
         error_msg = str(error)
         assert "betweeness" in error_msg
         # Should suggest "betweenness" 
         assert "betweenness" in error_msg or "Did you mean" in error_msg.lower()
 
 
-class TestInvalidFilterError:
-    """Test the InvalidFilterError exception."""
+class TestUnknownAttributeError:
+    """Test the UnknownAttributeError exception."""
 
-    def test_invalid_filter_error_basic(self):
-        """Test basic InvalidFilterError."""
-        error = InvalidFilterError("Invalid filter condition")
+    def test_unknown_attribute_error_basic(self):
+        """Test basic UnknownAttributeError."""
+        error = UnknownAttributeError("invalid_attr")
         assert isinstance(error, DslError)
-        assert "Invalid filter condition" in str(error)
+        assert "invalid_attr" in str(error)
 
-    def test_invalid_filter_error_with_details(self):
-        """Test InvalidFilterError with filter details."""
-        error = InvalidFilterError(
-            "Comparison requires numeric type",
-            filter_expression="layer > 5"
+    def test_unknown_attribute_error_with_suggestions(self):
+        """Test UnknownAttributeError with attribute suggestions."""
+        known = ["degree", "betweenness", "closeness"]
+        error = UnknownAttributeError("betweeness", known_attributes=known)
+        error_msg = str(error)
+        assert "betweeness" in error_msg
+        # Should suggest "betweenness"
+        assert "betweenness" in error_msg or "Did you mean" in error_msg.lower()
+
+
+class TestDslSyntaxError:
+    """Test the DslSyntaxError exception."""
+
+    def test_dsl_syntax_error_basic(self):
+        """Test basic DslSyntaxError."""
+        error = DslSyntaxError("Syntax error in query")
+        assert isinstance(error, DslError)
+        assert "Syntax error" in str(error)
+
+    def test_dsl_syntax_error_with_position(self):
+        """Test DslSyntaxError with position information."""
+        error = DslSyntaxError(
+            "Unexpected token",
+            query="SELECT nodes WHERE",
+            line=1,
+            column=19
         )
         error_msg = str(error)
-        assert "numeric type" in error_msg
+        assert "Unexpected token" in error_msg
 
 
-class TestInvalidComputeError:
-    """Test the InvalidComputeError exception."""
+class TestDslExecutionError:
+    """Test the DslExecutionError exception."""
 
-    def test_invalid_compute_error_basic(self):
-        """Test basic InvalidComputeError."""
-        error = InvalidComputeError("Invalid computation")
+    def test_dsl_execution_error_basic(self):
+        """Test basic DslExecutionError."""
+        error = DslExecutionError("Execution failed")
         assert isinstance(error, DslError)
-        assert "Invalid computation" in str(error)
+        assert "Execution failed" in str(error)
 
-    def test_invalid_compute_error_with_metric(self):
-        """Test InvalidComputeError with metric name."""
-        error = InvalidComputeError(
-            "Metric not applicable to this graph type",
-            metric_name="clustering_coefficient"
+    def test_dsl_execution_error_with_details(self):
+        """Test DslExecutionError with details."""
+        error = DslExecutionError(
+            "Network has no nodes",
+            query="SELECT nodes WHERE degree > 10"
         )
         error_msg = str(error)
-        assert "clustering_coefficient" in error_msg or "Metric" in error_msg
+        assert "no nodes" in error_msg
 
 
 class TestErrorHierarchy:
@@ -211,10 +233,11 @@ class TestErrorHierarchy:
     def test_all_dsl_errors_inherit_from_base(self):
         """Test that all DSL errors inherit from DslError."""
         errors_to_test = [
+            DslSyntaxError("test"),
+            DslExecutionError("test"),
             UnknownLayerError("test"),
-            UnknownOperatorError("test"),
-            InvalidFilterError("test"),
-            InvalidComputeError("test"),
+            UnknownAttributeError("test"),
+            UnknownMeasureError("test"),
         ]
         
         for error in errors_to_test:
@@ -225,10 +248,11 @@ class TestErrorHierarchy:
         """Test that all error messages can be converted to strings."""
         errors_to_test = [
             DslError("msg"),
+            DslSyntaxError("syntax"),
+            DslExecutionError("exec"),
             UnknownLayerError("layer"),
-            UnknownOperatorError("op"),
-            InvalidFilterError("filter"),
-            InvalidComputeError("compute"),
+            UnknownAttributeError("attr"),
+            UnknownMeasureError("measure"),
         ]
         
         for error in errors_to_test:
