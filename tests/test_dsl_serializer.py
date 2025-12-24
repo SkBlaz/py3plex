@@ -25,7 +25,7 @@ from py3plex.dsl.serializer import (
     _serialize_select,
     _serialize_layer_expr,
     _serialize_conditions,
-    _serialize_condition_atom,
+    _serialize_atom,
     _serialize_comparison,
 )
 
@@ -211,15 +211,15 @@ class TestSerializeConditions:
         assert "AND" in result or "and" in result
 
 
-class TestSerializeConditionAtom:
-    """Test the _serialize_condition_atom function."""
+class TestSerializeAtom:
+    """Test the _serialize_atom function."""
 
     def test_simple_comparison(self):
         """Test serializing simple comparison."""
         atom = ConditionAtom(
             comparison=Comparison(left="degree", op=">", right=10)
         )
-        result = _serialize_condition_atom(atom)
+        result = _serialize_atom(atom)
         assert "degree" in result
         assert ">" in result
         assert "10" in result
@@ -229,7 +229,7 @@ class TestSerializeConditionAtom:
         atom = ConditionAtom(
             function=FunctionCall(name="is_active", args=[])
         )
-        result = _serialize_condition_atom(atom)
+        result = _serialize_atom(atom)
         assert "is_active" in result
 
 
