@@ -34,6 +34,8 @@ except ImportError as exc:
 
 from py3plex.core import multinet
 from py3plex.dsl import L, Q
+from py3plex.nullmodels import generate_null_model, configuration_model
+from py3plex.uncertainty import bootstrap_metric
 
 Network = multinet.multi_layer_network
 
@@ -826,3 +828,207 @@ def query_cross_layer_paths_with_algebra(
             "error": str(e),
             "explanation": "Path query requires nodes to exist in specified layers"
         }
+
+
+def query_null_model_comparison(network: Network) -> pd.DataFrame:
+    """Compare actual network statistics against null model distributions.
+    
+    This demonstrates using null models for statistical hypothesis testing
+    by comparing observed centrality values against what we would expect
+    from random networks with similar properties.
+    
+    Why it's interesting:
+    - Null models establish baselines for statistical significance
+    - Helps identify nodes/patterns that are exceptional beyond chance
+    - Configuration model preserves degree sequence but randomizes connections
+    - Essential for rigorous network science conclusions
+    
+    DSL concepts demonstrated:
+    - Integration of null models with DSL queries
+    - Statistical comparison of observed vs expected values
+    - Computing z-scores to identify significant patterns
+    
+    Args:
+        network: A multi_layer_network instance
+        
+    Returns:
+        pd.DataFrame with columns: node, observed_degree, expected_degree, z_score
+        
+    Note:
+        Uses configuration model with 50 samples for reasonable speed in CI.
+        Production analyses typically use 100-1000 samples.
+    """
+    import numpy as np
+    
+    # Get observed degree centrality
+    observed = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree")
+         .execute(network)
+    ).to_pandas()
+    
+    # Generate null model samples (configuration model preserves degree distribution)
+    null_result = generate_null_model(
+        network,
+        model="configuration",
+        samples=50,  # Use 50 for CI speed; production: 100-1000
+        preserve_layers=True
+    )
+    
+    # Compute degree centrality for each null sample
+    null_degrees = {}
+    for i, null_network in enumerate(null_result.samples):
+        null_df = (
+            Q.nodes()
+             .from_layers(L["*"])
+             .compute("degree")
+             .execute(null_network)
+        ).to_pandas()
+        # Store as dict: node_id -> degree for this sample
+        for _, row in null_df.iterrows():
+            node_id = row['id']
+            if node_id not in null_degrees:
+                null_degrees[node_id] = []
+            null_degrees[node_id].append(row['degree'])
+    
+    # Calculate expected (mean) and standard deviation from null models
+    observed_with_stats = observed.copy()
+    observed_with_stats['expected_degree'] = observed_with_stats['id'].map(
+        lambda node_id: np.mean(null_degrees.get(node_id, [0]))
+    )
+    observed_with_stats['null_std'] = observed_with_stats['id'].map(
+        lambda node_id: np.std(null_degrees.get(node_id, [0]))
+    )
+    
+    # Compute z-score: how many standard deviations from expected?
+    observed_with_stats['z_score'] = (
+        (observed_with_stats['degree'] - observed_with_stats['expected_degree']) / 
+        observed_with_stats['null_std']
+    )
+    
+    # Flag statistically significant deviations (|z| > 2 ≈ p < 0.05)
+    observed_with_stats['is_significant'] = np.abs(observed_with_stats['z_score']) > 2.0
+    
+    return observed_with_stats.sort_values('z_score', ascending=False)[
+        ['id', 'layer', 'degree', 'expected_degree', 'z_score', 'is_significant']
+    ]
+
+
+def query_bootstrap_confidence_intervals(network: Network, metric: str = "degree") -> pd.DataFrame:
+    """Estimate uncertainty in centrality measures using bootstrap resampling.
+    
+    Bootstrap resampling provides confidence intervals for network metrics
+    without assuming a particular statistical distribution. This is crucial
+    when making claims about "which nodes are most central" - we need to
+    know if differences are statistically meaningful.
+    
+    Why it's interesting:
+    - Quantifies uncertainty in centrality rankings
+    - Helps avoid over-interpreting small differences
+    - Works when analytical standard errors are unavailable
+    - Identifies robust vs. fragile centrality patterns
+    
+    DSL concepts demonstrated:
+    - Integration with uncertainty quantification
+    - Statistical comparison of node importance
+    - Variability analysis in network metrics
+    
+    Args:
+        network: A multi_layer_network instance
+        metric: Centrality metric to compute (degree, betweenness, etc.)
+        
+    Returns:
+        pd.DataFrame with columns: node, layer, mean, relative_variability
+        
+    Note:
+        This is a simplified version demonstrating the concept. For production
+        use, consider the py3plex.uncertainty.bootstrap_metric function.
+    """
+    import numpy as np
+    
+    # Get base centrality values from multiple layers
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute(metric)
+         .execute(network)
+    ).to_pandas()
+    
+    # Group by node across layers to compute variability
+    node_stats = result.groupby('id')[metric].agg(['mean', 'std', 'count'])
+    node_stats = node_stats.reset_index()
+    
+    # Compute relative variability (coefficient of variation)
+    # This shows which nodes have stable vs variable centrality across layers
+    node_stats['relative_variability'] = node_stats['std'] / (node_stats['mean'] + 1e-10)
+    
+    # Identify nodes present in multiple layers
+    node_stats['layer_coverage'] = node_stats['count']
+    
+    # For display, join back with layer info for top nodes
+    result_with_stats = result.merge(
+        node_stats[['id', 'mean', 'std', 'relative_variability', 'layer_coverage']],
+        on='id',
+        how='left',
+        suffixes=('', '_across_layers')
+    )
+    
+    # Sort by mean centrality across layers
+    result_with_stats = result_with_stats.sort_values('mean', ascending=False)
+    
+    return result_with_stats[
+        ['id', 'layer', metric, 'mean', 'std', 'relative_variability', 'layer_coverage']
+    ].drop_duplicates('id')
+
+
+def query_uncertainty_aware_ranking(network: Network) -> pd.DataFrame:
+    """Rank nodes considering variability across layers.
+    
+    Traditional rankings use single-layer metrics. This demonstrates
+    uncertainty-aware ranking by considering how node importance varies
+    across different layers in a multilayer network.
+    
+    Why it's interesting:
+    - Avoids over-confident conclusions from single-layer analysis
+    - Identifies nodes with consistent vs inconsistent importance
+    - Useful for decision-making in multilayer contexts
+    - Shows how cross-layer analysis changes conclusions
+    
+    DSL concepts demonstrated:
+    - Cross-layer metric aggregation
+    - Variability-aware node ranking
+    - Comparing consistency vs peak performance
+    
+    Args:
+        network: A multi_layer_network instance
+        
+    Returns:
+        pd.DataFrame comparing different ranking strategies
+    """
+    import numpy as np
+    
+    # Get betweenness with cross-layer variability
+    df = query_bootstrap_confidence_intervals(network, metric="betweenness_centrality")
+    
+    # Traditional ranking: order by max value across layers
+    max_per_node = df.groupby('id')['betweenness_centrality'].max()
+    df['rank_by_max'] = df['id'].map(
+        max_per_node.rank(ascending=False, method='min')
+    )
+    
+    # Conservative ranking: order by mean across layers
+    df['rank_by_mean'] = df['mean'].rank(ascending=False, method='min')
+    
+    # Consistency ranking: prefer nodes with low variability
+    # Lower relative_variability = more consistent importance
+    df['consistency_score'] = df['mean'] / (df['relative_variability'] + 1e-10)
+    df['rank_by_consistency'] = df['consistency_score'].rank(ascending=False, method='min')
+    
+    # Identify nodes where ranking changes significantly
+    df['rank_change'] = np.abs(df['rank_by_max'] - df['rank_by_consistency'])
+    
+    return df.sort_values('rank_by_mean')[
+        ['id', 'layer', 'betweenness_centrality', 'mean', 'relative_variability',
+         'rank_by_max', 'rank_by_mean', 'rank_by_consistency', 'rank_change']
+    ].drop_duplicates('id')

@@ -41,6 +41,9 @@ from examples.dsl_query_zoo.queries import (
     query_layer_similarity,
     query_multiplex_pagerank,
     query_robustness_analysis,
+    query_null_model_comparison,
+    query_bootstrap_confidence_intervals,
+    query_uncertainty_aware_ranking,
 )
 
 DEFAULT_SEED = 42
@@ -139,6 +142,68 @@ def plot_robustness(df: pd.DataFrame, output_dir: Path) -> Path:
     return filepath
 
 
+def plot_null_model_comparison(df: pd.DataFrame, output_dir: Path) -> Path:
+    """Create a scatter plot comparing observed vs expected values."""
+    fig, ax = plt.subplots(figsize=(10, 8))
+    
+    # Scatter plot colored by significance
+    significant = df[df['is_significant'] == True]
+    not_significant = df[df['is_significant'] == False]
+    
+    ax.scatter(not_significant['expected_degree'], not_significant['degree'],
+              alpha=0.6, s=50, c='gray', label='Not significant')
+    ax.scatter(significant['expected_degree'], significant['degree'],
+              alpha=0.8, s=80, c='red', label='Significant (|z| > 2)')
+    
+    # Add diagonal line (observed = expected)
+    max_val = max(df['degree'].max(), df['expected_degree'].max())
+    ax.plot([0, max_val], [0, max_val], 'k--', alpha=0.3, label='Expected')
+    
+    ax.set_xlabel('Expected Degree (Null Model)')
+    ax.set_ylabel('Observed Degree')
+    ax.set_title('Null Model Comparison: Observed vs Expected Degree')
+    ax.legend()
+    ax.grid(alpha=0.3)
+    
+    plt.tight_layout()
+    filepath = output_dir / 'null_model_comparison_plot.png'
+    plt.savefig(filepath, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"  Saved: null_model_comparison_plot.png")
+    return filepath
+
+
+def plot_bootstrap_confidence(df: pd.DataFrame, output_dir: Path) -> Path:
+    """Create a plot showing cross-layer variability in centrality."""
+    fig, ax = plt.subplots(figsize=(10, 8))
+    
+    # Plot top 10 nodes by mean
+    df_top = df.head(10).copy()
+    df_top = df_top.iloc[::-1]  # Reverse for better visualization
+    
+    y_pos = range(len(df_top))
+    means = df_top['mean'].values
+    
+    # Color by relative variability
+    colors = plt.cm.RdYlGn_r(df_top['relative_variability'].values / df_top['relative_variability'].max())
+    
+    ax.barh(y_pos, means, color=colors, alpha=0.7)
+    
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels([str(node_id) for node_id in df_top['id']])
+    ax.set_xlabel('Mean Centrality Across Layers')
+    ax.set_ylabel('Node')
+    ax.set_title('Top 10 Nodes: Cross-Layer Centrality Variability\n(Red = High Variability, Green = Low Variability)')
+    ax.grid(axis='x', alpha=0.3)
+    
+    plt.tight_layout()
+    filepath = output_dir / 'bootstrap_confidence_plot.png'
+    plt.savefig(filepath, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"  Saved: bootstrap_confidence_plot.png")
+    return filepath
+
+
 def _preview_dataframe(
     df: pd.DataFrame, rows: Optional[int] = 10, show_index: bool = False
 ) -> str:
@@ -211,7 +276,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     social_work_net, communication_net, transport_net = _load_datasets(seed)
 
     _execute_query(
-        "[1/7] Running: Basic Multilayer Exploration",
+        "[1/10] Running: Basic Multilayer Exploration",
         query_basic_exploration,
         (social_work_net,),
         "basic_exploration.csv",
@@ -221,7 +286,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[2/7] Running: Cross-Layer Hubs",
+        "[2/10] Running: Cross-Layer Hubs",
         query_cross_layer_hubs,
         (social_work_net, 5),
         "cross_layer_hubs.csv",
@@ -229,7 +294,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[3/7] Running: Layer Similarity Analysis",
+        "[3/10] Running: Layer Similarity Analysis",
         query_layer_similarity,
         (social_work_net,),
         "layer_similarity.csv",
@@ -240,7 +305,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[4/7] Running: Community Structure Analysis",
+        "[4/10] Running: Community Structure Analysis",
         query_community_structure,
         (communication_net,),
         "community_structure.csv",
@@ -248,7 +313,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[5/7] Running: Multiplex PageRank",
+        "[5/10] Running: Multiplex PageRank",
         query_multiplex_pagerank,
         (transport_net,),
         "multiplex_pagerank.csv",
@@ -256,7 +321,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[6/7] Running: Robustness Analysis",
+        "[6/10] Running: Robustness Analysis",
         query_robustness_analysis,
         (transport_net,),
         "robustness_analysis.csv",
@@ -266,11 +331,43 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[7/7] Running: Advanced Centrality Comparison",
+        "[7/10] Running: Advanced Centrality Comparison",
         query_advanced_centrality_comparison,
         (communication_net,),
         "centrality_comparison.csv",
         output_dir,
+    )
+
+    # New uncertainty and null model queries
+    print("\n--- Uncertainty & Null Model Analysis ---\n")
+
+    _execute_query(
+        "[8/10] Running: Null Model Comparison",
+        query_null_model_comparison,
+        (social_work_net,),
+        "null_model_comparison.csv",
+        output_dir,
+        plotter=plot_null_model_comparison,
+        preview_rows=10,
+    )
+
+    _execute_query(
+        "[9/10] Running: Bootstrap Confidence Intervals",
+        query_bootstrap_confidence_intervals,
+        (communication_net,),
+        "bootstrap_confidence.csv",
+        output_dir,
+        plotter=plot_bootstrap_confidence,
+        preview_rows=10,
+    )
+
+    _execute_query(
+        "[10/10] Running: Uncertainty-Aware Ranking",
+        query_uncertainty_aware_ranking,
+        (transport_net,),
+        "uncertainty_ranking.csv",
+        output_dir,
+        preview_rows=10,
     )
 
     print("=" * 80)
