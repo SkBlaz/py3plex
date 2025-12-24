@@ -2561,10 +2561,18 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             result = execute_query(network, 'SELECT nodes')
             # Result could be dict or QueryResult object
             if result:
-                tests_passed.append("legacy_query")
-                if verbose:
-                    node_count = len(result['nodes']) if isinstance(result, dict) else len(result.nodes)
-                    print(f"   OK Legacy query: {node_count} nodes")
+                # Handle both dict and object return types
+                if isinstance(result, dict):
+                    node_count = len(result.get('nodes', []))
+                elif hasattr(result, 'nodes'):
+                    node_count = len(result.nodes)
+                else:
+                    node_count = 0
+                    
+                if node_count > 0:
+                    tests_passed.append("legacy_query")
+                    if verbose:
+                        print(f"   OK Legacy query: {node_count} nodes")
         except Exception as e:
             if verbose:
                 print(f"   ! Legacy query: {e}")
@@ -2646,12 +2654,10 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             else:
                 print("   [X] Workflows test failed: config creation failed")
         except Exception as e:
+            # If workflow config fails, this indicates a real problem
+            print(f"   [X] Workflows failed: {e}")
             if verbose:
-                print(f"   ! Workflow config: {e}")
-            # Even if config creation fails, don't fail the test entirely
-            # as long as the module imports work
-            print("   [OK] Workflows test passed (module imports)")
-            workflows_status = True
+                traceback.print_exc()
 
     except Exception as e:
         print(f"   [X] Workflows failed: {e}")
@@ -2668,7 +2674,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         # Create a temporal network
         tnet = TemporalMultiLayerNetwork()
         
-        # Add edges with timestamps (correct signature: u, layer_u, v, layer_v, t)
+        # Add edges with timestamps using keyword argument
         tnet.add_edge('A', 'social', 'B', 'social', t=1.0)
         tnet.add_edge('B', 'social', 'C', 'social', t=2.0)
         tnet.add_edge('C', 'social', 'A', 'social', t=3.0)
