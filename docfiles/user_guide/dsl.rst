@@ -428,6 +428,7 @@ The ``QueryBuilder`` returned supports these chainable methods:
      .from_layers(layer_expr)    # Filter by layers (optional)
      .where(**conditions)        # Filter by conditions (optional)
      .compute(*measures)         # Compute measures (optional)
+     .mutate(**transformations)  # Transform/create columns (optional)
      .order_by(*keys)            # Order results (optional)
      .limit(n)                   # Limit results (optional)
      .execute(network, **params) # Execute the query
@@ -494,6 +495,62 @@ Sort and limit results::
     
     # Limit results
     result = Q.nodes().compute("degree").order_by("-degree").limit(10).execute(network)
+
+MUTATE - Row-wise Transformations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``mutate()`` method creates new columns or transforms existing ones using 
+row-by-row operations (similar to dplyr::mutate in R). This is different from 
+``summarize()`` or ``aggregate()`` which operate on groups of rows.
+
+**Basic transformation with lambda functions**::
+
+    # Create a new column based on existing attributes
+    result = Q.nodes().compute("degree").mutate(
+        doubled_degree=lambda row: row.get("degree", 0) * 2
+    ).execute(network)
+
+**Multiple transformations**::
+
+    # Create several derived columns at once
+    result = Q.nodes().compute("degree", "clustering").mutate(
+        hub_score=lambda row: row.get("degree", 0) * row.get("clustering", 0),
+        is_hub=lambda row: row.get("degree", 0) > 2,
+        normalized_degree=lambda row: row.get("degree", 0) / 10.0
+    ).execute(network)
+
+**Conditional transformations**::
+
+    # Use conditional logic in transformations
+    result = Q.nodes().compute("degree").mutate(
+        category=lambda row: "hub" if row.get("degree", 0) > 3 else "peripheral"
+    ).execute(network)
+
+**Chaining with other operations**::
+
+    # Combine mutate with filtering and ordering
+    result = (
+        Q.nodes()
+         .where(layer="social")
+         .compute("degree", "betweenness_centrality")
+         .mutate(
+             influence=lambda row: (
+                 row.get("degree", 0) * 0.4 + 
+                 row.get("betweenness_centrality", 0) * 0.6
+             )
+         )
+         .order_by("-influence")
+         .limit(10)
+         .execute(network)
+    )
+
+The lambda function receives a dictionary with all available attributes for each node/edge,
+including computed metrics and network properties.
+
+.. seealso::
+   
+   For complete examples of mutate operations, see:
+   ``examples/network_analysis/example_dsl_mutate.py``
 
 Layer Algebra
 ~~~~~~~~~~~~~

@@ -233,6 +233,36 @@ Computing Metrics
     Q.nodes().compute("degree")
     Q.nodes().compute("degree", "betweenness_centrality")
 
+Row-wise Transformations (Mutate)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Create new columns or transform existing ones with row-by-row operations:
+
+.. code-block:: python
+
+    # Simple transformation
+    Q.nodes().compute("degree").mutate(
+        doubled=lambda row: row.get("degree", 0) * 2
+    )
+    
+    # Multiple transformations
+    Q.nodes().compute("degree", "clustering").mutate(
+        hub_score=lambda row: row.get("degree", 0) * row.get("clustering", 0),
+        is_hub=lambda row: row.get("degree", 0) > 2
+    )
+    
+    # Conditional transformation
+    Q.nodes().compute("degree").mutate(
+        category=lambda row: "hub" if row.get("degree", 0) > 3 else "peripheral"
+    )
+
+The lambda function receives a dictionary with all computed attributes and network properties
+for each node/edge. Use ``row.get(attr_name, default)`` to safely access attributes.
+
+.. note::
+   Use ``mutate()`` for row-by-row transformations. For group-level aggregations,
+   use ``summarize()`` or ``aggregate()`` instead.
+
 Sorting
 ~~~~~~~
 
@@ -266,8 +296,11 @@ All methods can be chained:
         Q.nodes()
          .from_layers(L["friends"])
          .where(degree__gt=5)
-         .compute("betweenness_centrality")
-         .order_by("-betweenness_centrality")
+         .compute("betweenness_centrality", "degree")
+         .mutate(
+             influence=lambda row: row.get("degree", 0) * row.get("betweenness_centrality", 0)
+         )
+         .order_by("-influence")
          .limit(10)
          .execute(network)
     )
