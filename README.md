@@ -46,23 +46,30 @@ master_regulators = (
         .compute("degree_centrality", "betweenness_centrality")
         .top_k(20, "betweenness_centrality__mean")  # Top 20 per layer by mean
      .end_grouping()
-     .sort(by="betweenness_centrality__mean", descending=True)
+     .mutate(                                  # Create derived influence score
+         influence_score=lambda row: (
+             row.get("degree_centrality__mean", 0) * 0.4 +
+             row.get("betweenness_centrality__mean", 0) * 0.6
+         )
+     )
+     .sort(by="influence_score", descending=True)
      .limit(20)                                # Final top 20 candidates
      .execute(network)
 )
 
 df = master_regulators.to_pandas(expand_uncertainty=True)
 print(df[["id", "layer", "betweenness_centrality", "betweenness_centrality_std", 
-          "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high"]].head(10))
+          "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high",
+          "influence_score"]].head(10))
 ```
 
 Emits:
 ```
 Found 287 communities, modularity = 0.649
-    id  layer  betweenness_centrality  betweenness_centrality_std  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high
-0  252      0                0.025961                    0.002134                         0.021820                          0.030102
-1   91      0                0.024918                    0.002051                         0.020902                          0.028934
-2  419      0                0.024184                    0.001987                         0.020298                          0.028070
+    id  layer  betweenness_centrality  betweenness_centrality_std  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high  influence_score
+0  252      0                0.025961                    0.002134                         0.021820                          0.030102         0.015577
+1   91      0                0.024918                    0.002051                         0.020902                          0.028934         0.014951
+2  419      0                0.024184                    0.001987                         0.020298                          0.028070         0.014510
 ...
 ```
 

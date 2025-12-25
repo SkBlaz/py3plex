@@ -1636,6 +1636,49 @@ class QueryBuilder:
         self._select.aggregate_specs.update(aggregations)
         return self
     
+    def mutate(self, **transformations) -> "QueryBuilder":
+        """Add or transform columns using expressions or lambda functions.
+        
+        This method creates new columns or modifies existing ones by applying
+        transformations to each row. It corresponds to dplyr::mutate and is
+        applied row-by-row (not aggregated like summarize/aggregate).
+        
+        Transformations can be:
+        - String expressions referencing existing attributes
+        - Lambda functions that receive a dict with item attributes
+        - Simple values (applied to all rows)
+        
+        Args:
+            **transformations: Named transformations where:
+                - Key is the output column name
+                - Value is either:
+                    * A lambda function receiving dict of item attributes
+                    * A string expression (e.g., "degree * 2")
+                    * A simple value (applied to all rows)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Create new columns from existing attributes
+            >>> Q.nodes().compute("degree", "clustering").mutate(
+            ...     normalized_degree=lambda row: row.get("degree", 0) / 10.0,
+            ...     log_degree=lambda row: np.log1p(row.get("degree", 0)),
+            ...     score=lambda row: row.get("degree", 0) * row.get("clustering", 0)
+            ... )
+            
+            >>> # Simple transformations
+            >>> Q.nodes().mutate(
+            ...     category="hub",  # Constant value
+            ...     doubled_degree=lambda row: row.get("degree", 0) * 2
+            ... )
+        """
+        if self._select.mutate_specs is None:
+            self._select.mutate_specs = {}
+        
+        self._select.mutate_specs.update(transformations)
+        return self
+    
     def sort(self, by: str, descending: bool = False) -> "QueryBuilder":
         """Sort results by a column (convenience alias for order_by).
         

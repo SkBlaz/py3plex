@@ -347,6 +347,7 @@ class SelectStmt:
         zscore_attrs: Optional list of attributes to compute z-scores for
         post_filters: Optional list of filter specifications to apply after computation
         aggregate_specs: Optional dict of name -> aggregation spec for aggregate()
+        mutate_specs: Optional dict of name -> transformation spec for mutate()
         autocompute: Whether to automatically compute missing metrics (default: True)
         uq_config: Optional query-scoped uncertainty quantification configuration
     """
@@ -377,6 +378,7 @@ class SelectStmt:
     zscore_attrs: Optional[List[str]] = None
     post_filters: Optional[List[Dict[str, Any]]] = None
     aggregate_specs: Optional[Dict[str, Any]] = None
+    mutate_specs: Optional[Dict[str, Any]] = None
     autocompute: bool = True
     uq_config: Optional['UQConfig'] = None
 

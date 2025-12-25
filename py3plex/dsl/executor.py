@@ -977,8 +977,8 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                 )
             items = _apply_ordering(items, select.order_by, attributes)
     
-    # Step 5.5: Apply post-processing operations (aggregate, summarize, rank, zscore, distinct, select, drop, rename)
-    if (select.aggregate_specs or select.summarize_aggs or select.rank_specs or select.zscore_attrs or 
+    # Step 5.5: Apply post-processing operations (aggregate, summarize, mutate, rank, zscore, distinct, select, drop, rename)
+    if (select.aggregate_specs or select.summarize_aggs or select.mutate_specs or select.rank_specs or select.zscore_attrs or 
         select.distinct_cols is not None or select.select_cols or 
         select.drop_cols or select.rename_map):
         items, attributes = _apply_post_processing(
@@ -1992,6 +1992,86 @@ def _apply_aggregate(
     return agg_items, agg_attrs
 
 
+def _apply_mutate(
+    items: List[Any],
+    attributes: Dict[str, Dict],
+    select: SelectStmt,
+    network: Any,
+    G: nx.Graph,
+) -> Dict[str, Dict]:
+    """Apply mutate operation - transform or create new columns row-by-row.
+    
+    Similar to dplyr::mutate, this operation creates new columns or modifies
+    existing ones by applying transformations to each row individually
+    (unlike aggregate/summarize which operate on groups).
+    
+    Args:
+        items: List of items (nodes or edges)
+        attributes: Computed attributes dict
+        select: SELECT statement with mutate_specs
+        network: Multilayer network
+        G: Core network graph
+        
+    Returns:
+        Updated attributes dict with new/modified columns
+    """
+    if not select.mutate_specs:
+        return attributes
+    
+    # Create new attribute columns
+    for new_col, transformation in select.mutate_specs.items():
+        attributes[new_col] = {}
+        
+        for item in items:
+            item_key = _get_item_key(item)
+            
+            # Build a row dict with all current attributes for this item
+            row = {}
+            for attr_name, attr_dict in attributes.items():
+                if item_key in attr_dict:
+                    row[attr_name] = attr_dict[item_key]
+            
+            # Add node/edge attributes from network if available
+            if select.target == Target.NODES:
+                if isinstance(item, tuple):
+                    node, layer = item
+                    node_attrs = G.nodes.get(item, {})
+                    row.update(node_attrs)
+                    row['id'] = node
+                    row['layer'] = layer
+                else:
+                    node_attrs = G.nodes.get(item, {})
+                    row.update(node_attrs)
+                    row['id'] = item
+            elif select.target == Target.EDGES:
+                if isinstance(item, tuple) and len(item) >= 2:
+                    edge_attrs = G.edges.get((item[0], item[1]), {}) if G.has_edge(item[0], item[1]) else {}
+                    row.update(edge_attrs)
+            
+            # Apply transformation
+            try:
+                if callable(transformation):
+                    # Lambda function
+                    result = transformation(row)
+                elif isinstance(transformation, str):
+                    # String expression - could be evaluated, but for safety
+                    # we'll just treat it as a reference to another column
+                    result = row.get(transformation)
+                else:
+                    # Constant value
+                    result = transformation
+            except Exception as e:
+                # If transformation fails, set to None
+                logging.getLogger(__name__).debug(
+                    f"Mutation failed for item {item_key}, column {new_col}: {e}"
+                )
+                result = None
+            
+            attributes[new_col][item_key] = result
+    
+    return attributes
+
+
 def _apply_post_processing(
     items: List[Any],
     attributes: Dict[str, Dict],
@@ -2001,17 +2081,18 @@ def _apply_post_processing(
 ) -> Tuple[List[Any], Dict[str, Dict]]:
     """Apply post-processing operations to query results.
     
-    Handles: aggregate, summarize, rank_by, zscore, distinct, rename, select, drop.
+    Handles: aggregate, summarize, mutate, rank_by, zscore, distinct, rename, select, drop.
     
     Operations are applied in this order:
     1. aggregate (create aggregated columns with lambda support)
     2. summarize (create aggregated columns)
-    3. rank_by (add rank columns)
-    4. zscore (add z-score columns)
-    5. distinct (deduplicate rows)
-    6. rename (rename columns - must be before select/drop)
-    7. select (filter columns)
-    8. drop (remove columns)
+    3. mutate (create or transform columns row-by-row)
+    4. rank_by (add rank columns)
+    5. zscore (add z-score columns)
+    6. distinct (deduplicate rows)
+    7. rename (rename columns - must be before select/drop)
+    8. select (filter columns)
+    9. drop (remove columns)
     
     Args:
         items: List of items (nodes or edges)
@@ -2031,27 +2112,31 @@ def _apply_post_processing(
     if select.summarize_aggs:
         items, attributes = _apply_summarize(items, attributes, select, network, G)
     
-    # 2. Apply rank_by (add rank columns)
+    # 2. Apply mutate (create or transform columns row-by-row)
+    if select.mutate_specs:
+        attributes = _apply_mutate(items, attributes, select, network, G)
+    
+    # 3. Apply rank_by (add rank columns)
     if select.rank_specs:
         attributes = _apply_rank_by(items, attributes, select, network, G)
     
-    # 3. Apply zscore (add z-score columns)
+    # 4. Apply zscore (add z-score columns)
     if select.zscore_attrs:
         attributes = _apply_zscore(items, attributes, select, network, G)
     
-    # 4. Apply distinct (deduplicate rows)
+    # 5. Apply distinct (deduplicate rows)
     if select.distinct_cols is not None:
         items = _apply_distinct(items, attributes, select)
     
-    # 5. Apply rename (rename columns - must be before select/drop)
+    # 6. Apply rename (rename columns - must be before select/drop)
     if select.rename_map:
         attributes = _apply_rename(attributes, select.rename_map)
     
-    # 6. Apply select (filter columns)
+    # 7. Apply select (filter columns)
     if select.select_cols:
         attributes = _apply_select(attributes, select.select_cols)
     
-    # 7. Apply drop (remove columns)
+    # 8. Apply drop (remove columns)
     if select.drop_cols:
         attributes = _apply_drop(attributes, select.drop_cols)
     
