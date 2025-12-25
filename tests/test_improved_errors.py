@@ -8,11 +8,19 @@ import pytest
 from pathlib import Path
 import tempfile
 
-from py3plex.exceptions import AlgorithmError, Py3plexIOError, Py3plexFormatError, Py3plexException
+from py3plex.exceptions import (
+    AlgorithmError, 
+    Py3plexIOError, 
+    Py3plexFormatError, 
+    Py3plexException, 
+    ParsingError,
+    NetworkConstructionError
+)
 from py3plex.paths.algorithms import PathRegistry
 from py3plex.centrality.robustness import robustness_centrality
 from py3plex.workflows import WorkflowConfig
 from py3plex.core import multinet
+from py3plex.temporal_utils import extract_edge_time
 
 
 class TestPathAlgorithmErrors:
@@ -158,6 +166,46 @@ class TestWorkflowConfigErrors:
             Path(temp_file).unlink()
 
 
+class TestTemporalUtilsErrors:
+    """Test improved error messages for temporal utilities."""
+
+    def test_invalid_time_value_provides_format_hints(self):
+        """Test that invalid time values provide format hints."""
+        with pytest.raises(ParsingError) as exc_info:
+            # Invalid time value in edge attributes
+            extract_edge_time({"t": [1, 2, 3]})  # List is not a valid time type
+        
+        error = exc_info.value
+        # Should provide suggestions about valid formats
+        assert len(error.suggestions) > 0
+        suggestions_text = " ".join(error.suggestions)
+        assert "timestamp" in suggestions_text.lower() or "datetime" in suggestions_text.lower()
+
+
+class TestAttributeCorrelationErrors:
+    """Test improved error messages for attribute correlation."""
+
+    def test_network_without_core_network_provides_helpful_message(self):
+        """Test that missing core_network error is helpful."""
+        # Create a mock network without core_network
+        class MockNetwork:
+            pass
+        
+        from py3plex.algorithms.attribute_correlation import correlate_attributes_with_centrality
+        
+        with pytest.raises(NetworkConstructionError) as exc_info:
+            correlate_attributes_with_centrality(
+                MockNetwork(), 
+                "some_attribute", 
+                centrality_type="degree"
+            )
+        
+        error = exc_info.value
+        # Should provide suggestions
+        assert len(error.suggestions) > 0
+        assert any("initialized" in s.lower() for s in error.suggestions)
+
+
 class TestErrorMessageFormatting:
     """Test that improved errors format nicely."""
 
@@ -188,3 +236,4 @@ class TestErrorMessageFormatting:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+

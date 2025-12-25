@@ -36,6 +36,8 @@ import datetime as _dt
 from dataclasses import dataclass
 from typing import Any, Optional, Union
 
+from py3plex.exceptions import ParsingError
+
 # Type alias for time-like values
 TimeLike = Union[int, float, str, _dt.datetime]
 
@@ -132,10 +134,28 @@ def _parse_time(value: TimeLike) -> float:
         except ValueError:
             pass
         
-        # If all else fails, raise error
-        raise ValueError(f"Cannot parse '{value}' as a time value")
+        # If all else fails, raise error with helpful suggestions
+        raise ParsingError(
+            f"Cannot parse time value '{value}'",
+            expected="numeric timestamp or ISO 8601 datetime string",
+            got=f"{type(value).__name__}: '{value}'",
+            suggestions=[
+                "Use numeric timestamps (e.g., 1234567890.0 for seconds since epoch)",
+                "Use ISO 8601 format strings (e.g., '2023-01-01T12:00:00')",
+                "Ensure datetime objects are properly formatted"
+            ]
+        )
     
-    raise ValueError(f"Unsupported time type: {type(value)}")
+    # Unsupported type
+    raise ParsingError(
+        f"Unsupported time value type: {type(value).__name__}",
+        expected="int, float, str, or datetime",
+        got=str(type(value)),
+        suggestions=[
+            "Convert your time value to one of: int, float, str (ISO 8601), or datetime",
+            f"Example: convert {type(value).__name__} to float timestamp"
+        ]
+    )
 
 
 def extract_edge_time(attrs: dict[str, Any]) -> EdgeTimeInterval:
