@@ -20,6 +20,7 @@ import networkx as nx
 
 from py3plex.core import multinet
 from py3plex.logging_config import get_logger
+from py3plex.exceptions import Py3plexIOError, Py3plexFormatError, AlgorithmError
 
 logger = get_logger(__name__)
 
@@ -66,13 +67,35 @@ class WorkflowConfig:
         config_path = Path(config_path)
 
         if not config_path.exists():
-            raise FileNotFoundError(f"Config file not found: {config_path}")
+            # Try to find similar files in the same directory
+            similar_files = []
+            if config_path.parent.exists():
+                similar_files = [
+                    str(f) for f in config_path.parent.glob("*.yaml")
+                ] + [
+                    str(f) for f in config_path.parent.glob("*.yml")
+                ] + [
+                    str(f) for f in config_path.parent.glob("*.json")
+                ]
+            
+            raise Py3plexIOError(
+                f"Configuration file not found: {config_path}",
+                suggestions=[
+                    "Check that the file path is correct",
+                    "Ensure the file exists and you have read permission"
+                ],
+                context={"similar_files": similar_files[:5] if similar_files else None}
+            )
 
         # Load based on file extension
         if config_path.suffix in [".yaml", ".yml"]:
             if not HAS_YAML:
-                raise ValueError(
-                    "YAML support not available. Install PyYAML: pip install pyyaml"
+                raise Py3plexFormatError(
+                    "YAML configuration files require PyYAML",
+                    suggestions=[
+                        "Install PyYAML: pip install pyyaml",
+                        "Alternatively, convert your config to JSON format"
+                    ]
                 )
             with open(config_path) as f:
                 config_dict = yaml.safe_load(f)
@@ -80,9 +103,10 @@ class WorkflowConfig:
             with open(config_path) as f:
                 config_dict = json.load(f)
         else:
-            raise ValueError(
-                f"Unsupported config format: {config_path.suffix}. "
-                "Use .yaml, .yml, or .json"
+            raise Py3plexFormatError(
+                f"Unsupported configuration file format: {config_path.suffix}",
+                valid_formats=[".yaml", ".yml", ".json"],
+                input_format=config_path.suffix
             )
 
         return cls(config_dict)
@@ -258,7 +282,16 @@ class WorkflowRunner:
                     network.add_edges(edges_dict, input_type="dict")
 
         else:
-            raise ValueError(f"Unknown generator: {generator}")
+            valid_generators = ["random"]
+            raise Py3plexFormatError(
+                f"Unknown network generator: '{generator}'",
+                valid_formats=valid_generators,
+                input_format=generator,
+                suggestions=[
+                    "Use 'random' generator for Erdős-Rényi multilayer networks",
+                    "Check the documentation for available generators"
+                ]
+            )
 
         return network
 
@@ -316,7 +349,16 @@ class WorkflowRunner:
         elif op_type == "convert":
             return self._convert(network, params)
         else:
-            raise ValueError(f"Unknown operation type: {op_type}")
+            valid_operations = ["stats", "community", "centrality", "visualize", "aggregate", "convert"]
+            from py3plex.errors import find_similar
+            did_you_mean = find_similar(op_type, valid_operations)
+            raise Py3plexFormatError(
+                f"Unknown workflow operation type: '{op_type}'",
+                valid_formats=valid_operations,
+                input_format=op_type,
+                suggestions=[f"Valid operations: {', '.join(valid_operations)}"],
+                did_you_mean=did_you_mean
+            )
 
     def _compute_stats(
         self, network: multinet.multi_layer_network, params: Dict[str, Any]
@@ -355,7 +397,16 @@ class WorkflowRunner:
             partition = community_wrapper.louvain_communities(G)
             communities = {str(node): int(comm) for node, comm in partition.items()}
         else:
-            raise ValueError(f"Unsupported algorithm: {algorithm}")
+            valid_algorithms = ["louvain"]
+            raise AlgorithmError(
+                f"Community detection algorithm '{algorithm}' is not available",
+                algorithm_name=algorithm,
+                valid_algorithms=valid_algorithms,
+                suggestions=[
+                    "Use 'louvain' for fast modularity-based community detection",
+                    "Check available algorithms in py3plex.algorithms.community_detection"
+                ]
+            )
 
         num_communities = len(set(communities.values()))
 
@@ -384,7 +435,21 @@ class WorkflowRunner:
         elif measure == "closeness":
             centrality = nx.closeness_centrality(G)
         else:
-            raise ValueError(f"Unsupported measure: {measure}")
+            valid_measures = ["degree", "betweenness", "closeness"]
+            from py3plex.errors import find_similar
+            did_you_mean = find_similar(measure, valid_measures)
+            raise AlgorithmError(
+                f"Centrality measure '{measure}' is not available",
+                algorithm_name=measure,
+                valid_algorithms=valid_measures,
+                suggestions=[
+                    f"Valid measures: {', '.join(valid_measures)}",
+                    "Use 'degree' for local connectivity",
+                    "Use 'betweenness' for bridge nodes",
+                    "Use 'closeness' for nodes close to all others"
+                ],
+                did_you_mean=did_you_mean
+            )
 
         centrality_data = {
             str(node): float(score) for node, score in centrality.items()
@@ -449,7 +514,17 @@ class WorkflowRunner:
             with open(output_path, "w") as f:
                 json.dump(data, f, indent=2)
         else:
-            raise ValueError(f"Unsupported output format: {output_path.suffix}")
+            valid_formats = [".graphml", ".gexf", ".gml", ".edgelist", ".json"]
+            raise Py3plexFormatError(
+                f"Unsupported output format: {output_path.suffix}",
+                valid_formats=valid_formats,
+                input_format=output_path.suffix,
+                suggestions=[
+                    "Use .graphml for rich network data with attributes",
+                    "Use .json for simple edge lists",
+                    "Use .edgelist for plain text format"
+                ]
+            )
 
         return str(output_path)
 
@@ -496,7 +571,15 @@ class WorkflowRunner:
             logger.error("Configuration validation failed:")
             for error in errors:
                 logger.error(f"  - {error}")
-            raise ValueError("Invalid configuration")
+            raise Py3plexFormatError(
+                "Workflow configuration validation failed",
+                suggestions=[
+                    "Check the configuration file for missing required fields",
+                    "Ensure all dataset and operation specifications are complete",
+                    f"Found {len(errors)} validation error(s) - see log for details"
+                ],
+                notes=errors[:3]  # Include first 3 errors as notes
+            )
 
         # Execute workflow steps
         try:

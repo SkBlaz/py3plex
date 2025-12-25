@@ -12,6 +12,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 from collections import defaultdict
 
+from py3plex.exceptions import AlgorithmError, NetworkConstructionError
+
 try:
     from scipy.stats import pearsonr, spearmanr, kendalltau
     SCIPY_AVAILABLE = True
@@ -54,13 +56,21 @@ def correlate_attributes_with_centrality(
         raise ImportError("scipy is required for correlation analysis")
     
     if not hasattr(network, 'core_network') or network.core_network is None:
-        raise ValueError("Network has no core_network")
+        raise NetworkConstructionError(
+            "Network object has no core_network attribute",
+            suggestions=[
+                "Ensure the network has been properly initialized",
+                "Add edges to the network before computing correlations",
+                "Check that the network object is a valid multilayer network"
+            ]
+        )
     
     import networkx as nx
     
     G = network.core_network
     
     # Compute centrality
+    valid_centrality_types = ["degree", "betweenness", "closeness", "eigenvector"]
     if centrality_type == "degree":
         centrality = dict(G.degree())
     elif centrality_type == "betweenness":
@@ -73,7 +83,20 @@ def correlate_attributes_with_centrality(
         except:
             centrality = dict(G.degree())  # Fallback
     else:
-        raise ValueError(f"Unknown centrality type: {centrality_type}")
+        from py3plex.errors import find_similar
+        did_you_mean = find_similar(centrality_type, valid_centrality_types)
+        raise AlgorithmError(
+            f"Centrality type '{centrality_type}' is not recognized",
+            algorithm_name=centrality_type,
+            valid_algorithms=valid_centrality_types,
+            suggestions=[
+                f"Valid centrality types: {', '.join(valid_centrality_types)}",
+                "Use 'degree' for node connectivity",
+                "Use 'betweenness' for bridge nodes",
+                "Use 'closeness' for central nodes"
+            ],
+            did_you_mean=did_you_mean
+        )
     
     # Extract node attributes
     node_attrs = nx.get_node_attributes(G, attribute_name)
@@ -149,7 +172,13 @@ def correlate_attributes_across_layers(
         raise ImportError("scipy is required for correlation analysis")
     
     if not hasattr(network, 'core_network') or network.core_network is None:
-        raise ValueError("Network has no core_network")
+        raise NetworkConstructionError(
+            "Network object has no core_network attribute",
+            suggestions=[
+                "Ensure the network has been properly initialized",
+                "Add edges to the network before analysis"
+            ]
+        )
     
     import networkx as nx
     
@@ -210,13 +239,20 @@ def attribute_structural_contingency(
         >>> print(f"Chi-square: {result['chi2']}, p-value: {result['p_value']}")
     """
     if not hasattr(network, 'core_network') or network.core_network is None:
-        raise ValueError("Network has no core_network")
+        raise NetworkConstructionError(
+            "Network object has no core_network attribute",
+            suggestions=[
+                "Ensure the network has been properly initialized",
+                "Add edges to the network before analysis"
+            ]
+        )
     
     import networkx as nx
     
     G = network.core_network
     
     # Get structural property
+    valid_properties = ["degree", "betweenness", "closeness"]
     if structural_property == "degree":
         struct_values = dict(G.degree())
     elif structural_property == "betweenness":
@@ -224,7 +260,14 @@ def attribute_structural_contingency(
     elif structural_property == "closeness":
         struct_values = nx.closeness_centrality(G)
     else:
-        raise ValueError(f"Unknown structural property: {structural_property}")
+        from py3plex.errors import find_similar
+        did_you_mean = find_similar(structural_property, valid_properties)
+        raise AlgorithmError(
+            f"Structural property '{structural_property}' is not recognized",
+            algorithm_name=structural_property,
+            valid_algorithms=valid_properties,
+            did_you_mean=did_you_mean
+        )
     
     # Get node attributes
     node_attrs = nx.get_node_attributes(G, attribute_name)
@@ -284,6 +327,7 @@ def _compute_correlation(x: np.ndarray, y: np.ndarray, method: str) -> Tuple[flo
     Returns:
         Tuple of (correlation, p-value)
     """
+    valid_methods = ["pearson", "spearman", "kendall"]
     if method == "pearson":
         return pearsonr(x, y)
     elif method == "spearman":
@@ -291,7 +335,19 @@ def _compute_correlation(x: np.ndarray, y: np.ndarray, method: str) -> Tuple[flo
     elif method == "kendall":
         return kendalltau(x, y)
     else:
-        raise ValueError(f"Unknown correlation method: {method}")
+        from py3plex.errors import find_similar
+        did_you_mean = find_similar(method, valid_methods)
+        raise AlgorithmError(
+            f"Correlation method '{method}' is not recognized",
+            algorithm_name=method,
+            valid_algorithms=valid_methods,
+            suggestions=[
+                "Use 'pearson' for linear correlations",
+                "Use 'spearman' for monotonic correlations",
+                "Use 'kendall' for rank correlations"
+            ],
+            did_you_mean=did_you_mean
+        )
 
 
 def multilayer_assortativity(
@@ -316,7 +372,13 @@ def multilayer_assortativity(
           Physical Review Letters, 89(20), 208701.
     """
     if not hasattr(network, 'core_network') or network.core_network is None:
-        raise ValueError("Network has no core_network")
+        raise NetworkConstructionError(
+            "Network object has no core_network attribute",
+            suggestions=[
+                "Ensure the network has been properly initialized",
+                "Add edges to the network before analysis"
+            ]
+        )
     
     import networkx as nx
     

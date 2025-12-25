@@ -9,6 +9,8 @@ import random
 from collections import defaultdict
 import networkx as nx
 
+from py3plex.exceptions import AlgorithmError
+
 
 class PathRegistry:
     """Registry for path algorithms.
@@ -47,11 +49,14 @@ class PathRegistry:
             The algorithm function
             
         Raises:
-            ValueError: If algorithm is not found
+            AlgorithmError: If algorithm is not found
         """
         if name not in self._algorithms:
-            known = ", ".join(sorted(self._algorithms.keys()))
-            raise ValueError(f"Unknown path algorithm '{name}'. Known: {known}")
+            raise AlgorithmError(
+                f"Path algorithm '{name}' is not registered",
+                algorithm_name=name,
+                valid_algorithms=list(self._algorithms.keys()),
+            )
         return self._algorithms[name]
     
     def has(self, name: str) -> bool:
