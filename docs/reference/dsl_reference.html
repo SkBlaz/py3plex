@@ -105,6 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#id1">Layer Selection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filtering">Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#computing-metrics">Computing Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#row-wise-transformations-mutate">Row-wise Transformations (Mutate)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sorting">Sorting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#limiting">Limiting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#execution">Execution</a></li>
@@ -402,6 +403,34 @@ string parsing, named groups, and real-world examples, see:
 </pre></div>
 </div>
 </section>
+<section id="row-wise-transformations-mutate">
+<h3>Row-wise Transformations (Mutate)<a class="headerlink" href="#row-wise-transformations-mutate" title="Link to this heading"></a></h3>
+<p>Create new columns or transform existing ones with row-by-row operations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple transformation</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+    <span class="n">doubled</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="p">)</span>
+
+<span class="c1"># Multiple transformations</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+    <span class="n">hub_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;clustering&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">is_hub</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span>
+<span class="p">)</span>
+
+<span class="c1"># Conditional transformation</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+    <span class="n">category</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="s2">&quot;hub&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="s2">&quot;peripheral&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The lambda function receives a dictionary with all computed attributes and network properties
+for each node/edge. Use <code class="docutils literal notranslate"><span class="pre">row.get(attr_name,</span> <span class="pre">default)</span></code> to safely access attributes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> for row-by-row transformations. For group-level aggregations,
+use <code class="docutils literal notranslate"><span class="pre">summarize()</span></code> or <code class="docutils literal notranslate"><span class="pre">aggregate()</span></code> instead.</p>
+</div>
+</section>
 <section id="sorting">
 <h3>Sorting<a class="headerlink" href="#sorting" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>           <span class="c1"># Ascending</span>
@@ -428,8 +457,11 @@ string parsing, named groups, and real-world examples, see:
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+         <span class="n">influence</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-influence&quot;</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
