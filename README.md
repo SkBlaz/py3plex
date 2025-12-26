@@ -46,6 +46,7 @@ master_regulators = (
         .compute("degree_centrality", "betweenness_centrality")
         .top_k(20, "betweenness_centrality__mean")  # Top 20 per layer by mean
      .end_grouping()
+     .coverage(mode="at_least", k=2)           # Keep genes that are hubs in ≥2 layers
      .mutate(                                  # Create derived influence score
          influence_score=lambda row: (
              row.get("degree_centrality__mean", 0) * 0.4 +
@@ -72,6 +73,16 @@ Found 287 communities, modularity = 0.649
 2  419      0                0.024184                    0.001987                         0.020298                          0.028070         0.014510
 ...
 ```
+
+**Note:** The `.coverage(mode="at_least", k=2)` operator filters nodes to keep only those that appear in the top-20 of at least 2 layers, ensuring we find *robust* master regulators that are consistently important across the multilayer structure. Other useful DSL operators include:
+- `.distinct()` - Remove duplicate rows
+- `.select()` / `.drop()` - Column selection/removal
+- `.rename()` - Rename columns
+- `.zscore()` - Compute z-scores for normalization
+- `.rank_by()` - Add ranking columns
+- `.summarize()` / `.aggregate()` - Compute summary statistics
+- `.coverage(mode="all")` - Keep only nodes appearing in *all* layers
+- `.coverage(mode="fraction", p=0.67)` - Keep nodes in at least 67% of layers
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
