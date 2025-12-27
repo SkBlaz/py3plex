@@ -74,15 +74,7 @@ Found 287 communities, modularity = 0.649
 ...
 ```
 
-**Note:** The `.coverage(mode="at_least", k=2)` operator filters nodes to keep only those that appear in the top-20 of at least 2 layers, ensuring we find *robust* master regulators that are consistently important across the multilayer structure. Other useful DSL operators include:
-- `.distinct()` - Remove duplicate rows
-- `.select()` / `.drop()` - Column selection/removal
-- `.rename()` - Rename columns
-- `.zscore()` - Compute z-scores for normalization
-- `.rank_by()` - Add ranking columns
-- `.summarize()` / `.aggregate()` - Compute summary statistics
-- `.coverage(mode="all")` - Keep only nodes appearing in *all* layers
-- `.coverage(mode="fraction", p=0.67)` - Keep nodes in at least 67% of layers
+**Note:** The `.coverage(mode="at_least", k=2)` operator filters nodes to keep only those that appear in the top-20 of at least 2 layers, ensuring we find *robust* master regulators that are consistently important across the multilayer structure.
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
