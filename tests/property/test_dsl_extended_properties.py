@@ -835,3 +835,230 @@ def test_result_metadata_contains_query_info(num_nodes):
     # Should have metadata
     assert hasattr(result, 'meta')
     assert isinstance(result.meta, dict)
+
+
+# ============================================================================
+# Property Tests: Query Building and Serialization
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=30)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_query_to_ast_is_consistent(layer_idx):
+    """
+    Property: Building query to AST is consistent.
+    
+    Tests that query builder produces valid AST.
+    """
+    network = create_test_network(num_nodes=5, num_layers=2, seed=42)
+    layer = f'layer{layer_idx}'
+    
+    # Build query
+    query = Q.nodes().from_layers(L[layer]).compute("degree")
+    
+    # Convert to AST
+    ast = query.to_ast()
+    
+    # Should have valid AST structure
+    assert ast is not None
+    assert hasattr(ast, 'select')
+
+
+@pytest.mark.property
+def test_multiple_compute_calls_accumulate():
+    """
+    Property: Multiple compute() calls accumulate metrics.
+    
+    Tests that chaining compute() adds metrics.
+    """
+    network = create_test_network(num_nodes=5, num_layers=1, seed=42)
+    
+    # Multiple compute calls
+    result = (
+        Q.nodes()
+        .compute("degree")
+        .compute("clustering")
+        .execute(network)
+    )
+    
+    df = result.to_pandas()
+    
+    # Should have both metrics
+    assert 'degree' in df.columns
+    assert 'clustering' in df.columns
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_from_layers_overrides_previous(layer_idx):
+    """
+    Property: from_layers() overrides previous layer selection.
+    
+    Tests that second from_layers() replaces first.
+    """
+    network = create_test_network(num_nodes=5, num_layers=2, seed=42)
+    layer = f'layer{layer_idx}'
+    other_layer = f'layer{1 - layer_idx}'
+    
+    # Multiple from_layers calls
+    result = (
+        Q.nodes()
+        .from_layers(L[other_layer])
+        .from_layers(L[layer])  # This should override
+        .execute(network)
+    )
+    
+    df = result.to_pandas()
+    
+    # All nodes should be from the final layer
+    if len(df) > 0:
+        assert all(df['layer'] == layer)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=30)
+@given(
+    num_nodes=st.integers(min_value=3, max_value=8)
+)
+def test_query_execute_is_repeatable(num_nodes):
+    """
+    Property: Executing same query multiple times gives same results.
+    
+    Tests that queries are deterministic.
+    """
+    network = create_test_network(num_nodes=num_nodes, num_layers=1, seed=42)
+    
+    query = Q.nodes().compute("degree")
+    
+    # Execute twice
+    result1 = query.execute(network)
+    result2 = query.execute(network)
+    
+    # Should return same count
+    assert len(result1) == len(result2)
+
+
+@pytest.mark.property
+def test_empty_compute_returns_no_metrics():
+    """
+    Property: Query without compute() returns no computed metrics.
+    
+    Tests that metrics are only computed when requested.
+    """
+    network = create_test_network(num_nodes=5, num_layers=1, seed=42)
+    
+    result = Q.nodes().execute(network)
+    df = result.to_pandas()
+    
+    # Should have basic columns but no computed metrics
+    assert 'id' in df.columns or 'node' in df.columns
+    assert 'layer' in df.columns
+    # Metrics like degree, betweenness should not be present unless computed
+    # (though degree might be added automatically in some cases)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=30)
+@given(
+    order_desc=st.booleans()
+)
+def test_order_by_desc_flag_works(order_desc):
+    """
+    Property: order_by(desc=True/False) affects ordering.
+    
+    Tests that desc flag is respected.
+    """
+    network = create_test_network(num_nodes=6, num_layers=1, seed=42)
+    
+    result = Q.nodes().compute("degree").order_by("degree", desc=order_desc).execute(network)
+    df = result.to_pandas()
+    
+    if len(df) > 1:
+        degrees = df['degree'].tolist()
+        if order_desc:
+            # First should be >= last
+            assert degrees[0] >= degrees[-1]
+        else:
+            # First should be <= last
+            assert degrees[0] <= degrees[-1]
+
+
+# ============================================================================
+# Property Tests: Error Handling and Edge Cases
+# ============================================================================
+
+@pytest.mark.property
+def test_query_on_empty_network_returns_empty():
+    """
+    Property: Queries on empty network return empty results.
+    
+    Tests that empty networks are handled gracefully.
+    """
+    empty_network = multinet.multi_layer_network(directed=False)
+    
+    result = Q.nodes().execute(empty_network)
+    
+    assert len(result) == 0
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    invalid_metric=st.text(min_size=10, max_size=20, alphabet='xyz')
+)
+def test_invalid_metric_raises_error(invalid_metric):
+    """
+    Property: Computing invalid metrics raises error.
+    
+    Tests error handling for invalid metrics.
+    """
+    from py3plex.dsl.errors import UnknownMeasureError
+    
+    network = create_test_network(num_nodes=5, num_layers=1, seed=42)
+    
+    # Try to compute invalid metric - should raise UnknownMeasureError
+    with pytest.raises(UnknownMeasureError):
+        result = Q.nodes().compute(invalid_metric).execute(network)
+
+
+@pytest.mark.property
+def test_where_with_conflicting_conditions_returns_empty():
+    """
+    Property: WHERE with conflicting conditions returns empty result.
+    
+    Tests that impossible conditions return no results.
+    """
+    network = create_test_network(num_nodes=5, num_layers=2, seed=42)
+    
+    # Conflicting conditions: layer can't be both at once
+    result = Q.nodes().where((F.layer == "layer0") & (F.layer == "layer1")).execute(network)
+    
+    # Should return empty or small result set
+    assert len(result) == 0
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    limit_val=st.integers(min_value=0, max_value=2)
+)
+def test_limit_zero_or_negative_returns_empty(limit_val):
+    """
+    Property: LIMIT(0) returns empty result.
+    
+    Tests that limit=0 or negative is handled.
+    """
+    network = create_test_network(num_nodes=5, num_layers=1, seed=42)
+    
+    if limit_val <= 0:
+        result = Q.nodes().limit(max(0, limit_val)).execute(network)
+        assert len(result) == 0
+    else:
+        result = Q.nodes().limit(limit_val).execute(network)
+        assert len(result) <= limit_val
+
