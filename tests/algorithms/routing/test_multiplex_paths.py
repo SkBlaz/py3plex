@@ -311,14 +311,16 @@ class TestEdgeCases:
     
     def test_same_source_target(self, simple_multiplex):
         """Test routing from node to itself."""
-        # This should find a trivial path (the node in some layer)
         result = multiplex_shortest_path(
             simple_multiplex, 'A', 'A', switch_cost=1.0
         )
         
-        # Behavior: might return empty path or single-node path
-        # Both are acceptable
-        assert result['success'] is True or result['path'] == []
+        # Should find a trivial path (single node in one layer)
+        assert result['success'] is True
+        assert len(result['path']) == 1
+        assert result['path'][0][0] == 'A'
+        assert result['total_distance'] == 0.0
+        assert result['num_switches'] == 0
     
     def test_invalid_objective(self, simple_multiplex):
         """Test error handling for invalid objective parameter."""

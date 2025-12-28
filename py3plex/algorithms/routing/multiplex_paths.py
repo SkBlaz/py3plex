@@ -614,7 +614,7 @@ def multiplex_shortest_path(
             valid_algorithms=valid_objectives
         )
     
-    valid_methods = ["dijkstra", "astar", "multiobjective"]
+    valid_methods = ["dijkstra", "multiobjective"]
     if method not in valid_methods:
         raise AlgorithmError(
             f"Invalid method '{method}'",
