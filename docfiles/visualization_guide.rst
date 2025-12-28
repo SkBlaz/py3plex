@@ -228,6 +228,79 @@ Arranges layers in a grid. Good for many layers or hierarchical structures.
 - Time-series data
 - Wide figures
 
+Pymnet Style Visualization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Inspired by the pymnet library, this visualization style displays multilayer networks
+with layers stacked vertically and shared node positions across all layers.
+
+.. code-block:: python
+
+    from py3plex.visualization.pymnet_style import draw_multilayer_pymnet
+    
+    # Draw pymnet style visualization
+    fig, ax, handles, positions = draw_multilayer_pymnet(
+        network,                    # py3plex network or dict of NetworkX graphs
+        layout="spring",            # Layout algorithm
+        seed=42,                    # Random seed for deterministic output
+        layer_gap=2.5,              # Vertical spacing between layers
+        node_size=150,              # Node size
+        show_node_labels=True,      # Display node labels
+        show_layer_labels=True,     # Display layer names
+        node_color_by="layer",      # Color nodes by layer
+        figsize=(10, 6)             # Figure size
+    )
+    
+    # Save outputs
+    fig.savefig("multilayer_pymnet.png", dpi=150, bbox_inches='tight')
+    fig.savefig("multilayer_pymnet.svg", bbox_inches='tight')
+
+**Key features:**
+
+- **Deterministic layouts**: Use ``seed`` parameter for reproducible visualizations
+- **Multiple input formats**: Accepts py3plex networks, NetworkX graphs, edge lists
+- **Shared positions**: Nodes appear at the same X,Y coordinates across all layers
+- **Clear layer separation**: Layers are stacked with configurable vertical spacing
+- **Flexible styling**: Customize node colors, edge transparency, and layout algorithms
+
+**Supported layout algorithms:**
+
+- ``"spring"``: Force-directed layout (default)
+- ``"kamada_kawai"``: Kamada-Kawai layout
+- ``"circular"``: Circular layout
+- ``"spectral"``: Spectral layout
+- Custom callable: ``layout=my_layout_func``
+
+**Node coloring options:**
+
+.. code-block:: python
+
+    # Color by layer (default)
+    draw_multilayer_pymnet(network, node_color_by="layer")
+    
+    # Color by degree
+    draw_multilayer_pymnet(network, node_color_by="degree")
+    
+    # Custom coloring function
+    def custom_color(node, layer):
+        return 'red' if layer == 'social' else 'blue'
+    
+    draw_multilayer_pymnet(network, node_color_by=custom_color)
+
+**Best for:**
+
+- Publication-quality figures
+- Reproducible research (deterministic layouts)
+- Comparative visualization across layers
+- Multiplex networks with identical nodes in each layer
+
+**Reference:**
+
+  Pymnet library: https://github.com/bolozna/Multilayer-networks-library
+  
+  Kivelä, M., et al. (2014). Multilayer networks. 
+  Journal of complex networks, 2(3), 203-271.
+
 Auto-Scaling Features
 ---------------------
 
