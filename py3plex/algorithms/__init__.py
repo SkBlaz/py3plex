@@ -11,6 +11,9 @@ from .multilayer_clustering import multilayer_clustering
 # Centrality explanation module
 from . import centrality
 
+# Routing algorithms
+from . import routing
+
 # SIR epidemic simulator (requires numpy and scipy)
 try:
     from .sir_multiplex import (
@@ -46,4 +49,5 @@ __all__ = [
     "summarize",
     "EpidemicResult",
     "centrality",
+    "routing",
 ]
