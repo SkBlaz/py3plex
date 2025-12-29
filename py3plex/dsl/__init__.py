@@ -7,12 +7,13 @@ analyzing multilayer networks. DSL v2 introduces:
 2. Pythonic builder API (Q, L, Param)
 3. Multilayer-specific abstractions (layer algebra, intralayer/interlayer)
 4. Improved ergonomics (ORDER BY, LIMIT, EXPLAIN, rich results)
+5. Optional progress logging for debugging and monitoring
 
 DSL Extensions (v2.1):
-5. Network comparison (C.compare())
-6. Null models (N.model())
-7. Path queries (P.shortest(), P.random_walk())
-8. Plugin system for user-defined operators (@dsl_operator)
+6. Network comparison (C.compare())
+7. Null models (N.model())
+8. Path queries (P.shortest(), P.random_walk())
+9. Plugin system for user-defined operators (@dsl_operator)
 
 Example Usage:
     >>> from py3plex.dsl import Q, L, Param, C, N, P
@@ -30,6 +31,9 @@ Example Usage:
     >>> # Execute the query
     >>> result = q.execute(network, k=5)  # doctest: +SKIP
     >>> df = result.to_pandas()  # doctest: +SKIP
+    >>>
+    >>> # Execute with progress logging
+    >>> result = q.execute(network, progress=True)  # doctest: +SKIP
     >>>
     >>> # Compare two networks
     >>> comparison = C.compare("baseline", "treatment").using("multiplex_jaccard").execute(networks)  # doctest: +SKIP
