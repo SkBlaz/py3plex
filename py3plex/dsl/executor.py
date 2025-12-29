@@ -133,7 +133,7 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     # Step 2: Check for EXPLAIN mode
     if bound_query.explain:
         if progress:
-            logger.info("Building execution plan (EXPLAIN mode)")
+            logger.info("Step 2: Building execution plan (EXPLAIN mode)")
         return _build_execution_plan(network, bound_query)
     
     # Step 3: Check for windowed query
@@ -145,7 +145,7 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     
     # Step 4: Wrap network in temporal view if needed
     if progress:
-        logger.info("Step 2: Applying temporal context")
+        logger.info("Step 2: Applying temporal context (if needed)")
     actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
     
     # Step 5: Execute SELECT statement (pass params for dynamic resolution)
