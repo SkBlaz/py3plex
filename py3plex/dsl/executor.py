@@ -1010,8 +1010,9 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             G=G,
             attributes=attributes,
         )
-        if progress and grouping_metadata:
-            logger.info(f"Grouped into {len(grouping_metadata.get('groups', []))} group(s)")
+        if progress and grouping_metadata is not None:
+            num_groups = len(grouping_metadata.get('groups', []))
+            logger.info(f"Grouped into {num_groups} group(s)")
         # Skip global ORDER BY when grouping is used (ordering is per-group)
     else:
         # Step 5: Apply global ORDER BY (only when not grouping and not already ordered)
