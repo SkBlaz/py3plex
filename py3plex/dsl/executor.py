@@ -264,7 +264,7 @@ def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[st
         # Apply temporal context if specified
         actual_window_net = _apply_temporal_context(window_net, window_select.temporal_context)
         
-        # Execute on this window
+        # Execute on this window (suppress sub-query progress to avoid clutter)
         window_result = _execute_select(actual_window_net, window_select, params, progress=False)
         
         # Add window metadata
@@ -1010,7 +1010,7 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             G=G,
             attributes=attributes,
         )
-        if progress:
+        if progress and grouping_metadata:
             logger.info(f"Grouped into {len(grouping_metadata.get('groups', []))} group(s)")
         # Skip global ORDER BY when grouping is used (ordering is per-group)
     else:
