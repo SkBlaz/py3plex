@@ -496,3 +496,150 @@ class TestIntegration:
         assert result['success'] is True
         assert result['path'][0][0] == 'A'
         assert result['path'][-1][0] == 'C'
+
+
+# ============================================================================
+# Additional Corner Case Tests
+# ============================================================================
+
+
+class TestAdditionalCornerCases:
+    """Additional corner case tests for routing."""
+    
+    def test_single_layer_no_switches(self):
+        """Test that single-layer network never requires switches."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        edges = [
+            ['A', 'L1', 'B', 'L1', 1.0],
+            ['B', 'L1', 'C', 'L1', 2.0],
+            ['C', 'L1', 'D', 'L1', 1.5],
+        ]
+        net.add_edges(edges, input_type="list")
+        
+        # Test with various switch costs
+        for switch_cost in [0.0, 1.0, 100.0]:
+            result = multiplex_shortest_path(net, 'A', 'D', switch_cost=switch_cost)
+            assert result['success'] is True
+            assert result['num_switches'] == 0, f"Single layer should have 0 switches (got {result['num_switches']})"
+            assert len(result['layers_visited']) == 1
+    
+    def test_single_edge_network(self):
+        """Test routing on minimal network with single edge."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        edges = [['A', 'L1', 'B', 'L1', 2.5]]
+        net.add_edges(edges, input_type="list")
+        
+        result = multiplex_shortest_path(net, 'A', 'B', switch_cost=1.0)
+        
+        assert result['success'] is True
+        assert result['total_distance'] == 2.5
+        assert result['num_switches'] == 0
+        assert len(result['path']) == 2
+    
+    def test_isolated_node_in_layer(self):
+        """Test with node that exists in one layer but is isolated in another."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        edges = [
+            # L1: A -- B -- C
+            ['A', 'L1', 'B', 'L1', 1.0],
+            ['B', 'L1', 'C', 'L1', 1.0],
+            # L2: A and C exist but are not connected
+        ]
+        net.add_edges(edges, input_type="list")
+        
+        # Add isolated nodes in L2 by creating self-referencing structure
+        net.add_edges([['A', 'L2', 'A', 'L2', 0.0]], input_type="list")
+        net.add_edges([['C', 'L2', 'C', 'L2', 0.0]], input_type="list")
+        
+        # Should still find path through L1
+        result = multiplex_shortest_path(net, 'A', 'C', switch_cost=0.5)
+        assert result['success'] is True
+        assert 'L1' in result['layers_visited']
+    
+    def test_parallel_edges_different_layers(self):
+        """Test routing with parallel edges in different layers."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        edges = [
+            ['A', 'L1', 'B', 'L1', 5.0],  # Expensive in L1
+            ['A', 'L2', 'B', 'L2', 1.0],  # Cheap in L2
+        ]
+        net.add_edges(edges, input_type="list")
+        
+        # With zero switch cost, should choose L2
+        result = multiplex_shortest_path(net, 'A', 'B', switch_cost=0.0)
+        assert result['success'] is True
+        assert result['total_distance'] == 1.0
+        
+        # With high switch cost, may choose either but L2 should still be better
+        result_high = multiplex_shortest_path(net, 'A', 'B', switch_cost=100.0)
+        assert result_high['success'] is True
+        # Should use L2 directly (1.0) vs L1 directly (5.0)
+        assert result_high['total_distance'] == 1.0
+    
+    def test_star_topology_single_layer(self):
+        """Test routing on star topology (single hub node)."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        edges = [
+            ['hub', 'L1', 'A', 'L1', 1.0],
+            ['hub', 'L1', 'B', 'L1', 1.0],
+            ['hub', 'L1', 'C', 'L1', 1.0],
+        ]
+        net.add_edges(edges, input_type="list")
+        
+        # Route from A to C through hub
+        result = multiplex_shortest_path(net, 'A', 'C', switch_cost=1.0)
+        
+        assert result['success'] is True
+        assert result['total_distance'] == 2.0  # A -> hub -> C
+        assert result['num_switches'] == 0
+        assert result['path'][1][0] == 'hub'  # Goes through hub
+    
+    def test_empty_switch_cost_matrix(self):
+        """Test with empty switch cost matrix falls back to scalar."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        edges = [
+            ['A', 'L1', 'B', 'L1', 1.0],
+            ['B', 'L2', 'C', 'L2', 1.0],
+        ]
+        net.add_edges(edges, input_type="list")
+        
+        result = multiplex_shortest_path(
+            net, 'A', 'C',
+            switch_cost=2.0,
+            switch_cost_matrix={}  # Empty matrix
+        )
+        
+        assert result['success'] is True
+        # Should use scalar cost: 1.0 + 2.0 + 1.0 = 4.0
+        assert abs(result['total_distance'] - 4.0) < 0.01
+    
+    def test_chain_requires_all_layers(self):
+        """Test path that must traverse all layers in sequence."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        edges = [
+            ['A', 'L1', 'B', 'L1', 1.0],
+            ['B', 'L2', 'C', 'L2', 1.0],
+            ['C', 'L3', 'D', 'L3', 1.0],
+        ]
+        net.add_edges(edges, input_type="list")
+        
+        result = multiplex_shortest_path(net, 'A', 'D', switch_cost=0.5)
+        
+        assert result['success'] is True
+        assert result['num_switches'] == 2  # L1->L2 and L2->L3
+        assert len(result['layers_visited']) == 3
+        assert result['layers_visited'] == {'L1', 'L2', 'L3'}
+    
+    def test_bidirectional_edges_undirected(self):
+        """Test that undirected network allows bidirectional traversal."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        edges = [['A', 'L1', 'B', 'L1', 1.0]]
+        net.add_edges(edges, input_type="list")
+        
+        # Should be able to route in both directions
+        result_ab = multiplex_shortest_path(net, 'A', 'B', switch_cost=1.0)
+        result_ba = multiplex_shortest_path(net, 'B', 'A', switch_cost=1.0)
+        
+        assert result_ab['success'] is True
+        assert result_ba['success'] is True
+        assert result_ab['total_distance'] == result_ba['total_distance']
