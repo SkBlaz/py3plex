@@ -71,7 +71,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Dec 29, 2025}
+\date{Dec 30, 2025}
 \release{1.0.3}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -34439,14 +34439,18 @@ Multilayer\sphinxhyphen{}specific abstractions (layer algebra, intralayer/interl
 \sphinxAtStartPar
 Improved ergonomics (ORDER BY, LIMIT, EXPLAIN, rich results)
 
+\item {} 
+\sphinxAtStartPar
+Optional progress logging for debugging and monitoring
+
 \end{enumerate}
 
 \sphinxAtStartPar
 DSL Extensions (v2.1):
-5. Network comparison (C.compare())
-6. Null models (N.model())
-7. Path queries (P.shortest(), P.random\_walk())
-8. Plugin system for user\sphinxhyphen{}defined operators (@dsl\_operator)
+6. Network comparison (C.compare())
+7. Null models (N.model())
+8. Path queries (P.shortest(), P.random\_walk())
+9. Plugin system for user\sphinxhyphen{}defined operators (@dsl\_operator)
 \begin{description}
 \sphinxlineitem{Example Usage:}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -34465,6 +34469,9 @@ DSL Extensions (v2.1):
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Execute the query}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{n}{q}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}  
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}  
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Execute with progress logging}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{n}{q}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{progress}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}  
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Compare two networks}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{comparison} \PYG{o}{=} \PYG{n}{C}\PYG{o}{.}\PYG{n}{compare}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{baseline}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{treatment}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{using}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiplex\PYGZus{}jaccard}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{networks}\PYG{p}{)}  
@@ -43349,7 +43356,7 @@ Self for chaining
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{execute}}}
-{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{params}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{progress}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{params}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryResult}]{\sphinxcrossref{QueryResult}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -43359,6 +43366,10 @@ Execute the query.
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{network}} \textendash{} Multilayer network object
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{progress}} \textendash{} If True, log progress messages during query execution
 
 \item {} 
 \sphinxAtStartPar
@@ -47643,7 +47654,7 @@ Decorator function that registers the operator
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{execute\_ast}}}
-{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Query}]{\sphinxcrossref{Query}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{params}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Query}]{\sphinxcrossref{Query}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{params}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{progress}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryResult}]{\sphinxcrossref{QueryResult}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ExecutionPlan}]{\sphinxcrossref{ExecutionPlan}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -47661,6 +47672,10 @@ Execute an AST query on a multilayer network.
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{params}} \textendash{} Parameter bindings
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{progress}} \textendash{} If True, log progress messages during query execution
 
 \end{itemize}
 
