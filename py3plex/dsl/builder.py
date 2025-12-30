@@ -1708,11 +1708,12 @@ class QueryBuilder:
         """
         return ExplainQuery(self._select)
     
-    def execute(self, network: Any, **params) -> QueryResult:
+    def execute(self, network: Any, progress: bool = False, **params) -> QueryResult:
         """Execute the query.
         
         Args:
             network: Multilayer network object
+            progress: If True, log progress messages during query execution
             **params: Parameter bindings
             
         Returns:
@@ -1721,7 +1722,7 @@ class QueryBuilder:
         from .executor import execute_ast
         
         ast = Query(explain=False, select=self._select)
-        return execute_ast(network, ast, params=params)
+        return execute_ast(network, ast, params=params, progress=progress)
     
     def to_ast(self) -> Query:
         """Export as AST Query object.

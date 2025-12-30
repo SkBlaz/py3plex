@@ -107,36 +107,51 @@ CENTRALITY_ALIASES = {
 }
 
 
-def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = None) -> Union[QueryResult, ExecutionPlan]:
+def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = None, progress: bool = False) -> Union[QueryResult, ExecutionPlan]:
     """Execute an AST query on a multilayer network.
     
     Args:
         network: Multilayer network object
         query: Query AST
         params: Parameter bindings
+        progress: If True, log progress messages during query execution
         
     Returns:
         QueryResult or ExecutionPlan (if explain=True)
     """
     params = params or {}
+    logger = logging.getLogger(__name__)
+    
+    if progress:
+        logger.info("Starting DSL query execution")
     
     # Step 1: Parameter binding
+    if progress:
+        logger.info("Step 1: Binding parameters")
     bound_query = _bind_parameters(query, params)
     
     # Step 2: Check for EXPLAIN mode
     if bound_query.explain:
+        if progress:
+            logger.info("Step 2: Building execution plan (EXPLAIN mode)")
         return _build_execution_plan(network, bound_query)
     
     # Step 3: Check for windowed query
     if bound_query.select.window_spec is not None:
         # Execute windowed query
-        return _execute_windowed_query(network, bound_query, params)
+        if progress:
+            logger.info("Step 2: Executing windowed query")
+        return _execute_windowed_query(network, bound_query, params, progress=progress)
     
     # Step 4: Wrap network in temporal view if needed
+    if progress:
+        logger.info("Step 2: Applying temporal context (if needed)")
     actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
     
     # Step 5: Execute SELECT statement (pass params for dynamic resolution)
-    return _execute_select(actual_network, bound_query.select, params)
+    if progress:
+        logger.info("Step 3: Executing SELECT statement")
+    return _execute_select(actual_network, bound_query.select, params, progress=progress)
 
 
 def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalContext]) -> Any:
@@ -176,13 +191,14 @@ def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalCon
     return view
 
 
-def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[str, Any]] = None) -> QueryResult:
+def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[str, Any]] = None, progress: bool = False) -> QueryResult:
     """Execute a windowed query over a temporal network.
     
     Args:
         network: Network (should be TemporalMultiLayerNetwork or convertible)
         query: Query with window_spec
         params: Parameter bindings
+        progress: If True, log progress messages during query execution
         
     Returns:
         QueryResult with windowed results
@@ -190,6 +206,7 @@ def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[st
     Raises:
         DslExecutionError: If network doesn't support windowing or window spec is invalid
     """
+    logger = logging.getLogger(__name__)
     from py3plex.temporal_utils_extended import parse_duration_string
     
     window_spec = query.select.window_spec
@@ -224,7 +241,11 @@ def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[st
     # Collect results from each window
     window_results = []
     
+    if progress:
+        logger.info(f"Processing windowed query (window_size={window_size}, step={step})")
+    
     # Iterate over windows
+    window_idx = 0
     for t_start, t_end, window_net in network.window_iter(
         window_size=window_size,
         step=step,
@@ -232,6 +253,9 @@ def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[st
         end=window_spec.end,
         return_type="snapshot",
     ):
+        if progress:
+            logger.info(f"Processing window {window_idx + 1}: [{t_start}, {t_end}]")
+        
         # Execute query on this window
         # Create a copy of the select statement without the window spec
         window_select = copy.deepcopy(query.select)
@@ -240,14 +264,18 @@ def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[st
         # Apply temporal context if specified
         actual_window_net = _apply_temporal_context(window_net, window_select.temporal_context)
         
-        # Execute on this window
-        window_result = _execute_select(actual_window_net, window_select, params)
+        # Execute on this window (suppress sub-query progress to avoid clutter)
+        window_result = _execute_select(actual_window_net, window_select, params, progress=False)
         
         # Add window metadata
         window_result.meta['window_start'] = t_start
         window_result.meta['window_end'] = t_end
         
         window_results.append(window_result)
+        window_idx += 1
+    
+    if progress:
+        logger.info(f"Processed {window_idx} windows")
     
     # Aggregate results based on aggregation mode
     aggregation = window_spec.aggregation
@@ -743,15 +771,17 @@ def _compute_measure_with_uncertainty(
         return _wrap_deterministic_uncertainty(measure_fn(subgraph, items), items)
 
 
-def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None) -> QueryResult:
+def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None, progress: bool = False) -> QueryResult:
     """Execute a SELECT statement.
     
     Args:
         network: Multilayer network
         select: SELECT statement AST
         params: Parameter bindings for dynamic resolution
+        progress: If True, log progress messages during query execution
     """
     params = params or {}
+    logger = logging.getLogger(__name__)
     
     # Get core network
     if not hasattr(network, 'core_network') or network.core_network is None:
@@ -765,29 +795,49 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     G = network.core_network
     
     # Step 1: Get initial items
+    if progress:
+        logger.info(f"Step 3.1: Getting initial {select.target.value}")
     if select.target == Target.NODES:
         items = list(network.get_nodes())
     else:
         # Get edges with data to access attributes like weight
         items = list(network.get_edges(data=True))
+    if progress:
+        logger.info(f"Found {len(items)} initial {select.target.value}")
     
     # Step 2: Apply layer filter
     if select.layer_set is not None:
         # New style: LayerSet with algebra
+        if progress:
+            logger.info("Step 3.2: Applying layer filter")
         active_layers = select.layer_set.resolve(network, strict=False, warn_empty=True)
         items = _filter_by_layers(items, active_layers, select.target)
+        if progress:
+            logger.info(f"Filtered to {len(items)} {select.target.value} in {len(active_layers)} layers")
     elif select.layer_expr:
         # Old style: LayerExprBuilder compatibility
+        if progress:
+            logger.info("Step 3.2: Applying layer filter")
         active_layers = _evaluate_layer_expr(select.layer_expr, network)
         items = _filter_by_layers(items, active_layers, select.target)
+        if progress:
+            logger.info(f"Filtered to {len(items)} {select.target.value} in {len(active_layers)} layers")
     
     # Step 3: Apply WHERE conditions
     if select.where:
+        if progress:
+            logger.info("Step 3.3: Applying WHERE conditions")
         items = _filter_by_conditions(items, select.where, network, G, params)
+        if progress:
+            logger.info(f"Filtered to {len(items)} {select.target.value}")
     
     # Step 3.5: Apply post-filters (e.g., has_community with lambdas)
     if select.post_filters:
+        if progress:
+            logger.info("Step 3.3.5: Applying post-filters")
         items = _apply_post_filters(items, select.post_filters, network, G)
+        if progress:
+            logger.info(f"Filtered to {len(items)} {select.target.value}")
     
     # Optimization: Early LIMIT when ORDER BY uses existing attributes
     # This reduces the number of items before expensive compute operations
@@ -846,6 +896,8 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     # Step 4: Compute measures
     attributes: Dict[str, Dict] = {}
     if select.compute:
+        if progress:
+            logger.info(f"Step 3.4: Computing {len(select.compute)} measure(s)")
         if select.target == Target.NODES:
             # Node measures - existing implementation
             # Create subgraph for computation
@@ -867,7 +919,9 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                 params={},
             )
             
-            for compute_item in select.compute:
+            for i, compute_item in enumerate(select.compute):
+                if progress:
+                    logger.info(f"  Computing {compute_item.name} ({i+1}/{len(select.compute)})")
                 try:
                     # First, try to resolve from operator registry
                     operator = get_operator(compute_item.name)
@@ -914,7 +968,9 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                     attributes[compute_item.result_name] = {}
         else:
             # Edge measures - new implementation
-            for compute_item in select.compute:
+            for i, compute_item in enumerate(select.compute):
+                if progress:
+                    logger.info(f"  Computing {compute_item.name} ({i+1}/{len(select.compute)})")
                 try:
                     # Check if this is an edge-specific measure
                     measure_fn = measure_registry.get(compute_item.name, target="edges")
@@ -945,6 +1001,8 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     # Step 4.5: Apply grouping, per-group operations, and coverage filtering
     grouping_metadata = None
     if select.group_by or select.limit_per_group is not None or select.coverage_mode:
+        if progress:
+            logger.info("Step 3.4.5: Applying grouping and coverage filtering")
         items, grouping_metadata = _apply_grouping_and_coverage(
             items=items,
             select=select,
@@ -952,10 +1010,15 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             G=G,
             attributes=attributes,
         )
+        if progress and grouping_metadata is not None:
+            num_groups = len(grouping_metadata.get('groups', []))
+            logger.info(f"Grouped into {num_groups} group(s)")
         # Skip global ORDER BY when grouping is used (ordering is per-group)
     else:
         # Step 5: Apply global ORDER BY (only when not grouping and not already ordered)
         if select.order_by and not early_limit_applied:
+            if progress:
+                logger.info("Step 3.5: Applying ORDER BY")
             # Smart defaults: Ensure attributes exist before ordering
             for order_item in select.order_by:
                 # Skip validation for attributes that will be created by summarize
@@ -981,6 +1044,8 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     if (select.aggregate_specs or select.summarize_aggs or select.mutate_specs or select.rank_specs or select.zscore_attrs or 
         select.distinct_cols is not None or select.select_cols or 
         select.drop_cols or select.rename_map):
+        if progress:
+            logger.info("Step 3.5.5: Applying post-processing operations")
         items, attributes = _apply_post_processing(
             items=items,
             attributes=attributes,
@@ -991,9 +1056,13 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     
     # Step 6: Apply global LIMIT (if not already applied early)
     if select.limit is not None and not early_limit_applied:
+        if progress:
+            logger.info(f"Step 3.6: Applying LIMIT {select.limit}")
         items = items[:select.limit]
     
     # Create result
+    if progress:
+        logger.info(f"Step 3.7: Creating QueryResult with {len(items)} {select.target.value}")
     meta_dict = {"dsl_version": "2.0"}
     if grouping_metadata is not None:
         meta_dict["grouping"] = grouping_metadata
@@ -1007,17 +1076,24 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     
     # Step 7: Apply file export if specified
     if select.file_export:
+        if progress:
+            logger.info(f"Step 3.8: Exporting to file: {select.file_export}")
         from .export import export_result
         export_result(result, select.file_export)
     
     # Step 8: Apply export if specified (for result format conversion)
     if select.export:
+        if progress:
+            logger.info(f"Step 3.9: Converting to {select.export.value}")
         if select.export == ExportTarget.PANDAS:
             return result.to_pandas()
         elif select.export == ExportTarget.NETWORKX:
             return result.to_networkx(network)
         elif select.export == ExportTarget.ARROW:
             return result.to_arrow()
+    
+    if progress:
+        logger.info("Query execution completed")
     
     return result
 
