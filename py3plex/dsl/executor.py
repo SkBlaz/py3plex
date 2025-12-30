@@ -1060,6 +1060,18 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             logger.info(f"Step 3.6: Applying LIMIT {select.limit}")
         items = items[:select.limit]
     
+    # Step 6.5: Apply explanations if specified
+    if select.explain_spec is not None:
+        if progress:
+            logger.info("Step 3.6.5: Attaching explanations to results")
+        items, attributes = _apply_explanations(
+            network=network,
+            items=items,
+            attributes=attributes,
+            explain_spec=select.explain_spec,
+            target=select.target,
+        )
+    
     # Create result
     if progress:
         logger.info(f"Step 3.7: Creating QueryResult with {len(items)} {select.target.value}")
@@ -1096,6 +1108,79 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         logger.info("Query execution completed")
     
     return result
+
+
+def _apply_explanations(
+    network: Any,
+    items: List[Any],
+    attributes: Dict[str, Dict],
+    explain_spec: 'ExplainSpec',
+    target: Target,
+) -> Tuple[List[Any], Dict[str, Dict]]:
+    """Apply explanations to result items.
+    
+    Args:
+        network: Multilayer network instance
+        items: Result items (nodes or edges)
+        attributes: Computed attributes
+        explain_spec: Explanation specification
+        target: Query target (nodes or edges)
+        
+    Returns:
+        Tuple of (items, enhanced_attributes) with explanation data
+    """
+    from .explain import explain_rows
+    from .ast import ExplainSpec
+    
+    # Only support node explanations in Phase 1
+    if target != Target.NODES:
+        logger.warning("Explanations are currently only supported for node queries")
+        return items, attributes
+    
+    if not items:
+        return items, attributes
+    
+    # Convert items to row format expected by explain engine
+    rows = []
+    for item in items:
+        row = {}
+        if isinstance(item, tuple) and len(item) >= 2:
+            row['id'] = item[0]
+            row['layer'] = item[1]
+        else:
+            row['id'] = item
+            row['layer'] = None
+        rows.append(row)
+    
+    # Call explanation engine
+    try:
+        enriched_rows, explanation_schema = explain_rows(
+            network=network,
+            rows=rows,
+            include=explain_spec.include,
+            neighbors_top=explain_spec.neighbors_top,
+            neighbors_cfg=explain_spec.neighbors_cfg,
+            community_cfg=explain_spec.community_cfg,
+            layer_footprint_cfg=explain_spec.layer_footprint_cfg,
+            cache=explain_spec.cache,
+        )
+    except Exception as e:
+        logger.warning(f"Failed to generate explanations: {e}")
+        return items, attributes
+    
+    # Extract explanations from enriched rows and add to attributes
+    # Store explanations as attributes so they can be exported
+    for i, enriched_row in enumerate(enriched_rows):
+        explanations = enriched_row.get('_explanations', {})
+        item = items[i]
+        
+        # Add each explanation field as an attribute
+        for key, value in explanations.items():
+            if key not in attributes:
+                attributes[key] = {}
+            attributes[key][item] = value
+    
+    return items, attributes
 
 
 def _expand_layer_term(name: str, network: Any) -> Set[str]:

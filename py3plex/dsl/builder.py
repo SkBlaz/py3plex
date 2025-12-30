@@ -818,6 +818,138 @@ class QueryBuilder:
         """
         return self.uq(method=method, n_samples=n_samples, ci=ci, seed=seed, **kwargs)
     
+    def explain(
+        self,
+        neighbors_top: int = 10,
+        include: Optional[List[str]] = None,
+        exclude: Optional[List[str]] = None,
+        neighbors: Optional[Dict[str, Any]] = None,
+        community: Optional[Dict[str, Any]] = None,
+        layer_footprint: Optional[Dict[str, Any]] = None,
+        cache: bool = True,
+        as_columns: bool = True,
+        prefix: str = "",
+    ) -> "QueryBuilder":
+        """Attach explanations to each result row (typically nodes).
+        
+        Explanations provide additional context about nodes, such as:
+        - Community membership and size
+        - Top neighbors by weight/degree
+        - Layer footprint (which layers the node appears in)
+        
+        Explanations are computed post-query execution (after all filters, limits, etc.)
+        and can be expanded into columns when converting to pandas with:
+            result.to_pandas(expand_explanations=True)
+        
+        Args:
+            neighbors_top: Maximum number of neighbors to include in top_neighbors (default: 10)
+            include: List of explanation blocks to compute. If None, uses defaults:
+                    ["community", "top_neighbors", "layer_footprint"]
+            exclude: List of explanation blocks to exclude from include list
+            neighbors: Optional configuration for neighbor selection:
+                      - "metric": "weight" or "degree" (default: "weight")
+                      - "scope": "layer" (per-layer) or "global" (default: "layer")
+                      - "direction": "out", "in", or "both" (default: "both")
+            community: Optional configuration for community explanations (reserved)
+            layer_footprint: Optional configuration for layer footprint (reserved)
+            cache: Whether to cache neighbor lookups (default: True)
+            as_columns: Store explanations as top-level columns in result (default: True)
+            prefix: Optional prefix for explanation column names (default: "")
+            
+        Returns:
+            Self for chaining
+            
+        Raises:
+            ValueError: If include contains unknown explanation blocks
+            ValueError: If neighbors_top < 1
+            
+        Example:
+            >>> # Basic usage with defaults
+            >>> result = (
+            ...     Q.nodes()
+            ...      .from_layers(L["social"])
+            ...      .compute("degree", "betweenness")
+            ...      .limit(20)
+            ...      .explain(neighbors_top=10)
+            ...      .execute(network)
+            ... )
+            >>> df = result.to_pandas(expand_explanations=True)
+            >>> # df now has columns: id, layer, degree, betweenness, 
+            >>> #                      community_id, community_size, top_neighbors, 
+            >>> #                      layers_present, n_layers_present
+            
+            >>> # Custom neighbor selection
+            >>> result = (
+            ...     Q.nodes()
+            ...      .explain(
+            ...          neighbors_top=5,
+            ...          include=["top_neighbors"],
+            ...          neighbors={"metric": "degree", "scope": "global"}
+            ...      )
+            ...      .execute(network)
+            ... )
+        """
+        from .ast import ExplainSpec
+        
+        # Determine final include list
+        if include is None:
+            final_include = ["community", "top_neighbors", "layer_footprint"]
+        else:
+            final_include = list(include)
+        
+        # Apply exclusions
+        if exclude:
+            final_include = [b for b in final_include if b not in exclude]
+        
+        # Validate include list
+        supported_blocks = {"community", "top_neighbors", "layer_footprint"}
+        unknown = set(final_include) - supported_blocks
+        if unknown:
+            raise ValueError(
+                f"Unknown explanation blocks: {', '.join(sorted(unknown))}. "
+                f"Supported blocks: {', '.join(sorted(supported_blocks))}"
+            )
+        
+        # Validate neighbors_top
+        if neighbors_top < 1:
+            raise ValueError(f"neighbors_top must be >= 1, got {neighbors_top}")
+        
+        # Check if explain already called
+        if self._select.explain_spec is not None:
+            # Merge with existing spec (allow multiple calls)
+            existing = self._select.explain_spec
+            
+            # Merge include lists (deduplicate)
+            merged_include = list(dict.fromkeys(existing.include + final_include))
+            
+            # Later call overrides scalar values
+            self._select.explain_spec = ExplainSpec(
+                include=merged_include,
+                exclude=list(set(existing.exclude) | set(exclude or [])),
+                neighbors_top=neighbors_top,
+                neighbors_cfg=neighbors or existing.neighbors_cfg,
+                community_cfg=community or existing.community_cfg,
+                layer_footprint_cfg=layer_footprint or existing.layer_footprint_cfg,
+                cache=cache,
+                as_columns=as_columns,
+                prefix=prefix,
+            )
+        else:
+            # Create new spec
+            self._select.explain_spec = ExplainSpec(
+                include=final_include,
+                exclude=exclude or [],
+                neighbors_top=neighbors_top,
+                neighbors_cfg=neighbors or {},
+                community_cfg=community or {},
+                layer_footprint_cfg=layer_footprint or {},
+                cache=cache,
+                as_columns=as_columns,
+                prefix=prefix,
+            )
+        
+        return self
+    
     def group_by(self, *fields: str) -> "QueryBuilder":
         """Group result items by given fields.
         

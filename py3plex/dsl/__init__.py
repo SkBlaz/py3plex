@@ -84,6 +84,7 @@ from .ast import (
     ParamRef,
     TemporalContext,
     UQConfig,
+    ExplainSpec,
     # Execution plan
     PlanStep,
     ExecutionPlan,
@@ -241,6 +242,7 @@ __all__ = [
     "ParamRef",
     "TemporalContext",
     "UQConfig",
+    "ExplainSpec",
     "PlanStep",
     "ExecutionPlan",
     # DSL Extensions AST
