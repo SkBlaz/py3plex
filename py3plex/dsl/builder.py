@@ -820,7 +820,7 @@ class QueryBuilder:
     
     def explain(
         self,
-        neighbors_top: int = 10,
+        neighbors_top: Optional[int] = None,
         include: Optional[List[str]] = None,
         exclude: Optional[List[str]] = None,
         neighbors: Optional[Dict[str, Any]] = None,
@@ -829,20 +829,24 @@ class QueryBuilder:
         cache: bool = True,
         as_columns: bool = True,
         prefix: str = "",
-    ) -> "QueryBuilder":
-        """Attach explanations to each result row (typically nodes).
+    ) -> Union["QueryBuilder", ExplainQuery]:
+        """Attach explanations to results OR get execution plan.
         
-        Explanations provide additional context about nodes, such as:
-        - Community membership and size
-        - Top neighbors by weight/degree
-        - Layer footprint (which layers the node appears in)
+        **Two modes:**
         
-        Explanations are computed post-query execution (after all filters, limits, etc.)
-        and can be expanded into columns when converting to pandas with:
-            result.to_pandas(expand_explanations=True)
+        1. **Execution Plan Mode** (no arguments):
+           Returns an ExplainQuery that shows the execution plan when executed.
+           This is like SQL EXPLAIN - it shows what the query will do.
+           
+        2. **Explanations Mode** (with arguments):
+           Attaches explanations to each result row (typically nodes), such as:
+           - Community membership and size
+           - Top neighbors by weight/degree
+           - Layer footprint (which layers the node appears in)
         
         Args:
-            neighbors_top: Maximum number of neighbors to include in top_neighbors (default: 10)
+            neighbors_top: Maximum number of neighbors to include in top_neighbors (default: 10).
+                         If None and no other args, returns execution plan (mode 1).
             include: List of explanation blocks to compute. If None, uses defaults:
                     ["community", "top_neighbors", "layer_footprint"]
             exclude: List of explanation blocks to exclude from include list
@@ -857,14 +861,19 @@ class QueryBuilder:
             prefix: Optional prefix for explanation column names (default: "")
             
         Returns:
-            Self for chaining
+            QueryBuilder (self) for chaining when in explanations mode
+            ExplainQuery when in execution plan mode
             
         Raises:
             ValueError: If include contains unknown explanation blocks
             ValueError: If neighbors_top < 1
             
-        Example:
-            >>> # Basic usage with defaults
+        Examples:
+            >>> # Execution plan mode (no arguments)
+            >>> plan = Q.nodes().compute("degree").explain().execute(network)
+            >>> print(plan.steps)
+            
+            >>> # Explanations mode (with arguments)
             >>> result = (
             ...     Q.nodes()
             ...      .from_layers(L["social"])
@@ -877,19 +886,30 @@ class QueryBuilder:
             >>> # df now has columns: id, layer, degree, betweenness, 
             >>> #                      community_id, community_size, top_neighbors, 
             >>> #                      layers_present, n_layers_present
-            
-            >>> # Custom neighbor selection
-            >>> result = (
-            ...     Q.nodes()
-            ...      .explain(
-            ...          neighbors_top=5,
-            ...          include=["top_neighbors"],
-            ...          neighbors={"metric": "degree", "scope": "global"}
-            ...      )
-            ...      .execute(network)
-            ... )
         """
+        # Check if this is execution plan mode (no arguments provided)
+        has_any_arg = any([
+            neighbors_top is not None,
+            include is not None,
+            exclude is not None,
+            neighbors is not None,
+            community is not None,
+            layer_footprint is not None,
+            not cache,  # cache defaults to True, so False means it was set
+            not as_columns,  # as_columns defaults to True, so False means it was set
+            prefix != "",  # prefix defaults to "", so non-empty means it was set
+        ])
+        
+        if not has_any_arg:
+            # Execution plan mode - return ExplainQuery
+            return ExplainQuery(self._select)
+        
+        # Explanations mode - continue with explanation logic
         from .ast import ExplainSpec
+        
+        # Set default for neighbors_top if not provided
+        if neighbors_top is None:
+            neighbors_top = 10
         
         # Determine final include list
         if include is None:
@@ -1831,14 +1851,6 @@ class QueryBuilder:
             return self.order_by(f"-{by}")
         else:
             return self.order_by(by)
-    
-    def explain(self) -> ExplainQuery:
-        """Create EXPLAIN query for execution plan.
-        
-        Returns:
-            ExplainQuery that can be executed to get the plan
-        """
-        return ExplainQuery(self._select)
     
     def execute(self, network: Any, progress: bool = False, **params) -> QueryResult:
         """Execute the query.
