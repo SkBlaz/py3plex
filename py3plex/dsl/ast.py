@@ -317,6 +317,49 @@ class WindowSpec:
 
 
 @dataclass
+class ExplainSpec:
+    """Specification for attaching explanations to query results.
+    
+    Explanations provide additional context for each result row (typically nodes),
+    such as community membership, top neighbors, and layer footprint.
+    
+    Attributes:
+        include: List of explanation blocks to compute (e.g., ["community", "top_neighbors"])
+        exclude: List of explanation blocks to exclude from defaults
+        neighbors_top: Maximum number of neighbors to include in top_neighbors
+        neighbors_cfg: Configuration for neighbor selection (metric, scope, direction)
+        community_cfg: Configuration for community explanations
+        layer_footprint_cfg: Configuration for layer footprint explanations
+        cache: Whether to cache intermediate computations (default: True)
+        as_columns: Store explanations as top-level columns (default: True)
+        prefix: Optional prefix for explanation column names (default: "")
+    
+    Examples:
+        >>> # Basic usage with defaults
+        >>> ExplainSpec(include=["community", "top_neighbors"])
+        
+        >>> # Custom neighbor count
+        >>> ExplainSpec(include=["top_neighbors"], neighbors_top=5)
+        
+        >>> # With custom configuration
+        >>> ExplainSpec(
+        ...     include=["community", "top_neighbors", "layer_footprint"],
+        ...     neighbors_top=10,
+        ...     neighbors_cfg={"scope": "layer", "metric": "weight"}
+        ... )
+    """
+    include: List[str] = field(default_factory=lambda: ["community", "top_neighbors", "layer_footprint"])
+    exclude: List[str] = field(default_factory=list)
+    neighbors_top: int = 10
+    neighbors_cfg: Dict[str, Any] = field(default_factory=dict)
+    community_cfg: Dict[str, Any] = field(default_factory=dict)
+    layer_footprint_cfg: Dict[str, Any] = field(default_factory=dict)
+    cache: bool = True
+    as_columns: bool = True
+    prefix: str = ""
+
+
+@dataclass
 class SelectStmt:
     """A SELECT statement.
     
@@ -381,6 +424,7 @@ class SelectStmt:
     mutate_specs: Optional[Dict[str, Any]] = None
     autocompute: bool = True
     uq_config: Optional['UQConfig'] = None
+    explain_spec: Optional['ExplainSpec'] = None
 
 
 @dataclass

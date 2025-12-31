@@ -11,8 +11,160 @@ import math
 # Tolerance for matching quantile keys when finding CI bounds
 _QUANTILE_TOLERANCE = 0.01
 
+# Explanation attribute names that contain complex data structures
+_EXPLANATION_ATTRS = {
+    "top_neighbors",  # List of dicts
+    "layers_present",  # List of strings
+}
+
+
+def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
+    """Expand an explanation value for pandas DataFrame.
+    
+    For simple values (int, float, str, None), returns as-is.
+    For complex values (list, dict), converts to JSON string for DataFrame compatibility.
+    
+    Args:
+        attr_name: Attribute name
+        value: The explanation value
+        
+    Returns:
+        Dictionary with the attribute name and processed value
+    """
+    import json
+    
+    if value is None:
+        return {attr_name: None}
+    elif isinstance(value, (int, float, str, bool)):
+        return {attr_name: value}
+    elif isinstance(value, list):
+        # Convert list to JSON string for DataFrame
+        # Special case: if it's a list of simple types, keep as list (converted to string)
+        if all(isinstance(item, (int, float, str, bool, type(None))) for item in value):
+            return {attr_name: str(value)}
+        # For complex lists (e.g., list of dicts), convert to JSON
+        return {attr_name: json.dumps(value)}
+    elif isinstance(value, dict):
+        # Convert dict to JSON string
+        return {attr_name: json.dumps(value)}
+    else:
+        # Fallback: convert to string
+        return {attr_name: str(value)}
+
 
 def _expand_uncertainty_value(attr_name: str, value: Any, ci_level: float = 0.95) -> Dict[str, Any]:
+    """Expand an uncertainty value into multiple columns.
+    
+    Args:
+        attr_name: Base attribute name (e.g., "degree")
+        value: The value (may be dict with uncertainty info or scalar)
+        ci_level: Confidence interval level (default: 0.95)
+        
+    Returns:
+        Dictionary with expanded columns
+    """
+    result = {}
+    
+    # Always include the point estimate
+    if isinstance(value, dict) and 'mean' in value:
+        result[attr_name] = value['mean']
+        
+        # Add std if available
+        if 'std' in value:
+            result[f"{attr_name}_std"] = value['std']
+        else:
+            result[f"{attr_name}_std"] = None
+        
+        # Add CI bounds if quantiles are available
+        quantiles = value.get('quantiles', {})
+        if quantiles:
+            # Calculate quantile keys for the CI level
+            lower_q = (1 - ci_level) / 2
+            upper_q = 1 - (1 - ci_level) / 2
+            
+            # Find closest available quantiles
+            ci_low = quantiles.get(lower_q)
+            ci_high = quantiles.get(upper_q)
+            
+            # If exact quantiles not found, try to find closest
+            if ci_low is None or ci_high is None:
+                sorted_qs = sorted(quantiles.keys())
+                if sorted_qs:
+                    # Find closest lower quantile (within tolerance)
+                    lower_candidates = [q for q in sorted_qs if q <= lower_q + _QUANTILE_TOLERANCE]
+                    if lower_candidates:
+                        ci_low = quantiles[lower_candidates[-1]]
+                    
+                    # Find closest upper quantile (within tolerance)
+                    upper_candidates = [q for q in sorted_qs if q >= upper_q - _QUANTILE_TOLERANCE]
+                    if upper_candidates:
+                        ci_high = quantiles[upper_candidates[0]]
+            
+            # Convert CI level to percentage for column names (e.g., 0.95 -> ci95)
+            ci_pct = int(ci_level * 100)
+            
+            result[f"{attr_name}_ci{ci_pct}_low"] = ci_low
+            result[f"{attr_name}_ci{ci_pct}_high"] = ci_high
+            
+            # Calculate width if both bounds available
+            if ci_low is not None and ci_high is not None:
+                result[f"{attr_name}_ci{ci_pct}_width"] = ci_high - ci_low
+            else:
+                result[f"{attr_name}_ci{ci_pct}_width"] = None
+        else:
+            # No quantiles - set CI columns to None
+            ci_pct = int(ci_level * 100)
+            result[f"{attr_name}_ci{ci_pct}_low"] = None
+            result[f"{attr_name}_ci{ci_pct}_high"] = None
+            result[f"{attr_name}_ci{ci_pct}_width"] = None
+    else:
+        # Deterministic value - just use as-is
+        result[attr_name] = value
+        # Set uncertainty columns to None or 0
+        ci_pct = int(ci_level * 100)
+        result[f"{attr_name}_std"] = 0.0 if value is not None else None
+        result[f"{attr_name}_ci{ci_pct}_low"] = value
+        result[f"{attr_name}_ci{ci_pct}_high"] = value
+        result[f"{attr_name}_ci{ci_pct}_width"] = 0.0 if value is not None else None
+    
+    return result
+
+
+def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
+    """Expand an explanation value for pandas DataFrame.
+    
+    For simple values (int, float, str, None), returns as-is.
+    For complex values (list, dict), converts to JSON string for DataFrame compatibility.
+    
+    Args:
+        attr_name: Attribute name
+        value: The explanation value
+        
+    Returns:
+        Dictionary with the attribute name and processed value
+    """
+    import json
+    
+    if value is None:
+        return {attr_name: None}
+    elif isinstance(value, (int, float, str, bool)):
+        return {attr_name: value}
+    elif isinstance(value, list):
+        # Convert list to JSON string for DataFrame
+        # Special case: if it's a list of simple types, keep as list
+        if all(isinstance(item, (int, float, str, bool, type(None))) for item in value):
+            return {attr_name: str(value)}
+        # For complex lists (e.g., list of dicts), convert to JSON
+        return {attr_name: json.dumps(value)}
+    elif isinstance(value, dict):
+        # Convert dict to JSON string
+        return {attr_name: json.dumps(value)}
+    else:
+        # Fallback: convert to string
+        return {attr_name: str(value)}
+
+
+def _expand_uncertainty_value_OLD_BACKUP(attr_name: str, value: Any, ci_level: float = 0.95) -> Dict[str, Any]:
     """Expand an uncertainty value into multiple columns.
     
     Args:
@@ -151,7 +303,7 @@ class QueryResult:
         return iter(self.items)
     
     def to_pandas(self, multiindex: bool = False, include_grouping: bool = True,
-                  expand_uncertainty: bool = False):
+                  expand_uncertainty: bool = False, expand_explanations: bool = False):
         """Export results to pandas DataFrame.
         
         For node queries: Returns DataFrame with 'id' column plus computed attributes
@@ -169,6 +321,9 @@ class QueryResult:
                               - metric_ci95_low (95% CI lower bound)
                               - metric_ci95_high (95% CI upper bound)
                               - metric_ci95_width (CI width)
+            expand_explanations: If True, expand explanation fields into columns.
+                               Explanations are attached via .explain() in the query.
+                               Fields like top_neighbors (list) are converted to JSON strings.
         
         Returns:
             pandas.DataFrame with items and computed attributes
@@ -180,6 +335,10 @@ class QueryResult:
             >>> result = Q.nodes().uq(UQ.fast()).compute("degree").execute(net)
             >>> df = result.to_pandas(expand_uncertainty=True)
             >>> # df now has columns: id, layer, degree, degree_std, degree_ci95_low, degree_ci95_high, degree_ci95_width
+            
+            >>> result = Q.nodes().explain().compute("degree").execute(net)
+            >>> df = result.to_pandas(expand_explanations=True)
+            >>> # df now has explanation columns: community_id, community_size, top_neighbors, etc.
         """
         try:
             import pandas as pd
@@ -299,20 +458,31 @@ class QueryResult:
                 
                 # Add computed attributes
                 for attr_name, values in self.attributes.items():
+                    # Check if this is an explanation attribute
+                    is_explanation = attr_name in _EXPLANATION_ATTRS or any(
+                        attr_name.startswith(prefix) 
+                        for prefix in ["community_", "layers_", "n_layers_", "top_"]
+                    )
+                    
                     if isinstance(values, dict):
                         # Use node_item (full tuple) as key
                         if node_item in values:
                             value = values[node_item]
                             
-                            if expand_uncertainty:
+                            # Handle explanations
+                            if is_explanation and expand_explanations:
+                                # Expand explanation value (converts complex types to JSON strings)
+                                expanded = _expand_explanation_value(attr_name, value)
+                                row.update(expanded)
+                            elif expand_uncertainty and not is_explanation:
                                 # Expand uncertainty into multiple columns
                                 expanded = _expand_uncertainty_value(attr_name, value)
                                 row.update(expanded)
                             else:
-                                # Preserve uncertainty dictionaries unless explicitly expanded.
+                                # Preserve original value
                                 row[attr_name] = value
                         else:
-                            if expand_uncertainty:
+                            if expand_uncertainty and not is_explanation:
                                 # Add None for all expanded columns
                                 ci_pct = 95  # Default CI level
                                 row[attr_name] = None
@@ -328,15 +498,19 @@ class QueryResult:
                         if idx < len(values):
                             value = values[idx]
                             
-                            if expand_uncertainty:
+                            # Handle explanations
+                            if is_explanation and expand_explanations:
+                                expanded = _expand_explanation_value(attr_name, value)
+                                row.update(expanded)
+                            elif expand_uncertainty and not is_explanation:
                                 # Expand uncertainty into multiple columns
                                 expanded = _expand_uncertainty_value(attr_name, value)
                                 row.update(expanded)
                             else:
-                                # Preserve uncertainty dictionaries unless explicitly expanded.
+                                # Preserve original value
                                 row[attr_name] = value
                         else:
-                            if expand_uncertainty:
+                            if expand_uncertainty and not is_explanation:
                                 # Add None for all expanded columns
                                 ci_pct = 95  # Default CI level
                                 row[attr_name] = None
