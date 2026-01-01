@@ -134,6 +134,10 @@ def compute_uncertainty_metrics(
     
     # Second-best gap: difference between top 2 probabilities
     q_sorted = np.sort(q, axis=1)[:, ::-1]
-    metrics['top2_gap'] = q_sorted[:, 0] - q_sorted[:, 1]
+    if q.shape[1] >= 2:
+        metrics['top2_gap'] = q_sorted[:, 0] - q_sorted[:, 1]
+    else:
+        # When K=1, there's no second-best, set gap to max (1.0)
+        metrics['top2_gap'] = np.ones(q.shape[0])
     
     return metrics
