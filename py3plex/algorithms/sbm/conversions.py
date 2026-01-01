@@ -33,27 +33,63 @@ def extract_layer_adjacencies(
         - node_to_idx: Dict mapping node IDs to integer indices
     """
     # Get all nodes (aligned across layers for multiplex)
-    all_nodes = sorted(network.get_nodes())
+    # get_nodes() returns (node_id, layer) tuples, extract unique node IDs
+    all_node_tuples = list(network.get_nodes())
+    unique_node_ids = set()
+    for node in all_node_tuples:
+        if isinstance(node, tuple):
+            unique_node_ids.add(node[0])
+        else:
+            unique_node_ids.add(node)
+    
+    all_nodes = sorted(unique_node_ids)
     node_to_idx = {node: idx for idx, node in enumerate(all_nodes)}
     n_nodes = len(all_nodes)
     
-    # Get layers to process
-    if layers is None:
-        layers = list(network.get_layers())
+    # Get layers information
+    layers_tuple = network.get_layers()
+    # get_layers() returns (layer_names, layer_graphs, other_info)
+    layer_names = layers_tuple[0] if isinstance(layers_tuple, tuple) else list(layers_tuple)
+    layer_graphs = layers_tuple[1] if isinstance(layers_tuple, tuple) and len(layers_tuple) > 1 else None
+    
+    # Filter to requested layers
+    if layers is not None:
+        layer_indices = [layer_names.index(l) for l in layers if l in layer_names]
+        layer_names = [layer_names[i] for i in layer_indices]
+        if layer_graphs:
+            layer_graphs = [layer_graphs[i] for i in layer_indices]
     
     adjacency_list = []
     
-    for layer in layers:
-        # Get edges for this layer
+    for idx, layer_name in enumerate(layer_names):
+        # Get the layer graph
+        if layer_graphs and idx < len(layer_graphs):
+            layer_graph = layer_graphs[idx]
+        else:
+            # Fallback: extract from core network
+            # This shouldn't happen normally
+            layer_graph = nx.MultiGraph() if not directed else nx.MultiDiGraph()
+            for u, v, data in network.core_network.edges(data=True):
+                # Nodes in py3plex are (node_id, layer) tuples
+                if isinstance(u, tuple) and isinstance(v, tuple):
+                    if u[1] == layer_name and v[1] == layer_name:
+                        layer_graph.add_edge(u[0], v[0], **data)
+        
+        # Extract edges from the layer graph
         edges = []
         weights = []
         
-        # Extract edges from the network for this layer
-        layer_graph = network.get_layer_subgraph(layer)
-        
         for u, v, data in layer_graph.edges(data=True):
-            u_idx = node_to_idx[u]
-            v_idx = node_to_idx[v]
+            # Nodes might be tuples (node_id, layer) or just node_id
+            u_clean = u[0] if isinstance(u, tuple) else u
+            v_clean = v[0] if isinstance(v, tuple) else v
+            
+            # Map to indices
+            if u_clean not in node_to_idx or v_clean not in node_to_idx:
+                continue
+            
+            u_idx = node_to_idx[u_clean]
+            v_idx = node_to_idx[v_clean]
             w = data.get(weight_attr, 1.0)
             
             edges.append((u_idx, v_idx))
@@ -78,7 +114,7 @@ def extract_layer_adjacencies(
         
         adjacency_list.append(A)
     
-    return adjacency_list, layers, node_to_idx
+    return adjacency_list, layer_names, node_to_idx
 
 
 def build_node_alignment(
@@ -95,9 +131,29 @@ def build_node_alignment(
     """
     alignment = {}
     
-    for layer in network.get_layers():
-        layer_graph = network.get_layer_subgraph(layer)
-        alignment[layer] = list(layer_graph.nodes())
+    layers_tuple = network.get_layers()
+    # get_layers() returns (layer_names, layer_graphs, other_info)
+    layer_names = layers_tuple[0] if isinstance(layers_tuple, tuple) else list(layers_tuple)
+    layer_graphs = layers_tuple[1] if isinstance(layers_tuple, tuple) and len(layers_tuple) > 1 else None
+    
+    for idx, layer_name in enumerate(layer_names):
+        if layer_graphs and idx < len(layer_graphs):
+            layer_graph = layer_graphs[idx]
+            # Nodes might be tuples (node_id, layer) or just node_id
+            nodes_in_layer = []
+            for node in layer_graph.nodes():
+                if isinstance(node, tuple):
+                    nodes_in_layer.append(node[0])  # Extract node_id
+                else:
+                    nodes_in_layer.append(node)
+            alignment[layer_name] = nodes_in_layer
+        else:
+            # Fallback: extract from core network
+            nodes_in_layer = set()
+            for node in network.core_network.nodes():
+                if isinstance(node, tuple) and node[1] == layer_name:
+                    nodes_in_layer.add(node[0])
+            alignment[layer_name] = list(nodes_in_layer)
     
     return alignment
 
