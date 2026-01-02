@@ -55,7 +55,7 @@ master_regulators = (
      )
      .sort(by="influence_score", descending=True)
      .limit(20)                                # Final top 20 candidates
-     .explain(neighbors_top=5)                 # Add context: community membership, top 5 connected genes, layer presence
+     .explain(neighbors_top=5)                 # Enrich each gene with: community ID, top 5 interaction partners, layer presence
      .execute(network)
 )
 
@@ -75,7 +75,7 @@ Found 287 communities, modularity = 0.649
 ...
 ```
 
-**Note:** The `.coverage(mode="at_least", k=2)` operator filters nodes to keep only those that appear in the top-20 of at least 2 layers, ensuring we find *robust* master regulators that are consistently important across the multilayer structure. The `.explain()` method adds interpretability by providing: (1) community membership showing which functional module each gene belongs to, (2) top connected genes revealing key interaction partners, and (3) layer footprint indicating which biological networks the gene participates in.
+**Note:** The `.coverage(mode="at_least", k=2)` operator filters nodes to keep only those that appear in the top-20 of at least 2 layers, ensuring we find *robust* master regulators that are consistently important across the multilayer structure. The `.explain()` method enriches each individual gene result with interpretability features: (1) which community the gene belongs to, (2) the top 5 genes it interacts with most strongly (by edge weight), and (3) which layers the gene appears in.
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
