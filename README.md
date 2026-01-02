@@ -55,26 +55,27 @@ master_regulators = (
      )
      .sort(by="influence_score", descending=True)
      .limit(20)                                # Final top 20 candidates
+     .explain(neighbors_top=5)                 # Add explanations: community, neighbors, layers
      .execute(network)
 )
 
-df = master_regulators.to_pandas(expand_uncertainty=True)
+df = master_regulators.to_pandas(expand_uncertainty=True, expand_explanations=True)
 print(df[["id", "layer", "betweenness_centrality", "betweenness_centrality_std", 
           "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high",
-          "influence_score"]].head(10))
+          "influence_score", "community_id", "top_neighbors"]].head(10))
 ```
 
 Emits:
 ```
 Found 287 communities, modularity = 0.649
-    id  layer  betweenness_centrality  betweenness_centrality_std  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high  influence_score
-0  252      0                0.025961                    0.002134                         0.021820                          0.030102         0.015577
-1   91      0                0.024918                    0.002051                         0.020902                          0.028934         0.014951
-2  419      0                0.024184                    0.001987                         0.020298                          0.028070         0.014510
+    id  layer  betweenness_centrality  betweenness_centrality_std  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high  influence_score  community_id                                      top_neighbors
+0  252      0                0.025961                    0.002134                         0.021820                          0.030102         0.015577            42  [{'id': '91', 'weight': 2.3}, {'id': '419',...
+1   91      0                0.024918                    0.002051                         0.020902                          0.028934         0.014951            42  [{'id': '252', 'weight': 2.3}, {'id': '103...
+2  419      0                0.024184                    0.001987                         0.020298                          0.028070         0.014510            42  [{'id': '252', 'weight': 1.9}, {'id': '91'...
 ...
 ```
 
-**Note:** The `.coverage(mode="at_least", k=2)` operator filters nodes to keep only those that appear in the top-20 of at least 2 layers, ensuring we find *robust* master regulators that are consistently important across the multilayer structure.
+**Note:** The `.coverage(mode="at_least", k=2)` operator filters nodes to keep only those that appear in the top-20 of at least 2 layers, ensuring we find *robust* master regulators that are consistently important across the multilayer structure. The `.explain()` method adds interpretability by providing community membership, top neighbors, and layer footprint for each candidate.
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 

@@ -39,7 +39,7 @@ def test_flagship_dsl_query_structure_with_uq():
     ]
     net.add_edges(edges, input_type="list")
 
-    # Test the flagship query structure with .uq()
+    # Test the flagship query structure with .uq() and .explain()
     result = (
         Q.nodes()
         .where(degree__gt=0)  # Simplified filter
@@ -50,6 +50,7 @@ def test_flagship_dsl_query_structure_with_uq():
         .end_grouping()
         .sort(by="betweenness_centrality__mean", descending=True)
         .limit(3)
+        .explain(neighbors_top=5)  # Add explanations as in README
         .execute(net)
     )
 
@@ -57,8 +58,8 @@ def test_flagship_dsl_query_structure_with_uq():
     assert result is not None
     assert result.count > 0
 
-    # Test expand_uncertainty=True
-    df = result.to_pandas(expand_uncertainty=True)
+    # Test expand_uncertainty=True and expand_explanations=True
+    df = result.to_pandas(expand_uncertainty=True, expand_explanations=True)
 
     # Verify uncertainty columns are present
     assert "betweenness_centrality" in df.columns
@@ -67,6 +68,10 @@ def test_flagship_dsl_query_structure_with_uq():
     assert "betweenness_centrality_ci95_high" in df.columns
     assert "degree_centrality" in df.columns
     assert "degree_centrality_std" in df.columns
+
+    # Verify explanation columns are present
+    assert "top_neighbors" in df.columns
+    assert "layers_present" in df.columns or "n_layers_present" in df.columns
 
     # Verify we have valid data
     assert len(df) > 0
@@ -102,7 +107,7 @@ def test_flagship_with_coverage_operator():
     ]
     net.add_edges(edges, input_type="list")
 
-    # Test the enhanced flagship query with coverage
+    # Test the enhanced flagship query with coverage and explain
     # This mirrors the README example structure
     result = (
         Q.nodes()
@@ -120,6 +125,7 @@ def test_flagship_with_coverage_operator():
             )
         )
         .limit(5)
+        .explain(neighbors_top=5)  # Add explanations as in README
         .execute(net)
     )
 
@@ -127,8 +133,8 @@ def test_flagship_with_coverage_operator():
     assert result is not None
     assert result.count > 0
 
-    # Convert to DataFrame
-    df = result.to_pandas(expand_uncertainty=True)
+    # Convert to DataFrame with both uncertainty and explanations
+    df = result.to_pandas(expand_uncertainty=True, expand_explanations=True)
 
     # Verify we have valid data
     assert len(df) > 0
@@ -136,6 +142,9 @@ def test_flagship_with_coverage_operator():
     assert "betweenness_centrality" in df.columns
     assert "betweenness_centrality_std" in df.columns
     assert "degree_centrality" in df.columns
+
+    # Verify explanation columns are present
+    assert "top_neighbors" in df.columns
 
     # Verify that coverage filtering worked - nodes should appear in multiple layers
     # A, B, and E should be in the results as they are hubs in 2+ layers
