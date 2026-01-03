@@ -2,9 +2,42 @@
 
 > This file provides comprehensive documentation about py3plex, optimized for AI agents and assistants.
 
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [SQL-like DSL for Multilayer Networks](#sql-like-dsl-for-multilayer-networks)
+3. [DSL Examples with Outputs](#dsl-examples-with-outputs)
+4. [Result Dictionary Structure](#result-dictionary-structure)
+5. [Best Practices](#best-practices)
+6. [Current Limitations](#current-limitations)
+7. [DSL v2: Modern Builder API](#dsl-v2-modern-builder-api-q-uq-l)
+8. [Dplyr-Style Chainable Graph Operations API](#dplyr-style-chainable-graph-operations-api)
+9. [Method Chaining for Network Construction](#method-chaining-for-network-construction)
+10. [Pythonic Interface Features](#pythonic-interface-features)
+11. [Sklearn-Style Pipeline API](#sklearn-style-pipeline-api)
+12. [Config-Driven Workflows](#config-driven-workflows)
+13. [First-Class DSL Method on Network](#first-class-dsl-method-on-network)
+14. [Command-Line Interface (CLI)](#command-line-interface-cli)
+15. [Built-in Datasets](#built-in-datasets)
+16. [Plugin System](#plugin-system)
+17. [I/O API](#io-api)
+18. [Profiling Utilities](#profiling-utilities)
+19. [Exception Hierarchy](#exception-hierarchy)
+20. [Configuration](#configuration)
+21. [Linter and Validation](#linter-and-validation)
+22. [R Interoperability](#r-interoperability)
+23. [Dynamics Simulations](#dynamics-simulations)
+24. [Uncertainty Quantification](#uncertainty-quantification)
+25. [Temporal Networks](#temporal-networks)
+26. [Null Models](#null-models)
+27. [Version Information](#version-information)
+28. [File Locations](#file-locations)
+
+---
+
 ## Project Overview
 
-py3plex is a Python library (version 1.0) for analyzing and visualizing multilayer and multiplex networks. It provides:
+py3plex is a Python library (version 1.1.0) for analyzing and visualizing multilayer and multiplex networks. It provides:
 
 **Core Features:**
 - Native support for multilayer network structures
@@ -26,6 +59,10 @@ py3plex is a Python library (version 1.0) for analyzing and visualizing multilay
 - **Performance Profiling:** Built-in timing and benchmarking utilities
 - **File Linting:** Validate graph data files before loading
 - **Multiple I/O Formats:** EdgeList, GraphML, GML, JSON, CSV, Apache Arrow
+- **Dynamics Simulations:** SIS, SIR, SEIR, Random Walk and custom processes
+- **Uncertainty Quantification:** First-class uncertainty support with confidence intervals
+- **Temporal Networks:** Time-stamped edges, snapshots, and sliding windows
+- **Null Models:** Configuration model, random graphs for statistical testing
 
 **Key Ergonomics Features:**
 - **DSL Queries:** `net.execute_query('SELECT nodes WHERE degree > 5')`
@@ -712,6 +749,286 @@ The `execute_query` function returns a dictionary with the following structure:
 - Complex nested conditions require multiple queries
 - No aggregation functions (SUM, AVG, etc.)
 - Measures are computed using NetworkX algorithms
+
+---
+
+## DSL v2: Modern Builder API (Q, UQ, L)
+
+py3plex DSL v2 introduces a modern, Pythonic builder API for constructing queries with enhanced ergonomics and new features like uncertainty quantification, pattern matching, and dynamics.
+
+### DSL v2 Core Components
+
+```python
+from py3plex.dsl import (
+    Q,        # Main query builder
+    UQ,       # Uncertainty quantification builder
+    L,        # Layer expression builder
+    Param,    # Parameter placeholder
+    C,        # Compare networks builder
+    N,        # Null models builder
+    P,        # Path queries builder
+    F,        # Field expressions
+)
+from py3plex.dynamics import D  # Dynamics simulations builder
+```
+
+### Example 1: Basic Query with Q Builder
+
+```python
+from py3plex.dsl import Q, L
+from py3plex.core import multinet
+
+# Create network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'C', 'target': 'D', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'A', 'target': 'B', 'source_type': 'work', 'target_type': 'work'},
+])
+
+# Query with builder API
+result = (
+    Q.nodes()
+     .from_layers(L["social"] + L["work"])
+     .where(degree__gt=1)
+     .compute("betweenness_centrality", "degree_centrality")
+     .order_by("betweenness_centrality", desc=True)
+     .limit(5)
+     .execute(net)
+)
+
+# Convert to pandas
+df = result.to_pandas()
+print(df)
+```
+
+**Output:**
+```
+  node  layer  degree  betweenness_centrality  degree_centrality
+0    B  social       2                0.500000           0.666667
+1    B   work       1                0.000000           0.500000
+2    A  social       1                0.000000           0.333333
+...
+```
+
+---
+
+### Example 2: Uncertainty Quantification with UQ
+
+The flagship feature of DSL v2 is first-class uncertainty support via the `UQ` builder and `.uq()` method:
+
+```python
+from py3plex.dsl import Q, UQ
+
+# Query with uncertainty quantification
+result = (
+    Q.nodes()
+     .from_layers(L["social"])
+     .where(degree__gt=1)
+     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
+     .compute("betweenness_centrality", "pagerank")
+     .execute(net)
+)
+
+# Access uncertainty statistics
+df = result.to_pandas(expand_uncertainty=True)
+print(df[["node", "betweenness_centrality", "betweenness_centrality_std",
+          "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high"]])
+```
+
+**Output:**
+```
+  node  betweenness_centrality  betweenness_centrality_std  ci95_low  ci95_high
+0    B                0.500000                    0.021134  0.458820   0.541102
+1    C                0.333333                    0.018051  0.297902   0.368934
+...
+```
+
+---
+
+### Example 3: Layer Algebra with L Builder
+
+```python
+from py3plex.dsl import L
+
+# Layer expressions
+all_social = L["facebook"] + L["twitter"] + L["linkedin"]
+work_layers = L["email"] + L["slack"]
+all_layers = all_social + work_layers
+
+# Use in query
+result = (
+    Q.nodes()
+     .from_layers(all_social)
+     .where(degree__gt=5)
+     .execute(net)
+)
+```
+
+---
+
+### Example 4: Per-Layer Grouping and Coverage
+
+```python
+# Group by layer and find cross-layer hubs
+result = (
+    Q.nodes()
+     .where(degree__gt=3)
+     .per_layer()
+        .compute("betweenness_centrality")
+        .top_k(20, "betweenness_centrality__mean")
+     .end_grouping()
+     .coverage(mode="at_least", k=2)  # Present in ≥2 layers
+     .execute(net)
+)
+
+# Get summary by layer
+summary_df = result.group_summary()
+print(summary_df)
+```
+
+**Output:**
+```
+    layer  count  avg_betweenness_centrality
+0  social     15                    0.234567
+1    work     12                    0.198234
+...
+```
+
+---
+
+### Example 5: Enrichment with Explain
+
+```python
+# Enrich results with explanatory features
+result = (
+    Q.nodes()
+     .where(degree__gt=5)
+     .compute("betweenness_centrality")
+     .explain(neighbors_top=5, include_community=True)
+     .execute(net)
+)
+
+df = result.to_pandas(expand_explanations=True)
+print(df[["node", "betweenness_centrality", "community_id", "top_neighbors"]])
+```
+
+**Output:**
+```
+  node  betweenness_centrality  community_id                     top_neighbors
+0    B                0.500000            42  [{'id': 'A', 'weight': 2.3}, ...]
+...
+```
+
+---
+
+### Example 6: Network Comparison
+
+```python
+from py3plex.dsl import C
+
+# Compare two networks
+comparison = (
+    C.compare("baseline", "treatment")
+     .using("multiplex_jaccard")
+     .by_layer()
+     .execute({"baseline": net1, "treatment": net2})
+)
+
+print(f"Jaccard similarity: {comparison.similarity}")
+print(f"Layer-wise: {comparison.by_layer}")
+```
+
+---
+
+### Example 7: Null Models
+
+```python
+from py3plex.dsl import N
+
+# Generate configuration model null models
+null_models = (
+    N.configuration()
+     .samples(100)
+     .seed(42)
+     .preserve_layers(True)
+     .execute(net)
+)
+
+# Use for statistical testing
+observed_stat = compute_network_statistic(net)
+null_distribution = [compute_network_statistic(nm) for nm in null_models]
+p_value = sum(ns >= observed_stat for ns in null_distribution) / len(null_distribution)
+```
+
+---
+
+### Example 8: Path Queries
+
+```python
+from py3plex.dsl import P
+
+# Find shortest paths across layers
+paths = (
+    P.shortest("Alice", "Bob")
+     .crossing_layers()
+     .max_length(5)
+     .execute(net)
+)
+
+for path in paths.paths:
+    print(f"Path: {' -> '.join(path)}, Length: {len(path)-1}")
+```
+
+---
+
+### Example 9: Pattern Matching (Cypher-like)
+
+```python
+from py3plex.dsl import PatternQueryBuilder
+
+# Find triangles in social layer
+pattern = (
+    PatternQueryBuilder()
+     .node("a", layer="social")
+     .edge("a", "b")
+     .edge("b", "c")
+     .edge("c", "a")
+     .return_nodes("a", "b", "c")
+)
+
+matches = pattern.execute(net)
+for match in matches:
+    print(f"Triangle: {match['a']} - {match['b']} - {match['c']}")
+```
+
+---
+
+### DSL v2 vs Legacy DSL
+
+| Feature | Legacy DSL | DSL v2 |
+|---------|-----------|--------|
+| Syntax | String-based | Builder API (+ string) |
+| Layer algebra | Limited | Full algebra (L[...] + L[...]) |
+| Uncertainty | Not supported | First-class (.uq()) |
+| Grouping | Not supported | per_layer(), coverage() |
+| Pattern matching | Basic MATCH | Full Cypher-like |
+| Dynamics | Not supported | D.process(...) |
+| Null models | Not supported | N.configuration() |
+| Type safety | Runtime errors | IDE autocomplete |
+
+### DSL v2 Architecture
+
+DSL v2 uses a unified AST (Abstract Syntax Tree) compilation model:
+
+```
+Builder API (Q, L, etc.)  ─┐
+                          ├─→ AST ─→ Executor ─→ QueryResult
+String DSL                ─┘
+```
+
+Both frontends compile to the same AST, ensuring consistent behavior.
 
 ---
 
@@ -1482,14 +1799,453 @@ between <- betweenness(g)
 
 ---
 
+## Dynamics Simulations
+
+py3plex provides a comprehensive framework for simulating dynamical processes on multilayer networks.
+
+### Core Components
+
+```python
+from py3plex.dynamics import (
+    D,                      # Dynamics builder
+    SIS, SIR, SEIR,        # Compartmental models
+    RandomWalk,             # Random walk process
+    DynamicsProcess,        # Base class for custom dynamics
+    SimulationResult,       # Result container
+)
+```
+
+### Example 1: Basic SIS Simulation
+
+```python
+from py3plex.dynamics import D, SIS
+
+# Define and run SIS simulation
+sim = (
+    D.process(SIS(beta=0.3, mu=0.1))
+     .initial(infected=0.01)  # 1% initially infected
+     .steps(100)
+     .measure("prevalence", "incidence")
+     .replicates(20)
+     .seed(42)
+)
+
+result = sim.run(network)
+df = result.to_pandas()  # Tidy DataFrame with time series
+
+print(df.head())
+# time  replicate  prevalence  incidence
+# 0     0          0.010000    0.010000
+# 1     0          0.015234    0.005234
+# ...
+```
+
+---
+
+### Example 2: Multilayer SIR with Coupling
+
+```python
+from py3plex.dynamics import D, SIR
+from py3plex.dsl import L
+
+# SIR on multiple layers with node coupling
+sim = (
+    D.process(SIR(beta=0.2, gamma=0.05))
+     .on_layers(L["offline"] + L["online"])
+     .coupling(node_replicas="strong")  # State syncs across layers
+     .initial(infected=0.01)
+     .steps(200)
+     .measure("prevalence", "prevalence_by_layer")
+     .replicates(10)
+)
+
+result = sim.run(network)
+df = result.to_pandas()
+```
+
+---
+
+### Example 3: Random Walk Dynamics
+
+```python
+from py3plex.dynamics import D, RandomWalk
+
+# Random walk with layer transitions
+sim = (
+    D.process(RandomWalk(transition_prob=0.1))  # 10% chance to switch layers
+     .initial(walkers={"A": 1.0})  # Start walker at node A
+     .steps(1000)
+     .measure("visit_counts", "stationary_distribution")
+)
+
+result = sim.run(network)
+```
+
+---
+
+### Example 4: Custom Dynamics Process
+
+```python
+from py3plex.dynamics import DynamicsProcess
+import numpy as np
+
+class ThresholdDynamics(DynamicsProcess):
+    """Custom threshold activation model."""
+    
+    def __init__(self, threshold=0.3):
+        self.threshold = threshold
+    
+    def step(self, network, state):
+        """Execute one time step."""
+        new_state = state.copy()
+        
+        for node in network.get_nodes():
+            neighbors = list(network.core_network.neighbors(node))
+            if not neighbors:
+                continue
+            
+            active_neighbors = sum(state.get(n, 0) for n in neighbors)
+            fraction_active = active_neighbors / len(neighbors)
+            
+            if fraction_active >= self.threshold:
+                new_state[node] = 1
+        
+        return new_state
+
+# Use custom dynamics
+sim = (
+    D.process(ThresholdDynamics(threshold=0.3))
+     .initial(active={"A": 1, "B": 1})
+     .steps(50)
+     .measure("active_count")
+)
+
+result = sim.run(network)
+```
+
+---
+
+### Available Process Models
+
+| Model | Description | Parameters |
+|-------|-------------|------------|
+| `SIS` | Susceptible-Infected-Susceptible | `beta` (infection), `mu` (recovery) |
+| `SIR` | Susceptible-Infected-Recovered | `beta` (infection), `gamma` (recovery) |
+| `SEIR` | With Exposed state | `beta`, `sigma` (incubation), `gamma` |
+| `RandomWalk` | Random walker on network | `transition_prob` (layer switch) |
+
+### Available Measurements
+
+- `prevalence`: Fraction of infected nodes
+- `incidence`: New infections per step
+- `prevalence_by_layer`: Prevalence separated by layer
+- `visit_counts`: Node visit frequency (for random walks)
+- `stationary_distribution`: Long-term visit probabilities
+
+---
+
+## Uncertainty Quantification
+
+py3plex features first-class uncertainty support, treating uncertainty as a native property of statistics rather than an add-on.
+
+### Core Components
+
+```python
+from py3plex.uncertainty import (
+    StatSeries,             # Universal statistic type
+    StatMatrix,             # Matrix statistics
+    CommunityStats,         # Community detection results
+    ResamplingStrategy,     # Resampling methods
+    estimate_uncertainty,   # Generic uncertainty estimator
+    uncertainty_enabled,    # Context manager
+)
+```
+
+### Example 1: Explicit Uncertainty Parameter
+
+```python
+from py3plex.algorithms.centrality_toolkit import multilayer_pagerank
+from py3plex.uncertainty import ResamplingStrategy
+
+# Compute PageRank with uncertainty
+result = multilayer_pagerank(
+    network,
+    uncertainty=True,
+    n_runs=100,
+    resampling=ResamplingStrategy.PERTURBATION,
+    random_seed=42
+)
+
+# Access statistics
+print(f"Mean: {result.mean}")
+print(f"Std: {result.std}")
+print(f"95% CI: {result.quantiles[0.025]} - {result.quantiles[0.975]}")
+print(f"Certainty: {result.certainty}")  # 0.0 = uncertain, 1.0 = deterministic
+```
+
+---
+
+### Example 2: Context Manager for Global Uncertainty
+
+```python
+from py3plex.uncertainty import uncertainty_enabled
+
+# Enable uncertainty for entire pipeline
+with uncertainty_enabled(n_runs=50):
+    pr = multilayer_pagerank(network)
+    bc = multilayer_betweenness_centrality(network)
+    # Both have uncertainty information
+
+    print(f"PageRank std: {pr.std}")
+    print(f"Betweenness std: {bc.std}")
+```
+
+---
+
+### Example 3: Custom Metric with Uncertainty
+
+```python
+from py3plex.uncertainty import estimate_uncertainty, ResamplingStrategy
+
+def my_custom_metric(net):
+    """Compute average clustering coefficient."""
+    import networkx as nx
+    clustering = nx.clustering(net.core_network)
+    return sum(clustering.values()) / len(clustering)
+
+# Estimate uncertainty
+result = estimate_uncertainty(
+    network,
+    my_custom_metric,
+    n_runs=50,
+    resampling=ResamplingStrategy.PERTURBATION,
+    perturbation_params={
+        "edge_drop_p": 0.1,  # Drop 10% of edges per sample
+        "node_drop_p": 0.05  # Drop 5% of nodes per sample
+    }
+)
+
+print(f"Metric: {result['mean']:.4f} ± {result['std']:.4f}")
+```
+
+---
+
+### Example 4: StatSeries for Backward Compatibility
+
+```python
+# StatSeries implements __array__ for numpy compatibility
+result = multilayer_pagerank(network, uncertainty=True, n_runs=50)
+
+# Works with numpy
+import numpy as np
+arr = np.array(result)  # Extracts mean values
+
+# Dictionary-like access
+node = result.index[0]
+stats = result[node]
+# {'mean': 0.25, 'std': 0.02, 'quantiles': {...}}
+```
+
+---
+
+### Resampling Strategies
+
+| Strategy | Description | Use Case |
+|----------|-------------|----------|
+| `SEED` | Multiple random seeds | Stochastic algorithms |
+| `PERTURBATION` | Drop edges/nodes | Structural uncertainty |
+| `BOOTSTRAP` | Resample with replacement | Statistical inference |
+| `JACKKNIFE` | Leave-one-out | Influence analysis |
+
+---
+
+## Temporal Networks
+
+py3plex provides native support for temporal multilayer networks with time-stamped edges and temporal queries.
+
+### Core Components
+
+```python
+from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+from py3plex.temporal_utils import EdgeTimeInterval, extract_edge_time
+```
+
+### Example 1: Creating Temporal Networks
+
+```python
+from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+
+# Create temporal network
+tnet = TemporalMultiLayerNetwork()
+
+# Add time-stamped edges
+tnet.add_edge('A', 'B', layer='social', time=100.0)
+tnet.add_edge('B', 'C', layer='social', time=200.0)
+tnet.add_edge('A', 'C', layer='social', time=150.0)
+
+# Add interval edges
+tnet.add_edge('A', 'B', layer='work', t_start=100.0, t_end=200.0)
+```
+
+---
+
+### Example 2: Temporal Snapshots
+
+```python
+# Get snapshot at specific time
+snapshot = tnet.snapshot_at(150.0)
+print(f"Snapshot at t=150: {snapshot.number_of_nodes()} nodes, {snapshot.number_of_edges()} edges")
+
+# Get snapshot for time range
+snapshot = tnet.get_snapshot(time_range=(100.0, 200.0))
+```
+
+---
+
+### Example 3: Sliding Windows
+
+```python
+# Iterate over temporal windows
+for t_start, t_end, window_net in tnet.window_iter(window_size=50, step=25):
+    print(f"Window [{t_start}, {t_end}]:")
+    print(f"  Nodes: {window_net.number_of_nodes()}")
+    print(f"  Edges: {window_net.number_of_edges()}")
+    
+    # Compute statistics on window
+    avg_degree = sum(dict(window_net.degree()).values()) / window_net.number_of_nodes()
+    print(f"  Avg degree: {avg_degree:.2f}")
+```
+
+---
+
+### Example 4: Temporal DSL Queries
+
+```python
+from py3plex.dsl import Q
+
+# Query edges in time window
+result = (
+    Q.edges()
+     .where(t__between=(100.0, 200.0))
+     .from_layers(L["social"])
+     .execute(tnet.base_network)
+)
+
+# Query nodes active in time range
+result = (
+    Q.nodes()
+     .where(t__gte=100.0, t__lte=200.0)
+     .compute("degree")
+     .execute(tnet.base_network)
+)
+```
+
+---
+
+### Example 5: Temporal Aggregation
+
+```python
+# Aggregate temporal network over time windows
+import pandas as pd
+
+time_windows = [(0, 100), (100, 200), (200, 300)]
+stats = []
+
+for t_start, t_end in time_windows:
+    snapshot = tnet.get_snapshot(time_range=(t_start, t_end))
+    stats.append({
+        'window': f"{t_start}-{t_end}",
+        'nodes': snapshot.number_of_nodes(),
+        'edges': snapshot.number_of_edges(),
+        'density': snapshot.number_of_edges() / (snapshot.number_of_nodes() ** 2)
+    })
+
+df = pd.DataFrame(stats)
+print(df)
+```
+
+---
+
+## Null Models
+
+py3plex provides null model implementations for statistical testing and comparison.
+
+### Core Components
+
+```python
+from py3plex.nullmodels import (
+    configuration_model,      # Preserve degree sequence
+    erdos_renyi_model,       # Random graph
+    barabasi_albert_model,   # Preferential attachment
+    stochastic_block_model,  # Community structure
+)
+```
+
+### Example 1: Configuration Model
+
+```python
+from py3plex.nullmodels import configuration_model
+
+# Generate configuration model null model
+null_net = configuration_model(network, preserve_layers=True)
+
+# Compute observed statistic
+observed_clustering = compute_clustering(network)
+
+# Generate null distribution
+null_distribution = []
+for i in range(100):
+    null_net = configuration_model(network, preserve_layers=True, seed=i)
+    null_clustering = compute_clustering(null_net)
+    null_distribution.append(null_clustering)
+
+# Compute p-value
+import numpy as np
+p_value = sum(nc >= observed_clustering for nc in null_distribution) / len(null_distribution)
+print(f"p-value: {p_value:.4f}")
+```
+
+---
+
+### Example 2: DSL Integration with Null Models
+
+```python
+from py3plex.dsl import N
+
+# Generate null models via DSL
+null_models = (
+    N.configuration()
+     .samples(100)
+     .seed(42)
+     .preserve_layers(True)
+     .preserve_degree_sequence(True)
+     .execute(network)
+)
+
+# Use for statistical testing
+observed = compute_statistic(network)
+null_stats = [compute_statistic(nm) for nm in null_models]
+
+# Compute z-score
+import numpy as np
+z_score = (observed - np.mean(null_stats)) / np.std(null_stats)
+print(f"Z-score: {z_score:.2f}")
+```
+
+---
+
 ## Version Information
 
 ```python
 import py3plex
 
-print(py3plex.__version__)      # Current version: "0.96"
-print(py3plex.__api_version__)  # API version: "0.96"
+print(py3plex.__version__)      # Current version: "1.1.0"
 ```
+
+**Version History:**
+- **1.1.0** (Current): DSL v2, Dynamics, Uncertainty, Temporal networks, Null models
+- **1.0.0**: Initial stable release with DSL v1, pipelines, CLI
+- **0.96**: Pre-release version
 
 ---
 
@@ -1497,10 +2253,18 @@ print(py3plex.__api_version__)  # API version: "0.96"
 
 - **Core Modules:**
   - `py3plex/core/multinet.py` - Main multi_layer_network class
-  - `py3plex/dsl.py` - SQL-like DSL implementation
+  - `py3plex/core/temporal_multinet.py` - Temporal multilayer networks
+  - `py3plex/dsl/` - DSL v2 implementation (builder API, AST, executor)
+  - `py3plex/dsl_legacy.py` - Legacy string-based DSL (backward compatibility)
   - `py3plex/graph_ops.py` - Dplyr-style chainable API
   - `py3plex/pipeline.py` - Sklearn-style pipeline
   - `py3plex/workflows.py` - Config-driven workflows
+
+- **Advanced Features:**
+  - `py3plex/dynamics/` - Dynamics simulations (SIS, SIR, RandomWalk, custom)
+  - `py3plex/uncertainty/` - Uncertainty quantification (StatSeries, bootstrap, null models)
+  - `py3plex/temporal_utils.py` - Temporal network utilities
+  - `py3plex/nullmodels/` - Null model implementations
 
 - **Utilities:**
   - `py3plex/cli.py` - Command-line interface
@@ -1522,7 +2286,11 @@ print(py3plex.__api_version__)  # API version: "0.96"
   - `py3plex/wrappers/r_interop.py` - R interoperability
 
 - **Algorithms:**
-  - `py3plex/algorithms/` - Network algorithms (community detection, centrality, etc.)
+  - `py3plex/algorithms/` - Network algorithms
+    - `centrality/` - Centrality measures
+    - `community_detection/` - Community detection algorithms
+    - `temporal/` - Temporal network algorithms
+    - `general/` - General graph algorithms
 
 - **Visualization:**
   - `py3plex/visualization/` - Visualization tools and layouts
@@ -1530,6 +2298,8 @@ print(py3plex.__api_version__)  # API version: "0.96"
 - **Documentation:**
   - `docfiles/user_guide/dsl.rst` - DSL documentation
   - `docfiles/r_interop.rst` - R interoperability guide
+  - `AGENTS.md` - AI agent documentation (this file)
+  - `README.md` - Quick start and flagship example
 
 - **Examples:**
   - `examples/getting_started/` - Getting started tutorials
@@ -1537,6 +2307,9 @@ print(py3plex.__api_version__)  # API version: "0.96"
   - `examples/pipelines/` - Pipeline examples
   - `examples/workflows/` - Workflow examples
   - `examples/visualization/` - Visualization examples
+  - `examples/dynamics/` - Dynamics simulation examples
+  - `examples/uncertainty/` - Uncertainty quantification examples
+  - `examples/temporal/` - Temporal network examples
 
 - **Tests:**
   - `tests/test_dsl.py` - DSL tests
@@ -1546,3 +2319,437 @@ print(py3plex.__api_version__)  # API version: "0.96"
   - `tests/test_cli.py` - CLI tests
   - `tests/test_plugin_system.py` - Plugin system tests
   - `tests/test_workflows.py` - Workflow tests
+  - `tests/test_dynamics.py` - Dynamics tests
+  - `tests/test_uncertainty.py` - Uncertainty tests
+  - `tests/test_temporal.py` - Temporal network tests
+
+---
+
+## API-Specific Patterns and Best Practices
+
+### Multi_layer_network API
+
+**Node and Edge Addition:**
+- The API uses `add_nodes()` and `add_edges()` (plural) - the `multi_layer_network` class doesn't expose singular forms
+- Use `add_edges([...])` with list of dicts, NOT individual edge additions
+- When serializing to JSON format with `to_json()`, the output uses `'edges'` key, not `'links'`
+- Method signature: `add_edges([{'source': ..., 'target': ..., 'source_type': ..., 'target_type': ...}])`
+
+**Example:**
+```python
+# Correct
+net.add_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'},
+    {'source': 'B', 'target': 'C', 'source_type': 'layer1', 'target_type': 'layer1'},
+])
+
+# Incorrect - singular form doesn't exist
+# net.add_edge('A', 'B', 'layer1', 'layer1')  # Don't do this!
+```
+
+---
+
+### DSL Architecture Patterns
+
+**DSL v2 vs Legacy:**
+- **DSL v2:** Modern builder API in `py3plex/dsl/` (preferred) - use Q, L, UQ builders
+- **Legacy DSL:** String-based parsing in `py3plex/dsl_legacy.py` (backward compatibility)
+- Use `Q.nodes()` for builder API, `execute_query()` for legacy string queries
+- DSL supports autocompute of centrality metrics - set `autocompute=False` to disable
+
+**Layer Selection:**
+- Canonical: `FROM layer="name"` or `Q.from_layers(L["name"])`
+- Backward compat: `WHERE layer="name"`
+
+**Edge Grouping and Coverage:**
+- Use `per_layer()` for node queries to group by layer
+- Use `per_layer_pair()` for edge queries to group by layer pairs
+- Edge grouping groups by (src_layer, dst_layer) pairs
+- Coverage filtering works for both nodes and edges: `coverage(mode="at_least", k=2)`
+- QueryResult.meta["grouping"] contains structured grouping metadata
+- Use `result.group_summary()` to get DataFrame summary of groups
+
+**Temporal Extensions:**
+- DSL supports temporal queries via `.window()` builder method
+- Temporal filters: `t__between`, `t__gte`, `t__lte`, `t__gt`, `t__lt` in `where()` clause
+- WindowSpec AST node represents temporal query specifications
+
+**Example:**
+```python
+# DSL v2 with layer algebra
+result = (
+    Q.nodes()
+     .from_layers(L["social"] + L["work"])
+     .where(degree__gt=5)
+     .per_layer()
+        .compute("betweenness_centrality")
+        .top_k(10, "betweenness_centrality")
+     .end_grouping()
+     .coverage(mode="at_least", k=2)
+     .execute(net)
+)
+
+# Temporal query
+result = (
+    Q.edges()
+     .where(t__between=(100.0, 200.0))
+     .from_layers(L["social"])
+     .execute(temporal_net)
+)
+```
+
+---
+
+### Error Handling Best Practices
+
+Always use domain-specific exceptions:
+
+```python
+from py3plex.exceptions import (
+    Py3plexIOError,           # For I/O errors
+    Py3plexException,         # For general errors
+    NetworkConstructionError, # For network construction failures
+    ParsingError,             # For input parsing failures
+)
+
+# For I/O errors
+try:
+    net.load_network("file.csv")
+except Py3plexIOError as e:
+    print(f"Failed to read file: {e}")
+
+# For general errors
+try:
+    result = execute_query(net, query)
+except Py3plexException as e:
+    print(f"Query failed: {e}")
+```
+
+**Never use generic exceptions for domain-specific errors:**
+- Use `Py3plexIOError` instead of `FileNotFoundError` for I/O
+- Use `NetworkConstructionError` instead of `ValueError` for construction errors
+
+---
+
+## Common Pitfalls and Solutions
+
+### 1. NetworkX MultiGraph Limitations
+
+**Problem:** NetworkX's `clustering()` doesn't support MultiGraph.
+
+**Solution:** Convert to simple Graph first by merging parallel edges.
+
+```python
+import networkx as nx
+
+# Wrong - will fail on MultiGraph
+# clustering = nx.clustering(net.core_network)
+
+# Correct - convert to simple graph first
+simple_graph = nx.Graph(net.core_network)
+clustering = nx.clustering(simple_graph)
+```
+
+---
+
+### 2. Forward References in DSL
+
+**Problem:** Type hints for classes defined later in the same file cause NameError.
+
+**Solution:** Use string type hints for forward references.
+
+```python
+# Correct
+def dynamics(self) -> "DynamicsBuilder":
+    return DynamicsBuilder()
+
+# Wrong - causes NameError
+# def dynamics(self) -> DynamicsBuilder:  # DynamicsBuilder not defined yet
+```
+
+---
+
+### 3. DSL Builder Method Chaining
+
+**Problem:** Forgetting to call `.execute()` returns builder object, not results.
+
+**Solution:** Always end query chains with `.execute(network)`.
+
+```python
+# Wrong - returns QueryBuilder, not results
+result = Q.nodes().where(degree__gt=5)
+
+# Correct - returns QueryResult
+result = Q.nodes().where(degree__gt=5).execute(network)
+```
+
+---
+
+### 4. Uncertainty Context Scope
+
+**Problem:** Uncertainty context doesn't affect code outside the `with` block.
+
+**Solution:** Ensure all uncertainty-enabled code is inside the context manager.
+
+```python
+from py3plex.uncertainty import uncertainty_enabled
+
+# Wrong - pagerank computed outside context, no uncertainty
+result = multilayer_pagerank(network)
+with uncertainty_enabled(n_runs=50):
+    pass
+
+# Correct - all computations inside context
+with uncertainty_enabled(n_runs=50):
+    result = multilayer_pagerank(network)
+    print(f"Std: {result.std}")
+```
+
+---
+
+### 5. Temporal Edge Attributes
+
+**Problem:** Mixing `t` with `t_start`/`t_end` causes confusion.
+
+**Solution:** Use interval form (`t_start`, `t_end`) for consistency, or stick to one convention.
+
+```python
+# Preferred - interval form
+tnet.add_edge('A', 'B', layer='social', t_start=100.0, t_end=200.0)
+
+# Also valid - point-in-time
+tnet.add_edge('A', 'B', layer='social', t=150.0)
+
+# Don't mix both on same edge
+```
+
+---
+
+### 6. Null Model Randomization
+
+**Problem:** Forgetting to set random seed makes results non-reproducible.
+
+**Solution:** Always specify `seed` parameter for reproducibility.
+
+```python
+# Non-reproducible
+null_net = configuration_model(network)
+
+# Reproducible
+null_net = configuration_model(network, seed=42)
+```
+
+---
+
+### 7. Layer Names with Special Characters
+
+**Problem:** Layer names with spaces or special characters break DSL queries.
+
+**Solution:** Use underscores or quote layer names.
+
+```python
+# Wrong - spaces break parsing
+# L["social media"]
+
+# Correct - use underscores
+L["social_media"]
+
+# Also correct - quote if needed
+net.add_nodes([{'source': 'A', 'type': 'social_media'}])
+```
+
+---
+
+### 8. Test Dependencies
+
+**Problem:** Some tests require optional dependencies not in core install.
+
+**Solution:** Install test extras or check for missing dependencies.
+
+```bash
+# Install test dependencies
+pip install py3plex[tests]
+
+# Or install specific extras
+pip install py3plex[infomap,algos]
+```
+
+**Note:** Tests require `pytest-benchmark` (in `dev` dependencies). Some examples may use `sympy`.
+
+---
+
+### 9. Type Checking Requirements
+
+**Problem:** mypy requires Python 3.9+ while project supports 3.8+.
+
+**Solution:** Use Python 3.9+ for type checking, 3.8+ for runtime.
+
+```bash
+# Development with type checking
+python3.9 -m mypy py3plex/
+
+# Runtime supports 3.8+
+python3.8 -m pytest tests/
+```
+
+---
+
+### 10. Excluded Files from Linting
+
+**Problem:** `powerlaw.py` intentionally excluded from linting due to legacy issues.
+
+**Solution:** Don't try to fix linting in excluded files - they work as-is.
+
+**Files excluded from linting:**
+- `py3plex/algorithms/statistics/powerlaw.py`
+- `examples/` directory (intentional)
+
+---
+
+## Security Guidelines
+
+1. **Input Validation:** Always validate file paths and network data before processing
+2. **No Arbitrary Code Execution:** Don't use `eval()` or `exec()` on user input
+3. **File Operations:** Use safe file operations with proper error handling
+4. **Dependencies:** Check new dependencies for known vulnerabilities with `gh-advisory-database` tool
+5. **Domain Exceptions:** Use `Py3plexIOError` and related exceptions, never expose raw system errors to users
+
+**Example of secure file loading:**
+```python
+from py3plex.exceptions import Py3plexIOError
+from py3plex.validation import validate_file_exists
+import os
+
+def safe_load_network(path: str):
+    # Validate input
+    if not path or '..' in path:
+        raise Py3plexIOError("Invalid file path")
+    
+    # Check file exists
+    validate_file_exists(path)
+    
+    # Load with error handling
+    try:
+        net = multinet.multi_layer_network()
+        net.load_network(path, input_type="edgelist")
+        return net
+    except Exception as e:
+        raise Py3plexIOError(f"Failed to load network: {e}")
+```
+
+---
+
+## Testing Strategy
+
+**Test Organization:**
+- **Unit Tests:** Fast, isolated tests in `tests/test_*.py`
+- **Property Tests:** Hypothesis-based tests marked with `@pytest.mark.property`
+- **Integration Tests:** Multi-component tests marked with `@pytest.mark.integration`
+- **Slow Tests:** Marked with `@pytest.mark.slow` - skip during development
+
+**Running Tests:**
+```bash
+# Run all tests
+pytest tests/
+
+# Run specific test file
+pytest tests/test_dsl.py
+
+# Run with coverage
+pytest tests/ --cov=py3plex
+
+# Skip slow tests
+pytest tests/ -m "not slow"
+
+# Run only property tests
+pytest tests/ -m property
+
+# Run targeted test
+pytest tests/test_dsl.py -k "test_specific_function"
+```
+
+**Test Markers:**
+- `@pytest.mark.property` - Property-based tests (Hypothesis)
+- `@pytest.mark.integration` - Integration tests
+- `@pytest.mark.slow` - Potentially slow tests (>1 second)
+- `@pytest.mark.unit` - Fast unit tests
+
+---
+
+## Performance Considerations
+
+1. **Large Networks:** Consider memory usage for networks with >10k nodes
+2. **Centrality Computation:** Betweenness/closeness are O(n³) for large networks
+3. **DSL Autocompute:** Disable with `autocompute=False` if metrics are pre-computed
+4. **Uncertainty Sampling:** Start with n_runs=10-20 for development, increase for production
+5. **Temporal Snapshots:** Cache snapshots if querying same time range repeatedly
+6. **Null Models:** Generate in parallel when possible using multiprocessing
+
+**Benchmarking:**
+```bash
+# Run benchmarks
+pytest benchmarks/ --benchmark-only
+
+# Compare against baseline
+pytest benchmarks/ --benchmark-compare
+```
+
+**Profiling:**
+```python
+from py3plex.profiling import profile_performance, timed_section
+
+@profile_performance
+def my_analysis(network):
+    # Your code here
+    pass
+
+with timed_section("community_detection"):
+    communities = detect_communities(network)
+```
+
+---
+
+## References and Learning Resources
+
+- **README.md:** Quick start with flagship biological network example
+- **AGENTS.md:** Comprehensive AI agent documentation (this file)
+- **docfiles/:** Detailed documentation source files
+- **examples/:** 50+ working examples demonstrating all features
+- **pyproject.toml:** All dependencies, build config, and tool settings
+- **Technical Book:** `docs/py3plex_book.pdf` - 106-page handbook
+
+**Key Examples to Study:**
+- `examples/getting_started/quickstart.py` - Basic usage
+- `examples/network_analysis/dsl_queries.py` - DSL examples
+- `examples/uncertainty/uncertainty_quantification.py` - UQ examples
+- `examples/dynamics/sir_simulation.py` - Dynamics examples
+- `examples/temporal/temporal_analysis.py` - Temporal networks
+
+---
+
+## Contributing Guidelines
+
+When adding new features:
+
+1. **Minimal Changes:** Make the smallest possible change to achieve the goal
+2. **Type Hints:** Add type hints for all public functions
+3. **Docstrings:** Use Google-style docstrings
+4. **Tests:** Add tests to `tests/` for new features
+5. **Documentation:** Update AGENTS.md and relevant docfiles
+6. **Backward Compatibility:** Never break existing APIs without deprecation
+7. **Domain Exceptions:** Use exceptions from `py3plex.exceptions`
+8. **Dependencies:** Check with `gh-advisory-database` before adding new dependencies
+
+**Code Style:**
+```bash
+# Format code
+black py3plex/
+
+# Lint
+ruff check py3plex/
+
+# Type check
+mypy py3plex/
+```
+
+---
