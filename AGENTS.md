@@ -767,9 +767,9 @@ from py3plex.dsl import (
     C,        # Compare networks builder
     N,        # Null models builder
     P,        # Path queries builder
-    D,        # Dynamics simulations builder
     F,        # Field expressions
 )
+from py3plex.dynamics import D  # Dynamics simulations builder
 ```
 
 ### Example 1: Basic Query with Q Builder
