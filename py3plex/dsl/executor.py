@@ -1428,6 +1428,8 @@ def _get_attribute_value(item: Any, attribute: str, network: Any, G: nx.Graph) -
         - 'target_layer': returns target node's layer
         - 'layer': returns source layer (for intralayer edges) or None
         - 'weight': returns edge weight (default 1.0)
+        - 'src_degree' / 'source_degree': returns source node's degree
+        - 'dst_degree' / 'target_degree': returns target node's degree
         - other: looks up edge attributes
     """
     # Check if this is an edge (tuple with 2 node tuples as first elements)
@@ -1462,6 +1464,16 @@ def _get_attribute_value(item: Any, attribute: str, network: Any, G: nx.Graph) -
                         if edge_data:
                             return edge_data.get('weight', 1.0)
                     return 1.0
+                elif attribute in ("src_degree", "source_degree"):
+                    # Get source node's degree
+                    if first_elem in G:
+                        return G.degree(first_elem)
+                    return 0
+                elif attribute in ("dst_degree", "target_degree"):
+                    # Get target node's degree
+                    if second_elem in G:
+                        return G.degree(second_elem)
+                    return 0
                 else:
                     # Try to get from edge data dict
                     if len(item) >= 3 and isinstance(item[2], dict):
@@ -1937,48 +1949,71 @@ def _get_coverage_identity(item: Any, select: SelectStmt, network: Any, G: nx.Gr
         return _get_attribute_value(item, id_field, network, G)
 
 
-def _parse_aggregation_expr(expr: str) -> Tuple[str, Optional[str]]:
-    """Parse an aggregation expression like 'mean(degree)' or 'n()'.
+def _parse_aggregation_expr(expr: str) -> Tuple[str, Optional[str], Optional[float]]:
+    """Parse an aggregation expression like 'mean(degree)', 'n()', or 'quantile(degree, 0.95)'.
     
     Args:
         expr: Aggregation expression string
         
     Returns:
-        Tuple of (agg_func, attr_name) where attr_name is None for n()
+        Tuple of (agg_func, attr_name, quantile_p) where:
+            - attr_name is None for n()
+            - quantile_p is None except for quantile() function
         
     Raises:
         ValueError: If expression format is invalid
     """
     import re
     
-    # Match pattern: func(attr) or func()
+    # Match pattern: func(attr) or func() or func(attr, param)
     match = re.match(r'([a-z_]+)\(([^)]*)\)$', expr.strip())
     if not match:
-        raise ValueError(f"Invalid aggregation expression: '{expr}'. Expected format: 'func(attr)' or 'n()'")
+        raise ValueError(f"Invalid aggregation expression: '{expr}'. Expected format: 'func(attr)', 'func(attr, param)', or 'n()'")
     
     func = match.group(1)
-    attr = match.group(2).strip() if match.group(2) else None
+    args_str = match.group(2).strip() if match.group(2) else None
     
-    return func, attr
+    if not args_str:
+        # func() - e.g., n()
+        return func, None, None
+    
+    # Split arguments by comma
+    args = [arg.strip() for arg in args_str.split(',')]
+    
+    if len(args) == 1:
+        # func(attr) - e.g., mean(degree)
+        return func, args[0], None
+    elif len(args) == 2:
+        # func(attr, param) - e.g., quantile(degree, 0.95)
+        attr_name = args[0]
+        try:
+            param = float(args[1])
+        except ValueError:
+            raise ValueError(f"Invalid parameter in aggregation expression: '{args[1]}' (expected numeric value)")
+        return func, attr_name, param
+    else:
+        raise ValueError(f"Invalid aggregation expression: '{expr}'. Too many arguments (max 2)")
 
 
-def _apply_aggregation(values: List[Any], func: str) -> Any:
+
+def _apply_aggregation(values: List[Any], func: str, quantile_p: Optional[float] = None) -> Any:
     """Apply an aggregation function to a list of values.
     
     Args:
         values: List of numeric values (or uncertainty dicts)
-        func: Aggregation function name
+        func: Aggregation function name (mean, sum, min, max, std, var, median, quantile, count, n)
+        quantile_p: Quantile probability for 'quantile' function (e.g., 0.95 for 95th percentile)
         
     Returns:
         Aggregated result (float for numeric ops, int for count)
         Returns NaN for empty lists on statistical functions
         
     Raises:
-        ValueError: If function is unknown
+        ValueError: If function is unknown or quantile_p is missing for quantile function
     """
     import numpy as np
     
-    if func == "n":
+    if func in ("n", "count"):
         return len(values)
     
     # Return NaN for empty lists on statistical operations
@@ -2006,6 +2041,12 @@ def _apply_aggregation(values: List[Any], func: str) -> Any:
         return float(np.std(numeric_values))
     elif func == "var":
         return float(np.var(numeric_values))
+    elif func == "median":
+        return float(np.median(numeric_values))
+    elif func == "quantile":
+        if quantile_p is None:
+            raise ValueError("quantile() aggregation requires a probability argument (e.g., quantile(attr, 0.95))")
+        return float(np.quantile(numeric_values, quantile_p))
     else:
         raise ValueError(f"Unknown aggregation function: '{func}'")
 
@@ -2110,11 +2151,11 @@ def _apply_aggregate(
                 else:
                     result = None
             elif isinstance(agg_spec, str):
-                # Check if it's a function call like "mean(degree)"
+                # Check if it's a function call like "mean(degree)" or "quantile(degree, 0.95)"
                 if "(" in agg_spec and ")" in agg_spec:
-                    func, attr = _parse_aggregation_expr(agg_spec)
+                    func, attr, quantile_p = _parse_aggregation_expr(agg_spec)
                     
-                    if func == "n":
+                    if func in ("n", "count"):
                         # Count of items in group
                         result = len(group_items)
                     else:
@@ -2130,7 +2171,7 @@ def _apply_aggregate(
                                 values.append(attributes[attr][item_key])
                         
                         # Apply aggregation
-                        result = _apply_aggregation(values, func)
+                        result = _apply_aggregation(values, func, quantile_p)
                 else:
                     # Direct attribute reference - just get the value
                     # For grouped results, get from first item
@@ -2353,9 +2394,9 @@ def _apply_summarize(
         
         # Compute each aggregation for this group
         for agg_name, agg_expr in select.summarize_aggs.items():
-            func, attr = _parse_aggregation_expr(agg_expr)
+            func, attr, quantile_p = _parse_aggregation_expr(agg_expr)
             
-            if func == "n":
+            if func in ("n", "count"):
                 # Count of items in group
                 value = len(group_items)
             else:
@@ -2371,7 +2412,7 @@ def _apply_summarize(
                         values.append(attributes[attr][item_key])
                 
                 # Apply aggregation
-                value = _apply_aggregation(values, func)
+                value = _apply_aggregation(values, func, quantile_p)
             
             summary_attrs[agg_name][summary_item] = value
     
