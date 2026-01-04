@@ -184,7 +184,6 @@ def test_quantile_aggregation_bounded(quantile_p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
 def test_quantile_ordering_property():
     """
     Property: quantile(attr, p1) <= quantile(attr, p2) when p1 < p2.
@@ -520,7 +519,6 @@ def test_aggregate_and_summarize_equivalence(num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
 def test_aggregation_on_empty_group():
     """
     Property: Aggregations on empty groups return NaN or 0.
