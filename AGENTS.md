@@ -745,10 +745,14 @@ The `execute_query` function returns a dictionary with the following structure:
 
 ## Current Limitations
 
-- Edge queries have limited support
 - Complex nested conditions require multiple queries
-- No aggregation functions (SUM, AVG, etc.)
 - Measures are computed using NetworkX algorithms
+- Some advanced graph algorithms may have performance limitations on very large networks
+
+**Note:** Previous limitations on edge queries and aggregation functions have been resolved. py3plex now supports:
+- Full-featured edge queries with filtering on endpoint properties (src_degree, dst_degree)
+- Comprehensive aggregation operators: mean, median, sum, std, var, min, max, quantile(p), count
+- Aggregations work on both nodes and edges with per_layer() and per_layer_pair() grouping
 
 ---
 
@@ -1005,6 +1009,179 @@ for match in matches:
 
 ---
 
+### Example 10: Aggregations and Statistical Operators
+
+py3plex DSL v2 provides first-class support for aggregations with a rich set of statistical operators:
+
+```python
+from py3plex.dsl import Q, L
+
+# Basic aggregations on nodes
+result = (
+    Q.nodes()
+     .compute("degree", "betweenness_centrality")
+     .summarize(
+         total_nodes="count()",
+         avg_degree="mean(degree)",
+         median_degree="median(degree)",
+         std_degree="std(degree)",
+         q95_degree="quantile(degree, 0.95)",
+         max_bc="max(betweenness_centrality)"
+     )
+     .execute(net)
+)
+
+# Per-layer aggregations
+result = (
+    Q.nodes()
+     .compute("degree")
+     .per_layer()
+     .aggregate(
+         node_count="count()",
+         avg_degree="mean(degree)",
+         median_degree="median(degree)",
+         q25="quantile(degree, 0.25)",
+         q75="quantile(degree, 0.75)"
+     )
+     .execute(net)
+)
+
+# Edge aggregations per layer pair
+result = (
+    Q.edges()
+     .per_layer_pair()
+     .aggregate(
+         edge_count="count()",
+         total_weight="sum(weight)",
+         avg_weight="mean(weight)",
+         median_weight="median(weight)",
+         max_weight="max(weight)"
+     )
+     .execute(net)
+)
+
+# Convert to pandas for further analysis
+df = result.to_pandas()
+print(df)
+```
+
+**Supported aggregation functions:**
+- `count()` / `n()`: Count of items in group
+- `mean(attr)`: Arithmetic mean
+- `median(attr)`: Median value
+- `sum(attr)`: Sum of values
+- `min(attr)` / `max(attr)`: Minimum/maximum values
+- `std(attr)` / `var(attr)`: Standard deviation and variance
+- `quantile(attr, p)`: p-th quantile (e.g., `quantile(degree, 0.95)` for 95th percentile)
+
+**Output:**
+```
+  layer  node_count  avg_degree  median_degree   q25   q75
+0  social         5       2.400          2.0   2.0   3.0
+1  work           3       2.000          2.0   2.0   2.0
+```
+
+---
+
+### Example 11: Advanced Edge Queries with Endpoint Properties
+
+Edge queries now support full parity with node queries, including filtering on endpoint properties:
+
+```python
+from py3plex.dsl import Q, L
+
+# Filter edges by source node degree
+high_degree_edges = (
+    Q.edges()
+     .where(src_degree__gt=3)
+     .execute(net)
+)
+
+# Filter by both source and target degrees
+result = (
+    Q.edges()
+     .where(src_degree__ge=2, dst_degree__ge=2)
+     .execute(net)
+)
+
+# Combine endpoint properties with edge attributes
+result = (
+    Q.edges()
+     .where(weight__gt=1.5, src_degree__gt=2)
+     .order_by("-weight")
+     .limit(10)
+     .execute(net)
+)
+
+# Aggregate endpoint properties per layer pair
+result = (
+    Q.edges()
+     .per_layer_pair()
+     .aggregate(
+         edge_count="count()",
+         avg_src_degree="mean(src_degree)",
+         avg_dst_degree="mean(dst_degree)",
+         max_src_degree="max(src_degree)",
+         avg_weight="mean(weight)"
+     )
+     .execute(net)
+)
+
+# Export to pandas
+df = result.to_pandas()
+print(df)
+```
+
+**Available endpoint properties for edges:**
+- `src_degree` / `source_degree`: Degree of source node
+- `dst_degree` / `target_degree`: Degree of target node
+- `source_layer`: Layer of source node
+- `target_layer`: Layer of target node
+- `weight`: Edge weight (default: 1.0)
+- Any custom edge attributes
+
+**Output:**
+```
+  source_layer target_layer  edge_count  avg_src_degree  avg_dst_degree  avg_weight
+0      social       social           4            2.75            2.75        2.50
+1      work         work             3            2.00            2.00        6.00
+```
+
+---
+
+### Example 12: Edge Coverage Analysis
+
+Analyze edges that appear across multiple layer pairs:
+
+```python
+from py3plex.dsl import Q, L
+
+# Find edges present in multiple layer pairs
+result = (
+    Q.edges()
+     .per_layer_pair()
+     .coverage(mode="at_least", k=2)  # Edges in at least 2 layer pairs
+     .aggregate(
+         layer_pair_count="count()",
+         avg_weight="mean(weight)"
+     )
+     .execute(net)
+)
+
+# Get summary of grouped edges
+summary = result.group_summary()
+print(summary)
+```
+
+**Output:**
+```
+  edge              layer_pairs  count  avg_weight
+0 (A, B)           2            2      3.0
+1 (B, C)           2            2      4.0
+```
+
+---
+
 ### DSL v2 vs Legacy DSL
 
 | Feature | Legacy DSL | DSL v2 |
@@ -1012,7 +1189,10 @@ for match in matches:
 | Syntax | String-based | Builder API (+ string) |
 | Layer algebra | Limited | Full algebra (L[...] + L[...]) |
 | Uncertainty | Not supported | First-class (.uq()) |
-| Grouping | Not supported | per_layer(), coverage() |
+| Grouping | Not supported | per_layer(), per_layer_pair(), coverage() |
+| Aggregations | Not supported | Full suite (mean, median, quantile, etc.) |
+| Edge queries | Limited | Full parity with node queries |
+| Endpoint properties | Not supported | src_degree, dst_degree, etc. |
 | Pattern matching | Basic MATCH | Full Cypher-like |
 | Dynamics | Not supported | D.process(...) |
 | Null models | Not supported | N.configuration() |
