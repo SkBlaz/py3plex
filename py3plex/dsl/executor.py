@@ -2160,15 +2160,23 @@ def _apply_aggregate(
                         result = len(group_items)
                     else:
                         # Need to extract attribute values from group items
-                        if attr not in attributes:
-                            raise DslExecutionError(f"Cannot aggregate on '{attr}' - attribute not computed")
-                        
-                        # Get values for items in this group
-                        values = []
-                        for item in group_items:
-                            item_key = _get_item_key(item)
-                            if item_key in attributes[attr]:
-                                values.append(attributes[attr][item_key])
+                        if attr in attributes:
+                            # Attribute was computed
+                            values = []
+                            for item in group_items:
+                                item_key = _get_item_key(item)
+                                if item_key in attributes[attr]:
+                                    values.append(attributes[attr][item_key])
+                        else:
+                            # Try to extract from item data (e.g., edge weight, node attributes)
+                            values = []
+                            for item in group_items:
+                                val = _get_attribute_value(item, attr, network, G)
+                                if val is not None:
+                                    values.append(val)
+                            
+                            if not values:
+                                raise DslExecutionError(f"Cannot aggregate on '{attr}' - attribute not found or computed")
                         
                         # Apply aggregation
                         result = _apply_aggregation(values, func, quantile_p)
@@ -2401,15 +2409,23 @@ def _apply_summarize(
                 value = len(group_items)
             else:
                 # Need to extract attribute values from group items
-                if attr not in attributes:
-                    raise DslExecutionError(f"Cannot aggregate on '{attr}' - attribute not computed")
-                
-                # Get values for items in this group
-                values = []
-                for item in group_items:
-                    item_key = _get_item_key(item)
-                    if item_key in attributes[attr]:
-                        values.append(attributes[attr][item_key])
+                if attr in attributes:
+                    # Attribute was computed
+                    values = []
+                    for item in group_items:
+                        item_key = _get_item_key(item)
+                        if item_key in attributes[attr]:
+                            values.append(attributes[attr][item_key])
+                else:
+                    # Try to extract from item data (e.g., edge weight, node attributes)
+                    values = []
+                    for item in group_items:
+                        val = _get_attribute_value(item, attr, network, G)
+                        if val is not None:
+                            values.append(val)
+                    
+                    if not values:
+                        raise DslExecutionError(f"Cannot aggregate on '{attr}' - attribute not found or computed")
                 
                 # Apply aggregation
                 value = _apply_aggregation(values, func, quantile_p)
