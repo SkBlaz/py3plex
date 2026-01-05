@@ -28,11 +28,12 @@
 22. [R Interoperability](#r-interoperability)
 23. [Dynamics Simulations](#dynamics-simulations)
 24. [Uncertainty Quantification](#uncertainty-quantification)
-25. [Temporal Networks](#temporal-networks)
-26. [Null Models](#null-models)
-27. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-28. [Version Information](#version-information)
-29. [File Locations](#file-locations)
+25. [Replayable Provenance and Query Replay](#replayable-provenance-and-query-replay)
+26. [Temporal Networks](#temporal-networks)
+27. [Null Models](#null-models)
+28. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+29. [Version Information](#version-information)
+30. [File Locations](#file-locations)
 
 ---
 
@@ -2338,6 +2339,189 @@ stats = result[node]
 | `PERTURBATION` | Drop edges/nodes | Structural uncertainty |
 | `BOOTSTRAP` | Resample with replacement | Statistical inference |
 | `JACKKNIFE` | Leave-one-out | Influence analysis |
+
+---
+
+## Replayable Provenance and Query Replay
+
+py3plex provides **replayable provenance** that captures sufficient information to deterministically reproduce query results. This enables reproducible research, debugging, and result verification.
+
+### Key Concepts
+
+**Provenance Modes:**
+- **log** (default): Lightweight metadata tracking (timestamps, network fingerprint, timing)
+- **replayable**: Full provenance with network snapshot, AST serialization, and seed capture
+
+**Capture Methods:**
+- **auto**: Automatically decide based on network size (inline for small, fingerprint for large)
+- **fingerprint**: Only capture metadata (node/edge counts, layers)
+- **snapshot**: Always capture full network snapshot
+- **delta**: Capture changes from a base network (future feature)
+
+### Basic Usage
+
+```python
+from py3plex.dsl import Q
+
+# Execute query with replayable provenance
+result = (
+    Q.nodes()
+     .provenance(mode="replayable", capture="auto", seed=42)
+     .compute("degree", "betweenness_centrality")
+     .execute(network)
+)
+
+# Check if replayable
+print(result.is_replayable)  # True
+
+# Access provenance
+prov = result.provenance
+print(prov['mode'])  # "replayable"
+print(prov['network_capture']['capture_method'])  # "snapshot_graph"
+
+# Replay to reproduce results
+result2 = result.replay(strict=False)
+assert result.count == result2.count  # Deterministic reproduction
+```
+
+### Convenience Method
+
+Use `.reproducible()` for simpler syntax:
+
+```python
+# Equivalent to .provenance(mode="replayable", capture="auto", seed=42)
+result = (
+    Q.nodes()
+     .reproducible(True, seed=42)
+     .compute("degree")
+     .execute(network)
+)
+```
+
+### Bundle Export and Import
+
+Export results with provenance as portable bundles:
+
+```python
+from py3plex.provenance import replay_from_bundle
+
+# Export bundle (compressed JSON)
+result.export_bundle("result.json.gz", compress=True)
+
+# Load and replay from bundle
+result2 = replay_from_bundle("result.json.gz", strict=False)
+
+# Or load without replaying
+from py3plex.provenance import load_bundle
+bundle = load_bundle("result.json.gz")
+prov = bundle["provenance"]
+```
+
+### Provenance Schema (v1.0)
+
+Replayable provenance includes:
+
+1. **Query Information:**
+   - Serialized AST for exact query reconstruction
+   - Parameter bindings
+   - Execution plan (stages and toggles)
+
+2. **Network Snapshot:**
+   - Nodes (id, layer, attributes)
+   - Edges (source, target, layers, weight, attributes)
+   - Stable ordering for hashing
+
+3. **Randomness Configuration:**
+   - Base seed for reproducibility
+   - Derived seeds per stage (UQ, community detection, etc.)
+   - SeedSequence entropy for advanced scenarios
+
+4. **Environment:**
+   - py3plex version
+   - Python version and platform
+   - Dependency versions (numpy, networkx, etc.)
+
+5. **Performance:**
+   - Timing per stage (bind_parameters, filter, compute, etc.)
+
+### Deterministic Replay with Uncertainty
+
+When using uncertainty quantification (.uq()), replayable provenance ensures identical confidence intervals:
+
+```python
+# Original query
+result1 = (
+    Q.nodes()
+     .reproducible(True, seed=42)
+     .uq(method="bootstrap", n_samples=100)
+     .compute("betweenness_centrality")
+     .execute(network)
+)
+
+# Replay produces identical CI bounds
+result2 = result1.replay()
+
+# Check mean and CI match
+for node in result1.items:
+    stats1 = result1.attributes['betweenness_centrality'][node]
+    stats2 = result2.attributes['betweenness_centrality'][node]
+    assert stats1['mean'] == stats2['mean']
+    assert stats1['quantiles'] == stats2['quantiles']
+```
+
+### Size Guardrails
+
+Provenance respects size limits to avoid memory issues:
+
+```python
+# Default thresholds
+# - 10,000 nodes or 50,000 edges: inline snapshot
+# - Above: fingerprint only (unless explicitly set to snapshot)
+
+# Explicit control
+result = (
+    Q.nodes()
+     .provenance(
+         mode="replayable",
+         capture="snapshot",  # Force snapshot even for large graphs
+         max_bytes=20*1024*1024  # 20MB limit
+     )
+     .execute(network)
+)
+```
+
+### Backward Compatibility
+
+Queries without provenance config use log mode by default:
+
+```python
+# Legacy behavior (still works)
+result = Q.nodes().compute("degree").execute(network)
+
+# Has provenance but not replayable
+assert result.provenance is not None
+assert not result.is_replayable  # False (log mode)
+```
+
+### Limitations
+
+- **Large Networks:** Auto-capture uses fingerprint for >10k nodes. Export to external bundle for replay.
+- **Version Compatibility:** `strict=True` in replay() enforces exact version match. Use `strict=False` for minor versions.
+- **Non-Deterministic Operations:** Some operations (e.g., hash-based ordering) may differ across Python versions.
+
+### Agent Guidance
+
+**When writing code that produces query results:**
+1. Use `.reproducible(True, seed=...)` when reproducibility matters (papers, reports, debugging).
+2. Default (log mode) is fine for exploratory analysis.
+3. Always check `result.is_replayable` before calling `.replay()`.
+4. Use `.export_bundle()` to save results for later verification.
+
+**When reviewing provenance-related code:**
+1. Preserve backward compatibility: existing queries must not break.
+2. Add size warnings when capture exceeds thresholds.
+3. Ensure determinism: use explicit seeds for all stochastic operations.
+4. Test replay with bundle export/import roundtrips.
 
 ---
 
