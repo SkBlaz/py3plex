@@ -1865,12 +1865,12 @@ class QueryBuilder:
         else:
             return self.order_by(by)
     
-    def execute(self, network: Any, progress: bool = False, **params) -> QueryResult:
+    def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
         """Execute the query.
         
         Args:
             network: Multilayer network object
-            progress: If True, log progress messages during query execution
+            progress: If True, log progress messages during query execution (default: True)
             **params: Parameter bindings
             
         Returns:

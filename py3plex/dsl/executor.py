@@ -107,14 +107,14 @@ CENTRALITY_ALIASES = {
 }
 
 
-def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = None, progress: bool = False) -> Union[QueryResult, ExecutionPlan]:
+def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = None, progress: bool = True) -> Union[QueryResult, ExecutionPlan]:
     """Execute an AST query on a multilayer network.
     
     Args:
         network: Multilayer network object
         query: Query AST
         params: Parameter bindings
-        progress: If True, log progress messages during query execution
+        progress: If True, log progress messages during query execution (default: True)
         
     Returns:
         QueryResult or ExecutionPlan (if explain=True)
@@ -191,14 +191,14 @@ def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalCon
     return view
 
 
-def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[str, Any]] = None, progress: bool = False) -> QueryResult:
+def _execute_windowed_query(network: Any, query: Query, params: Optional[Dict[str, Any]] = None, progress: bool = True) -> QueryResult:
     """Execute a windowed query over a temporal network.
     
     Args:
         network: Network (should be TemporalMultiLayerNetwork or convertible)
         query: Query with window_spec
         params: Parameter bindings
-        progress: If True, log progress messages during query execution
+        progress: If True, log progress messages during query execution (default: True)
         
     Returns:
         QueryResult with windowed results
@@ -771,14 +771,14 @@ def _compute_measure_with_uncertainty(
         return _wrap_deterministic_uncertainty(measure_fn(subgraph, items), items)
 
 
-def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None, progress: bool = False) -> QueryResult:
+def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None, progress: bool = True) -> QueryResult:
     """Execute a SELECT statement.
     
     Args:
         network: Multilayer network
         select: SELECT statement AST
         params: Parameter bindings for dynamic resolution
-        progress: If True, log progress messages during query execution
+        progress: If True, log progress messages during query execution (default: True)
     """
     params = params or {}
     logger = logging.getLogger(__name__)

@@ -28,12 +28,12 @@ Example Usage:
     ...      .limit(20)
     ... )
     >>>
-    >>> # Execute the query
+    >>> # Execute the query (progress logging enabled by default)
     >>> result = q.execute(network, k=5)  # doctest: +SKIP
     >>> df = result.to_pandas()  # doctest: +SKIP
     >>>
-    >>> # Execute with progress logging
-    >>> result = q.execute(network, progress=True)  # doctest: +SKIP
+    >>> # Execute without progress logging
+    >>> result = q.execute(network, progress=False)  # doctest: +SKIP
     >>>
     >>> # Compare two networks
     >>> comparison = C.compare("baseline", "treatment").using("multiplex_jaccard").execute(networks)  # doctest: +SKIP

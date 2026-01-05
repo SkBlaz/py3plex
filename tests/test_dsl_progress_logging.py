@@ -41,14 +41,14 @@ def sample_network():
 class TestProgressLogging:
     """Test progress logging feature."""
 
-    def test_progress_disabled_by_default(self, sample_network, caplog):
-        """Test that progress logging is disabled by default."""
+    def test_progress_enabled_by_default(self, sample_network, caplog):
+        """Test that progress logging is enabled by default."""
         with caplog.at_level(logging.INFO):
             q = Q.nodes().from_layers(L["social"]).compute("degree")
             result = q.execute(sample_network)
             
-            # Should not have progress messages
-            assert "Starting DSL query execution" not in caplog.text
+            # Should have progress messages by default
+            assert "Starting DSL query execution" in caplog.text
             assert len(result.items) == 3
 
     def test_progress_enabled(self, sample_network, caplog):
@@ -117,7 +117,7 @@ class TestProgressLogging:
             q = Q.nodes().from_layers(L["social"]).compute("degree")
             result = q.execute(sample_network, progress=False)
             
-            # Should not have progress messages
+            # Should not have progress messages when explicitly disabled
             assert "Starting DSL query execution" not in caplog.text
             assert len(result.items) == 3
 
