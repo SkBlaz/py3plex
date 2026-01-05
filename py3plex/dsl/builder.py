@@ -1262,13 +1262,15 @@ class QueryBuilder:
         strings like "mean(degree)", "max(degree)", "n()".
         
         Supported aggregations:
-            - n() : count of items
+            - n() / count() : count of items
             - mean(attr) : mean value
+            - median(attr) : median value
             - sum(attr) : sum of values
             - min(attr) : minimum value
             - max(attr) : maximum value
             - std(attr) : standard deviation
             - var(attr) : variance
+            - quantile(attr, p) : p-th quantile (e.g., quantile(degree, 0.95))
         
         Args:
             **aggregations: Named aggregations (name=expression)
@@ -1283,6 +1285,8 @@ class QueryBuilder:
             >>> Q.nodes().from_layers(L["*"]).compute("degree").per_layer().summarize(
             ...     mean_degree="mean(degree)",
             ...     max_degree="max(degree)",
+            ...     median_degree="median(degree)",
+            ...     q95_degree="quantile(degree, 0.95)",
             ...     n="n()"
             ... )
         """
@@ -1752,7 +1756,7 @@ class QueryBuilder:
         """Aggregate columns with support for lambdas and builtin functions.
         
         This method computes aggregations over the result set. It supports:
-        - Built-in aggregation functions: mean(), sum(), min(), max(), std(), count()
+        - Built-in aggregation functions: mean(), sum(), min(), max(), std(), var(), median(), quantile(attr, p), count()
         - Direct attribute references for last/first value
         - Lambda functions for custom aggregations
         
@@ -1762,7 +1766,7 @@ class QueryBuilder:
             **aggregations: Named aggregations where:
                 - Key is the output column name
                 - Value is either:
-                    * A string like "mean(degree)" or "sum(weight)"
+                    * A string like "mean(degree)", "quantile(degree, 0.95)", or "sum(weight)"
                     * A string attribute name (gets the value directly)
                     * A lambda function receiving each item
             
@@ -1773,6 +1777,8 @@ class QueryBuilder:
             >>> Q.nodes().per_layer().aggregate(
             ...     avg_degree="mean(degree)",
             ...     max_bc="max(betweenness_centrality)",
+            ...     median_bc="median(betweenness_centrality)",
+            ...     q95_degree="quantile(degree, 0.95)",
             ...     node_count="count()",
             ...     layer_name="layer"  # Direct attribute
             ... )
@@ -1780,6 +1786,13 @@ class QueryBuilder:
             >>> # With lambda
             >>> Q.nodes().aggregate(
             ...     community_size=lambda n: network.community_sizes[network.get_partition(n)]
+            ... )
+            
+            >>> # Edge aggregations
+            >>> Q.edges().per_layer_pair().aggregate(
+            ...     avg_weight="mean(weight)",
+            ...     total_edges="count()",
+            ...     max_src_degree="max(src_degree)"
             ... )
         """
         if self._select.aggregate_specs is None:
