@@ -257,36 +257,58 @@ def _extract_graph_data(
         Tuple of (nodes, edges)
     """
     # Get included layers
+    layers_result = network.get_layers()
+    # get_layers() returns a tuple: (layer_names, layer_graphs, ...)
+    all_layer_names = layers_result[0] if isinstance(layers_result, tuple) else layers_result
+    
     if layer_expr:
         included_layers = set(_get_layer_names(layer_expr))
     else:
         # All layers
-        included_layers = set(network.get_layers())
+        included_layers = set(all_layer_names)
     
     # Collect nodes
     nodes = []
     for layer in included_layers:
-        layer_nodes = network.get_nodes(layer)
-        for node in layer_nodes:
-            # Node identifier: (node_id, layer) or just node_id
-            # For simplicity, use node_id (assumes unique across layers or single layer)
-            nodes.append(node)
+        try:
+            layer_nodes = network.get_nodes(layer)
+            for node in layer_nodes:
+                # Use simple node identifiers (not tuples)
+                nodes.append(node)
+        except Exception:
+            # Fallback: iterate over all nodes and filter by layer
+            pass
     
     # Deduplicate
     nodes = list(set(nodes))
     
+    # If no nodes collected via get_nodes, collect from edges
+    if not nodes:
+        # Collect all unique node IDs from edges
+        node_set = set()
+        for edge_data in network.get_edges(data=True):
+            if len(edge_data) == 3:
+                (u_node, u_layer), (v_node, v_layer), data = edge_data
+                if u_layer in included_layers:
+                    node_set.add(u_node)
+                if v_layer in included_layers:
+                    node_set.add(v_node)
+        nodes = list(node_set)
+    
     # Collect edges
     edges = []
-    for u, v, data in network.get_edges():
-        # Check layer constraints
-        src_layer = data.get('source_type', data.get('layer'))
-        dst_layer = data.get('target_type', data.get('layer'))
+    for edge_data in network.get_edges(data=True):
+        if len(edge_data) != 3:
+            continue
         
-        if src_layer not in included_layers or dst_layer not in included_layers:
+        (u_node, u_layer), (v_node, v_layer), data = edge_data
+        
+        # Check layer constraints
+        if u_layer not in included_layers or v_layer not in included_layers:
             continue
         
         # Check cross-layer policy
-        is_cross_layer = (src_layer != dst_layer)
+        is_cross_layer = (u_layer != v_layer)
         if is_cross_layer:
             if crossing_spec.mode == "forbidden":
                 continue
@@ -296,7 +318,8 @@ def _extract_graph_data(
                 weight_attr = data.get('weight', 1.0)
                 data['weight'] = weight_attr + crossing_spec.penalty
         
-        edges.append((u, v, data))
+        # Store with simple node identifiers
+        edges.append((u_node, v_node, data))
     
     return nodes, edges
 

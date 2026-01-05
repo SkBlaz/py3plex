@@ -121,6 +121,17 @@ def sssp_dijkstra(
         weight = lift_edge_value(attrs, lift_spec)
         if weight is None:  # on_missing="drop"
             continue
+        # Add nodes to adj if not present (they might come from edges)
+        if src not in adj:
+            adj[src] = []
+            if src not in distances:
+                distances[src] = semiring.zero()
+                predecessors[src] = None
+        if dst not in adj:
+            adj[dst] = []
+            if dst not in distances:
+                distances[dst] = semiring.zero()
+                predecessors[dst] = None
         adj[src].append((dst, weight))
     
     iterations = 0
