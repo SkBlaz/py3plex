@@ -53,7 +53,7 @@ def test_conf_exposes_metadata_and_html_options(load_doc_conf):
     conf = load_doc_conf()
 
     assert conf.project == "py3plex"
-    assert conf.version == conf.release == "1.0.3"
+    assert conf.version == conf.release == "1.1.0"
     assert conf.author == "Blaž Škrlj"
     assert conf.language == "en"
 
