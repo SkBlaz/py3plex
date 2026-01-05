@@ -39,6 +39,31 @@ from .registry import (
 from .lift import (
     WeightLiftSpec,
     lift_edge_value,
+    parse_lift_shorthand,
+)
+
+from .paths import (
+    sssp,
+    PathResult,
+)
+
+from .closure import (
+    closure,
+)
+
+from .backend import (
+    get_backend,
+    list_backends,
+    GraphBackend,
+)
+
+from .witness import (
+    WitnessSpec,
+    PathWitness,
+)
+
+from .fixed_point import (
+    fixed_point_iteration,
 )
 
 __all__ = [
@@ -57,4 +82,19 @@ __all__ = [
     # Weight lifting
     "WeightLiftSpec",
     "lift_edge_value",
+    "parse_lift_shorthand",
+    # Paths
+    "sssp",
+    "PathResult",
+    # Closure
+    "closure",
+    # Backend
+    "get_backend",
+    "list_backends",
+    "GraphBackend",
+    # Witness
+    "WitnessSpec",
+    "PathWitness",
+    # Fixed point
+    "fixed_point_iteration",
 ]
