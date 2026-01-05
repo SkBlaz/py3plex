@@ -104,77 +104,25 @@ def perturb_network_edges(
     rng = np.random.default_rng(seed)
     
     # Create new network (same type, directed status)
-    new_net = multinet.multi_layer_network(directed=network.is_directed())
+    new_net = multinet.multi_layer_network(directed=network.directed)
     
-    # Copy all nodes (preserve node set and attributes)
-    for node in network.get_nodes():
-        # Get node attributes if available
-        node_attrs = {}
-        try:
-            node_data = network.get_node_data(node)
-            if node_data:
-                node_attrs = dict(node_data)
-        except:
-            pass
-        
-        # Add node with attributes
-        if isinstance(node, tuple) and len(node) == 2:
-            # Multilayer node (node_id, layer)
-            new_net.add_node(node[0], node[1], **node_attrs)
-        else:
-            # Simple node
-            new_net.add_node(node, **node_attrs)
+    # Get all edges from original network
+    edges = list(network.get_edges())
     
-    # Copy edges with probabilistic dropping
-    for edge in network.get_edges():
-        # Decide whether to keep this edge
+    # Filter edges based on drop probability
+    kept_edges = []
+    for edge in edges:
         if rng.random() >= edge_drop_p:
-            # Keep edge
-            # Edge format depends on network type
-            if hasattr(edge, '__len__') and len(edge) >= 2:
-                if len(edge) == 2:
-                    # Simple edge (u, v)
-                    u, v = edge
-                    edge_data = network.get_edge_data(u, v)
-                    new_net.add_edge(u, v, **edge_data)
-                
-                elif len(edge) == 3:
-                    # May be (u, v, data) or multilayer format
-                    if isinstance(edge[2], dict):
-                        # (u, v, data)
-                        u, v, data = edge
-                        new_net.add_edge(u, v, **data)
-                    else:
-                        # Assume multilayer (u, layer_u, v)
-                        # Need more components
-                        pass
-                
-                elif len(edge) >= 4:
-                    # Multilayer: (u, layer_u, v, layer_v, ...)
-                    u, layer_u, v, layer_v = edge[:4]
-                    weight = edge[4] if len(edge) > 4 else 1.0
-                    
-                    # Get additional edge attributes
-                    edge_attrs = {}
-                    try:
-                        edge_data = network.get_edge_data((u, layer_u), (v, layer_v))
-                        if edge_data:
-                            edge_attrs = dict(edge_data)
-                            edge_attrs['weight'] = weight
-                    except:
-                        edge_attrs = {'weight': weight}
-                    
-                    new_net.add_edge(
-                        (u, layer_u),
-                        (v, layer_v),
-                        **edge_attrs
-                    )
-            else:
-                # Unknown edge format - try to copy as-is
-                try:
-                    new_net.add_edge(edge)
-                except:
-                    pass
+            # Keep this edge
+            # Edge is ((node1, layer1), (node2, layer2))
+            if len(edge) == 2:
+                (node1, layer1), (node2, layer2) = edge
+                # Convert to list format for add_edges
+                kept_edges.append([node1, layer1, node2, layer2, 1.0])
+    
+    # Add edges to new network (which will also create nodes)
+    if kept_edges:
+        new_net.add_edges(kept_edges, input_type='list')
     
     return new_net
 
@@ -230,22 +178,7 @@ def bootstrap_network_edges(
     rng = np.random.default_rng(seed)
     
     # Create new network
-    new_net = multinet.multi_layer_network(directed=network.is_directed())
-    
-    # Copy all nodes
-    for node in network.get_nodes():
-        node_attrs = {}
-        try:
-            node_data = network.get_node_data(node)
-            if node_data:
-                node_attrs = dict(node_data)
-        except:
-            pass
-        
-        if isinstance(node, tuple) and len(node) == 2:
-            new_net.add_node(node[0], node[1], **node_attrs)
-        else:
-            new_net.add_node(node, **node_attrs)
+    new_net = multinet.multi_layer_network(directed=network.directed)
     
     # Get all edges as list
     edges = list(network.get_edges())
@@ -257,43 +190,17 @@ def bootstrap_network_edges(
     # Sample with replacement
     sampled_indices = rng.integers(0, n_edges, size=n_edges)
     
-    # Add sampled edges
+    # Convert sampled edges to list format
+    sampled_edges = []
     for idx in sampled_indices:
         edge = edges[idx]
-        
-        # Add edge based on format
-        if hasattr(edge, '__len__') and len(edge) >= 4:
-            # Multilayer edge
-            u, layer_u, v, layer_v = edge[:4]
-            weight = edge[4] if len(edge) > 4 else 1.0
-            
-            edge_attrs = {}
-            try:
-                edge_data = network.get_edge_data((u, layer_u), (v, layer_v))
-                if edge_data:
-                    edge_attrs = dict(edge_data)
-                    edge_attrs['weight'] = weight
-            except:
-                edge_attrs = {'weight': weight}
-            
-            new_net.add_edge(
-                (u, layer_u),
-                (v, layer_v),
-                **edge_attrs
-            )
-        
-        elif hasattr(edge, '__len__') and len(edge) == 2:
-            # Simple edge
-            u, v = edge
-            edge_data = network.get_edge_data(u, v)
-            new_net.add_edge(u, v, **edge_data)
-        
-        else:
-            # Try to add as-is
-            try:
-                new_net.add_edge(edge)
-            except:
-                pass
+        if len(edge) == 2:
+            (node1, layer1), (node2, layer2) = edge
+            sampled_edges.append([node1, layer1, node2, layer2, 1.0])
+    
+    # Add edges to new network
+    if sampled_edges:
+        new_net.add_edges(sampled_edges, input_type='list')
     
     return new_net
 
@@ -352,7 +259,7 @@ def resample_network_nodes(
     n_nodes = len(nodes)
     
     if n_nodes == 0:
-        return multinet.multi_layer_network(directed=network.is_directed())
+        return multinet.multi_layer_network(directed=network.directed)
     
     # Sample nodes with replacement
     sampled_indices = rng.integers(0, n_nodes, size=n_nodes)
@@ -360,50 +267,21 @@ def resample_network_nodes(
     sampled_node_set = set(sampled_nodes)
     
     # Create new network
-    new_net = multinet.multi_layer_network(directed=network.is_directed())
+    new_net = multinet.multi_layer_network(directed=network.directed)
     
-    # Add sampled nodes
-    for node in sampled_nodes:
-        node_attrs = {}
-        try:
-            node_data = network.get_node_data(node)
-            if node_data:
-                node_attrs = dict(node_data)
-        except:
-            pass
-        
-        if isinstance(node, tuple) and len(node) == 2:
-            new_net.add_node(node[0], node[1], **node_attrs)
-        else:
-            new_net.add_node(node, **node_attrs)
+    # Get edges where both endpoints are in sampled set
+    edges = list(network.get_edges())
+    kept_edges = []
     
-    # Add edges between sampled nodes
-    for edge in network.get_edges():
-        # Check if both endpoints are in sampled set
-        if hasattr(edge, '__len__') and len(edge) >= 4:
-            # Multilayer edge
-            u, layer_u, v, layer_v = edge[:4]
-            node_u = (u, layer_u)
-            node_v = (v, layer_v)
-            
-            if node_u in sampled_node_set and node_v in sampled_node_set:
-                weight = edge[4] if len(edge) > 4 else 1.0
-                
-                edge_attrs = {}
-                try:
-                    edge_data = network.get_edge_data(node_u, node_v)
-                    if edge_data:
-                        edge_attrs = dict(edge_data)
-                        edge_attrs['weight'] = weight
-                except:
-                    edge_attrs = {'weight': weight}
-                
-                new_net.add_edge(node_u, node_v, **edge_attrs)
-        
-        elif hasattr(edge, '__len__') and len(edge) == 2:
-            u, v = edge
-            if u in sampled_node_set and v in sampled_node_set:
-                edge_data = network.get_edge_data(u, v)
-                new_net.add_edge(u, v, **edge_data)
+    for edge in edges:
+        if len(edge) == 2:
+            node1, node2 = edge
+            if node1 in sampled_node_set and node2 in sampled_node_set:
+                (n1, l1), (n2, l2) = node1, node2
+                kept_edges.append([n1, l1, n2, l2, 1.0])
+    
+    # Add edges (which will create nodes)
+    if kept_edges:
+        new_net.add_edges(kept_edges, input_type='list')
     
     return new_net

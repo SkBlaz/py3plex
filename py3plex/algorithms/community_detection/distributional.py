@@ -42,8 +42,9 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 
 from py3plex.core import multinet
-from py3plex.algorithms.community_detection import multilayer_louvain
-from py3plex.algorithms.community_detection.leiden_multilayer import leiden_multilayer
+# Import directly from module files to avoid circular import
+from py3plex.algorithms.community_detection.multilayer_modularity import multilayer_modularity
+from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 from py3plex.uncertainty.partition import CommunityDistribution, partition_dict_to_array
 from py3plex.uncertainty.resampling_graph import (
     perturb_network_edges,
@@ -94,15 +95,24 @@ def _run_louvain_single(args: Tuple) -> Tuple[np.ndarray, float, List[Any]]:
             suggestions=["Use 'seed', 'perturbation', or 'bootstrap'"]
         )
     
-    # Run Louvain
+    # Run Louvain - call louvain_multilayer directly then compute modularity
     try:
-        partition_dict, modularity = multilayer_louvain(
+        partition_dict = louvain_multilayer(
             network,
             gamma=gamma,
             omega=omega,
             weight=weight,
             max_iter=max_iter,
             random_state=seed,
+        )
+        
+        # Calculate modularity
+        modularity = multilayer_modularity(
+            network=network,
+            communities=partition_dict,
+            gamma=gamma,
+            omega=omega,
+            weight=weight,
         )
         
         # Convert to array with canonical node ordering
