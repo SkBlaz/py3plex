@@ -2532,6 +2532,224 @@ print(comparison)
 | **DSL method** | `.uq()` | `.robustness_check()` |
 | **Provenance** | `provenance.uncertainty` | `provenance.counterfactual` |
 | **Use for** | Reporting metrics | Validating conclusions |
+## Distributional Community Detection
+
+**New in v1.1:** Uncertainty-aware community detection via distributional partitions.
+
+py3plex now supports distributional community detection that runs community detection multiple times (with resampling or different seeds) to produce a distribution over partitions. This enables:
+
+- **Co-association matrices**: P(node_i and node_j in same community)
+- **Consensus partitions**: Representative partition (medoid or clustering-based)
+- **Node confidence scores**: Per-node stability measures
+- **Boundary node identification**: Nodes with uncertain assignments
+
+### Core Functions and Types
+
+```python
+from py3plex.algorithms.community_detection import multilayer_louvain_distribution
+from py3plex.uncertainty import CommunityDistribution, perturb_network_edges, bootstrap_network_edges
+```
+
+### API Signature
+
+```python
+def multilayer_louvain_distribution(
+    network: multi_layer_network,
+    *,
+    n_runs: int = 100,
+    resampling: str = "seed",  # "seed" | "perturbation" | "bootstrap"
+    perturbation_params: Optional[Dict[str, Any]] = None,  # e.g., {"edge_drop_p": 0.05}
+    gamma: Union[float, Dict[Any, float]] = 1.0,
+    gamma_grid: Optional[List[float]] = None,
+    omega: Union[float, np.ndarray] = 1.0,
+    weight: str = "weight",
+    max_iter: int = 100,
+    seed: Optional[int] = None,
+    n_jobs: int = 1,
+    weight_by: Optional[str] = "modularity",  # "modularity" | None
+    coassoc_mode: str = "auto",  # "auto" | "dense" | "sparse"
+    topk: int = 50,
+) -> CommunityDistribution
+```
+
+### Return Type: CommunityDistribution
+
+```python
+class CommunityDistribution:
+    # Properties
+    n_nodes: int
+    n_partitions: int
+    nodes: List[Any]
+    partitions: List[np.ndarray]
+    weights: np.ndarray
+    meta: Dict[str, Any]
+    
+    # Methods
+    coassociation(mode="dense"|"sparse", topk=50) -> Union[np.ndarray, Dict]
+    consensus_partition(method="medoid"|"cluster_coassoc") -> np.ndarray
+    node_confidence(consensus=None) -> np.ndarray
+    node_entropy(aligned=False) -> np.ndarray
+    node_margin(consensus=None) -> np.ndarray
+    align_labels(reference="medoid"|"first"|array, metric="overlap"|"nmi")
+    node_membership_probs() -> np.ndarray  # Requires alignment
+    to_dict(node_id) -> Dict[str, Any]
+```
+
+### Provenance Fields
+
+The `meta` dict in `CommunityDistribution` contains provenance information:
+
+```python
+{
+    'method': 'multilayer_louvain',
+    'n_runs': 100,
+    'resampling': 'perturbation',  # or 'seed', 'bootstrap'
+    'gamma': 1.0,
+    'gamma_grid': None,  # Optional: list of gamma values
+    'omega': 1.0,
+    'seed': 42,
+    'n_jobs': 2,
+    'weight_by': 'modularity',
+    'layers': ['L1', 'L2'],
+    'perturbation_params': {'edge_drop_p': 0.05},  # If perturbation
+    'mean_modularity': 0.42,
+    'std_modularity': 0.05,
+}
+```
+
+### Example 1: Basic Distributional Community Detection
+
+```python
+from py3plex.core import multinet
+from py3plex.algorithms.community_detection import multilayer_louvain_distribution
+
+# Create or load network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    ['A', 'L1', 'B', 'L1', 1],
+    ['B', 'L1', 'C', 'L1', 1],
+    ['C', 'L1', 'D', 'L1', 1],
+], input_type='list')
+
+# Run distributional community detection
+dist = multilayer_louvain_distribution(
+    net,
+    n_runs=100,
+    resampling='perturbation',
+    perturbation_params={'edge_drop_p': 0.05},
+    seed=42,
+    n_jobs=2
+)
+
+# Get consensus partition
+consensus = dist.consensus_partition()
+print(f"Communities: {consensus}")
+
+# Get node confidence (stability)
+confidence = dist.node_confidence()
+print(f"Confidence: {confidence}")
+```
+
+---
+
+### Example 2: Identifying Stable vs Boundary Nodes
+
+```python
+# Get confidence scores
+confidence = dist.node_confidence()
+entropy = dist.node_entropy()
+
+# Identify stable core (high confidence)
+stable_mask = confidence >= 0.8
+stable_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if stable_mask[i]]
+
+# Identify boundary nodes (low confidence)
+boundary_mask = confidence < 0.5
+boundary_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if boundary_mask[i]]
+
+print(f"Stable core: {len(stable_nodes)} nodes")
+print(f"Boundary: {len(boundary_nodes)} nodes")
+```
+
+---
+
+### Example 3: Co-Association Matrix
+
+```python
+# Compute co-association matrix P(i, j in same community)
+coassoc = dist.coassociation(mode='dense')
+
+# Find nodes strongly associated with node 0
+node_idx = 0
+strong_assoc = [(i, coassoc[node_idx, i]) for i in range(dist.n_nodes) 
+                 if i != node_idx and coassoc[node_idx, i] > 0.8]
+
+print(f"Nodes strongly associated with {dist.nodes[node_idx]}:")
+for i, prob in sorted(strong_assoc, key=lambda x: x[1], reverse=True):
+    print(f"  {dist.nodes[i]}: P={prob:.3f}")
+```
+
+---
+
+### Best Practices
+
+1. **Use co-association for large networks**:
+   - For n_nodes > 2000, use `coassoc_mode='sparse'` or `mode='auto'`
+   - Dense co-association is O(n²) memory
+
+2. **Prefer co-association-based confidence over aligned label probs**:
+   - Co-association is label-permutation invariant (no alignment needed)
+   - Alignment can be expensive and introduce artifacts
+
+3. **Always set seed for reproducibility**:
+   - Deterministic: same seed => identical results regardless of n_jobs
+   - Uses numpy SeedSequence for proper parallel seed spawning
+
+4. **Choose resampling strategy wisely**:
+   - `'seed'`: Algorithm stochasticity (fastest, recommended default)
+   - `'perturbation'`: Structural uncertainty (edge drop, slower)
+   - `'bootstrap'`: Statistical bootstrap (slowest, edge resampling)
+
+5. **Weight by modularity for quality-aware consensus**:
+   - `weight_by='modularity'` weights better partitions more heavily
+   - Set `weight_by=None` for uniform weighting
+
+6. **Parallel execution preserves determinism**:
+   - `n_jobs=1`: Serial execution
+   - `n_jobs>1`: Parallel with deterministic seed spawning
+   - Same seed + same n_runs => identical output regardless of n_jobs
+
+### Copy/Paste Snippet
+
+```python
+# Quick start: uncertainty-aware community detection
+from py3plex.core import multinet
+from py3plex.algorithms.community_detection import multilayer_louvain_distribution
+
+net = multinet.multi_layer_network(directed=False)
+net.load_network('my_network.edgelist', directed=False, input_type='edgelist_hash')
+
+# Run with 100 iterations, perturbation resampling
+dist = multilayer_louvain_distribution(
+    net,
+    n_runs=100,
+    resampling='perturbation',
+    perturbation_params={'edge_drop_p': 0.05},
+    seed=42,
+    n_jobs=4  # Parallel
+)
+
+# Get results
+consensus = dist.consensus_partition()
+confidence = dist.node_confidence()
+
+# Filter stable core
+stable_mask = confidence >= 0.8
+stable_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if stable_mask[i]]
+
+print(f"Communities: {len(set(consensus))}")
+print(f"Stable core: {len(stable_nodes)}/{dist.n_nodes} nodes")
+```
 
 ---
 
