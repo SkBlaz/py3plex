@@ -1865,6 +1865,81 @@ class QueryBuilder:
         else:
             return self.order_by(by)
     
+    def provenance(
+        self,
+        mode: str = "replayable",
+        capture: str = "auto",
+        max_bytes: Optional[int] = None,
+        seed: Optional[int] = None
+    ) -> "QueryBuilder":
+        """Configure provenance tracking for this query.
+        
+        Enables replayable provenance that captures sufficient information
+        to deterministically reproduce the query result.
+        
+        Args:
+            mode: Provenance mode ("log" or "replayable"). Default: "replayable"
+            capture: Network capture method:
+                - "auto": Automatically decide based on network size
+                - "fingerprint": Only capture metadata (node/edge counts)
+                - "snapshot": Always capture full network snapshot
+                - "delta": Capture delta from base (if available)
+            max_bytes: Maximum bytes for inline snapshot (default: 10MB)
+            seed: Base random seed for reproducibility (default: None)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> result = (Q.nodes()
+            ...          .provenance(mode="replayable", capture="auto", seed=42)
+            ...          .compute("degree")
+            ...          .execute(net))
+            >>> result.is_replayable  # True
+            >>> result.replay()  # Deterministically reproduce the result
+            >>> result.export_bundle("result.json.gz")  # Save for later
+        """
+        # Store provenance config in select statement
+        if not hasattr(self._select, 'provenance_config'):
+            self._select.provenance_config = {}
+        
+        self._select.provenance_config = {
+            "mode": mode,
+            "capture": capture,
+            "max_bytes": max_bytes,
+            "seed": seed,
+        }
+        
+        return self
+    
+    def reproducible(
+        self,
+        enabled: bool = True,
+        capture: str = "auto",
+        seed: Optional[int] = None
+    ) -> "QueryBuilder":
+        """Enable reproducible execution (sugar for provenance).
+        
+        Convenience method that sets up replayable provenance with
+        a simpler interface.
+        
+        Args:
+            enabled: Whether to enable reproducible mode
+            capture: Network capture method (see provenance())
+            seed: Base random seed
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> result = Q.nodes().reproducible(True, seed=42).compute("degree").execute(net)
+            >>> result.is_replayable  # True
+        """
+        if enabled:
+            return self.provenance(mode="replayable", capture=capture, seed=seed)
+        else:
+            return self.provenance(mode="log", capture="fingerprint")
+    
     def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
         """Execute the query.
         

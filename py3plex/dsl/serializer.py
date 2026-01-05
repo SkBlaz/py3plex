@@ -1,10 +1,10 @@
-"""AST to DSL string serializer.
+"""AST to DSL string serializer and deserializer.
 
-This module provides functionality to convert AST Query objects back to
-DSL string representation.
+This module provides functionality to convert AST Query objects to/from
+DSL string representation and JSON format for provenance.
 """
 
-from typing import Any, Union
+from typing import Any, Dict, Union
 
 from .ast import (
     Query,
@@ -175,3 +175,107 @@ def _serialize_function(function: FunctionCall) -> str:
     """Serialize a function call."""
     args = ", ".join(_serialize_value(arg) for arg in function.args)
     return f"{function.name}({args})"
+
+
+def serialize_query(query: Query) -> Dict[str, Any]:
+    """Serialize a Query AST to JSON-compatible dictionary.
+    
+    This is used for provenance storage and replay.
+    
+    Args:
+        query: Query AST object
+        
+    Returns:
+        Dictionary representation of the query
+    """
+    from dataclasses import asdict
+    
+    # Convert to dict, handling dataclasses recursively
+    def _to_dict(obj: Any) -> Any:
+        if obj is None:
+            return None
+        elif isinstance(obj, (str, int, float, bool)):
+            return obj
+        elif isinstance(obj, (Target, ExportTarget)):
+            return obj.value
+        elif hasattr(obj, '__dataclass_fields__'):
+            # Dataclass
+            result = {}
+            for field_name in obj.__dataclass_fields__:
+                value = getattr(obj, field_name)
+                result[field_name] = _to_dict(value)
+            result['__class__'] = obj.__class__.__name__
+            return result
+        elif isinstance(obj, list):
+            return [_to_dict(item) for item in obj]
+        elif isinstance(obj, dict):
+            return {k: _to_dict(v) for k, v in obj.items()}
+        else:
+            return str(obj)
+    
+    return _to_dict(query)
+
+
+def deserialize_query(data: Dict[str, Any]) -> Query:
+    """Deserialize a Query AST from JSON-compatible dictionary.
+    
+    This reconstructs the query for replay.
+    
+    Args:
+        data: Dictionary representation of the query
+        
+    Returns:
+        Query AST object
+    """
+    def _from_dict(obj: Any, target_class: Any = None) -> Any:
+        if obj is None:
+            return None
+        elif isinstance(obj, (str, int, float, bool)):
+            return obj
+        elif isinstance(obj, list):
+            return [_from_dict(item) for item in obj]
+        elif isinstance(obj, dict):
+            class_name = obj.get('__class__')
+            if class_name:
+                # Reconstruct dataclass
+                obj_copy = dict(obj)
+                del obj_copy['__class__']
+                
+                # Map class names to classes
+                class_map = {
+                    'Query': Query,
+                    'SelectStmt': SelectStmt,
+                    'Target': Target,
+                    'ExportTarget': ExportTarget,
+                    'LayerExpr': LayerExpr,
+                    'ConditionExpr': ConditionExpr,
+                    'ConditionAtom': ConditionAtom,
+                    'Comparison': Comparison,
+                    'FunctionCall': FunctionCall,
+                    'SpecialPredicate': SpecialPredicate,
+                    'ComputeItem': ComputeItem,
+                    'OrderItem': OrderItem,
+                    'ParamRef': ParamRef,
+                }
+                
+                cls = class_map.get(class_name)
+                if cls:
+                    # Recursively reconstruct fields
+                    kwargs = {}
+                    for key, value in obj_copy.items():
+                        kwargs[key] = _from_dict(value)
+                    
+                    # Handle enums specially
+                    if class_name == 'Target':
+                        return Target(kwargs.get('value', 'nodes'))
+                    elif class_name == 'ExportTarget':
+                        return ExportTarget(kwargs.get('value', 'pandas'))
+                    
+                    return cls(**kwargs)
+            
+            # Regular dict
+            return {k: _from_dict(v) for k, v in obj.items()}
+        else:
+            return obj
+    
+    return _from_dict(data)
