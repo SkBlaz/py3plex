@@ -23,10 +23,13 @@ Example:
 """
 
 import logging
+import pandas as pd
 from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .layers import LayerSet
+    from py3plex.counterfactual.spec import InterventionSpec
+    from py3plex.counterfactual.result import CounterfactualResult, RobustnessReport
 
 from .ast import (
     Query,
@@ -47,6 +50,7 @@ from .ast import (
     TemporalContext,
     WindowSpec,
     UQConfig,
+    CounterfactualSpec,
 )
 from .result import QueryResult
 
@@ -1864,6 +1868,174 @@ class QueryBuilder:
             return self.order_by(f"-{by}")
         else:
             return self.order_by(by)
+    
+    def robustness_check(
+        self,
+        network: Any,
+        strength: str = "medium",
+        shake: str = "degree_safe",
+        repeats: int = 30,
+        seed: Optional[int] = None,
+        targets: Optional[Any] = None,
+        **params
+    ) -> "RobustnessReport":
+        """Test robustness of query results to network perturbations.
+        
+        This is the PRIMARY interface for counterfactual analysis. It runs
+        the query on the original network (baseline) and on multiple perturbed
+        versions to test whether analytical conclusions remain stable.
+        
+        Args:
+            network: Multilayer network to analyze
+            strength: Perturbation strength - "light", "medium", or "heavy"
+            shake: Perturbation strategy preset (default: "degree_safe")
+                   Options: "quick", "degree_safe", "layer_safe", "weight_only", "targeted"
+            repeats: Number of counterfactual runs (default: 30)
+            seed: Random seed for reproducibility (default: None)
+            targets: Optional target specification for targeted perturbations
+            **params: Parameter bindings for the query
+            
+        Returns:
+            RobustnessReport with human-friendly summary and analysis methods
+            
+        Example:
+            >>> # Quick robustness check
+            >>> report = (Q.nodes()
+            ...           .compute("pagerank")
+            ...           .robustness_check(net))
+            >>> report.show()
+            >>> 
+            >>> # Check top-k stability
+            >>> stable = report.stable_top_k(k=10, threshold=0.8)
+            >>> fragile = report.fragile(n=5)
+        """
+        from py3plex.counterfactual import get_preset
+        from py3plex.counterfactual.engine import CounterfactualEngine
+        
+        # Get intervention spec from preset
+        spec = get_preset(shake, strength=strength, targets=targets)
+        
+        # Create and run engine
+        engine = CounterfactualEngine(
+            network=network,
+            query=self,
+            spec=spec,
+            repeats=repeats,
+            seed=seed,
+            streaming=False
+        )
+        
+        result = engine.run()
+        return result.to_report()
+    
+    def try_strengths(
+        self,
+        network: Any,
+        repeats: int = 30,
+        seed: Optional[int] = None,
+        **params
+    ) -> pd.DataFrame:
+        """Compare light/medium/heavy perturbation strengths.
+        
+        This convenience method runs robustness checks at three different
+        perturbation strengths and returns a summary table for comparison.
+        
+        Args:
+            network: Multilayer network to analyze
+            repeats: Number of counterfactual runs per strength (default: 30)
+            seed: Random seed for reproducibility (default: None)
+            **params: Parameter bindings for the query
+            
+        Returns:
+            DataFrame with summary statistics for each strength level
+            
+        Example:
+            >>> # Compare strengths
+            >>> summary = (Q.nodes()
+            ...           .compute("betweenness_centrality")
+            ...           .try_strengths(net))
+            >>> print(summary)
+        """
+        import pandas as pd
+        
+        strengths = ["light", "medium", "heavy"]
+        results = []
+        
+        for strength in strengths:
+            report = self.robustness_check(
+                network=network,
+                strength=strength,
+                shake="degree_safe",
+                repeats=repeats,
+                seed=seed,
+                **params
+            )
+            
+            # Extract key statistics
+            summary_df = report.to_pandas()
+            
+            # Compute aggregate statistics
+            metric_cols = [c for c in summary_df.columns if c.endswith("_cv")]
+            
+            strength_summary = {"strength": strength}
+            for col in metric_cols:
+                metric_name = col.replace("_cv", "")
+                strength_summary[f"{metric_name}_avg_cv"] = summary_df[col].mean()
+                strength_summary[f"{metric_name}_max_cv"] = summary_df[col].max()
+            
+            results.append(strength_summary)
+        
+        return pd.DataFrame(results)
+    
+    def counterfactualize(
+        self,
+        network: Any,
+        spec: "InterventionSpec",
+        repeats: int = 100,
+        seed: int = 42,
+        **params
+    ) -> "CounterfactualResult":
+        """Execute query under custom counterfactual intervention (ADVANCED).
+        
+        This is the advanced interface for counterfactual analysis, allowing
+        full control over intervention specifications. Most users should use
+        robustness_check() instead.
+        
+        Args:
+            network: Multilayer network to analyze
+            spec: Custom InterventionSpec (from py3plex.counterfactual.spec)
+            repeats: Number of counterfactual runs (default: 100)
+            seed: Random seed for reproducibility (default: 42)
+            **params: Parameter bindings for the query
+            
+        Returns:
+            CounterfactualResult with full details of baseline and counterfactuals
+            
+        Example:
+            >>> from py3plex.counterfactual import RemoveEdgesSpec
+            >>> 
+            >>> # Custom intervention
+            >>> spec = RemoveEdgesSpec(proportion=0.1, mode="targeted")
+            >>> result = (Q.nodes()
+            ...           .compute("degree")
+            ...           .counterfactualize(net, spec, repeats=100))
+            >>> 
+            >>> # Convert to report for analysis
+            >>> report = result.to_report()
+            >>> report.show()
+        """
+        from py3plex.counterfactual.engine import CounterfactualEngine
+        
+        engine = CounterfactualEngine(
+            network=network,
+            query=self,
+            spec=spec,
+            repeats=repeats,
+            seed=seed,
+            streaming=False
+        )
+        
+        return engine.run()
     
     def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
         """Execute the query.
