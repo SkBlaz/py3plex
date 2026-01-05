@@ -61,6 +61,16 @@ from .bootstrap import (
 from .null_models import (
     null_model_metric,
 )
+from .partition import (
+    CommunityDistribution,
+    partition_dict_to_array,
+    partition_array_to_dict,
+)
+from .resampling_graph import (
+    perturb_network_edges,
+    bootstrap_network_edges,
+    resample_network_nodes,
+)
 
 __all__ = [
     # Core stat types
@@ -81,4 +91,12 @@ __all__ = [
     "bootstrap_metric",
     # Null models
     "null_model_metric",
+    # Community distributions
+    "CommunityDistribution",
+    "partition_dict_to_array",
+    "partition_array_to_dict",
+    # Graph resampling
+    "perturb_network_edges",
+    "bootstrap_network_edges",
+    "resample_network_nodes",
 ]
