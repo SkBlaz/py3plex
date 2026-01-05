@@ -651,7 +651,7 @@ class ExtendedQuery:
     and TRAJECTORIES statements in addition to SELECT statements.
     
     Attributes:
-        kind: Query type ("select", "compare", "nullmodel", "path", "dynamics", "trajectories")
+        kind: Query type ("select", "compare", "nullmodel", "path", "dynamics", "trajectories", "semiring")
         explain: If True, return execution plan instead of results
         select: SELECT statement (if kind == "select")
         compare: COMPARE statement (if kind == "compare")
@@ -659,6 +659,7 @@ class ExtendedQuery:
         path: PATH statement (if kind == "path")
         dynamics: DYNAMICS statement (if kind == "dynamics")
         trajectories: TRAJECTORIES statement (if kind == "trajectories")
+        semiring: SEMIRING statement (if kind == "semiring")
         dsl_version: DSL version for compatibility
     """
     kind: str
@@ -669,4 +670,171 @@ class ExtendedQuery:
     path: Optional[PathStmt] = None
     dynamics: Optional[DynamicsStmt] = None
     trajectories: Optional[TrajectoriesStmt] = None
+    semiring: Optional["SemiringStmt"] = None
     dsl_version: str = "2.0"
+
+
+# ==============================================================================
+# Semiring Algebra AST Nodes
+# ==============================================================================
+
+
+@dataclass
+class SemiringSpecNode:
+    """Semiring specification for algebra operations.
+    
+    Supports:
+    - Single semiring: name or per_layer dict
+    - Combined semirings: product or lexicographic combination
+    
+    Attributes:
+        name: Semiring name (e.g., "min_plus", "boolean", "max_times")
+        per_layer: Optional dict mapping layer -> semiring name
+        combine_strategy: How to combine per-layer semirings ("product", "lexicographic")
+    """
+    name: Optional[str] = None
+    per_layer: Optional[Dict[str, str]] = None
+    combine_strategy: Optional[str] = None
+
+
+@dataclass
+class WeightLiftSpecNode:
+    """Weight lifting specification for edge attribute extraction.
+    
+    Attributes:
+        attr: Edge attribute name (e.g., "weight", "cost")
+        transform: Optional transformation ("log", custom callable reference)
+        default: Default value if attribute missing
+        on_missing: Behavior on missing attribute ("default", "fail", "drop")
+    """
+    attr: Optional[str] = None
+    transform: Optional[str] = None
+    default: Any = 1.0
+    on_missing: str = "default"
+
+
+@dataclass
+class CrossingLayersSpec:
+    """Specification for cross-layer edge handling.
+    
+    Attributes:
+        mode: Crossing mode ("allowed", "forbidden", "penalty")
+        penalty: Optional penalty value (for "penalty" mode)
+    """
+    mode: str = "allowed"
+    penalty: Optional[float] = None
+
+
+@dataclass
+class SemiringPathStmt:
+    """SEMIRING PATH statement for path queries using semiring algebra.
+    
+    DSL Example:
+        S.paths()
+         .from_node("Alice")
+         .to_node("Bob")
+         .semiring("min_plus")
+         .lift(attr="weight", default=1.0)
+         .from_layers(L["social"] + L["work"])
+         .crossing_layers(mode="allowed")
+         .max_hops(5)
+         .k_best(3)
+         .witness(True)
+         .backend("graph")
+    
+    Attributes:
+        source: Source node identifier
+        target: Optional target node identifier
+        semiring_spec: Semiring specification
+        lift_spec: Weight lifting specification
+        layer_expr: Optional layer expression for filtering
+        crossing_layers: Cross-layer edge handling
+        max_hops: Optional maximum path length
+        k_best: Optional number of best paths to find
+        witness: Whether to track path witnesses
+        backend: Backend selection ("graph", "matrix")
+        uq_config: Optional uncertainty quantification config
+    """
+    source: Union[str, ParamRef]
+    target: Optional[Union[str, ParamRef]] = None
+    semiring_spec: SemiringSpecNode = field(default_factory=lambda: SemiringSpecNode(name="min_plus"))
+    lift_spec: WeightLiftSpecNode = field(default_factory=WeightLiftSpecNode)
+    layer_expr: Optional[LayerExpr] = None
+    crossing_layers: CrossingLayersSpec = field(default_factory=CrossingLayersSpec)
+    max_hops: Optional[int] = None
+    k_best: Optional[int] = None
+    witness: bool = False
+    backend: str = "graph"
+    uq_config: Optional[UQConfig] = None
+
+
+@dataclass
+class SemiringClosureStmt:
+    """SEMIRING CLOSURE statement for transitive closure.
+    
+    DSL Example:
+        S.closure()
+         .semiring("boolean")
+         .lift(attr="weight")
+         .from_layers(L["social"])
+         .backend("graph")
+    
+    Attributes:
+        semiring_spec: Semiring specification
+        lift_spec: Weight lifting specification
+        layer_expr: Optional layer expression
+        crossing_layers: Cross-layer edge handling
+        method: Closure method ("auto", "floyd_warshall", "iterative")
+        backend: Backend selection
+        output_format: Output format ("sparse", "dense")
+    """
+    semiring_spec: SemiringSpecNode = field(default_factory=lambda: SemiringSpecNode(name="boolean"))
+    lift_spec: WeightLiftSpecNode = field(default_factory=WeightLiftSpecNode)
+    layer_expr: Optional[LayerExpr] = None
+    crossing_layers: CrossingLayersSpec = field(default_factory=CrossingLayersSpec)
+    method: str = "auto"
+    backend: str = "graph"
+    output_format: str = "sparse"
+
+
+@dataclass
+class SemiringFixedPointStmt:
+    """SEMIRING FIXED_POINT statement for iterative computation.
+    
+    DSL Example:
+        S.fixed_point()
+         .operator("closure")
+         .semiring("boolean")
+         .max_iters(100)
+         .tol(1e-6)
+    
+    Attributes:
+        operator: Operator to iterate ("closure", custom)
+        semiring_spec: Semiring specification
+        lift_spec: Weight lifting specification
+        layer_expr: Optional layer expression
+        max_iters: Maximum iterations
+        tol: Optional tolerance for convergence
+    """
+    operator: str = "closure"
+    semiring_spec: SemiringSpecNode = field(default_factory=lambda: SemiringSpecNode(name="boolean"))
+    lift_spec: WeightLiftSpecNode = field(default_factory=WeightLiftSpecNode)
+    layer_expr: Optional[LayerExpr] = None
+    max_iters: int = 100
+    tol: Optional[float] = None
+
+
+@dataclass
+class SemiringStmt:
+    """Top-level SEMIRING statement (union of path/closure/fixed_point).
+    
+    Attributes:
+        operation: Operation type ("paths", "closure", "fixed_point")
+        paths: Path statement (if operation == "paths")
+        closure: Closure statement (if operation == "closure")
+        fixed_point: Fixed-point statement (if operation == "fixed_point")
+    """
+    operation: str
+    paths: Optional[SemiringPathStmt] = None
+    closure: Optional[SemiringClosureStmt] = None
+    fixed_point: Optional[SemiringFixedPointStmt] = None

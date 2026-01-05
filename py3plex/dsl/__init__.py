@@ -95,6 +95,14 @@ from .ast import (
     DynamicsStmt,
     TrajectoriesStmt,
     ExtendedQuery,
+    # Semiring algebra AST nodes
+    SemiringSpecNode,
+    WeightLiftSpecNode,
+    CrossingLayersSpec,
+    SemiringPathStmt,
+    SemiringClosureStmt,
+    SemiringFixedPointStmt,
+    SemiringStmt,
 )
 
 from .builder import (
@@ -116,6 +124,10 @@ from .builder import (
     # Dynamics builders
     DynamicsBuilder,
     TrajectoriesBuilder,
+    # Semiring algebra builders
+    S,
+    SemiringPathBuilder,
+    SemiringClosureBuilder,
 )
 
 from .layers import (
@@ -260,6 +272,14 @@ __all__ = [
     "DynamicsStmt",
     "TrajectoriesStmt",
     "ExtendedQuery",
+    # Semiring algebra AST
+    "SemiringSpecNode",
+    "WeightLiftSpecNode",
+    "CrossingLayersSpec",
+    "SemiringPathStmt",
+    "SemiringClosureStmt",
+    "SemiringFixedPointStmt",
+    "SemiringStmt",
     # Builder
     "Q",
     "QueryBuilder",
@@ -281,6 +301,10 @@ __all__ = [
     # Dynamics Builders
     "DynamicsBuilder",
     "TrajectoriesBuilder",
+    # Semiring algebra Builders
+    "S",
+    "SemiringPathBuilder",
+    "SemiringClosureBuilder",
     # Pattern Matching
     "PatternNode",
     "PatternEdge",

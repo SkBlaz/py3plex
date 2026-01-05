@@ -3015,3 +3015,374 @@ class TrajectoriesBuilder:
     
     def __repr__(self) -> str:
         return f"TrajectoriesBuilder({self._stmt.process_ref})"
+
+
+# ==============================================================================
+# Semiring Algebra Builder (Part S: Semiring Operations)
+# ==============================================================================
+
+
+class SemiringPathBuilder:
+    """Builder for SEMIRING PATH statements.
+    
+    Example:
+        >>> from py3plex.dsl import S, L
+        >>> 
+        >>> result = (
+        ...     S.paths()
+        ...      .from_node("Alice")
+        ...      .to_node("Bob")
+        ...      .semiring("min_plus")
+        ...      .lift(attr="weight", default=1.0)
+        ...      .from_layers(L["social"] + L["work"])
+        ...      .crossing_layers(mode="allowed")
+        ...      .max_hops(5)
+        ...      .execute(network)
+        ... )
+    """
+    
+    def __init__(self):
+        """Initialize builder."""
+        from .ast import SemiringPathStmt, SemiringSpecNode, WeightLiftSpecNode, CrossingLayersSpec
+        self._stmt = SemiringPathStmt(
+            source="",  # Must be set by from_node()
+            semiring_spec=SemiringSpecNode(name="min_plus"),
+            lift_spec=WeightLiftSpecNode(),
+            crossing_layers=CrossingLayersSpec(),
+        )
+    
+    def from_node(self, source: Union[str, ParamRef]) -> "SemiringPathBuilder":
+        """Set source node.
+        
+        Args:
+            source: Source node identifier or parameter reference
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.source = source
+        return self
+    
+    def to_node(self, target: Union[str, ParamRef]) -> "SemiringPathBuilder":
+        """Set target node (optional).
+        
+        Args:
+            target: Target node identifier or parameter reference
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.target = target
+        return self
+    
+    def semiring(self, name_or_spec: Union[str, Dict[str, str]]) -> "SemiringPathBuilder":
+        """Set semiring specification.
+        
+        Args:
+            name_or_spec: Either a semiring name (e.g., "min_plus") or
+                         a dict mapping layer names to semiring names
+            
+        Returns:
+            Self for chaining
+        """
+        from .ast import SemiringSpecNode
+        if isinstance(name_or_spec, str):
+            self._stmt.semiring_spec = SemiringSpecNode(name=name_or_spec)
+        elif isinstance(name_or_spec, dict):
+            self._stmt.semiring_spec = SemiringSpecNode(per_layer=name_or_spec)
+        return self
+    
+    def lift(
+        self,
+        attr: Optional[str] = None,
+        transform: Optional[str] = None,
+        default: Any = 1.0,
+        on_missing: str = "default",
+    ) -> "SemiringPathBuilder":
+        """Set weight lifting specification.
+        
+        Args:
+            attr: Edge attribute name
+            transform: Optional transformation ("log")
+            default: Default value if missing
+            on_missing: Behavior on missing ("default", "fail", "drop")
+            
+        Returns:
+            Self for chaining
+        """
+        from .ast import WeightLiftSpecNode
+        self._stmt.lift_spec = WeightLiftSpecNode(
+            attr=attr,
+            transform=transform,
+            default=default,
+            on_missing=on_missing,
+        )
+        return self
+    
+    def from_layers(self, layer_expr: LayerExprBuilder) -> "SemiringPathBuilder":
+        """Filter by layers using layer algebra.
+        
+        Args:
+            layer_expr: Layer expression (e.g., L["social"] + L["work"])
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.layer_expr = layer_expr._to_ast()
+        return self
+    
+    def crossing_layers(
+        self,
+        mode: str = "allowed",
+        penalty: Optional[float] = None,
+    ) -> "SemiringPathBuilder":
+        """Set cross-layer edge handling.
+        
+        Args:
+            mode: Crossing mode ("allowed", "forbidden", "penalty")
+            penalty: Optional penalty value (for "penalty" mode)
+            
+        Returns:
+            Self for chaining
+        """
+        from .ast import CrossingLayersSpec
+        self._stmt.crossing_layers = CrossingLayersSpec(mode=mode, penalty=penalty)
+        return self
+    
+    def max_hops(self, n: int) -> "SemiringPathBuilder":
+        """Set maximum path length.
+        
+        Args:
+            n: Maximum number of hops
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.max_hops = n
+        return self
+    
+    def k_best(self, k: int) -> "SemiringPathBuilder":
+        """Find k best paths.
+        
+        Args:
+            k: Number of best paths to find
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.k_best = k
+        return self
+    
+    def witness(self, enabled: bool = True) -> "SemiringPathBuilder":
+        """Enable/disable witness tracking for path reconstruction.
+        
+        Args:
+            enabled: Whether to track witnesses
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.witness = enabled
+        return self
+    
+    def backend(self, name: str) -> "SemiringPathBuilder":
+        """Set backend selection.
+        
+        Args:
+            name: Backend name ("graph", "matrix")
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.backend = name
+        return self
+    
+    def uq(
+        self,
+        mode: Optional[str] = None,
+        samples: Optional[int] = None,
+        method: Optional[str] = None,
+        seed: Optional[int] = None,
+        **kwargs,
+    ) -> "SemiringPathBuilder":
+        """Enable uncertainty quantification.
+        
+        Args:
+            mode: UQ mode ("bootstrap", "seed")
+            samples: Number of samples
+            method: Resampling method
+            seed: Random seed
+            **kwargs: Additional UQ parameters
+            
+        Returns:
+            Self for chaining
+        """
+        from .ast import UQConfig
+        self._stmt.uq_config = UQConfig(
+            mode=mode or "bootstrap",
+            samples=samples or 100,
+            method=method or "bootstrap",
+            seed=seed,
+            params=kwargs,
+        )
+        return self
+    
+    def execute(self, network: Any, **params) -> "QueryResult":
+        """Execute semiring path query.
+        
+        Args:
+            network: Multilayer network
+            **params: Parameter bindings
+            
+        Returns:
+            QueryResult with path data
+        """
+        from .executor_semiring import execute_semiring_path_stmt
+        return execute_semiring_path_stmt(network, self._stmt, params)
+    
+    def to_ast(self) -> "SemiringPathStmt":
+        """Export as AST SemiringPathStmt object."""
+        return self._stmt
+    
+    def __repr__(self) -> str:
+        return f"SemiringPathBuilder(from={self._stmt.source}, to={self._stmt.target})"
+
+
+class SemiringClosureBuilder:
+    """Builder for SEMIRING CLOSURE statements.
+    
+    Example:
+        >>> from py3plex.dsl import S, L
+        >>> 
+        >>> result = (
+        ...     S.closure()
+        ...      .semiring("boolean")
+        ...      .from_layers(L["social"])
+        ...      .method("auto")
+        ...      .execute(network)
+        ... )
+    """
+    
+    def __init__(self):
+        """Initialize builder."""
+        from .ast import SemiringClosureStmt, SemiringSpecNode, WeightLiftSpecNode, CrossingLayersSpec
+        self._stmt = SemiringClosureStmt(
+            semiring_spec=SemiringSpecNode(name="boolean"),
+            lift_spec=WeightLiftSpecNode(),
+            crossing_layers=CrossingLayersSpec(),
+        )
+    
+    def semiring(self, name: str) -> "SemiringClosureBuilder":
+        """Set semiring.
+        
+        Args:
+            name: Semiring name
+            
+        Returns:
+            Self for chaining
+        """
+        from .ast import SemiringSpecNode
+        self._stmt.semiring_spec = SemiringSpecNode(name=name)
+        return self
+    
+    def lift(
+        self,
+        attr: Optional[str] = None,
+        transform: Optional[str] = None,
+        default: Any = 1.0,
+        on_missing: str = "default",
+    ) -> "SemiringClosureBuilder":
+        """Set weight lifting specification.
+        
+        Args:
+            attr: Edge attribute name
+            transform: Optional transformation
+            default: Default value
+            on_missing: Behavior on missing
+            
+        Returns:
+            Self for chaining
+        """
+        from .ast import WeightLiftSpecNode
+        self._stmt.lift_spec = WeightLiftSpecNode(
+            attr=attr,
+            transform=transform,
+            default=default,
+            on_missing=on_missing,
+        )
+        return self
+    
+    def from_layers(self, layer_expr: LayerExprBuilder) -> "SemiringClosureBuilder":
+        """Filter by layers.
+        
+        Args:
+            layer_expr: Layer expression
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.layer_expr = layer_expr._to_ast()
+        return self
+    
+    def method(self, name: str) -> "SemiringClosureBuilder":
+        """Set closure method.
+        
+        Args:
+            name: Method name ("auto", "floyd_warshall", "iterative")
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.method = name
+        return self
+    
+    def backend(self, name: str) -> "SemiringClosureBuilder":
+        """Set backend.
+        
+        Args:
+            name: Backend name
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.backend = name
+        return self
+    
+    def execute(self, network: Any, **params) -> "QueryResult":
+        """Execute closure query.
+        
+        Args:
+            network: Multilayer network
+            **params: Parameter bindings
+            
+        Returns:
+            QueryResult with closure data
+        """
+        from .executor_semiring import execute_semiring_closure_stmt
+        return execute_semiring_closure_stmt(network, self._stmt, params)
+    
+    def to_ast(self) -> "SemiringClosureStmt":
+        """Export as AST."""
+        return self._stmt
+    
+    def __repr__(self) -> str:
+        return f"SemiringClosureBuilder(semiring={self._stmt.semiring_spec.name})"
+
+
+class S:
+    """Semiring algebra factory for creating semiring builders.
+    
+    Example:
+        >>> S.paths().from_node("A").to_node("B").semiring("min_plus")
+        >>> S.closure().semiring("boolean").from_layers(L["social"])
+    """
+    
+    @staticmethod
+    def paths() -> SemiringPathBuilder:
+        """Create a semiring path query builder."""
+        return SemiringPathBuilder()
+    
+    @staticmethod
+    def closure() -> SemiringClosureBuilder:
+        """Create a semiring closure query builder."""
+        return SemiringClosureBuilder()
