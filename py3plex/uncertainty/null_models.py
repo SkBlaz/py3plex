@@ -13,6 +13,53 @@ import numpy as np
 import networkx as nx
 
 from py3plex.core import multinet
+from py3plex._parallel import parallel_map, spawn_seeds
+from py3plex import config
+
+
+def _generate_and_compute_null(args):
+    """Generate a null model and compute metric on it.
+    
+    This is a module-level function so it can be pickled for multiprocessing.
+    
+    Parameters
+    ----------
+    args : tuple
+        Tuple of (graph, metric_fn, model, seed, index)
+        
+    Returns
+    -------
+    np.ndarray
+        Metric values for this null model, indexed by the index list
+    """
+    graph, metric_fn, model, seed, index = args
+    
+    # Create RNG for this null model
+    rng = np.random.default_rng(seed)
+    
+    # Generate null model
+    if model == "degree_preserving":
+        null_graph = _generate_degree_preserving_null(graph, rng)
+    elif model == "erdos_renyi":
+        null_graph = _generate_erdos_renyi_null(graph, rng)
+    elif model == "configuration":
+        null_graph = _generate_configuration_null(graph, rng)
+    else:
+        raise ValueError(
+            f"Unknown null model: {model}. "
+            "Must be 'degree_preserving', 'erdos_renyi', or 'configuration'"
+        )
+    
+    # Compute metric on null model
+    try:
+        null_result = metric_fn(null_graph)
+    except Exception:
+        # If metric fails on this null model, use zeros
+        null_result = {item: 0.0 for item in index}
+    
+    # Convert to array (use 0 for missing items)
+    result_array = np.array([null_result.get(item, 0.0) for item in index])
+    return result_array
 
 
 def null_model_metric(
@@ -21,6 +68,7 @@ def null_model_metric(
     n_null: int = 200,
     model: str = "degree_preserving",
     random_state: Optional[int] = None,
+    n_jobs: Optional[int] = None,
 ) -> Dict[str, np.ndarray]:
     """Compute metric on null models for statistical significance testing.
     
@@ -45,6 +93,9 @@ def null_model_metric(
         - "configuration": Configuration model matching degree distribution
     random_state : int, optional
         Random seed for reproducibility.
+    n_jobs : int, optional
+        Number of parallel jobs. If None, uses config.DEFAULT_N_JOBS.
+        If 1, runs serially. If >1, runs in parallel.
     
     Returns
     -------
@@ -91,8 +142,6 @@ def null_model_metric(
       check the sign of z-score to determine the direction.
     - High |z-score| and low p-value indicate statistical significance
     """
-    rng = np.random.default_rng(random_state)
-    
     # Compute observed metric
     observed_result = metric_fn(graph)
     if not isinstance(observed_result, dict):
@@ -121,34 +170,29 @@ def null_model_metric(
     # Convert observed to array
     observed = np.array([observed_result[item] for item in index])
     
-    # Pre-allocate array for null samples: (n_null, n_items)
-    null_samples = np.zeros((n_null, n_items))
+    # Determine number of jobs
+    if n_jobs is None:
+        n_jobs = getattr(config, 'DEFAULT_N_JOBS', 1)
     
-    # Generate null models and compute metrics
-    for i in range(n_null):
-        # Generate null model
-        if model == "degree_preserving":
-            null_graph = _generate_degree_preserving_null(graph, rng)
-        elif model == "erdos_renyi":
-            null_graph = _generate_erdos_renyi_null(graph, rng)
-        elif model == "configuration":
-            null_graph = _generate_configuration_null(graph, rng)
-        else:
-            raise ValueError(
-                f"Unknown null model: {model}. "
-                "Must be 'degree_preserving', 'erdos_renyi', or 'configuration'"
-            )
-        
-        # Compute metric on null model
-        try:
-            null_result = metric_fn(null_graph)
-        except Exception:
-            # If metric fails on this null model, use zeros
-            null_result = {item: 0.0 for item in index}
-        
-        # Fill in values (use 0 for missing items)
-        for j, item in enumerate(index):
-            null_samples[i, j] = null_result.get(item, 0.0)
+    # Generate child seeds for deterministic parallel execution
+    child_seeds = spawn_seeds(random_state, n_null)
+    
+    # Prepare arguments for each null model
+    null_args = [
+        (graph, metric_fn, model, child_seed, index)
+        for child_seed in child_seeds
+    ]
+    
+    # Generate null models and compute metrics in parallel or serial
+    null_samples_list = parallel_map(
+        _generate_and_compute_null,
+        null_args,
+        n_jobs=n_jobs,
+        backend=getattr(config, 'DEFAULT_PARALLEL_BACKEND', 'multiprocessing'),
+    )
+    
+    # Stack results into array: (n_null, n_items)
+    null_samples = np.array(null_samples_list)
     
     # Compute null statistics
     mean_null = np.mean(null_samples, axis=0)
