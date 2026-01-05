@@ -798,6 +798,10 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     if select.target == Target.COMMUNITIES:
         return _execute_community_select(network, select, params, progress=progress)
     
+    # Check if this is a bridge query from communities
+    if hasattr(select, '_from_communities') and select._from_communities is not None:
+        return _execute_community_bridge(network, select, params, progress=progress)
+    
     # Step 1: Get initial items
     if progress:
         logger.info(f"Step 3.1: Getting initial {select.target.value}")
@@ -1300,6 +1304,225 @@ def _extract_community_filters(where: ConditionExpr, filters: Dict[str, Any]) ->
             suffix = op_map.get(op, "eq")
             filter_key = f"{attr}__{suffix}" if suffix != "eq" else attr
             filters[filter_key] = value
+
+
+def _execute_community_bridge(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None, progress: bool = False) -> QueryResult:
+    """Execute a query that bridges from communities to nodes/edges.
+    
+    Args:
+        network: Multilayer network
+        select: SELECT statement AST (with _from_communities)
+        params: Parameter bindings for dynamic resolution
+        progress: If True, log progress messages during query execution
+        
+    Returns:
+        QueryResult with filtered nodes or edges
+    """
+    logger = logging.getLogger(__name__)
+    
+    if progress:
+        logger.info("Executing community bridge query")
+    
+    # First, execute the community query to get selected communities
+    community_select = select._from_communities
+    community_result = _execute_community_select(network, community_select, params, progress=progress)
+    
+    # Get community records from metadata
+    community_records_dict = community_result.meta.get('_community_records', {})
+    selected_comm_ids = set(community_result.items)
+    
+    if progress:
+        logger.info(f"Bridge from {len(selected_comm_ids)} communities to {select.target.value}")
+    
+    # Get core network
+    G = network.core_network
+    
+    if select.target == Target.NODES:
+        # .members() bridge: get all nodes in selected communities
+        member_nodes = []
+        for comm_id in selected_comm_ids:
+            if comm_id in community_records_dict:
+                record = community_records_dict[comm_id]
+                member_nodes.extend(record.members)
+        
+        if progress:
+            logger.info(f"Found {len(member_nodes)} member nodes")
+        
+        # Set items for the rest of execution
+        items = member_nodes
+        
+    elif select.target == Target.EDGES:
+        # .boundary_edges() bridge: get edges crossing community boundaries
+        edge_type = getattr(select, '_community_edge_type', 'boundary')
+        
+        if edge_type == 'boundary':
+            # Get boundary edges
+            boundary_edges = []
+            
+            # Get all members across selected communities
+            all_members = set()
+            for comm_id in selected_comm_ids:
+                if comm_id in community_records_dict:
+                    record = community_records_dict[comm_id]
+                    all_members.update(record.members)
+            
+            # Find edges where endpoints are in different communities
+            for edge in network.get_edges(data=True):
+                src, dst = edge[0], edge[1]
+                
+                if src in all_members and dst in all_members:
+                    # Check if they're in different communities
+                    src_comm = None
+                    dst_comm = None
+                    
+                    for comm_id in selected_comm_ids:
+                        record = community_records_dict[comm_id]
+                        if src in record.members:
+                            src_comm = comm_id
+                        if dst in record.members:
+                            dst_comm = comm_id
+                    
+                    if src_comm is not None and dst_comm is not None and src_comm != dst_comm:
+                        boundary_edges.append(edge)
+            
+            if progress:
+                logger.info(f"Found {len(boundary_edges)} boundary edges")
+            
+            items = boundary_edges
+        else:
+            # Unknown edge type
+            items = []
+    else:
+        # Should not happen
+        items = []
+    
+    # Now continue with the normal execution path by temporarily removing the
+    # _from_communities marker and executing the rest
+    original_from_communities = select._from_communities
+    select._from_communities = None
+    
+    # Apply layer filters
+    if select.layer_set is not None:
+        if progress:
+            logger.info("Applying layer filter")
+        active_layers = select.layer_set.resolve(network, strict=False, warn_empty=True)
+        items = _filter_by_layers(items, active_layers, select.target)
+    elif select.layer_expr:
+        if progress:
+            logger.info("Applying layer filter")
+        active_layers = _evaluate_layer_expr(select.layer_expr, network)
+        items = _filter_by_layers(items, active_layers, select.target)
+    
+    # Apply WHERE conditions
+    if select.where:
+        if progress:
+            logger.info("Applying WHERE conditions")
+        items = _filter_by_conditions(items, select.where, network, G, params)
+    
+    # Build execution context for operators
+    if select.compute and select.target == Target.NODES:
+        # For nodes, we need to compute measures - use the existing code path
+        # by creating a new SelectStmt and executing it
+        
+        # Create a modified network that only contains our filtered items
+        temp_select = SelectStmt(target=select.target, autocompute=select.autocompute)
+        temp_select.compute = select.compute
+        temp_select.order_by = select.order_by
+        temp_select.limit = select.limit
+        temp_select.group_by = select.group_by
+        
+        # Store the items for filtering
+        temp_select._prefiltered_items = items
+        
+        # Execute via the standard path
+        result = _execute_select_with_items(network, temp_select, items, params, progress=progress)
+        
+        # Restore marker
+        select._from_communities = original_from_communities
+        
+        return result
+    
+    # Simple case: no compute, just return filtered items
+    attributes: Dict[str, Dict] = {}
+    
+    # Apply ordering
+    if select.order_by:
+        if progress:
+            logger.info("Applying ORDER BY")
+        items = _apply_ordering(items, select.order_by, attributes)
+    
+    # Apply limit
+    if select.limit is not None:
+        if progress:
+            logger.info(f"Applying LIMIT {select.limit}")
+        items = items[:select.limit]
+    
+    # Restore marker
+    select._from_communities = original_from_communities
+    
+    if progress:
+        logger.info("Community bridge query execution completed")
+    
+    return QueryResult(
+        target=select.target.value,
+        items=items,
+        attributes=attributes,
+        meta={'dsl_version': '2.1', 'from_communities': True}
+    )
+
+
+def _execute_select_with_items(network: Any, select: SelectStmt, items: List[Any], params: Optional[Dict[str, Any]] = None, progress: bool = False) -> QueryResult:
+    """Execute SELECT with pre-filtered items.
+    
+    This is a helper for bridge queries where items are already filtered.
+    """
+    logger = logging.getLogger(__name__)
+    G = network.core_network
+    
+    # Compute measures if needed
+    attributes: Dict[str, Dict] = {}
+    if select.compute:
+        if progress:
+            logger.info(f"Computing {len(select.compute)} measure(s)")
+        
+        if select.target == Target.NODES:
+            # Node measures
+            subgraph = G.subgraph([item for item in items if item in G]).copy()
+            
+            for compute_item in select.compute:
+                result_name = compute_item.alias or compute_item.name
+                
+                # Look up measure in registry
+                measure_fn = measure_registry.get(compute_item.name)
+                if measure_fn:
+                    try:
+                        values = measure_fn(subgraph, items)
+                        attributes[result_name] = values
+                    except Exception as e:
+                        if progress:
+                            logger.warning(f"Failed to compute {compute_item.name}: {e}")
+                        # Return None for all items
+                        attributes[result_name] = {item: None for item in items}
+                else:
+                    # Unknown measure
+                    if progress:
+                        logger.warning(f"Unknown measure: {compute_item.name}")
+                    attributes[result_name] = {item: None for item in items}
+    
+    # Apply ordering
+    if select.order_by:
+        items = _apply_ordering(items, select.order_by, attributes)
+    
+    # Apply limit
+    if select.limit is not None:
+        items = items[:select.limit]
+    
+    return QueryResult(
+        target=select.target.value,
+        items=items,
+        attributes=attributes,
+        meta={'dsl_version': '2.1'}
+    )
 
 
 def _apply_explanations(
