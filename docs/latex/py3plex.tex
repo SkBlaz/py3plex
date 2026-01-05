@@ -2667,9 +2667,13 @@ Extract subnetworks:
                            \PYG{n}{subset\PYGZus{}by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node\PYGZus{}layer\PYGZus{}names}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
+Use \sphinxcode{\sphinxupquote{subset\_by}} to control whether you filter by layers, node names, or explicit node\sphinxhyphen{}layer tuples.
 
-\subsubsection{Use \sphinxstyleliteralintitle{\sphinxupquote{subset\_by}} to control whether you filter by layers, node names, or explicit node\sphinxhyphen{}layer tuples.}
-\label{\detokenize{getting_started/tutorial_10min:use-subset-by-to-control-whether-you-filter-by-layers-node-names-or-explicit-node-layer-tuples}}
+
+\bigskip\hrule\bigskip
+
+
 
 \subsubsection{Part 3: Advanced Metrics (2 min)}
 \label{\detokenize{getting_started/tutorial_10min:part-3-advanced-metrics-2-min}}
@@ -2733,9 +2737,13 @@ Multilayer statistics:
 \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Sizes: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{dict}\PYG{p}{(}\PYG{n}{sizes}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{partition}} maps each node\sphinxhyphen{}layer pair to a community label. Tune \sphinxcode{\sphinxupquote{gamma}} (resolution) and \sphinxcode{\sphinxupquote{omega}} (inter\sphinxhyphen{}layer coupling) to control granularity; fix \sphinxcode{\sphinxupquote{random\_state}} for reproducible runs.
 
-\subsubsection{\sphinxstyleliteralintitle{\sphinxupquote{partition}} maps each node\sphinxhyphen{}layer pair to a community label. Tune \sphinxstyleliteralintitle{\sphinxupquote{gamma}} (resolution) and \sphinxstyleliteralintitle{\sphinxupquote{omega}} (inter\sphinxhyphen{}layer coupling) to control granularity; fix \sphinxstyleliteralintitle{\sphinxupquote{random\_state}} for reproducible runs.}
-\label{\detokenize{getting_started/tutorial_10min:partition-maps-each-node-layer-pair-to-a-community-label-tune-gamma-resolution-and-omega-inter-layer-coupling-to-control-granularity-fix-random-state-for-reproducible-runs}}
+
+\bigskip\hrule\bigskip
+
+
 
 \subsubsection{Part 5: Random Walks (1 min)}
 \label{\detokenize{getting_started/tutorial_10min:part-5-random-walks-1-min}}
@@ -2810,9 +2818,13 @@ With community colors:
 \PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{get\_layers(style="hairball")}} returns a NetworkX graph and color mapping ready for \sphinxcode{\sphinxupquote{hairball\_plot}}; saving figures makes headless runs reproducible.
 
-\subsubsection{\sphinxstyleliteralintitle{\sphinxupquote{get\_layers(style="hairball")}} returns a NetworkX graph and color mapping ready for \sphinxstyleliteralintitle{\sphinxupquote{hairball\_plot}}; saving figures makes headless runs reproducible.}
-\label{\detokenize{getting_started/tutorial_10min:get-layers-style-hairball-returns-a-networkx-graph-and-color-mapping-ready-for-hairball-plot-saving-figures-makes-headless-runs-reproducible}}
+
+\bigskip\hrule\bigskip
+
+
 
 \subsubsection{Key Concepts}
 \label{\detokenize{getting_started/tutorial_10min:key-concepts}}
@@ -34466,12 +34478,12 @@ DSL Extensions (v2.1):
 \PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{20}\PYG{p}{)}
 \PYG{g+gp}{... }\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Execute the query}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Execute the query (progress logging enabled by default)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{n}{q}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}  
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}  
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Execute with progress logging}
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{n}{q}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{progress}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}  
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Execute without progress logging}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{n}{q}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{progress}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}  
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Compare two networks}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{comparison} \PYG{o}{=} \PYG{n}{C}\PYG{o}{.}\PYG{n}{compare}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{baseline}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{treatment}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{using}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiplex\PYGZus{}jaccard}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{networks}\PYG{p}{)}  
@@ -43670,7 +43682,7 @@ Self for chaining
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{execute}}}
-{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{progress}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{params}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{progress}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{params}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryResult}]{\sphinxcrossref{QueryResult}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -43683,7 +43695,7 @@ Execute the query.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{progress}} \textendash{} If True, log progress messages during query execution
+\sphinxstyleliteralstrong{\sphinxupquote{progress}} \textendash{} If True, log progress messages during query execution (default: True)
 
 \item {} 
 \sphinxAtStartPar
@@ -48099,7 +48111,7 @@ Decorator function that registers the operator
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{execute\_ast}}}
-{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Query}]{\sphinxcrossref{Query}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{params}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{progress}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Query}]{\sphinxcrossref{Query}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{params}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{progress}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryResult}]{\sphinxcrossref{QueryResult}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ExecutionPlan}]{\sphinxcrossref{ExecutionPlan}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -48120,7 +48132,7 @@ Execute an AST query on a multilayer network.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{progress}} \textendash{} If True, log progress messages during query execution
+\sphinxstyleliteralstrong{\sphinxupquote{progress}} \textendash{} If True, log progress messages during query execution (default: True)
 
 \end{itemize}
 
