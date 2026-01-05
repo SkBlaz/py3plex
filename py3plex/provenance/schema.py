@@ -136,14 +136,23 @@ class ProvenanceSchema:
         # Convert string enums back
         if isinstance(data.get("mode"), str):
             data["mode"] = ProvenanceMode(data["mode"])
-        if "network_capture" in data and isinstance(data["network_capture"].get("capture_method"), str):
-            data["network_capture"]["capture_method"] = CaptureMethod(data["network_capture"]["capture_method"])
         
-        # Reconstruct nested dataclasses
-        data["query"] = QueryInfo(**data["query"])
-        data["randomness"] = RandomnessInfo(**data["randomness"])
-        data["network_capture"] = NetworkCaptureInfo(**data["network_capture"])
-        data["environment"] = EnvironmentInfo(**data["environment"])
+        # Handle network_capture - it might already be a NetworkCaptureInfo object
+        if "network_capture" in data:
+            nc = data["network_capture"]
+            if isinstance(nc, dict):
+                if isinstance(nc.get("capture_method"), str):
+                    nc["capture_method"] = CaptureMethod(nc["capture_method"])
+                data["network_capture"] = NetworkCaptureInfo(**nc)
+            # else: already a NetworkCaptureInfo object, leave it as is
+        
+        # Reconstruct nested dataclasses only if they're dicts
+        if "query" in data and isinstance(data["query"], dict):
+            data["query"] = QueryInfo(**data["query"])
+        if "randomness" in data and isinstance(data["randomness"], dict):
+            data["randomness"] = RandomnessInfo(**data["randomness"])
+        if "environment" in data and isinstance(data["environment"], dict):
+            data["environment"] = EnvironmentInfo(**data["environment"])
         
         return cls(**data)
 

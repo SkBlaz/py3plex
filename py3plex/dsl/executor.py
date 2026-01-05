@@ -124,12 +124,81 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     params = params or {}
     logger = logging.getLogger(__name__)
     
-    # Initialize provenance builder
-    provenance_builder = ProvenanceBuilder("dsl_v2_executor")
-    provenance_builder.start_timer()
-    provenance_builder.set_network(network)
-    provenance_builder.set_query_ast(query)
-    provenance_builder.set_params(params)
+    # Check for provenance configuration in query
+    provenance_config = getattr(query.select, 'provenance_config', None)
+    use_new_provenance = provenance_config and provenance_config.get('mode') == 'replayable'
+    
+    if use_new_provenance:
+        # Use new provenance schema
+        from py3plex.provenance.schema import (
+            create_provenance_record,
+            ProvenanceMode,
+            CaptureMethod,
+            should_capture_inline,
+        )
+        from py3plex.provenance.capture import capture_network
+        from py3plex.dsl.serializer import serialize_query
+        from py3plex.dsl.provenance import network_fingerprint, ast_fingerprint, ast_summary
+        
+        # Get provenance parameters
+        capture_method_str = provenance_config.get('capture', 'auto')
+        max_bytes = provenance_config.get('max_bytes')
+        base_seed = provenance_config.get('seed')
+        
+        # Map capture method string to enum
+        capture_method_map = {
+            'auto': CaptureMethod.AUTO,
+            'fingerprint': CaptureMethod.FINGERPRINT_ONLY,
+            'snapshot': CaptureMethod.SNAPSHOT_GRAPH,
+            'delta': CaptureMethod.DELTA_FROM_DATASET,
+        }
+        capture_method = capture_method_map.get(capture_method_str, CaptureMethod.AUTO)
+        
+        # Capture network fingerprint
+        net_fingerprint = network_fingerprint(network)
+        
+        # Decide whether to capture inline
+        snapshot_data = None
+        if capture_method == CaptureMethod.AUTO:
+            # Auto-decide based on size
+            if should_capture_inline(net_fingerprint['node_count'], net_fingerprint['edge_count']):
+                capture_method = CaptureMethod.SNAPSHOT_GRAPH
+            else:
+                capture_method = CaptureMethod.FINGERPRINT_ONLY
+        
+        # Capture network snapshot if needed
+        if capture_method == CaptureMethod.SNAPSHOT_GRAPH:
+            network_capture = capture_network(network, include_attributes=True)
+            snapshot_data = network_capture.to_dict()
+        
+        # Serialize AST for replay
+        ast_serialized = serialize_query(query)
+        
+        # Create provenance record
+        prov_record = create_provenance_record(
+            mode=ProvenanceMode.REPLAYABLE,
+            engine="dsl_v2_executor",
+            target=query.select.target.value if hasattr(query.select.target, 'value') else str(query.select.target),
+            ast_hash=ast_fingerprint(query),
+            ast_summary=ast_summary(query),
+            network_fingerprint=net_fingerprint,
+            ast_serialized=ast_serialized,
+            params=params,
+            capture_method=capture_method,
+            snapshot_data=snapshot_data,
+            base_seed=base_seed,
+            randomness_used=False,  # Will be updated if UQ is used
+        )
+        
+        # Track timing
+        start_time = time.monotonic()
+    else:
+        # Use legacy provenance builder
+        provenance_builder = ProvenanceBuilder("dsl_v2_executor")
+        provenance_builder.start_timer()
+        provenance_builder.set_network(network)
+        provenance_builder.set_query_ast(query)
+        provenance_builder.set_params(params)
     
     if progress:
         logger.info("Starting DSL query execution")
@@ -139,7 +208,12 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     if progress:
         logger.info("Step 1: Binding parameters")
     bound_query = _bind_parameters(query, params)
-    provenance_builder.record_stage("bind_parameters", (time.monotonic() - stage_start) * 1000)
+    
+    if use_new_provenance:
+        bind_time = (time.monotonic() - stage_start) * 1000
+        prov_record.performance['bind_parameters'] = bind_time
+    else:
+        provenance_builder.record_stage("bind_parameters", (time.monotonic() - stage_start) * 1000)
     
     # Step 2: Check for EXPLAIN mode
     if bound_query.explain:
@@ -155,7 +229,11 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
             logger.info("Step 2: Executing windowed query")
         result = _execute_windowed_query(network, bound_query, params, progress=progress)
         # Add provenance to windowed result
-        result.meta["provenance"] = provenance_builder.build()
+        if use_new_provenance:
+            prov_record.performance['total_ms'] = (time.monotonic() - start_time) * 1000
+            result.meta["provenance"] = prov_record.to_dict()
+        else:
+            result.meta["provenance"] = provenance_builder.build()
         return result
     
     # Step 4: Wrap network in temporal view if needed
@@ -163,15 +241,36 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     if progress:
         logger.info("Step 2: Applying temporal context (if needed)")
     actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
-    provenance_builder.record_stage("temporal_context", (time.monotonic() - stage_start) * 1000)
+    
+    if use_new_provenance:
+        prov_record.performance['temporal_context'] = (time.monotonic() - stage_start) * 1000
+    else:
+        provenance_builder.record_stage("temporal_context", (time.monotonic() - stage_start) * 1000)
     
     # Step 5: Execute SELECT statement (pass params for dynamic resolution)
     if progress:
         logger.info("Step 3: Executing SELECT statement")
-    result = _execute_select(actual_network, bound_query.select, params, progress=progress, provenance_builder=provenance_builder)
     
-    # Finalize and attach provenance
-    result.meta["provenance"] = provenance_builder.build()
+    if use_new_provenance:
+        # Pass provenance record instead of builder
+        result = _execute_select(
+            actual_network, bound_query.select, params, 
+            progress=progress, 
+            provenance_record=prov_record
+        )
+        
+        # Finalize provenance
+        prov_record.performance['total_ms'] = (time.monotonic() - start_time) * 1000
+        result.meta["provenance"] = prov_record.to_dict()
+    else:
+        result = _execute_select(
+            actual_network, bound_query.select, params, 
+            progress=progress, 
+            provenance_builder=provenance_builder
+        )
+        
+        # Finalize and attach provenance
+        result.meta["provenance"] = provenance_builder.build()
     
     return result
 
@@ -793,7 +892,14 @@ def _compute_measure_with_uncertainty(
         return _wrap_deterministic_uncertainty(measure_fn(subgraph, items), items)
 
 
-def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None, progress: bool = True, provenance_builder: Optional[ProvenanceBuilder] = None) -> QueryResult:
+def _execute_select(
+    network: Any, 
+    select: SelectStmt, 
+    params: Optional[Dict[str, Any]] = None, 
+    progress: bool = True, 
+    provenance_builder: Optional[ProvenanceBuilder] = None,
+    provenance_record: Optional[Any] = None
+) -> QueryResult:
     """Execute a SELECT statement.
     
     Args:
@@ -801,13 +907,21 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         select: SELECT statement AST
         params: Parameter bindings for dynamic resolution
         progress: If True, log progress messages during query execution (default: True)
-        provenance_builder: Optional provenance builder for tracking execution
+        provenance_builder: Optional legacy provenance builder for tracking execution
+        provenance_record: Optional new provenance record for replayable mode
     """
     params = params or {}
     logger = logging.getLogger(__name__)
     
-    # Create provenance builder if not provided (for standalone calls)
-    if provenance_builder is None:
+    # Helper function to record timing in either provenance system
+    def _record_timing(stage_name: str, duration_ms: float):
+        if provenance_record is not None:
+            provenance_record.performance[stage_name] = duration_ms
+        elif provenance_builder is not None:
+            provenance_builder.record_stage(stage_name, duration_ms)
+    
+    # Create provenance builder if neither is provided (for standalone calls)
+    if provenance_builder is None and provenance_record is None:
         provenance_builder = ProvenanceBuilder("dsl_v2_executor")
         provenance_builder.start_timer()
         provenance_builder.set_network(network)
@@ -820,7 +934,10 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             attributes={},
             meta={"dsl_version": "2.0", "warning": "Network has no core_network"}
         )
-        result.meta["provenance"] = provenance_builder.build()
+        if provenance_record is not None:
+            result.meta["provenance"] = provenance_record.to_dict()
+        elif provenance_builder is not None:
+            result.meta["provenance"] = provenance_builder.build()
         return result
     
     G = network.core_network
@@ -844,7 +961,7 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         items = list(network.get_edges(data=True))
     if progress:
         logger.info(f"Found {len(items)} initial {select.target.value}")
-    provenance_builder.record_stage("get_items", (time.monotonic() - stage_start) * 1000)
+    _record_timing("get_items", (time.monotonic() - stage_start) * 1000)
     
     # Step 2: Apply layer filter
     stage_start = time.monotonic()
@@ -864,7 +981,7 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         items = _filter_by_layers(items, active_layers, select.target)
         if progress:
             logger.info(f"Filtered to {len(items)} {select.target.value} in {len(active_layers)} layers")
-    provenance_builder.record_stage("filter_layers", (time.monotonic() - stage_start) * 1000)
+    _record_timing("filter_layers", (time.monotonic() - stage_start) * 1000)
     
     # Step 3: Apply WHERE conditions
     stage_start = time.monotonic()
@@ -874,7 +991,7 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         items = _filter_by_conditions(items, select.where, network, G, params)
         if progress:
             logger.info(f"Filtered to {len(items)} {select.target.value}")
-    provenance_builder.record_stage("filter_where", (time.monotonic() - stage_start) * 1000)
+    _record_timing("filter_where", (time.monotonic() - stage_start) * 1000)
     
     # Step 3.5: Apply post-filters (e.g., has_community with lambdas)
     if select.post_filters:
@@ -1099,14 +1216,14 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             network=network,
             G=G,
         )
-    provenance_builder.record_stage("group_aggregate", (time.monotonic() - stage_start) * 1000)
+    _record_timing("group_aggregate", (time.monotonic() - stage_start) * 1000)
     
     # Step 6: Apply global LIMIT (if not already applied early)
     if select.limit is not None and not early_limit_applied:
         if progress:
             logger.info(f"Step 3.6: Applying LIMIT {select.limit}")
         items = items[:select.limit]
-    provenance_builder.record_stage("limit", (time.monotonic() - stage_start) * 1000)
+    _record_timing("limit", (time.monotonic() - stage_start) * 1000)
     
     # Step 6.5: Apply explanations if specified
     if select.explain_spec is not None:
@@ -1135,7 +1252,7 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         attributes=attributes,
         meta=meta_dict
     )
-    provenance_builder.record_stage("materialize", (time.monotonic() - stage_start) * 1000)
+    _record_timing("materialize", (time.monotonic() - stage_start) * 1000)
     
     # Step 7: Apply file export if specified
     if select.file_export:

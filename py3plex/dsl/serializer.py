@@ -260,16 +260,24 @@ def deserialize_query(data: Dict[str, Any]) -> Query:
                 
                 cls = class_map.get(class_name)
                 if cls:
+                    # Handle enums specially - they should be reconstructed from value
+                    if class_name == 'Target' and 'value' in obj_copy:
+                        return Target(obj_copy['value'])
+                    elif class_name == 'ExportTarget' and 'value' in obj_copy:
+                        return ExportTarget(obj_copy['value'])
+                    
                     # Recursively reconstruct fields
                     kwargs = {}
                     for key, value in obj_copy.items():
-                        kwargs[key] = _from_dict(value)
-                    
-                    # Handle enums specially
-                    if class_name == 'Target':
-                        return Target(kwargs.get('value', 'nodes'))
-                    elif class_name == 'ExportTarget':
-                        return ExportTarget(kwargs.get('value', 'pandas'))
+                        # Convert enum values back to enums
+                        if key == 'target' and isinstance(value, str):
+                            # If target is already a string value, convert to Target enum
+                            kwargs[key] = Target(value) if value in ['nodes', 'edges', 'communities'] else _from_dict(value)
+                        elif key == 'export' and isinstance(value, str):
+                            # If export is a string value, convert to ExportTarget enum
+                            kwargs[key] = ExportTarget(value) if value in ['pandas', 'networkx', 'arrow', 'dict'] else _from_dict(value)
+                        else:
+                            kwargs[key] = _from_dict(value)
                     
                     return cls(**kwargs)
             
