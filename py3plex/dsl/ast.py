@@ -14,6 +14,7 @@ class Target(Enum):
     """Query target - what to select from the network."""
     NODES = "nodes"
     EDGES = "edges"
+    COMMUNITIES = "communities"
 
 
 class ExportTarget(Enum):

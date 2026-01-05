@@ -794,6 +794,10 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     
     G = network.core_network
     
+    # Handle community queries specially
+    if select.target == Target.COMMUNITIES:
+        return _execute_community_select(network, select, params, progress=progress)
+    
     # Step 1: Get initial items
     if progress:
         logger.info(f"Step 3.1: Getting initial {select.target.value}")
@@ -1108,6 +1112,194 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         logger.info("Query execution completed")
     
     return result
+
+
+def _execute_community_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None, progress: bool = False) -> QueryResult:
+    """Execute a SELECT statement for communities.
+    
+    Args:
+        network: Multilayer network
+        select: SELECT statement AST
+        params: Parameter bindings for dynamic resolution
+        progress: If True, log progress messages during query execution
+        
+    Returns:
+        QueryResult with community records
+    """
+    from .communities import build_community_records, compute_community_metric
+    
+    params = params or {}
+    logger = logging.getLogger(__name__)
+    
+    if progress:
+        logger.info("Executing community query")
+    
+    # Step 1: Get partition name (from select or default)
+    partition_name = getattr(select, 'partition_name', 'default')
+    
+    if progress:
+        logger.info(f"Step 1: Loading partition '{partition_name}'")
+    
+    # Step 2: Get partition from network
+    partition = network.get_partition_by_name(partition_name)
+    
+    if partition is None:
+        raise DslExecutionError(
+            f"No partition named '{partition_name}' found in network. "
+            f"Available partitions: {network.list_partitions()}. "
+            f"Use network.assign_partition(partition, name='...') to assign a partition."
+        )
+    
+    if progress:
+        logger.info(f"Loaded partition with {len(set(partition.values()))} communities")
+    
+    # Step 3: Build community records
+    records = build_community_records(network, partition, name=partition_name)
+    
+    if progress:
+        logger.info(f"Built {len(records)} community records")
+    
+    # Step 4: Apply WHERE conditions (filter communities)
+    if select.where:
+        if progress:
+            logger.info("Step 2: Applying WHERE conditions")
+        
+        # Build filters dict from conditions
+        filters = {}
+        _extract_community_filters(select.where, filters)
+        
+        # Apply filters
+        from .communities import filter_communities
+        records = filter_communities(records, **filters)
+        
+        if progress:
+            logger.info(f"Filtered to {len(records)} communities")
+    
+    # Step 5: Compute additional metrics
+    attributes: Dict[str, Dict] = {}
+    if select.compute:
+        if progress:
+            logger.info(f"Step 3: Computing {len(select.compute)} measure(s)")
+        
+        for compute_item in select.compute:
+            metric_name = compute_item.name
+            result_name = compute_item.alias or metric_name
+            
+            # Compute metric for each community
+            metric_values = {}
+            for record in records:
+                value = compute_community_metric(record, metric_name, network)
+                metric_values[record.community_id] = value
+            
+            attributes[result_name] = metric_values
+        
+        if progress:
+            logger.info(f"Computed {len(attributes)} metrics")
+    
+    # Step 6: Convert records to items (community_id)
+    items = [record.community_id for record in records]
+    
+    # Step 7: Build attributes dict with community properties
+    # Add built-in attributes
+    attributes['size'] = {r.community_id: r.size for r in records}
+    attributes['intra_edges'] = {r.community_id: r.intra_edges for r in records}
+    attributes['inter_edges'] = {r.community_id: r.inter_edges for r in records}
+    attributes['density_intra'] = {r.community_id: r.density_intra for r in records}
+    attributes['cut_size'] = {r.community_id: r.cut_size for r in records}
+    attributes['layer_scope'] = {r.community_id: r.layer_scope for r in records}
+    
+    # Step 8: Apply ordering
+    if select.order_by:
+        if progress:
+            logger.info("Step 4: Applying ORDER BY")
+        items = _apply_ordering(items, select.order_by, attributes)
+    
+    # Step 9: Apply limit
+    if select.limit is not None:
+        if progress:
+            logger.info(f"Step 5: Applying LIMIT {select.limit}")
+        items = items[:select.limit]
+    
+    # Step 10: Apply grouping if requested
+    grouping_meta = None
+    if select.group_by:
+        if progress:
+            logger.info(f"Step 6: Applying grouping by {select.group_by}")
+        
+        # Build grouping metadata
+        groups: Dict[Any, List[Any]] = {}
+        for comm_id in items:
+            # Get group key based on group_by fields
+            if 'layer' in select.group_by:
+                # Group by layer_scope
+                record = next(r for r in records if r.community_id == comm_id)
+                key = record.layer_scope
+            else:
+                # Group by algorithm or other metadata
+                key = tuple(attributes.get(field, {}).get(comm_id) for field in select.group_by)
+            
+            if key not in groups:
+                groups[key] = []
+            groups[key].append(comm_id)
+        
+        grouping_meta = {
+            'grouping': 'community',
+            'groups': groups,
+            'group_by': select.group_by
+        }
+    
+    # Build metadata
+    meta_dict = {
+        'dsl_version': '2.1',
+        'partition_name': partition_name,
+        'num_communities': len(items),
+        'total_communities': len(records),
+    }
+    
+    if grouping_meta:
+        meta_dict.update(grouping_meta)
+    
+    # Store community records in metadata for bridge methods
+    meta_dict['_community_records'] = {r.community_id: r for r in records}
+    
+    if progress:
+        logger.info("Community query execution completed")
+    
+    return QueryResult(
+        target=select.target.value,
+        items=items,
+        attributes=attributes,
+        meta=meta_dict
+    )
+
+
+def _extract_community_filters(where: ConditionExpr, filters: Dict[str, Any]) -> None:
+    """Extract community filters from WHERE conditions.
+    
+    Args:
+        where: ConditionExpr AST node
+        filters: Dict to populate with filters
+    """
+    for atom in where.atoms:
+        if atom.comparison:
+            comp = atom.comparison
+            attr = comp.left
+            op = comp.op
+            value = comp.right
+            
+            # Map operator to filter suffix
+            op_map = {
+                ">": "gt",
+                ">=": "gte",
+                "<": "lt",
+                "<=": "lte",
+                "=": "eq",
+                "!=": "ne",
+            }
+            
+            suffix = op_map.get(op, "eq")
+            filter_key = f"{attr}__{suffix}" if suffix != "eq" else attr
+            filters[filter_key] = value
 
 
 def _apply_explanations(
