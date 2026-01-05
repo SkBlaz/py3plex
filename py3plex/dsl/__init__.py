@@ -100,6 +100,7 @@ from .ast import (
 from .builder import (
     Q,
     QueryBuilder,
+    CommunityQueryBuilder,
     LayerExprBuilder,
     LayerProxy,
     L,
@@ -145,6 +146,13 @@ from .expressions import (
     FieldExpression,
     BooleanExpression,
     FieldProxy,
+)
+
+from .communities import (
+    CommunityRecord,
+    build_community_records,
+    filter_communities,
+    compute_community_metric,
 )
 
 from .result import QueryResult
@@ -255,6 +263,7 @@ __all__ = [
     # Builder
     "Q",
     "QueryBuilder",
+    "CommunityQueryBuilder",
     "LayerExprBuilder",
     "LayerProxy",
     "L",
@@ -292,6 +301,11 @@ __all__ = [
     "FieldExpression",
     "BooleanExpression",
     "FieldProxy",
+    # Communities
+    "CommunityRecord",
+    "build_community_records",
+    "filter_communities",
+    "compute_community_metric",
     # Result
     "QueryResult",
     "export_result",

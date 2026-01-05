@@ -30,8 +30,9 @@
 24. [Uncertainty Quantification](#uncertainty-quantification)
 25. [Temporal Networks](#temporal-networks)
 26. [Null Models](#null-models)
-27. [Version Information](#version-information)
-28. [File Locations](#file-locations)
+27. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+28. [Version Information](#version-information)
+29. [File Locations](#file-locations)
 
 ---
 
@@ -2410,6 +2411,271 @@ null_stats = [compute_statistic(nm) for nm in null_models]
 import numpy as np
 z_score = (observed - np.mean(null_stats)) / np.std(null_stats)
 print(f"Z-score: {z_score:.2f}")
+```
+
+---
+
+## Community Queries (First-Class Communities)
+
+py3plex now supports communities as a first-class DSL target, enabling direct querying, filtering, aggregation, and analysis of network communities. This extends beyond simply computing community assignments to treating communities as queryable entities alongside nodes and edges.
+
+### Core Features
+
+- **First-Class Target:** Query communities directly with `Q.communities()`
+- **Filtering:** Filter communities by size, density, connectivity, and more
+- **Metrics:** Compute community-level statistics (conductance, cut size, modularity contribution)
+- **Bridges:** Seamlessly transition between communities, nodes, and edges
+- **Named Partitions:** Store and query multiple community structures (e.g., different algorithms, resolutions)
+- **Grouping:** Group communities by layer scope or other properties
+
+### API Components
+
+```python
+from py3plex.dsl import Q, CommunityRecord
+
+# Query communities
+result = Q.communities().execute(network)
+
+# Query from a specific partition
+result = Q.communities(partition="louvain").execute(network)
+
+# Filter and compute
+result = (
+    Q.communities()
+     .where(size__gt=10, density_intra__gt=0.5)
+     .compute("conductance", "modularity_contribution")
+     .order_by("size", desc=True)
+     .execute(network)
+)
+
+# Bridge to nodes
+members = Q.communities().where(size__gt=10).members().compute("degree").execute(network)
+
+# Bridge to edges
+boundary = Q.communities().boundary_edges().execute(network)
+```
+
+### Example 1: Basic Community Query and Analysis
+
+```python
+from py3plex.core import multinet
+from py3plex.dsl import Q
+
+# Create a network with community structure
+network = multinet.multi_layer_network(directed=False)
+network.add_nodes([
+    {'source': 'A', 'type': 'social'},
+    {'source': 'B', 'type': 'social'},
+    {'source': 'C', 'type': 'social'},
+    {'source': 'D', 'type': 'social'},
+])
+network.add_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'A', 'target': 'C', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'C', 'target': 'D', 'source_type': 'social', 'target_type': 'social'},
+])
+
+# Detect communities (using legacy DSL or external algorithm)
+from py3plex.dsl import detect_communities
+communities_info = detect_communities(network)
+partition = communities_info['partition']
+
+# Assign partition to network
+network.assign_partition(partition)
+
+# Query communities
+result = Q.communities().execute(network)
+
+print(f"Number of communities: {len(result.items)}")
+print(f"Community IDs: {result.items}")
+
+# Export to pandas
+df = result.to_pandas()
+print(df[['community_id', 'size', 'density_intra', 'cut_size']])
+
+# Output:
+#   community_id  size  density_intra  cut_size
+# 0             0     3       1.000000         1
+# 1             1     1       0.000000         1
+```
+
+### Example 2: Filter and Analyze Large Communities
+
+```python
+# Query large, dense communities
+result = (
+    Q.communities()
+     .where(size__gt=5, density_intra__gt=0.6)
+     .compute("conductance", "modularity_contribution")
+     .order_by("size", desc=True)
+     .limit(10)
+     .execute(network)
+)
+
+df = result.to_pandas()
+print(df[['community_id', 'size', 'conductance', 'modularity_contribution']])
+
+# Output shows top 10 large, dense communities sorted by size
+```
+
+### Example 3: Bridge from Communities to Member Nodes
+
+```python
+# Get nodes in large communities and compute their centrality
+result = (
+    Q.communities()
+     .where(size__gt=10)
+     .members()  # Bridge to nodes
+     .compute("degree", "betweenness_centrality")
+     .order_by("betweenness_centrality", desc=True)
+     .execute(network)
+)
+
+df = result.to_pandas()
+print(f"Found {len(df)} nodes in large communities")
+print(df[['id', 'layer', 'degree', 'betweenness_centrality']].head())
+
+# Output shows members of communities with >10 nodes, sorted by centrality
+```
+
+### Example 4: Bridge from Communities to Boundary Edges
+
+```python
+# Get inter-community edges (edges crossing community boundaries)
+result = (
+    Q.communities()
+     .where(size__gt=5)
+     .boundary_edges()  # Bridge to edges
+     .execute(network)
+)
+
+df = result.to_pandas()
+print(f"Found {len(df)} boundary edges between large communities")
+print(df[['source', 'target', 'source_layer', 'target_layer', 'weight']].head())
+
+# Output shows edges connecting different communities
+```
+
+### Example 5: Named Partitions for Algorithm Comparison
+
+```python
+# Detect communities with different algorithms
+partition_louvain = detect_communities_louvain(network)
+partition_infomap = detect_communities_infomap(network)
+
+# Store multiple partitions
+network.assign_partition(partition_louvain, name="louvain", meta={"resolution": 1.0})
+network.assign_partition(partition_infomap, name="infomap")
+
+# Query from specific partition
+result_louvain = Q.communities(partition="louvain").execute(network)
+result_infomap = Q.communities(partition="infomap").execute(network)
+
+print(f"Louvain: {len(result_louvain.items)} communities")
+print(f"Infomap: {len(result_infomap.items)} communities")
+
+# List available partitions
+partitions = network.list_partitions()
+print(f"Available partitions: {partitions}")
+
+# Output:
+# Louvain: 5 communities
+# Infomap: 7 communities
+# Available partitions: ['louvain', 'infomap']
+```
+
+### Community Filtering Predicates
+
+Communities support rich filtering via `.where()`:
+
+**Size filters:**
+- `size__gt=10` - Communities with >10 members
+- `size__between=(5, 20)` - Communities with 5-20 members
+- `size__eq=3` - Communities with exactly 3 members
+
+**Connectivity filters:**
+- `density_intra__gt=0.5` - Dense communities (>50% internal density)
+- `cut_size__lt=5` - Communities with few boundary edges
+- `inter_edges__gt=3` - Communities with >3 outgoing edges
+
+**Layer scope filters:**
+- `layer_scope__eq="single_layer"` - Communities within one layer
+- `layer_scope__eq="multi_layer"` - Communities spanning layers
+
+### Community Metrics
+
+Compute community-level statistics with `.compute()`:
+
+**Built-in metrics:**
+- `size` - Number of members
+- `intra_edges` - Number of internal edges
+- `inter_edges` - Number of boundary edges
+- `cut_size` - Number of boundary edges (alias for `inter_edges`)
+- `density_intra` - Internal edge density
+- `conductance` - Ratio of cut edges to total edges
+- `normalized_cut` - Normalized cut value
+- `modularity_contribution` - Community's contribution to modularity
+- `hub_nodes_top_k` - Top k central nodes within community (e.g., `hub_nodes_top_5`)
+
+### Bridge Methods
+
+**From communities to nodes:**
+```python
+# Get members of selected communities
+nodes = Q.communities().where(...).members()
+```
+
+**From communities to edges:**
+```python
+# Get boundary edges between communities
+edges = Q.communities().boundary_edges()
+```
+
+### Error Handling
+
+```python
+from py3plex.dsl.errors import DslExecutionError
+
+try:
+    result = Q.communities().execute(network)
+except DslExecutionError as e:
+    if "No partition" in str(e):
+        print("Network has no community assignments. Run community detection first.")
+        # Detect communities
+        partition = detect_communities(network)['partition']
+        network.assign_partition(partition)
+        result = Q.communities().execute(network)
+```
+
+### Integration with Existing DSL Features
+
+Communities work seamlessly with other DSL features:
+
+```python
+# Per-layer community analysis
+result = (
+    Q.communities()
+     .per_layer()  # Group by layer
+     .compute("size")
+     .execute(network)
+)
+
+# Uncertainty quantification on community metrics
+result = (
+    Q.communities()
+     .uq(UQ.fast())
+     .compute("conductance")
+     .execute(network)
+)
+
+# Export communities
+result = (
+    Q.communities()
+     .where(size__gt=5)
+     .to("pandas")  # or "networkx", "arrow"
+     .execute(network)
+)
 ```
 
 ---
