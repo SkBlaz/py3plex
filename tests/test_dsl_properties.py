@@ -23,8 +23,8 @@ def layer_name_strategy():
         min_size=1,
         max_size=15,
         alphabet=st.characters(
-            whitelist_categories=('Lu', 'Ll', 'Nd'),
-            blacklist_characters=' \t\n\r'
+            categories=('Lu', 'Ll', 'Nd'),
+            exclude_characters=' \t\n\r'
         )
     )
 
@@ -34,7 +34,7 @@ def node_name_strategy():
     return st.text(
         min_size=1,
         max_size=10,
-        alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'))
+        alphabet=st.characters(categories=('Lu', 'Ll', 'Nd'))
     )
 
 
@@ -143,7 +143,7 @@ class TestConditionBuilderProperties:
     """Property-based tests for condition building."""
     
     @given(
-        st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=('Ll',))),
+        st.text(min_size=1, max_size=20, alphabet=st.characters(categories=('Ll',))),
         st.integers(min_value=0, max_value=100)
     )
     @settings(max_examples=50)
@@ -175,7 +175,7 @@ class TestParameterBindingProperties:
     """Property-based tests for parameter binding."""
     
     @given(
-        st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=('Ll',))),
+        st.text(min_size=1, max_size=20, alphabet=st.characters(categories=('Ll',))),
         st.integers(min_value=1, max_value=100)
     )
     @settings(max_examples=50)
@@ -192,7 +192,7 @@ class TestParameterBindingProperties:
             q.execute(network, progress=False, **{})
     
     @given(
-        st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=('Ll',))),
+        st.text(min_size=1, max_size=20, alphabet=st.characters(categories=('Ll',))),
         st.integers(min_value=0, max_value=100)
     )
     @settings(max_examples=50)
