@@ -30,8 +30,9 @@
 24. [Uncertainty Quantification](#uncertainty-quantification)
 25. [Temporal Networks](#temporal-networks)
 26. [Null Models](#null-models)
-27. [Version Information](#version-information)
-28. [File Locations](#file-locations)
+27. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+28. [Version Information](#version-information)
+29. [File Locations](#file-locations)
 
 ---
 

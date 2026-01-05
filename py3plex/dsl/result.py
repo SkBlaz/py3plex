@@ -345,7 +345,76 @@ class QueryResult:
         except ImportError:
             raise ImportError("pandas is required for to_pandas(). Install with: pip install pandas")
         
-        if self.target == "edges":
+        if self.target == "communities":
+            # Build community dataframe
+            rows = []
+            for comm_id in self.items:
+                row = {'community_id': comm_id}
+                
+                # Add computed attributes
+                for attr_name, values in self.attributes.items():
+                    if isinstance(values, dict):
+                        if comm_id in values:
+                            value = values[comm_id]
+                            
+                            if expand_uncertainty:
+                                # Expand uncertainty into multiple columns
+                                expanded = _expand_uncertainty_value(attr_name, value)
+                                row.update(expanded)
+                            else:
+                                row[attr_name] = value
+                        else:
+                            if expand_uncertainty:
+                                # Add None for all expanded columns
+                                ci_pct = 95  # Default CI level
+                                row[attr_name] = None
+                                row[f"{attr_name}_std"] = None
+                                row[f"{attr_name}_ci{ci_pct}_low"] = None
+                                row[f"{attr_name}_ci{ci_pct}_high"] = None
+                                row[f"{attr_name}_ci{ci_pct}_width"] = None
+                            else:
+                                row[attr_name] = None
+                    else:
+                        # If values is a list, use index
+                        idx = self.items.index(comm_id)
+                        if idx < len(values):
+                            value = values[idx]
+                            
+                            if expand_uncertainty:
+                                # Expand uncertainty into multiple columns
+                                expanded = _expand_uncertainty_value(attr_name, value)
+                                row.update(expanded)
+                            else:
+                                row[attr_name] = value
+                        else:
+                            if expand_uncertainty:
+                                # Add None for all expanded columns
+                                ci_pct = 95  # Default CI level
+                                row[attr_name] = None
+                                row[f"{attr_name}_std"] = None
+                                row[f"{attr_name}_ci{ci_pct}_low"] = None
+                                row[f"{attr_name}_ci{ci_pct}_high"] = None
+                                row[f"{attr_name}_ci{ci_pct}_width"] = None
+                            else:
+                                row[attr_name] = None
+                
+                rows.append(row)
+            
+            df = pd.DataFrame(rows)
+            
+            # Apply grouping metadata if present
+            if include_grouping and "grouping" in self.meta:
+                grouping_info = self.meta["grouping"]
+                if multiindex and "group_by" in grouping_info:
+                    # Set multiindex using grouping keys
+                    index_cols = grouping_info["group_by"]
+                    # Only set index if all keys exist in the dataframe
+                    if all(col in df.columns for col in index_cols):
+                        df = df.set_index(index_cols)
+            
+            return df
+        
+        elif self.target == "edges":
             # Build edge dataframe with standard columns
             rows = []
             for edge in self.items:

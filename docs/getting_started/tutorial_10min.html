@@ -59,13 +59,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#part-1-your-first-network-2-min">Part 1: Your First Network (2 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#part-2-basic-analysis-2-min">Part 2: Basic Analysis (2 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#use-subset-by-to-control-whether-you-filter-by-layers-node-names-or-explicit-node-layer-tuples">Use <code class="docutils literal notranslate"><span class="pre">subset_by</span></code> to control whether you filter by layers, node names, or explicit node-layer tuples.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#part-3-advanced-metrics-2-min">Part 3: Advanced Metrics (2 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#part-4-community-detection-2-min">Part 4: Community Detection (2 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#partition-maps-each-node-layer-pair-to-a-community-label-tune-gamma-resolution-and-omega-inter-layer-coupling-to-control-granularity-fix-random-state-for-reproducible-runs"><code class="docutils literal notranslate"><span class="pre">partition</span></code> maps each node-layer pair to a community label. Tune <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (resolution) and <code class="docutils literal notranslate"><span class="pre">omega</span></code> (inter-layer coupling) to control granularity; fix <code class="docutils literal notranslate"><span class="pre">random_state</span></code> for reproducible runs.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#part-5-random-walks-1-min">Part 5: Random Walks (1 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#part-6-visualization-1-min">Part 6: Visualization (1 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-layers-style-hairball-returns-a-networkx-graph-and-color-mapping-ready-for-hairball-plot-saving-figures-makes-headless-runs-reproducible"><code class="docutils literal notranslate"><span class="pre">get_layers(style=&quot;hairball&quot;)</span></code> returns a NetworkX graph and color mapping ready for <code class="docutils literal notranslate"><span class="pre">hairball_plot</span></code>; saving figures makes headless runs reproducible.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#key-concepts">Key Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#complete-example">Complete Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dsl-query-networks-like-sql">DSL: Query Networks Like SQL</a></li>
@@ -322,10 +319,9 @@ Bob&#39;s activity: 1.000
                            <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">subset_by</span></code> to control whether you filter by layers, node names, or explicit node-layer tuples.</p>
 </section>
-<section id="use-subset-by-to-control-whether-you-filter-by-layers-node-names-or-explicit-node-layer-tuples">
-<h2>Use <code class="docutils literal notranslate"><span class="pre">subset_by</span></code> to control whether you filter by layers, node names, or explicit node-layer tuples.<a class="headerlink" href="#use-subset-by-to-control-whether-you-filter-by-layers-node-names-or-explicit-node-layer-tuples" title="Link to this heading"></a></h2>
-</section>
+<hr class="docutils" />
 <section id="part-3-advanced-metrics-2-min">
 <h2>Part 3: Advanced Metrics (2 min)<a class="headerlink" href="#part-3-advanced-metrics-2-min" title="Link to this heading"></a></h2>
 <p>Layer-specific centrality (using NetworkX wrappers):</p>
@@ -373,10 +369,9 @@ Bob&#39;s activity: 1.000
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sizes: </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">partition</span></code> maps each node-layer pair to a community label. Tune <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (resolution) and <code class="docutils literal notranslate"><span class="pre">omega</span></code> (inter-layer coupling) to control granularity; fix <code class="docutils literal notranslate"><span class="pre">random_state</span></code> for reproducible runs.</p>
 </section>
-<section id="partition-maps-each-node-layer-pair-to-a-community-label-tune-gamma-resolution-and-omega-inter-layer-coupling-to-control-granularity-fix-random-state-for-reproducible-runs">
-<h2><code class="docutils literal notranslate"><span class="pre">partition</span></code> maps each node-layer pair to a community label. Tune <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (resolution) and <code class="docutils literal notranslate"><span class="pre">omega</span></code> (inter-layer coupling) to control granularity; fix <code class="docutils literal notranslate"><span class="pre">random_state</span></code> for reproducible runs.<a class="headerlink" href="#partition-maps-each-node-layer-pair-to-a-community-label-tune-gamma-resolution-and-omega-inter-layer-coupling-to-control-granularity-fix-random-state-for-reproducible-runs" title="Link to this heading"></a></h2>
-</section>
+<hr class="docutils" />
 <section id="part-5-random-walks-1-min">
 <h2>Part 5: Random Walks (1 min)<a class="headerlink" href="#part-5-random-walks-1-min" title="Link to this heading"></a></h2>
 <p>Basic walk:</p>
@@ -432,10 +427,9 @@ Bob&#39;s activity: 1.000
 <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">get_layers(style=&quot;hairball&quot;)</span></code> returns a NetworkX graph and color mapping ready for <code class="docutils literal notranslate"><span class="pre">hairball_plot</span></code>; saving figures makes headless runs reproducible.</p>
 </section>
-<section id="get-layers-style-hairball-returns-a-networkx-graph-and-color-mapping-ready-for-hairball-plot-saving-figures-makes-headless-runs-reproducible">
-<h2><code class="docutils literal notranslate"><span class="pre">get_layers(style=&quot;hairball&quot;)</span></code> returns a NetworkX graph and color mapping ready for <code class="docutils literal notranslate"><span class="pre">hairball_plot</span></code>; saving figures makes headless runs reproducible.<a class="headerlink" href="#get-layers-style-hairball-returns-a-networkx-graph-and-color-mapping-ready-for-hairball-plot-saving-figures-makes-headless-runs-reproducible" title="Link to this heading"></a></h2>
-</section>
+<hr class="docutils" />
 <section id="key-concepts">
 <h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
 <p>Understand these concepts to navigate py3plex effectively:</p>

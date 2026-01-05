@@ -28,12 +28,12 @@ Example Usage:
     ...      .limit(20)
     ... )
     >>>
-    >>> # Execute the query
+    >>> # Execute the query (progress logging enabled by default)
     >>> result = q.execute(network, k=5)  # doctest: +SKIP
     >>> df = result.to_pandas()  # doctest: +SKIP
     >>>
-    >>> # Execute with progress logging
-    >>> result = q.execute(network, progress=True)  # doctest: +SKIP
+    >>> # Execute without progress logging
+    >>> result = q.execute(network, progress=False)  # doctest: +SKIP
     >>>
     >>> # Compare two networks
     >>> comparison = C.compare("baseline", "treatment").using("multiplex_jaccard").execute(networks)  # doctest: +SKIP
@@ -100,6 +100,7 @@ from .ast import (
 from .builder import (
     Q,
     QueryBuilder,
+    CommunityQueryBuilder,
     LayerExprBuilder,
     LayerProxy,
     L,
@@ -145,6 +146,13 @@ from .expressions import (
     FieldExpression,
     BooleanExpression,
     FieldProxy,
+)
+
+from .communities import (
+    CommunityRecord,
+    build_community_records,
+    filter_communities,
+    compute_community_metric,
 )
 
 from .result import QueryResult
@@ -255,6 +263,7 @@ __all__ = [
     # Builder
     "Q",
     "QueryBuilder",
+    "CommunityQueryBuilder",
     "LayerExprBuilder",
     "LayerProxy",
     "L",
@@ -292,6 +301,11 @@ __all__ = [
     "FieldExpression",
     "BooleanExpression",
     "FieldProxy",
+    # Communities
+    "CommunityRecord",
+    "build_community_records",
+    "filter_communities",
+    "compute_community_metric",
     # Result
     "QueryResult",
     "export_result",

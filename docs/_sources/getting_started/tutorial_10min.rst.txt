@@ -177,6 +177,7 @@ Extract subnetworks:
                                subset_by="node_layer_names")
 
 Use ``subset_by`` to control whether you filter by layers, node names, or explicit node-layer tuples.
+
 ----
 
 Part 3: Advanced Metrics (2 min)
@@ -237,6 +238,7 @@ Part 4: Community Detection (2 min)
     print(f"Sizes: {dict(sizes)}")
 
 ``partition`` maps each node-layer pair to a community label. Tune ``gamma`` (resolution) and ``omega`` (inter-layer coupling) to control granularity; fix ``random_state`` for reproducible runs.
+
 ----
 
 Part 5: Random Walks (1 min)
@@ -307,6 +309,7 @@ With community colors:
     plt.close()
 
 ``get_layers(style="hairball")`` returns a NetworkX graph and color mapping ready for ``hairball_plot``; saving figures makes headless runs reproducible.
+
 ----
 
 Key Concepts

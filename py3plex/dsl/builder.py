@@ -1865,12 +1865,12 @@ class QueryBuilder:
         else:
             return self.order_by(by)
     
-    def execute(self, network: Any, progress: bool = False, **params) -> QueryResult:
+    def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
         """Execute the query.
         
         Args:
             network: Multilayer network object
-            progress: If True, log progress messages during query execution
+            progress: If True, log progress messages during query execution (default: True)
             **params: Parameter bindings
             
         Returns:
@@ -1900,6 +1900,87 @@ class QueryBuilder:
     
     def __repr__(self) -> str:
         return f"QueryBuilder(target={self._select.target.value})"
+
+
+class CommunityQueryBuilder(QueryBuilder):
+    """Builder for community queries.
+    
+    Extends QueryBuilder with community-specific operations.
+    Use Q.communities() to create.
+    """
+    
+    def __init__(self, autocompute: bool = True, partition_name: str = "default"):
+        """Initialize community query builder.
+        
+        Args:
+            autocompute: Whether to automatically compute missing metrics (default: True)
+            partition_name: Name of the partition to query (default: "default")
+        """
+        super().__init__(Target.COMMUNITIES, autocompute=autocompute)
+        self._partition_name = partition_name
+        # Store partition name in select for executor
+        if not hasattr(self._select, 'partition_name'):
+            self._select.partition_name = partition_name
+    
+    def from_partition(self, name: str) -> "CommunityQueryBuilder":
+        """Select which partition to query.
+        
+        Args:
+            name: Name of the partition (e.g., "louvain", "infomap", "default")
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.communities().from_partition("louvain")
+        """
+        self._partition_name = name
+        self._select.partition_name = name
+        return self
+    
+    def members(self) -> QueryBuilder:
+        """Return nodes that are members of the selected communities.
+        
+        This bridges from communities to nodes, allowing you to query
+        the members of filtered communities.
+        
+        Returns:
+            NodeQueryBuilder for members
+            
+        Example:
+            >>> # Get nodes in large communities
+            >>> Q.communities().where(size__gt=10).members().compute("degree")
+        """
+        # Create a new node query builder
+        node_builder = QueryBuilder(Target.NODES, autocompute=self._select.autocompute)
+        
+        # Mark that this is derived from a community query
+        if not hasattr(node_builder._select, '_from_communities'):
+            node_builder._select._from_communities = self._select
+        
+        return node_builder
+    
+    def boundary_edges(self) -> QueryBuilder:
+        """Return edges that cross community boundaries.
+        
+        Returns edges where source and target are in different communities.
+        
+        Returns:
+            EdgeQueryBuilder for boundary edges
+            
+        Example:
+            >>> # Get inter-community edges for large communities
+            >>> Q.communities().where(size__gt=10).boundary_edges()
+        """
+        # Create a new edge query builder
+        edge_builder = QueryBuilder(Target.EDGES, autocompute=self._select.autocompute)
+        
+        # Mark that this is derived from a community query (boundary edges)
+        if not hasattr(edge_builder._select, '_from_communities'):
+            edge_builder._select._from_communities = self._select
+            edge_builder._select._community_edge_type = "boundary"
+        
+        return edge_builder
 
 
 class Q:
@@ -1936,6 +2017,29 @@ class Q:
             QueryBuilder for edges
         """
         return QueryBuilder(Target.EDGES, autocompute=autocompute)
+    
+    @staticmethod
+    def communities(autocompute: bool = True, partition: str = "default") -> CommunityQueryBuilder:
+        """Create a query builder for communities.
+        
+        Args:
+            autocompute: Whether to automatically compute missing metrics (default: True)
+            partition: Name of the partition to query (default: "default")
+            
+        Returns:
+            CommunityQueryBuilder for communities
+            
+        Example:
+            >>> # Query large communities
+            >>> Q.communities().where(size__gt=10).compute("conductance")
+            
+            >>> # Query from a specific algorithm
+            >>> Q.communities(partition="louvain").where(density_intra__gt=0.5)
+            
+            >>> # Get members of large communities
+            >>> Q.communities().where(size__gt=10).members().compute("degree")
+        """
+        return CommunityQueryBuilder(autocompute=autocompute, partition_name=partition)
     
     @staticmethod
     def dynamics(process_name: str, **params) -> "DynamicsBuilder":

@@ -3579,18 +3579,24 @@ class multi_layer_network:
     # ═════════════════════════════════════════════════════════════════════════
 
     def assign_partition(
-        self, partition: Dict[Tuple[Any, Any], int]
+        self, partition: Dict[Tuple[Any, Any], int], *, name: str = "default", meta: Optional[Dict[str, Any]] = None
     ) -> None:
         """
         Assign community partition to network nodes.
 
         This method stores the community assignments as node attributes and
-        computes community-level statistics.
+        computes community-level statistics. Supports named partitions for
+        tracking multiple partitions (e.g., from different algorithms or seeds).
 
         Parameters
         ----------
         partition : dict
             Dictionary mapping (node, layer) tuples to community IDs.
+        name : str, optional
+            Name for this partition (default: "default"). Used to store multiple
+            partitions and access them later.
+        meta : dict, optional
+            Metadata about the partition (algorithm, parameters, etc.)
 
         Examples
         --------
@@ -3601,18 +3607,39 @@ class multi_layer_network:
         >>> net.assign_partition(partition)
         >>> print(net.community_sizes)
         {0: 2}
+        
+        >>> # Named partition for multiple algorithms
+        >>> net.assign_partition(partition, name="louvain", meta={"resolution": 1.0})
+        >>> net.assign_partition(partition2, name="infomap")
         """
-        # Store partition as node attribute
+        # Initialize partitions storage if needed
+        if not hasattr(self, '_partitions'):
+            self._partitions = {}
+        
+        # Store partition with name and metadata
+        self._partitions[name] = {
+            'partition': partition.copy(),
+            'meta': meta or {}
+        }
+        
+        # Store partition as node attribute (default partition uses "community")
+        attr_name = "community" if name == "default" else f"community_{name}"
         for (node, layer), community_id in partition.items():
             if (node, layer) in self.core_network.nodes:
-                self.core_network.nodes[(node, layer)]["community"] = community_id
+                self.core_network.nodes[(node, layer)][attr_name] = community_id
 
         # Compute community sizes
         community_counts: Dict[int, int] = {}
         for community_id in partition.values():
             community_counts[community_id] = community_counts.get(community_id, 0) + 1
 
-        self.community_sizes = community_counts
+        # Store as default community_sizes or named sizes
+        if name == "default":
+            self.community_sizes = community_counts
+        else:
+            if not hasattr(self, '_community_sizes'):
+                self._community_sizes = {}
+            self._community_sizes[name] = community_counts
 
     def get_partition(self, node: Any, layer: Any = None) -> Optional[int]:
         """
@@ -3648,6 +3675,76 @@ class multi_layer_network:
         if node_tuple in self.core_network.nodes:
             return self.core_network.nodes[node_tuple].get("community")
         return None
+
+    def get_partition_by_name(self, name: str = "default") -> Optional[Dict[Tuple[Any, Any], int]]:
+        """
+        Get a named partition from the network.
+        
+        Parameters
+        ----------
+        name : str, optional
+            Name of the partition to retrieve (default: "default")
+            
+        Returns
+        -------
+        dict or None
+            Partition dictionary mapping (node, layer) tuples to community IDs,
+            or None if the named partition doesn't exist.
+            
+        Examples
+        --------
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network(directed=False)
+        >>> _ = net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> partition = {('A', 'L1'): 0, ('B', 'L1'): 0}
+        >>> net.assign_partition(partition, name="louvain")
+        >>> retrieved = net.get_partition_by_name("louvain")
+        >>> print(retrieved)
+        {('A', 'L1'): 0, ('B', 'L1'): 0}
+        """
+        if not hasattr(self, '_partitions'):
+            # Try to build default partition from node attributes
+            if name == "default":
+                partition = {}
+                for node, layer in self.core_network.nodes():
+                    comm_id = self.core_network.nodes[(node, layer)].get("community")
+                    if comm_id is not None:
+                        partition[(node, layer)] = comm_id
+                return partition if partition else None
+            return None
+        
+        partition_data = self._partitions.get(name)
+        if partition_data:
+            return partition_data['partition']
+        return None
+    
+    def list_partitions(self) -> List[str]:
+        """
+        List all named partitions stored in the network.
+        
+        Returns
+        -------
+        list of str
+            Names of all stored partitions
+            
+        Examples
+        --------
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network(directed=False)
+        >>> _ = net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        >>> partition = {('A', 'L1'): 0, ('B', 'L1'): 0}
+        >>> net.assign_partition(partition, name="louvain")
+        >>> net.assign_partition(partition, name="infomap")
+        >>> print(net.list_partitions())
+        ['louvain', 'infomap']
+        """
+        if not hasattr(self, '_partitions'):
+            # Check if default partition exists
+            for node, layer in self.core_network.nodes():
+                if "community" in self.core_network.nodes[(node, layer)]:
+                    return ["default"]
+            return []
+        return list(self._partitions.keys())
 
     def get_node_attribute(
         self, node: Any, attribute: str, layer: Any = None
