@@ -2414,6 +2414,115 @@ print(f"Z-score: {z_score:.2f}")
 
 ---
 
+## Internal Parallelization
+
+**Note: Parallelization is fully internal and transparent - no API changes required.**
+
+py3plex implements deterministic parallel execution for computationally expensive operations including null model generation and uncertainty quantification. The parallelization is completely internal and maintains full backward compatibility.
+
+### Key Features
+
+- **Deterministic Results**: Same seed produces identical results regardless of `n_jobs` setting or execution order
+- **Serial by Default**: No multiprocessing overhead when not needed (`n_jobs=1` by default)
+- **Optional Parallelization**: Use `n_jobs` parameter to enable parallel execution
+- **Platform Safe**: Uses spawn context for Windows compatibility
+- **No API Changes**: All parallelization is internal; existing code works unchanged
+
+### Configuration
+
+Parallel execution defaults can be set in `py3plex.config`:
+
+```python
+from py3plex import config
+
+# Set default number of parallel jobs (default: 1 for serial execution)
+config.DEFAULT_N_JOBS = 4
+
+# Set parallel backend (default: "multiprocessing")
+config.DEFAULT_PARALLEL_BACKEND = "multiprocessing"  # or "joblib" if installed
+```
+
+### Parallelized Operations
+
+The following operations support optional parallel execution via the `n_jobs` parameter:
+
+**1. Null Model Generation:**
+```python
+from py3plex.nullmodels import generate_null_model
+
+# Serial execution (default)
+result = generate_null_model(network, model="configuration", num_samples=100, seed=42)
+
+# Parallel execution
+result = generate_null_model(network, model="configuration", num_samples=100, seed=42, n_jobs=4)
+# Same deterministic result as serial execution
+```
+
+**2. Bootstrap Uncertainty Estimation:**
+```python
+from py3plex.uncertainty import bootstrap_metric
+
+def degree_metric(net):
+    return {node: net.core_network.degree(node) for node in net.get_nodes()}
+
+# Serial execution (default)
+boot = bootstrap_metric(network, degree_metric, n_boot=100, random_state=42)
+
+# Parallel execution
+boot = bootstrap_metric(network, degree_metric, n_boot=100, random_state=42, n_jobs=4)
+# Same deterministic result as serial execution
+```
+
+**3. Null Model Statistical Testing:**
+```python
+from py3plex.uncertainty import null_model_metric
+
+def degree_metric(net):
+    return {node: net.core_network.degree(node) for node in net.get_nodes()}
+
+# Serial execution (default)
+null_stats = null_model_metric(network, degree_metric, n_null=200, random_state=42)
+
+# Parallel execution
+null_stats = null_model_metric(network, degree_metric, n_null=200, random_state=42, n_jobs=4)
+# Same deterministic result as serial execution
+```
+
+### Determinism Guarantees
+
+The parallel implementation uses numpy's `SeedSequence` to spawn independent, reproducible child seeds for each parallel task:
+
+```python
+# Example: Same seed produces identical results
+result_serial = generate_null_model(network, num_samples=100, seed=42, n_jobs=1)
+result_parallel = generate_null_model(network, num_samples=100, seed=42, n_jobs=4)
+
+# Results are identical (same structure, node counts, edge counts)
+assert len(result_serial.samples) == len(result_parallel.samples)
+```
+
+### Performance Considerations
+
+- **Serial Default**: `n_jobs=1` runs without multiprocessing overhead
+- **Optimal Parallelization**: Use `n_jobs=-1` to use all CPU cores
+- **Task Granularity**: Parallel execution is most beneficial for:
+  - Large numbers of samples (num_samples ≥ 10)
+  - Complex networks (>100 nodes)
+  - Expensive metric functions
+- **Overhead**: Small networks or few samples may be faster in serial mode
+
+### Implementation Notes
+
+The parallel infrastructure is located in `py3plex/_parallel.py` (internal module, not part of public API):
+- `parallel_map()`: Parallel execution with serial fallback
+- `spawn_seeds()`: Deterministic seed spawning via numpy's SeedSequence
+- Supports multiprocessing (default) and joblib backends
+- Optional tqdm progress bars (if tqdm is installed)
+
+All parallel execution maintains order-independent aggregation to ensure deterministic results regardless of task completion order.
+
+---
+
 ## Version Information
 
 ```python
