@@ -2341,6 +2341,200 @@ stats = result[node]
 
 ---
 
+## Counterfactual Reasoning vs Uncertainty Quantification
+
+py3plex provides distinct tools for **uncertainty quantification (UQ)** and **counterfactual reasoning**. Understanding the difference is crucial for correct analysis:
+
+**Uncertainty Quantification (UQ):**
+- **Question:** "What is the error bar on this estimate?"
+- **Purpose:** Quantify uncertainty of a measurement/statistic
+- **Output:** Confidence intervals, standard deviations
+- **Example:** "PageRank is 0.25 ± 0.02 (95% CI: [0.21, 0.29])"
+
+**Counterfactual Reasoning:**
+- **Question:** "Would my conclusion hold if I perturbed the network?"
+- **Purpose:** Test sensitivity of analytical conclusions to structural interventions
+- **Output:** Robustness reports, stability metrics
+- **Example:** "Node A is stably in top-5 across 80% of perturbations"
+
+### When to Use Each
+
+Use **UQ (`.uq()`)** when you need to:
+- Report confidence intervals on metrics
+- Quantify measurement uncertainty
+- Compare statistics with error bars
+- Assess reliability of estimates
+
+Use **Counterfactual (`.robustness_check()`)** when you need to:
+- Test if rankings are stable
+- Validate conclusions under perturbations
+- Identify fragile vs robust nodes/communities
+- Assess sensitivity to network structure
+
+### Example 1: Counterfactual Robustness Check
+
+```python
+from py3plex.dsl import Q
+from py3plex.core import multinet
+
+# Create network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    ['A', 'social', 'B', 'social', 1.0],
+    ['B', 'social', 'C', 'social', 1.0],
+    ['C', 'social', 'D', 'social', 1.0],
+    # ... more edges
+])
+
+# Test if top-5 PageRank nodes are stable under perturbations
+report = (Q.nodes()
+         .compute("pagerank")
+         .robustness_check(net, strength="medium", repeats=30, seed=42))
+
+# Show human-readable report
+report.show()
+
+# Find stably-ranked nodes
+stable_top_5 = report.stable_top_k(k=5, threshold=0.8)
+print(f"Stable top-5: {stable_top_5}")
+
+# Find fragile nodes (high variability)
+fragile = report.fragile(n=5)
+print(f"Most fragile nodes: {fragile}")
+```
+
+### Example 2: Comparing UQ vs Counterfactual
+
+```python
+# UQ: Estimate PageRank with uncertainty
+uq_result = (Q.nodes()
+            .uq(method="perturbation", n_samples=100, seed=42)
+            .compute("pagerank")
+            .execute(net))
+
+# Access uncertainty estimates
+df_uq = uq_result.to_pandas(expand_uncertainty=True)
+print(df_uq[['id', 'pagerank', 'pagerank_std', 'pagerank_ci95_low', 'pagerank_ci95_high']])
+# Output: Node A has PageRank 0.25 ± 0.02 (CI: [0.21, 0.29])
+
+# Counterfactual: Test conclusion stability
+cf_report = (Q.nodes()
+            .compute("pagerank")
+            .robustness_check(net, strength="medium", repeats=30, seed=42))
+
+# Check if "A is in top-5" is a robust conclusion
+stable = cf_report.stable_top_k(k=5, threshold=0.8)
+print(f"Is A stably top-5? {'Yes' if 'A' in stable else 'No'}")
+# Output: Tests the CONCLUSION ("A is top-5"), not the ESTIMATE ("A has PageRank X")
+```
+
+### Example 3: Try Different Intervention Strengths
+
+```python
+# Compare light/medium/heavy interventions
+summary = (Q.nodes()
+          .compute("degree", "betweenness_centrality")
+          .try_strengths(net, repeats=30, seed=42))
+
+print(summary)
+# Output DataFrame:
+#   strength  degree_avg_cv  degree_max_cv  betweenness_avg_cv  ...
+#   light     0.05          0.12           0.08                ...
+#   medium    0.12          0.25           0.18                ...
+#   heavy     0.28          0.54           0.35                ...
+```
+
+### Example 4: Advanced Custom Interventions
+
+```python
+from py3plex.counterfactual import RemoveEdgesSpec, RewireDegreePreservingSpec
+
+# Custom intervention: remove 15% of edges randomly
+spec = RemoveEdgesSpec(proportion=0.15, mode="random")
+
+result = (Q.nodes()
+         .compute("closeness_centrality")
+         .counterfactualize(net, spec, repeats=100, seed=42))
+
+# Convert to report
+report = result.to_report()
+report.show()
+
+# Or use degree-preserving rewiring
+spec2 = RewireDegreePreservingSpec(n_swaps=100)
+result2 = (Q.nodes()
+          .compute("betweenness_centrality")
+          .counterfactualize(net, spec2, repeats=50, seed=42))
+```
+
+### Intervention Presets
+
+Py3plex provides dummy-proof presets for common interventions:
+
+| Preset | Description | Use Case |
+|--------|-------------|----------|
+| `"quick"` | Minimal edge removal (2-10%) | Fast exploration |
+| `"degree_safe"` | Degree-preserving rewiring (DEFAULT) | Test topology sensitivity |
+| `"layer_safe"` | Preserve per-layer edge counts | Test layer-specific effects |
+| `"weight_only"` | Shuffle weights only | Test weight sensitivity |
+| `"targeted"` | Remove high-weight edges | Test hub importance |
+
+```python
+# Use preset with strength parameter
+report = (Q.nodes()
+         .compute("eigenvector_centrality")
+         .robustness_check(
+             net,
+             shake="degree_safe",  # Preset
+             strength="heavy",      # light/medium/heavy
+             repeats=50,
+             seed=42
+         ))
+```
+
+### RobustnessReport Methods
+
+```python
+report = Q.nodes().compute("degree").robustness_check(net)
+
+# Display human-readable summary
+report.show(top_n=20, precision=4)
+
+# Statistical summary
+report.describe()
+
+# Find stable top-k items
+stable = report.stable_top_k(k=10, threshold=0.8)
+
+# Find most fragile items
+fragile = report.fragile(n=5)
+
+# Per-layer sensitivity (if applicable)
+layer_sens = report.layer_sensitivity()
+
+# Export to pandas
+df = report.to_pandas()
+
+# Compare specific item across runs
+comparison = report.compare_items(item_id='A')
+print(comparison)
+# {'item_id': 'A', 
+#  'baseline': {'degree': 5}, 
+#  'counterfactuals': {'degree': {'mean': 4.8, 'std': 0.6, ...}}}
+```
+
+### Key Differences Summary
+
+| Aspect | UQ | Counterfactual |
+|--------|----|--------------  |
+| **What it tests** | Estimate uncertainty | Conclusion stability |
+| **Output type** | Error bars, CIs | Stability metrics |
+| **DSL method** | `.uq()` | `.robustness_check()` |
+| **Provenance** | `provenance.uncertainty` | `provenance.counterfactual` |
+| **Use for** | Reporting metrics | Validating conclusions |
+
+---
+
 ## Temporal Networks
 
 py3plex provides native support for temporal multilayer networks with time-stamped edges and temporal queries.
