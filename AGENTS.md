@@ -2511,6 +2511,31 @@ assert len(result_serial.samples) == len(result_parallel.samples)
   - Expensive metric functions
 - **Overhead**: Small networks or few samples may be faster in serial mode
 
+### Picklability Requirements
+
+**Important**: When using `n_jobs > 1`, custom metric functions must be picklable:
+
+```python
+# ✓ GOOD: Module-level function (picklable)
+def my_metric(network):
+    return {node: network.core_network.degree(node) for node in network.get_nodes()}
+
+# Use with parallel execution
+result = bootstrap_metric(network, my_metric, n_boot=100, n_jobs=4)
+```
+
+```python
+# ✗ BAD: Local function (not picklable for multiprocessing)
+def run_analysis():
+    def my_metric(network):  # Defined inside function - not picklable!
+        return {node: network.core_network.degree(node) for node in network.get_nodes()}
+    
+    # This will fail with n_jobs > 1
+    result = bootstrap_metric(network, my_metric, n_boot=100, n_jobs=4)
+```
+
+**Solution**: Define metric functions at module level or use `n_jobs=1` for serial execution (no pickling required).
+
 ### Implementation Notes
 
 The parallel infrastructure is located in `py3plex/_parallel.py` (internal module, not part of public API):
