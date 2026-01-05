@@ -133,6 +133,9 @@ class ProvenanceSchema:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ProvenanceSchema":
         """Create from dictionary."""
+        # Make a copy to avoid mutating input
+        data = dict(data)
+        
         # Convert string enums back
         if isinstance(data.get("mode"), str):
             data["mode"] = ProvenanceMode(data["mode"])
@@ -149,10 +152,15 @@ class ProvenanceSchema:
         # Reconstruct nested dataclasses only if they're dicts
         if "query" in data and isinstance(data["query"], dict):
             data["query"] = QueryInfo(**data["query"])
+        # else: already a QueryInfo object
+        
         if "randomness" in data and isinstance(data["randomness"], dict):
             data["randomness"] = RandomnessInfo(**data["randomness"])
+        # else: already a RandomnessInfo object
+        
         if "environment" in data and isinstance(data["environment"], dict):
             data["environment"] = EnvironmentInfo(**data["environment"])
+        # else: already an EnvironmentInfo object
         
         return cls(**data)
 
