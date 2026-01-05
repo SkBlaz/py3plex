@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Documentation &mdash; py3plex 1.0.3 documentation</title>
+  <title>API Documentation &mdash; py3plex 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=baaebd52"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -8787,7 +8787,7 @@ Filters to only include edges/nodes active after (and at) time t.</p>
 <span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">aggregations</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.builder.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.aggregate" title="Link to this definition"></a></dt>
 <dd><p>Aggregate columns with support for lambdas and builtin functions.</p>
 <p>This method computes aggregations over the result set. It supports:
-- Built-in aggregation functions: mean(), sum(), min(), max(), std(), count()
+- Built-in aggregation functions: mean(), sum(), min(), max(), std(), var(), median(), quantile(attr, p), count()
 - Direct attribute references for last/first value
 - Lambda functions for custom aggregations</p>
 <p>The aggregations are computed after grouping if active, otherwise globally.</p>
@@ -8798,7 +8798,7 @@ Filters to only include edges/nodes active after (and at) time t.</p>
 - Value is either:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>A string like “mean(degree)” or “sum(weight)”</p></li>
+<li><p>A string like “mean(degree)”, “quantile(degree, 0.95)”, or “sum(weight)”</p></li>
 <li><p>A string attribute name (gets the value directly)</p></li>
 <li><p>A lambda function receiving each item</p></li>
 </ul>
@@ -8813,6 +8813,8 @@ Filters to only include edges/nodes active after (and at) time t.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">per_layer</span><span class="p">()</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">avg_degree</span><span class="o">=</span><span class="s2">&quot;mean(degree)&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">max_bc</span><span class="o">=</span><span class="s2">&quot;max(betweenness_centrality)&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">median_bc</span><span class="o">=</span><span class="s2">&quot;median(betweenness_centrality)&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">q95_degree</span><span class="o">=</span><span class="s2">&quot;quantile(degree, 0.95)&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">node_count</span><span class="o">=</span><span class="s2">&quot;count()&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;layer&quot;</span>  <span class="c1"># Direct attribute</span>
 <span class="gp">... </span><span class="p">)</span>
@@ -8821,6 +8823,14 @@ Filters to only include edges/nodes active after (and at) time t.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># With lambda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">community_size</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">community_sizes</span><span class="p">[</span><span class="n">network</span><span class="o">.</span><span class="n">get_partition</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Edge aggregations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">per_layer_pair</span><span class="p">()</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">avg_weight</span><span class="o">=</span><span class="s2">&quot;mean(weight)&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">total_edges</span><span class="o">=</span><span class="s2">&quot;count()&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_src_degree</span><span class="o">=</span><span class="s2">&quot;max(src_degree)&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
@@ -9623,13 +9633,15 @@ or globally if no grouping is set. Aggregation expressions are
 strings like “mean(degree)”, “max(degree)”, “n()”.</p>
 <dl class="simple">
 <dt>Supported aggregations:</dt><dd><ul class="simple">
-<li><p>n() : count of items</p></li>
+<li><p>n() / count() : count of items</p></li>
 <li><p>mean(attr) : mean value</p></li>
+<li><p>median(attr) : median value</p></li>
 <li><p>sum(attr) : sum of values</p></li>
 <li><p>min(attr) : minimum value</p></li>
 <li><p>max(attr) : maximum value</p></li>
 <li><p>std(attr) : standard deviation</p></li>
 <li><p>var(attr) : variance</p></li>
+<li><p>quantile(attr, p) : p-th quantile (e.g., quantile(degree, 0.95))</p></li>
 </ul>
 </dd>
 </dl>
@@ -9648,6 +9660,8 @@ strings like “mean(degree)”, “max(degree)”, “n()”.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">per_layer</span><span class="p">()</span><span class="o">.</span><span class="n">summarize</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">mean_degree</span><span class="o">=</span><span class="s2">&quot;mean(degree)&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">max_degree</span><span class="o">=</span><span class="s2">&quot;max(degree)&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">median_degree</span><span class="o">=</span><span class="s2">&quot;median(degree)&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">q95_degree</span><span class="o">=</span><span class="s2">&quot;quantile(degree, 0.95)&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">n</span><span class="o">=</span><span class="s2">&quot;n()&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>

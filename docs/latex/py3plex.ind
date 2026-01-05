@@ -81,7 +81,7 @@
   \item \spxentry{assign\_partition()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{351}
   \item \spxentry{ast\_summary}\spxextra{py3plex.dsl.ExplainResult attribute}, \hyperpage{417}
-  \item \spxentry{at()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{449}
+  \item \spxentry{at()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{450}
   \item \spxentry{at()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{475}
   \item \spxentry{atoms}\spxextra{py3plex.dsl.ConditionExpr attribute}, \hyperpage{408, 409}
   \item \spxentry{attr}\spxextra{py3plex.dsl.Predicate attribute}, \hyperpage{444}
@@ -1310,7 +1310,7 @@
   \item \spxentry{NODE\_REF}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{403}
   \item \spxentry{node\_type()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{459}
   \item \spxentry{nodes}\spxextra{py3plex.dsl.PatternGraph attribute}, \hyperpage{437}
-  \item \spxentry{nodes}\spxextra{py3plex.dsl.QueryResult property}, \hyperpage{466}
+  \item \spxentry{nodes}\spxextra{py3plex.dsl.QueryResult property}, \hyperpage{467}
   \item \spxentry{NODES}\spxextra{py3plex.dsl.Target attribute}, \hyperpage{474}
   \item \spxentry{nodes()}\spxextra{py3plex.dsl.Q static method}, \hyperpage{445}
   \item \spxentry{non\_redundant()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
@@ -2010,7 +2010,7 @@
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.DynamicsBuilder method}, \hyperpage{413}
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.NullModelBuilder method}, \hyperpage{429}
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.PathBuilder method}, \hyperpage{433}
-  \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{462}
+  \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{463}
   \item \spxentry{to\_ast()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{476}
   \item \spxentry{to\_condition\_expr()}\spxextra{py3plex.dsl.BooleanExpression method}, 
 		\hyperpage{403}
@@ -2150,7 +2150,7 @@
   \item \spxentry{where()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{464}
   \item \spxentry{where()}\spxextra{py3plex.dsl.TrajectoriesBuilder method}, \hyperpage{476}
   \item \spxentry{wildcard()}\spxextra{py3plex.dsl.LayerConstraint static method}, \hyperpage{423}
-  \item \spxentry{window()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{464}
+  \item \spxentry{window()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{465}
   \item \spxentry{window\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{470}, 
 		\hyperpage{473}
   \item \spxentry{with\_params()}\spxextra{py3plex.dsl.NullModelBuilder method}, \hyperpage{429}
