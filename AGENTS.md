@@ -713,6 +713,11 @@ TRAIN layer centrality:
 
 ## Result Dictionary Structure
 
+**Legacy DSL Returns:** Dictionary format
+**DSL v2 Returns:** QueryResult object (with backward-compatible dict export)
+
+### Legacy DSL Result Structure
+
 The `execute_query` function returns a dictionary with the following structure:
 
 ```python
@@ -728,9 +733,105 @@ The `execute_query` function returns a dictionary with the following structure:
             ...
         },
         ...
+    },
+    'meta': {               # Metadata (added in version 1.1.0)
+        'provenance': {...}  # Query execution provenance (see below)
     }
 }
 ```
+
+### DSL v2 QueryResult Structure
+
+```python
+result = Q.nodes().compute("degree").execute(network)
+
+# QueryResult attributes
+result.target          # "nodes" or "edges"
+result.items           # List of node/edge items
+result.attributes      # Dict of computed attributes
+result.meta            # Metadata dict including provenance
+result.count           # Number of items (same as len(result))
+
+# Export formats
+df = result.to_pandas()       # pandas DataFrame
+G = result.to_networkx()      # NetworkX graph
+arrow = result.to_arrow()     # Apache Arrow table
+dict_result = result.to_dict()  # Plain dictionary
+```
+
+### Query Provenance (Version 1.1.0+)
+
+Every query execution now includes provenance metadata in `result.meta["provenance"]` or `result["meta"]["provenance"]` (legacy). This enables reproducibility, debugging, and performance analysis.
+
+**Provenance Structure:**
+
+```python
+{
+    "engine": "dsl_v2_executor",  # or "dsl_legacy", "graph_ops", "pipeline_step"
+    "py3plex_version": "1.1.0",
+    "timestamp_utc": "2026-01-05T04:05:42.336000+00:00",
+    "network_fingerprint": {
+        "node_count": 100,
+        "edge_count": 250,
+        "layer_count": 3,
+        "layers": ["social", "work", "family"]
+    },
+    "network_version": None,  # Mutation counter if available
+    "query": {
+        "target": "nodes",
+        "ast_hash": "a1b2c3d4e5f6g7h8",  # Stable hash of query AST
+        "ast_summary": "SELECT nodes WHERE degree>5 COMPUTE betweenness",
+        "params": {}  # Parameter bindings used
+    },
+    "randomness": {
+        "seed": None,  # Base seed if randomness is used
+        "n_samples": None,  # For uncertainty quantification
+        "method": None  # Resampling method if used
+    },
+    "backend": {
+        "graph_backend": "networkx",
+        "algo_backends": [],  # Algorithm backends used
+        "fast_path": False  # Whether fast path optimizations were used
+    },
+    "performance": {
+        "bind_parameters": 0.1,  # milliseconds per stage
+        "get_items": 2.5,
+        "filter_layers": 1.3,
+        "filter_where": 3.2,
+        "compute": 45.6,
+        "total_ms": 53.5  # Total execution time
+    },
+    "warnings": []  # List of warning messages
+}
+```
+
+**Key Provenance Fields:**
+
+- **engine**: Execution engine used
+- **py3plex_version**: Version for compatibility tracking
+- **timestamp_utc**: When query was executed (ISO8601)
+- **network_fingerprint**: Network summary (counts, layers)
+- **query.ast_hash**: Stable query hash (invariant across runs)
+- **query.ast_summary**: Human-readable query summary
+- **performance.timings_ms**: Timing breakdown by stage
+
+**Accessing Provenance:**
+
+```python
+# DSL v2
+result = Q.nodes().compute("degree").execute(network)
+prov = result.meta["provenance"]
+print(f"Query took {prov['performance']['total_ms']:.2f}ms")
+print(f"AST hash: {prov['query']['ast_hash']}")
+print(f"Network: {prov['network_fingerprint']['node_count']} nodes, {prov['network_fingerprint']['layer_count']} layers")
+
+# Legacy DSL
+result = execute_query(network, 'SELECT nodes WHERE degree > 5')
+prov = result["meta"]["provenance"]
+print(f"Engine: {prov['engine']}")
+```
+
+**Backward Compatibility:** Provenance is additive and doesn't break existing code. All QueryResult operations continue to work unchanged.
 
 ---
 

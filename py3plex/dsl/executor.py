@@ -6,6 +6,7 @@ multilayer networks. It supports temporal queries via the TemporalMultinetView w
 
 import copy
 import logging
+import time
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
 
 try:
@@ -40,6 +41,7 @@ from .result import QueryResult
 from .registry import measure_registry
 from .operator_registry import get_operator
 from .context import DSLExecutionContext
+from .provenance import ProvenanceBuilder
 from .errors import (
     DslExecutionError,
     ParameterMissingError,
@@ -122,18 +124,28 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     params = params or {}
     logger = logging.getLogger(__name__)
     
+    # Initialize provenance builder
+    provenance_builder = ProvenanceBuilder("dsl_v2_executor")
+    provenance_builder.start_timer()
+    provenance_builder.set_network(network)
+    provenance_builder.set_query_ast(query)
+    provenance_builder.set_params(params)
+    
     if progress:
         logger.info("Starting DSL query execution")
     
     # Step 1: Parameter binding
+    stage_start = time.monotonic()
     if progress:
         logger.info("Step 1: Binding parameters")
     bound_query = _bind_parameters(query, params)
+    provenance_builder.record_stage("bind_parameters", (time.monotonic() - stage_start) * 1000)
     
     # Step 2: Check for EXPLAIN mode
     if bound_query.explain:
         if progress:
             logger.info("Step 2: Building execution plan (EXPLAIN mode)")
+        # EXPLAIN mode doesn't execute, so return plan without provenance
         return _build_execution_plan(network, bound_query)
     
     # Step 3: Check for windowed query
@@ -141,17 +153,27 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
         # Execute windowed query
         if progress:
             logger.info("Step 2: Executing windowed query")
-        return _execute_windowed_query(network, bound_query, params, progress=progress)
+        result = _execute_windowed_query(network, bound_query, params, progress=progress)
+        # Add provenance to windowed result
+        result.meta["provenance"] = provenance_builder.build()
+        return result
     
     # Step 4: Wrap network in temporal view if needed
+    stage_start = time.monotonic()
     if progress:
         logger.info("Step 2: Applying temporal context (if needed)")
     actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
+    provenance_builder.record_stage("temporal_context", (time.monotonic() - stage_start) * 1000)
     
     # Step 5: Execute SELECT statement (pass params for dynamic resolution)
     if progress:
         logger.info("Step 3: Executing SELECT statement")
-    return _execute_select(actual_network, bound_query.select, params, progress=progress)
+    result = _execute_select(actual_network, bound_query.select, params, progress=progress, provenance_builder=provenance_builder)
+    
+    # Finalize and attach provenance
+    result.meta["provenance"] = provenance_builder.build()
+    
+    return result
 
 
 def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalContext]) -> Any:
@@ -771,7 +793,7 @@ def _compute_measure_with_uncertainty(
         return _wrap_deterministic_uncertainty(measure_fn(subgraph, items), items)
 
 
-def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None, progress: bool = True) -> QueryResult:
+def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None, progress: bool = True, provenance_builder: Optional[ProvenanceBuilder] = None) -> QueryResult:
     """Execute a SELECT statement.
     
     Args:
@@ -779,18 +801,27 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         select: SELECT statement AST
         params: Parameter bindings for dynamic resolution
         progress: If True, log progress messages during query execution (default: True)
+        provenance_builder: Optional provenance builder for tracking execution
     """
     params = params or {}
     logger = logging.getLogger(__name__)
     
+    # Create provenance builder if not provided (for standalone calls)
+    if provenance_builder is None:
+        provenance_builder = ProvenanceBuilder("dsl_v2_executor")
+        provenance_builder.start_timer()
+        provenance_builder.set_network(network)
+    
     # Get core network
     if not hasattr(network, 'core_network') or network.core_network is None:
-        return QueryResult(
+        result = QueryResult(
             target=select.target.value,
             items=[],
             attributes={},
             meta={"dsl_version": "2.0", "warning": "Network has no core_network"}
         )
+        result.meta["provenance"] = provenance_builder.build()
+        return result
     
     G = network.core_network
     
@@ -803,6 +834,7 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         return _execute_community_bridge(network, select, params, progress=progress)
     
     # Step 1: Get initial items
+    stage_start = time.monotonic()
     if progress:
         logger.info(f"Step 3.1: Getting initial {select.target.value}")
     if select.target == Target.NODES:
@@ -812,8 +844,10 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         items = list(network.get_edges(data=True))
     if progress:
         logger.info(f"Found {len(items)} initial {select.target.value}")
+    provenance_builder.record_stage("get_items", (time.monotonic() - stage_start) * 1000)
     
     # Step 2: Apply layer filter
+    stage_start = time.monotonic()
     if select.layer_set is not None:
         # New style: LayerSet with algebra
         if progress:
@@ -830,14 +864,17 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         items = _filter_by_layers(items, active_layers, select.target)
         if progress:
             logger.info(f"Filtered to {len(items)} {select.target.value} in {len(active_layers)} layers")
+    provenance_builder.record_stage("filter_layers", (time.monotonic() - stage_start) * 1000)
     
     # Step 3: Apply WHERE conditions
+    stage_start = time.monotonic()
     if select.where:
         if progress:
             logger.info("Step 3.3: Applying WHERE conditions")
         items = _filter_by_conditions(items, select.where, network, G, params)
         if progress:
             logger.info(f"Filtered to {len(items)} {select.target.value}")
+    provenance_builder.record_stage("filter_where", (time.monotonic() - stage_start) * 1000)
     
     # Step 3.5: Apply post-filters (e.g., has_community with lambdas)
     if select.post_filters:
@@ -902,6 +939,7 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
                 early_limit_applied = True
     
     # Step 4: Compute measures
+    stage_start = time.monotonic()
     attributes: Dict[str, Dict] = {}
     if select.compute:
         if progress:
@@ -1061,12 +1099,14 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
             network=network,
             G=G,
         )
+    provenance_builder.record_stage("group_aggregate", (time.monotonic() - stage_start) * 1000)
     
     # Step 6: Apply global LIMIT (if not already applied early)
     if select.limit is not None and not early_limit_applied:
         if progress:
             logger.info(f"Step 3.6: Applying LIMIT {select.limit}")
         items = items[:select.limit]
+    provenance_builder.record_stage("limit", (time.monotonic() - stage_start) * 1000)
     
     # Step 6.5: Apply explanations if specified
     if select.explain_spec is not None:
@@ -1081,18 +1121,21 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
         )
     
     # Create result
+    stage_start = time.monotonic()
     if progress:
         logger.info(f"Step 3.7: Creating QueryResult with {len(items)} {select.target.value}")
     meta_dict = {"dsl_version": "2.0"}
     if grouping_metadata is not None:
         meta_dict["grouping"] = grouping_metadata
     
+    # Don't add provenance yet - will be added by caller
     result = QueryResult(
         target=select.target.value,
         items=items,
         attributes=attributes,
         meta=meta_dict
     )
+    provenance_builder.record_stage("materialize", (time.monotonic() - stage_start) * 1000)
     
     # Step 7: Apply file export if specified
     if select.file_export:

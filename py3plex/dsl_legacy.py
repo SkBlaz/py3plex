@@ -46,12 +46,14 @@ See examples/network_analysis/example_dsl_queries.py for more examples.
 """
 
 import re
+import time
 from collections import Counter
 import networkx as nx
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from dataclasses import dataclass, field
 from py3plex.logging_config import get_logger
 from py3plex.dsl.registry import _convert_multigraph_to_simple
+from py3plex.dsl.provenance import ProvenanceBuilder
 
 # Import community detection algorithm (Louvain)
 try:
@@ -1065,10 +1067,17 @@ def execute_query(network: Any, query: str) -> Dict[str, Any]:
         >>> result['count'] >= 0
         True
     """
+    # Initialize provenance builder
+    provenance_builder = ProvenanceBuilder("dsl_legacy")
+    provenance_builder.start_timer()
+    provenance_builder.set_network(network)
+    
     logger.info(f"Executing DSL query: {query}")
     
     # Tokenize query
+    stage_start = time.monotonic()
     tokens = _tokenize_query(query)
+    provenance_builder.record_stage("parse", (time.monotonic() - stage_start) * 1000)
     
     if not tokens:
         raise DSLSyntaxError("Empty query")
@@ -1076,12 +1085,28 @@ def execute_query(network: Any, query: str) -> Dict[str, Any]:
     # Determine query type and dispatch
     first_token = tokens[0].upper()
     
+    stage_start = time.monotonic()
     if first_token == 'MATCH':
-        return _execute_match_query(network, query, tokens)
+        result = _execute_match_query(network, query, tokens)
+        target = "edges"  # MATCH queries return edges/bindings
     elif first_token == 'SELECT':
-        return _execute_select_query(network, query, tokens)
+        result = _execute_select_query(network, query, tokens)
+        # Determine target from result
+        target = "nodes" if "nodes" in result else "edges" if "edges" in result else "unknown"
     else:
         raise DSLSyntaxError(f"Query must start with SELECT or MATCH, got '{tokens[0]}'")
+    provenance_builder.record_stage("execute", (time.monotonic() - stage_start) * 1000)
+    
+    # Set query info for legacy
+    provenance_builder.set_query_legacy(query, target)
+    
+    # Add provenance to result if it's a dict (standard result format)
+    if isinstance(result, dict):
+        if "meta" not in result:
+            result["meta"] = {}
+        result["meta"]["provenance"] = provenance_builder.build()
+    
+    return result
 
 
 def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[str, Any]:
