@@ -172,6 +172,10 @@ VISUALIZATION_BATCH_SIZE: int = 1000
 ENABLE_LAYOUT_CACHE: bool = True
 CACHE_SIZE_LIMIT: int = 100  # Number of layouts to cache
 
+# Parallel execution settings (internal use)
+DEFAULT_N_JOBS: int = 1  # Serial by default (no multiprocessing overhead)
+DEFAULT_PARALLEL_BACKEND: str = "multiprocessing"  # "multiprocessing" or "joblib"
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Validation Settings
 # ─────────────────────────────────────────────────────────────────────────────

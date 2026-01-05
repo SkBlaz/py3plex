@@ -13,6 +13,50 @@ import numpy as np
 import networkx as nx
 
 from py3plex.core import multinet
+from py3plex._parallel import parallel_map, spawn_seeds
+from py3plex import config
+
+
+def _bootstrap_single_replicate(args):
+    """Generate and compute metric for a single bootstrap replicate.
+    
+    This is a module-level function so it can be pickled for multiprocessing.
+    
+    Parameters
+    ----------
+    args : tuple
+        Tuple of (graph, metric_fn, unit, mode, seed, index)
+        
+    Returns
+    -------
+    np.ndarray
+        Metric values for this replicate, indexed by the index list
+    """
+    graph, metric_fn, unit, mode, seed, index = args
+    
+    # Create RNG for this replicate
+    rng = np.random.default_rng(seed)
+    
+    # Create bootstrap sample
+    if unit == "edges":
+        boot_graph = _resample_edges(graph, mode, rng)
+    elif unit == "nodes":
+        boot_graph = _resample_nodes(graph, mode, rng)
+    elif unit == "layers":
+        boot_graph = _resample_layers(graph, mode, rng)
+    else:
+        raise ValueError(f"Unknown unit: {unit}")
+    
+    # Compute metric on bootstrap sample
+    try:
+        boot_result = metric_fn(boot_graph)
+    except Exception:
+        # If metric fails on this bootstrap sample, use zeros
+        boot_result = {item: 0.0 for item in index}
+    
+    # Convert to array (use 0 for missing items)
+    result_array = np.array([boot_result.get(item, 0.0) for item in index])
+    return result_array
 
 
 def bootstrap_metric(
@@ -23,6 +67,7 @@ def bootstrap_metric(
     mode: str = "resample",
     ci: float = 0.95,
     random_state: Optional[int] = None,
+    n_jobs: Optional[int] = None,
 ) -> Dict[str, np.ndarray]:
     """Bootstrap a metric for uncertainty estimation.
     
@@ -49,6 +94,9 @@ def bootstrap_metric(
         Confidence interval level (e.g., 0.95 for 95% CI).
     random_state : int, optional
         Random seed for reproducibility.
+    n_jobs : int, optional
+        Number of parallel jobs. If None, uses config.DEFAULT_N_JOBS.
+        If 1, runs serially. If >1, runs in parallel.
     
     Returns
     -------
@@ -95,8 +143,6 @@ def bootstrap_metric(
     if n_boot <= 0:
         raise ValueError("n_boot must be positive")
 
-    rng = np.random.default_rng(random_state)
-    
     # Compute original metric to get item IDs
     original_result = metric_fn(graph)
     if not isinstance(original_result, dict):
@@ -121,32 +167,29 @@ def bootstrap_metric(
     index = sorted(original_result.keys(), key=lambda x: str(x))
     n_items = len(index)
     
-    # Pre-allocate array for bootstrap samples: (n_boot, n_items)
-    samples = np.zeros((n_boot, n_items))
+    # Determine number of jobs
+    if n_jobs is None:
+        n_jobs = getattr(config, 'DEFAULT_N_JOBS', 1)
     
-    # Run bootstrap replicates
-    for i in range(n_boot):
-        # Create bootstrap sample
-        if unit == "edges":
-            boot_graph = _resample_edges(graph, mode, rng)
-        elif unit == "nodes":
-            boot_graph = _resample_nodes(graph, mode, rng)
-        elif unit == "layers":
-            boot_graph = _resample_layers(graph, mode, rng)
-        else:
-            raise ValueError(f"Unknown unit: {unit}. Must be 'edges', 'nodes', or 'layers'")
-        
-        # Compute metric on bootstrap sample
-        try:
-            boot_result = metric_fn(boot_graph)
-        except Exception as e:
-            # If metric fails on this bootstrap sample, use zeros
-            # This can happen if the bootstrap sample is disconnected, etc.
-            boot_result = {item: 0.0 for item in index}
-        
-        # Fill in values (use 0 for missing items)
-        for j, item in enumerate(index):
-            samples[i, j] = boot_result.get(item, 0.0)
+    # Generate child seeds for deterministic parallel execution
+    child_seeds = spawn_seeds(random_state, n_boot)
+    
+    # Prepare arguments for each bootstrap replicate
+    replicate_args = [
+        (graph, metric_fn, unit, mode, child_seed, index)
+        for child_seed in child_seeds
+    ]
+    
+    # Run bootstrap replicates in parallel or serial
+    samples_list = parallel_map(
+        _bootstrap_single_replicate,
+        replicate_args,
+        n_jobs=n_jobs,
+        backend=getattr(config, 'DEFAULT_PARALLEL_BACKEND', 'multiprocessing'),
+    )
+    
+    # Stack results into array: (n_boot, n_items)
+    samples = np.array(samples_list)
     
     # Compute statistics
     mean = np.mean(samples, axis=0)

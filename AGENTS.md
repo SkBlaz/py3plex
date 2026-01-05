@@ -2415,268 +2415,137 @@ print(f"Z-score: {z_score:.2f}")
 
 ---
 
-## Community Queries (First-Class Communities)
+## Internal Parallelization
 
-py3plex now supports communities as a first-class DSL target, enabling direct querying, filtering, aggregation, and analysis of network communities. This extends beyond simply computing community assignments to treating communities as queryable entities alongside nodes and edges.
+**Note: Parallelization is fully internal and transparent - no API changes required.**
 
-### Core Features
+py3plex implements deterministic parallel execution for computationally expensive operations including null model generation and uncertainty quantification. The parallelization is completely internal and maintains full backward compatibility.
 
-- **First-Class Target:** Query communities directly with `Q.communities()`
-- **Filtering:** Filter communities by size, density, connectivity, and more
-- **Metrics:** Compute community-level statistics (conductance, cut size, modularity contribution)
-- **Bridges:** Seamlessly transition between communities, nodes, and edges
-- **Named Partitions:** Store and query multiple community structures (e.g., different algorithms, resolutions)
-- **Grouping:** Group communities by layer scope or other properties
+### Key Features
 
-### API Components
+- **Deterministic Results**: Same seed produces identical results regardless of `n_jobs` setting or execution order
+- **Serial by Default**: No multiprocessing overhead when not needed (`n_jobs=1` by default)
+- **Optional Parallelization**: Use `n_jobs` parameter to enable parallel execution
+- **Platform Safe**: Uses spawn context for Windows compatibility
+- **No API Changes**: All parallelization is internal; existing code works unchanged
 
-```python
-from py3plex.dsl import Q, CommunityRecord
+### Configuration
 
-# Query communities
-result = Q.communities().execute(network)
-
-# Query from a specific partition
-result = Q.communities(partition="louvain").execute(network)
-
-# Filter and compute
-result = (
-    Q.communities()
-     .where(size__gt=10, density_intra__gt=0.5)
-     .compute("conductance", "modularity_contribution")
-     .order_by("size", desc=True)
-     .execute(network)
-)
-
-# Bridge to nodes
-members = Q.communities().where(size__gt=10).members().compute("degree").execute(network)
-
-# Bridge to edges
-boundary = Q.communities().boundary_edges().execute(network)
-```
-
-### Example 1: Basic Community Query and Analysis
+Parallel execution defaults can be set in `py3plex.config`:
 
 ```python
-from py3plex.core import multinet
-from py3plex.dsl import Q
+from py3plex import config
 
-# Create a network with community structure
-network = multinet.multi_layer_network(directed=False)
-network.add_nodes([
-    {'source': 'A', 'type': 'social'},
-    {'source': 'B', 'type': 'social'},
-    {'source': 'C', 'type': 'social'},
-    {'source': 'D', 'type': 'social'},
-])
-network.add_edges([
-    {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'A', 'target': 'C', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'C', 'target': 'D', 'source_type': 'social', 'target_type': 'social'},
-])
+# Set default number of parallel jobs (default: 1 for serial execution)
+config.DEFAULT_N_JOBS = 4
 
-# Detect communities (using legacy DSL or external algorithm)
-from py3plex.dsl import detect_communities
-communities_info = detect_communities(network)
-partition = communities_info['partition']
-
-# Assign partition to network
-network.assign_partition(partition)
-
-# Query communities
-result = Q.communities().execute(network)
-
-print(f"Number of communities: {len(result.items)}")
-print(f"Community IDs: {result.items}")
-
-# Export to pandas
-df = result.to_pandas()
-print(df[['community_id', 'size', 'density_intra', 'cut_size']])
-
-# Output:
-#   community_id  size  density_intra  cut_size
-# 0             0     3       1.000000         1
-# 1             1     1       0.000000         1
+# Set parallel backend (default: "multiprocessing")
+config.DEFAULT_PARALLEL_BACKEND = "multiprocessing"  # or "joblib" if installed
 ```
 
-### Example 2: Filter and Analyze Large Communities
+### Parallelized Operations
+
+The following operations support optional parallel execution via the `n_jobs` parameter:
+
+**1. Null Model Generation:**
+```python
+from py3plex.nullmodels import generate_null_model
+
+# Serial execution (default)
+result = generate_null_model(network, model="configuration", num_samples=100, seed=42)
+
+# Parallel execution
+result = generate_null_model(network, model="configuration", num_samples=100, seed=42, n_jobs=4)
+# Same deterministic result as serial execution
+```
+
+**2. Bootstrap Uncertainty Estimation:**
+```python
+from py3plex.uncertainty import bootstrap_metric
+
+def degree_metric(net):
+    return {node: net.core_network.degree(node) for node in net.get_nodes()}
+
+# Serial execution (default)
+boot = bootstrap_metric(network, degree_metric, n_boot=100, random_state=42)
+
+# Parallel execution
+boot = bootstrap_metric(network, degree_metric, n_boot=100, random_state=42, n_jobs=4)
+# Same deterministic result as serial execution
+```
+
+**3. Null Model Statistical Testing:**
+```python
+from py3plex.uncertainty import null_model_metric
+
+def degree_metric(net):
+    return {node: net.core_network.degree(node) for node in net.get_nodes()}
+
+# Serial execution (default)
+null_stats = null_model_metric(network, degree_metric, n_null=200, random_state=42)
+
+# Parallel execution
+null_stats = null_model_metric(network, degree_metric, n_null=200, random_state=42, n_jobs=4)
+# Same deterministic result as serial execution
+```
+
+### Determinism Guarantees
+
+The parallel implementation uses numpy's `SeedSequence` to spawn independent, reproducible child seeds for each parallel task:
 
 ```python
-# Query large, dense communities
-result = (
-    Q.communities()
-     .where(size__gt=5, density_intra__gt=0.6)
-     .compute("conductance", "modularity_contribution")
-     .order_by("size", desc=True)
-     .limit(10)
-     .execute(network)
-)
+# Example: Same seed produces identical results
+result_serial = generate_null_model(network, num_samples=100, seed=42, n_jobs=1)
+result_parallel = generate_null_model(network, num_samples=100, seed=42, n_jobs=4)
 
-df = result.to_pandas()
-print(df[['community_id', 'size', 'conductance', 'modularity_contribution']])
-
-# Output shows top 10 large, dense communities sorted by size
+# Results are identical (same structure, node counts, edge counts)
+assert len(result_serial.samples) == len(result_parallel.samples)
 ```
 
-### Example 3: Bridge from Communities to Member Nodes
+### Performance Considerations
+
+- **Serial Default**: `n_jobs=1` runs without multiprocessing overhead
+- **Optimal Parallelization**: Use `n_jobs=-1` to use all CPU cores
+- **Task Granularity**: Parallel execution is most beneficial for:
+  - Large numbers of samples (num_samples ≥ 10)
+  - Complex networks (>100 nodes)
+  - Expensive metric functions
+- **Overhead**: Small networks or few samples may be faster in serial mode
+
+### Picklability Requirements
+
+**Important**: When using `n_jobs > 1`, custom metric functions must be picklable:
 
 ```python
-# Get nodes in large communities and compute their centrality
-result = (
-    Q.communities()
-     .where(size__gt=10)
-     .members()  # Bridge to nodes
-     .compute("degree", "betweenness_centrality")
-     .order_by("betweenness_centrality", desc=True)
-     .execute(network)
-)
+# ✓ GOOD: Module-level function (picklable)
+def my_metric(network):
+    return {node: network.core_network.degree(node) for node in network.get_nodes()}
 
-df = result.to_pandas()
-print(f"Found {len(df)} nodes in large communities")
-print(df[['id', 'layer', 'degree', 'betweenness_centrality']].head())
-
-# Output shows members of communities with >10 nodes, sorted by centrality
+# Use with parallel execution
+result = bootstrap_metric(network, my_metric, n_boot=100, n_jobs=4)
 ```
-
-### Example 4: Bridge from Communities to Boundary Edges
 
 ```python
-# Get inter-community edges (edges crossing community boundaries)
-result = (
-    Q.communities()
-     .where(size__gt=5)
-     .boundary_edges()  # Bridge to edges
-     .execute(network)
-)
-
-df = result.to_pandas()
-print(f"Found {len(df)} boundary edges between large communities")
-print(df[['source', 'target', 'source_layer', 'target_layer', 'weight']].head())
-
-# Output shows edges connecting different communities
+# ✗ BAD: Local function (not picklable for multiprocessing)
+def run_analysis():
+    def my_metric(network):  # Defined inside function - not picklable!
+        return {node: network.core_network.degree(node) for node in network.get_nodes()}
+    
+    # This will fail with n_jobs > 1
+    result = bootstrap_metric(network, my_metric, n_boot=100, n_jobs=4)
 ```
 
-### Example 5: Named Partitions for Algorithm Comparison
+**Solution**: Define metric functions at module level or use `n_jobs=1` for serial execution (no pickling required).
 
-```python
-# Detect communities with different algorithms
-partition_louvain = detect_communities_louvain(network)
-partition_infomap = detect_communities_infomap(network)
+### Implementation Notes
 
-# Store multiple partitions
-network.assign_partition(partition_louvain, name="louvain", meta={"resolution": 1.0})
-network.assign_partition(partition_infomap, name="infomap")
+The parallel infrastructure is located in `py3plex/_parallel.py` (internal module, not part of public API):
+- `parallel_map()`: Parallel execution with serial fallback
+- `spawn_seeds()`: Deterministic seed spawning via numpy's SeedSequence
+- Supports multiprocessing (default) and joblib backends
+- Optional tqdm progress bars (if tqdm is installed)
 
-# Query from specific partition
-result_louvain = Q.communities(partition="louvain").execute(network)
-result_infomap = Q.communities(partition="infomap").execute(network)
-
-print(f"Louvain: {len(result_louvain.items)} communities")
-print(f"Infomap: {len(result_infomap.items)} communities")
-
-# List available partitions
-partitions = network.list_partitions()
-print(f"Available partitions: {partitions}")
-
-# Output:
-# Louvain: 5 communities
-# Infomap: 7 communities
-# Available partitions: ['louvain', 'infomap']
-```
-
-### Community Filtering Predicates
-
-Communities support rich filtering via `.where()`:
-
-**Size filters:**
-- `size__gt=10` - Communities with >10 members
-- `size__between=(5, 20)` - Communities with 5-20 members
-- `size__eq=3` - Communities with exactly 3 members
-
-**Connectivity filters:**
-- `density_intra__gt=0.5` - Dense communities (>50% internal density)
-- `cut_size__lt=5` - Communities with few boundary edges
-- `inter_edges__gt=3` - Communities with >3 outgoing edges
-
-**Layer scope filters:**
-- `layer_scope__eq="single_layer"` - Communities within one layer
-- `layer_scope__eq="multi_layer"` - Communities spanning layers
-
-### Community Metrics
-
-Compute community-level statistics with `.compute()`:
-
-**Built-in metrics:**
-- `size` - Number of members
-- `intra_edges` - Number of internal edges
-- `inter_edges` - Number of boundary edges
-- `cut_size` - Number of boundary edges (alias for `inter_edges`)
-- `density_intra` - Internal edge density
-- `conductance` - Ratio of cut edges to total edges
-- `normalized_cut` - Normalized cut value
-- `modularity_contribution` - Community's contribution to modularity
-- `hub_nodes_top_k` - Top k central nodes within community (e.g., `hub_nodes_top_5`)
-
-### Bridge Methods
-
-**From communities to nodes:**
-```python
-# Get members of selected communities
-nodes = Q.communities().where(...).members()
-```
-
-**From communities to edges:**
-```python
-# Get boundary edges between communities
-edges = Q.communities().boundary_edges()
-```
-
-### Error Handling
-
-```python
-from py3plex.dsl.errors import DslExecutionError
-
-try:
-    result = Q.communities().execute(network)
-except DslExecutionError as e:
-    if "No partition" in str(e):
-        print("Network has no community assignments. Run community detection first.")
-        # Detect communities
-        partition = detect_communities(network)['partition']
-        network.assign_partition(partition)
-        result = Q.communities().execute(network)
-```
-
-### Integration with Existing DSL Features
-
-Communities work seamlessly with other DSL features:
-
-```python
-# Per-layer community analysis
-result = (
-    Q.communities()
-     .per_layer()  # Group by layer
-     .compute("size")
-     .execute(network)
-)
-
-# Uncertainty quantification on community metrics
-result = (
-    Q.communities()
-     .uq(UQ.fast())
-     .compute("conductance")
-     .execute(network)
-)
-
-# Export communities
-result = (
-    Q.communities()
-     .where(size__gt=5)
-     .to("pandas")  # or "networkx", "arrow"
-     .execute(network)
-)
-```
+All parallel execution maintains order-independent aggregation to ensure deterministic results regardless of task completion order.
 
 ---
 
