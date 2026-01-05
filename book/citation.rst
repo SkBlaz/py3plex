@@ -69,7 +69,7 @@ If you specifically reference this book (rather than the software), please cite:
 
 .. code-block:: text
 
-    Škrlj, B. (2025). *Practical Multilayer Network Analysis with Py3plex* (Version 1.0.3).
+    Škrlj, B. (2025). *Practical Multilayer Network Analysis with Py3plex* (Version 1.1.0).
     Available at: https://github.com/SkBlaz/py3plex
 
 BibTeX for This Book
@@ -81,7 +81,7 @@ BibTeX for This Book
       author = {Škrlj, Blaž},
       title = {Practical Multilayer Network Analysis with Py3plex},
       year = {2025},
-      version = {1.0.3},
+      version = {1.1.0},
       url = {https://github.com/SkBlaz/py3plex}
     }
 
@@ -141,20 +141,20 @@ Reproducibility best practice is to cite the specific version of py3plex used:
 .. code-block:: python
 
     import py3plex
-    print(py3plex.__version__)  # e.g., "1.0.3"
+    print(py3plex.__version__)  # e.g., "1.1.0"
 
 In your paper's methods section, include:
 
 .. code-block:: text
 
-    All analyses were performed using py3plex version 1.0.3 [Skrlj2019]
+    All analyses were performed using py3plex version 1.1.0 [Skrlj2019]
     running on Python 3.10.
 
 Or in acknowledgments:
 
 .. code-block:: text
 
-    This research utilized py3plex (version 1.0.3, Škrlj et al., 2019)
+    This research utilized py3plex (version 1.1.0, Škrlj et al., 2019)
     for multilayer network analysis.
 
 License
