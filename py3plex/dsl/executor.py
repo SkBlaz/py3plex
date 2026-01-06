@@ -754,6 +754,162 @@ def _ensure_attribute(
     raise UnknownAttributeError(attr_name, available)
 
 
+def _compute_communities_with_uncertainty(
+    network: Any,
+    compute_item: ComputeItem,
+    items: List[Any],
+) -> Dict[Any, Any]:
+    """Compute community assignments with uncertainty quantification.
+    
+    This function generates an ensemble of community partitions using
+    different resampling strategies, then returns probabilistic community
+    memberships along with uncertainty metrics.
+    
+    Args:
+        network: Multilayer network
+        compute_item: ComputeItem with uncertainty configuration
+        items: List of nodes to compute communities for
+        
+    Returns:
+        Dictionary with special structure for probabilistic communities:
+        - For each node: Dict with 'mean' (hard label), 'probs' (membership distribution),
+          'entropy', 'confidence', etc.
+    """
+    from py3plex.uncertainty import (
+        generate_community_ensemble,
+        ProbabilisticCommunityResult
+    )
+    
+    # Get UQ parameters
+    method = compute_item.method or "seed"
+    n_samples = compute_item.n_samples or 50
+    random_state = compute_item.random_state
+    
+    # Map method names to ensemble generation methods
+    method_map = {
+        'seed': 'seed',
+        'bootstrap': 'bootstrap',
+        'perturbation': 'perturbation',
+    }
+    ensemble_method = method_map.get(method.lower(), 'seed')
+    
+    # Get method-specific parameters
+    perturbation_rate = 0.1  # Default
+    bootstrap_unit = compute_item.bootstrap_unit or 'edges'
+    
+    # Generate community ensemble
+    try:
+        dist = generate_community_ensemble(
+            network=network,
+            algorithm='louvain',  # Default to Louvain
+            method=ensemble_method,
+            n_samples=n_samples,
+            seed=random_state,
+            perturbation_rate=perturbation_rate,
+            bootstrap_unit=bootstrap_unit,
+            verbose=False,
+        )
+        
+        # Wrap in ProbabilisticCommunityResult
+        result = ProbabilisticCommunityResult(dist)
+        
+        # Get probabilistic information
+        labels = result.labels
+        probs = result.probs if not result.is_deterministic else None
+        entropy = result.entropy if not result.is_deterministic else None
+        confidence = result.confidence if not result.is_deterministic else None
+        margin = result.margin if not result.is_deterministic else None
+        
+        # Build return dictionary with uncertainty structure
+        # Each node gets a dict with mean (hard label), probs, entropy, confidence
+        output = {}
+        for node in items:
+            if node in labels:
+                node_dict = {
+                    'mean': labels[node],  # Hard label (backward compatible)
+                    'label': labels[node],  # Alias
+                }
+                
+                if not result.is_deterministic:
+                    # Add probabilistic information
+                    node_dict['probs'] = probs.get(node, {})
+                    node_dict['entropy'] = entropy.get(node, 0.0)
+                    node_dict['confidence'] = confidence.get(node, 1.0)
+                    node_dict['margin'] = margin.get(node, 1.0)
+                    node_dict['std'] = 0.0  # Communities are categorical, no std
+                    
+                    # Add quantiles for consistency with numeric measures
+                    # (though for communities, these are not meaningful)
+                    node_dict['quantiles'] = {}
+                    node_dict['certainty'] = confidence.get(node, 1.0)
+                else:
+                    # Deterministic case: perfect certainty
+                    node_dict['std'] = 0.0
+                    node_dict['entropy'] = 0.0
+                    node_dict['confidence'] = 1.0
+                    node_dict['margin'] = 1.0
+                    node_dict['certainty'] = 1.0
+                    node_dict['quantiles'] = {}
+                
+                output[node] = node_dict
+            else:
+                # Node not in partition (isolated?)
+                output[node] = {
+                    'mean': -1,
+                    'label': -1,
+                    'std': 0.0,
+                    'entropy': 0.0,
+                    'confidence': 1.0,
+                    'margin': 1.0,
+                    'certainty': 1.0,
+                    'quantiles': {},
+                }
+        
+        # Store the full result object in metadata for later access
+        # This is a hack but allows us to pass the rich result through
+        if hasattr(network, '_probabilistic_community_result'):
+            # Store multiple results if needed
+            if not isinstance(network._probabilistic_community_result, dict):
+                network._probabilistic_community_result = {}
+            network._probabilistic_community_result['latest'] = result
+        else:
+            network._probabilistic_community_result = result
+        
+        return output
+    
+    except Exception as e:
+        # Fallback to deterministic if ensemble generation fails
+        logging.getLogger(__name__).warning(
+            f"Failed to generate community ensemble: {e}. "
+            f"Falling back to deterministic community detection."
+        )
+        
+        # Use standard Louvain on the network
+        from py3plex.dsl.registry import measure_registry
+        measure_fn = measure_registry.get('communities')
+        
+        G = network.core_network
+        subgraph = G.subgraph([item for item in items if item in G]).copy()
+        partition = measure_fn(subgraph, items)
+        
+        # Wrap in deterministic uncertainty format
+        output = {}
+        for node in items:
+            label = partition.get(node, -1)
+            output[node] = {
+                'mean': label,
+                'label': label,
+                'std': 0.0,
+                'entropy': 0.0,
+                'confidence': 1.0,
+                'margin': 1.0,
+                'certainty': 1.0,
+                'quantiles': {},
+            }
+        
+        return output
+
+
 def _compute_measure_with_uncertainty(
     network: Any,
     compute_item: ComputeItem,
@@ -1111,14 +1267,22 @@ def _execute_select(
                         measure_fn = measure_registry.get(compute_item.name)
                         result_name = compute_item.result_name
                         
-                        # Compute with or without uncertainty
-                        values = _compute_measure_with_uncertainty(
-                            network=network,
-                            compute_item=compute_item,
-                            measure_fn=measure_fn,
-                            subgraph=subgraph,
-                            items=items,
-                        )
+                        # Special handling for community detection with UQ
+                        if compute_item.name in ['communities', 'community'] and compute_item.uncertainty:
+                            values = _compute_communities_with_uncertainty(
+                                network=network,
+                                compute_item=compute_item,
+                                items=items,
+                            )
+                        else:
+                            # Standard uncertainty handling
+                            values = _compute_measure_with_uncertainty(
+                                network=network,
+                                compute_item=compute_item,
+                                measure_fn=measure_fn,
+                                subgraph=subgraph,
+                                items=items,
+                            )
                         attributes[result_name] = values
                 except UnknownMeasureError:
                     # Re-raise unknown measure errors (they have helpful suggestions)
