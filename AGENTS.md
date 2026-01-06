@@ -32,10 +32,11 @@
 26. [Replayable Provenance and Query Replay](#replayable-provenance-and-query-replay)
 27. [Temporal Networks](#temporal-networks)
 28. [Null Models](#null-models)
-29. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-28. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
-29. [Version Information](#version-information)
-30. [File Locations](#file-locations)
+29. [Probabilistic Community Detection](#probabilistic-community-detection)
+30. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+31. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
+32. [Version Information](#version-information)
+33. [File Locations](#file-locations)
 
 ---
 
@@ -1322,7 +1323,50 @@ Both frontends compile to the same AST, ensuring consistent behavior.
 
 py3plex provides a dplyr-inspired API for fluent, method-chaining operations on nodes and edges. This allows functional-style data manipulation similar to R's dplyr or Python's pandas.
 
-### Core Components
+**NOTE:** As of version 1.1.0, the dplyr-style methods have been integrated directly into the DSL v2 builder (`Q.nodes()` and `Q.edges()`), providing a unified API. The standalone `graph_ops` module is still available for backward compatibility, but the recommended approach is to use the DSL builder with dplyr-style methods like `.filter()`, `.head()`, `.tail()`, `.sample()`, etc.
+
+### Using Dplyr-Style Methods in DSL Builder
+
+```python
+from py3plex.dsl import Q, L
+from py3plex.core import multinet
+
+# Create network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'ppi', 'target_type': 'ppi'},
+    {'source': 'B', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
+    {'source': 'A', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
+])
+
+# Unified API with dplyr-style methods
+df = (
+    Q.nodes()
+     .from_layers(L["ppi"])
+     .compute("degree")
+     .filter(degree__gt=1)               # Dplyr-style filter
+     .mutate(norm_deg=lambda r: r["degree"] / 3)  # Mutate with lambdas
+     .arrange("-degree")                  # Sort descending
+     .head(3)                             # Take top 3
+     .execute(net)
+     .to_pandas()
+)
+```
+
+**New Dplyr-Style Methods in DSL Builder:**
+- `.filter()` - Alias for `.where()`, traditional dplyr naming
+- `.filter_expr(expr)` - String-based filtering: `filter_expr("degree > 10 and layer == 'ppi'")`
+- `.head(n)` - Keep first n results
+- `.tail(n)` - Keep last n results  
+- `.take(n)` - Alias for `.head(n)`, SQL-style
+- `.sample(n, seed)` - Random sampling with optional seed
+- `.slice(start, end)` - Array slicing like Python `[start:end]`
+- `.first()` - Return only first result (limits to 1)
+- `.last()` - Return only last result
+- `.pluck(field)` - Extract single column
+- `.collect()` - No-op for API compatibility
+
+### Core Components (Standalone graph_ops)
 
 ```python
 from py3plex.graph_ops import (
@@ -3322,6 +3366,340 @@ print(f"Z-score: {z_score:.2f}")
 **Note: Parallelization is fully internal and transparent - no API changes required.**
 
 py3plex implements deterministic parallel execution for computationally expensive operations including null model generation and uncertainty quantification. The parallelization is completely internal and maintains full backward compatibility.
+
+---
+
+## Probabilistic Community Detection
+
+py3plex provides probabilistic community detection with first-class uncertainty quantification, going beyond "hard labels" to provide membership distributions, node-level confidence, and community stability metrics.
+
+### Key Features
+
+- **Backward Compatible**: Deterministic mode returns hard labels as before
+- **Probabilistic Memberships**: Per-node membership probability distributions
+- **Node Uncertainty Metrics**: Entropy, confidence, margin for each node
+- **Community Stability**: Persistence, size variability across ensemble
+- **Partition Variability**: VI/ARI/NMI distributions between partitions
+- **Multiple UQ Methods**: SEED (algorithmic stochasticity), PERTURBATION (structural uncertainty), BOOTSTRAP (resampling)
+- **DSL Integration**: Works seamlessly with `.uq()` chaining
+
+### Core Components
+
+```python
+from py3plex.uncertainty import (
+    generate_community_ensemble,      # Generate partition ensemble
+    ProbabilisticCommunityResult,     # Probabilistic result wrapper
+    CommunityDistribution,            # Low-level distribution object
+)
+```
+
+### Example 1: Deterministic Community Detection (Backward Compatible)
+
+```python
+from py3plex.dsl import Q
+from py3plex.core import multinet
+
+# Create network
+net = multinet.multi_layer_network(directed=False)
+# ... add nodes and edges ...
+
+# Standard deterministic community detection
+result = Q.nodes().compute("communities").execute(net)
+communities = result.attributes['communities']
+
+# Hard labels: Dict[node, community_id]
+for node, comm_id in communities.items():
+    print(f"{node} -> Community {comm_id}")
+```
+
+### Example 2: Probabilistic Communities with SEED Method
+
+```python
+# Probabilistic community detection (algorithmic stochasticity)
+result = (
+    Q.nodes()
+    .uq(method="seed", n_samples=50, seed=42)
+    .compute("communities")
+    .execute(net)
+)
+
+communities = result.attributes['communities']
+
+# Each node has uncertainty information
+for node, data in communities.items():
+    print(f"{node}:")
+    print(f"  Hard label: {data['mean']}")
+    print(f"  Confidence: {data['confidence']:.3f}")
+    print(f"  Entropy: {data['entropy']:.3f}")
+    print(f"  Margin: {data['margin']:.3f}")
+    
+    # Membership probabilities
+    if 'probs' in data:
+        print(f"  Probabilities: {data['probs']}")
+```
+
+### Example 3: Comparing Uncertainty Methods
+
+```python
+# SEED method: Algorithmic stochasticity (multiple random seeds)
+result_seed = (
+    Q.nodes()
+    .uq(method="seed", n_samples=50, seed=42)
+    .compute("communities")
+    .execute(net)
+)
+
+# PERTURBATION method: Structural uncertainty (perturb edges)
+result_pert = (
+    Q.nodes()
+    .uq(method="perturbation", n_samples=50, seed=42)
+    .compute("communities")
+    .execute(net)
+)
+
+# Compare entropy (uncertainty)
+for node in result_seed.attributes['communities'].keys():
+    ent_seed = result_seed.attributes['communities'][node]['entropy']
+    ent_pert = result_pert.attributes['communities'][node]['entropy']
+    print(f"{node}: SEED={ent_seed:.3f}, PERT={ent_pert:.3f}")
+```
+
+### Example 4: Accessing Advanced Metrics
+
+```python
+# Generate ensemble and get full result object
+from py3plex.uncertainty import generate_community_ensemble, ProbabilisticCommunityResult
+
+dist = generate_community_ensemble(
+    net,
+    algorithm='louvain',
+    method='seed',
+    n_samples=100,
+    seed=42,
+    verbose=True
+)
+
+result = ProbabilisticCommunityResult(dist)
+
+# Node-level metrics
+labels = result.labels              # Dict[node, community_id]
+probs = result.probs               # Dict[node, Dict[comm_id, prob]]
+entropy = result.entropy           # Dict[node, float]
+confidence = result.confidence     # Dict[node, float]
+margin = result.margin             # Dict[node, float]
+
+# Community-level stability metrics
+stability = result.community_stability
+for comm_id, metrics in stability.items():
+    print(f"Community {comm_id}:")
+    print(f"  Persistence: {metrics['persistence']:.3f}")
+    print(f"  Size (mean ± std): {metrics['size_mean']:.1f} ± {metrics['size_std']:.1f}")
+    print(f"  Coefficient of variation: {metrics['size_cv']:.3f}")
+
+# Partition-space variability metrics
+part_metrics = result.partition_metrics
+print(f"Variation of Information (VI):")
+print(f"  Mean: {part_metrics['vi_mean']:.3f}")
+print(f"  Std: {part_metrics['vi_std']:.3f}")
+
+if 'ari_mean' in part_metrics:
+    print(f"Adjusted Rand Index (ARI):")
+    print(f"  Mean: {part_metrics['ari_mean']:.3f}")
+    print(f"  Std: {part_metrics['ari_std']:.3f}")
+```
+
+### Example 5: Filtering by Uncertainty
+
+```python
+# Find boundary nodes (high uncertainty)
+result = (
+    Q.nodes()
+    .uq(method="seed", n_samples=50, seed=42)
+    .compute("communities")
+    .execute(net)
+)
+
+communities = result.attributes['communities']
+
+# High-uncertainty nodes (entropy > threshold)
+boundary_nodes = [
+    node for node, data in communities.items()
+    if data['entropy'] > 0.5
+]
+
+# Confident core nodes (high confidence)
+core_nodes = [
+    node for node, data in communities.items()
+    if data['confidence'] > 0.9
+]
+
+print(f"Boundary nodes: {boundary_nodes}")
+print(f"Core nodes: {core_nodes}")
+```
+
+### Example 6: Pandas Export with Uncertainty
+
+```python
+import pandas as pd
+
+result = (
+    Q.nodes()
+    .uq(method="seed", n_samples=50, seed=42)
+    .compute("communities")
+    .execute(net)
+)
+
+# Manual expansion of uncertainty columns
+data = []
+for node, comm_data in result.attributes['communities'].items():
+    row = {
+        'node': node[0],
+        'layer': node[1],
+        'community_id': comm_data['mean'],
+        'community_confidence': comm_data['confidence'],
+        'membership_entropy': comm_data['entropy'],
+        'membership_margin': comm_data['margin'],
+    }
+    
+    # Add top-k membership probabilities
+    if 'probs' in comm_data and comm_data['probs']:
+        sorted_probs = sorted(comm_data['probs'].items(), 
+                            key=lambda x: x[1], reverse=True)
+        for k, (comm_id, prob) in enumerate(sorted_probs[:3]):
+            row[f'p_comm_{comm_id}'] = prob
+    
+    data.append(row)
+
+df = pd.DataFrame(data)
+print(df)
+```
+
+### Uncertainty Structure
+
+When uncertainty is enabled, each node's community data is a dict with:
+
+```python
+{
+    'mean': int,              # Hard label (most likely community)
+    'label': int,             # Alias for 'mean'
+    'probs': Dict[int, float], # Membership probabilities {comm_id: prob}
+    'entropy': float,         # Entropy of membership distribution (bits)
+    'confidence': float,      # Max probability (most likely community)
+    'margin': float,          # Difference between top 2 probabilities
+    'std': 0.0,              # Always 0 (communities are categorical)
+    'certainty': float,       # Alias for 'confidence'
+    'quantiles': {},          # Empty (not meaningful for categorical)
+}
+```
+
+### UQ Methods
+
+#### SEED Method (Algorithmic Stochasticity)
+```python
+.uq(method="seed", n_samples=50, seed=42)
+```
+Runs community detection with different random seeds. Captures algorithmic randomness (e.g., Louvain's randomized order). Best for assessing algorithm stability.
+
+#### PERTURBATION Method (Structural Uncertainty)
+```python
+.uq(method="perturbation", n_samples=50, seed=42)
+```
+Perturbs network structure (adds/removes edges) before each run. Captures structural uncertainty. Best for assessing robustness to noise.
+
+#### BOOTSTRAP Method (Resampling)
+```python
+.uq(method="bootstrap", n_samples=50, seed=42, 
+    bootstrap_unit="edges")
+```
+Resamples edges or nodes with replacement. Captures sampling uncertainty. Best for assessing statistical variability.
+
+### Supported Algorithms
+
+- **Louvain** (default): Fast modularity optimization
+- **Label Propagation**: Simple and fast spreading algorithm
+- **Infomap**: Information-theoretic community detection (requires `infomap` package)
+
+Specify algorithm in low-level API:
+```python
+from py3plex.uncertainty import generate_community_ensemble
+
+dist = generate_community_ensemble(
+    net,
+    algorithm='infomap',  # or 'louvain', 'label_propagation'
+    method='seed',
+    n_samples=50,
+    seed=42
+)
+```
+
+### Interpretation Guidelines
+
+#### Node Metrics
+- **Entropy**: Measures assignment uncertainty
+  - 0 = deterministic assignment
+  - High = node is on community boundary
+- **Confidence**: Probability of most likely community
+  - 1.0 = always assigned to same community
+  - <0.8 = uncertain, possibly boundary node
+- **Margin**: Confidence gap between top 2 communities
+  - High = clear winner
+  - Low = competing communities
+
+#### Community Metrics
+- **Persistence**: Fraction of runs where community exists
+  - High = stable community
+  - Low = unstable, may split/merge
+- **Size Variability (CV)**: Coefficient of variation of size
+  - Low = stable size
+  - High = growing/shrinking community
+
+#### Partition Metrics
+- **VI (Variation of Information)**: Distance between partitions
+  - 0 = identical partitions
+  - High = very different partitions
+- **ARI (Adjusted Rand Index)**: Similarity between partitions
+  - 1.0 = perfect agreement
+  - 0 = random agreement
+
+### Performance Considerations
+
+- **n_samples**: More samples = better uncertainty estimates, but slower
+  - 25-50 samples: Fast, good for exploration
+  - 100+ samples: More accurate, publishable results
+- **Algorithm**: Louvain is fastest, Infomap most accurate but slower
+- **Method**: SEED is fastest, PERTURBATION adds overhead for network modification
+- **Network size**: Scales linearly with n_samples
+
+### Best Practices
+
+1. **Always set seed** for reproducibility: `seed=42`
+2. **Use enough samples**: At least 25 for exploration, 100+ for publication
+3. **Choose method based on goal**:
+   - SEED: Algorithm stability
+   - PERTURBATION: Robustness to noise
+   - BOOTSTRAP: Statistical significance
+4. **Inspect high-entropy nodes**: They're often boundary nodes or bridges
+5. **Check community persistence**: Low persistence suggests over-partitioning
+6. **Compare methods**: Different methods highlight different uncertainty sources
+
+### Backward Compatibility
+
+The system is fully backward compatible:
+- `Q.nodes().compute("communities")` returns hard labels as before
+- Adding `.uq(...)` enables probabilistic mode
+- Without `.uq()`, deterministic Louvain is used (single run)
+- Deterministic mode returns `certainty=1.0`, `entropy=0.0`
+
+### Related Documentation
+
+- **Example**: `examples/network_analysis/example_dsl_probabilistic_communities.py`
+- **Tests**: `tests/property/test_probabilistic_communities_properties.py`
+- **Module**: `py3plex.uncertainty.community_result`
+- **Engine**: `py3plex.uncertainty.community_ensemble`
+
+---
+
+## Internal Parallelization (continued)
 
 ### Key Features
 

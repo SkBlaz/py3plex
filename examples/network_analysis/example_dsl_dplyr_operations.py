@@ -154,6 +154,74 @@ print("\nUnique degree values in the network:")
 print(unique_degrees.to_pandas())
 
 print("\n" + "="*70)
+print("Example 7: New integrated dplyr-style methods")
+print("="*70)
+
+# filter() - traditional dplyr naming (alias for where())
+filtered = (
+    Q.nodes()
+     .from_layers(L["social"])
+     .compute("degree")
+     .filter(degree__gt=2)  # Instead of where()
+     .execute(net)
+)
+print("\nFiltered nodes (degree > 2):")
+print(filtered.to_pandas())
+
+# filter_expr() - string-based filtering
+expr_filtered = (
+    Q.nodes()
+     .compute("degree")
+     .filter_expr("degree > 2 and layer == 'work'")
+     .execute(net)
+)
+print("\nExpression filtered (degree > 2 and layer == 'work'):")
+print(expr_filtered.to_pandas())
+
+# head() and tail()
+top_nodes = (
+    Q.nodes()
+     .compute("degree")
+     .arrange("-degree")
+     .head(3)  # Traditional dplyr head
+     .execute(net)
+)
+print("\nTop 3 nodes by degree:")
+print(top_nodes.to_pandas()[['id', 'layer', 'degree']])
+
+# sample() - random sampling
+sampled = (
+    Q.nodes()
+     .from_layers(L["social"])
+     .sample(2, seed=42)
+     .execute(net)
+)
+print("\nRandom sample of 2 nodes (seed=42):")
+print(sampled.to_pandas()[['id', 'layer']])
+
+# slice() - array slicing
+sliced = (
+    Q.nodes()
+     .from_layers(L["work"])
+     .slice(1, 4)  # Nodes [1:4]
+     .execute(net)
+)
+print("\nSliced nodes [1:4] from work layer:")
+print(sliced.to_pandas()[['id', 'layer']])
+
+# first() and last()
+first_node = (
+    Q.nodes()
+     .from_layers(L["hobby"])
+     .compute("degree")
+     .arrange("-degree")
+     .first()
+     .execute(net)
+)
+print("\nFirst node (highest degree in hobby):")
+print(first_node.to_pandas()[['id', 'layer', 'degree']])
+
+print("\n" + "="*70)
 print("✓ All examples completed successfully!")
 print("="*70)
 print("\nKey Takeaways:")
@@ -163,4 +231,12 @@ print("  • rank_by() and zscore() add statistical context to your analysis")
 print("  • coverage(mode='fraction', p=...) finds cross-layer patterns")
 print("  • select(), drop(), rename() clean and shape your results")
 print("  • arrange() and distinct() provide familiar data manipulation")
+print("\nNEW in v1.1.0:")
+print("  • filter() - traditional dplyr naming (alias for where())")
+print("  • filter_expr() - string-based filtering with expressions")
+print("  • head(n), tail(n) - keep first/last n results")
+print("  • sample(n, seed) - random sampling with reproducibility")
+print("  • slice(start, end) - array-style slicing")
+print("  • first(), last() - get first/last result")
+print("  • take(n), pluck(field), collect() - additional convenience methods")
 print("\nThe DSL now feels like dplyr but is multilayer-aware! 🎉")

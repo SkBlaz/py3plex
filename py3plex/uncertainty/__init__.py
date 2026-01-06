@@ -66,6 +66,12 @@ from .partition import (
     partition_dict_to_array,
     partition_array_to_dict,
 )
+from .community_result import (
+    ProbabilisticCommunityResult,
+)
+from .community_ensemble import (
+    generate_community_ensemble,
+)
 from .resampling_graph import (
     perturb_network_edges,
     bootstrap_network_edges,
@@ -93,6 +99,8 @@ __all__ = [
     "null_model_metric",
     # Community distributions
     "CommunityDistribution",
+    "ProbabilisticCommunityResult",
+    "generate_community_ensemble",
     "partition_dict_to_array",
     "partition_array_to_dict",
     # Graph resampling
