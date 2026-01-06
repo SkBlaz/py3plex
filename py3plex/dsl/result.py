@@ -250,28 +250,12 @@ class QueryResult:
     execution metadata.
     
     Attributes:
-        data: Query result data (list of dicts or other format)
-        meta: Metadata including provenance, grouping, etc.
-        sensitivity_result: Optional sensitivity analysis results (SensitivityResult)
-    """
-    
-    def __init__(self, data: Any, meta: Optional[Dict[str, Any]] = None):
-        """Initialize QueryResult.
-        
-        Args:
-            data: Query result data
-            meta: Metadata dictionary
-        """
-        self.data = data
-        self.meta = meta or {}
-        self.sensitivity_result = None  # Will be set by executor if sensitivity is requested
-    
-    Attributes:
         target: 'nodes' or 'edges'
         items: Sequence of node/edge identifiers
         attributes: Dictionary of computed attributes (column -> values or dict)
         meta: Metadata about the query execution
         computed_metrics: Set of metrics that were computed during query execution
+        sensitivity_result: Optional sensitivity analysis results (SensitivityResult)
     """
     
     def __init__(self, target: str, items: List[Any],
