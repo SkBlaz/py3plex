@@ -231,37 +231,44 @@ def main():
     if hasattr(net, '_probabilistic_community_result'):
         prob_result = net._probabilistic_community_result
         
-        print(f"\nProbabilistic community result:")
-        print(f"  Number of nodes: {prob_result.n_nodes}")
-        print(f"  Number of partitions: {prob_result.n_partitions}")
-        print(f"  Is deterministic: {prob_result.is_deterministic}")
+        # Handle both dict (with 'latest' key) and direct object storage
+        if isinstance(prob_result, dict):
+            prob_result = prob_result.get('latest')
         
-        if not prob_result.is_deterministic:
-            # Access community stability metrics
-            stability = prob_result.community_stability
-            print(f"\nCommunity stability metrics:")
-            for comm_id, metrics in sorted(stability.items()):
-                print(f"  Community {comm_id}:")
-                print(f"    Persistence: {metrics['persistence']:.3f}")
-                print(f"    Size (mean ± std): {metrics['size_mean']:.1f} ± {metrics['size_std']:.1f}")
-                print(f"    Coefficient of variation: {metrics['size_cv']:.3f}")
+        if prob_result is not None:
+            print(f"\nProbabilistic community result:")
+            print(f"  Number of nodes: {prob_result.n_nodes}")
+            print(f"  Number of partitions: {prob_result.n_partitions}")
+            print(f"  Is deterministic: {prob_result.is_deterministic}")
             
-            # Access partition-space metrics
-            part_metrics = prob_result.partition_metrics
-            print(f"\nPartition variability metrics:")
-            print(f"  Variation of Information (VI):")
-            print(f"    Mean: {part_metrics['vi_mean']:.3f}")
-            print(f"    Std: {part_metrics['vi_std']:.3f}")
-            
-            if 'ari_mean' in part_metrics:
-                print(f"  Adjusted Rand Index (ARI):")
-                print(f"    Mean: {part_metrics['ari_mean']:.3f}")
-                print(f"    Std: {part_metrics['ari_std']:.3f}")
-            
-            if 'nmi_mean' in part_metrics:
-                print(f"  Normalized Mutual Information (NMI):")
-                print(f"    Mean: {part_metrics['nmi_mean']:.3f}")
-                print(f"    Std: {part_metrics['nmi_std']:.3f}")
+            if not prob_result.is_deterministic:
+                # Access community stability metrics
+                stability = prob_result.community_stability
+                print(f"\nCommunity stability metrics:")
+                for comm_id, metrics in sorted(stability.items()):
+                    print(f"  Community {comm_id}:")
+                    print(f"    Persistence: {metrics['persistence']:.3f}")
+                    print(f"    Size (mean ± std): {metrics['size_mean']:.1f} ± {metrics['size_std']:.1f}")
+                    print(f"    Coefficient of variation: {metrics['size_cv']:.3f}")
+                
+                # Access partition-space metrics
+                part_metrics = prob_result.partition_metrics
+                print(f"\nPartition variability metrics:")
+                print(f"  Variation of Information (VI):")
+                print(f"    Mean: {part_metrics['vi_mean']:.3f}")
+                print(f"    Std: {part_metrics['vi_std']:.3f}")
+                
+                if 'ari_mean' in part_metrics:
+                    print(f"  Adjusted Rand Index (ARI):")
+                    print(f"    Mean: {part_metrics['ari_mean']:.3f}")
+                    print(f"    Std: {part_metrics['ari_std']:.3f}")
+                
+                if 'nmi_mean' in part_metrics:
+                    print(f"  Normalized Mutual Information (NMI):")
+                    print(f"    Mean: {part_metrics['nmi_mean']:.3f}")
+                    print(f"    Std: {part_metrics['nmi_std']:.3f}")
+        else:
+            print("\nNo probabilistic result stored (not available in this version)")
     else:
         print("\nNo probabilistic result stored (not available in this version)")
     
