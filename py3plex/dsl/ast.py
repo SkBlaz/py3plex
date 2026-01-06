@@ -361,6 +361,44 @@ class ExplainSpec:
 
 
 @dataclass
+class CounterfactualSpec:
+    """Specification for counterfactual robustness analysis.
+    
+    This represents a request to execute a query under controlled structural
+    interventions to test the sensitivity of analytical conclusions.
+    
+    Attributes:
+        intervention_type: Type of intervention ("remove_edges", "rewire", etc.)
+        intervention_params: Parameters for the intervention
+        repeats: Number of counterfactual runs
+        seed: Random seed for reproducibility
+        targets: Optional target specification for the intervention
+    
+    Examples:
+        >>> # Quick robustness check with edge removal
+        >>> CounterfactualSpec(
+        ...     intervention_type="remove_edges",
+        ...     intervention_params={"proportion": 0.05, "mode": "random"},
+        ...     repeats=30,
+        ...     seed=42
+        ... )
+        
+        >>> # Degree-preserving rewiring
+        >>> CounterfactualSpec(
+        ...     intervention_type="rewire_degree_preserving",
+        ...     intervention_params={"n_swaps": 100},
+        ...     repeats=50,
+        ...     seed=42
+        ... )
+    """
+    intervention_type: str
+    intervention_params: Dict[str, Any] = field(default_factory=dict)
+    repeats: int = 30
+    seed: Optional[int] = None
+    targets: Optional[Any] = None
+
+
+@dataclass
 class SelectStmt:
     """A SELECT statement.
     
@@ -394,6 +432,7 @@ class SelectStmt:
         mutate_specs: Optional dict of name -> transformation spec for mutate()
         autocompute: Whether to automatically compute missing metrics (default: True)
         uq_config: Optional query-scoped uncertainty quantification configuration
+        counterfactual_spec: Optional counterfactual robustness specification
     """
     target: Target
     layer_expr: Optional[LayerExpr] = None
@@ -426,6 +465,7 @@ class SelectStmt:
     autocompute: bool = True
     uq_config: Optional['UQConfig'] = None
     explain_spec: Optional['ExplainSpec'] = None
+    counterfactual_spec: Optional['CounterfactualSpec'] = None
 
 
 @dataclass
