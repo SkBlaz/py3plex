@@ -51,6 +51,7 @@ from .ast import (
     WindowSpec,
     UQConfig,
     CounterfactualSpec,
+    SensitivitySpec,
 )
 from .result import QueryResult
 
@@ -821,6 +822,114 @@ class QueryBuilder:
         See uq() for full documentation.
         """
         return self.uq(method=method, n_samples=n_samples, ci=ci, seed=seed, **kwargs)
+    
+    def sensitivity(
+        self,
+        perturb: str,
+        grid: Optional[List[float]] = None,
+        n_samples: int = 30,
+        seed: Optional[int] = None,
+        metrics: Optional[List[str]] = None,
+        scope: str = "global",
+        **kwargs
+    ) -> "QueryBuilder":
+        """Set query-scoped sensitivity analysis configuration.
+        
+        Sensitivity analysis tests the robustness of query CONCLUSIONS (rankings,
+        sets, communities) under controlled perturbations. This is DISTINCT from
+        uncertainty quantification (.uq()):
+        
+        - UQ (.uq()): Estimates uncertainty of metric VALUES (mean, std, CI)
+        - Sensitivity (.sensitivity()): Assesses stability of CONCLUSIONS
+        
+        The sensitivity analysis runs the query on multiple perturbed versions
+        of the network and measures how much the conclusions change using
+        stability metrics like Jaccard@k and Kendall-τ.
+        
+        Args:
+            perturb: Perturbation method:
+                    - 'edge_drop': Randomly drop edges
+                    - 'degree_preserving_rewire': Rewire while preserving degrees
+            grid: Perturbation strength grid (default: [0.0, 0.05, 0.1, 0.15, 0.2])
+                 Interpretation depends on perturbation method (e.g., fraction of edges)
+            n_samples: Number of samples per grid point for averaging (default: 30)
+            seed: Random seed for reproducibility (default: None)
+            metrics: Stability metrics to compute (default: ['kendall_tau'])
+                    Options: 'jaccard_at_k(k)', 'kendall_tau', 'variation_of_information'
+            scope: Analysis scope (default: 'global')
+                  - 'global': Overall stability curves
+                  - 'per_node': Node-level influence scores
+                  - 'per_layer': Layer-level influence scores
+            **kwargs: Additional perturbation-specific parameters:
+                     - layer_aware: Whether to preserve layer structure (default: True)
+                     - max_attempts: Max rewiring attempts (for rewiring methods)
+        
+        Returns:
+            Self for chaining
+        
+        Examples:
+            >>> # Sensitivity of top-k centrality rankings to edge removal
+            >>> result = (
+            ...     Q.nodes()
+            ...      .compute("betweenness_centrality")
+            ...      .order_by("-betweenness_centrality")
+            ...      .limit(20)
+            ...      .sensitivity(
+            ...          perturb="edge_drop",
+            ...          grid=[0.0, 0.05, 0.1, 0.15, 0.2],
+            ...          n_samples=30,
+            ...          metrics=["jaccard_at_k(20)", "kendall_tau"],
+            ...          seed=42
+            ...      )
+            ...      .execute(network)
+            ... )
+            >>> 
+            >>> # Access stability curves
+            >>> print(result.sensitivity_curves)
+            >>> 
+            >>> # Export to pandas
+            >>> df = result.to_pandas(expand_sensitivity=True)
+            
+            >>> # Community detection robustness
+            >>> result = (
+            ...     Q.communities()
+            ...      .detect("louvain")
+            ...      .sensitivity(
+            ...          perturb="degree_preserving_rewire",
+            ...          grid=[0.0, 0.1, 0.2, 0.3],
+            ...          metrics=["variation_of_information"],
+            ...          seed=42
+            ...      )
+            ...      .execute(network)
+            ... )
+        
+        Notes:
+            - Sensitivity results include stability curves (metric vs perturbation)
+            - Unlike UQ, sensitivity does NOT report mean/std/CI for values
+            - Sensitivity analyzes how CONCLUSIONS change, not value uncertainty
+            - Results can identify tipping points where conclusions collapse
+            - Per-node/per-layer scope provides local influence attribution
+        """
+        # Default grid if not provided
+        if grid is None:
+            grid = [0.0, 0.05, 0.1, 0.15, 0.2]
+        
+        # Default metrics if not provided
+        if metrics is None:
+            metrics = ["kendall_tau"]
+        
+        # Create sensitivity spec
+        self._select.sensitivity_spec = SensitivitySpec(
+            perturb=perturb,
+            grid=grid,
+            n_samples=n_samples,
+            seed=seed,
+            metrics=metrics,
+            scope=scope,
+            kwargs=kwargs,
+        )
+        
+        return self
     
     def explain(
         self,

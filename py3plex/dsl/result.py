@@ -250,6 +250,23 @@ class QueryResult:
     execution metadata.
     
     Attributes:
+        data: Query result data (list of dicts or other format)
+        meta: Metadata including provenance, grouping, etc.
+        sensitivity_result: Optional sensitivity analysis results (SensitivityResult)
+    """
+    
+    def __init__(self, data: Any, meta: Optional[Dict[str, Any]] = None):
+        """Initialize QueryResult.
+        
+        Args:
+            data: Query result data
+            meta: Metadata dictionary
+        """
+        self.data = data
+        self.meta = meta or {}
+        self.sensitivity_result = None  # Will be set by executor if sensitivity is requested
+    
+    Attributes:
         target: 'nodes' or 'edges'
         items: Sequence of node/edge identifiers
         attributes: Dictionary of computed attributes (column -> values or dict)
@@ -275,6 +292,7 @@ class QueryResult:
         self.attributes = attributes or {}
         self.meta = meta or {}
         self.computed_metrics = computed_metrics or set()
+        self.sensitivity_result = None  # Will be set by executor if sensitivity is requested
     
     @property
     def provenance(self) -> Optional[Dict[str, Any]]:
@@ -315,6 +333,26 @@ class QueryResult:
         )
         
         return has_snapshot
+    
+    @property
+    def sensitivity_curves(self) -> Optional[Dict[str, Any]]:
+        """Get sensitivity curves if sensitivity analysis was run.
+        
+        Returns:
+            Dictionary of stability curves keyed by metric name, or None
+        """
+        if self.sensitivity_result is not None:
+            return self.sensitivity_result.curves
+        return None
+    
+    @property
+    def has_sensitivity(self) -> bool:
+        """Check if this result includes sensitivity analysis.
+        
+        Returns:
+            True if sensitivity results are available
+        """
+        return self.sensitivity_result is not None
     
     def replay(self, backend: Optional[Any] = None, strict: bool = True) -> "QueryResult":
         """Replay this query to reproduce the result.

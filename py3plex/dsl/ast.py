@@ -399,6 +399,56 @@ class CounterfactualSpec:
 
 
 @dataclass
+class SensitivitySpec:
+    """Specification for query sensitivity analysis.
+    
+    Sensitivity analysis tests robustness of query conclusions (rankings, sets,
+    communities) under controlled perturbations. This is DISTINCT from UQ:
+    
+    - UQ: Estimates uncertainty of METRIC VALUES (mean, std, CI)
+    - Sensitivity: Assesses stability of CONCLUSIONS under perturbations
+    
+    Attributes:
+        perturb: Perturbation method ('edge_drop', 'degree_preserving_rewire')
+        grid: Perturbation strength grid (e.g., [0.0, 0.05, 0.1, 0.15, 0.2])
+        n_samples: Number of samples per grid point for averaging
+        seed: Random seed for reproducibility
+        metrics: Stability metrics to compute (e.g., ['jaccard_at_k(20)', 'kendall_tau'])
+        scope: Analysis scope ('global', 'per_node', 'per_layer')
+        kwargs: Additional perturbation-specific parameters
+    
+    Example:
+        SensitivitySpec(
+            perturb='edge_drop',
+            grid=[0.0, 0.05, 0.1, 0.15, 0.2],
+            n_samples=30,
+            seed=42,
+            metrics=['jaccard_at_k(20)', 'kendall_tau'],
+            scope='global'
+        )
+    """
+    perturb: str
+    grid: List[float]
+    n_samples: int = 30
+    seed: Optional[int] = None
+    metrics: List[str] = field(default_factory=lambda: ["kendall_tau"])
+    scope: str = "global"
+    kwargs: Dict[str, Any] = field(default_factory=dict)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for serialization."""
+        return {
+            "perturb": self.perturb,
+            "grid": self.grid,
+            "n_samples": self.n_samples,
+            "seed": self.seed,
+            "metrics": self.metrics,
+            "scope": self.scope,
+            "kwargs": self.kwargs,
+        }
+
+
+@dataclass
 class SelectStmt:
     """A SELECT statement.
     
@@ -466,6 +516,7 @@ class SelectStmt:
     uq_config: Optional['UQConfig'] = None
     explain_spec: Optional['ExplainSpec'] = None
     counterfactual_spec: Optional['CounterfactualSpec'] = None
+    sensitivity_spec: Optional['SensitivitySpec'] = None
 
 
 @dataclass

@@ -272,6 +272,50 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
         # Finalize and attach provenance
         result.meta["provenance"] = provenance_builder.build()
     
+    # Step 6: Handle sensitivity analysis if requested
+    if bound_query.select.sensitivity_spec is not None:
+        if progress:
+            logger.info("Step 4: Running sensitivity analysis")
+        
+        # Import sensitivity module
+        from py3plex.sensitivity import run_sensitivity_analysis
+        
+        sensitivity_spec = bound_query.select.sensitivity_spec
+        
+        # Create query executor closure
+        def query_executor(net):
+            """Execute query on a network."""
+            # Clone the query but remove sensitivity spec to avoid recursion
+            query_copy = copy.deepcopy(bound_query)
+            query_copy.select.sensitivity_spec = None
+            return _execute_select(
+                net, query_copy.select, params,
+                progress=False,  # Suppress progress logs for perturbed runs
+                provenance_builder=None  # No provenance for intermediate runs
+            )
+        
+        # Run sensitivity analysis
+        sensitivity_result = run_sensitivity_analysis(
+            network=actual_network,
+            query_executor=query_executor,
+            query_ast=bound_query,
+            perturb=sensitivity_spec.perturb,
+            grid=sensitivity_spec.grid,
+            n_samples=sensitivity_spec.n_samples,
+            seed=sensitivity_spec.seed,
+            metrics=sensitivity_spec.metrics,
+            scope=sensitivity_spec.scope,
+            **sensitivity_spec.kwargs
+        )
+        
+        # Attach sensitivity results to query result
+        result.sensitivity_result = sensitivity_result
+        result.meta["sensitivity"] = sensitivity_result.to_dict()
+        
+        # Update provenance to include sensitivity info
+        if "provenance" in result.meta:
+            result.meta["provenance"]["sensitivity"] = sensitivity_spec.to_dict()
+    
     return result
 
 
