@@ -11,6 +11,10 @@ __pycache__/
 .Python
 build/
 **/build/
+
+# Quality reports (generated, not committed - baseline exception)
+build/quality/*.json
+!build/quality/quality_baseline.json
 develop-eggs/
 downloads/
 eggs/

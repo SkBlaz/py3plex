@@ -501,6 +501,112 @@ For feature requests, describe:
 * Alternatives - Other approaches considered
 * Additional context - Examples, papers, etc.
 
+Quality Gates and Code Maintenance
+-----------------------------------
+
+py3plex maintains code quality through automated analysis and CI gates. These tools help keep the codebase clean, maintainable, and agent-friendly.
+
+Running Quality Checks
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Before submitting a PR, run quality checks to ensure your changes don't introduce issues:
+
+.. code-block:: bash
+
+    # Run all quality checks
+    python -m tools.quality.runner --tools all
+    
+    # Run specific checks
+    python -m tools.quality.runner --tools dead,redundancy,api
+    
+    # Check module boundaries
+    python -m tools.quality.layer_checker .
+    
+    # Check against baseline (regression detection)
+    python -m tools.quality.baseline
+
+Reports are saved to ``build/quality/*.json``.
+
+Module Layering Rules
+~~~~~~~~~~~~~~~~~~~~~
+
+py3plex enforces architectural boundaries to prevent circular dependencies. These rules are defined in ``pyproject.toml`` under ``[tool.py3plex.layering]``.
+
+**Key Rules:**
+
+* DSL modules should not import heavy algorithm modules directly
+* Algorithm modules should not import DSL
+* Dataset modules should not import visualization
+* Uncertainty modules should be dependency-light
+
+**Violation Example:**
+
+If you add an import in ``py3plex/dsl/executor.py`` that violates a rule:
+
+.. code-block:: python
+
+    # BAD: Violates layering rule
+    from py3plex.algorithms.statistics import compute_heavy_metric
+
+The layer checker will detect this and fail CI. Instead, use dependency injection or thin adapters.
+
+Dead Code and Duplicates
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The quality tools detect potentially dead code and duplicate functions:
+
+* **Dead Code**: Functions/classes with no references, not exported, not tested
+* **Redundancy**: Exact or near-duplicate code that should be unified
+
+If your changes are flagged:
+
+1. **Dead code**: If intentional (plugin, CLI command, reflection), add to ``tools/whitelist.yml``
+2. **Duplicates**: Refactor to use existing function or create shared helper
+
+Whitelisting Legitimate Cases
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some code appears unused but is actually loaded dynamically. Add it to ``tools/whitelist.yml``:
+
+.. code-block:: yaml
+
+    # Plugin entrypoints (dynamically loaded)
+    plugin_entrypoints:
+      - MyPlugin
+    
+    # CLI commands (used via Click)
+    cli_commands:
+      - my_command
+    
+    # Symbols used via reflection
+    reflection_used:
+      - __version__
+
+Baseline Regression Policy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To avoid blocking PRs on pre-existing issues, py3plex uses a baseline comparison:
+
+* **Grandfathering**: Existing issues are allowed
+* **No Regressions**: New issues above threshold fail CI
+* **Thresholds**: Dead code +5, redundancy +3, layer violations +0 (strict)
+
+If CI fails due to quality regression, fix the issue or justify it in the PR description.
+
+Keeping Examples and Docs Fresh
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Quality tools check that examples and documentation stay in sync with code changes:
+
+* **Examples Health**: Detects broken imports in example scripts
+* **Docs Health**: Finds stale code references in RST/Markdown
+
+If you rename or move an API:
+
+1. Update all examples that use it
+2. Update documentation references
+3. Consider adding deprecation warning for old name
+
 Code of Conduct
 ---------------
 

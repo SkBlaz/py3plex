@@ -4535,3 +4535,261 @@ mypy py3plex/
 ```
 
 ---
+
+## Code Quality and Crispness Workflow
+
+py3plex maintains code quality through automated analysis tools and CI gates that detect dead code, duplications, and module boundary violations.
+
+### Running Quality Analysis
+
+**Run all quality checks:**
+```bash
+python -m tools.quality.runner --repo-root . --tools all
+```
+
+**Run specific checks:**
+```bash
+# Import dependency graph
+python -m tools.quality.runner --tools import
+
+# Dead code detection
+python -m tools.quality.runner --tools dead
+
+# Duplicate code detection
+python -m tools.quality.runner --tools redundancy
+
+# Public API audit
+python -m tools.quality.runner --tools api
+
+# Examples health check
+python -m tools.quality.runner --tools examples
+
+# Docs health check
+python -m tools.quality.runner --tools docs
+```
+
+**Output:** Reports are saved to `build/quality/*.json` with stable, deterministic formatting.
+
+### Quality Reports
+
+#### Import Graph (`import_graph.json`)
+- Module dependency DAG
+- Shows which modules import which
+- Identifies modules never imported (potential dead code)
+- Statistics: total modules, edges, external imports
+
+#### Dead Code (`dead_code.json`)
+- Multi-signal scoring (0-1, higher = more likely dead)
+- Signals: unreferenced, not_exported, not_imported, no_tests
+- Suggested actions: remove, deprecate, keep-but-comment, add-to-whitelist
+- Grouped by confidence: high (≥0.7), medium (0.4-0.7), low (<0.4)
+
+#### Redundancy (`redundancy.json`)
+- Three detection levels:
+  - **Exact:** Identical normalized code (score: 1.0)
+  - **Near:** 80%+ token similarity (score: 0.8)
+  - **Semantic:** Same signature, similar structure (score: 0.6)
+- Clusters with canonical location suggestions
+- Actions: unify_into_helper, review_and_unify, review
+
+#### Public API (`public_api.json`)
+- All exported symbols from `__all__` declarations
+- Stability tiers:
+  - **Core:** Used in docs, examples, and internally (>10 refs)
+  - **Supported:** Used in docs or examples
+  - **Experimental:** Exported but not documented
+  - **Internal:** Not exported
+- Usage tracking: examples, docs, internal count
+
+#### Examples Health (`examples_health.json`)
+- Status for each example: healthy, import_error, runtime_error
+- Lists py3plex APIs used
+- Detects stale examples with moved/removed APIs
+
+#### Docs Health (`docs_health.json`)
+- Scans RST/Markdown code blocks
+- Extracts py3plex symbol references
+- Validates references still exist
+
+### Whitelisting Legitimate Usage
+
+Some symbols are intentionally unused or dynamically loaded. Add them to `tools/whitelist.yml`:
+
+```yaml
+# Plugin entrypoints (dynamically loaded)
+plugin_entrypoints:
+  - MyCustomPlugin
+
+# Symbols used via reflection
+reflection_used:
+  - __version__
+
+# Side-effect modules (imported for side effects)
+side_effect_modules:
+  - py3plex.logging_config
+
+# Registry patterns (registered dynamically)
+registries:
+  - CustomRegistry
+
+# CLI commands (used via Click)
+cli_commands:
+  - my_command
+```
+
+### Module Layering Rules
+
+py3plex enforces architectural boundaries to prevent circular dependencies and keep modules focused. Rules are defined in `pyproject.toml`:
+
+```toml
+[tool.py3plex.layering]
+# DSL should not import heavy algorithm modules directly
+dsl_forbidden_imports = [
+    "py3plex.algorithms.statistics",
+    "py3plex.algorithms.community_detection",
+]
+
+# Algorithms should not import DSL
+algorithms_forbidden_imports = [
+    "py3plex.dsl",
+]
+
+# Datasets should not import visualization
+datasets_forbidden_imports = [
+    "py3plex.visualization",
+]
+
+# Uncertainty should be dependency-light
+uncertainty_forbidden_imports = [
+    "py3plex.visualization",
+]
+```
+
+**Check boundaries:**
+```bash
+python -m tools.quality.layer_checker .
+```
+
+**Output:** `build/quality/layer_violations.json` with file, line, rule, and severity.
+
+**CI Integration:** Layer checks fail CI if violations are detected (exit code 1).
+
+### Baseline and Regression Policy
+
+To avoid blocking merges on pre-existing issues, py3plex uses a **baseline comparison** approach:
+
+1. **Establish baseline** (run once):
+   ```bash
+   python -m tools.quality.baseline --repo-root . --update-baseline
+   ```
+   Creates `build/quality/quality_baseline.json` with current metrics.
+
+2. **Check for regressions** (in CI):
+   ```bash
+   python -m tools.quality.baseline --repo-root .
+   ```
+   Compares current metrics to baseline. Fails if:
+   - Dead code count increases by >5
+   - Redundancy clusters increase by >3
+   - Layer violations increase by >0 (strict)
+
+3. **Grandfathering:** Existing issues are allowed, but new ones are blocked.
+
+4. **Continuous improvement:** As issues are fixed, update the baseline to "ratchet down" the allowed threshold.
+
+### Interpreting JSON Outputs
+
+#### Dead Code Example
+```json
+{
+  "symbol": "unused_helper",
+  "file": "py3plex/utils.py",
+  "line": 42,
+  "score": 0.85,
+  "signals": ["unreferenced", "not_exported", "no_tests"],
+  "reason_codes": ["NO_REFERENCES", "NOT_IN_PUBLIC_API", "NO_TEST_COVERAGE"],
+  "suggested_action": "remove"
+}
+```
+**Interpretation:** Very high confidence (0.85) that `unused_helper` is dead. No references found, not exported, no tests. **Action:** Safe to remove.
+
+#### Redundancy Example
+```json
+{
+  "cluster_id": "exact_a3b5c7d9",
+  "similarity_type": "exact",
+  "similarity_score": 1.0,
+  "members": [
+    {"file": "py3plex/core/utils.py", "line": 10, "symbol": "normalize"},
+    {"file": "py3plex/algorithms/helpers.py", "line": 25, "symbol": "normalize"}
+  ],
+  "canonical_location": "py3plex/core/utils.py:10",
+  "suggested_action": "unify_into_helper"
+}
+```
+**Interpretation:** Two exact duplicates of `normalize` function. **Action:** Keep `py3plex/core/utils.py` version, replace other with import.
+
+### Deprecation Policy
+
+When removing or renaming public APIs:
+
+1. **Do NOT remove immediately** - this breaks user code
+2. **Add deprecation warning:**
+   ```python
+   import warnings
+   
+   def old_function():
+       warnings.warn(
+           "old_function is deprecated, use new_function instead",
+           DeprecationWarning,
+           stacklevel=2
+       )
+       return new_function()
+   ```
+3. **Update docs** to mention deprecation and replacement
+4. **Add entry to `deprecations.json`** (future: automated tracking)
+5. **Keep for 2-3 releases** before removal
+
+### CI Quality Gates
+
+Quality checks run automatically on every PR. CI fails if:
+
+- Layer boundary violations are detected
+- Dead code or redundancy regresses beyond threshold
+- Examples fail to import (syntax errors)
+
+**Workflow:**
+1. Developer opens PR
+2. CI runs: `python -m tools.quality.runner --tools all`
+3. CI runs: `python -m tools.quality.baseline` (check regressions)
+4. CI runs: `python -m tools.quality.layer_checker` (strict check)
+5. If any fail → PR blocked until fixed
+
+### Best Practices
+
+**For AI Agents and Contributors:**
+
+1. **Before making changes:** Run quality analysis to understand current state
+2. **Check layering rules:** Ensure new imports don't violate boundaries
+3. **Minimize duplication:** Search for existing functions before adding new ones
+4. **Use whitelist:** If a symbol appears dead but isn't, add to whitelist
+5. **Update baseline:** After fixing issues, update baseline to lock in improvements
+6. **Test examples:** Ensure examples still work after API changes
+
+**Keeping Examples/Docs in Sync:**
+
+- Examples health check catches broken imports
+- Docs health check catches stale code references
+- Run before releasing: `python -m tools.quality.runner --tools examples,docs`
+- Fix any errors reported before tagging release
+
+**Optional Dependencies:**
+
+py3plex has many optional dependencies for visualization, specific algorithms, etc. When adding code that uses optional imports:
+
+1. Gate behind try/except with clear error message
+2. Document in docstring: "Requires: pip install py3plex[viz]"
+3. Add to `pyproject.toml` optional-dependencies section
+4. Add test with `@pytest.mark.skipif` for missing optional
+
+---
