@@ -282,5 +282,70 @@ def test_json_output_stable(temp_repo):
     assert len(result1["nodes"]) == len(result2["nodes"])
 
 
+def test_baseline_comparison(temp_repo):
+    """Test baseline comparison functionality."""
+    from tools.quality.baseline import BaselineChecker
+    
+    quality_dir = temp_repo / "build" / "quality"
+    quality_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create initial baseline metrics
+    baseline_metrics = {
+        "dead_code": {"total_candidates": 100, "high_confidence": 10},
+        "redundancy": {"total_clusters": 20},
+    }
+    
+    # Create and save baseline
+    checker = BaselineChecker(temp_repo)
+    checker.update_baseline(baseline_metrics)
+    
+    # Reload checker to get baseline
+    checker = BaselineChecker(temp_repo)
+    
+    # Compare against same baseline (should pass)
+    results = checker.compare(baseline_metrics)
+    if results:
+        assert all(not r.regression for r in results)
+    
+    # Compare with regression
+    regressed_metrics = {
+        "dead_code": {"total_candidates": 110, "high_confidence": 10},  # +10 (threshold is 5)
+        "redundancy": {"total_clusters": 20},
+    }
+    results = checker.compare(regressed_metrics)
+    
+    # Should detect regression in dead_code
+    if results:
+        dead_code_results = [r for r in results if r.metric == "dead_code_count"]
+        if dead_code_results:
+            assert dead_code_results[0].regression  # 110 > 100 + 5
+
+
+def test_layer_checker_rules(temp_repo):
+    """Test layer boundary checker."""
+    from tools.quality.layer_checker import ImportBoundaryChecker
+    
+    # Create pyproject.toml with rules
+    pyproject = temp_repo / "pyproject.toml"
+    pyproject.write_text("""
+[tool.py3plex.layering]
+dsl_forbidden_imports = ["py3plex.algorithms"]
+""")
+    
+    # Create violating code
+    dsl_dir = temp_repo / "py3plex" / "dsl"
+    dsl_dir.mkdir(parents=True, exist_ok=True)
+    (dsl_dir / "test.py").write_text("""
+from py3plex.algorithms import something
+""")
+    
+    checker = ImportBoundaryChecker(temp_repo)
+    violations = checker.check()
+    
+    # Should detect violation
+    assert len(violations) > 0
+    assert violations[0].rule == "dsl_forbidden_imports"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

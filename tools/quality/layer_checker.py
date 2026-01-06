@@ -6,10 +6,19 @@ constraints (e.g., DSL should not import heavy algorithm modules).
 
 import ast
 import json
-import tomli
+import sys
 from pathlib import Path
 from typing import Dict, List, Set
 from dataclasses import dataclass, asdict
+
+# Use tomllib for Python 3.11+ (built-in), tomli for older versions
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    try:
+        import tomli as tomllib
+    except ImportError:
+        tomllib = None  # Will handle gracefully
 
 
 @dataclass
@@ -43,9 +52,13 @@ class ImportBoundaryChecker:
         if not pyproject_path.exists():
             return {}
 
+        if tomllib is None:
+            print("Warning: tomli/tomllib not available, skipping layer checks")
+            return {}
+
         try:
             with open(pyproject_path, "rb") as f:
-                config = tomli.load(f)
+                config = tomllib.load(f)
 
             layering = config.get("tool", {}).get("py3plex", {}).get("layering", {})
             return layering
