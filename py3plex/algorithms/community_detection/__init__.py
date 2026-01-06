@@ -24,6 +24,10 @@ from .leiden_multilayer import (
     leiden_multilayer,
     LeidenResult,
 )
+from .distributional import (
+    multilayer_louvain_distribution,
+    multilayer_leiden_distribution,
+)
 
 
 def multilayer_louvain(
@@ -110,4 +114,6 @@ __all__ = [
     "generate_multilayer_lfr",
     "generate_coupled_er_multilayer",
     "generate_sbm_multilayer",
+    "multilayer_louvain_distribution",
+    "multilayer_leiden_distribution",
 ]

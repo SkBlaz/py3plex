@@ -624,3 +624,35 @@ References
 
 - Efron, B., & Tibshirani, R. J. (1994). *An Introduction to the Bootstrap*. CRC press.
 - Milo, R., et al. (2002). "Network motifs: simple building blocks of complex networks." *Science*, 298(5594), 824-827.
+
+Distributional Community Detection
+===================================
+
+**New in v1.1**: Uncertainty-aware community detection.
+
+Beyond metrics, py3plex now supports distributional community detection that quantifies uncertainty in community assignments.
+
+Quick Example
+-------------
+
+.. code-block:: python
+
+    from py3plex.algorithms.community_detection import multilayer_louvain_distribution
+    
+    # Run distributional community detection
+    dist = multilayer_louvain_distribution(
+        net,
+        n_runs=100,
+        resampling='perturbation',
+        perturbation_params={'edge_drop_p': 0.05},
+        seed=42
+    )
+    
+    # Get consensus and confidence
+    consensus = dist.consensus_partition()
+    confidence = dist.node_confidence()
+    
+    # Filter stable core (high confidence nodes)
+    stable_mask = confidence >= 0.8
+
+See :doc:`../user_guide/community_detection` for complete documentation.

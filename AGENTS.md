@@ -32,6 +32,10 @@
 26. [Temporal Networks](#temporal-networks)
 27. [Null Models](#null-models)
 28. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+25. [Temporal Networks](#temporal-networks)
+26. [Null Models](#null-models)
+27. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+28. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
 29. [Version Information](#version-information)
 30. [File Locations](#file-locations)
 
@@ -2522,6 +2526,415 @@ assert not result.is_replayable  # False (log mode)
 2. Add size warnings when capture exceeds thresholds.
 3. Ensure determinism: use explicit seeds for all stochastic operations.
 4. Test replay with bundle export/import roundtrips.
+## Counterfactual Reasoning vs Uncertainty Quantification
+
+py3plex provides distinct tools for **uncertainty quantification (UQ)** and **counterfactual reasoning**. Understanding the difference is crucial for correct analysis:
+
+**Uncertainty Quantification (UQ):**
+- **Question:** "What is the error bar on this estimate?"
+- **Purpose:** Quantify uncertainty of a measurement/statistic
+- **Output:** Confidence intervals, standard deviations
+- **Example:** "PageRank is 0.25 ± 0.02 (95% CI: [0.21, 0.29])"
+
+**Counterfactual Reasoning:**
+- **Question:** "Would my conclusion hold if I perturbed the network?"
+- **Purpose:** Test sensitivity of analytical conclusions to structural interventions
+- **Output:** Robustness reports, stability metrics
+- **Example:** "Node A is stably in top-5 across 80% of perturbations"
+
+### When to Use Each
+
+Use **UQ (`.uq()`)** when you need to:
+- Report confidence intervals on metrics
+- Quantify measurement uncertainty
+- Compare statistics with error bars
+- Assess reliability of estimates
+
+Use **Counterfactual (`.robustness_check()`)** when you need to:
+- Test if rankings are stable
+- Validate conclusions under perturbations
+- Identify fragile vs robust nodes/communities
+- Assess sensitivity to network structure
+
+### Example 1: Counterfactual Robustness Check
+
+```python
+from py3plex.dsl import Q
+from py3plex.core import multinet
+
+# Create network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    ['A', 'social', 'B', 'social', 1.0],
+    ['B', 'social', 'C', 'social', 1.0],
+    ['C', 'social', 'D', 'social', 1.0],
+    # ... more edges
+])
+
+# Test if top-5 PageRank nodes are stable under perturbations
+report = (Q.nodes()
+         .compute("pagerank")
+         .robustness_check(net, strength="medium", repeats=30, seed=42))
+
+# Show human-readable report
+report.show()
+
+# Find stably-ranked nodes
+stable_top_5 = report.stable_top_k(k=5, threshold=0.8)
+print(f"Stable top-5: {stable_top_5}")
+
+# Find fragile nodes (high variability)
+fragile = report.fragile(n=5)
+print(f"Most fragile nodes: {fragile}")
+```
+
+### Example 2: Comparing UQ vs Counterfactual
+
+```python
+# UQ: Estimate PageRank with uncertainty
+uq_result = (Q.nodes()
+            .uq(method="perturbation", n_samples=100, seed=42)
+            .compute("pagerank")
+            .execute(net))
+
+# Access uncertainty estimates
+df_uq = uq_result.to_pandas(expand_uncertainty=True)
+print(df_uq[['id', 'pagerank', 'pagerank_std', 'pagerank_ci95_low', 'pagerank_ci95_high']])
+# Output: Node A has PageRank 0.25 ± 0.02 (CI: [0.21, 0.29])
+
+# Counterfactual: Test conclusion stability
+cf_report = (Q.nodes()
+            .compute("pagerank")
+            .robustness_check(net, strength="medium", repeats=30, seed=42))
+
+# Check if "A is in top-5" is a robust conclusion
+stable = cf_report.stable_top_k(k=5, threshold=0.8)
+print(f"Is A stably top-5? {'Yes' if 'A' in stable else 'No'}")
+# Output: Tests the CONCLUSION ("A is top-5"), not the ESTIMATE ("A has PageRank X")
+```
+
+### Example 3: Try Different Intervention Strengths
+
+```python
+# Compare light/medium/heavy interventions
+summary = (Q.nodes()
+          .compute("degree", "betweenness_centrality")
+          .try_strengths(net, repeats=30, seed=42))
+
+print(summary)
+# Output DataFrame:
+#   strength  degree_avg_cv  degree_max_cv  betweenness_avg_cv  ...
+#   light     0.05          0.12           0.08                ...
+#   medium    0.12          0.25           0.18                ...
+#   heavy     0.28          0.54           0.35                ...
+```
+
+### Example 4: Advanced Custom Interventions
+
+```python
+from py3plex.counterfactual import RemoveEdgesSpec, RewireDegreePreservingSpec
+
+# Custom intervention: remove 15% of edges randomly
+spec = RemoveEdgesSpec(proportion=0.15, mode="random")
+
+result = (Q.nodes()
+         .compute("closeness_centrality")
+         .counterfactualize(net, spec, repeats=100, seed=42))
+
+# Convert to report
+report = result.to_report()
+report.show()
+
+# Or use degree-preserving rewiring
+spec2 = RewireDegreePreservingSpec(n_swaps=100)
+result2 = (Q.nodes()
+          .compute("betweenness_centrality")
+          .counterfactualize(net, spec2, repeats=50, seed=42))
+```
+
+### Intervention Presets
+
+Py3plex provides dummy-proof presets for common interventions:
+
+| Preset | Description | Use Case |
+|--------|-------------|----------|
+| `"quick"` | Minimal edge removal (2-10%) | Fast exploration |
+| `"degree_safe"` | Degree-preserving rewiring (DEFAULT) | Test topology sensitivity |
+| `"layer_safe"` | Preserve per-layer edge counts | Test layer-specific effects |
+| `"weight_only"` | Shuffle weights only | Test weight sensitivity |
+| `"targeted"` | Remove high-weight edges | Test hub importance |
+
+```python
+# Use preset with strength parameter
+report = (Q.nodes()
+         .compute("eigenvector_centrality")
+         .robustness_check(
+             net,
+             shake="degree_safe",  # Preset
+             strength="heavy",      # light/medium/heavy
+             repeats=50,
+             seed=42
+         ))
+```
+
+### RobustnessReport Methods
+
+```python
+report = Q.nodes().compute("degree").robustness_check(net)
+
+# Display human-readable summary
+report.show(top_n=20, precision=4)
+
+# Statistical summary
+report.describe()
+
+# Find stable top-k items
+stable = report.stable_top_k(k=10, threshold=0.8)
+
+# Find most fragile items
+fragile = report.fragile(n=5)
+
+# Per-layer sensitivity (if applicable)
+layer_sens = report.layer_sensitivity()
+
+# Export to pandas
+df = report.to_pandas()
+
+# Compare specific item across runs
+comparison = report.compare_items(item_id='A')
+print(comparison)
+# {'item_id': 'A', 
+#  'baseline': {'degree': 5}, 
+#  'counterfactuals': {'degree': {'mean': 4.8, 'std': 0.6, ...}}}
+```
+
+### Key Differences Summary
+
+| Aspect | UQ | Counterfactual |
+|--------|----|--------------  |
+| **What it tests** | Estimate uncertainty | Conclusion stability |
+| **Output type** | Error bars, CIs | Stability metrics |
+| **DSL method** | `.uq()` | `.robustness_check()` |
+| **Provenance** | `provenance.uncertainty` | `provenance.counterfactual` |
+| **Use for** | Reporting metrics | Validating conclusions |
+## Distributional Community Detection
+
+**New in v1.1:** Uncertainty-aware community detection via distributional partitions.
+
+py3plex now supports distributional community detection that runs community detection multiple times (with resampling or different seeds) to produce a distribution over partitions. This enables:
+
+- **Co-association matrices**: P(node_i and node_j in same community)
+- **Consensus partitions**: Representative partition (medoid or clustering-based)
+- **Node confidence scores**: Per-node stability measures
+- **Boundary node identification**: Nodes with uncertain assignments
+
+### Core Functions and Types
+
+```python
+from py3plex.algorithms.community_detection import multilayer_louvain_distribution
+from py3plex.uncertainty import CommunityDistribution, perturb_network_edges, bootstrap_network_edges
+```
+
+### API Signature
+
+```python
+def multilayer_louvain_distribution(
+    network: multi_layer_network,
+    *,
+    n_runs: int = 100,
+    resampling: str = "seed",  # "seed" | "perturbation" | "bootstrap"
+    perturbation_params: Optional[Dict[str, Any]] = None,  # e.g., {"edge_drop_p": 0.05}
+    gamma: Union[float, Dict[Any, float]] = 1.0,
+    gamma_grid: Optional[List[float]] = None,
+    omega: Union[float, np.ndarray] = 1.0,
+    weight: str = "weight",
+    max_iter: int = 100,
+    seed: Optional[int] = None,
+    n_jobs: int = 1,
+    weight_by: Optional[str] = "modularity",  # "modularity" | None
+    coassoc_mode: str = "auto",  # "auto" | "dense" | "sparse"
+    topk: int = 50,
+) -> CommunityDistribution
+```
+
+### Return Type: CommunityDistribution
+
+```python
+class CommunityDistribution:
+    # Properties
+    n_nodes: int
+    n_partitions: int
+    nodes: List[Any]
+    partitions: List[np.ndarray]
+    weights: np.ndarray
+    meta: Dict[str, Any]
+    
+    # Methods
+    coassociation(mode="dense"|"sparse", topk=50) -> Union[np.ndarray, Dict]
+    consensus_partition(method="medoid"|"cluster_coassoc") -> np.ndarray
+    node_confidence(consensus=None) -> np.ndarray
+    node_entropy(aligned=False) -> np.ndarray
+    node_margin(consensus=None) -> np.ndarray
+    align_labels(reference="medoid"|"first"|array, metric="overlap"|"nmi")
+    node_membership_probs() -> np.ndarray  # Requires alignment
+    to_dict(node_id) -> Dict[str, Any]
+```
+
+### Provenance Fields
+
+The `meta` dict in `CommunityDistribution` contains provenance information:
+
+```python
+{
+    'method': 'multilayer_louvain',
+    'n_runs': 100,
+    'resampling': 'perturbation',  # or 'seed', 'bootstrap'
+    'gamma': 1.0,
+    'gamma_grid': None,  # Optional: list of gamma values
+    'omega': 1.0,
+    'seed': 42,
+    'n_jobs': 2,
+    'weight_by': 'modularity',
+    'layers': ['L1', 'L2'],
+    'perturbation_params': {'edge_drop_p': 0.05},  # If perturbation
+    'mean_modularity': 0.42,
+    'std_modularity': 0.05,
+}
+```
+
+### Example 1: Basic Distributional Community Detection
+
+```python
+from py3plex.core import multinet
+from py3plex.algorithms.community_detection import multilayer_louvain_distribution
+
+# Create or load network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    ['A', 'L1', 'B', 'L1', 1],
+    ['B', 'L1', 'C', 'L1', 1],
+    ['C', 'L1', 'D', 'L1', 1],
+], input_type='list')
+
+# Run distributional community detection
+dist = multilayer_louvain_distribution(
+    net,
+    n_runs=100,
+    resampling='perturbation',
+    perturbation_params={'edge_drop_p': 0.05},
+    seed=42,
+    n_jobs=2
+)
+
+# Get consensus partition
+consensus = dist.consensus_partition()
+print(f"Communities: {consensus}")
+
+# Get node confidence (stability)
+confidence = dist.node_confidence()
+print(f"Confidence: {confidence}")
+```
+
+---
+
+### Example 2: Identifying Stable vs Boundary Nodes
+
+```python
+# Get confidence scores
+confidence = dist.node_confidence()
+entropy = dist.node_entropy()
+
+# Identify stable core (high confidence)
+stable_mask = confidence >= 0.8
+stable_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if stable_mask[i]]
+
+# Identify boundary nodes (low confidence)
+boundary_mask = confidence < 0.5
+boundary_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if boundary_mask[i]]
+
+print(f"Stable core: {len(stable_nodes)} nodes")
+print(f"Boundary: {len(boundary_nodes)} nodes")
+```
+
+---
+
+### Example 3: Co-Association Matrix
+
+```python
+# Compute co-association matrix P(i, j in same community)
+coassoc = dist.coassociation(mode='dense')
+
+# Find nodes strongly associated with node 0
+node_idx = 0
+strong_assoc = [(i, coassoc[node_idx, i]) for i in range(dist.n_nodes) 
+                 if i != node_idx and coassoc[node_idx, i] > 0.8]
+
+print(f"Nodes strongly associated with {dist.nodes[node_idx]}:")
+for i, prob in sorted(strong_assoc, key=lambda x: x[1], reverse=True):
+    print(f"  {dist.nodes[i]}: P={prob:.3f}")
+```
+
+---
+
+### Best Practices
+
+1. **Use co-association for large networks**:
+   - For n_nodes > 2000, use `coassoc_mode='sparse'` or `mode='auto'`
+   - Dense co-association is O(n²) memory
+
+2. **Prefer co-association-based confidence over aligned label probs**:
+   - Co-association is label-permutation invariant (no alignment needed)
+   - Alignment can be expensive and introduce artifacts
+
+3. **Always set seed for reproducibility**:
+   - Deterministic: same seed => identical results regardless of n_jobs
+   - Uses numpy SeedSequence for proper parallel seed spawning
+
+4. **Choose resampling strategy wisely**:
+   - `'seed'`: Algorithm stochasticity (fastest, recommended default)
+   - `'perturbation'`: Structural uncertainty (edge drop, slower)
+   - `'bootstrap'`: Statistical bootstrap (slowest, edge resampling)
+
+5. **Weight by modularity for quality-aware consensus**:
+   - `weight_by='modularity'` weights better partitions more heavily
+   - Set `weight_by=None` for uniform weighting
+
+6. **Parallel execution preserves determinism**:
+   - `n_jobs=1`: Serial execution
+   - `n_jobs>1`: Parallel with deterministic seed spawning
+   - Same seed + same n_runs => identical output regardless of n_jobs
+
+### Copy/Paste Snippet
+
+```python
+# Quick start: uncertainty-aware community detection
+from py3plex.core import multinet
+from py3plex.algorithms.community_detection import multilayer_louvain_distribution
+
+net = multinet.multi_layer_network(directed=False)
+net.load_network('my_network.edgelist', directed=False, input_type='edgelist_hash')
+
+# Run with 100 iterations, perturbation resampling
+dist = multilayer_louvain_distribution(
+    net,
+    n_runs=100,
+    resampling='perturbation',
+    perturbation_params={'edge_drop_p': 0.05},
+    seed=42,
+    n_jobs=4  # Parallel
+)
+
+# Get results
+consensus = dist.consensus_partition()
+confidence = dist.node_confidence()
+
+# Filter stable core
+stable_mask = confidence >= 0.8
+stable_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if stable_mask[i]]
+
+print(f"Communities: {len(set(consensus))}")
+print(f"Stable core: {len(stable_nodes)}/{dist.n_nodes} nodes")
+```
 
 ---
 
@@ -2831,6 +3244,400 @@ The parallel infrastructure is located in `py3plex/_parallel.py` (internal modul
 - Optional tqdm progress bars (if tqdm is installed)
 
 All parallel execution maintains order-independent aggregation to ensure deterministic results regardless of task completion order.
+
+---
+
+## Semiring Algebra (S Builder): Paths, Closure, Fixed-Point
+
+**Location**: `py3plex.dsl.S`, `py3plex.algebra`
+
+py3plex provides a comprehensive semiring algebra framework for generic path computation and graph analysis. A **semiring** is an algebraic structure (S, ⊕, ⊗, 0, 1) that generalizes different notions of "best path":
+
+- **Boolean semiring**: reachability (path existence)
+- **Min-plus (tropical)**: shortest paths (minimize distance)
+- **Max-times**: most reliable paths (maximize probability product)
+- **Max-plus**: longest/best paths (maximize value)
+
+The S builder integrates seamlessly with DSL v2, multilayer networks, layer algebra, and provenance tracking.
+
+### Core Concept
+
+A semiring defines:
+- `add` (⊕): how to combine alternative paths
+- `mul` (⊗): how to extend a path with an edge
+- `zero` (0): identity for add (no path)
+- `one` (1): identity for mul (empty path)
+
+**Example**: In min-plus semiring for shortest paths:
+- `add(a, b) = min(a, b)` (choose shorter path)
+- `mul(a, b) = a + b` (extend path by adding edge weight)
+- `zero = +∞` (no path has infinite cost)
+- `one = 0` (empty path has zero cost)
+
+### Public API
+
+#### Import
+
+```python
+from py3plex.dsl import S, L
+from py3plex.algebra import (
+    get_semiring,
+    list_semirings,
+    WeightLiftSpec,
+)
+```
+
+#### Built-in Semirings
+
+Available via `get_semiring(name)` or `list_semirings()`:
+
+| Name | Add (⊕) | Mul (⊗) | Zero | One | Use Case |
+|------|---------|---------|------|-----|----------|
+| `boolean` | OR | AND | False | True | Reachability |
+| `min_plus` | min | + | +∞ | 0 | Shortest paths |
+| `max_plus` | max | + | -∞ | 0 | Longest paths |
+| `max_times` | max | * | 0 | 1 | Most reliable paths |
+
+#### S.paths() - Semiring Path Queries
+
+Find best paths using semiring operations:
+
+```python
+# Shortest path (min-plus semiring)
+result = (
+    S.paths()
+     .from_node("Alice")
+     .to_node("Bob")
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .from_layers(L["social"] + L["work"])
+     .crossing_layers(mode="allowed")
+     .max_hops(5)
+     .witness(True)  # Track path for reconstruction
+     .execute(network)
+)
+
+# Access results
+df = result.to_pandas()  # Columns: node, value, path (if witness=True)
+print(df[df['node'] == 'Bob']['value'].iloc[0])  # Shortest distance
+print(df[df['node'] == 'Bob']['path'].iloc[0])   # Actual path
+```
+
+**Builder Methods**:
+- `.from_node(source)`: Set source node
+- `.to_node(target)`: Set target node (optional for SSSP)
+- `.semiring(name)`: Choose semiring ("min_plus", "boolean", "max_times", etc.)
+- `.lift(attr, default, transform)`: Extract edge weights
+  - `attr`: Edge attribute name (e.g., "weight", "cost")
+  - `default`: Default value if missing
+  - `transform`: Optional transformation ("log" or callable)
+- `.from_layers(L[...])`: Filter by layers (layer algebra)
+- `.crossing_layers(mode, penalty)`: Handle cross-layer edges
+  - `mode`: "allowed", "forbidden", "penalty"
+  - `penalty`: Additional cost for cross-layer edges
+- `.max_hops(n)`: Limit path length
+- `.k_best(k)`: Find k best paths (experimental)
+- `.witness(True)`: Enable path reconstruction
+- `.backend("graph"|"matrix")`: Choose backend (default: "graph")
+
+#### Reachability Example (Boolean Semiring)
+
+```python
+# Check which nodes are reachable from a source
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("boolean")
+     .lift(attr=None, default=True)  # No weights needed
+     .execute(network)
+)
+
+reachable = result.to_pandas()
+print(reachable[reachable['value'] == True]['node'].tolist())
+```
+
+#### Most Reliable Path (Max-Times Semiring)
+
+```python
+# Find path maximizing product of edge reliabilities
+result = (
+    S.paths()
+     .from_node("Alice")
+     .to_node("Bob")
+     .semiring("max_times")
+     .lift(attr="reliability", default=1.0)
+     .execute(network)
+)
+
+reliability = result.to_pandas()
+print(reliability[reliability['node'] == 'Bob']['value'].iloc[0])
+```
+
+#### S.closure() - Transitive Closure
+
+Compute all-pairs relationships:
+
+```python
+# Reachability closure (boolean semiring)
+result = (
+    S.closure()
+     .semiring("boolean")
+     .from_layers(L["social"])
+     .method("auto")  # "floyd_warshall", "iterative", or "auto"
+     .execute(network)
+)
+
+df = result.to_pandas()  # Columns: source, target, value
+reachable_pairs = df[df['value'] == True][['source', 'target']]
+
+# All-pairs shortest paths (min-plus semiring)
+result = (
+    S.closure()
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .method("floyd_warshall")
+     .execute(network)
+)
+
+distances = result.to_pandas()
+```
+
+### Multilayer Integration
+
+#### Layer Filtering
+
+```python
+# Shortest paths only within "social" layer
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .from_layers(L["social"])  # Single layer
+     .execute(network)
+)
+
+# Paths across social OR work layers
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("min_plus")
+     .from_layers(L["social"] + L["work"])  # Union
+     .execute(network)
+)
+```
+
+#### Cross-Layer Edge Handling
+
+```python
+# Allow cross-layer edges
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("min_plus")
+     .crossing_layers(mode="allowed")
+     .execute(network)
+)
+
+# Forbid cross-layer edges (intralayer paths only)
+result = (
+    S.paths()
+     .from_node("Alice")
+     .crossing_layers(mode="forbidden")
+     .execute(network)
+)
+
+# Penalize cross-layer edges (+10 cost)
+result = (
+    S.paths()
+     .from_node("Alice")
+     .crossing_layers(mode="penalty", penalty=10.0)
+     .execute(network)
+)
+```
+
+#### Per-Layer Semirings (Advanced)
+
+```python
+# Different semirings for different layers
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring({
+         "social": "min_plus",
+         "work": "max_times",
+     })
+     .execute(network)
+)
+# Note: Per-layer semiring combination is experimental
+```
+
+### Provenance and Metadata
+
+All semiring queries include comprehensive provenance:
+
+```python
+result = S.paths().from_node("Alice").semiring("min_plus").execute(network)
+
+prov = result.meta['provenance']['algebra']
+
+# Semiring info
+print(prov['semiring']['name'])           # "min_plus"
+print(prov['semiring']['properties'])     # {idempotent_add: True, ...}
+
+# Weight lifting
+print(prov['lift']['attr'])               # "weight"
+print(prov['lift']['default'])            # 1.0
+
+# Problem specification
+print(prov['problem']['kind'])            # "paths"
+print(prov['problem']['source'])          # "Alice"
+print(prov['problem']['max_hops'])        # None or value
+
+# Multilayer config
+print(prov['multilayer']['layers_included'])        # ["social", "work"]
+print(prov['multilayer']['crossing_layers_mode'])   # "allowed"
+
+# Backend and algorithm
+print(prov['backend']['name'])            # "graph"
+print(prov['backend']['algorithm'])       # "dijkstra" or "bellman_ford"
+
+# Performance
+print(prov['performance']['total_time'])  # Execution time
+print(prov['performance']['iterations'])  # Algorithm iterations
+
+# Determinism
+print(prov['determinism']['converged'])   # True/False
+print(prov['determinism']['stable_ordering'])  # True
+```
+
+### Determinism and Performance
+
+#### Algorithm Selection
+
+The system automatically chooses the best algorithm based on semiring properties:
+
+- **Dijkstra-like**: For idempotent+monotone semirings (min_plus, max_times)
+  - O(E log V) with priority queue
+  - Optimal for non-negative weights
+- **Bellman-Ford**: For general semirings
+  - O(V·E) iterations
+  - Handles negative weights, detects convergence
+
+Override with `.backend("graph")` or force algorithm selection via internal parameters.
+
+#### Determinism Guarantees
+
+- Node/edge iteration in stable order (sorted layer names, sorted node IDs)
+- Tie-breaking uses semiring.better() or lexicographic node ID
+- Parallel execution (via UQ) uses deterministic seed spawning
+- Provenance includes determinism metadata
+
+#### Performance Notes
+
+- **Small graphs (<100 nodes)**: Floyd-Warshall for closure (O(n³))
+- **Large graphs**: Iterative SSSP (O(n·algorithm_cost))
+- **Sparse graphs**: Graph backend is efficient
+- **Dense graphs**: Matrix backend (future) may be faster
+
+### Backward Compatibility
+
+The existing `P.shortest()` builder is powered by the semiring engine internally:
+
+```python
+# Equivalent calls:
+result1 = P.shortest("Alice", "Bob").execute(network)
+
+result2 = (
+    S.paths()
+     .from_node("Alice")
+     .to_node("Bob")
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .execute(network)
+)
+# result1 uses semiring engine under the hood (future integration)
+```
+
+### Configuration
+
+Default backend and semiring settings can be configured:
+
+```python
+from py3plex import config
+
+# Future: config.set("algebra.default_backend", "graph")
+# Future: config.set("algebra.default_semiring", "min_plus")
+```
+
+Current defaults:
+- Backend: "graph"
+- Semiring: "min_plus" for paths, "boolean" for closure
+
+### Implementation Details
+
+**Location**: `py3plex/algebra/`
+- `semiring.py`: Semiring protocol and built-ins
+- `registry.py`: Semiring registry
+- `lift.py`: Weight lifting specifications
+- `paths.py`: Generic SSSP/APSP solvers
+- `closure.py`: Kleene star / transitive closure
+- `backend.py`: Backend dispatch (graph/matrix)
+- `witness.py`: Path witness tracking
+- `fixed_point.py`: Fixed-point iteration engine
+
+**DSL Integration**: `py3plex/dsl/`
+- `ast.py`: Semiring AST nodes (SemiringPathStmt, SemiringClosureStmt, etc.)
+- `builder.py`: S builder classes
+- `executor_semiring.py`: Executor for semiring queries
+
+### Advanced: Custom Semirings
+
+Register custom semirings for domain-specific problems:
+
+```python
+from py3plex.algebra import register_semiring
+from dataclasses import dataclass
+
+@dataclass
+class FuzzySemiring:
+    name: str = "fuzzy"
+    
+    def add(self, a, b):
+        return max(a, b)  # max for fuzzy union
+    
+    def mul(self, a, b):
+        return min(a, b)  # min for fuzzy intersection
+    
+    def zero(self):
+        return 0.0
+    
+    def one(self):
+        return 1.0
+    
+    def better(self, a, b):
+        return a > b
+    
+    @property
+    def props(self):
+        return {
+            "commutative_add": True,
+            "idempotent_add": True,
+            "monotone": True,
+        }
+
+# Register
+register_semiring("fuzzy", FuzzySemiring(), overwrite=False)
+
+# Use
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("fuzzy")
+     .lift(attr="membership", default=1.0)
+     .execute(network)
+)
+```
 
 ---
 
