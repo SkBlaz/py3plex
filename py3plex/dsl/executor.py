@@ -274,7 +274,82 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
         # Finalize and attach provenance
         result.meta["provenance"] = provenance_builder.build()
     
+    # Step 6: Handle contract evaluation if specified
+    if bound_query.select.contract_spec is not None:
+        if progress:
+            logger.info("Step 4: Evaluating robustness contract")
+        
+        # Import contract evaluation engine
+        from py3plex.contracts.engine import evaluate_contract
+        from py3plex.dsl.builder import QueryBuilder
+        
+        # Infer conclusion type from query structure
+        conclusion_type = _infer_conclusion_type(bound_query.select)
+        top_k = bound_query.select.limit
+        
+        # Infer metric from computed measures
+        metric = None
+        if bound_query.select.compute:
+            metric = bound_query.select.compute[0].name
+        
+        # Create a QueryBuilder from the SelectStmt for re-execution
+        # We need to pass the original query builder that can be re-executed
+        # For now, we'll create a minimal wrapper
+        class QueryBuilderWrapper:
+            def __init__(self, select_stmt):
+                self._select = select_stmt
+            
+            def execute(self, network):
+                return _execute_select(network, self._select, params, progress=False)
+        
+        query_builder_wrapper = QueryBuilderWrapper(bound_query.select)
+        
+        # Evaluate contract
+        contract_result = evaluate_contract(
+            baseline_result=result,
+            contract=bound_query.select.contract_spec.contract,
+            network=actual_network,
+            query_builder=query_builder_wrapper,
+            conclusion_type=conclusion_type,
+            top_k=top_k,
+            metric=metric,
+        )
+        
+        # Check if contract failed in hard mode
+        if bound_query.select.contract_spec.contract.mode == "hard" and not contract_result.contract_ok:
+            # Raise exception in hard mode
+            from py3plex.contracts.failure_modes import FailureMode
+            
+            class ContractViolation(Exception):
+                """Contract violation exception (hard mode)."""
+                def __init__(self, contract_result):
+                    self.contract_result = contract_result
+                    super().__init__(f"Contract violated: {contract_result.failure_mode.value if contract_result.failure_mode else 'unknown'}")
+            
+            raise ContractViolation(contract_result)
+        
+        # Return ContractResult in soft mode (or if passed)
+        return contract_result
+    
     return result
+
+
+def _infer_conclusion_type(select: SelectStmt) -> str:
+    """Infer conclusion type from SELECT statement.
+    
+    Returns:
+        "top_k", "ranking", "community", or "general"
+    """
+    if select.target == Target.COMMUNITIES:
+        return "community"
+    
+    if select.limit is not None and select.order_by:
+        return "top_k"
+    
+    if select.order_by:
+        return "ranking"
+    
+    return "general"
 
 
 def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalContext]) -> Any:
