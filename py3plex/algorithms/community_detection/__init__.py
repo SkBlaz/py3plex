@@ -24,6 +24,12 @@ from .leiden_multilayer import (
     leiden_multilayer,
     LeidenResult,
 )
+from .leiden_uq import (
+    multilayer_leiden,
+    multilayer_leiden_uq,
+    UQResult,
+    canonicalize_partition,
+)
 from .distributional import (
     multilayer_louvain_distribution,
     multilayer_leiden_distribution,
@@ -111,6 +117,10 @@ __all__ = [
     "multilayer_louvain",
     "leiden_multilayer",
     "LeidenResult",
+    "multilayer_leiden",
+    "multilayer_leiden_uq",
+    "UQResult",
+    "canonicalize_partition",
     "generate_multilayer_lfr",
     "generate_coupled_er_multilayer",
     "generate_sbm_multilayer",
