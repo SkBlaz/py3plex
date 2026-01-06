@@ -467,7 +467,7 @@ def _perturb_network(
     # Create a copy of the network
     from py3plex.core import multinet
     
-    # Get edges
+    # Get edges - format is ((source, source_layer), (target, target_layer))
     edges = list(network.get_edges())
     
     # Perturb
@@ -475,7 +475,7 @@ def _perturb_network(
     n_perturb = max(1, int(len(edges) * perturbation_rate))
     
     # Remove random edges
-    edges_to_remove = rng.choice(len(edges), size=n_perturb, replace=False)
+    edges_to_remove = rng.choice(len(edges), size=min(n_perturb, len(edges)), replace=False)
     remaining_edges = [e for i, e in enumerate(edges) if i not in edges_to_remove]
     
     # Create new network
@@ -487,19 +487,20 @@ def _perturb_network(
     
     # Add remaining edges
     for edge in remaining_edges:
-        source, source_type, target, target_type, weight = edge[:5]
+        (source, source_type), (target, target_type) = edge
         net_new.add_edges([{
             'source': source,
             'target': target,
             'source_type': source_type,
             'target_type': target_type,
-            'weight': weight
+            'weight': 1.0
         }])
     
     # Add new random edges (same number as removed)
-    # Sample pairs of nodes
     node_list = list(nodes)
     for _ in range(n_perturb):
+        if len(node_list) < 2:
+            break
         # Random pair
         idx1, idx2 = rng.choice(len(node_list), size=2, replace=False)
         n1, n2 = node_list[idx1], node_list[idx2]
@@ -558,13 +559,13 @@ def _bootstrap_network(
         
         # Add sampled edges
         for edge in sampled_edges:
-            source, source_type, target, target_type, weight = edge[:5]
+            (source, source_type), (target, target_type) = edge
             net_new.add_edges([{
                 'source': source,
                 'target': target,
                 'source_type': source_type,
                 'target_type': target_type,
-                'weight': weight
+                'weight': 1.0
             }])
         
         return net_new
@@ -586,14 +587,14 @@ def _bootstrap_network(
         # Add edges between sampled nodes
         edges = list(network.get_edges())
         for edge in edges:
-            source, source_type, target, target_type, weight = edge[:5]
+            (source, source_type), (target, target_type) = edge
             if (source, source_type) in sampled_node_set and (target, target_type) in sampled_node_set:
                 net_new.add_edges([{
                     'source': source,
                     'target': target,
                     'source_type': source_type,
                     'target_type': target_type,
-                    'weight': weight
+                    'weight': 1.0
                 }])
         
         return net_new
