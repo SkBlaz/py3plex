@@ -31,8 +31,9 @@
 25. [Temporal Networks](#temporal-networks)
 26. [Null Models](#null-models)
 27. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-28. [Version Information](#version-information)
-29. [File Locations](#file-locations)
+28. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
+29. [Version Information](#version-information)
+30. [File Locations](#file-locations)
 
 ---
 
@@ -3059,6 +3060,400 @@ The parallel infrastructure is located in `py3plex/_parallel.py` (internal modul
 - Optional tqdm progress bars (if tqdm is installed)
 
 All parallel execution maintains order-independent aggregation to ensure deterministic results regardless of task completion order.
+
+---
+
+## Semiring Algebra (S Builder): Paths, Closure, Fixed-Point
+
+**Location**: `py3plex.dsl.S`, `py3plex.algebra`
+
+py3plex provides a comprehensive semiring algebra framework for generic path computation and graph analysis. A **semiring** is an algebraic structure (S, ⊕, ⊗, 0, 1) that generalizes different notions of "best path":
+
+- **Boolean semiring**: reachability (path existence)
+- **Min-plus (tropical)**: shortest paths (minimize distance)
+- **Max-times**: most reliable paths (maximize probability product)
+- **Max-plus**: longest/best paths (maximize value)
+
+The S builder integrates seamlessly with DSL v2, multilayer networks, layer algebra, and provenance tracking.
+
+### Core Concept
+
+A semiring defines:
+- `add` (⊕): how to combine alternative paths
+- `mul` (⊗): how to extend a path with an edge
+- `zero` (0): identity for add (no path)
+- `one` (1): identity for mul (empty path)
+
+**Example**: In min-plus semiring for shortest paths:
+- `add(a, b) = min(a, b)` (choose shorter path)
+- `mul(a, b) = a + b` (extend path by adding edge weight)
+- `zero = +∞` (no path has infinite cost)
+- `one = 0` (empty path has zero cost)
+
+### Public API
+
+#### Import
+
+```python
+from py3plex.dsl import S, L
+from py3plex.algebra import (
+    get_semiring,
+    list_semirings,
+    WeightLiftSpec,
+)
+```
+
+#### Built-in Semirings
+
+Available via `get_semiring(name)` or `list_semirings()`:
+
+| Name | Add (⊕) | Mul (⊗) | Zero | One | Use Case |
+|------|---------|---------|------|-----|----------|
+| `boolean` | OR | AND | False | True | Reachability |
+| `min_plus` | min | + | +∞ | 0 | Shortest paths |
+| `max_plus` | max | + | -∞ | 0 | Longest paths |
+| `max_times` | max | * | 0 | 1 | Most reliable paths |
+
+#### S.paths() - Semiring Path Queries
+
+Find best paths using semiring operations:
+
+```python
+# Shortest path (min-plus semiring)
+result = (
+    S.paths()
+     .from_node("Alice")
+     .to_node("Bob")
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .from_layers(L["social"] + L["work"])
+     .crossing_layers(mode="allowed")
+     .max_hops(5)
+     .witness(True)  # Track path for reconstruction
+     .execute(network)
+)
+
+# Access results
+df = result.to_pandas()  # Columns: node, value, path (if witness=True)
+print(df[df['node'] == 'Bob']['value'].iloc[0])  # Shortest distance
+print(df[df['node'] == 'Bob']['path'].iloc[0])   # Actual path
+```
+
+**Builder Methods**:
+- `.from_node(source)`: Set source node
+- `.to_node(target)`: Set target node (optional for SSSP)
+- `.semiring(name)`: Choose semiring ("min_plus", "boolean", "max_times", etc.)
+- `.lift(attr, default, transform)`: Extract edge weights
+  - `attr`: Edge attribute name (e.g., "weight", "cost")
+  - `default`: Default value if missing
+  - `transform`: Optional transformation ("log" or callable)
+- `.from_layers(L[...])`: Filter by layers (layer algebra)
+- `.crossing_layers(mode, penalty)`: Handle cross-layer edges
+  - `mode`: "allowed", "forbidden", "penalty"
+  - `penalty`: Additional cost for cross-layer edges
+- `.max_hops(n)`: Limit path length
+- `.k_best(k)`: Find k best paths (experimental)
+- `.witness(True)`: Enable path reconstruction
+- `.backend("graph"|"matrix")`: Choose backend (default: "graph")
+
+#### Reachability Example (Boolean Semiring)
+
+```python
+# Check which nodes are reachable from a source
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("boolean")
+     .lift(attr=None, default=True)  # No weights needed
+     .execute(network)
+)
+
+reachable = result.to_pandas()
+print(reachable[reachable['value'] == True]['node'].tolist())
+```
+
+#### Most Reliable Path (Max-Times Semiring)
+
+```python
+# Find path maximizing product of edge reliabilities
+result = (
+    S.paths()
+     .from_node("Alice")
+     .to_node("Bob")
+     .semiring("max_times")
+     .lift(attr="reliability", default=1.0)
+     .execute(network)
+)
+
+reliability = result.to_pandas()
+print(reliability[reliability['node'] == 'Bob']['value'].iloc[0])
+```
+
+#### S.closure() - Transitive Closure
+
+Compute all-pairs relationships:
+
+```python
+# Reachability closure (boolean semiring)
+result = (
+    S.closure()
+     .semiring("boolean")
+     .from_layers(L["social"])
+     .method("auto")  # "floyd_warshall", "iterative", or "auto"
+     .execute(network)
+)
+
+df = result.to_pandas()  # Columns: source, target, value
+reachable_pairs = df[df['value'] == True][['source', 'target']]
+
+# All-pairs shortest paths (min-plus semiring)
+result = (
+    S.closure()
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .method("floyd_warshall")
+     .execute(network)
+)
+
+distances = result.to_pandas()
+```
+
+### Multilayer Integration
+
+#### Layer Filtering
+
+```python
+# Shortest paths only within "social" layer
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .from_layers(L["social"])  # Single layer
+     .execute(network)
+)
+
+# Paths across social OR work layers
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("min_plus")
+     .from_layers(L["social"] + L["work"])  # Union
+     .execute(network)
+)
+```
+
+#### Cross-Layer Edge Handling
+
+```python
+# Allow cross-layer edges
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("min_plus")
+     .crossing_layers(mode="allowed")
+     .execute(network)
+)
+
+# Forbid cross-layer edges (intralayer paths only)
+result = (
+    S.paths()
+     .from_node("Alice")
+     .crossing_layers(mode="forbidden")
+     .execute(network)
+)
+
+# Penalize cross-layer edges (+10 cost)
+result = (
+    S.paths()
+     .from_node("Alice")
+     .crossing_layers(mode="penalty", penalty=10.0)
+     .execute(network)
+)
+```
+
+#### Per-Layer Semirings (Advanced)
+
+```python
+# Different semirings for different layers
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring({
+         "social": "min_plus",
+         "work": "max_times",
+     })
+     .execute(network)
+)
+# Note: Per-layer semiring combination is experimental
+```
+
+### Provenance and Metadata
+
+All semiring queries include comprehensive provenance:
+
+```python
+result = S.paths().from_node("Alice").semiring("min_plus").execute(network)
+
+prov = result.meta['provenance']['algebra']
+
+# Semiring info
+print(prov['semiring']['name'])           # "min_plus"
+print(prov['semiring']['properties'])     # {idempotent_add: True, ...}
+
+# Weight lifting
+print(prov['lift']['attr'])               # "weight"
+print(prov['lift']['default'])            # 1.0
+
+# Problem specification
+print(prov['problem']['kind'])            # "paths"
+print(prov['problem']['source'])          # "Alice"
+print(prov['problem']['max_hops'])        # None or value
+
+# Multilayer config
+print(prov['multilayer']['layers_included'])        # ["social", "work"]
+print(prov['multilayer']['crossing_layers_mode'])   # "allowed"
+
+# Backend and algorithm
+print(prov['backend']['name'])            # "graph"
+print(prov['backend']['algorithm'])       # "dijkstra" or "bellman_ford"
+
+# Performance
+print(prov['performance']['total_time'])  # Execution time
+print(prov['performance']['iterations'])  # Algorithm iterations
+
+# Determinism
+print(prov['determinism']['converged'])   # True/False
+print(prov['determinism']['stable_ordering'])  # True
+```
+
+### Determinism and Performance
+
+#### Algorithm Selection
+
+The system automatically chooses the best algorithm based on semiring properties:
+
+- **Dijkstra-like**: For idempotent+monotone semirings (min_plus, max_times)
+  - O(E log V) with priority queue
+  - Optimal for non-negative weights
+- **Bellman-Ford**: For general semirings
+  - O(V·E) iterations
+  - Handles negative weights, detects convergence
+
+Override with `.backend("graph")` or force algorithm selection via internal parameters.
+
+#### Determinism Guarantees
+
+- Node/edge iteration in stable order (sorted layer names, sorted node IDs)
+- Tie-breaking uses semiring.better() or lexicographic node ID
+- Parallel execution (via UQ) uses deterministic seed spawning
+- Provenance includes determinism metadata
+
+#### Performance Notes
+
+- **Small graphs (<100 nodes)**: Floyd-Warshall for closure (O(n³))
+- **Large graphs**: Iterative SSSP (O(n·algorithm_cost))
+- **Sparse graphs**: Graph backend is efficient
+- **Dense graphs**: Matrix backend (future) may be faster
+
+### Backward Compatibility
+
+The existing `P.shortest()` builder is powered by the semiring engine internally:
+
+```python
+# Equivalent calls:
+result1 = P.shortest("Alice", "Bob").execute(network)
+
+result2 = (
+    S.paths()
+     .from_node("Alice")
+     .to_node("Bob")
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .execute(network)
+)
+# result1 uses semiring engine under the hood (future integration)
+```
+
+### Configuration
+
+Default backend and semiring settings can be configured:
+
+```python
+from py3plex import config
+
+# Future: config.set("algebra.default_backend", "graph")
+# Future: config.set("algebra.default_semiring", "min_plus")
+```
+
+Current defaults:
+- Backend: "graph"
+- Semiring: "min_plus" for paths, "boolean" for closure
+
+### Implementation Details
+
+**Location**: `py3plex/algebra/`
+- `semiring.py`: Semiring protocol and built-ins
+- `registry.py`: Semiring registry
+- `lift.py`: Weight lifting specifications
+- `paths.py`: Generic SSSP/APSP solvers
+- `closure.py`: Kleene star / transitive closure
+- `backend.py`: Backend dispatch (graph/matrix)
+- `witness.py`: Path witness tracking
+- `fixed_point.py`: Fixed-point iteration engine
+
+**DSL Integration**: `py3plex/dsl/`
+- `ast.py`: Semiring AST nodes (SemiringPathStmt, SemiringClosureStmt, etc.)
+- `builder.py`: S builder classes
+- `executor_semiring.py`: Executor for semiring queries
+
+### Advanced: Custom Semirings
+
+Register custom semirings for domain-specific problems:
+
+```python
+from py3plex.algebra import register_semiring
+from dataclasses import dataclass
+
+@dataclass
+class FuzzySemiring:
+    name: str = "fuzzy"
+    
+    def add(self, a, b):
+        return max(a, b)  # max for fuzzy union
+    
+    def mul(self, a, b):
+        return min(a, b)  # min for fuzzy intersection
+    
+    def zero(self):
+        return 0.0
+    
+    def one(self):
+        return 1.0
+    
+    def better(self, a, b):
+        return a > b
+    
+    @property
+    def props(self):
+        return {
+            "commutative_add": True,
+            "idempotent_add": True,
+            "monotone": True,
+        }
+
+# Register
+register_semiring("fuzzy", FuzzySemiring(), overwrite=False)
+
+# Use
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("fuzzy")
+     .lift(attr="membership", default=1.0)
+     .execute(network)
+)
+```
 
 ---
 
