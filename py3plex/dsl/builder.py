@@ -969,8 +969,7 @@ class QueryBuilder:
 
         return self
 
-    
-        def contract(self, contract: "Robustness") -> "QueryBuilder":
+    def contract(self, contract: "Robustness") -> "QueryBuilder":
         """Attach a robustness contract to the query (certification-grade).
         
         Contracts ensure that query conclusions are stable under structural
