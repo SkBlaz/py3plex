@@ -351,17 +351,10 @@ def execute_ast(
         if "provenance" in result.meta:
             result.meta["provenance"]["sensitivity"] = sensitivity_spec.to_dict()
 
-    return result
-
-
-def _apply_temporal_context(
-    network: Any, temporal_context: Optional[TemporalContext]
-) -> Any:
-    
-    # Step 6: Handle contract evaluation if specified
+    # Step 7: Handle contract evaluation if specified
     if bound_query.select.contract_spec is not None:
         if progress:
-            logger.info("Step 4: Evaluating robustness contract")
+            logger.info("Step 5: Evaluating robustness contract")
         
         # Import contract evaluation engine
         from py3plex.contracts.engine import evaluate_contract
@@ -414,7 +407,7 @@ def _apply_temporal_context(
         
         # Return ContractResult in soft mode (or if passed)
         return contract_result
-    
+
     return result
 
 
