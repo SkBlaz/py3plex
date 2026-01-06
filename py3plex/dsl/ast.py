@@ -399,6 +399,28 @@ class CounterfactualSpec:
 
 
 @dataclass
+class ContractSpec:
+    """Specification for robustness contract (certification-grade).
+    
+    This represents a contract that ensures query conclusions are stable
+    under perturbations. Unlike counterfactual analysis, contracts have:
+    - Typed failure modes
+    - Automatic predicate selection
+    - Repair mechanisms
+    - Deterministic reproducibility guarantees
+    
+    Attributes:
+        contract: Robustness contract object from py3plex.contracts
+    
+    Examples:
+        >>> from py3plex.contracts import Robustness
+        >>> ContractSpec(contract=Robustness())
+        >>> ContractSpec(contract=Robustness(n_samples=100, p_max=0.2))
+    """
+    contract: Any  # Robustness from py3plex.contracts
+
+
+@dataclass
 class SelectStmt:
     """A SELECT statement.
     
@@ -466,6 +488,7 @@ class SelectStmt:
     uq_config: Optional['UQConfig'] = None
     explain_spec: Optional['ExplainSpec'] = None
     counterfactual_spec: Optional['CounterfactualSpec'] = None
+    contract_spec: Optional['ContractSpec'] = None
 
 
 @dataclass
