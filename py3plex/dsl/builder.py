@@ -1432,6 +1432,241 @@ class QueryBuilder:
         self._select.zscore_attrs.extend(attrs)
         return self
     
+    # ═══════════════════════════════════════════════════════════════════════
+    # Additional dplyr-style methods (merged from graph_ops.py)
+    # ═══════════════════════════════════════════════════════════════════════
+    
+    def filter(self, *args, **kwargs) -> "QueryBuilder":
+        """Filter results using a predicate (dplyr-style alias for where).
+        
+        This is an alias for the where() method, providing the traditional
+        dplyr naming convention. Supports the same syntax as where():
+        - Keyword arguments for simple conditions
+        - Expression objects using F
+        
+        Args:
+            *args: BooleanExpression objects from F
+            **kwargs: Conditions as keyword arguments
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().filter(degree__gt=5)
+            >>> Q.nodes().filter(F.degree > 5, layer="social")
+        """
+        return self.where(*args, **kwargs)
+    
+    def filter_expr(self, expr: str) -> "QueryBuilder":
+        """Filter results using a string expression.
+        
+        Provides string-based filtering similar to pandas query() or
+        graph_ops.NodeFrame.filter_expr(). Uses safe expression evaluation
+        to prevent code injection.
+        
+        Args:
+            expr: Expression string like "degree > 10 and layer == 'social'"
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().compute("degree").filter_expr("degree > 10 and layer == 'ppi'")
+            >>> Q.edges().filter_expr("weight > 0.5")
+        
+        Note:
+            This method creates a post-processing filter that evaluates
+            the expression on each result row. For better performance,
+            use where() with keyword arguments when possible.
+        """
+        if self._select.post_filters is None:
+            self._select.post_filters = []
+        
+        self._select.post_filters.append({
+            "type": "expression",
+            "expr": expr,
+        })
+        return self
+    
+    def head(self, n: int = 5) -> "QueryBuilder":
+        """Keep only the first n results (dplyr-style).
+        
+        Equivalent to limit(n) but with more intuitive dplyr-style naming.
+        
+        Args:
+            n: Number of results to keep (default: 5)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().compute("degree").head(10)
+            >>> Q.nodes().arrange("-degree").head(5)
+        """
+        return self.limit(n)
+    
+    def tail(self, n: int = 5) -> "QueryBuilder":
+        """Keep only the last n results.
+        
+        Returns the last n results after all other operations are applied.
+        Useful for finding the bottom-k items when combined with sorting.
+        
+        Args:
+            n: Number of results to keep from the end (default: 5)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().compute("degree").arrange("degree").tail(5)  # 5 lowest degree nodes
+        """
+        if self._select.post_filters is None:
+            self._select.post_filters = []
+        
+        self._select.post_filters.append({
+            "type": "tail",
+            "n": n,
+        })
+        return self
+    
+    def take(self, n: int = 5) -> "QueryBuilder":
+        """Keep only the first n results (alias for head).
+        
+        SQL-style alias for head() method.
+        
+        Args:
+            n: Number of results to keep (default: 5)
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().take(10)
+        """
+        return self.head(n)
+    
+    def sample(self, n: int = 5, seed: Optional[int] = None) -> "QueryBuilder":
+        """Randomly sample n results.
+        
+        Randomly selects n items from the result set. Useful for
+        quick exploration or testing on a subset of data.
+        
+        Args:
+            n: Number of results to sample (default: 5)
+            seed: Optional random seed for reproducibility
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().sample(10, seed=42)
+            >>> Q.nodes().from_layers(L["social"]).sample(5)
+        """
+        if self._select.post_filters is None:
+            self._select.post_filters = []
+        
+        self._select.post_filters.append({
+            "type": "sample",
+            "n": n,
+            "seed": seed,
+        })
+        return self
+    
+    def slice(self, start: int, end: Optional[int] = None) -> "QueryBuilder":
+        """Slice results from start to end index.
+        
+        Returns a slice of the result set using Python's slicing semantics.
+        
+        Args:
+            start: Starting index (0-based, inclusive)
+            end: Ending index (exclusive). If None, slices to the end.
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> Q.nodes().slice(5, 15)  # rows 5-14
+            >>> Q.nodes().slice(10)     # rows 10 to end
+        """
+        if self._select.post_filters is None:
+            self._select.post_filters = []
+        
+        self._select.post_filters.append({
+            "type": "slice",
+            "start": start,
+            "end": end,
+        })
+        return self
+    
+    def first(self) -> "QueryBuilder":
+        """Return only the first result.
+        
+        Terminal-style operation that limits results to 1. 
+        Note: This still returns a QueryBuilder for chaining with execute().
+        
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> result = Q.nodes().arrange("-degree").first().execute(net)
+            >>> df = result.to_pandas()  # Will have at most 1 row
+        """
+        return self.limit(1)
+    
+    def last(self) -> "QueryBuilder":
+        """Return only the last result.
+        
+        Returns the last result after all other operations are applied.
+        
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> result = Q.nodes().arrange("degree").last().execute(net)
+        """
+        if self._select.post_filters is None:
+            self._select.post_filters = []
+        
+        self._select.post_filters.append({
+            "type": "last",
+        })
+        return self
+    
+    def collect(self) -> "QueryBuilder":
+        """Explicitly collect results (no-op for builder).
+        
+        This method exists for API compatibility with graph_ops.NodeFrame
+        but is a no-op in the builder pattern since execute() handles
+        collection. Included for completeness and to reduce cognitive load
+        when switching between APIs.
+        
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> result = Q.nodes().filter(degree__gt=5).collect().execute(net)
+        """
+        # No-op in builder - execute() handles collection
+        return self
+    
+    def pluck(self, field: str) -> "QueryBuilder":
+        """Extract values for a single field/column.
+        
+        Convenience method that selects only one column. Equivalent to
+        select(field) but with more intuitive naming for single-column extraction.
+        
+        Args:
+            field: Field name to extract
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> result = Q.nodes().compute("degree").pluck("degree").execute(net)
+            >>> df = result.to_pandas()  # Will have only 'degree' column (plus id/layer)
+        """
+        return self.select(field)
+    
     def at(self, t: float) -> "QueryBuilder":
         """Add temporal snapshot constraint (AT clause).
         

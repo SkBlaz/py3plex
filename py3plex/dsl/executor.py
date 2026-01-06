@@ -4,8 +4,10 @@ This module provides the execution engine that runs AST queries against
 multilayer networks. It supports temporal queries via the TemporalMultinetView wrapper.
 """
 
+import ast
 import copy
 import logging
+import random
 import time
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
 
@@ -2632,7 +2634,7 @@ def _apply_post_filters(
     network: Any,
     G: nx.Graph,
 ) -> List[Any]:
-    """Apply post-filters like has_community().
+    """Apply post-filters like has_community(), tail(), sample(), etc.
     
     Args:
         items: List of items to filter
@@ -2660,8 +2662,130 @@ def _apply_post_filters(
                     item for item in filtered_items
                     if G.nodes.get(item, {}).get("community") == predicate
                 ]
+        
+        elif filter_type == "expression":
+            # String-based expression filtering
+            expr = filter_spec["expr"]
+            new_items = []
+            for item in filtered_items:
+                # Build context dict from item attributes
+                if isinstance(item, dict):
+                    context = item
+                else:
+                    # Try to extract attributes from graph
+                    context = {"id": item}
+                    if hasattr(item, "__iter__") and len(item) >= 2:
+                        context["layer"] = item[1] if len(item) > 1 else None
+                    # Add graph attributes
+                    if G and G.has_node(item):
+                        context.update(G.nodes[item])
+                    # Add degree
+                    if G and G.has_node(item):
+                        context["degree"] = G.degree(item)
+                
+                try:
+                    # Safe evaluation of expression
+                    if _safe_eval_expr(expr, context):
+                        new_items.append(item)
+                except (ValueError, KeyError, TypeError):
+                    # Skip items that fail evaluation
+                    pass
+            filtered_items = new_items
+        
+        elif filter_type == "tail":
+            # Keep last n items
+            n = filter_spec["n"]
+            filtered_items = filtered_items[-n:] if n > 0 and len(filtered_items) > n else filtered_items
+        
+        elif filter_type == "sample":
+            # Random sampling
+            n = filter_spec["n"]
+            seed = filter_spec.get("seed")
+            if n >= len(filtered_items):
+                # Don't sample if n >= total items
+                pass
+            else:
+                rng = random.Random(seed) if seed is not None else random
+                filtered_items = rng.sample(filtered_items, n)
+        
+        elif filter_type == "slice":
+            # Array slicing
+            start = filter_spec["start"]
+            end = filter_spec.get("end")
+            filtered_items = filtered_items[start:end]
+        
+        elif filter_type == "last":
+            # Keep only last item
+            filtered_items = filtered_items[-1:] if filtered_items else []
     
     return filtered_items
+
+
+def _safe_eval_expr(expr: str, context: dict) -> bool:
+    """Safely evaluate a filter expression string.
+    
+    Uses Python's ast module to parse and evaluate expressions with
+    controlled locals, preventing code injection.
+    
+    Args:
+        expr: Expression string like "degree > 10 and layer == 'ppi'"
+        context: Dictionary of available variable names and values
+    
+    Returns:
+        Boolean result of the expression
+    
+    Raises:
+        ValueError: If expression contains disallowed constructs
+    """
+    # Parse the expression
+    try:
+        tree = ast.parse(expr, mode='eval')
+    except SyntaxError as e:
+        raise ValueError(f"Invalid expression syntax: {e}")
+    
+    # Validate the AST - only allow safe operations
+    allowed_nodes = (
+        ast.Expression,
+        ast.BoolOp,
+        ast.And,
+        ast.Or,
+        ast.Compare,
+        ast.Eq,
+        ast.NotEq,
+        ast.Lt,
+        ast.LtE,
+        ast.Gt,
+        ast.GtE,
+        ast.In,
+        ast.NotIn,
+        ast.Is,
+        ast.IsNot,
+        ast.UnaryOp,
+        ast.Not,
+        ast.Name,
+        ast.Load,
+        ast.Constant,
+        ast.BinOp,
+        ast.Add,
+        ast.Sub,
+        ast.Mult,
+        ast.Div,
+        ast.Mod,
+        ast.FloorDiv,
+        ast.Pow,
+    )
+    
+    for node in ast.walk(tree):
+        if not isinstance(node, allowed_nodes):
+            raise ValueError(
+                f"Expression contains disallowed construct: {type(node).__name__}"
+            )
+    
+    # Evaluate with controlled context
+    try:
+        return eval(compile(tree, '<string>', 'eval'), {"__builtins__": {}}, context)
+    except Exception as e:
+        raise ValueError(f"Error evaluating expression: {e}")
 
 
 def _apply_aggregate(

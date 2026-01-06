@@ -1323,7 +1323,50 @@ Both frontends compile to the same AST, ensuring consistent behavior.
 
 py3plex provides a dplyr-inspired API for fluent, method-chaining operations on nodes and edges. This allows functional-style data manipulation similar to R's dplyr or Python's pandas.
 
-### Core Components
+**NOTE:** As of version 1.1.0, the dplyr-style methods have been integrated directly into the DSL v2 builder (`Q.nodes()` and `Q.edges()`), providing a unified API. The standalone `graph_ops` module is still available for backward compatibility, but the recommended approach is to use the DSL builder with dplyr-style methods like `.filter()`, `.head()`, `.tail()`, `.sample()`, etc.
+
+### Using Dplyr-Style Methods in DSL Builder
+
+```python
+from py3plex.dsl import Q, L
+from py3plex.core import multinet
+
+# Create network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'ppi', 'target_type': 'ppi'},
+    {'source': 'B', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
+    {'source': 'A', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
+])
+
+# Unified API with dplyr-style methods
+df = (
+    Q.nodes()
+     .from_layers(L["ppi"])
+     .compute("degree")
+     .filter(degree__gt=1)               # Dplyr-style filter
+     .mutate(norm_deg=lambda r: r["degree"] / 3)  # Mutate with lambdas
+     .arrange("-degree")                  # Sort descending
+     .head(3)                             # Take top 3
+     .execute(net)
+     .to_pandas()
+)
+```
+
+**New Dplyr-Style Methods in DSL Builder:**
+- `.filter()` - Alias for `.where()`, traditional dplyr naming
+- `.filter_expr(expr)` - String-based filtering: `filter_expr("degree > 10 and layer == 'ppi'")`
+- `.head(n)` - Keep first n results
+- `.tail(n)` - Keep last n results  
+- `.take(n)` - Alias for `.head(n)`, SQL-style
+- `.sample(n, seed)` - Random sampling with optional seed
+- `.slice(start, end)` - Array slicing like Python `[start:end]`
+- `.first()` - Return only first result (limits to 1)
+- `.last()` - Return only last result
+- `.pluck(field)` - Extract single column
+- `.collect()` - No-op for API compatibility
+
+### Core Components (Standalone graph_ops)
 
 ```python
 from py3plex.graph_ops import (
