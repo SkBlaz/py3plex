@@ -167,8 +167,8 @@ class Robustness:
             New Robustness instance with resolved defaults
         """
         # Get network stats
-        n_nodes = len(network.get_nodes()) if hasattr(network, "get_nodes") else 0
-        n_edges = len(network.get_edges()) if hasattr(network, "get_edges") else 0
+        n_nodes = len(list(network.get_nodes())) if hasattr(network, "get_nodes") else 0
+        n_edges = len(list(network.get_edges())) if hasattr(network, "get_edges") else 0
         
         # Resolve p_max
         p_max = self.p_max

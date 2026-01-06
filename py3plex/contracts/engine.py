@@ -457,8 +457,8 @@ def _make_provenance(
     metric: Optional[str],
 ) -> Dict[str, Any]:
     """Create provenance dictionary."""
-    n_nodes = len(network.get_nodes()) if hasattr(network, "get_nodes") else 0
-    n_edges = len(network.get_edges()) if hasattr(network, "get_edges") else 0
+    n_nodes = len(list(network.get_nodes())) if hasattr(network, "get_nodes") else 0
+    n_edges = len(list(network.get_edges())) if hasattr(network, "get_edges") else 0
     
     return {
         "contract": contract.to_dict(),
