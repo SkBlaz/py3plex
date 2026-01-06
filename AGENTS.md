@@ -29,15 +29,15 @@
 23. [Dynamics Simulations](#dynamics-simulations)
 24. [Uncertainty Quantification](#uncertainty-quantification)
 25. [Replayable Provenance and Query Replay](#replayable-provenance-and-query-replay)
-26. [Temporal Networks](#temporal-networks)
-27. [Null Models](#null-models)
-28. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-25. [Temporal Networks](#temporal-networks)
-26. [Null Models](#null-models)
-27. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-28. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
-29. [Version Information](#version-information)
-30. [File Locations](#file-locations)
+26. [Counterfactual Reasoning vs Uncertainty Quantification](#counterfactual-reasoning-vs-uncertainty-quantification)
+27. [Robustness Contracts (Certification-Grade)](#robustness-contracts-certification-grade)
+28. [Distributional Community Detection](#distributional-community-detection)
+29. [Temporal Networks](#temporal-networks)
+30. [Null Models](#null-models)
+31. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+32. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
+33. [Version Information](#version-information)
+34. [File Locations](#file-locations)
 
 ---
 
@@ -2760,6 +2760,77 @@ print(comparison)
 | **DSL method** | `.uq()` | `.robustness_check()` |
 | **Provenance** | `provenance.uncertainty` | `provenance.counterfactual` |
 | **Use for** | Reporting metrics | Validating conclusions |
+
+**Summary:** Use `.uq()` to quantify error bars, use `.robustness_check()` or `.contract()` to test conclusion stability.
+
+---
+
+## Robustness Contracts (Certification-Grade)
+
+py3plex provides **robustness contracts** that ensure query conclusions are stable under structural perturbations. Contracts are designed for certification-grade reproducibility with sensible defaults and explicit failure modes.
+
+### Contracts vs UQ vs Counterfactual
+
+**Contracts (`.contract()`):**
+- **Question:** "Can I certify this conclusion is stable?"
+- **Purpose:** Formal certification with typed failure modes
+- **Output:** Pass/fail with evidence, repair mechanisms, reproducible provenance
+- **Example:** "Top-5 PageRank is stable (Jaccard ≥ 0.85 for all p ≤ 0.1)"
+
+**Key Differences:**
+- **Typed failure modes**: 8 explicit modes (INSUFFICIENT_BASELINE, CONTRACT_VIOLATION, etc.)
+- **Auto-inference**: Predicates, grid, samples auto-selected from query structure
+- **Repair mechanisms**: Stable cores, ranking tiers, stable communities
+- **Determinism by default**: seed=0 ensures reproducibility
+- **1-line usage**: Minimal syntax with all defaults
+
+### Minimal Usage (1-Line with Defaults)
+
+```python
+from py3plex.dsl import Q
+from py3plex.contracts import Robustness
+
+# Top-k stability with all defaults
+result = (Q.nodes()
+          .compute("pagerank")
+          .order_by("pagerank", desc=True)
+          .limit(20)
+          .contract(Robustness())
+          .execute(net))
+
+if result.contract_ok:
+    print("✓ Top-20 PageRank is stable!")
+else:
+    print(f"✗ Failed: {result.failure_mode.value}")
+    print(f"Stable core: {result.repair.stable_core}")
+```
+
+### Default Inference Table
+
+| **Parameter** | **Default Value** | **Adaptive Rules** |
+|--------------|-------------------|-------------------|
+| `perturb` | `"edge_drop"` | Layer-aware edge removal |
+| `p_max` | `0.10` (10%) | `0.05` if E < 20 |
+| `grid` | `[0.0, 0.05, 0.10]` | Always includes 0 and p_max |
+| `n_samples` | `30` | `50` if N≤100 & E≤1000 |
+| `seed` | `0` | Deterministic by default |
+| `mode` | `"soft"` | Returns ContractResult |
+| `repair` | `True` | Enabled by default |
+
+**Auto-Predicate Selection:**
+
+| **Query Type** | **Predicate** | **Threshold** |
+|---------------|--------------|--------------|
+| Top-k | `JaccardAtK(k) >= 0.85` | 0.85 |
+| Ranking | `KendallTau >= 0.8` | 0.8 |
+| Community | `PartitionVI <= 0.25` | 0.25 |
+
+### Failure Modes
+
+8 typed failure modes: INSUFFICIENT_BASELINE, NONDETERMINISM_LEAK, PERTURBATION_INVALID, METRIC_UNDEFINED, CONTRACT_VIOLATION, REPAIR_IMPOSSIBLE, RESOURCE_LIMIT, EXECUTION_ERROR.
+
+---
+
 ## Distributional Community Detection
 
 **New in v1.1:** Uncertainty-aware community detection via distributional partitions.
