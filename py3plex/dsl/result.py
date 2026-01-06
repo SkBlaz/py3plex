@@ -4,6 +4,7 @@ This module provides a rich result object that supports multiple export formats
 and includes metadata about the query execution.
 """
 
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 import math
 
@@ -274,6 +275,113 @@ class QueryResult:
         self.attributes = attributes or {}
         self.meta = meta or {}
         self.computed_metrics = computed_metrics or set()
+    
+    @property
+    def provenance(self) -> Optional[Dict[str, Any]]:
+        """Get provenance information from metadata.
+        
+        Returns:
+            Provenance dictionary if available, None otherwise
+        """
+        return self.meta.get("provenance")
+    
+    @property
+    def is_replayable(self) -> bool:
+        """Check if this result has replayable provenance.
+        
+        Returns:
+            True if result can be replayed deterministically
+        """
+        prov = self.provenance
+        if not prov:
+            return False
+        
+        # Check for replayable mode
+        mode = prov.get("mode")
+        if mode != "replayable":
+            return False
+        
+        # Check for required fields
+        query_info = prov.get("query", {})
+        if not query_info.get("ast_serialized"):
+            return False
+        
+        # Check for network capture
+        network_capture = prov.get("network_capture", {})
+        has_snapshot = (
+            network_capture.get("snapshot_data") is not None or
+            network_capture.get("snapshot_external_path") is not None or
+            network_capture.get("delta_ops") is not None
+        )
+        
+        return has_snapshot
+    
+    def replay(self, backend: Optional[Any] = None, strict: bool = True) -> "QueryResult":
+        """Replay this query to reproduce the result.
+        
+        Reconstructs the network and query from provenance, then re-executes
+        to produce a new QueryResult. With replayable provenance, the new
+        result should match this one deterministically.
+        
+        Args:
+            backend: Optional backend override (not currently used)
+            strict: If True, enforce strict version compatibility checks
+            
+        Returns:
+            New QueryResult from replayed query
+            
+        Raises:
+            ValueError: If result is not replayable
+            ReplayError: If replay fails
+        """
+        if not self.is_replayable:
+            raise ValueError(
+                "Result is not replayable. Provenance mode must be 'replayable' "
+                "with captured network snapshot and serialized AST."
+            )
+        
+        # Import replay functionality
+        from py3plex.provenance.schema import ProvenanceSchema
+        from py3plex.provenance.replay import replay_query, ReplayError
+        
+        try:
+            # Reconstruct provenance schema
+            prov_dict = self.provenance
+            prov_schema = ProvenanceSchema.from_dict(prov_dict)
+            
+            # Replay query
+            result = replay_query(prov_schema, strict=strict)
+            return result
+            
+        except Exception as e:
+            if isinstance(e, ReplayError):
+                raise
+            raise ReplayError(f"Failed to replay query: {e}")
+    
+    def export_bundle(
+        self,
+        path: Union[str, "Path"],
+        compress: bool = True,
+        include_results: bool = True
+    ) -> None:
+        """Export this result with provenance as a portable bundle.
+        
+        Creates a file or directory containing:
+        - Provenance metadata (query, network, seeds, environment)
+        - Optionally, the query results
+        - Network snapshot if needed for replay
+        
+        Args:
+            path: Output file path (will add .json or .json.gz extension)
+            compress: Whether to compress the bundle with gzip
+            include_results: Whether to include result data in bundle
+            
+        Raises:
+            BundleError: If export fails
+        """
+        from py3plex.provenance.bundle import export_bundle as _export_bundle
+        
+        _export_bundle(self, path, compress=compress, include_results=include_results)
     
     @property
     def nodes(self) -> List[Any]:
