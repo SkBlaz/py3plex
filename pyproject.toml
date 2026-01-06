@@ -286,3 +286,24 @@ deadline = 500
 paths_to_mutate = "py3plex/utils.py"
 tests_dir = "tests/"
 runner = "PYTHONPATH=/home/runner/work/py3plex/py3plex python -m pytest -x tests/test_utils.py tests/property/test_utils_properties.py"
+
+[tool.py3plex]
+# Module layering rules for import boundary enforcement
+[tool.py3plex.layering]
+# DSL should not import heavy algorithm modules directly
+dsl_forbidden_imports = [
+    "py3plex.algorithms.statistics",
+    "py3plex.algorithms.community_detection",
+]
+# Algorithms should not import DSL
+algorithms_forbidden_imports = [
+    "py3plex.dsl",
+]
+# Datasets should not import visualization
+datasets_forbidden_imports = [
+    "py3plex.visualization",
+]
+# Uncertainty should be dependency-light
+uncertainty_forbidden_imports = [
+    "py3plex.visualization",
+]

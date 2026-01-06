@@ -1,0 +1,31 @@
+# Whitelist configuration for dead code detection
+# Symbols listed here will not be flagged as dead code
+
+# Plugin entrypoints (dynamically loaded)
+plugin_entrypoints:
+  - BasePlugin
+  - CentralityPlugin
+  - CommunityPlugin
+  - DynamicsPlugin
+
+# Symbols used via reflection
+reflection_used:
+  - __version__
+  - __all__
+
+# Side-effect modules (imported for their side effects)
+side_effect_modules:
+  - py3plex.logging_config
+
+# Registry patterns (registered dynamically)
+registries:
+  - PluginRegistry
+  - StatRegistry
+
+# CLI commands (used via Click)
+cli_commands:
+  - main
+  - create
+  - analyze
+  - visualize
+  - convert
