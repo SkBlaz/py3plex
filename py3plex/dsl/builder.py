@@ -1592,6 +1592,10 @@ class QueryBuilder:
     # Additional dplyr-style methods (merged from graph_ops.py)
     # ═══════════════════════════════════════════════════════════════════════
     
+    # ═══════════════════════════════════════════════════════════════════════
+    # Additional dplyr-style methods (merged from graph_ops.py)
+    # ═══════════════════════════════════════════════════════════════════════
+    
     def filter(self, *args, **kwargs) -> "QueryBuilder":
         """Filter results using a predicate (dplyr-style alias for where).
         

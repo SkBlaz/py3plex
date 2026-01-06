@@ -37,6 +37,14 @@
 31. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
 32. [Version Information](#version-information)
 33. [File Locations](#file-locations)
+25. [Replayable Provenance and Query Replay](#replayable-provenance-and-query-replay)
+26. [Temporal Networks](#temporal-networks)
+27. [Null Models](#null-models)
+28. [Probabilistic Community Detection](#probabilistic-community-detection)
+29. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+30. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
+31. [Version Information](#version-information)
+32. [File Locations](#file-locations)
 
 ---
 
