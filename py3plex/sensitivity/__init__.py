@@ -35,11 +35,11 @@ Examples
 ...      )
 ...      .execute(network)
 ... )
->>> 
+>>>
 >>> # Access stability curves
 >>> curves = result.sensitivity_curves
 >>> print(curves["jaccard_at_k(20)"])  # {0.0: 1.0, 0.05: 0.95, ...}
->>> 
+>>>
 >>> # Export to pandas with sensitivity columns
 >>> df = result.to_pandas(expand_sensitivity=True)
 """

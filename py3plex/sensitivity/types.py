@@ -12,18 +12,19 @@ import numpy as np
 @dataclass
 class PerturbationSpec:
     """Specification for network perturbation.
-    
+
     Attributes:
         method: Perturbation method ('edge_drop', 'degree_preserving_rewire', etc.)
         strength: Perturbation strength (e.g., fraction of edges to drop)
         seed: Random seed for reproducibility
         kwargs: Additional method-specific parameters
     """
+
     method: str
     strength: float
     seed: Optional[int] = None
     kwargs: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for storage."""
         return {
@@ -37,7 +38,7 @@ class PerturbationSpec:
 @dataclass
 class StabilityCurve:
     """Stability curve showing metric vs perturbation strength.
-    
+
     Attributes:
         metric: Stability metric name (e.g., 'jaccard_at_k(20)', 'kendall_tau')
         grid: Perturbation strength grid points
@@ -45,12 +46,13 @@ class StabilityCurve:
         std: Standard deviation at each grid point (across samples)
         collapse_point: Perturbation strength at which stability drops below threshold
     """
+
     metric: str
     grid: List[float]
     values: List[float]
     std: Optional[List[float]] = None
     collapse_point: Optional[float] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for storage."""
         return {
@@ -65,7 +67,7 @@ class StabilityCurve:
 @dataclass
 class LocalInfluence:
     """Per-node or per-layer influence on stability.
-    
+
     Attributes:
         scope: Scope of influence ('node', 'layer', 'edge')
         entity_id: ID of the entity (node name, layer name, edge tuple)
@@ -73,12 +75,13 @@ class LocalInfluence:
         rank_volatility: Expected rank change per unit perturbation
         top_k_probability: Probability of remaining in top-k across perturbations
     """
+
     scope: str  # 'node', 'layer', 'edge'
     entity_id: Any  # Node name, layer name, or edge tuple
     influence_score: float
     rank_volatility: Optional[float] = None
     top_k_probability: Optional[float] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for storage."""
         return {
@@ -93,13 +96,13 @@ class LocalInfluence:
 @dataclass
 class SensitivityResult:
     """Container for sensitivity analysis results.
-    
+
     This is the core result object returned by sensitivity analysis.
     It stores stability curves, influence data, and provenance.
-    
+
     NOTE: This is NOT a UQ result. It does not contain mean/std/CI for values.
     It contains stability metrics, curves, and influence scores.
-    
+
     Attributes:
         perturbation: Perturbation specification
         grid: Perturbation strength grid
@@ -108,49 +111,47 @@ class SensitivityResult:
         baseline_result: Original query result (unperturbed)
         meta: Metadata including provenance
     """
+
     perturbation: PerturbationSpec
     grid: List[float]
     curves: Dict[str, StabilityCurve]
     influence: Optional[Dict[str, List[LocalInfluence]]] = None
     baseline_result: Optional[Any] = None
     meta: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for export.
-        
+
         Returns:
             Dictionary representation of sensitivity results
         """
         result = {
             "perturbation": self.perturbation.to_dict(),
             "grid": self.grid,
-            "curves": {
-                name: curve.to_dict() 
-                for name, curve in self.curves.items()
-            },
+            "curves": {name: curve.to_dict() for name, curve in self.curves.items()},
             "meta": self.meta,
         }
-        
+
         if self.influence:
             result["influence"] = {
                 scope: [inf.to_dict() for inf in influences]
                 for scope, influences in self.influence.items()
             }
-        
+
         return result
-    
+
     def to_pandas(self, expand_sensitivity: bool = False) -> "pd.DataFrame":
         """Convert sensitivity curves to pandas DataFrame.
-        
+
         Args:
             expand_sensitivity: If True, creates columns for each metric at each grid point
                                If False, returns curves in long format
-        
+
         Returns:
             DataFrame with sensitivity data
         """
         import pandas as pd
-        
+
         if not expand_sensitivity:
             # Long format: one row per (metric, grid_point)
             rows = []
@@ -178,21 +179,21 @@ class SensitivityResult:
                             row[f"{metric_name}_std"] = curve.std[i]
                 rows.append(row)
             return pd.DataFrame(rows)
-    
+
     def get_collapse_points(self, threshold: float = 0.5) -> Dict[str, Optional[float]]:
         """Find collapse points for all metrics.
-        
+
         Collapse point is the minimum perturbation strength at which
         stability drops below the threshold.
-        
+
         Args:
             threshold: Stability threshold (default: 0.5)
-        
+
         Returns:
             Dictionary mapping metric names to collapse points (or None if never collapses)
         """
         collapse_points = {}
-        
+
         for metric_name, curve in self.curves.items():
             collapse_point = None
             for grid_val, stability_val in zip(curve.grid, curve.values):
@@ -200,5 +201,5 @@ class SensitivityResult:
                     collapse_point = grid_val
                     break
             collapse_points[metric_name] = collapse_point
-        
+
         return collapse_points

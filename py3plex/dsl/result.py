@@ -21,19 +21,19 @@ _EXPLANATION_ATTRS = {
 
 def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
     """Expand an explanation value for pandas DataFrame.
-    
+
     For simple values (int, float, str, None), returns as-is.
     For complex values (list, dict), converts to JSON string for DataFrame compatibility.
-    
+
     Args:
         attr_name: Attribute name
         value: The explanation value
-        
+
     Returns:
         Dictionary with the attribute name and processed value
     """
     import json
-    
+
     if value is None:
         return {attr_name: None}
     elif isinstance(value, (int, float, str, bool)):
@@ -53,60 +53,66 @@ def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
         return {attr_name: str(value)}
 
 
-def _expand_uncertainty_value(attr_name: str, value: Any, ci_level: float = 0.95) -> Dict[str, Any]:
+def _expand_uncertainty_value(
+    attr_name: str, value: Any, ci_level: float = 0.95
+) -> Dict[str, Any]:
     """Expand an uncertainty value into multiple columns.
-    
+
     Args:
         attr_name: Base attribute name (e.g., "degree")
         value: The value (may be dict with uncertainty info or scalar)
         ci_level: Confidence interval level (default: 0.95)
-        
+
     Returns:
         Dictionary with expanded columns
     """
     result = {}
-    
+
     # Always include the point estimate
-    if isinstance(value, dict) and 'mean' in value:
-        result[attr_name] = value['mean']
-        
+    if isinstance(value, dict) and "mean" in value:
+        result[attr_name] = value["mean"]
+
         # Add std if available
-        if 'std' in value:
-            result[f"{attr_name}_std"] = value['std']
+        if "std" in value:
+            result[f"{attr_name}_std"] = value["std"]
         else:
             result[f"{attr_name}_std"] = None
-        
+
         # Add CI bounds if quantiles are available
-        quantiles = value.get('quantiles', {})
+        quantiles = value.get("quantiles", {})
         if quantiles:
             # Calculate quantile keys for the CI level
             lower_q = (1 - ci_level) / 2
             upper_q = 1 - (1 - ci_level) / 2
-            
+
             # Find closest available quantiles
             ci_low = quantiles.get(lower_q)
             ci_high = quantiles.get(upper_q)
-            
+
             # If exact quantiles not found, try to find closest
             if ci_low is None or ci_high is None:
                 sorted_qs = sorted(quantiles.keys())
                 if sorted_qs:
                     # Find closest lower quantile (within tolerance)
-                    lower_candidates = [q for q in sorted_qs if q <= lower_q + _QUANTILE_TOLERANCE]
+                    lower_candidates = [
+                        q for q in sorted_qs if q <= lower_q + _QUANTILE_TOLERANCE
+                    ]
                     if lower_candidates:
                         ci_low = quantiles[lower_candidates[-1]]
-                    
+
                     # Find closest upper quantile (within tolerance)
-                    upper_candidates = [q for q in sorted_qs if q >= upper_q - _QUANTILE_TOLERANCE]
+                    upper_candidates = [
+                        q for q in sorted_qs if q >= upper_q - _QUANTILE_TOLERANCE
+                    ]
                     if upper_candidates:
                         ci_high = quantiles[upper_candidates[0]]
-            
+
             # Convert CI level to percentage for column names (e.g., 0.95 -> ci95)
             ci_pct = int(ci_level * 100)
-            
+
             result[f"{attr_name}_ci{ci_pct}_low"] = ci_low
             result[f"{attr_name}_ci{ci_pct}_high"] = ci_high
-            
+
             # Calculate width if both bounds available
             if ci_low is not None and ci_high is not None:
                 result[f"{attr_name}_ci{ci_pct}_width"] = ci_high - ci_low
@@ -127,25 +133,25 @@ def _expand_uncertainty_value(attr_name: str, value: Any, ci_level: float = 0.95
         result[f"{attr_name}_ci{ci_pct}_low"] = value
         result[f"{attr_name}_ci{ci_pct}_high"] = value
         result[f"{attr_name}_ci{ci_pct}_width"] = 0.0 if value is not None else None
-    
+
     return result
 
 
 def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
     """Expand an explanation value for pandas DataFrame.
-    
+
     For simple values (int, float, str, None), returns as-is.
     For complex values (list, dict), converts to JSON string for DataFrame compatibility.
-    
+
     Args:
         attr_name: Attribute name
         value: The explanation value
-        
+
     Returns:
         Dictionary with the attribute name and processed value
     """
     import json
-    
+
     if value is None:
         return {attr_name: None}
     elif isinstance(value, (int, float, str, bool)):
@@ -165,60 +171,66 @@ def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
         return {attr_name: str(value)}
 
 
-def _expand_uncertainty_value_OLD_BACKUP(attr_name: str, value: Any, ci_level: float = 0.95) -> Dict[str, Any]:
+def _expand_uncertainty_value_OLD_BACKUP(
+    attr_name: str, value: Any, ci_level: float = 0.95
+) -> Dict[str, Any]:
     """Expand an uncertainty value into multiple columns.
-    
+
     Args:
         attr_name: Base attribute name (e.g., "degree")
         value: The value (may be dict with uncertainty info or scalar)
         ci_level: Confidence interval level (default: 0.95)
-        
+
     Returns:
         Dictionary with expanded columns
     """
     result = {}
-    
+
     # Always include the point estimate
-    if isinstance(value, dict) and 'mean' in value:
-        result[attr_name] = value['mean']
-        
+    if isinstance(value, dict) and "mean" in value:
+        result[attr_name] = value["mean"]
+
         # Add std if available
-        if 'std' in value:
-            result[f"{attr_name}_std"] = value['std']
+        if "std" in value:
+            result[f"{attr_name}_std"] = value["std"]
         else:
             result[f"{attr_name}_std"] = None
-        
+
         # Add CI bounds if quantiles are available
-        quantiles = value.get('quantiles', {})
+        quantiles = value.get("quantiles", {})
         if quantiles:
             # Calculate quantile keys for the CI level
             lower_q = (1 - ci_level) / 2
             upper_q = 1 - (1 - ci_level) / 2
-            
+
             # Find closest available quantiles
             ci_low = quantiles.get(lower_q)
             ci_high = quantiles.get(upper_q)
-            
+
             # If exact quantiles not found, try to find closest
             if ci_low is None or ci_high is None:
                 sorted_qs = sorted(quantiles.keys())
                 if sorted_qs:
                     # Find closest lower quantile (within tolerance)
-                    lower_candidates = [q for q in sorted_qs if q <= lower_q + _QUANTILE_TOLERANCE]
+                    lower_candidates = [
+                        q for q in sorted_qs if q <= lower_q + _QUANTILE_TOLERANCE
+                    ]
                     if lower_candidates:
                         ci_low = quantiles[lower_candidates[-1]]
-                    
+
                     # Find closest upper quantile (within tolerance)
-                    upper_candidates = [q for q in sorted_qs if q >= upper_q - _QUANTILE_TOLERANCE]
+                    upper_candidates = [
+                        q for q in sorted_qs if q >= upper_q - _QUANTILE_TOLERANCE
+                    ]
                     if upper_candidates:
                         ci_high = quantiles[upper_candidates[0]]
-            
+
             # Convert CI level to percentage for column names (e.g., 0.95 -> ci95)
             ci_pct = int(ci_level * 100)
-            
+
             result[f"{attr_name}_ci{ci_pct}_low"] = ci_low
             result[f"{attr_name}_ci{ci_pct}_high"] = ci_high
-            
+
             # Calculate width if both bounds available
             if ci_low is not None and ci_high is not None:
                 result[f"{attr_name}_ci{ci_pct}_width"] = ci_high - ci_low
@@ -239,16 +251,16 @@ def _expand_uncertainty_value_OLD_BACKUP(attr_name: str, value: Any, ci_level: f
         result[f"{attr_name}_ci{ci_pct}_low"] = value
         result[f"{attr_name}_ci{ci_pct}_high"] = value
         result[f"{attr_name}_ci{ci_pct}_width"] = 0.0 if value is not None else None
-    
+
     return result
 
 
 class QueryResult:
     """Rich result object from DSL query execution.
-    
+
     Provides access to query results with multiple export formats and
     execution metadata.
-    
+
     Attributes:
         target: 'nodes' or 'edges'
         items: Sequence of node/edge identifiers
@@ -257,13 +269,17 @@ class QueryResult:
         computed_metrics: Set of metrics that were computed during query execution
         sensitivity_result: Optional sensitivity analysis results (SensitivityResult)
     """
-    
-    def __init__(self, target: str, items: List[Any],
-                 attributes: Optional[Dict[str, Union[List[Any], Dict[Any, Any]]]] = None,
-                 meta: Optional[Dict[str, Any]] = None,
-                 computed_metrics: Optional[set] = None):
+
+    def __init__(
+        self,
+        target: str,
+        items: List[Any],
+        attributes: Optional[Dict[str, Union[List[Any], Dict[Any, Any]]]] = None,
+        meta: Optional[Dict[str, Any]] = None,
+        computed_metrics: Optional[set] = None,
+    ):
         """Initialize QueryResult.
-        
+
         Args:
             target: 'nodes' or 'edges'
             items: List of node/edge identifiers
@@ -276,82 +292,86 @@ class QueryResult:
         self.attributes = attributes or {}
         self.meta = meta or {}
         self.computed_metrics = computed_metrics or set()
-        self.sensitivity_result = None  # Will be set by executor if sensitivity is requested
-    
+        self.sensitivity_result = (
+            None  # Will be set by executor if sensitivity is requested
+        )
+
     @property
     def provenance(self) -> Optional[Dict[str, Any]]:
         """Get provenance information from metadata.
-        
+
         Returns:
             Provenance dictionary if available, None otherwise
         """
         return self.meta.get("provenance")
-    
+
     @property
     def is_replayable(self) -> bool:
         """Check if this result has replayable provenance.
-        
+
         Returns:
             True if result can be replayed deterministically
         """
         prov = self.provenance
         if not prov:
             return False
-        
+
         # Check for replayable mode
         mode = prov.get("mode")
         if mode != "replayable":
             return False
-        
+
         # Check for required fields
         query_info = prov.get("query", {})
         if not query_info.get("ast_serialized"):
             return False
-        
+
         # Check for network capture
         network_capture = prov.get("network_capture", {})
         has_snapshot = (
-            network_capture.get("snapshot_data") is not None or
-            network_capture.get("snapshot_external_path") is not None or
-            network_capture.get("delta_ops") is not None
+            network_capture.get("snapshot_data") is not None
+            or network_capture.get("snapshot_external_path") is not None
+            or network_capture.get("delta_ops") is not None
         )
-        
+
         return has_snapshot
-    
+
     @property
     def sensitivity_curves(self) -> Optional[Dict[str, Any]]:
         """Get sensitivity curves if sensitivity analysis was run.
-        
+
         Returns:
             Dictionary of stability curves keyed by metric name, or None
         """
         if self.sensitivity_result is not None:
             return self.sensitivity_result.curves
         return None
-    
+
     @property
     def has_sensitivity(self) -> bool:
         """Check if this result includes sensitivity analysis.
-        
+
         Returns:
             True if sensitivity results are available
         """
         return self.sensitivity_result is not None
-    
-    def replay(self, backend: Optional[Any] = None, strict: bool = True) -> "QueryResult":
+
+    def replay(
+        self, backend: Optional[Any] = None, strict: bool = True
+    ) -> "QueryResult":
         """Replay this query to reproduce the result.
-        
+
         Reconstructs the network and query from provenance, then re-executes
         to produce a new QueryResult. With replayable provenance, the new
         result should match this one deterministically.
-        
+
         Args:
             backend: Optional backend override (not currently used)
             strict: If True, enforce strict version compatibility checks
-            
+
         Returns:
             New QueryResult from replayed query
-            
+
         Raises:
             ValueError: If result is not replayable
             ReplayError: If replay fails
@@ -361,85 +381,90 @@ class QueryResult:
                 "Result is not replayable. Provenance mode must be 'replayable' "
                 "with captured network snapshot and serialized AST."
             )
-        
+
         # Import replay functionality
         from py3plex.provenance.schema import ProvenanceSchema
         from py3plex.provenance.replay import replay_query, ReplayError
-        
+
         try:
             # Reconstruct provenance schema
             prov_dict = self.provenance
             prov_schema = ProvenanceSchema.from_dict(prov_dict)
-            
+
             # Replay query
             result = replay_query(prov_schema, strict=strict)
             return result
-            
+
         except Exception as e:
             if isinstance(e, ReplayError):
                 raise
             raise ReplayError(f"Failed to replay query: {e}")
-    
+
     def export_bundle(
         self,
         path: Union[str, "Path"],
         compress: bool = True,
-        include_results: bool = True
+        include_results: bool = True,
     ) -> None:
         """Export this result with provenance as a portable bundle.
-        
+
         Creates a file or directory containing:
         - Provenance metadata (query, network, seeds, environment)
         - Optionally, the query results
         - Network snapshot if needed for replay
-        
+
         Args:
             path: Output file path (will add .json or .json.gz extension)
             compress: Whether to compress the bundle with gzip
             include_results: Whether to include result data in bundle
-            
+
         Raises:
             BundleError: If export fails
         """
         from py3plex.provenance.bundle import export_bundle as _export_bundle
-        
+
         _export_bundle(self, path, compress=compress, include_results=include_results)
-    
+
     @property
     def nodes(self) -> List[Any]:
         """Get nodes (raises if target is not 'nodes')."""
         if self.target != "nodes":
             raise ValueError(f"Cannot access nodes - target is '{self.target}'")
         return self.items
-    
+
     @property
     def edges(self) -> List[Any]:
         """Get edges (raises if target is not 'edges')."""
         if self.target != "edges":
             raise ValueError(f"Cannot access edges - target is '{self.target}'")
         return self.items
-    
+
     @property
     def count(self) -> int:
         """Get number of items in result."""
         return len(self.items)
-    
+
     def __len__(self) -> int:
         """Return number of items."""
         return len(self.items)
-    
+
     def __iter__(self):
         """Iterate over items."""
         return iter(self.items)
-    
-    def to_pandas(self, multiindex: bool = False, include_grouping: bool = True,
-                  expand_uncertainty: bool = False, expand_explanations: bool = False):
+
+    def to_pandas(
+        self,
+        multiindex: bool = False,
+        include_grouping: bool = True,
+        expand_uncertainty: bool = False,
+        expand_explanations: bool = False,
+    ):
         """Export results to pandas DataFrame.
-        
+
         For node queries: Returns DataFrame with 'id' column plus computed attributes
-        For edge queries: Returns DataFrame with 'source', 'target', 'source_layer', 
+        For edge queries: Returns DataFrame with 'source', 'target', 'source_layer',
                          'target_layer', 'weight' columns plus computed attributes
-        
+
         Args:
             multiindex: If True and grouping metadata is present, set DataFrame index
                        to the grouping keys (e.g., ["layer"] or ["src_layer", "dst_layer"])
@@ -454,18 +479,18 @@ class QueryResult:
             expand_explanations: If True, expand explanation fields into columns.
                                Explanations are attached via .explain() in the query.
                                Fields like top_neighbors (list) are converted to JSON strings.
-        
+
         Returns:
             pandas.DataFrame with items and computed attributes
-            
+
         Raises:
             ImportError: If pandas is not available
-            
+
         Example:
             >>> result = Q.nodes().uq(UQ.fast()).compute("degree").execute(net)
             >>> df = result.to_pandas(expand_uncertainty=True)
             >>> # df now has columns: id, layer, degree, degree_std, degree_ci95_low, degree_ci95_high, degree_ci95_width
-            
+
             >>> result = Q.nodes().explain().compute("degree").execute(net)
             >>> df = result.to_pandas(expand_explanations=True)
             >>> # df now has explanation columns: community_id, community_size, top_neighbors, etc.
@@ -473,20 +498,22 @@ class QueryResult:
         try:
             import pandas as pd
         except ImportError:
-            raise ImportError("pandas is required for to_pandas(). Install with: pip install pandas")
-        
+            raise ImportError(
+                "pandas is required for to_pandas(). Install with: pip install pandas"
+            )
+
         if self.target == "communities":
             # Build community dataframe
             rows = []
             for comm_id in self.items:
-                row = {'community_id': comm_id}
-                
+                row = {"community_id": comm_id}
+
                 # Add computed attributes
                 for attr_name, values in self.attributes.items():
                     if isinstance(values, dict):
                         if comm_id in values:
                             value = values[comm_id]
-                            
+
                             if expand_uncertainty:
                                 # Expand uncertainty into multiple columns
                                 expanded = _expand_uncertainty_value(attr_name, value)
@@ -509,7 +536,7 @@ class QueryResult:
                         idx = self.items.index(comm_id)
                         if idx < len(values):
                             value = values[idx]
-                            
+
                             if expand_uncertainty:
                                 # Expand uncertainty into multiple columns
                                 expanded = _expand_uncertainty_value(attr_name, value)
@@ -527,11 +554,11 @@ class QueryResult:
                                 row[f"{attr_name}_ci{ci_pct}_width"] = None
                             else:
                                 row[attr_name] = None
-                
+
                 rows.append(row)
-            
+
             df = pd.DataFrame(rows)
-            
+
             # Apply grouping metadata if present
             if include_grouping and "grouping" in self.meta:
                 grouping_info = self.meta["grouping"]
@@ -541,9 +568,9 @@ class QueryResult:
                     # Only set index if all keys exist in the dataframe
                     if all(col in df.columns for col in index_cols):
                         df = df.set_index(index_cols)
-            
+
             return df
-        
+
         elif self.target == "edges":
             # Build edge dataframe with standard columns
             rows = []
@@ -551,28 +578,28 @@ class QueryResult:
                 if isinstance(edge, tuple) and len(edge) >= 2:
                     source, target = edge[0], edge[1]
                     row = {}
-                    
+
                     # Extract source and target info
                     if isinstance(source, tuple) and len(source) >= 2:
-                        row['source'] = source[0]
-                        row['source_layer'] = source[1]
+                        row["source"] = source[0]
+                        row["source_layer"] = source[1]
                     else:
-                        row['source'] = source
-                        row['source_layer'] = None
-                    
+                        row["source"] = source
+                        row["source_layer"] = None
+
                     if isinstance(target, tuple) and len(target) >= 2:
-                        row['target'] = target[0]
-                        row['target_layer'] = target[1]
+                        row["target"] = target[0]
+                        row["target_layer"] = target[1]
                     else:
-                        row['target'] = target
-                        row['target_layer'] = None
-                    
+                        row["target"] = target
+                        row["target_layer"] = None
+
                     # Extract weight from edge data
                     if len(edge) >= 3 and isinstance(edge[2], dict):
-                        row['weight'] = edge[2].get('weight', 1.0)
+                        row["weight"] = edge[2].get("weight", 1.0)
                     else:
-                        row['weight'] = 1.0
-                    
+                        row["weight"] = 1.0
+
                     # Add computed attributes
                     # Use hashable edge key (u, v) for lookup
                     edge_key = (source, target)
@@ -581,10 +608,12 @@ class QueryResult:
                             # Use simplified key for lookup
                             if edge_key in values:
                                 value = values[edge_key]
-                                
+
                                 if expand_uncertainty:
                                     # Expand uncertainty into multiple columns
-                                    expanded = _expand_uncertainty_value(attr_name, value)
+                                    expanded = _expand_uncertainty_value(
+                                        attr_name, value
+                                    )
                                     row.update(expanded)
                                 else:
                                     # Preserve uncertainty dictionaries unless explicitly expanded.
@@ -605,10 +634,12 @@ class QueryResult:
                             idx = self.items.index(edge)
                             if idx < len(values):
                                 value = values[idx]
-                                
+
                                 if expand_uncertainty:
                                     # Expand uncertainty into multiple columns
-                                    expanded = _expand_uncertainty_value(attr_name, value)
+                                    expanded = _expand_uncertainty_value(
+                                        attr_name, value
+                                    )
                                     row.update(expanded)
                                 else:
                                     # Preserve uncertainty dictionaries unless explicitly expanded.
@@ -624,11 +655,11 @@ class QueryResult:
                                     row[f"{attr_name}_ci{ci_pct}_width"] = None
                                 else:
                                     row[attr_name] = None
-                    
+
                     rows.append(row)
-            
+
             df = pd.DataFrame(rows)
-            
+
             # Apply grouping metadata if present
             if include_grouping and "grouping" in self.meta:
                 grouping_info = self.meta["grouping"]
@@ -638,36 +669,36 @@ class QueryResult:
                     # Only set index if all keys exist in the dataframe
                     if all(col in df.columns for col in index_cols):
                         df = df.set_index(index_cols)
-            
+
             return df
-        
+
         else:
             # Node dataframe
             rows = []
             for node_item in self.items:
                 row = {}
-                
+
                 # Extract node info - nodes are (node_id, layer) tuples
                 if isinstance(node_item, tuple) and len(node_item) >= 2:
-                    row['id'] = node_item[0]
-                    row['layer'] = node_item[1]
+                    row["id"] = node_item[0]
+                    row["layer"] = node_item[1]
                 else:
-                    row['id'] = node_item
-                    row['layer'] = None
-                
+                    row["id"] = node_item
+                    row["layer"] = None
+
                 # Add computed attributes
                 for attr_name, values in self.attributes.items():
                     # Check if this is an explanation attribute
                     is_explanation = attr_name in _EXPLANATION_ATTRS or any(
-                        attr_name.startswith(prefix) 
+                        attr_name.startswith(prefix)
                         for prefix in ["community_", "layers_", "n_layers_", "top_"]
                     )
-                    
+
                     if isinstance(values, dict):
                         # Use node_item (full tuple) as key
                         if node_item in values:
                             value = values[node_item]
-                            
+
                             # Handle explanations
                             if is_explanation and expand_explanations:
                                 # Expand explanation value (converts complex types to JSON strings)
@@ -696,7 +727,7 @@ class QueryResult:
                         idx = self.items.index(node_item)
                         if idx < len(values):
                             value = values[idx]
-                            
+
                             # Handle explanations
                             if is_explanation and expand_explanations:
                                 expanded = _expand_explanation_value(attr_name, value)
@@ -719,17 +750,17 @@ class QueryResult:
                                 row[f"{attr_name}_ci{ci_pct}_width"] = None
                             else:
                                 row[attr_name] = None
-                
+
                 rows.append(row)
-            
+
             # Create DataFrame with proper columns even if empty
             if rows:
                 df = pd.DataFrame(rows)
             else:
                 # Return empty DataFrame with expected columns
-                columns = ['id', 'layer'] + list(self.attributes.keys())
+                columns = ["id", "layer"] + list(self.attributes.keys())
                 df = pd.DataFrame(columns=columns)
-            
+
             # Apply grouping metadata if present
             if include_grouping and "grouping" in self.meta:
                 grouping_info = self.meta["grouping"]
@@ -739,27 +770,27 @@ class QueryResult:
                     # Only set index if all keys exist in the dataframe
                     if all(col in df.columns for col in index_cols):
                         df = df.set_index(index_cols)
-            
+
             return df
-    
+
     def to_networkx(self, network: Optional[Any] = None):
         """Export results to NetworkX graph.
-        
+
         For node queries: Returns subgraph containing the selected nodes
         For edge queries: Returns subgraph containing the selected edges and their endpoints
-        
+
         Args:
             network: Optional source network to extract subgraph from
-            
+
         Returns:
             networkx.Graph subgraph containing result items
-            
+
         Raises:
             ImportError: If networkx is not available
         """
         import networkx as nx
-        
-        if network is not None and hasattr(network, 'core_network'):
+
+        if network is not None and hasattr(network, "core_network"):
             G = network.core_network
         else:
             # Create new graph with just the items
@@ -771,13 +802,17 @@ class QueryResult:
                 for edge in self.items:
                     if isinstance(edge, tuple) and len(edge) >= 2:
                         u, v = edge[0], edge[1]
-                        attrs = edge[2] if len(edge) >= 3 and isinstance(edge[2], dict) else {}
+                        attrs = (
+                            edge[2]
+                            if len(edge) >= 3 and isinstance(edge[2], dict)
+                            else {}
+                        )
                         G.add_edge(u, v, **attrs)
-        
+
         # Create subgraph with result items
         if self.target == "nodes":
             subgraph = G.subgraph(self.items).copy()
-            
+
             # Attach computed attributes to nodes
             for attr_name, values in self.attributes.items():
                 if isinstance(values, dict):
@@ -793,13 +828,13 @@ class QueryResult:
             # First, collect all nodes involved in selected edges
             nodes_in_edges = set()
             edge_list = []
-            
+
             for edge in self.items:
                 if isinstance(edge, tuple) and len(edge) >= 2:
                     u, v = edge[0], edge[1]
                     nodes_in_edges.add(u)
                     nodes_in_edges.add(v)
-                    
+
                     # Get edge data from original graph or from edge tuple
                     edge_data = {}
                     if G.has_edge(u, v):
@@ -817,9 +852,9 @@ class QueryResult:
                                 edge_data = edge_data.copy()
                     elif len(edge) >= 3 and isinstance(edge[2], dict):
                         edge_data = edge[2].copy()
-                    
+
                     edge_list.append((u, v, edge_data))
-            
+
             # Create new graph with selected edges
             if isinstance(G, nx.MultiGraph):
                 subgraph = nx.MultiGraph()
@@ -827,18 +862,18 @@ class QueryResult:
                 subgraph = nx.DiGraph()
             else:
                 subgraph = nx.Graph()
-            
+
             # Add nodes with their attributes
             for node in nodes_in_edges:
                 if node in G:
                     subgraph.add_node(node, **G.nodes[node])
                 else:
                     subgraph.add_node(node)
-            
+
             # Add edges with their attributes
             for u, v, data in edge_list:
                 subgraph.add_edge(u, v, **data)
-            
+
             # Attach computed edge attributes
             for attr_name, values in self.attributes.items():
                 if isinstance(values, dict):
@@ -847,39 +882,43 @@ class QueryResult:
                             u, v = edge[0], edge[1]
                             if subgraph.has_edge(u, v):
                                 subgraph[u][v][attr_name] = val
-        
+
         return subgraph
-    
+
     def to_arrow(self):
         """Export results to Apache Arrow table.
-        
+
         Returns:
             pyarrow.Table with items and computed attributes
-            
+
         Raises:
             ImportError: If pyarrow is not available
         """
         try:
             import pyarrow as pa
         except ImportError:
-            raise ImportError("pyarrow is required for to_arrow(). Install with: pip install pyarrow")
-        
+            raise ImportError(
+                "pyarrow is required for to_arrow(). Install with: pip install pyarrow"
+            )
+
         # Convert items to strings for Arrow compatibility
         data = {"id": [str(item) for item in self.items]}
-        
+
         for attr_name, values in self.attributes.items():
             if isinstance(values, dict):
                 data[attr_name] = [values.get(item, None) for item in self.items]
             elif len(values) == len(self.items):
                 data[attr_name] = list(values)
             else:
-                data[attr_name] = list(values) + [None] * (len(self.items) - len(values))
-        
+                data[attr_name] = list(values) + [None] * (
+                    len(self.items) - len(values)
+                )
+
         return pa.table(data)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Export results as a dictionary.
-        
+
         Returns:
             Dictionary with target, items, attributes, and metadata
         """
@@ -890,21 +929,21 @@ class QueryResult:
             "computed": self.attributes,
             "meta": self.meta,
         }
-    
+
     def group_summary(self):
         """Return a summary DataFrame with one row per group.
-        
+
         Returns a pandas DataFrame containing:
         - Grouping key columns (e.g., "layer", "src_layer", "dst_layer")
         - n_items: Number of items (nodes/edges) in each group
         - Any group-level coverage metrics if available
-        
+
         This method only uses information already present in the result and
         does not recompute expensive measures.
-        
+
         Returns:
             pandas.DataFrame with one row per group
-            
+
         Raises:
             ImportError: If pandas is not available
             ValueError: If result does not have grouping metadata
@@ -912,39 +951,42 @@ class QueryResult:
         try:
             import pandas as pd
         except ImportError:
-            raise ImportError("pandas is required for group_summary(). Install with: pip install pandas")
-        
+            raise ImportError(
+                "pandas is required for group_summary(). Install with: pip install pandas"
+            )
+
         # Check that grouping metadata exists
         if "grouping" not in self.meta:
             from .errors import GroupingError
+
             raise GroupingError(
                 "group_summary() is only defined for grouped results. "
                 "Use .per_layer() or .per_layer_pair() to create a grouped query."
             )
-        
+
         grouping_info = self.meta["grouping"]
         groups = grouping_info.get("groups", [])
-        
+
         # Build rows from group metadata
         rows = []
         for group_meta in groups:
             row = {}
-            
+
             # Add grouping key columns
             key_dict = group_meta.get("key", {})
             row.update(key_dict)
-            
+
             # Add n_items
             row["n_items"] = group_meta.get("n_items", 0)
-            
+
             # Add any additional metadata (e.g., coverage metrics)
             for k, v in group_meta.items():
                 if k not in ("key", "n_items"):
                     row[k] = v
-            
+
             rows.append(row)
-        
+
         return pd.DataFrame(rows)
-    
+
     def __repr__(self) -> str:
         return f"QueryResult(target='{self.target}', count={len(self.items)}, attributes={list(self.attributes.keys())})"

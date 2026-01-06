@@ -28,13 +28,11 @@
 22. [R Interoperability](#r-interoperability)
 23. [Dynamics Simulations](#dynamics-simulations)
 24. [Uncertainty Quantification](#uncertainty-quantification)
-25. [Replayable Provenance and Query Replay](#replayable-provenance-and-query-replay)
-26. [Temporal Networks](#temporal-networks)
-27. [Null Models](#null-models)
-28. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-25. [Temporal Networks](#temporal-networks)
-26. [Null Models](#null-models)
-27. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+25. [Query Sensitivity Analysis](#query-sensitivity-analysis)
+26. [Replayable Provenance and Query Replay](#replayable-provenance-and-query-replay)
+27. [Temporal Networks](#temporal-networks)
+28. [Null Models](#null-models)
+29. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
 28. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
 29. [Version Information](#version-information)
 30. [File Locations](#file-locations)
@@ -67,6 +65,7 @@ py3plex is a Python library (version 1.1.0) for analyzing and visualizing multil
 - **Multiple I/O Formats:** EdgeList, GraphML, GML, JSON, CSV, Apache Arrow
 - **Dynamics Simulations:** SIS, SIR, SEIR, Random Walk and custom processes
 - **Uncertainty Quantification:** First-class uncertainty support with confidence intervals
+- **Query Sensitivity Analysis:** Test robustness of conclusions (rankings, communities) under perturbations
 - **Temporal Networks:** Time-stamped edges, snapshots, and sliding windows
 - **Null Models:** Configuration model, random graphs for statistical testing
 
@@ -2343,6 +2342,211 @@ stats = result[node]
 | `PERTURBATION` | Drop edges/nodes | Structural uncertainty |
 | `BOOTSTRAP` | Resample with replacement | Statistical inference |
 | `JACKKNIFE` | Leave-one-out | Influence analysis |
+
+---
+
+## Query Sensitivity Analysis
+
+**Query Sensitivity Analysis** tests the robustness of query CONCLUSIONS (rankings, sets, communities) under controlled perturbations. This is fundamentally DISTINCT from Uncertainty Quantification (UQ):
+
+| Aspect | UQ (.uq()) | Sensitivity (.sensitivity()) |
+|--------|------------|------------------------------|
+| **Purpose** | Estimate uncertainty of metric VALUES | Assess stability of CONCLUSIONS |
+| **Question** | "What is the uncertainty in this measurement?" | "Is this result robust to perturbations?" |
+| **Output** | mean ± std, confidence intervals | stability curves, tipping points, influence scores |
+| **Reports** | Distributional statistics (mean, std, quantiles) | Agreement metrics (Jaccard@k, Kendall-τ, VI) |
+| **Focus** | Value dispersion | Conclusion stability |
+
+### Key Concepts
+
+- **Stability Curves**: How conclusions change as perturbation strength varies
+- **Ranking Stability**: Jaccard@k (set overlap), Kendall-τ (ranking correlation)
+- **Community Stability**: Variation of Information, flip probability
+- **Local Influence**: Per-node/per-layer attribution of instability
+- **Tipping Points**: Perturbation thresholds where conclusions collapse
+
+### Core Components
+
+```python
+from py3plex.dsl import Q
+from py3plex.sensitivity import (
+    SensitivityResult,      # Result container with stability curves
+    PerturbationSpec,       # Perturbation specification
+    edge_drop,              # Drop edges randomly
+    degree_preserving_rewire,  # Rewire preserving degrees
+    jaccard_at_k,           # Top-k set agreement
+    kendall_tau,            # Ranking correlation
+    variation_of_information,  # Partition distance
+)
+```
+
+---
+
+### Example 1: Centrality Ranking Robustness
+
+```python
+from py3plex.dsl import Q
+
+# Test how stable the top-20 centrality ranking is under edge removal
+result = (
+    Q.nodes()
+     .compute("betweenness_centrality")
+     .order_by("-betweenness_centrality")
+     .limit(20)
+     .sensitivity(
+         perturb="edge_drop",                      # Perturbation method
+         grid=[0.0, 0.05, 0.1, 0.15, 0.2],        # Perturbation strengths
+         n_samples=30,                             # Samples per grid point
+         metrics=["jaccard_at_k(20)", "kendall_tau"],  # Stability metrics
+         seed=42                                   # For reproducibility
+     )
+     .execute(network)
+)
+
+# Access stability curves
+print(result.sensitivity_curves)
+# {
+#   'jaccard_at_k(20)': StabilityCurve(...),
+#   'kendall_tau': StabilityCurve(...)
+# }
+
+# Check for collapse points (where stability drops below 0.5)
+collapse_points = result.sensitivity_result.get_collapse_points()
+print(f"Ranking collapses at: {collapse_points['kendall_tau']}")
+
+# Export stability curves to pandas
+df = result.sensitivity_result.to_pandas(expand_sensitivity=False)
+print(df)
+#          metric  perturbation_strength  stability  stability_std
+# jaccard_at_k(20)                   0.00       1.00           0.00
+# jaccard_at_k(20)                   0.05       0.95           0.02
+# jaccard_at_k(20)                   0.10       0.87           0.04
+# ...
+```
+
+---
+
+### Example 2: Community Detection Stability
+
+```python
+# Test community detection robustness under topology changes
+result = (
+    Q.communities()
+     .detect("louvain")
+     .sensitivity(
+         perturb="degree_preserving_rewire",  # Preserve degree sequence
+         grid=[0.0, 0.1, 0.2, 0.3],
+         n_samples=50,
+         metrics=["variation_of_information"],  # Partition distance
+         seed=42
+     )
+     .execute(network)
+)
+
+# Check stability
+for metric, curve in result.sensitivity_curves.items():
+    print(f"\n{metric}:")
+    for p, stability in zip(curve.grid, curve.values):
+        print(f"  Rewire fraction {p:.2f}: VI={stability:.4f}")
+```
+
+---
+
+### Example 3: Comparing UQ and Sensitivity
+
+```python
+# UQ: Uncertainty of centrality VALUES
+uq_result = (
+    Q.nodes()
+     .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
+     .compute("degree")
+     .execute(network)
+)
+# → Returns: degree mean ± std, 95% CI for each node
+
+# Sensitivity: Stability of top-k RANKING
+sens_result = (
+    Q.nodes()
+     .compute("degree")
+     .order_by("-degree")
+     .limit(10)
+     .sensitivity(
+         perturb="edge_drop",
+         grid=[0.0, 0.1, 0.2],
+         metrics=["jaccard_at_k(10)"],
+         seed=42
+     )
+     .execute(network)
+)
+# → Returns: stability curves showing how top-10 set changes
+```
+
+---
+
+### Supported Perturbations
+
+| Method | Description | Parameters |
+|--------|-------------|------------|
+| `edge_drop` | Randomly drop edges | `fraction` (0.0-1.0), `layer_aware` |
+| `degree_preserving_rewire` | Rewire while preserving degrees | `fraction`, `max_attempts`, `layer_aware` |
+
+Both perturbations:
+- Are seeded for reproducibility
+- Preserve multilayer structure (when `layer_aware=True`)
+- Log parameters to provenance
+
+---
+
+### Stability Metrics
+
+| Metric | Type | Range | Interpretation |
+|--------|------|-------|----------------|
+| `jaccard_at_k(k)` | Set agreement | [0, 1] | 1.0 = identical top-k sets |
+| `kendall_tau` | Ranking correlation | [-1, 1] | 1.0 = perfect agreement, -1.0 = reversed |
+| `variation_of_information` | Partition distance | [0, ∞) | 0.0 = identical partitions |
+
+---
+
+### Local Influence (Per-Node/Per-Layer)
+
+```python
+result = (
+    Q.nodes()
+     .compute("betweenness_centrality")
+     .order_by("-betweenness_centrality")
+     .sensitivity(
+         perturb="edge_drop",
+         grid=[0.0, 0.1, 0.2],
+         scope="per_node",  # Enable local influence
+         seed=42
+     )
+     .execute(network)
+)
+
+# Access per-node influence scores
+influence = result.sensitivity_result.influence
+for node_influence in influence["node"]:
+    print(f"Node {node_influence.entity_id}: "
+          f"influence={node_influence.influence_score:.4f}")
+```
+
+---
+
+### Interpretation Guidelines
+
+**When to use Sensitivity:**
+- "How robust is this top-10 ranking to edge noise?"
+- "At what perturbation level does my community detection fail?"
+- "Which nodes are most influential on ranking stability?"
+
+**When to use UQ:**
+- "How confident am I in this centrality value?"
+- "What is the measurement uncertainty?"
+- "Do these two groups differ significantly?"
+
+**Both are complementary:**
+- UQ: "Node A has betweenness 0.42 ± 0.03"
+- Sensitivity: "Node A stays in top-20 with 90% stability up to 15% edge removal"
 
 ---
 
