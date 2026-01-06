@@ -420,13 +420,30 @@ def multilayer_leiden_uq(
     scores = []
     failures = []
     
+    # Get original node order
+    node_order = sorted(network.get_nodes())
+    
     for i, seed in enumerate(seeds):
         try:
             # Perturb network if requested
             if method == "perturbation":
                 net_i = perturb_network_edges(network, edge_drop_p=perturbation_rate, seed=seed)
+                # Ensure node order stays the same
+                current_nodes = set(net_i.get_nodes())
+                original_nodes = set(node_order)
+                if current_nodes != original_nodes:
+                    # Skip if network structure changed too much
+                    failures.append({'run': i, 'seed': seed, 'error': 'Network structure changed'})
+                    continue
             elif method == "bootstrap":
                 net_i = bootstrap_network_edges(network, seed=seed)
+                # Ensure node order stays the same
+                current_nodes = set(net_i.get_nodes())
+                original_nodes = set(node_order)
+                if current_nodes != original_nodes:
+                    # Skip if network structure changed too much
+                    failures.append({'run': i, 'seed': seed, 'error': 'Network structure changed'})
+                    continue
             else:
                 net_i = network
             
@@ -447,7 +464,7 @@ def multilayer_leiden_uq(
             suggestions=["Check network validity and parameters"]
         )
     
-    # Get stable node ordering
+    # Use node order from first successful run
     node_order = sorted(partitions[0].keys())
     n_nodes = len(node_order)
     
@@ -488,13 +505,38 @@ def multilayer_leiden_uq(
     
     # Compute stability metrics
     from sklearn.metrics import normalized_mutual_info_score as nmi
-    from py3plex.sensitivity.metrics import variation_of_information
+    from sklearn.metrics.cluster import contingency_matrix
+    
+    def vi_from_arrays(arr1, arr2):
+        """Compute Variation of Information from partition arrays."""
+        # VI = H(X) + H(Y) - 2*MI(X,Y)
+        # Where H is entropy and MI is mutual information
+        n = len(arr1)
+        if n == 0:
+            return 0.0
+        
+        # Build contingency table
+        cont = contingency_matrix(arr1, arr2)
+        
+        # Compute entropies
+        p1 = cont.sum(axis=1) / n
+        p2 = cont.sum(axis=0) / n
+        h1 = -np.sum(p1 * np.log2(p1 + 1e-10))
+        h2 = -np.sum(p2 * np.log2(p2 + 1e-10))
+        
+        # Compute mutual information
+        pxy = cont / n
+        px_py = np.outer(p1, p2)
+        mi = np.sum(pxy * np.log2((pxy + 1e-10) / (px_py + 1e-10)))
+        
+        # VI = H(X) + H(Y) - 2*MI(X,Y)
+        return h1 + h2 - 2 * mi
     
     vi_scores = []
     nmi_scores = []
     for i in range(len(partition_arrays)):
         for j in range(i+1, len(partition_arrays)):
-            vi = variation_of_information(partition_arrays[i], partition_arrays[j])
+            vi = vi_from_arrays(partition_arrays[i], partition_arrays[j])
             nmi_val = nmi(partition_arrays[i], partition_arrays[j])
             vi_scores.append(vi)
             nmi_scores.append(nmi_val)
@@ -509,13 +551,25 @@ def multilayer_leiden_uq(
         # Compute entropy
         node_entropy[i] = -np.sum(probs * np.log2(probs + 1e-10))
     
+    # Compute pairwise agreement (fraction of node pairs with same assignment)
+    agreement_sum = 0.0
+    n_pairs = 0
+    for i in range(len(partition_arrays)):
+        for j in range(i+1, len(partition_arrays)):
+            # Count matching assignments
+            matches = np.sum(partition_arrays[i] == partition_arrays[j])
+            agreement_sum += matches / n_nodes
+            n_pairs += 1
+    
+    pairwise_agreement = agreement_sum / n_pairs if n_pairs > 0 else 1.0
+    
     stability_metrics = {
         'vi_mean': np.mean(vi_scores) if vi_scores else 0.0,
         'vi_std': np.std(vi_scores) if vi_scores else 0.0,
         'nmi_mean': np.mean(nmi_scores) if nmi_scores else 0.0,
         'nmi_std': np.std(nmi_scores) if nmi_scores else 0.0,
         'node_entropy': node_entropy,
-        'pairwise_agreement': dist.pairwise_agreement(),
+        'pairwise_agreement': pairwise_agreement,
     }
     
     # Compute confidence intervals
