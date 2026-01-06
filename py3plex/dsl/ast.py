@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 class Target(Enum):
     """Query target - what to select from the network."""
+
     NODES = "nodes"
     EDGES = "edges"
     COMMUNITIES = "communities"
@@ -19,6 +20,7 @@ class Target(Enum):
 
 class ExportTarget(Enum):
     """Export target for query results."""
+
     PANDAS = "pandas"
     NETWORKX = "networkx"
     ARROW = "arrow"
@@ -27,19 +29,20 @@ class ExportTarget(Enum):
 @dataclass
 class ExportSpec:
     """Specification for exporting query results to a file.
-    
+
     Used to declaratively export results as part of the DSL pipeline.
-    
+
     Attributes:
         path: Output file path
         fmt: Format type ('csv', 'json', 'tsv', etc.)
         columns: Optional list of columns to include/order
         options: Additional format-specific options (e.g., delimiter, orient)
-    
+
     Example:
         ExportSpec(path='results.csv', fmt='csv', columns=['node', 'score'])
         ExportSpec(path='output.json', fmt='json', options={'orient': 'records'})
     """
+
     path: str
     fmt: str = "csv"
     columns: Optional[List[str]] = None
@@ -49,16 +52,17 @@ class ExportSpec:
 @dataclass
 class ParamRef:
     """Reference to a query parameter.
-    
+
     Parameters are placeholders in queries that are bound at execution time.
-    
+
     Attributes:
         name: Parameter name (e.g., "k" for :k in DSL)
         type_hint: Optional type hint for validation
     """
+
     name: str
     type_hint: Optional[str] = None
-    
+
     def __repr__(self) -> str:
         return f":{self.name}"
 
@@ -66,29 +70,31 @@ class ParamRef:
 @dataclass
 class LayerTerm:
     """A single layer reference in a layer expression.
-    
+
     Attributes:
         name: Layer name (e.g., "social", "work")
     """
+
     name: str
 
 
 @dataclass
 class LayerExpr:
     """Layer expression with optional algebra operations.
-    
+
     Supports:
         - Union: LAYER("a") + LAYER("b")
-        - Difference: LAYER("a") - LAYER("b") 
+        - Difference: LAYER("a") - LAYER("b")
         - Intersection: LAYER("a") & LAYER("b")
-    
+
     Attributes:
         terms: List of layer terms
         ops: List of operators between terms ('+', '-', '&')
     """
+
     terms: List[LayerTerm] = field(default_factory=list)
     ops: List[str] = field(default_factory=list)
-    
+
     def get_layer_names(self) -> List[str]:
         """Get all layer names referenced in this expression."""
         return [term.name for term in self.terms]
@@ -101,12 +107,13 @@ Value = Union[str, float, int, ParamRef]
 @dataclass
 class Comparison:
     """A comparison expression.
-    
+
     Attributes:
         left: Attribute name (e.g., "degree", "layer")
         op: Comparison operator ('>', '>=', '<', '<=', '=', '!=')
         right: Value to compare against
     """
+
     left: str
     op: str
     right: Value
@@ -115,11 +122,12 @@ class Comparison:
 @dataclass
 class FunctionCall:
     """A function call in a condition.
-    
+
     Attributes:
         name: Function name (e.g., "reachable_from")
         args: List of arguments
     """
+
     name: str
     args: List[Value] = field(default_factory=list)
 
@@ -127,17 +135,18 @@ class FunctionCall:
 @dataclass
 class SpecialPredicate:
     """Special multilayer predicates.
-    
+
     Supported kinds:
         - 'intralayer': Edges within the same layer
         - 'interlayer': Edges between specific layers
         - 'motif': Motif pattern matching
         - 'reachable_from': Cross-layer reachability
-    
+
     Attributes:
         kind: Predicate type
         params: Additional parameters for the predicate
     """
+
     kind: str
     params: Dict[str, Any] = field(default_factory=dict)
 
@@ -145,26 +154,27 @@ class SpecialPredicate:
 @dataclass
 class ConditionAtom:
     """A single atomic condition.
-    
+
     Exactly one of comparison, function, or special should be non-None.
-    
+
     Attributes:
         comparison: Simple comparison (e.g., degree > 5)
         function: Function call (e.g., reachable_from("Alice"))
         special: Special predicate (e.g., intralayer)
     """
+
     comparison: Optional[Comparison] = None
     function: Optional[FunctionCall] = None
     special: Optional[SpecialPredicate] = None
-    
+
     @property
     def is_comparison(self) -> bool:
         return self.comparison is not None
-    
+
     @property
     def is_function(self) -> bool:
         return self.function is not None
-    
+
     @property
     def is_special(self) -> bool:
         return self.special is not None
@@ -173,13 +183,14 @@ class ConditionAtom:
 @dataclass
 class ConditionExpr:
     """Compound condition expression.
-    
+
     Represents conditions joined by logical operators (AND, OR).
-    
+
     Attributes:
         atoms: List of condition atoms
         ops: List of logical operators ('AND', 'OR') between atoms
     """
+
     atoms: List[ConditionAtom] = field(default_factory=list)
     ops: List[str] = field(default_factory=list)
 
@@ -187,23 +198,24 @@ class ConditionExpr:
 @dataclass
 class UQConfig:
     """Query-scoped uncertainty quantification configuration.
-    
+
     This dataclass stores uncertainty estimation settings at the query level,
     providing defaults for all metrics computed in the query unless explicitly
     overridden on a per-metric basis.
-    
+
     Attributes:
         method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
         n_samples: Number of samples for uncertainty estimation
         ci: Confidence interval level (e.g., 0.95 for 95% CI)
         seed: Random seed for reproducibility
         kwargs: Additional method-specific parameters (e.g., bootstrap_unit, bootstrap_mode)
-    
+
     Example:
         >>> uq = UQConfig(method="perturbation", n_samples=100, ci=0.95, seed=42)
-        >>> uq = UQConfig(method="bootstrap", n_samples=200, ci=0.95, 
+        >>> uq = UQConfig(method="bootstrap", n_samples=200, ci=0.95,
         ...               kwargs={"bootstrap_unit": "edges", "bootstrap_mode": "resample"})
     """
+
     method: Optional[str] = None
     n_samples: Optional[int] = None
     ci: Optional[float] = None
@@ -214,7 +226,7 @@ class UQConfig:
 @dataclass
 class ComputeItem:
     """A measure to compute.
-    
+
     Attributes:
         name: Measure name (e.g., 'betweenness_centrality')
         alias: Optional alias for the result (e.g., 'bc')
@@ -228,6 +240,7 @@ class ComputeItem:
         null_model: Null model type: "degree_preserving", "erdos_renyi", "configuration"
         random_state: Random seed for reproducibility
     """
+
     name: str
     alias: Optional[str] = None
     uncertainty: bool = False
@@ -239,7 +252,7 @@ class ComputeItem:
     n_null: Optional[int] = None
     null_model: Optional[str] = None
     random_state: Optional[int] = None
-    
+
     @property
     def result_name(self) -> str:
         """Get the name to use in results (alias or original name)."""
@@ -249,11 +262,12 @@ class ComputeItem:
 @dataclass
 class OrderItem:
     """Ordering specification.
-    
+
     Attributes:
         key: Attribute or computed value to order by
         desc: True for descending order, False for ascending
     """
+
     key: str
     desc: bool = False
 
@@ -261,25 +275,26 @@ class OrderItem:
 @dataclass
 class TemporalContext:
     """Temporal context for time-based queries.
-    
+
     This represents temporal constraints on a query, specified via AT or DURING clauses.
-    
+
     Attributes:
         kind: Type of temporal constraint ("at" for point-in-time, "during" for interval)
         t0: Start time for interval queries (None for point-in-time)
         t1: End time for interval queries (None for point-in-time)
         range_name: Optional named range reference (e.g., "Q1_2023")
-    
+
     Examples:
         >>> # Point-in-time: AT 1234567890
         >>> TemporalContext(kind="at", t0=1234567890.0, t1=1234567890.0)
-        
+
         >>> # Time range: DURING [100, 200]
         >>> TemporalContext(kind="during", t0=100.0, t1=200.0)
-        
+
         >>> # Named range: DURING RANGE "Q1_2023"
         >>> TemporalContext(kind="during", range_name="Q1_2023")
     """
+
     kind: str  # "at" or "during"
     t0: Optional[float] = None
     t1: Optional[float] = None
@@ -289,27 +304,28 @@ class TemporalContext:
 @dataclass
 class WindowSpec:
     """Specification for sliding window iteration over temporal networks.
-    
+
     This enables queries that operate over time windows, useful for
     streaming algorithms and temporal analysis.
-    
+
     Attributes:
         window_size: Size of each time window (numeric or duration string)
         step: Step size between windows (defaults to window_size for non-overlapping)
         start: Optional start time for windowing
         end: Optional end time for windowing
         aggregation: How to aggregate results across windows ("list", "concat", "avg", etc.)
-    
+
     Examples:
         >>> # Non-overlapping windows of size 100
         >>> WindowSpec(window_size=100.0)
-        
+
         >>> # Overlapping windows: size 100, step 50
         >>> WindowSpec(window_size=100.0, step=50.0)
-        
+
         >>> # Duration string (parsed later)
         >>> WindowSpec(window_size="7d", step="1d")
     """
+
     window_size: Union[float, str]
     step: Optional[Union[float, str]] = None
     start: Optional[float] = None
@@ -320,10 +336,10 @@ class WindowSpec:
 @dataclass
 class ExplainSpec:
     """Specification for attaching explanations to query results.
-    
+
     Explanations provide additional context for each result row (typically nodes),
     such as community membership, top neighbors, and layer footprint.
-    
+
     Attributes:
         include: List of explanation blocks to compute (e.g., ["community", "top_neighbors"])
         exclude: List of explanation blocks to exclude from defaults
@@ -334,14 +350,14 @@ class ExplainSpec:
         cache: Whether to cache intermediate computations (default: True)
         as_columns: Store explanations as top-level columns (default: True)
         prefix: Optional prefix for explanation column names (default: "")
-    
+
     Examples:
         >>> # Basic usage with defaults
         >>> ExplainSpec(include=["community", "top_neighbors"])
-        
+
         >>> # Custom neighbor count
         >>> ExplainSpec(include=["top_neighbors"], neighbors_top=5)
-        
+
         >>> # With custom configuration
         >>> ExplainSpec(
         ...     include=["community", "top_neighbors", "layer_footprint"],
@@ -349,7 +365,10 @@ class ExplainSpec:
         ...     neighbors_cfg={"scope": "layer", "metric": "weight"}
         ... )
     """
-    include: List[str] = field(default_factory=lambda: ["community", "top_neighbors", "layer_footprint"])
+
+    include: List[str] = field(
+        default_factory=lambda: ["community", "top_neighbors", "layer_footprint"]
+    )
     exclude: List[str] = field(default_factory=list)
     neighbors_top: int = 10
     neighbors_cfg: Dict[str, Any] = field(default_factory=dict)
@@ -363,17 +382,17 @@ class ExplainSpec:
 @dataclass
 class CounterfactualSpec:
     """Specification for counterfactual robustness analysis.
-    
+
     This represents a request to execute a query under controlled structural
     interventions to test the sensitivity of analytical conclusions.
-    
+
     Attributes:
         intervention_type: Type of intervention ("remove_edges", "rewire", etc.)
         intervention_params: Parameters for the intervention
         repeats: Number of counterfactual runs
         seed: Random seed for reproducibility
         targets: Optional target specification for the intervention
-    
+
     Examples:
         >>> # Quick robustness check with edge removal
         >>> CounterfactualSpec(
@@ -382,7 +401,7 @@ class CounterfactualSpec:
         ...     repeats=30,
         ...     seed=42
         ... )
-        
+
         >>> # Degree-preserving rewiring
         >>> CounterfactualSpec(
         ...     intervention_type="rewire_degree_preserving",
@@ -391,11 +410,63 @@ class CounterfactualSpec:
         ...     seed=42
         ... )
     """
+
     intervention_type: str
     intervention_params: Dict[str, Any] = field(default_factory=dict)
     repeats: int = 30
     seed: Optional[int] = None
     targets: Optional[Any] = None
+
+
+@dataclass
+class SensitivitySpec:
+    """Specification for query sensitivity analysis.
+
+    Sensitivity analysis tests robustness of query conclusions (rankings, sets,
+    communities) under controlled perturbations. This is DISTINCT from UQ:
+
+    - UQ: Estimates uncertainty of METRIC VALUES (mean, std, CI)
+    - Sensitivity: Assesses stability of CONCLUSIONS under perturbations
+
+    Attributes:
+        perturb: Perturbation method ('edge_drop', 'degree_preserving_rewire')
+        grid: Perturbation strength grid (e.g., [0.0, 0.05, 0.1, 0.15, 0.2])
+        n_samples: Number of samples per grid point for averaging
+        seed: Random seed for reproducibility
+        metrics: Stability metrics to compute (e.g., ['jaccard_at_k(20)', 'kendall_tau'])
+        scope: Analysis scope ('global', 'per_node', 'per_layer')
+        kwargs: Additional perturbation-specific parameters
+
+    Example:
+        SensitivitySpec(
+            perturb='edge_drop',
+            grid=[0.0, 0.05, 0.1, 0.15, 0.2],
+            n_samples=30,
+            seed=42,
+            metrics=['jaccard_at_k(20)', 'kendall_tau'],
+            scope='global'
+        )
+    """
+
+    perturb: str
+    grid: List[float]
+    n_samples: int = 30
+    seed: Optional[int] = None
+    metrics: List[str] = field(default_factory=lambda: ["kendall_tau"])
+    scope: str = "global"
+    kwargs: Dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for serialization."""
+        return {
+            "perturb": self.perturb,
+            "grid": self.grid,
+            "n_samples": self.n_samples,
+            "seed": self.seed,
+            "metrics": self.metrics,
+            "scope": self.scope,
+            "kwargs": self.kwargs,
+        }
 
 
 @dataclass
@@ -423,7 +494,7 @@ class ContractSpec:
 @dataclass
 class SelectStmt:
     """A SELECT statement.
-    
+
     Attributes:
         target: What to select (nodes or edges)
         layer_expr: Optional layer expression for filtering
@@ -456,6 +527,7 @@ class SelectStmt:
         uq_config: Optional query-scoped uncertainty quantification configuration
         counterfactual_spec: Optional counterfactual robustness specification
     """
+
     target: Target
     layer_expr: Optional[LayerExpr] = None
     layer_set: Optional[Any] = None  # LayerSet type (Any to avoid circular import)
@@ -464,9 +536,9 @@ class SelectStmt:
     order_by: List[OrderItem] = field(default_factory=list)
     limit: Optional[int] = None
     export: Optional[ExportTarget] = None
-    file_export: Optional['ExportSpec'] = None
-    temporal_context: Optional['TemporalContext'] = None
-    window_spec: Optional['WindowSpec'] = None
+    file_export: Optional["ExportSpec"] = None
+    temporal_context: Optional["TemporalContext"] = None
+    window_spec: Optional["WindowSpec"] = None
     group_by: List[str] = field(default_factory=list)
     limit_per_group: Optional[int] = None
     coverage_mode: Optional[str] = None
@@ -485,21 +557,23 @@ class SelectStmt:
     aggregate_specs: Optional[Dict[str, Any]] = None
     mutate_specs: Optional[Dict[str, Any]] = None
     autocompute: bool = True
-    uq_config: Optional['UQConfig'] = None
-    explain_spec: Optional['ExplainSpec'] = None
-    counterfactual_spec: Optional['CounterfactualSpec'] = None
-    contract_spec: Optional['ContractSpec'] = None
+    uq_config: Optional["UQConfig"] = None
+    explain_spec: Optional["ExplainSpec"] = None
+    counterfactual_spec: Optional["CounterfactualSpec"] = None
+    sensitivity_spec: Optional["SensitivitySpec"] = None
+    contract_spec: Optional["ContractSpec"] = None
 
 
 @dataclass
 class Query:
     """Top-level query representation.
-    
+
     Attributes:
         explain: If True, return execution plan instead of results
         select: The SELECT statement
         dsl_version: DSL version for compatibility
     """
+
     explain: bool
     select: SelectStmt
     dsl_version: str = "2.0"
@@ -508,11 +582,12 @@ class Query:
 @dataclass
 class PlanStep:
     """A step in the execution plan.
-    
+
     Attributes:
         description: Human-readable description of the step
         estimated_complexity: Estimated time complexity (e.g., "O(|V|)")
     """
+
     description: str
     estimated_complexity: Optional[str] = None
 
@@ -520,11 +595,12 @@ class PlanStep:
 @dataclass
 class ExecutionPlan:
     """Execution plan for EXPLAIN queries.
-    
+
     Attributes:
         steps: List of execution steps
         warnings: List of performance or correctness warnings
     """
+
     steps: List[PlanStep] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
 
@@ -537,14 +613,14 @@ class ExecutionPlan:
 @dataclass
 class CompareStmt:
     """COMPARE statement for network comparison.
-    
+
     DSL Example:
         COMPARE NETWORK baseline, intervention
         USING multiplex_jaccard
         ON LAYER("offline") + LAYER("online")
         MEASURE global_distance
         TO pandas
-    
+
     Attributes:
         network_a: Name/key for first network
         network_b: Name/key for second network
@@ -553,6 +629,7 @@ class CompareStmt:
         measures: List of measure types (e.g., ["global_distance", "layerwise_distance"])
         export_target: Optional export format
     """
+
     network_a: str
     network_b: str
     metric_name: str
@@ -569,14 +646,14 @@ class CompareStmt:
 @dataclass
 class NullModelStmt:
     """NULLMODEL statement for generating randomized networks.
-    
+
     DSL Example:
         NULLMODEL configuration
         ON LAYER("social") + LAYER("work")
         WITH preserve_degree=True, preserve_layer_sizes=True
         SAMPLES 100
         SEED 42
-    
+
     Attributes:
         model_type: Type of null model (e.g., "configuration", "erdos_renyi", "layer_shuffle")
         layer_expr: Optional layer expression for filtering
@@ -585,6 +662,7 @@ class NullModelStmt:
         seed: Optional random seed
         export_target: Optional export format
     """
+
     model_type: str
     layer_expr: Optional[LayerExpr] = None
     params: Dict[str, Any] = field(default_factory=dict)
@@ -601,13 +679,13 @@ class NullModelStmt:
 @dataclass
 class PathStmt:
     """PATH statement for path queries and flow analysis.
-    
+
     DSL Example:
         PATH SHORTEST FROM "Alice" TO "Bob"
         ON LAYER("social") + LAYER("work")
         CROSSING LAYERS
         LIMIT 10
-    
+
     Attributes:
         path_type: Type of path query ("shortest", "all", "random_walk", "flow")
         source: Source node identifier
@@ -618,6 +696,7 @@ class PathStmt:
         limit: Optional limit on results
         export_target: Optional export format
     """
+
     path_type: str
     source: Union[str, ParamRef]
     target: Optional[Union[str, ParamRef]] = None
@@ -641,7 +720,7 @@ class PathStmt:
 @dataclass
 class DynamicsStmt:
     """DYNAMICS statement for declarative process simulation.
-    
+
     DSL Example:
         DYNAMICS SIS WITH beta=0.3, mu=0.1
         ON LAYER("contacts") + LAYER("travel")
@@ -649,7 +728,7 @@ class DynamicsStmt:
         PARAMETERS PER LAYER contacts: {beta=0.4}, travel: {beta=0.2}
         RUN FOR 100 STEPS, 10 REPLICATES
         TRACK prevalence, incidence
-    
+
     Attributes:
         process_name: Name of the process (e.g., "SIS", "SIR", "RANDOM_WALK")
         params: Global process parameters (e.g., {"beta": 0.3, "mu": 0.1})
@@ -663,6 +742,7 @@ class DynamicsStmt:
         seed: Optional random seed for reproducibility
         export_target: Optional export format
     """
+
     process_name: str
     params: Dict[str, Any] = field(default_factory=dict)
     layer_expr: Optional[LayerExpr] = None
@@ -679,7 +759,7 @@ class DynamicsStmt:
 @dataclass
 class TrajectoriesStmt:
     """TRAJECTORIES statement for querying simulation results.
-    
+
     DSL Example:
         TRAJECTORIES FROM process_result
         WHERE replicate = 5
@@ -687,7 +767,7 @@ class TrajectoriesStmt:
         MEASURE peak_time, final_state
         ORDER BY node_id
         LIMIT 100
-    
+
     Attributes:
         process_ref: Reference to a dynamics process or result
         where: Optional WHERE conditions on trajectories
@@ -697,6 +777,7 @@ class TrajectoriesStmt:
         limit: Optional limit on results
         export_target: Optional export format
     """
+
     process_ref: str
     where: Optional[ConditionExpr] = None
     temporal_context: Optional[TemporalContext] = None
@@ -709,10 +790,10 @@ class TrajectoriesStmt:
 @dataclass
 class ExtendedQuery:
     """Extended query supporting multiple statement types.
-    
+
     This extends the basic Query to support COMPARE, NULLMODEL, PATH, DYNAMICS,
     and TRAJECTORIES statements in addition to SELECT statements.
-    
+
     Attributes:
         kind: Query type ("select", "compare", "nullmodel", "path", "dynamics", "trajectories", "semiring")
         explain: If True, return execution plan instead of results
@@ -725,6 +806,7 @@ class ExtendedQuery:
         semiring: SEMIRING statement (if kind == "semiring")
         dsl_version: DSL version for compatibility
     """
+
     kind: str
     explain: bool = False
     select: Optional[SelectStmt] = None
@@ -745,16 +827,17 @@ class ExtendedQuery:
 @dataclass
 class SemiringSpecNode:
     """Semiring specification for algebra operations.
-    
+
     Supports:
     - Single semiring: name or per_layer dict
     - Combined semirings: product or lexicographic combination
-    
+
     Attributes:
         name: Semiring name (e.g., "min_plus", "boolean", "max_times")
         per_layer: Optional dict mapping layer -> semiring name
         combine_strategy: How to combine per-layer semirings ("product", "lexicographic")
     """
+
     name: Optional[str] = None
     per_layer: Optional[Dict[str, str]] = None
     combine_strategy: Optional[str] = None
@@ -763,13 +846,14 @@ class SemiringSpecNode:
 @dataclass
 class WeightLiftSpecNode:
     """Weight lifting specification for edge attribute extraction.
-    
+
     Attributes:
         attr: Edge attribute name (e.g., "weight", "cost")
         transform: Optional transformation ("log", custom callable reference)
         default: Default value if attribute missing
         on_missing: Behavior on missing attribute ("default", "fail", "drop")
     """
+
     attr: Optional[str] = None
     transform: Optional[str] = None
     default: Any = 1.0
@@ -779,11 +863,12 @@ class WeightLiftSpecNode:
 @dataclass
 class CrossingLayersSpec:
     """Specification for cross-layer edge handling.
-    
+
     Attributes:
         mode: Crossing mode ("allowed", "forbidden", "penalty")
         penalty: Optional penalty value (for "penalty" mode)
     """
+
     mode: str = "allowed"
     penalty: Optional[float] = None
 
@@ -791,7 +876,7 @@ class CrossingLayersSpec:
 @dataclass
 class SemiringPathStmt:
     """SEMIRING PATH statement for path queries using semiring algebra.
-    
+
     DSL Example:
         S.paths()
          .from_node("Alice")
@@ -804,7 +889,7 @@ class SemiringPathStmt:
          .k_best(3)
          .witness(True)
          .backend("graph")
-    
+
     Attributes:
         source: Source node identifier
         target: Optional target node identifier
@@ -818,9 +903,12 @@ class SemiringPathStmt:
         backend: Backend selection ("graph", "matrix")
         uq_config: Optional uncertainty quantification config
     """
+
     source: Union[str, ParamRef]
     target: Optional[Union[str, ParamRef]] = None
-    semiring_spec: SemiringSpecNode = field(default_factory=lambda: SemiringSpecNode(name="min_plus"))
+    semiring_spec: SemiringSpecNode = field(
+        default_factory=lambda: SemiringSpecNode(name="min_plus")
+    )
     lift_spec: WeightLiftSpecNode = field(default_factory=WeightLiftSpecNode)
     layer_expr: Optional[LayerExpr] = None
     crossing_layers: CrossingLayersSpec = field(default_factory=CrossingLayersSpec)
@@ -834,14 +922,14 @@ class SemiringPathStmt:
 @dataclass
 class SemiringClosureStmt:
     """SEMIRING CLOSURE statement for transitive closure.
-    
+
     DSL Example:
         S.closure()
          .semiring("boolean")
          .lift(attr="weight")
          .from_layers(L["social"])
          .backend("graph")
-    
+
     Attributes:
         semiring_spec: Semiring specification
         lift_spec: Weight lifting specification
@@ -851,7 +939,10 @@ class SemiringClosureStmt:
         backend: Backend selection
         output_format: Output format ("sparse", "dense")
     """
-    semiring_spec: SemiringSpecNode = field(default_factory=lambda: SemiringSpecNode(name="boolean"))
+
+    semiring_spec: SemiringSpecNode = field(
+        default_factory=lambda: SemiringSpecNode(name="boolean")
+    )
     lift_spec: WeightLiftSpecNode = field(default_factory=WeightLiftSpecNode)
     layer_expr: Optional[LayerExpr] = None
     crossing_layers: CrossingLayersSpec = field(default_factory=CrossingLayersSpec)
@@ -863,14 +954,14 @@ class SemiringClosureStmt:
 @dataclass
 class SemiringFixedPointStmt:
     """SEMIRING FIXED_POINT statement for iterative computation.
-    
+
     DSL Example:
         S.fixed_point()
          .operator("closure")
          .semiring("boolean")
          .max_iters(100)
          .tol(1e-6)
-    
+
     Attributes:
         operator: Operator to iterate ("closure", custom)
         semiring_spec: Semiring specification
@@ -879,8 +970,11 @@ class SemiringFixedPointStmt:
         max_iters: Maximum iterations
         tol: Optional tolerance for convergence
     """
+
     operator: str = "closure"
-    semiring_spec: SemiringSpecNode = field(default_factory=lambda: SemiringSpecNode(name="boolean"))
+    semiring_spec: SemiringSpecNode = field(
+        default_factory=lambda: SemiringSpecNode(name="boolean")
+    )
     lift_spec: WeightLiftSpecNode = field(default_factory=WeightLiftSpecNode)
     layer_expr: Optional[LayerExpr] = None
     max_iters: int = 100
@@ -890,13 +984,14 @@ class SemiringFixedPointStmt:
 @dataclass
 class SemiringStmt:
     """Top-level SEMIRING statement (union of path/closure/fixed_point).
-    
+
     Attributes:
         operation: Operation type ("paths", "closure", "fixed_point")
         paths: Path statement (if operation == "paths")
         closure: Closure statement (if operation == "closure")
         fixed_point: Fixed-point statement (if operation == "fixed_point")
     """
+
     operation: str
     paths: Optional[SemiringPathStmt] = None
     closure: Optional[SemiringClosureStmt] = None
