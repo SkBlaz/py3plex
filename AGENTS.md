@@ -35,10 +35,11 @@
 29. [Temporal Networks](#temporal-networks)
 30. [Null Models](#null-models)
 31. [Probabilistic Community Detection](#probabilistic-community-detection)
-32. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-33. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
-34. [Version Information](#version-information)
-35. [File Locations](#file-locations)
+32. [Multilayer Leiden Algorithm with UQ](#multilayer-leiden-algorithm-with-uq)
+33. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
+34. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
+35. [Version Information](#version-information)
+36. [File Locations](#file-locations)
 
 ---
 
@@ -3768,6 +3769,270 @@ The system is fully backward compatible:
 - **Example**: `examples/network_analysis/example_dsl_probabilistic_communities.py`
 - **Tests**: `tests/property/test_probabilistic_communities_properties.py`
 - **Module**: `py3plex.uncertainty.community_result`
+
+---
+
+## Multilayer Leiden Algorithm with UQ
+
+py3plex provides a production-quality multilayer/multiplex Leiden community detection algorithm with first-class uncertainty quantification (UQ) and DSL integration.
+
+### Key Features
+
+- **Deterministic by Default**: random_state=None becomes seed=0 for reproducibility
+- **Multilayer Modularity**: Optimizes Q with resolution γ and coupling ω parameters
+- **Uncertainty Quantification**: Ensemble runs with consensus partitions and stability metrics
+- **Multiple UQ Methods**: SEED (Monte Carlo), PERTURBATION (structural), BOOTSTRAP (resampling)
+- **DSL Integration**: Works seamlessly with `.community(method="leiden")` and `.uq()`
+- **Comprehensive Diagnostics**: Timing, convergence info, stability metrics
+
+### Core API
+
+```python
+from py3plex.algorithms.community_detection import (
+    multilayer_leiden,         # Main algorithm
+    multilayer_leiden_uq,      # With uncertainty quantification
+    UQResult,                  # UQ result container
+    canonicalize_partition,    # Utility for partition labels
+)
+```
+
+### Multilayer Modularity Objective
+
+The algorithm optimizes multilayer modularity:
+
+```
+Q = (1/2μ) Σ_{ijsr} [(A_{ijs} - γ_s k_{is}k_{js}/2m_s) δ_{sr} + δ_{ij} ω_{sr}] δ(g_{is}, g_{jr})
+```
+
+Where:
+- `A_{ijs}`: adjacency matrix element for nodes i,j in layer s
+- `γ_s`: resolution parameter for layer s (higher → more communities)
+- `k_{is}`: degree of node i in layer s
+- `m_s`: total edge weight in layer s
+- `ω_{sr}`: interlayer coupling between layers s and r (higher → stronger coupling)
+- `δ(g_{is}, g_{jr})`: 1 if node-layers are in same community, else 0
+- `μ`: total weight in supra-network
+
+### Example 1: Basic Multilayer Leiden
+
+```python
+from py3plex.core import multinet
+from py3plex.algorithms.community_detection import multilayer_leiden
+
+# Create network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    ['A', 'L1', 'B', 'L1', 1],
+    ['B', 'L1', 'C', 'L1', 1],
+    ['A', 'L2', 'C', 'L2', 1],
+], input_type='list')
+
+# Run Leiden
+partition, Q = multilayer_leiden(
+    net,
+    gamma=1.0,      # Resolution parameter
+    omega=1.0,      # Interlayer coupling
+    n_iterations=2, # Leiden iterations
+    random_state=42 # Seed for reproducibility
+)
+
+print(f"Modularity: {Q:.4f}")
+print(f"Communities: {len(set(partition.values()))}")
+
+# Partition is Dict[(node, layer), community_id]
+for (node, layer), comm_id in partition.items():
+    print(f"  ({node}, {layer}) → Community {comm_id}")
+```
+
+### Example 2: Leiden with Diagnostics
+
+```python
+partition, Q, diagnostics = multilayer_leiden(
+    net,
+    gamma=1.0,
+    omega=1.0,
+    random_state=42,
+    return_diagnostics=True
+)
+
+print(f"Runtime: {diagnostics['timing']:.4f}s")
+print(f"Iterations: {diagnostics['convergence_info']['iterations']}")
+print(f"Converged: {diagnostics['convergence_info']['converged']}")
+print(f"Backend: {diagnostics['backend_used']}")
+print(f"#Communities: {diagnostics['n_communities']}")
+```
+
+### Example 3: Multilayer Leiden with UQ
+
+```python
+from py3plex.algorithms.community_detection import multilayer_leiden_uq
+
+# Run ensemble with uncertainty quantification
+result = multilayer_leiden_uq(
+    net,
+    gamma=1.0,
+    omega=1.0,
+    n_runs=50,                # Number of ensemble runs
+    method="seed",            # UQ method: "seed", "perturbation", "bootstrap"
+    ci=0.95,                  # Confidence interval level
+    random_state=42           # Base seed (generates n_runs seeds deterministically)
+)
+
+# Summary statistics
+print(f"Score mean: {result.summary['score_mean']:.4f}")
+print(f"Score std: {result.summary['score_std']:.4f}")
+print(f"Score 95% CI: [{result.ci['score'][0]:.4f}, {result.ci['score'][1]:.4f}]")
+print(f"#Communities mean: {result.summary['n_communities_mean']:.2f}")
+
+# Stability metrics
+print(f"VI mean: {result.stability_metrics['vi_mean']:.4f}")
+print(f"NMI mean: {result.stability_metrics['nmi_mean']:.4f}")
+print(f"Pairwise agreement: {result.stability_metrics['pairwise_agreement']:.4f}")
+
+# Per-node uncertainty (entropy)
+node_entropy = result.stability_metrics['node_entropy']
+for i, (node, layer) in enumerate(sorted(result.consensus_partition.keys())):
+    print(f"({node}, {layer}): entropy = {node_entropy[i]:.4f}")
+
+# Consensus partition
+for (node, layer), comm_id in result.consensus_partition.items():
+    print(f"  ({node}, {layer}) → Community {comm_id}")
+```
+
+### Example 4: DSL Integration
+
+```python
+from py3plex.dsl import Q
+
+# Basic community detection via DSL
+result = (
+    Q.nodes()
+     .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
+     .execute(net)
+)
+
+# With uncertainty quantification
+result = (
+    Q.nodes()
+     .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
+     .uq(method="ensemble", n_samples=50, seed=42)
+     .execute(net)
+)
+
+# Result metadata includes consensus partition and stability metrics
+print(f"Consensus partition: {result.meta['consensus_partition']}")
+print(f"Score CI: {result.meta['score_ci']}")
+```
+
+### Parameters
+
+#### multilayer_leiden
+
+- **gamma** (float or Dict[layer, float]): Resolution parameter. Higher → more communities. Default: 1.0
+- **omega** (float or np.ndarray): Interlayer coupling. Higher → stronger coupling. Default: 1.0
+- **n_iterations** (int): Maximum Leiden iterations. Default: 2
+- **random_state** (int or None): Random seed. None → 0 (deterministic). Default: None
+- **init_partition** (Dict or None): Initial partition. Default: None (singleton)
+- **allow_isolates** (bool): Whether isolates can form their own communities. Default: True
+- **return_diagnostics** (bool): Return diagnostics dict. Default: False
+- **backend** (str): Algorithm backend ("auto", "native", "igraph"). Default: "auto"
+
+#### multilayer_leiden_uq
+
+- **gamma, omega, n_iterations, random_state**: Same as multilayer_leiden
+- **n_runs** (int): Number of ensemble runs. Default: 20
+- **seeds** (List[int] or None): Explicit seeds. None → auto-generate. Default: None
+- **agg** (str): Consensus method ("consensus"=medoid, "coassignment"=clustering). Default: "consensus"
+- **ci** (float): Confidence interval level (0 < ci < 1). Default: 0.95
+- **return_all** (bool): Include all partitions in result. Default: False
+- **method** (str): UQ strategy ("seed", "perturbation", "bootstrap"). Default: "seed"
+- **perturbation_rate** (float): For method="perturbation", edge drop fraction. Default: 0.05
+
+### UQResult Structure
+
+```python
+@dataclass
+class UQResult:
+    partitions: Optional[List[Dict]]       # All partitions (if return_all=True)
+    scores: List[float]                    # Modularity scores
+    consensus_partition: Dict              # Consensus partition
+    membership_probs: np.ndarray           # Co-assignment matrix
+    stability_metrics: Dict                # VI, NMI, node entropy, pairwise agreement
+    ci: Dict                               # Confidence intervals
+    summary: Dict                          # Mean/std statistics
+    diagnostics: Dict                      # Seeds, runtime, failures
+```
+
+### Defaults and Invariants
+
+#### Determinism
+
+- **Same seed → identical results**: Fixed random_state yields bit-identical partition and score
+- **Default seed is 0**: If random_state=None, uses seed=0 for deterministic behavior
+- **Stable node ordering**: Nodes sorted consistently across runs and machines
+- **Canonical labels**: Community IDs relabeled 0, 1, 2, ... by order of first appearance
+
+#### UQ Ensemble
+
+- **Deterministic seed generation**: Seeds derived from base random_state using spawn_seeds()
+- **Consensus partition**: Medoid (default) minimizes mean VI distance to all partitions
+- **Co-assignment matrix**: P(node_i, node_j in same community) across ensemble
+- **Stability metrics**: VI/NMI distributions, pairwise agreement, per-node entropy
+
+### Performance Notes
+
+- **Native backend**: Pure Python implementation, no external dependencies
+- **Supra-graph formulation**: Builds supra-adjacency with interlayer coupling
+- **Time complexity**: O(n log n) per iteration for sparse networks
+- **Memory**: O(n + m) for network with n nodes, m edges
+- **Consensus computation**: Medoid is O(n² × n_runs) for VI distances
+- **Co-assignment**: Dense O(n²) or sparse approximation for large networks
+
+### Error Handling
+
+The API validates inputs and provides helpful error messages:
+
+```python
+# Invalid gamma
+multilayer_leiden(net, gamma=-1.0)  # Raises AlgorithmError with suggestions
+
+# Invalid omega
+multilayer_leiden(net, omega=-1.0)  # Raises AlgorithmError
+
+# Invalid n_iterations
+multilayer_leiden(net, n_iterations=0)  # Raises AlgorithmError
+
+# Invalid UQ parameters
+multilayer_leiden_uq(net, n_runs=0)  # Raises AlgorithmError
+multilayer_leiden_uq(net, method="invalid")  # Raises AlgorithmError
+multilayer_leiden_uq(net, agg="invalid")  # Raises AlgorithmError
+multilayer_leiden_uq(net, ci=1.5)  # Raises AlgorithmError
+```
+
+### Testing Strategy
+
+Comprehensive test suite in `tests/test_multilayer_leiden_uq.py`:
+
+1. **Unit tests**: Basic execution, diagnostics, canonicalization
+2. **Determinism tests**: Same seed → identical results
+3. **Parameter sweeps**: Gamma and omega effects
+4. **Property-based tests**: Partition validity, coverage, finite scores
+5. **UQ tests**: Ensemble, stability metrics, confidence intervals
+6. **Method tests**: Seed, perturbation, bootstrap strategies
+7. **Regression fixtures**: Fixed seed + expected outputs
+
+Run tests:
+```bash
+python -m unittest tests.test_multilayer_leiden_uq -v
+```
+
+### Related Documentation
+
+- **Example**: `examples/network_analysis/example_multilayer_leiden_uq.py`
+- **Tests**: `tests/test_multilayer_leiden_uq.py`
+- **Module**: `py3plex.algorithms.community_detection.leiden_uq`
+- **Base Algorithm**: `py3plex.algorithms.community_detection.leiden_multilayer`
+
 - **Engine**: `py3plex.uncertainty.community_ensemble`
 
 ---

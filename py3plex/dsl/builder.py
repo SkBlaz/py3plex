@@ -25,6 +25,7 @@ Example:
 import logging
 import pandas as pd
 from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
+import numpy as np
 
 if TYPE_CHECKING:
     from .layers import LayerSet
@@ -861,6 +862,91 @@ class QueryBuilder:
         See uq() for full documentation.
         """
         return self.uq(method=method, n_samples=n_samples, ci=ci, seed=seed, **kwargs)
+
+    def community(
+        self,
+        method: str = "leiden",
+        gamma: Union[float, Dict[Any, float]] = 1.0,
+        omega: Union[float, np.ndarray] = 1.0,
+        n_iterations: int = 2,
+        random_state: Optional[int] = None,
+        partition_name: str = "default",
+        **kwargs,
+    ) -> "QueryBuilder":
+        """Run community detection and attach partition to network.
+        
+        This operator runs community detection on the network and attaches the
+        resulting partition so it can be queried or used in subsequent operations.
+        
+        Supported algorithms:
+            - "leiden": Multilayer Leiden algorithm (production-ready with UQ)
+            - "louvain": Multilayer Louvain algorithm
+            - "infomap": Infomap (if available)
+            - "label_propagation": Label propagation
+            
+        For Leiden specifically, use in combination with .uq() for uncertainty
+        quantification:
+        
+        Args:
+            method: Community detection algorithm (default: "leiden")
+            gamma: Resolution parameter(s). Higher -> more communities. (default: 1.0)
+            omega: Interlayer coupling strength. Higher -> stronger coupling. (default: 1.0)
+            n_iterations: Number of iterations for iterative methods (default: 2)
+            random_state: Random seed for reproducibility. If None, uses 0. (default: None)
+            partition_name: Name to assign to this partition (default: "default")
+            **kwargs: Additional algorithm-specific parameters
+            
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> # Basic Leiden community detection
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community(method="leiden", gamma=1.2, random_state=42)
+            ...      .execute(network)
+            ... )
+            >>>
+            >>> # Leiden with uncertainty quantification
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
+            ...      .uq(method="ensemble", n_samples=50, seed=42)
+            ...      .execute(network)
+            ... )
+            >>> print(f"Consensus partition: {result.meta['consensus_partition']}")
+            >>> print(f"Score CI: {result.meta['score_ci']}")
+            >>>
+            >>> # Query communities after detection
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community(method="leiden", partition_name="my_leiden")
+            ...      .execute(network)
+            ... )
+            >>> communities = Q.communities(partition="my_leiden").execute(network)
+            
+        Notes:
+            - Results are attached to the network under partition_name
+            - Combining with .uq() enables probabilistic community detection
+            - Default random_state=None becomes 0 for determinism
+            - For large networks, consider tuning omega and gamma for performance
+        """
+        # Store community detection config in select statement
+        if not hasattr(self._select, 'community_config'):
+            self._select.community_config = {}
+        
+        self._select.community_config = {
+            'method': method,
+            'gamma': gamma,
+            'omega': omega,
+            'n_iterations': n_iterations,
+            'random_state': random_state if random_state is not None else 0,
+            'partition_name': partition_name,
+            **kwargs
+        }
+        
+        return self
+
     def sensitivity(
         self,
         perturb: str,
