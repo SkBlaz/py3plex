@@ -987,6 +987,80 @@ class QueryResult:
             rows.append(row)
 
         return pd.DataFrame(rows)
+    
+    def counterexample(
+        self,
+        claim: str,
+        params: Optional[Dict[str, Any]] = None,
+        seed: int = 42,
+        find_minimal: bool = True,
+        budget_max_tests: int = 200,
+        budget_max_witness_size: int = 500,
+        initial_radius: int = 2,
+    ) -> Optional[Any]:
+        """Find counterexample for a claim using query result.
+        
+        This is a convenience method that builds a counterexample query from
+        the current result's network context.
+        
+        Args:
+            claim: Claim string (e.g., "degree__ge(k) -> pagerank__rank_gt(r)")
+            params: Parameter bindings (e.g., {"k": 10, "r": 50})
+            seed: Random seed for determinism
+            find_minimal: Whether to minimize witness
+            budget_max_tests: Maximum violation tests during minimization
+            budget_max_witness_size: Maximum witness size (nodes)
+            initial_radius: Ego subgraph radius
+            
+        Returns:
+            Counterexample object if found, None otherwise
+            
+        Raises:
+            ValueError: If network context is not available
+            CounterexampleNotFound: If no violation exists
+            
+        Example:
+            >>> result = Q.nodes().compute("degree", "pagerank").execute(net)
+            >>> cex = result.counterexample(
+            ...     claim="degree__ge(k) -> pagerank__rank_gt(r)",
+            ...     params={"k": 10, "r": 50},
+            ...     seed=42
+            ... )
+        """
+        from py3plex.counterexamples import find_counterexample
+        from py3plex.counterexamples.types import Budget
+        
+        # Try to get network from meta
+        network = self.meta.get("_network")
+        if network is None:
+            raise ValueError(
+                "Network context not available in QueryResult. "
+                "Cannot generate counterexample from result alone."
+            )
+        
+        if params is None:
+            params = {}
+        
+        budget = Budget(
+            max_tests=budget_max_tests,
+            max_witness_size=budget_max_witness_size,
+        )
+        
+        # Extract layers from result if available
+        layers = None
+        if "layers" in self.meta:
+            layers = self.meta["layers"]
+        
+        return find_counterexample(
+            network=network,
+            claim_str=claim,
+            params=params,
+            layers=layers,
+            seed=seed,
+            find_minimal=find_minimal,
+            budget=budget,
+            initial_radius=initial_radius,
+        )
 
     def __repr__(self) -> str:
         return f"QueryResult(target='{self.target}', count={len(self.items)}, attributes={list(self.attributes.keys())})"
