@@ -8,6 +8,29 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 import networkx as nx
 
 
+def _parse_edge(edge: Any) -> Tuple[Any, Any, str, str, float]:
+    """Parse edge tuple into components.
+    
+    Handles two formats:
+    - ((src, src_layer), (tgt, tgt_layer), weight)
+    - ((src, src_layer), (tgt, tgt_layer))
+    
+    Returns:
+        Tuple of (src, tgt, src_layer, tgt_layer, weight)
+    """
+    src_tuple = edge[0]
+    tgt_tuple = edge[1]
+    
+    src = src_tuple[0]
+    src_layer = src_tuple[1]
+    tgt = tgt_tuple[0]
+    tgt_layer = tgt_tuple[1]
+    
+    weight = edge[2] if len(edge) > 2 else 1.0
+    
+    return src, tgt, src_layer, tgt_layer, weight
+
+
 def ego_subgraph(
     network: Any,
     center_node: Any,
@@ -51,7 +74,7 @@ def ego_subgraph(
         all_nodes = _trim_nodes(network, all_nodes, center_node, center_layer, max_nodes, strategy)
     
     # Build witness subgraph
-    witness = multinet.multi_layer_network(directed=network.is_directed())
+    witness = multinet.multi_layer_network(directed=network.directed)
     
     # Add nodes
     for node, layer in all_nodes:
@@ -59,10 +82,7 @@ def ego_subgraph(
     
     # Add edges between included nodes
     for edge in network.get_edges():
-        src = edge[0]
-        tgt = edge[1]
-        src_layer = edge[2]
-        tgt_layer = edge[3]
+        src, tgt, src_layer, tgt_layer, weight = _parse_edge(edge)
         
         if (src, src_layer) in all_nodes and (tgt, tgt_layer) in all_nodes:
             edge_dict = {
@@ -70,10 +90,8 @@ def ego_subgraph(
                 "target": tgt,
                 "source_type": src_layer,
                 "target_type": tgt_layer,
+                "weight": weight,
             }
-            # Copy weight if present
-            if len(edge) > 4:
-                edge_dict["weight"] = edge[4]
             witness.add_edges([edge_dict])
     
     return witness
@@ -137,10 +155,7 @@ def _bfs_multilayer(
         
         # Explore neighbors in multilayer network
         for edge in network.get_edges():
-            src = edge[0]
-            tgt = edge[1]
-            src_layer = edge[2]
-            tgt_layer = edge[3]
+            src, tgt, src_layer, tgt_layer, weight = _parse_edge(edge)
             
             # Check if this edge involves current node
             next_node = None
@@ -149,7 +164,7 @@ def _bfs_multilayer(
             if src == node and src_layer == layer:
                 next_node = tgt
                 next_layer = tgt_layer
-            elif not network.is_directed() and tgt == node and tgt_layer == layer:
+            elif not network.directed and tgt == node and tgt_layer == layer:
                 next_node = src
                 next_layer = src_layer
             
@@ -199,11 +214,7 @@ def _trim_nodes(
         for node, layer in candidates:
             score = 0.0
             for edge in network.get_edges():
-                src = edge[0]
-                tgt = edge[1]
-                src_layer = edge[2]
-                tgt_layer = edge[3]
-                weight = edge[4] if len(edge) > 4 else 1.0
+                src, tgt, src_layer, tgt_layer, weight = _parse_edge(edge)
                 
                 if (src == node and src_layer == layer) or (tgt == node and tgt_layer == layer):
                     score += weight

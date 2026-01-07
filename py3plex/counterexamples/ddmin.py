@@ -8,6 +8,27 @@ from typing import Any, Callable, List, Set, Tuple
 import time
 
 
+def _parse_edge(edge: Any) -> Tuple[Any, Any, str, str, float]:
+    """Parse edge tuple into components.
+    
+    Handles format: ((src, src_layer), (tgt, tgt_layer), weight)
+    
+    Returns:
+        Tuple of (src, tgt, src_layer, tgt_layer, weight)
+    """
+    src_tuple = edge[0]
+    tgt_tuple = edge[1]
+    
+    src = src_tuple[0]
+    src_layer = src_tuple[1]
+    tgt = tgt_tuple[0]
+    tgt_layer = tgt_tuple[1]
+    
+    weight = edge[2] if len(edge) > 2 else 1.0
+    
+    return src, tgt, src_layer, tgt_layer, weight
+
+
 def minimize_edges(
     subgraph: Any,
     violation_tester: Callable[[Any], bool],
@@ -73,12 +94,8 @@ def _get_edges_sorted(network: Any) -> List[Tuple]:
     """
     edges = []
     for edge in network.get_edges():
-        # Normalize: (src, tgt, src_layer, tgt_layer, weight)
-        src = edge[0]
-        tgt = edge[1]
-        src_layer = edge[2]
-        tgt_layer = edge[3]
-        weight = edge[4] if len(edge) > 4 else 1.0
+        # Parse and normalize
+        src, tgt, src_layer, tgt_layer, weight = _parse_edge(edge)
         edges.append((src, tgt, src_layer, tgt_layer, weight))
     
     # Sort for determinism: by (src, tgt, src_layer, tgt_layer)
@@ -107,7 +124,7 @@ def _build_subgraph_from_edges(template: Any, edges: List[Tuple]) -> Any:
         nodes.add((tgt, tgt_layer))
     
     # Build network
-    result = multinet.multi_layer_network(directed=template.is_directed())
+    result = multinet.multi_layer_network(directed=template.directed)
     
     # Add nodes
     for node, layer in sorted(nodes, key=lambda x: (str(x[0]), x[1])):
@@ -277,7 +294,7 @@ def _build_subgraph_from_nodes(template: Any, nodes: Set[Tuple[Any, str]]) -> An
     """
     from py3plex.core import multinet
     
-    result = multinet.multi_layer_network(directed=template.is_directed())
+    result = multinet.multi_layer_network(directed=template.directed)
     
     # Add nodes
     for node, layer in sorted(nodes, key=lambda x: (str(x[0]), x[1])):
@@ -286,11 +303,7 @@ def _build_subgraph_from_nodes(template: Any, nodes: Set[Tuple[Any, str]]) -> An
     # Add edges between included nodes
     edge_dicts = []
     for edge in template.get_edges():
-        src = edge[0]
-        tgt = edge[1]
-        src_layer = edge[2]
-        tgt_layer = edge[3]
-        weight = edge[4] if len(edge) > 4 else 1.0
+        src, tgt, src_layer, tgt_layer, weight = _parse_edge(edge)
         
         if (src, src_layer) in nodes and (tgt, tgt_layer) in nodes:
             edge_dict = {

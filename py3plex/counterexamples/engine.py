@@ -111,7 +111,10 @@ def find_counterexample(
     
     witness_edges = set()
     for edge in witness.get_edges():
-        witness_edges.add((edge[0], edge[1], edge[2], edge[3]))
+        # Parse edge format: ((src, src_layer), (tgt, tgt_layer))
+        src_tuple = edge[0]
+        tgt_tuple = edge[1]
+        witness_edges.add((src_tuple[0], tgt_tuple[0], src_tuple[1], tgt_tuple[1]))
     
     # Build provenance
     total_time = (time.time() - start_time) * 1000
@@ -196,7 +199,7 @@ def find_violation(
     for record in nodes_data:
         if "degree" not in record and antecedent_metric == "degree":
             # Compute degree for this node
-            node = record["node"]
+            node = record.get("id", record.get("node"))  # Handle both 'id' and 'node' columns
             layer = record["layer"]
             degree = _compute_degree(network, node, layer)
             record["degree"] = degree
@@ -225,9 +228,12 @@ def find_violation(
     # Heuristic: highest antecedent margin, worst consequent margin
     best = _select_best_violation(violating_nodes, antecedent_metric, consequent_metric, is_rank_based, seed)
     
+    # Extract node identifier (handle both 'id' and 'node' columns)
+    node_id = best.get("id", best.get("node"))
+    
     # Build Violation object
     violation = Violation(
-        node=best["node"],
+        node=node_id,
         layer=best["layer"],
         antecedent_values={antecedent_metric: best.get(antecedent_metric, 0)},
         consequent_values={consequent_metric: best.get(consequent_metric, 0)},
@@ -344,15 +350,30 @@ def _compute_degree(network: Any, node: Any, layer: str) -> int:
     """Compute degree of a node in a specific layer."""
     degree = 0
     for edge in network.get_edges():
-        src = edge[0]
-        tgt = edge[1]
-        src_layer = edge[2]
-        tgt_layer = edge[3]
-        
-        if src == node and src_layer == layer:
-            degree += 1
-        elif not network.is_directed() and tgt == node and tgt_layer == layer:
-            degree += 1
+        # Edge format: ((src, src_layer), (tgt, tgt_layer)) or extended
+        if len(edge) >= 2:
+            src_tuple = edge[0]
+            tgt_tuple = edge[1]
+            
+            if isinstance(src_tuple, tuple) and len(src_tuple) >= 2:
+                src = src_tuple[0]
+                src_layer = src_tuple[1]
+            else:
+                # Fallback for different format
+                src = src_tuple
+                src_layer = layer
+            
+            if isinstance(tgt_tuple, tuple) and len(tgt_tuple) >= 2:
+                tgt = tgt_tuple[0]
+                tgt_layer = tgt_tuple[1]
+            else:
+                tgt = tgt_tuple
+                tgt_layer = layer
+            
+            if src == node and src_layer == layer:
+                degree += 1
+            elif not network.directed and tgt == node and tgt_layer == layer:
+                degree += 1
     
     return degree
 
@@ -364,10 +385,14 @@ def _add_ranks(nodes_data: List[Dict], metric: str) -> None:
         nodes_data: List of node records
         metric: Metric name to rank
     """
+    # Get node id helper
+    def get_node_id(record):
+        return str(record.get("id", record.get("node", "")))
+    
     # Sort by metric descending, then by (node, layer) for determinism
     sorted_nodes = sorted(
         nodes_data,
-        key=lambda x: (-x.get(metric, 0), str(x["node"]), x["layer"])
+        key=lambda x: (-x.get(metric, 0), get_node_id(x), x["layer"])
     )
     
     # Assign ranks (1-indexed)
@@ -393,10 +418,14 @@ def _select_best_violation(
         # For now, use simple heuristic
         record["margin"] = record.get(antecedent_metric, 0)
     
+    # Get node id (handle both 'id' and 'node')
+    def get_node_id(record):
+        return str(record.get("id", record.get("node", "")))
+    
     # Sort by margin descending, then by (node, layer)
     sorted_violations = sorted(
         violating_nodes,
-        key=lambda x: (-x["margin"], str(x["node"]), x["layer"])
+        key=lambda x: (-x["margin"], get_node_id(x), x["layer"])
     )
     
     return sorted_violations[0]
