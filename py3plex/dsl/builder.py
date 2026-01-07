@@ -2882,6 +2882,26 @@ class Q:
             ... )
         """
         return CounterexampleBuilder()
+    
+    @staticmethod
+    def learn_claims() -> "ClaimLearnerBuilder":
+        """Create a claim learning query builder.
+        
+        Returns:
+            ClaimLearnerBuilder for learning claims from network data
+            
+        Example:
+            >>> claims = (
+            ...     Q.learn_claims()
+            ...      .from_metrics(["degree", "pagerank", "betweenness"])
+            ...      .min_support(0.9)
+            ...      .min_coverage(0.05)
+            ...      .max_claims(20)
+            ...      .seed(42)
+            ...      .execute(network)
+            ... )
+        """
+        return ClaimLearnerBuilder()
 
     @staticmethod
     def pattern() -> "PatternQueryBuilder":
@@ -4401,3 +4421,213 @@ class CounterexampleBuilder:
         elif isinstance(layer_ast, LayerTerm):
             names.append(layer_ast.name)
         return names
+
+
+# ==============================================================================
+# Claim Learning Builder
+# ==============================================================================
+
+
+class ClaimLearnerBuilder:
+    """Builder for claim learning queries.
+    
+    Example:
+        >>> from py3plex.dsl import Q
+        >>> claims = (Q.learn_claims()
+        ...             .from_metrics(["degree", "pagerank"])
+        ...             .min_support(0.9)
+        ...             .min_coverage(0.05)
+        ...             .seed(42)
+        ...             .execute(net))
+    """
+    
+    def __init__(self):
+        """Initialize claim learner builder."""
+        self._metrics: List[str] = []
+        self._layers: Optional[List[str]] = None
+        self._min_support: float = 0.9
+        self._min_coverage: float = 0.05
+        self._max_antecedents: int = 1
+        self._max_claims: int = 20
+        self._seed: int = 42
+        self._cheap_metrics: Optional[List[str]] = None
+        self._target_metrics: Optional[List[str]] = None
+        self._autocompute: bool = True
+    
+    def from_metrics(self, metrics: List[str]) -> "ClaimLearnerBuilder":
+        """Set metrics to use for claim learning.
+        
+        Args:
+            metrics: List of metric names (e.g., ["degree", "pagerank"])
+            
+        Returns:
+            Self for chaining
+        """
+        self._metrics = metrics
+        return self
+    
+    def layers(self, layer_expr: Any) -> "ClaimLearnerBuilder":
+        """Set layers to consider.
+        
+        Args:
+            layer_expr: Layer expression (e.g., L["social"] + L["work"])
+            
+        Returns:
+            Self for chaining
+        """
+        # Extract layer names from layer expression
+        if hasattr(layer_expr, '_to_ast'):
+            # LayerExprBuilder
+            ast = layer_expr._to_ast()
+            self._layers = self._extract_layer_names(ast)
+        elif isinstance(layer_expr, list):
+            self._layers = layer_expr
+        else:
+            self._layers = [str(layer_expr)]
+        return self
+    
+    def min_support(self, support: float) -> "ClaimLearnerBuilder":
+        """Set minimum support threshold.
+        
+        Args:
+            support: Minimum support (default: 0.9)
+            
+        Returns:
+            Self for chaining
+        """
+        self._min_support = support
+        return self
+    
+    def min_coverage(self, coverage: float) -> "ClaimLearnerBuilder":
+        """Set minimum coverage threshold.
+        
+        Args:
+            coverage: Minimum coverage (default: 0.05)
+            
+        Returns:
+            Self for chaining
+        """
+        self._min_coverage = coverage
+        return self
+    
+    def max_antecedents(self, n: int) -> "ClaimLearnerBuilder":
+        """Set maximum antecedent terms.
+        
+        MVP: Only 1 is supported. Validation happens at execution.
+        
+        Args:
+            n: Maximum antecedent terms (must be 1 in MVP)
+            
+        Returns:
+            Self for chaining
+        """
+        self._max_antecedents = n
+        return self
+    
+    def max_claims(self, n: int) -> "ClaimLearnerBuilder":
+        """Set maximum claims to return.
+        
+        Args:
+            n: Maximum claims (default: 20)
+            
+        Returns:
+            Self for chaining
+        """
+        self._max_claims = n
+        return self
+    
+    def seed(self, seed: int) -> "ClaimLearnerBuilder":
+        """Set random seed for determinism.
+        
+        Args:
+            seed: Random seed (default: 42)
+            
+        Returns:
+            Self for chaining
+        """
+        self._seed = seed
+        return self
+    
+    def cheap_metrics(self, metrics: List[str]) -> "ClaimLearnerBuilder":
+        """Set which metrics to use for antecedents.
+        
+        Args:
+            metrics: List of metric names for antecedents
+            
+        Returns:
+            Self for chaining
+        """
+        self._cheap_metrics = metrics
+        return self
+    
+    def target_metrics(self, metrics: List[str]) -> "ClaimLearnerBuilder":
+        """Set which metrics to use for consequents.
+        
+        Args:
+            metrics: List of metric names for consequents
+            
+        Returns:
+            Self for chaining
+        """
+        self._target_metrics = metrics
+        return self
+    
+    def autocompute(self, enabled: bool = True) -> "ClaimLearnerBuilder":
+        """Set whether to autocompute missing metrics.
+        
+        Args:
+            enabled: Whether to autocompute (default: True)
+            
+        Returns:
+            Self for chaining
+        """
+        self._autocompute = enabled
+        return self
+    
+    def execute(self, network: Any) -> List[Any]:
+        """Execute claim learning.
+        
+        Args:
+            network: py3plex multi_layer_network object
+            
+        Returns:
+            List of Claim objects, sorted by rank
+            
+        Raises:
+            ClaimLearningError: If learning fails
+        """
+        from py3plex.claims.learner import learn_claims
+        
+        if not self._metrics:
+            from py3plex.claims.learner import ClaimLearningError
+            raise ClaimLearningError(
+                "No metrics specified",
+                suggestions=["Call .from_metrics([...]) before .execute()"],
+            )
+        
+        return learn_claims(
+            network=network,
+            metrics=self._metrics,
+            layers=self._layers,
+            min_support=self._min_support,
+            min_coverage=self._min_coverage,
+            max_antecedents=self._max_antecedents,
+            max_claims=self._max_claims,
+            seed=self._seed,
+            cheap_metrics=self._cheap_metrics,
+            target_metrics=self._target_metrics,
+            autocompute=self._autocompute,
+        )
+    
+    def _extract_layer_names(self, layer_ast: Any) -> List[str]:
+        """Extract layer names from layer AST."""
+        from .ast import LayerExpr, LayerTerm
+        
+        names = []
+        if isinstance(layer_ast, LayerExpr):
+            for term in layer_ast.terms:
+                names.extend(self._extract_layer_names(term))
+        elif isinstance(layer_ast, LayerTerm):
+            names.append(layer_ast.name)
+        return names
+
