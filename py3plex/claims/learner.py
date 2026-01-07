@@ -50,7 +50,6 @@ def learn_claims(
     seed: int = 42,
     cheap_metrics: Optional[List[str]] = None,
     target_metrics: Optional[List[str]] = None,
-    autocompute: bool = True,
 ) -> List[Claim]:
     """Learn claims from network data.
     
@@ -72,7 +71,6 @@ def learn_claims(
         seed: Random seed for determinism
         cheap_metrics: Metrics to use for antecedents (default: derive from metrics)
         target_metrics: Metrics to use for consequents (default: derive from metrics)
-        autocompute: Whether to compute missing metrics automatically
         
     Returns:
         List of Claim objects, sorted by rank
@@ -127,7 +125,7 @@ def learn_claims(
     
     # Compute all required metrics
     for metric in metrics:
-        query = query.compute(metric, autocompute=autocompute)
+        query = query.compute(metric)
     
     # Also compute layer_count if not already in metrics
     if "layer_count" not in metrics:

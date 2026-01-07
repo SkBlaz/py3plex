@@ -4452,7 +4452,6 @@ class ClaimLearnerBuilder:
         self._seed: int = 42
         self._cheap_metrics: Optional[List[str]] = None
         self._target_metrics: Optional[List[str]] = None
-        self._autocompute: bool = True
     
     def from_metrics(self, metrics: List[str]) -> "ClaimLearnerBuilder":
         """Set metrics to use for claim learning.
@@ -4575,13 +4574,16 @@ class ClaimLearnerBuilder:
     def autocompute(self, enabled: bool = True) -> "ClaimLearnerBuilder":
         """Set whether to autocompute missing metrics.
         
+        Note: This is a placeholder for future functionality.
+        Currently, all metrics specified are computed.
+        
         Args:
             enabled: Whether to autocompute (default: True)
             
         Returns:
             Self for chaining
         """
-        self._autocompute = enabled
+        # Placeholder for future functionality
         return self
     
     def execute(self, network: Any) -> List[Any]:
@@ -4616,7 +4618,6 @@ class ClaimLearnerBuilder:
             seed=self._seed,
             cheap_metrics=self._cheap_metrics,
             target_metrics=self._target_metrics,
-            autocompute=self._autocompute,
         )
     
     def _extract_layer_names(self, layer_ast: Any) -> List[str]:
