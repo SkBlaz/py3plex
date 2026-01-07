@@ -418,3 +418,54 @@ class Py3plexLayoutError(Py3plexException):
     """
 
     default_code = "PX402"
+
+
+class SemiringError(Py3plexException):
+    """Base exception for semiring-related errors.
+
+    Error code: PX601
+    """
+
+    default_code = "PX601"
+
+
+class SemiringValidationError(SemiringError):
+    """Exception raised when semiring validation fails.
+
+    Includes counterexample details when algebraic laws are violated.
+
+    Error code: PX602
+    """
+
+    default_code = "PX602"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        counterexample: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ):
+        """Initialize with optional counterexample.
+
+        Args:
+            message: Error message
+            counterexample: Dict with 'a', 'b', 'c', 'op', 'expected', 'got' keys
+            **kwargs: Additional arguments for Py3plexException
+        """
+        self.counterexample = counterexample
+        notes = kwargs.pop("notes", [])
+
+        if counterexample:
+            notes.append(f"Counterexample: {counterexample}")
+
+        super().__init__(message, notes=notes, **kwargs)
+
+
+class SemiringExecutionError(SemiringError):
+    """Exception raised during semiring algorithm execution.
+
+    Error code: PX603
+    """
+
+    default_code = "PX603"
