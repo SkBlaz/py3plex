@@ -37,16 +37,7 @@
 31. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
 32. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
 33. [Network Counterexample Generation](#network-counterexample-generation)
-34. [Version Information](#version-information)
-35. [File Locations](#file-locations)
-27. [Counterfactual Reasoning vs Uncertainty Quantification](#counterfactual-reasoning-vs-uncertainty-quantification)
-28. [Robustness Contracts (Certification-Grade)](#robustness-contracts-certification-grade)
-29. [Temporal Networks](#temporal-networks)
-30. [Null Models](#null-models)
-31. [Probabilistic Community Detection](#probabilistic-community-detection)
-32. [Multilayer Leiden Algorithm with UQ](#multilayer-leiden-algorithm-with-uq)
-33. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-34. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
+34. [Learning Claims from Data](#learning-claims-from-data)
 35. [Version Information](#version-information)
 36. [File Locations](#file-locations)
 
@@ -4907,6 +4898,344 @@ print(cex.explain())
 - `py3plex/counterexamples/engine.py` - Main engine
 - `py3plex/dsl/builder.py` - `Q.counterexample()` builder
 - `py3plex/dsl/result.py` - `QueryResult.counterexample()`
+
+---
+
+## Learning Claims from Data
+
+The **claim learning engine** automatically discovers plausible, interpretable implication-style claims from multilayer network data through **inductive reasoning**. This feature enables:
+
+- **Hypothesis generation**: Discover patterns and relationships in network data
+- **Network understanding**: Find general rules that characterize network structure
+- **Scientific method in code**: Generate falsifiable hypotheses with statistical support
+- **Integration with counterexamples**: Learned claims can be tested and falsified
+
+### Core Concepts
+
+**Claim**: An executable implication between network metrics
+- Format: `antecedent -> consequent`
+- Example: `degree__gte(10.0) -> pagerank__rank_lte(50)`
+
+**Antecedent**: Left side of implication (cheap-to-compute properties)
+- Threshold predicates: `degree >= k`, `strength >= x`
+- Top-p predicates: `top_p(degree, 0.1)` (top 10% by degree)
+- Layer count: `layer_count >= 2`
+
+**Consequent**: Right side of implication (target metrics)
+- Threshold predicates: `pagerank >= x`, `betweenness >= y`
+- Rank predicates: `pagerank_rank <= r` (top-r nodes by PageRank)
+
+**Support**: P(consequent | antecedent) - fraction of nodes satisfying both
+**Coverage**: P(antecedent) - fraction of nodes satisfying antecedent
+
+**Provenance**: Full metadata including seed, network fingerprint, metrics used
+
+### DSL Integration
+
+Use `Q.learn_claims()` builder:
+
+```python
+from py3plex.dsl import Q, L
+from py3plex.core import multinet
+
+# Build network
+net = multinet.multi_layer_network(directed=False)
+# ... add nodes and edges ...
+
+# Learn claims
+claims = (
+    Q.learn_claims()
+     .from_metrics(["degree", "pagerank", "betweenness_centrality"])
+     .min_support(0.9)           # At least 90% support
+     .min_coverage(0.05)         # At least 5% coverage
+     .max_claims(20)             # Return top 20 claims
+     .seed(42)                   # Deterministic
+     .execute(net)
+)
+
+# Examine claims
+for claim in claims:
+    print(f"{claim.claim_string}")
+    print(f"  Support: {claim.support:.3f}, Coverage: {claim.coverage:.3f}")
+```
+
+### Layer-Restricted Learning
+
+Learn claims for specific layers:
+
+```python
+claims = (
+    Q.learn_claims()
+     .from_metrics(["degree", "pagerank"])
+     .layers(L["social"] + L["work"])  # Only these layers
+     .min_support(0.85)
+     .min_coverage(0.1)
+     .seed(42)
+     .execute(net)
+)
+```
+
+### Advanced Options
+
+Control antecedent vs consequent metrics:
+
+```python
+claims = (
+    Q.learn_claims()
+     .from_metrics(["degree", "strength", "pagerank", "betweenness"])
+     .cheap_metrics(["degree", "strength"])      # Use for antecedents
+     .target_metrics(["pagerank", "betweenness"]) # Use for consequents
+     .min_support(0.9)
+     .min_coverage(0.05)
+     .max_antecedents(1)  # MVP: only 1 antecedent term supported
+     .seed(42)
+     .execute(net)
+)
+```
+
+### Claim Object
+
+Each returned `Claim` object provides:
+
+**Attributes:**
+- `claim_string`: DSL-compatible claim string (e.g., `"degree__gte(10.0) -> pagerank__rank_lte(50)"`)
+- `antecedent`: Antecedent predicate object
+- `consequent`: Consequent predicate object
+- `support`: Statistical support (0.0 to 1.0)
+- `coverage`: Coverage (0.0 to 1.0)
+- `score`: ClaimScore with detailed statistics
+- `meta["provenance"]`: Full provenance metadata
+
+**Methods:**
+- `counterexample(net, **kwargs)`: Lazily find counterexample using engine (#34)
+- `to_dict()`: JSON-serializable representation
+
+**Example:**
+```python
+for claim in claims:
+    print(claim.claim_string)
+    # degree__gte(5.0) -> pagerank__rank_lte(20)
+    
+    print(f"Support: {claim.support:.3f}")   # 0.952
+    print(f"Coverage: {claim.coverage:.3f}") # 0.120
+    
+    # Test with counterexample engine
+    cex = claim.counterexample(net, seed=42)
+    if cex:
+        print(f"Counterexample found: {cex.explain()}")
+    else:
+        print("No counterexample found (claim holds)")
+```
+
+### Provenance
+
+Claims include comprehensive provenance:
+
+```python
+claim = claims[0]
+prov = claim.meta["provenance"]
+# {
+#     "engine": "claim_learner",
+#     "py3plex_version": "1.1.0",
+#     "timestamp_utc": "2026-01-07T05:00:00.000Z",
+#     "network_fingerprint": {
+#         "n_nodes": 100,
+#         "n_edges": 250,
+#         "n_layers": 2
+#     },
+#     "metrics_used": ["degree", "pagerank"],
+#     "cheap_metrics": ["degree"],
+#     "target_metrics": ["pagerank"],
+#     "parameters": {
+#         "min_support": 0.9,
+#         "min_coverage": 0.05,
+#         "max_antecedents": 1,
+#         "max_claims": 20
+#     },
+#     "randomness": {"seed": 42}
+# }
+```
+
+### Determinism
+
+Claim learning is **fully deterministic** given a seed:
+
+```python
+claims1 = Q.learn_claims().from_metrics(["degree", "pagerank"]).seed(42).execute(net)
+claims2 = Q.learn_claims().from_metrics(["degree", "pagerank"]).seed(42).execute(net)
+
+# Identical results
+assert len(claims1) == len(claims2)
+for c1, c2 in zip(claims1, claims2):
+    assert c1.claim_string == c2.claim_string
+    assert c1.support == c2.support
+    assert c1.coverage == c2.coverage
+```
+
+### Claim Ranking
+
+Claims are ranked by:
+1. **Support** (descending) - higher support first
+2. **Coverage** (descending) - higher coverage first
+3. **Simplicity** (descending) - threshold > layer_count > top_p
+4. **Lexicographic** - stable tie-breaking
+
+This ensures the most statistically significant and interpretable claims appear first.
+
+### Integration with Counterexamples
+
+Learned claims can be falsified using the counterexample engine:
+
+```python
+# Learn claims
+claims = Q.learn_claims() \
+    .from_metrics(["degree", "pagerank"]) \
+    .min_support(0.8) \
+    .execute(net)
+
+# Test each claim
+for claim in claims:
+    print(f"Testing: {claim.claim_string}")
+    
+    # Lazy counterexample search
+    cex = claim.counterexample(net, seed=42)
+    
+    if cex:
+        print(f"  ✗ Falsified: {cex.violation.node} violates claim")
+        print(f"    Witness has {len(cex.witness_edges)} edges")
+    else:
+        print(f"  ✓ No counterexample found (support={claim.support:.3f})")
+```
+
+### Warning: Interpretation
+
+**Claims are hypotheses, not truths.**
+
+- **Support < 1.0** means claims can have exceptions
+- High support does NOT imply causation
+- Claims are **inductive** - they summarize observed data patterns
+- Always validate claims on held-out data or additional networks
+- Use counterexample engine to understand when claims fail
+- Claims are **falsifiable** - this is a feature, not a bug
+
+**Best Practices:**
+1. Use `min_support >= 0.9` for reliable claims
+2. Use `min_coverage >= 0.05` to avoid overfitting to rare patterns
+3. Always set a `seed` for reproducibility
+4. Test claims with counterexample engine
+5. Validate on multiple networks before drawing conclusions
+6. Document provenance metadata for audit trails
+
+### Supported Metrics
+
+**Cheap Metrics (for antecedents):**
+- `degree`: Node degree
+- `strength`: Weighted degree
+- `layer_count`: Number of layers node appears in
+- Custom metrics computed via DSL
+
+**Target Metrics (for consequents):**
+- `pagerank`: PageRank centrality
+- `betweenness_centrality`: Betweenness centrality
+- `closeness_centrality`: Closeness centrality
+- `eigenvector_centrality`: Eigenvector centrality
+- Custom metrics computed via DSL
+
+### Use Cases
+
+**1. Pattern discovery:**
+```python
+# Discover degree-centrality relationships
+claims = Q.learn_claims() \
+    .from_metrics(["degree", "pagerank", "betweenness_centrality"]) \
+    .min_support(0.85) \
+    .execute(net)
+
+for claim in claims[:5]:
+    print(claim.claim_string)
+# degree__gte(8.0) -> pagerank__rank_lte(50)
+# degree__gte(12.0) -> betweenness_centrality__gte(0.05)
+```
+
+**2. Hypothesis generation for research:**
+```python
+# Generate testable hypotheses
+claims = Q.learn_claims() \
+    .from_metrics(["degree", "clustering", "pagerank"]) \
+    .layers(L["social"]) \
+    .min_support(0.9) \
+    .min_coverage(0.1) \
+    .seed(42) \
+    .execute(net)
+
+# Export for research paper
+for claim in claims:
+    print(f"{claim.claim_string} (support={claim.support:.3f}, n={claim.score.n_antecedent})")
+```
+
+**3. Network characterization:**
+```python
+# Characterize multilayer structure
+claims = Q.learn_claims() \
+    .from_metrics(["layer_count", "degree", "pagerank"]) \
+    .min_support(0.8) \
+    .execute(multilayer_net)
+
+# Find claims about multilayer nodes
+for claim in claims:
+    if "layer_count" in claim.claim_string:
+        print(claim.claim_string)
+        # layer_count__gte(2) -> pagerank__gte(0.015)
+```
+
+**4. Automated hypothesis testing:**
+```python
+# Learn claims on training data
+train_claims = Q.learn_claims() \
+    .from_metrics(["degree", "pagerank"]) \
+    .min_support(0.9) \
+    .seed(42) \
+    .execute(train_net)
+
+# Test on held-out data
+for claim in train_claims:
+    # Re-evaluate support on test network
+    test_cex = claim.counterexample(test_net, seed=42)
+    if test_cex:
+        print(f"Claim doesn't generalize: {claim.claim_string}")
+```
+
+### Error Handling
+
+Claim learning uses domain exceptions:
+
+```python
+from py3plex.claims.learner import ClaimLearningError
+
+try:
+    claims = Q.learn_claims().execute(net)  # No metrics specified
+except ClaimLearningError as e:
+    print(f"Error: {e}")
+    # "No metrics specified for claim learning"
+
+try:
+    claims = Q.learn_claims() \
+        .from_metrics(["degree"]) \
+        .max_antecedents(2) \  # Not supported in MVP
+        .execute(net)
+except ClaimLearningError as e:
+    print(f"Error: {e}")
+    # "max_antecedents must be 1 in MVP (got 2)"
+```
+
+### Files
+
+- `py3plex/claims/types.py` - Data structures (Claim, Antecedent, Consequent, ClaimScore)
+- `py3plex/claims/generator.py` - Candidate generation
+- `py3plex/claims/scorer.py` - Support/coverage calculation and ranking
+- `py3plex/claims/learner.py` - Main orchestration
+- `py3plex/dsl/builder.py` - `Q.learn_claims()` builder
+- `tests/test_claim_learning.py` - Comprehensive test suite (25 tests)
 
 ---
 

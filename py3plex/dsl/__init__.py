@@ -130,6 +130,8 @@ from .builder import (
     SemiringClosureBuilder,
     # Counterexample builder
     CounterexampleBuilder,
+    # Claim learning builder
+    ClaimLearnerBuilder,
 )
 
 from .layers import (
@@ -309,6 +311,8 @@ __all__ = [
     "SemiringClosureBuilder",
     # Counterexample Builder
     "CounterexampleBuilder",
+    # Claim Learning Builder
+    "ClaimLearnerBuilder",
     # Pattern Matching
     "PatternNode",
     "PatternEdge",
