@@ -1,1067 +1,2361 @@
 # py3plex AI Agent Documentation
 
-> This file provides comprehensive documentation about py3plex, optimized for AI agents and assistants.
+> **Mission**: Make this single markdown file fully self-sufficient for an LLM agent to design correct, reproducible, performant py3plex pipelines end-to-end (discover → decide → build → validate → export) without guessing or hallucinating APIs.
+
+**What this document is**:
+- An operational playbook (not just API docs)
+- A decision guide (when to use what)
+- A set of known-good pipeline blueprints ("Golden Paths")
+- A reproducibility + performance policy manual
+
+**Version**: py3plex 1.1.0 | DSL v2.1 | Python 3.8+
+
+---
 
 ## Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [SQL-like DSL for Multilayer Networks](#sql-like-dsl-for-multilayer-networks)
-3. [DSL Examples with Outputs](#dsl-examples-with-outputs)
-4. [Result Dictionary Structure](#result-dictionary-structure)
-5. [Best Practices](#best-practices)
-6. [Current Limitations](#current-limitations)
-7. [DSL v2: Modern Builder API](#dsl-v2-modern-builder-api-q-uq-l)
-8. [Dplyr-Style Chainable Graph Operations API](#dplyr-style-chainable-graph-operations-api)
-9. [Method Chaining for Network Construction](#method-chaining-for-network-construction)
-10. [Pythonic Interface Features](#pythonic-interface-features)
-11. [Sklearn-Style Pipeline API](#sklearn-style-pipeline-api)
-12. [Config-Driven Workflows](#config-driven-workflows)
-13. [First-Class DSL Method on Network](#first-class-dsl-method-on-network)
-14. [Command-Line Interface (CLI)](#command-line-interface-cli)
-15. [Built-in Datasets](#built-in-datasets)
-16. [Plugin System](#plugin-system)
-17. [I/O API](#io-api)
-18. [Profiling Utilities](#profiling-utilities)
-19. [Exception Hierarchy](#exception-hierarchy)
-20. [Configuration](#configuration)
-21. [Linter and Validation](#linter-and-validation)
-22. [R Interoperability](#r-interoperability)
-23. [Dynamics Simulations](#dynamics-simulations)
-24. [Uncertainty Quantification](#uncertainty-quantification)
-25. [Query Sensitivity Analysis](#query-sensitivity-analysis)
-26. [Replayable Provenance and Query Replay](#replayable-provenance-and-query-replay)
-27. [Temporal Networks](#temporal-networks)
-28. [Null Models](#null-models)
-29. [Probabilistic Community Detection](#probabilistic-community-detection)
-30. [Multilayer Leiden Algorithm with UQ](#multilayer-leiden-algorithm-with-uq)
-31. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
-32. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
-33. [Network Counterexample Generation](#network-counterexample-generation)
-34. [Learning Claims from Data](#learning-claims-from-data)
-35. [Version Information](#version-information)
-36. [File Locations](#file-locations)
+1. [Quick Start: Golden Paths](#quick-start-golden-paths)
+2. [DSL v2 (Q / UQ / L) — Complete Reference](#dsl-v2-q-uq-l--complete-reference)
+3. [Decision Guide: Which API When?](#decision-guide-which-api-when)
+4. [Legacy DSL (String-Based)](#legacy-dsl-string-based)
+5. [Dplyr-Style Operations](#dplyr-style-operations)
+6. [Pipeline API (Sklearn-Style)](#pipeline-api-sklearn-style)
+7. [I/O and Data Loading](#io-and-data-loading)
+8. [Dynamics Simulations](#dynamics-simulations)
+9. [Uncertainty Quantification](#uncertainty-quantification)
+10. [Temporal Networks](#temporal-networks)
+11. [Null Models and Statistical Testing](#null-models-and-statistical-testing)
+12. [Counterexample Generation](#counterexample-generation)
+13. [Claim Learning (Hypothesis Discovery)](#claim-learning-hypothesis-discovery)
+14. [Semiring Algebra (Paths, Closure, Fixed-Point)](#semiring-algebra-paths-closure-fixed-point)
+15. [Community Detection and Queries](#community-detection-and-queries)
+16. [Pattern Matching (Cypher-like)](#pattern-matching-cypher-like)
+17. [Network Comparison and Diff](#network-comparison-and-diff)
+18. [CLI Tool](#cli-tool)
+19. [Plugin System](#plugin-system)
+20. [Configuration and Profiling](#configuration-and-profiling)
+21. [Exception Hierarchy](#exception-hierarchy)
+22. [Performance Guidelines](#performance-guidelines)
+23. [Reproducibility Policy](#reproducibility-policy)
+24. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
+25. [Testing Strategy](#testing-strategy)
+26. [File Locations](#file-locations)
 
 ---
 
-## Project Overview
+## Quick Start: Golden Paths
 
-py3plex is a Python library (version 1.1.0) for analyzing and visualizing multilayer and multiplex networks. It provides:
+### Path 1: Network Analysis from CSV
 
-**Core Features:**
-- Native support for multilayer network structures
-- SQL-like DSL for intuitive network queries
-- Dplyr-style chainable graph operations API (filter, select, mutate, arrange, group_by, summarise)
-- Sklearn-style pipeline API for composable workflows
-- Fluent method chaining for network construction
-- Pythonic interface (__len__, __iter__, __contains__, properties)
-- Visualization capabilities for complex networks
-- Community detection and centrality measures
-- Integration with NetworkX
+```python
+from py3plex.core import multinet
+from py3plex.dsl import Q, L
 
-**Additional Features:**
-- **CLI Tool:** Full-featured command-line interface (`py3plex --help`)
-- **Built-in Datasets:** Similar to scikit-learn (`load_aarhus_cs()`, `make_random_multilayer()`)
-- **Plugin System:** Extensible architecture for custom algorithms
-- **Config-Driven Workflows:** YAML/JSON workflow definitions
-- **R Interoperability:** Use py3plex from R via reticulate
-- **Performance Profiling:** Built-in timing and benchmarking utilities
-- **File Linting:** Validate graph data files before loading
-- **Multiple I/O Formats:** EdgeList, GraphML, GML, JSON, CSV, Apache Arrow
-- **Dynamics Simulations:** SIS, SIR, SEIR, Random Walk and custom processes
-- **Uncertainty Quantification:** First-class uncertainty support with confidence intervals
-- **Query Sensitivity Analysis:** Test robustness of conclusions (rankings, communities) under perturbations
-- **Temporal Networks:** Time-stamped edges, snapshots, and sliding windows
-- **Null Models:** Configuration model, random graphs for statistical testing
+# Load network
+net = multinet.multi_layer_network(directed=False)
+net.load_network("network.csv", input_type="edgelist")
 
-**Key Ergonomics Features:**
-- **DSL Queries:** `net.execute_query('SELECT nodes WHERE degree > 5')`
-- **Dplyr Pipes:** `nodes(net).filter(lambda n: n["degree"] > 5).mutate(...).to_pandas()`
-- **Method Chaining:** `net.add_nodes([...]).add_edges([...])`
-- **Pipelines:** `Pipeline([("load", LoadStep(...)), ("stats", ComputeStats())])`
-- **CLI:** `py3plex create --nodes 100 --layers 3 --output network.edgelist`
+# Query: Top hubs in each layer
+result = (
+    Q.nodes()
+     .from_layers(L["*"])  # All layers
+     .compute("degree", "betweenness_centrality")
+     .per_layer()
+       .top_k(10, "degree")
+     .end_grouping()
+     .execute(net)
+)
 
-**Repository:** https://github.com/SkBlaz/py3plex  
-**Documentation:** https://skblaz.github.io/py3plex/
+# Export
+df = result.to_pandas()
+df.to_csv("hubs.csv", index=False)
+```
+
+### Path 2: Uncertainty-Aware Centrality
+
+```python
+from py3plex.dsl import Q, L, UQ
+
+# Compute with uncertainty
+result = (
+    Q.nodes()
+     .from_layers(L["social"] + L["work"])
+     .compute("pagerank", "betweenness_centrality")
+     .uq(method="bootstrap", n_samples=100, ci=0.95, seed=42)
+     .execute(net)
+)
+
+# Get confidence intervals
+df = result.to_pandas(expand_uncertainty=True)
+print(df[["node", "pagerank", "pagerank_ci95_low", "pagerank_ci95_high"]])
+```
+
+### Path 3: Temporal Network Analysis
+
+```python
+from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+from py3plex.dsl import Q
+
+# Create temporal network
+tnet = TemporalMultiLayerNetwork()
+tnet.add_edge('A', 'B', layer='social', t_start=100.0, t_end=200.0)
+# ... add more edges
+
+# Query specific time window
+result = (
+    Q.edges()
+     .during(100.0, 150.0)
+     .from_layers(L["social"])
+     .execute(tnet)
+)
+```
+
+### Path 4: Dynamics Simulation
+
+```python
+from py3plex.dsl import Q, L
+
+# Run SIS epidemic
+sim = (
+    Q.dynamics("SIS", beta=0.3, mu=0.1)
+     .on_layers(L["contacts"])
+     .seed_infections(0.01)  # 1% initial infections
+     .run(steps=100, replicates=10)
+     .execute(net)
+)
+
+# Extract peak time
+trajectories = sim.trajectories
+peak_time = trajectories['infected'].idxmax()
+```
+
+### Path 5: Hypothesis Testing with Counterexamples
+
+```python
+from py3plex.dsl import Q
+
+# Learn claims from data
+claims = (
+    Q.learn_claims()
+     .from_metrics(["degree", "pagerank", "betweenness_centrality"])
+     .min_support(0.9)
+     .min_coverage(0.05)
+     .seed(42)
+     .execute(net)
+)
+
+# Test each claim for counterexamples
+for claim in claims[:5]:
+    cex = claim.counterexample(net, seed=42)
+    if cex:
+        print(f"✗ {claim.claim_string}: counterexample found")
+    else:
+        print(f"✓ {claim.claim_string}: no counterexample (support={claim.support:.3f})")
+```
 
 ---
 
-## SQL-like DSL for Multilayer Networks
+## DSL v2 (Q / UQ / L) — Complete Reference
 
-The Domain-Specific Language (DSL) in py3plex allows querying and analyzing multilayer networks using SQL-like syntax. This is a key feature that makes network analysis intuitive and accessible.
+### Minimal Mental Model
 
-### DSL Syntax Overview
+**Core Concepts**:
+1. **Builder Lifecycle**: Build → Execute → Result
+   - `Q.nodes()` creates a builder (lazy)
+   - `.where()`, `.compute()`, etc. configure the builder (still lazy)
+   - `.execute(network)` runs the query (eager) → returns `QueryResult`
+
+2. **Lazy vs Eager**:
+   - All builder methods (`.where()`, `.compute()`, `.from_layers()`) are **lazy** - they just build an AST
+   - Only `.execute(network)` is **eager** - it runs the query
+   - You can call `.to_ast()` to see the query without executing it
+
+3. **Grouping and Coverage**:
+   - `.per_layer()` / `.per_layer_pair()` enable grouping
+   - `.top_k(k, key)` keeps top-k items **per group**
+   - `.coverage(mode="all")` filters cross-group: keep items in all/any/k groups
+   - **Order matters**: grouping → operations → end_grouping → coverage
+
+4. **Return Types**:
+   - Builder methods → `QueryBuilder` (chainable)
+   - `.execute(network)` → `QueryResult` (rich result object)
+   - `QueryResult.to_pandas()` → pandas DataFrame
+   - `QueryResult.to_networkx()` → NetworkX graph
+   - `QueryResult.to_arrow()` → Apache Arrow table
+
+5. **Compute vs Aggregate**:
+   - `.compute("degree")` - compute metric **per item** (node/edge)
+   - `.aggregate(avg_degree="mean(degree)")` - compute **per group** statistic
+   - Aggregate requires grouping; compute does not
+
+---
+
+### Q — Query Builder Factory
+
+**Import**: `from py3plex.dsl import Q`
+
+#### Q.nodes(autocompute=True) → QueryBuilder
+
+Create a node query builder.
+
+**Args**:
+- `autocompute` (bool, default=True): Auto-compute referenced metrics if missing
+
+**Returns**: `QueryBuilder` for nodes
+
+**Example**:
+```python
+Q.nodes().where(degree__gt=5).execute(net)
+Q.nodes(autocompute=False).where(layer="social").execute(net)
+```
+
+**Failure modes**:
+- If `autocompute=False` and you filter on a metric not yet computed, execution fails
+- Use `.compute()` explicitly to avoid this
+
+---
+
+#### Q.edges(autocompute=True) → QueryBuilder
+
+Create an edge query builder.
+
+**Args**:
+- `autocompute` (bool, default=True): Auto-compute referenced metrics if missing
+
+**Returns**: `QueryBuilder` for edges
+
+**Example**:
+```python
+Q.edges().where(weight__gt=1.0).execute(net)
+Q.edges().per_layer_pair().aggregate(count="count()").execute(net)
+```
+
+**Failure modes**:
+- Edge endpoint properties (src_degree, dst_degree) require autocompute or pre-computation
+
+---
+
+#### Q.communities(autocompute=True, partition="default") → CommunityQueryBuilder
+
+Create a community query builder.
+
+**Args**:
+- `autocompute` (bool, default=True): Auto-compute metrics if missing
+- `partition` (str, default="default"): Partition name to query
+
+**Returns**: `CommunityQueryBuilder` (extends QueryBuilder)
+
+**Example**:
+```python
+# Detect communities first
+from py3plex.algorithms.community_detection import louvain
+communities = louvain(net)
+
+# Query communities
+Q.communities().where(size__gt=10).compute("modularity").execute(net)
+Q.communities(partition="louvain").where(conductance__lt=0.5).execute(net)
+```
+
+**Failure modes**:
+- Community partition must exist before querying
+- Use `detect_communities()` first or pass results to network
+
+---
+
+#### Q.dynamics(process_name, **params) → DynamicsBuilder
+
+Create a dynamics simulation builder.
+
+**Args**:
+- `process_name` (str): Process type ("SIS", "SIR", "SEIR", "RANDOM_WALK", "CUSTOM")
+- `**params`: Process-specific parameters (e.g., `beta=0.3`, `mu=0.1`)
+
+**Returns**: `DynamicsBuilder`
+
+**Example**:
+```python
+sim = (
+    Q.dynamics("SIS", beta=0.3, mu=0.1)
+     .on_layers(L["contacts"])
+     .seed_infections(0.01)
+     .run(steps=100, replicates=10)
+     .execute(net)
+)
+```
+
+**See**: [Dynamics Simulations](#dynamics-simulations) section for full reference
+
+---
+
+#### Q.trajectories(process_ref) → TrajectoriesBuilder
+
+Create a trajectories query builder (query simulation results).
+
+**Args**:
+- `process_ref` (str): Reference to simulation result
+
+**Returns**: `TrajectoriesBuilder`
+
+**Example**:
+```python
+# After running a simulation
+result = Q.trajectories("sim_1").at(50).measure("peak_time").execute(context)
+```
+
+---
+
+#### Q.counterexample() → CounterexampleBuilder
+
+Create a counterexample search builder.
+
+**Returns**: `CounterexampleBuilder`
+
+**Example**:
+```python
+cex = (
+    Q.counterexample()
+     .claim("degree__ge(k) -> pagerank__rank_le(r)")
+     .params(k=10, r=50)
+     .seed(42)
+     .execute(net)
+)
+```
+
+**See**: [Counterexample Generation](#counterexample-generation) section
+
+---
+
+#### Q.learn_claims() → ClaimLearnerBuilder
+
+Create a claim learning builder (hypothesis discovery).
+
+**Returns**: `ClaimLearnerBuilder`
+
+**Example**:
+```python
+claims = (
+    Q.learn_claims()
+     .from_metrics(["degree", "pagerank", "betweenness_centrality"])
+     .min_support(0.9)
+     .min_coverage(0.05)
+     .seed(42)
+     .execute(net)
+)
+```
+
+**See**: [Claim Learning](#claim-learning-hypothesis-discovery) section
+
+---
+
+### QueryBuilder — Main Query Builder
+
+**Obtained from**: `Q.nodes()` or `Q.edges()`
+
+All methods return `self` (QueryBuilder) for chaining unless otherwise noted.
+
+---
+
+#### .from_layers(layer_expr) → QueryBuilder
+
+Filter by layers using layer algebra.
+
+**Args**:
+- `layer_expr`: LayerExprBuilder from `L[...]` or LayerSet
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().from_layers(L["social"])
+Q.nodes().from_layers(L["social"] + L["work"])
+Q.nodes().from_layers(L["* - coupling"])  # All except coupling
+```
+
+**Semantics**:
+- Selects only nodes/edges in specified layers
+- Layer algebra: `+` (union), `-` (difference), `&` (intersection)
+- `L["*"]` means all layers
+
+**Failure modes**:
+- Unknown layer names are caught at execution (raises `UnknownLayerError`)
+- Empty layer expression → empty result (not an error)
+
+---
+
+#### .where(*args, **kwargs) → QueryBuilder
+
+Add WHERE conditions (filtering).
+
+**Args**:
+- `*args`: BooleanExpression objects from `F` (e.g., `F.degree > 5`)
+- `**kwargs`: Conditions as keyword arguments
+
+**Returns**: QueryBuilder (self)
+
+**Keyword Syntax**:
+- Simple equality: `layer="social"`
+- Comparisons: `degree__gt=5`, `degree__gte=5`, `degree__lt=10`, `degree__lte=10`, `degree__eq=5`, `degree__ne=3`
+- Special predicates:
+  - `intralayer=True` - edges within same layer
+  - `interlayer=("social", "work")` - edges between specific layers
+  - `t__between=(100, 200)` - temporal range
+  - `t__gte=100`, `t__lt=200` - temporal comparisons
+
+**Expression Syntax** (using `F`):
+```python
+from py3plex.dsl import F
+
+Q.nodes().where(F.degree > 5)
+Q.nodes().where((F.degree > 5) & (F.layer == "social"))
+Q.nodes().where((F.degree > 10) | (F.clustering < 0.5))
+```
+
+**Operators**: `>`, `>=`, `<`, `<=`, `==`, `!=`, `&` (and), `|` (or), `~` (not)
+
+**Example**:
+```python
+# Keyword style
+Q.nodes().where(layer="social", degree__gt=5)
+Q.edges().where(weight__gte=1.0, intralayer=True)
+
+# Expression style
+Q.nodes().where(F.degree > 5, F.layer == "social")
+Q.nodes().where((F.degree > 10) | (F.betweenness_centrality > 0.1))
+
+# Mix both
+Q.nodes().where(F.degree > 5, layer="social")
+```
+
+**Semantics**:
+- Multiple conditions are combined with AND
+- Conditions are evaluated lazily at execution time
+- Autocompute metrics referenced in conditions (if autocompute=True)
+
+**Failure modes**:
+- Unknown attributes raise `UnknownAttributeError` at execution
+- Type mismatches (e.g., `layer > 5`) raise `TypeMismatchError`
+- If autocompute=False and metric not computed, execution fails
+
+---
+
+#### .compute(*measures, **options) → QueryBuilder
+
+Compute metrics per item (node/edge).
+
+**Args**:
+- `*measures` (str): Metric names to compute
+- `alias` (str, optional): Alias for single measure
+- `aliases` (Dict[str, str], optional): Map measure→alias
+- `uncertainty` (bool, optional): Enable uncertainty for these measures
+- `method`, `n_samples`, `ci`, etc.: Uncertainty options (see UQ section)
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree")
+Q.nodes().compute("degree", "betweenness_centrality", "pagerank")
+Q.nodes().compute("degree", alias="node_degree")
+Q.nodes().compute("betweenness_centrality", "pagerank", 
+                  aliases={"betweenness_centrality": "bc", "pagerank": "pr"})
+
+# With uncertainty
+Q.nodes().compute("pagerank", uncertainty=True, n_samples=100, ci=0.95, seed=42)
+```
+
+**Built-in Metrics** (nodes):
+- `degree` - Node degree
+- `degree_centrality` - Normalized degree centrality
+- `betweenness_centrality` - Betweenness centrality
+- `closeness_centrality` - Closeness centrality
+- `eigenvector_centrality` - Eigenvector centrality
+- `pagerank` - PageRank
+- `clustering` - Clustering coefficient
+- `strength` - Weighted degree (sum of edge weights)
+- `layer_count` - Number of layers node appears in
+
+**Built-in Metrics** (edges):
+- `weight` - Edge weight (default: 1.0)
+- `src_degree`, `dst_degree` - Endpoint degrees
+- `edge_betweenness_centrality` - Edge betweenness
+
+**Custom Metrics**: Use plugin system or `.mutate()` for derived metrics
+
+**Semantics**:
+- Computes metrics for **each item** (not aggregated)
+- Results stored in QueryResult.attributes
+- Multiple `.compute()` calls accumulate (don't replace)
+
+**Failure modes**:
+- Unknown measure names raise `UnknownMeasureError`
+- Some measures require simple graphs (e.g., clustering) → auto-converted if needed
+- Computationally expensive on large networks (>10k nodes)
+
+---
+
+#### .order_by(*keys, desc=False) → QueryBuilder
+
+Sort results by one or more keys.
+
+**Args**:
+- `*keys` (str): Attribute names to sort by. Prefix with `-` for descending (e.g., `"-degree"`)
+- `desc` (bool, default=False): Sort descending (applies to all keys if no `-` prefix)
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree").order_by("degree")  # Ascending
+Q.nodes().compute("degree").order_by("-degree")  # Descending
+Q.nodes().compute("degree").order_by("degree", desc=True)  # Descending
+Q.nodes().compute("degree", "layer").order_by("layer", "degree")  # Multi-key
+Q.nodes().compute("degree", "pagerank").order_by("-pagerank", "-degree")  # Both desc
+```
+
+**Semantics**:
+- Stable sort (preserves order of equal elements)
+- Multi-key sort: primary key first, then secondary, etc.
+- `-` prefix overrides `desc` parameter for that key
+
+**Failure modes**:
+- Unknown keys raise error at execution
+- Keys must be in result (computed or intrinsic like "node", "layer")
+
+---
+
+#### .limit(n) → QueryBuilder
+
+Limit result to first n items.
+
+**Args**:
+- `n` (int): Maximum number of items to return
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree").order_by("-degree").limit(10)  # Top 10 by degree
+```
+
+**Semantics**:
+- Applied **after** ordering
+- Does not interact with grouping (see `.top_k()` for per-group limits)
+
+---
+
+#### .uq(method, n_samples, ci, seed, **options) → QueryBuilder
+
+Enable uncertainty quantification for the query.
+
+**Args**:
+- `method` (str): "bootstrap", "perturbation", "seed"
+- `n_samples` (int): Number of samples for UQ
+- `ci` (float): Confidence interval level (e.g., 0.95 for 95%)
+- `seed` (int): Random seed for reproducibility
+- `**options`: Additional UQ options (bootstrap_unit, bootstrap_mode, etc.)
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, ci=0.95, seed=42)
+Q.nodes().compute("degree", "betweenness").uq(method="perturbation", n_samples=50, seed=123)
+```
+
+**Methods**:
+- `"bootstrap"`: Resample edges/nodes/layers
+- `"perturbation"`: Add noise to edge weights
+- `"seed"`: Multi-run with different random seeds
+
+**Semantics**:
+- Computes metrics multiple times with resampling
+- Returns mean, std, confidence intervals
+- Use `.to_pandas(expand_uncertainty=True)` to get CI columns
+
+**See**: [Uncertainty Quantification](#uncertainty-quantification) for detailed reference
+
+**Failure modes**:
+- Computationally expensive (n_samples × metric cost)
+- Requires deterministic metrics (some algorithms use randomness)
+- Seed must be set for reproducibility
+
+---
+
+#### .per_layer() → QueryBuilder
+
+Group results by layer (for **node** queries).
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().per_layer().top_k(5, "degree")
+```
+
+**Semantics**:
+- Shorthand for `.group_by("layer")`
+- Enables per-layer operations (`.top_k()`, `.aggregate()`)
+- **Only valid for node queries** (raises error for edges)
+
+**After grouping, use**:
+- `.top_k(k, key)` - top-k per layer
+- `.aggregate(...)` - compute per-layer statistics
+- `.end_grouping()` - marker for readability
+- `.coverage(...)` - cross-layer filtering
+
+**Failure modes**:
+- Called on edge query → raises `DslExecutionError`
+- Forgetting `.end_grouping()` before `.coverage()` → may be confusing but not an error
+
+---
+
+#### .per_layer_pair() → QueryBuilder
+
+Group edge results by (src_layer, dst_layer) pair (for **edge** queries).
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.edges().per_layer_pair().aggregate(count="count()", avg_weight="mean(weight)")
+```
+
+**Semantics**:
+- Shorthand for `.group_by("src_layer", "dst_layer")`
+- Enables per-layer-pair operations
+- **Only valid for edge queries** (raises error for nodes)
+
+**Failure modes**:
+- Called on node query → raises `DslExecutionError`
+
+---
+
+#### .top_k(k, key=None) → QueryBuilder
+
+Keep top-k items per group.
+
+**Args**:
+- `k` (int): Number of items to keep per group
+- `key` (str, optional): Attribute to sort by (descending). If None, uses existing order_by.
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().per_layer().top_k(5, "degree")
+Q.nodes().per_layer().compute("betweenness").top_k(10, "betweenness_centrality")
+```
+
+**Semantics**:
+- Requires prior grouping (`.per_layer()` or `.group_by()`)
+- Keeps top-k **per group** (not global top-k)
+- If key provided, implicitly sets `.order_by(f"-{key}")`
+
+**Failure modes**:
+- Called without grouping → raises `ValueError`
+- Key must be in result (computed or intrinsic)
+
+---
+
+#### .end_grouping() → QueryBuilder
+
+Marker for end of grouping configuration (readability).
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+(Q.nodes()
+  .per_layer()
+    .top_k(5, "degree")
+  .end_grouping()
+  .coverage(mode="all"))
+```
+
+**Semantics**:
+- No execution effect (purely for API readability)
+- Helps visually separate grouping operations from post-grouping operations
+
+---
+
+#### .coverage(mode, k=None, threshold=None, p=None) → QueryBuilder
+
+Filter items based on cross-group coverage.
+
+**Args**:
+- `mode` (str): "all", "any", "at_least", "exact", "fraction"
+- `k` (int, optional): Threshold for "at_least" or "exact" modes
+- `threshold` (int, optional): Alias for `k`
+- `p` (float, optional): Fraction threshold (0.0-1.0) for "fraction" mode
+
+**Returns**: QueryBuilder (self)
+
+**Modes**:
+- `"all"`: Keep items in ALL groups
+- `"any"`: Keep items in at least ONE group (default behavior, not usually needed)
+- `"at_least"`: Keep items in at least k groups (requires `k` or `threshold`)
+- `"exact"`: Keep items in exactly k groups (requires `k`)
+- `"fraction"`: Keep items in at least p fraction of groups (requires `p`, e.g., p=0.67 for 67%)
+
+**Example**:
+```python
+# Cross-layer hubs (top-5 degree in ALL layers)
+Q.nodes().per_layer().top_k(5, "degree").coverage(mode="all")
+
+# Top-5 in at least 2 layers
+Q.nodes().per_layer().top_k(5, "degree").coverage(mode="at_least", k=2)
+
+# Top-10 in at least 70% of layers
+Q.nodes().per_layer().top_k(10, "degree").coverage(mode="fraction", p=0.7)
+```
+
+**Semantics**:
+- Requires prior grouping
+- Applied **after** per-group operations (`.top_k()`, `.aggregate()`)
+- Filters final result to items meeting cross-group criteria
+
+**Failure modes**:
+- Called without grouping → raises `GroupingError`
+- Invalid mode → raises `ValueError`
+- Missing required parameters (k for "at_least", p for "fraction") → raises `ValueError`
+
+---
+
+#### .aggregate(**aggregations) → QueryBuilder
+
+Compute per-group statistics.
+
+**Args**:
+- `**aggregations`: Map of `alias="function(attribute)"` pairs
+
+**Returns**: QueryBuilder (self)
+
+**Functions**:
+- `count()` / `n()`: Count of items in group
+- `mean(attr)`: Arithmetic mean
+- `median(attr)`: Median value
+- `sum(attr)`: Sum of values
+- `min(attr)`, `max(attr)`: Minimum/maximum
+- `std(attr)`, `var(attr)`: Standard deviation and variance
+- `quantile(attr, p)`: p-th quantile (e.g., `quantile(degree, 0.95)`)
+
+**Example**:
+```python
+# Per-layer statistics
+Q.nodes().per_layer().aggregate(
+    node_count="count()",
+    avg_degree="mean(degree)",
+    median_degree="median(degree)",
+    q95_degree="quantile(degree, 0.95)"
+)
+
+# Per-layer-pair edge statistics
+Q.edges().per_layer_pair().aggregate(
+    edge_count="count()",
+    avg_weight="mean(weight)",
+    total_weight="sum(weight)"
+)
+```
+
+**Semantics**:
+- Requires prior grouping
+- Returns **one row per group** (not per item)
+- Result has group keys (layer, src_layer/dst_layer) + computed aggregates
+
+**Failure modes**:
+- Called without grouping → error
+- Unknown aggregation functions → error
+- Attribute not in result → error
+
+---
+
+#### .filter(*args, **kwargs) → QueryBuilder
+
+Alias for `.where()` (dplyr-style naming).
+
+**See**: `.where()` documentation above
+
+---
+
+#### .filter_expr(expr) → QueryBuilder
+
+Filter using string expression.
+
+**Args**:
+- `expr` (str): Boolean expression string
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().filter_expr("degree > 5 and layer == 'social'")
+Q.edges().filter_expr("weight >= 1.0 and intralayer")
+```
+
+**Semantics**:
+- Parses expression and converts to condition AST
+- Supports: `>`, `>=`, `<`, `<=`, `==`, `!=`, `and`, `or`, `not`
+
+**Failure modes**:
+- Invalid syntax → parse error
+- Unknown attributes → error at execution
+
+---
+
+#### .head(n=5) → QueryBuilder
+
+Keep first n results (dplyr-style).
+
+**Args**:
+- `n` (int, default=5): Number of items to keep
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree").order_by("-degree").head(10)
+```
+
+**Semantics**:
+- Alias for `.limit(n)`
+- Applied after ordering
+
+---
+
+#### .tail(n=5) → QueryBuilder
+
+Keep last n results (dplyr-style).
+
+**Args**:
+- `n` (int, default=5): Number of items to keep
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree").order_by("degree").tail(10)  # 10 lowest degree
+```
+
+**Semantics**:
+- Reverses order, takes first n, reverses again
+- Applied after ordering
+
+---
+
+#### .sample(n=5, seed=None) → QueryBuilder
+
+Random sample of n items (dplyr-style).
+
+**Args**:
+- `n` (int, default=5): Number of items to sample
+- `seed` (int, optional): Random seed for reproducibility
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().sample(10, seed=42)  # Random 10 nodes, reproducible
+```
+
+**Semantics**:
+- Random sampling without replacement
+- Seed ensures reproducibility
+
+**Failure modes**:
+- If n > result size, returns all items (not an error)
+
+---
+
+#### .slice(start, end=None) → QueryBuilder
+
+Array-style slicing (dplyr-style).
+
+**Args**:
+- `start` (int): Start index (inclusive, 0-based)
+- `end` (int, optional): End index (exclusive). If None, goes to end.
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().slice(10, 20)  # Items 10-19
+Q.nodes().slice(5, None)  # Items 5 to end
+```
+
+**Semantics**:
+- Python-style slicing
+- Applied after ordering
+
+---
+
+#### .mutate(**transformations) → QueryBuilder
+
+Add or modify attributes using lambda functions (dplyr-style).
+
+**Args**:
+- `**transformations`: Map of `new_attr=lambda row: expression` pairs
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree").mutate(
+    norm_deg=lambda r: r["degree"] / 10,
+    is_hub=lambda r: r["degree"] > 5
+)
+```
+
+**Semantics**:
+- Computes new attributes from existing ones
+- Lambda receives row dict with all current attributes
+- Can reference computed metrics
+
+**Failure modes**:
+- Lambda errors (e.g., KeyError for missing attr) propagate at execution
+
+---
+
+#### .select(*columns) → QueryBuilder
+
+Keep only specified columns in result (dplyr-style).
+
+**Args**:
+- `*columns` (str): Column names to keep
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree", "pagerank").select("node", "layer", "degree")
+```
+
+**Semantics**:
+- Projection operation (like SQL SELECT)
+- Other columns are dropped from result
+
+---
+
+#### .rename(**mapping) → QueryBuilder
+
+Rename columns (dplyr-style).
+
+**Args**:
+- `**mapping`: Map of `old_name="new_name"` pairs
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree").rename(degree="node_degree", layer="layer_name")
+```
+
+---
+
+#### .arrange(*columns, desc=False) → QueryBuilder
+
+Alias for `.order_by()` (dplyr-style).
+
+**See**: `.order_by()` documentation
+
+---
+
+#### .at(t) → QueryBuilder
+
+Temporal snapshot at time t (temporal networks).
+
+**Args**:
+- `t` (float): Timestamp
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.edges().at(150.0).execute(temporal_net)
+```
+
+**Semantics**:
+- Filters edges to those active at time t
+- Requires `t_start`/`t_end` or `t` on edges
+
+**See**: [Temporal Networks](#temporal-networks) section
+
+---
+
+#### .during(t_start, t_end) → QueryBuilder
+
+Temporal range query [t_start, t_end] (temporal networks).
+
+**Args**:
+- `t_start` (float): Start time (inclusive)
+- `t_end` (float): End time (inclusive)
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.edges().during(100.0, 200.0).execute(temporal_net)
+```
+
+**Semantics**:
+- Filters edges to those active in interval
+- Requires `t_start`/`t_end` or `t` on edges
+
+---
+
+#### .before(t) → QueryBuilder
+
+Temporal query for edges before time t.
+
+**Args**:
+- `t` (float): Cutoff time
+
+**Returns**: QueryBuilder (self)
+
+---
+
+#### .after(t) → QueryBuilder
+
+Temporal query for edges after time t.
+
+**Args**:
+- `t` (float): Cutoff time
+
+**Returns**: QueryBuilder (self)
+
+---
+
+#### .window(size, stride=None, ...) → QueryBuilder
+
+Sliding window temporal query (temporal networks).
+
+**Args**:
+- `size` (float): Window size
+- `stride` (float, optional): Stride (default: size, non-overlapping)
+- Additional params: anchors, aggregation, etc.
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.edges().window(size=100.0, stride=50.0).execute(temporal_net)
+```
+
+**See**: [Temporal Networks](#temporal-networks) section
+
+---
+
+#### .execute(network, progress=True, **params) → QueryResult
+
+Execute the query and return results.
+
+**Args**:
+- `network`: multi_layer_network or TemporalMultiLayerNetwork instance
+- `progress` (bool, default=True): Show progress logging
+- `**params`: Parameter bindings (for Param.ref placeholders)
+
+**Returns**: `QueryResult`
+
+**Example**:
+```python
+result = Q.nodes().where(degree__gt=Param.int("k")).execute(net, k=5)
+```
+
+**Semantics**:
+- **This is the only eager operation**
+- Compiles query to AST, binds parameters, executes
+- Returns rich QueryResult object
+
+**Failure modes**:
+- Network validation errors
+- Unknown layers, attributes, measures
+- Parameter binding errors (missing or type mismatch)
+
+---
+
+#### .to_ast() → Query
+
+Export query as AST without executing.
+
+**Returns**: AST Query object
+
+**Example**:
+```python
+ast = Q.nodes().where(degree__gt=5).compute("pagerank").to_ast()
+print(ast)  # Inspect AST structure
+```
+
+**Use cases**:
+- Debugging query structure
+- Serializing queries
+- Static analysis
+
+---
+
+### QueryResult — Rich Result Object
+
+**Obtained from**: `.execute(network)`
+
+#### Attributes
+
+- `result.target`: "nodes" or "edges"
+- `result.items`: List of node/edge items (tuples)
+- `result.attributes`: Dict of computed attributes (e.g., `{"degree": {...}}`)
+- `result.meta`: Metadata dict (provenance, grouping, etc.)
+- `result.count`: Number of items (same as `len(result)`)
+
+#### Methods
+
+##### .to_pandas(expand_uncertainty=False, expand_explanations=False) → DataFrame
+
+Convert to pandas DataFrame.
+
+**Args**:
+- `expand_uncertainty` (bool): Expand UQ columns (_mean, _std, _ci95_low, _ci95_high)
+- `expand_explanations` (bool): Expand explain() metadata into columns
+
+**Returns**: pandas DataFrame
+
+**Example**:
+```python
+df = result.to_pandas()
+df = result.to_pandas(expand_uncertainty=True)
+```
+
+---
+
+##### .to_networkx() → nx.Graph
+
+Convert result to NetworkX graph.
+
+**Returns**: NetworkX Graph or MultiGraph
+
+---
+
+##### .to_arrow() → pyarrow.Table
+
+Convert to Apache Arrow table (for interop with other tools).
+
+**Returns**: Apache Arrow Table
+
+---
+
+##### .to_dict() → dict
+
+Convert to plain dictionary (backward compatible with legacy DSL).
+
+**Returns**: Dictionary with keys: query, target, nodes/edges, count, computed, meta
+
+---
+
+##### .group_summary() → DataFrame
+
+Get summary of grouped results (when grouping is used).
+
+**Returns**: DataFrame with group keys and per-group statistics
+
+**Example**:
+```python
+result = (Q.nodes()
+           .per_layer()
+           .aggregate(count="count()", avg_degree="mean(degree)")
+           .execute(net))
+df = result.group_summary()
+```
+
+---
+
+##### .counterexample(claim, **kwargs) → Counterexample | None
+
+Lazily find counterexample for a claim on this result's network.
+
+**Args**:
+- `claim` (str): Claim string (e.g., "degree__ge(k) -> pagerank__rank_le(r)")
+- `**kwargs`: Passed to counterexample engine (params, seed, etc.)
+
+**Returns**: Counterexample object or None
+
+**Example**:
+```python
+result = Q.nodes().compute("degree", "pagerank").execute(net)
+cex = result.counterexample("degree__ge(k) -> pagerank__rank_le(r)", k=10, r=50, seed=42)
+```
+
+**See**: [Counterexample Generation](#counterexample-generation)
+
+---
+
+### L — Layer Algebra Builder
+
+**Import**: `from py3plex.dsl import L`
+
+#### L["layer_name"] → LayerExprBuilder
+
+Create a layer expression builder.
+
+**Example**:
+```python
+L["social"]  # Single layer
+L["social"] + L["work"]  # Union
+L["social"] - L["bots"]  # Difference
+L["social"] & L["work"]  # Intersection
+L["*"]  # All layers
+L["*"] - L["coupling"]  # All except coupling
+```
+
+**Operators**:
+- `+`: Union of layers
+- `-`: Difference (A - B = elements in A but not B)
+- `&`: Intersection
+- `L["*"]`: All layers (wildcard)
+
+**Advanced Syntax** (LayerSet parsing):
+```python
+L["* - coupling"]  # String expression with operators
+L["(ppi | gene) & disease"]  # Parentheses and pipe operator
+```
+
+**Semantics**:
+- Builds AST for layer selection
+- Resolved at execution time against network's layers
+- Unknown layers → error at execution
+
+**Failure modes**:
+- Empty result (e.g., `L["social"] & L["work"]` on network without both) → empty query result, not error
+
+---
+
+#### L.define(name, layer_expr)
+
+Define named layer group for reuse.
+
+**Args**:
+- `name` (str): Group name
+- `layer_expr`: LayerExprBuilder or LayerSet
+
+**Example**:
+```python
+bio = L["ppi"] | L["gene"] | L["disease"]
+L.define("bio", bio)
+
+# Later
+Q.nodes().from_layers(L["bio"]).execute(net)
+```
+
+---
+
+#### L.list_groups() → dict
+
+List all defined layer groups.
+
+**Returns**: Dictionary mapping group names to layer expressions
+
+---
+
+#### L.clear_groups()
+
+Clear all defined layer groups.
+
+---
+
+### UQ — Uncertainty Quantification Factory
+
+**Import**: `from py3plex.dsl import UQ`
+
+UQ provides defaults for uncertainty quantification across queries.
+
+#### UQ.defaults(method, n_samples, ci, seed, **options) → UncertaintyConfig
+
+Set default UQ configuration.
+
+**Args**:
+- `method` (str): "bootstrap", "perturbation", "seed"
+- `n_samples` (int): Number of samples
+- `ci` (float): Confidence interval level (e.g., 0.95)
+- `seed` (int): Random seed
+- `**options`: bootstrap_unit, bootstrap_mode, etc.
+
+**Returns**: UncertaintyConfig object
+
+**Example**:
+```python
+UQ.defaults(method="bootstrap", n_samples=100, ci=0.95, seed=42)
+
+# Now all queries with uncertainty=True use these defaults
+Q.nodes().compute("pagerank", uncertainty=True).execute(net)
+```
+
+**See**: [Uncertainty Quantification](#uncertainty-quantification) for full reference
+
+---
+
+### Param — Parameter Placeholders
+
+**Import**: `from py3plex.dsl import Param`
+
+Param creates parameter placeholders for parameterized queries.
+
+#### Param.int(name) → ParamRef
+
+Integer parameter.
+
+**Example**:
+```python
+q = Q.nodes().where(degree__gt=Param.int("k"))
+result = q.execute(net, k=5)
+```
+
+---
+
+#### Param.float(name) → ParamRef
+
+Float parameter.
+
+**Example**:
+```python
+q = Q.nodes().where(weight__gte=Param.float("threshold"))
+result = q.execute(net, threshold=1.5)
+```
+
+---
+
+#### Param.str(name) → ParamRef
+
+String parameter.
+
+**Example**:
+```python
+q = Q.nodes().where(layer=Param.str("target_layer"))
+result = q.execute(net, target_layer="social")
+```
+
+---
+
+#### Param.ref(name) → ParamRef
+
+Untyped parameter reference.
+
+**Example**:
+```python
+q = Q.nodes().where(degree__gt=Param.ref("threshold"))
+result = q.execute(net, threshold=10)
+```
+
+---
+
+### F — Field Expressions
+
+**Import**: `from py3plex.dsl import F`
+
+F provides a fluent API for building filter expressions.
+
+#### F.field_name → FieldProxy
+
+Access field for comparisons.
+
+**Example**:
+```python
+F.degree > 5
+F.degree >= 10
+F.layer == "social"
+F.weight != 1.0
+(F.degree > 5) & (F.layer == "social")
+(F.degree > 10) | (F.clustering < 0.5)
+~(F.degree < 5)  # NOT
+```
+
+**Operators**:
+- Comparison: `>`, `>=`, `<`, `<=`, `==`, `!=`
+- Logical: `&` (and), `|` (or), `~` (not)
+
+**Usage in `.where()`**:
+```python
+Q.nodes().where(F.degree > 5)
+Q.nodes().where((F.degree > 5) & (F.layer == "social"))
+```
+
+---
+
+### Common Patterns
+
+#### Pattern 1: Top-k Hubs per Layer
+
+```python
+result = (
+    Q.nodes()
+     .from_layers(L["*"])
+     .compute("degree", "betweenness_centrality")
+     .per_layer()
+       .top_k(10, "degree")
+     .end_grouping()
+     .execute(net)
+)
+```
+
+---
+
+#### Pattern 2: Cross-Layer Hubs (All Layers)
+
+```python
+result = (
+    Q.nodes()
+     .from_layers(L["*"])
+     .compute("degree")
+     .per_layer()
+       .top_k(20, "degree")
+     .end_grouping()
+     .coverage(mode="all")  # Must be top-20 in ALL layers
+     .execute(net)
+)
+```
+
+---
+
+#### Pattern 3: Aggregation per Layer
+
+```python
+result = (
+    Q.nodes()
+     .per_layer()
+     .aggregate(
+         node_count="count()",
+         avg_degree="mean(degree)",
+         q95_degree="quantile(degree, 0.95)"
+     )
+     .execute(net)
+)
+
+df = result.to_pandas()
+# Columns: layer, node_count, avg_degree, q95_degree
+```
+
+---
+
+#### Pattern 4: Filtered Aggregation
+
+```python
+result = (
+    Q.nodes()
+     .where(degree__gt=5)  # Filter first
+     .per_layer()
+     .aggregate(
+         high_degree_count="count()",
+         avg_bc="mean(betweenness_centrality)"
+     )
+     .execute(net)
+)
+```
+
+---
+
+#### Pattern 5: Temporal Snapshot with Grouping
+
+```python
+result = (
+    Q.edges()
+     .during(100.0, 200.0)
+     .per_layer_pair()
+     .aggregate(
+         edge_count="count()",
+         avg_weight="mean(weight)"
+     )
+     .execute(temporal_net)
+)
+```
+
+---
+
+#### Pattern 6: Uncertainty with Filtering
+
+```python
+result = (
+    Q.nodes()
+     .where(degree__gt=10)
+     .compute("pagerank", "betweenness_centrality")
+     .uq(method="bootstrap", n_samples=100, ci=0.95, seed=42)
+     .order_by("-pagerank")
+     .limit(20)
+     .execute(net)
+)
+
+df = result.to_pandas(expand_uncertainty=True)
+# Columns include: pagerank_mean, pagerank_std, pagerank_ci95_low, pagerank_ci95_high
+```
+
+---
+
+### Failure Mode Reference
+
+**Empty Results**:
+- Layer expressions that match no layers → empty result (not error)
+- Filters that match no items → empty result (not error)
+- `SELECT nodes WHERE degree > 1000` on small network → empty result
+
+**Execution Errors**:
+- Unknown layer names → `UnknownLayerError`
+- Unknown attributes → `UnknownAttributeError`
+- Unknown measures → `UnknownMeasureError`
+- Type mismatches (e.g., `layer > 5`) → `TypeMismatchError`
+- Grouping errors (e.g., `.top_k()` without `.per_layer()`) → `GroupingError`
+
+**Parameter Binding Errors**:
+- Missing parameters → `ParameterMissingError`
+- Type mismatches → binding errors at execution
+
+**Autocompute Limitations**:
+- If `autocompute=False` and metric referenced in filter not computed → error
+- Circular dependencies in metrics → error (rare)
+
+**Performance Issues**:
+- Large networks (>10k nodes) with expensive metrics (betweenness, closeness) → slow
+- UQ with many samples (>1000) → very slow
+- Solution: Use smaller sample sizes, profile with `.meta['provenance']['performance']`
+
+---
+
+### Performance Tips
+
+1. **Filter early**: Use `.where()` before `.compute()` to reduce computation
+2. **Disable autocompute**: If you know metrics are pre-computed, use `autocompute=False`
+3. **Use layer algebra**: `L["social"]` is faster than selecting all and filtering
+4. **Batch computations**: Compute multiple metrics in one `.compute()` call
+5. **UQ sampling**: Start with n_samples=10-20 for development, increase for production
+6. **Temporal queries**: Use `.at()` or `.during()` to reduce edge set before other operations
+7. **Grouping**: Use `.per_layer()` early to parallelize computations (future feature)
+
+---
+
+
+## Decision Guide: Which API When?
+
+### Use DSL v2 (Q builder) when:
+- ✓ You need type-safe, IDE-autocomplete experience
+- ✓ Complex queries with grouping, aggregation, coverage
+- ✓ Uncertainty quantification required
+- ✓ Temporal network queries
+- ✓ Integration with other DSL features (dynamics, counterexamples)
+- ✓ Building reusable, parameterized queries
+- ✓ You're new to py3plex (most ergonomic API)
+
+### Use Legacy DSL (string-based) when:
+- ✓ Quick one-off queries in notebooks
+- ✓ You prefer SQL-like syntax
+- ✓ Simple filtering and centrality computation
+- ✓ Backward compatibility with old scripts
+- ✓ Teaching/documentation (familiar SQL syntax)
+
+### Use Dplyr-Style API when:
+- ✓ You're familiar with R's dplyr or pandas
+- ✓ Interactive data exploration in notebooks
+- ✓ Simple transformations (filter, mutate, arrange, select)
+- ✓ Converting results to DataFrames for analysis
+- ✗ NOT for complex multilayer-specific operations (use Q builder instead)
+
+### Use Pipeline API when:
+- ✓ Sklearn-style workflow orchestration
+- ✓ Reproducible multi-step analysis pipelines
+- ✓ Caching intermediate results
+- ✓ Config-driven workflows from YAML/JSON
+- ✓ Research workflows requiring provenance
+
+### Use CLI when:
+- ✓ Shell scripts and automation
+- ✓ Quick network statistics without Python
+- ✓ File format conversion
+- ✓ CI/CD integration
+
+### Decision Tree: Computing Centrality
+
+```
+Need uncertainty quantification?
+├─ YES → Use Q.nodes().compute(...).uq(...)
+└─ NO
+   ├─ Complex filtering (multilayer-specific)?
+   │  └─ YES → Use Q.nodes().from_layers(L[...]).where(...).compute(...)
+   └─ Simple layer filtering?
+      ├─ YES → Use execute_query("SELECT nodes WHERE layer='X' COMPUTE ...")
+      └─ NO (single-layer or all layers)
+         └─ Use networkx directly: nx.betweenness_centrality(net.core_network)
+```
+
+### Decision Tree: Network Analysis Workflow
+
+```
+Start with network file (CSV, edgelist, etc.)
+├─ Load: net.load_network("file.csv", input_type="edgelist")
+├─ Explore structure: net.get_layers(), len(net.get_nodes()), len(net.get_edges())
+├─ Query:
+│  ├─ Descriptive stats → Q.nodes().per_layer().aggregate(...)
+│  ├─ Top nodes → Q.nodes().per_layer().top_k(...)
+│  └─ Specific patterns → Q.edges().where(intralayer=True).per_layer_pair().aggregate(...)
+├─ Analysis:
+│  ├─ Centrality with uncertainty → Q.nodes().compute(...).uq(...)
+│  ├─ Community detection → from py3plex.algorithms.community_detection import louvain; louvain(net)
+│  └─ Dynamics → Q.dynamics("SIS", ...).run(...).execute(net)
+└─ Export: result.to_pandas().to_csv("output.csv")
+```
+
+---
+
+## Legacy DSL (String-Based)
+
+For backward compatibility, py3plex supports SQL-like string queries.
+
+### Syntax
 
 ```
 SELECT target WHERE conditions COMPUTE measures
 ```
 
-**Components:**
-- **SELECT**: Specify what to select (`nodes` or `edges`)
-- **WHERE**: Filter results based on conditions (optional)
-- **COMPUTE**: Calculate network measures for filtered results (optional)
-
-### Core Functions
+### Core Function
 
 ```python
-from py3plex.dsl import (
-    execute_query,       # Execute DSL query on network
-    format_result,       # Format results as readable string
-    select_nodes_by_layer,      # Convenience: get nodes in layer
-    select_high_degree_nodes,   # Convenience: get high-degree nodes
-    compute_centrality_for_layer,  # Convenience: compute centrality
-    DSLSyntaxError,      # Exception for syntax errors
-    DSLExecutionError,   # Exception for execution errors
-)
-```
-
-### Supported Operations
-
-**Comparison Operators:**
-- `=` : Equal to
-- `!=` : Not equal to
-- `>` : Greater than
-- `<` : Less than
-- `>=` : Greater than or equal
-- `<=` : Less than or equal
-
-**Logical Operators:**
-- `AND` : Both conditions must be true
-- `OR` : Either condition must be true
-- `NOT` : Negates the condition
-
-**Computable Measures:**
-- `degree` : Node degree
-- `degree_centrality` : Normalized degree centrality
-- `betweenness_centrality` : Betweenness centrality
-- `closeness_centrality` : Closeness centrality
-- `eigenvector_centrality` : Eigenvector centrality
-- `pagerank` : PageRank score
-- `clustering` : Clustering coefficient
-
----
-
-## DSL Examples with Outputs
-
-### Example 1: Basic Setup and Network Creation
-
-```python
-from py3plex.core import multinet
 from py3plex.dsl import execute_query, format_result
 
-# Create a multilayer network
-network = multinet.multi_layer_network(directed=False)
-
-# Add nodes to multiple layers
-nodes = [
-    {'source': 'Alice', 'type': 'social'},
-    {'source': 'Bob', 'type': 'social'},
-    {'source': 'Charlie', 'type': 'social'},
-    {'source': 'David', 'type': 'social'},
-    {'source': 'Eve', 'type': 'social'},
-    {'source': 'Alice', 'type': 'work'},
-    {'source': 'Bob', 'type': 'work'},
-    {'source': 'Charlie', 'type': 'work'},
-    {'source': 'Alice', 'type': 'transport'},
-    {'source': 'Bob', 'type': 'transport'},
-    {'source': 'David', 'type': 'transport'},
-    {'source': 'Eve', 'type': 'transport'},
-]
-network.add_nodes(nodes)
-
-# Add edges within layers
-edges = [
-    # Social layer
-    {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'Bob', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'Charlie', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'David', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social'},
-    # Work layer
-    {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
-    {'source': 'Alice', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
-    {'source': 'Bob', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
-    # Transport layer
-    {'source': 'Alice', 'target': 'Bob', 'source_type': 'transport', 'target_type': 'transport'},
-    {'source': 'Bob', 'target': 'David', 'source_type': 'transport', 'target_type': 'transport'},
-    {'source': 'Bob', 'target': 'Eve', 'source_type': 'transport', 'target_type': 'transport'},
-    {'source': 'David', 'target': 'Eve', 'source_type': 'transport', 'target_type': 'transport'},
-]
-network.add_edges(edges)
-
-print(f"Network: {network}")
-print(f"Total nodes: {len(list(network.get_nodes()))}")
-print(f"Total edges: {len(list(network.get_edges()))}")
-```
-
-**Output:**
-```
-Network: <multi_layer_network: type=multilayer, directed=False, nodes=12, edges=13, layers=3>
-Total nodes: 12
-Total edges: 13
-```
-
----
-
-### Example 2: Select Nodes by Layer
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE layer="social"')
+result = execute_query(network, 'SELECT nodes WHERE degree > 5')
 print(format_result(result))
 ```
 
-**Output:**
-```
-Query: SELECT nodes WHERE layer="social"
-Target: nodes
-Count: 5
-
-Nodes (showing 5 of 5):
-  ('Alice', 'social')
-  ('Bob', 'social')
-  ('Charlie', 'social')
-  ('David', 'social')
-  ('Eve', 'social')
-```
-
----
-
-### Example 3: Filter Nodes by Degree
+### Examples
 
 ```python
-result = execute_query(network, 'SELECT nodes WHERE degree > 2')
-print(format_result(result))
+# Select by layer
+execute_query(net, 'SELECT nodes WHERE layer="social"')
+
+# Filter by degree
+execute_query(net, 'SELECT nodes WHERE degree > 2')
+
+# Combine filters
+execute_query(net, 'SELECT nodes WHERE layer="social" AND degree > 2')
+
+# Compute centrality
+execute_query(net, 'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality')
+
+# Multiple measures
+execute_query(net, 'SELECT nodes WHERE degree > 2 COMPUTE degree_centrality closeness_centrality')
 ```
 
-**Output:**
-```
-Query: SELECT nodes WHERE degree > 2
-Target: nodes
-Count: 4
+### Supported Operators
 
-Nodes (showing 4 of 4):
-  ('Bob', 'social')
-  ('Charlie', 'social')
-  ('David', 'social')
-  ('Bob', 'transport')
-```
+- Comparisons: `=`, `!=`, `>`, `<`, `>=`, `<=`
+- Logical: `AND`, `OR`, `NOT`
+- Measures: degree, degree_centrality, betweenness_centrality, closeness_centrality, eigenvector_centrality, pagerank, clustering
 
----
-
-### Example 4: Combine Layer and Degree Filters (AND)
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE layer="transport" AND degree > 1')
-print(format_result(result))
-```
-
-**Output:**
-```
-Query: SELECT nodes WHERE layer="transport" AND degree > 1
-Target: nodes
-Count: 3
-
-Nodes (showing 3 of 3):
-  ('Bob', 'transport')
-  ('David', 'transport')
-  ('Eve', 'transport')
-```
-
----
-
-### Example 5: Multiple Layer Selection (OR)
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE layer="social" OR layer="work"')
-print(format_result(result))
-```
-
-**Output:**
-```
-Query: SELECT nodes WHERE layer="social" OR layer="work"
-Target: nodes
-Count: 8
-
-Nodes (showing 8 of 8):
-  ('Alice', 'social')
-  ('Bob', 'social')
-  ('Charlie', 'social')
-  ('David', 'social')
-  ('Eve', 'social')
-  ('Alice', 'work')
-  ('Bob', 'work')
-  ('Charlie', 'work')
-```
-
----
-
-### Example 6: Compute Betweenness Centrality
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality')
-print(format_result(result))
-```
-
-**Output:**
-```
-Query: SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality
-Target: nodes
-Count: 5
-
-Nodes (showing 5 of 5):
-  ('Alice', 'social')
-  ('Bob', 'social')
-  ('Charlie', 'social')
-  ('David', 'social')
-  ('Eve', 'social')
-
-Computed measures:
-  betweenness_centrality:
-    ('David', 'social'): 0.5000
-    ('Bob', 'social'): 0.1667
-    ('Charlie', 'social'): 0.1667
-    ('Eve', 'social'): 0.0000
-    ('Alice', 'social'): 0.0000
-```
-
----
-
-### Example 7: Multiple Measures at Once
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE degree > 2 COMPUTE degree_centrality closeness_centrality')
-print(format_result(result))
-```
-
-**Output:**
-```
-Query: SELECT nodes WHERE degree > 2 COMPUTE degree_centrality closeness_centrality
-Target: nodes
-Count: 4
-
-Nodes (showing 4 of 4):
-  ('Bob', 'social')
-  ('Charlie', 'social')
-  ('David', 'social')
-  ('Bob', 'transport')
-
-Computed measures:
-  degree_centrality:
-    ('Bob', 'social'): 0.6667
-    ('Charlie', 'social'): 0.6667
-    ('David', 'social'): 0.6667
-    ('Bob', 'transport'): 0.0000
-  closeness_centrality:
-    ('Bob', 'social'): 0.6667
-    ('Charlie', 'social'): 0.6667
-    ('David', 'social'): 0.6667
-    ('Bob', 'transport'): 0.0000
-```
-
----
-
-### Example 8: Degree Range Filtering
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE degree >= 2 AND degree <= 4')
-print(format_result(result))
-```
-
-**Output:**
-```
-Query: SELECT nodes WHERE degree >= 2 AND degree <= 4
-Target: nodes
-Count: 10
-
-Nodes (showing 10 of 10):
-  ('Alice', 'social')
-  ('Bob', 'social')
-  ('Charlie', 'social')
-  ('David', 'social')
-  ('Alice', 'work')
-  ('Bob', 'work')
-  ('Charlie', 'work')
-  ('Bob', 'transport')
-  ('David', 'transport')
-  ('Eve', 'transport')
-```
-
----
-
-### Example 9: Select All Nodes (No Filter)
-
-```python
-result = execute_query(network, 'SELECT nodes')
-print(f"Total nodes: {result['count']}")
-print(f"Nodes: {result['nodes']}")
-```
-
-**Output:**
-```
-Total nodes: 12
-Nodes: [('Alice', 'social'), ('Bob', 'social'), ('Charlie', 'social'), ('David', 'social'), ('Eve', 'social'), ('Alice', 'work'), ('Bob', 'work'), ('Charlie', 'work'), ('Alice', 'transport'), ('Bob', 'transport'), ('David', 'transport'), ('Eve', 'transport')]
-```
-
----
-
-### Example 10: Using NOT Operator
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE NOT layer="social"')
-print(format_result(result))
-```
-
-**Output:**
-```
-Query: SELECT nodes WHERE NOT layer="social"
-Target: nodes
-Count: 7
-
-Nodes (showing 7 of 7):
-  ('Alice', 'work')
-  ('Bob', 'work')
-  ('Charlie', 'work')
-  ('Alice', 'transport')
-  ('Bob', 'transport')
-  ('David', 'transport')
-  ('Eve', 'transport')
-```
-
----
-
-### Example 11: Convenience Functions
-
-```python
-from py3plex.dsl import select_nodes_by_layer, select_high_degree_nodes, compute_centrality_for_layer
-
-# Get all nodes in a specific layer
-social_nodes = select_nodes_by_layer(network, 'social')
-print(f"Nodes in 'social' layer: {len(social_nodes)}")
-print(f"Nodes: {social_nodes}")
-
-# Get high-degree nodes (degree > 3)
-high_degree = select_high_degree_nodes(network, min_degree=3)
-print(f"Nodes with degree > 3: {len(high_degree)}")
-
-# Compute centrality for a layer
-centrality = compute_centrality_for_layer(network, 'transport', 'degree_centrality')
-print("Degree centrality for 'transport' layer:")
-for node, value in sorted(centrality.items(), key=lambda x: x[1], reverse=True):
-    print(f"  {node}: {value:.4f}")
-```
-
-**Output:**
-```
-Nodes in 'social' layer: 5
-Nodes: [('Alice', 'social'), ('Bob', 'social'), ('Charlie', 'social'), ('David', 'social'), ('Eve', 'social')]
-Nodes with degree > 3: 0
-Degree centrality for 'transport' layer:
-  ('Bob', 'transport'): 1.0000
-  ('David', 'transport'): 0.6667
-  ('Eve', 'transport'): 0.6667
-  ('Alice', 'transport'): 0.3333
-```
-
----
-
-### Example 12: Compute PageRank
-
-```python
-result = execute_query(network, 'SELECT nodes COMPUTE pagerank')
-print(format_result(result, limit=10))
-```
-
-**Output:**
-```
-Query: SELECT nodes COMPUTE pagerank
-Target: nodes
-Count: 12
-
-Nodes (showing 10 of 12):
-  ('Alice', 'social')
-  ('Bob', 'social')
-  ('Charlie', 'social')
-  ('David', 'social')
-  ('Eve', 'social')
-  ('Alice', 'work')
-  ('Bob', 'work')
-  ('Charlie', 'work')
-  ('Alice', 'transport')
-  ('Bob', 'transport')
-  ... and 2 more
-
-Computed measures:
-  pagerank:
-    ('Bob', 'social'): 0.1186
-    ('Charlie', 'social'): 0.1186
-    ('David', 'social'): 0.1186
-    ('Bob', 'transport'): 0.1099
-    ('Alice', 'social'): 0.0955
-    ('Eve', 'social'): 0.0730
-    ('David', 'transport'): 0.0706
-    ('Eve', 'transport'): 0.0706
-    ('Alice', 'work'): 0.0540
-    ('Bob', 'work'): 0.0540
-```
-
----
-
-### Example 13: Compute Clustering Coefficient
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE layer="social" COMPUTE clustering')
-print(format_result(result))
-```
-
-**Output:**
-```
-Query: SELECT nodes WHERE layer="social" COMPUTE clustering
-Target: nodes
-Count: 5
-
-Nodes (showing 5 of 5):
-  ('Alice', 'social')
-  ('Bob', 'social')
-  ('Charlie', 'social')
-  ('David', 'social')
-  ('Eve', 'social')
-
-Computed measures:
-  clustering:
-    ('Alice', 'social'): 1.0000
-    ('Charlie', 'social'): 0.6667
-    ('Bob', 'social'): 0.3333
-    ('David', 'social'): 0.3333
-    ('Eve', 'social'): 0.0000
-```
-
----
-
-### Example 14: Error Handling
-
-```python
-from py3plex.dsl import DSLSyntaxError, DSLExecutionError
-
-try:
-    result = execute_query(network, 'INVALID QUERY')
-except DSLSyntaxError as e:
-    print(f"Syntax error: {e}")
-
-try:
-    result = execute_query(network, 'SELECT edges')  # Edge queries limited
-except DSLExecutionError as e:
-    print(f"Execution error: {e}")
-```
-
-**Output:**
-```
-Syntax error: Query must start with SELECT
-```
-
----
-
-### Example 15: Accessing Result Data Programmatically
-
-```python
-result = execute_query(network, 'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality')
-
-# Access query metadata
-print(f"Query: {result['query']}")
-print(f"Target: {result['target']}")
-print(f"Count: {result['count']}")
-
-# Access selected nodes
-for node in result['nodes']:
-    print(f"Node: {node}")
-
-# Access computed measures
-if 'computed' in result:
-    for measure, values in result['computed'].items():
-        print(f"\n{measure}:")
-        for node, value in sorted(values.items(), key=lambda x: x[1], reverse=True):
-            print(f"  {node}: {value:.4f}")
-```
-
-**Output:**
-```
-Query: SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality
-Target: nodes
-Count: 5
-Node: ('Alice', 'social')
-Node: ('Bob', 'social')
-Node: ('Charlie', 'social')
-Node: ('David', 'social')
-Node: ('Eve', 'social')
-
-betweenness_centrality:
-  ('David', 'social'): 0.5000
-  ('Bob', 'social'): 0.1667
-  ('Charlie', 'social'): 0.1667
-  ('Alice', 'social'): 0.0000
-  ('Eve', 'social'): 0.0000
-```
-
----
-
-### Example 16: Hub Identification Workflow
-
-```python
-# Find hub nodes in each layer
-layers = ['social', 'work', 'transport']
-
-for layer in layers:
-    result = execute_query(network, f'SELECT nodes WHERE layer="{layer}" AND degree >= 2')
-    print(f"\nHubs in {layer} layer (degree >= 2): {result['count']}")
-    for node in result['nodes']:
-        degree = network.core_network.degree(node)
-        print(f"  {node}: degree={degree}")
-```
-
-**Output:**
-```
-Hubs in social layer (degree >= 2): 4
-  ('Alice', 'social'): degree=2
-  ('Bob', 'social'): degree=3
-  ('Charlie', 'social'): degree=3
-  ('David', 'social'): degree=3
-
-Hubs in work layer (degree >= 2): 3
-  ('Alice', 'work'): degree=2
-  ('Bob', 'work'): degree=2
-  ('Charlie', 'work'): degree=2
-
-Hubs in transport layer (degree >= 2): 3
-  ('Bob', 'transport'): degree=3
-  ('David', 'transport'): degree=2
-  ('Eve', 'transport'): degree=2
-```
-
----
-
-### Example 17: Layer Comparison Analysis
-
-```python
-layers = ['social', 'work', 'transport']
-
-print("Layer Comparison - Average Degree:")
-for layer in layers:
-    result = execute_query(network, f'SELECT nodes WHERE layer="{layer}" COMPUTE degree')
-    degrees = result['computed']['degree']
-    avg_degree = sum(degrees.values()) / len(degrees) if degrees else 0
-    max_degree = max(degrees.values()) if degrees else 0
-    print(f"  {layer}: avg={avg_degree:.2f}, max={max_degree}")
-```
-
-**Output:**
-```
-Layer Comparison - Average Degree:
-  social: avg=2.40, max=3
-  work: avg=2.00, max=2
-  transport: avg=1.75, max=3
-```
-
----
-
-### Example 18: Transportation Network Analysis
-
-```python
-# Create transportation network
-transport_net = multinet.multi_layer_network(directed=False)
-
-# Stations
-stations = ['A', 'B', 'C', 'D', 'E', 'F']
-for station in stations:
-    for layer in ['bus', 'metro', 'train']:
-        transport_net.add_nodes([{'source': station, 'type': layer}])
-
-# Connections
-edges = [
-    # Bus (dense)
-    {'source': 'A', 'target': 'B', 'source_type': 'bus', 'target_type': 'bus'},
-    {'source': 'B', 'target': 'C', 'source_type': 'bus', 'target_type': 'bus'},
-    {'source': 'C', 'target': 'D', 'source_type': 'bus', 'target_type': 'bus'},
-    {'source': 'D', 'target': 'E', 'source_type': 'bus', 'target_type': 'bus'},
-    {'source': 'E', 'target': 'F', 'source_type': 'bus', 'target_type': 'bus'},
-    # Metro (medium)
-    {'source': 'A', 'target': 'C', 'source_type': 'metro', 'target_type': 'metro'},
-    {'source': 'C', 'target': 'E', 'source_type': 'metro', 'target_type': 'metro'},
-    # Train (sparse)
-    {'source': 'A', 'target': 'F', 'source_type': 'train', 'target_type': 'train'},
-]
-transport_net.add_edges(edges)
-
-# Compare layers
-for layer in ['bus', 'metro', 'train']:
-    result = execute_query(transport_net, f'SELECT nodes WHERE layer="{layer}" COMPUTE betweenness_centrality')
-    print(f"\n{layer.upper()} layer centrality:")
-    centralities = result['computed']['betweenness_centrality']
-    for node, value in sorted(centralities.items(), key=lambda x: x[1], reverse=True)[:3]:
-        print(f"  {node}: {value:.4f}")
-```
-
-**Output:**
-```
-BUS layer centrality:
-  ('C', 'bus'): 0.6000
-  ('D', 'bus'): 0.6000
-  ('B', 'bus'): 0.4000
-
-METRO layer centrality:
-  ('C', 'metro'): 1.0000
-  ('A', 'metro'): 0.0000
-  ('E', 'metro'): 0.0000
-
-TRAIN layer centrality:
-  ('A', 'train'): 0.0000
-  ('F', 'train'): 0.0000
-  ('B', 'train'): 0.0000
-```
-
----
-
-## Result Dictionary Structure
-
-**Legacy DSL Returns:** Dictionary format
-**DSL v2 Returns:** QueryResult object (with backward-compatible dict export)
-
-### Legacy DSL Result Structure
-
-The `execute_query` function returns a dictionary with the following structure:
+### Result Structure (Dictionary)
 
 ```python
 {
     'query': str,           # Original query string
     'target': str,          # 'nodes' or 'edges'
-    'nodes': list,          # List of (node_id, layer) tuples (if target='nodes')
-    'edges': list,          # List of edge tuples (if target='edges')
-    'count': int,           # Number of items returned
-    'computed': {           # Present only if COMPUTE was used
-        'measure_name': {   # Dictionary mapping nodes to values
+    'nodes': list,          # List of (node_id, layer) tuples
+    'count': int,           # Number of items
+    'computed': {           # Present if COMPUTE used
+        'measure_name': {
             (node_id, layer): float,
             ...
-        },
-        ...
+        }
     },
-    'meta': {               # Metadata (added in version 1.1.0)
-        'provenance': {...}  # Query execution provenance (see below)
+    'meta': {               # Metadata including provenance
+        'provenance': {...}
     }
 }
 ```
 
-### DSL v2 QueryResult Structure
-
-```python
-result = Q.nodes().compute("degree").execute(network)
-
-# QueryResult attributes
-result.target          # "nodes" or "edges"
-result.items           # List of node/edge items
-result.attributes      # Dict of computed attributes
-result.meta            # Metadata dict including provenance
-result.count           # Number of items (same as len(result))
-
-# Export formats
-df = result.to_pandas()       # pandas DataFrame
-G = result.to_networkx()      # NetworkX graph
-arrow = result.to_arrow()     # Apache Arrow table
-dict_result = result.to_dict()  # Plain dictionary
-```
-
-### Query Provenance (Version 1.1.0+)
-
-Every query execution now includes provenance metadata in `result.meta["provenance"]` or `result["meta"]["provenance"]` (legacy). This enables reproducibility, debugging, and performance analysis.
-
-**Provenance Structure:**
-
-```python
-{
-    "engine": "dsl_v2_executor",  # or "dsl_legacy", "graph_ops", "pipeline_step"
-    "py3plex_version": "1.1.0",
-    "timestamp_utc": "2026-01-05T04:05:42.336000+00:00",
-    "network_fingerprint": {
-        "node_count": 100,
-        "edge_count": 250,
-        "layer_count": 3,
-        "layers": ["social", "work", "family"]
-    },
-    "network_version": None,  # Mutation counter if available
-    "query": {
-        "target": "nodes",
-        "ast_hash": "a1b2c3d4e5f6g7h8",  # Stable hash of query AST
-        "ast_summary": "SELECT nodes WHERE degree>5 COMPUTE betweenness",
-        "params": {}  # Parameter bindings used
-    },
-    "randomness": {
-        "seed": None,  # Base seed if randomness is used
-        "n_samples": None,  # For uncertainty quantification
-        "method": None  # Resampling method if used
-    },
-    "backend": {
-        "graph_backend": "networkx",
-        "algo_backends": [],  # Algorithm backends used
-        "fast_path": False  # Whether fast path optimizations were used
-    },
-    "performance": {
-        "bind_parameters": 0.1,  # milliseconds per stage
-        "get_items": 2.5,
-        "filter_layers": 1.3,
-        "filter_where": 3.2,
-        "compute": 45.6,
-        "total_ms": 53.5  # Total execution time
-    },
-    "warnings": []  # List of warning messages
-}
-```
-
-**Key Provenance Fields:**
-
-- **engine**: Execution engine used
-- **py3plex_version**: Version for compatibility tracking
-- **timestamp_utc**: When query was executed (ISO8601)
-- **network_fingerprint**: Network summary (counts, layers)
-- **query.ast_hash**: Stable query hash (invariant across runs)
-- **query.ast_summary**: Human-readable query summary
-- **performance.timings_ms**: Timing breakdown by stage
-
-**Accessing Provenance:**
-
-```python
-# DSL v2
-result = Q.nodes().compute("degree").execute(network)
-prov = result.meta["provenance"]
-print(f"Query took {prov['performance']['total_ms']:.2f}ms")
-print(f"AST hash: {prov['query']['ast_hash']}")
-print(f"Network: {prov['network_fingerprint']['node_count']} nodes, {prov['network_fingerprint']['layer_count']} layers")
-
-# Legacy DSL
-result = execute_query(network, 'SELECT nodes WHERE degree > 5')
-prov = result["meta"]["provenance"]
-print(f"Engine: {prov['engine']}")
-```
-
-**Backward Compatibility:** Provenance is additive and doesn't break existing code. All QueryResult operations continue to work unchanged.
-
----
-
-## Best Practices
-
-1. **Filter by layer first** - Reduces computation for large networks
-2. **Use convenience functions** - For common operations like `select_nodes_by_layer()`
-3. **Cache computed measures** - Avoid recomputing expensive centrality measures
-4. **Handle errors gracefully** - Wrap queries in try-except blocks
-5. **Use `format_result()`** - For debugging and human-readable output
-
----
-
-## Current Limitations
-
-- Complex nested conditions require multiple queries
-- Measures are computed using NetworkX algorithms
-- Some advanced graph algorithms may have performance limitations on very large networks
-
-**Note:** Previous limitations on edge queries and aggregation functions have been resolved. py3plex now supports:
-- Full-featured edge queries with filtering on endpoint properties (src_degree, dst_degree)
-- Comprehensive aggregation operators: mean, median, sum, std, var, min, max, quantile(p), count
-- Aggregations work on both nodes and edges with per_layer() and per_layer_pair() grouping
-
----
-
-## DSL v2: Modern Builder API (Q, UQ, L)
-
-py3plex DSL v2 introduces a modern, Pythonic builder API for constructing queries with enhanced ergonomics and new features like uncertainty quantification, pattern matching, and dynamics.
-
-### DSL v2 Core Components
+### Convenience Functions
 
 ```python
 from py3plex.dsl import (
-    Q,        # Main query builder
-    UQ,       # Uncertainty quantification builder
-    L,        # Layer expression builder
-    Param,    # Parameter placeholder
-    C,        # Compare networks builder
-    N,        # Null models builder
-    P,        # Path queries builder
-    F,        # Field expressions
+    select_nodes_by_layer,
+    select_high_degree_nodes,
+    compute_centrality_for_layer
 )
-from py3plex.dynamics import D  # Dynamics simulations builder
+
+# Get nodes in layer
+nodes = select_nodes_by_layer(net, 'social')
+
+# Get high-degree nodes
+high_deg = select_high_degree_nodes(net, min_degree=3)
+
+# Compute centrality for layer
+centrality = compute_centrality_for_layer(net, 'transport', 'degree_centrality')
 ```
 
-### Example 1: Basic Query with Q Builder
+### Limitations
+
+- ✗ No grouping or aggregation
+- ✗ No uncertainty quantification
+- ✗ No temporal queries
+- ✗ Limited edge queries
+- ✗ No layer algebra
+- → **Use DSL v2 for these features**
+
+---
+
+## Dplyr-Style Operations
+
+**NOTE**: As of v1.1.0, dplyr methods are integrated into DSL v2 builder (`Q.nodes()`, `Q.edges()`). The standalone `graph_ops` module remains for backward compatibility.
+
+### Integrated DSL v2 Dplyr Methods
+
+All dplyr-style methods work directly in the Q builder:
 
 ```python
 from py3plex.dsl import Q, L
-from py3plex.core import multinet
 
-# Create network
-net = multinet.multi_layer_network(directed=False)
-net.add_edges([
-    {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'C', 'target': 'D', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'A', 'target': 'B', 'source_type': 'work', 'target_type': 'work'},
+result = (
+    Q.nodes()
+     .from_layers(L["ppi"])
+     .compute("degree")
+     .filter(degree__gt=1)               # Dplyr-style filter
+     .mutate(norm_deg=lambda r: r["degree"] / 3)
+     .arrange("-degree")
+     .head(10)
+     .execute(net)
+)
+
+df = result.to_pandas()
+```
+
+### Available Dplyr Methods in DSL Builder
+
+**Filtering**:
+- `.filter(...)` - Alias for `.where()`
+- `.filter_expr("degree > 5 and layer == 'social'")` - String expression filtering
+
+**Sampling and Slicing**:
+- `.head(n)` - First n items
+- `.tail(n)` - Last n items
+- `.sample(n, seed)` - Random sample
+- `.slice(start, end)` - Array slicing
+- `.first()` - First item only
+- `.last()` - Last item only
+
+**Transformation**:
+- `.mutate(**transformations)` - Add/modify columns with lambdas
+- `.select(*columns)` - Keep only specified columns
+- `.rename(**mapping)` - Rename columns
+- `.drop(*columns)` - Drop columns
+
+**Ordering**:
+- `.arrange(*columns, desc)` - Sort (alias for `.order_by()`)
+- `.order_by(*keys, desc)` - Sort by keys
+
+**Aggregation**:
+- `.aggregate(**aggregations)` - Per-group statistics
+- `.summarize(**aggregations)` - Alias for `.aggregate()`
+
+**Misc**:
+- `.collect()` - No-op for API compatibility
+- `.pluck(field)` - Extract single column
+
+### Standalone graph_ops (Backward Compatibility)
+
+```python
+from py3plex.graph_ops import nodes, edges
+
+# Node operations
+df = (
+    nodes(net, layers=["ppi"])
+    .filter(lambda n: n["degree"] > 1)
+    .mutate(normalized_degree=lambda n: n["degree"] / 4)
+    .arrange("degree", reverse=True)
+    .head(3)
+    .to_pandas()
+)
+
+# Group by and summarise
+df = (
+    nodes(net)
+    .group_by("layer")
+    .summarise(
+        avg_degree=("degree", np.mean),
+        max_degree=("degree", max),
+        n_nodes=("id", len)
+    )
+    .to_pandas()
+)
+```
+
+**Recommendation**: Use integrated DSL v2 methods for new code. Use standalone `graph_ops` only for legacy scripts.
+
+---
+
+## Pipeline API (Sklearn-Style)
+
+py3plex provides sklearn-style pipelines for composable, reproducible workflows.
+
+### Core Concepts
+
+```python
+from py3plex.pipeline import Pipeline, Step
+
+# Define pipeline
+pipeline = Pipeline([
+    ("load", LoadStep(path="network.csv", input_type="edgelist")),
+    ("stats", ComputeStatsStep(measures=["degree", "betweenness"])),
+    ("filter", FilterStep(condition="degree > 5")),
+    ("export", ExportStep(path="output.csv", format="csv"))
 ])
 
-# Query with builder API
-result = (
-    Q.nodes()
-     .from_layers(L["social"] + L["work"])
-     .where(degree__gt=1)
-     .compute("betweenness_centrality", "degree_centrality")
-     .order_by("betweenness_centrality", desc=True)
-     .limit(5)
-     .execute(net)
-)
-
-# Convert to pandas
-df = result.to_pandas()
-print(df)
+# Run pipeline
+result = pipeline.fit(network)
 ```
 
-**Output:**
+### Built-in Steps
+
+**I/O Steps**:
+- `LoadStep` - Load network from file
+- `ExportStep` - Export results to file
+
+**Transformation Steps**:
+- `ComputeStatsStep` - Compute centrality measures
+- `FilterStep` - Filter nodes/edges
+- `AggregateStep` - Per-layer aggregation
+
+**Analysis Steps**:
+- `CommunityDetectionStep` - Run community detection
+- `CentralityStep` - Compute centrality with options
+- `DynamicsStep` - Run dynamics simulation
+
+**Custom Steps**:
+```python
+from py3plex.pipeline import BaseStep
+
+class CustomStep(BaseStep):
+    def __init__(self, param=1.0):
+        self.param = param
+    
+    def fit(self, network, context=None):
+        # Your logic here
+        return result
 ```
-  node  layer  degree  betweenness_centrality  degree_centrality
-0    B  social       2                0.500000           0.666667
-1    B   work       1                0.000000           0.500000
-2    A  social       1                0.000000           0.333333
-...
+
+### Config-Driven Workflows
+
+```yaml
+# workflow.yaml
+pipeline:
+  - step: load
+    path: network.csv
+    input_type: edgelist
+  
+  - step: compute_stats
+    measures:
+      - degree
+      - betweenness_centrality
+  
+  - step: filter
+    condition: "degree > 5"
+  
+  - step: export
+    path: output.csv
+    format: csv
+```
+
+```python
+from py3plex.workflows import load_workflow, run_workflow
+
+workflow = load_workflow("workflow.yaml")
+result = run_workflow(workflow, network)
+```
+
+### Provenance
+
+Pipelines track full provenance:
+
+```python
+result = pipeline.fit(network)
+prov = result.meta['provenance']
+
+# Pipeline execution trace
+for step in prov['steps']:
+    print(f"{step['name']}: {step['duration_ms']}ms")
 ```
 
 ---
 
-### Example 2: Uncertainty Quantification with UQ
+## I/O and Data Loading
 
-The flagship feature of DSL v2 is first-class uncertainty support via the `UQ` builder and `.uq()` method:
+### Multi_layer_network Construction
 
 ```python
-from py3plex.dsl import Q, UQ
+from py3plex.core import multinet
 
-# Query with uncertainty quantification
-result = (
-    Q.nodes()
-     .from_layers(L["social"])
-     .where(degree__gt=1)
-     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
-     .compute("betweenness_centrality", "pagerank")
-     .execute(net)
+# Create empty network
+net = multinet.multi_layer_network(directed=False)
+
+# Add nodes (plural)
+net.add_nodes([
+    {'source': 'Alice', 'type': 'social'},
+    {'source': 'Bob', 'type': 'social'},
+    {'source': 'Alice', 'type': 'work'},
+])
+
+# Add edges (plural)
+net.add_edges([
+    {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'Bob', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
+])
+```
+
+**CRITICAL API PATTERNS**:
+- Use `add_nodes([...])` and `add_edges([...])` (plural) - singular forms don't exist
+- Edge dict format: `{'source': ..., 'target': ..., 'source_type': ..., 'target_type': ...}`
+- Node dict format: `{'source': ..., 'type': ...}`
+
+### Load from File
+
+```python
+# Edgelist format (CSV)
+net.load_network("network.csv", input_type="edgelist")
+
+# GraphML
+net.load_network("network.graphml", input_type="graphml")
+
+# GML
+net.load_network("network.gml", input_type="gml")
+
+# JSON
+net.load_network("network.json", input_type="json")
+
+# Apache Arrow (high-performance)
+from py3plex.io import load_from_arrow
+net = load_from_arrow("network.arrow")
+```
+
+### Export to File
+
+```python
+# JSON
+net.to_json("output.json")
+
+# CSV (via query result)
+result = Q.nodes().compute("degree").execute(net)
+result.to_pandas().to_csv("output.csv", index=False)
+
+# Arrow
+from py3plex.io import save_to_arrow
+save_to_arrow(result, "output.arrow")
+```
+
+### Built-in Datasets
+
+```python
+from py3plex.datasets import (
+    load_aarhus_cs,
+    load_imdb,
+    load_example_multilayer,
+    make_random_multilayer,
 )
 
-# Access uncertainty statistics
+# Load real dataset
+net = load_aarhus_cs()
+
+# Generate random multilayer network
+net = make_random_multilayer(
+    n_nodes=100,
+    n_layers=3,
+    p_intra=0.1,
+    p_inter=0.01,
+    seed=42
+)
+```
+
+---
+
+## Dynamics Simulations
+
+py3plex supports epidemic-style dynamics on multilayer networks.
+
+### Built-in Processes
+
+**SIS (Susceptible-Infected-Susceptible)**:
+```python
+sim = (
+    Q.dynamics("SIS", beta=0.3, mu=0.1)
+     .on_layers(L["contacts"])
+     .seed_infections(0.01)  # 1% initial
+     .run(steps=100, replicates=10)
+     .execute(net)
+)
+```
+
+**SIR (Susceptible-Infected-Recovered)**:
+```python
+sim = (
+    Q.dynamics("SIR", beta=0.3, gamma=0.1)
+     .on_layers(L["social"] + L["work"])
+     .seed_infections(nodes=[('Alice', 'social')])
+     .run(steps=200, replicates=5)
+     .execute(net)
+)
+```
+
+**SEIR (Susceptible-Exposed-Infected-Recovered)**:
+```python
+sim = (
+    Q.dynamics("SEIR", beta=0.3, sigma=0.2, gamma=0.1)
+     .on_layers(L["*"])
+     .seed_infections(0.05)
+     .run(steps=150, replicates=20)
+     .execute(net)
+)
+```
+
+**Random Walk**:
+```python
+sim = (
+    Q.dynamics("RANDOM_WALK", restart_prob=0.15)
+     .on_layers(L["social"])
+     .starting_nodes([('Alice', 'social')])
+     .run(steps=100, replicates=50)
+     .execute(net)
+)
+```
+
+### DynamicsBuilder Reference
+
+#### Methods
+
+##### .on_layers(layer_expr) → DynamicsBuilder
+
+Specify layers for simulation.
+
+**Args**: layer_expr from `L[...]`
+
+##### .seed_infections(fraction=None, nodes=None) → DynamicsBuilder
+
+Initialize infections.
+
+**Args**:
+- `fraction` (float): Fraction of nodes to infect randomly (e.g., 0.01 for 1%)
+- `nodes` (list): Specific nodes to infect (list of (node, layer) tuples)
+
+##### .starting_nodes(nodes) → DynamicsBuilder
+
+Set starting nodes for random walk.
+
+**Args**: `nodes` - List of (node, layer) tuples
+
+##### .run(steps, replicates, track="all") → DynamicsBuilder
+
+Configure simulation execution.
+
+**Args**:
+- `steps` (int): Number of simulation steps
+- `replicates` (int): Number of independent runs
+- `track` (str): What to track - "all", "infected", "peak_time", etc.
+
+##### .execute(network) → DynamicsResult
+
+Run simulation and return results.
+
+**Returns**: DynamicsResult with trajectories, statistics, provenance
+
+### DynamicsResult
+
+```python
+# Access trajectories
+sim.trajectories  # DataFrame with columns: step, replicate, susceptible, infected, recovered
+
+# Summary statistics
+print(sim.mean_peak_time)
+print(sim.mean_final_infected)
+
+# Per-replicate data
+for rep in range(sim.n_replicates):
+    traj = sim.trajectories[sim.trajectories['replicate'] == rep]
+    # Analyze individual trajectory
+```
+
+### Custom Dynamics (Advanced)
+
+```python
+def custom_process(node, state, neighbors, params):
+    """Custom dynamics process.
+    
+    Args:
+        node: Current node (tuple: (id, layer))
+        state: Current state dict
+        neighbors: List of neighbor nodes
+        params: Process parameters
+    
+    Returns:
+        new_state: Updated state for node
+    """
+    # Your logic here
+    return new_state
+
+sim = (
+    Q.dynamics("CUSTOM", process_func=custom_process, alpha=0.5)
+     .on_layers(L["*"])
+     .run(steps=100, replicates=10)
+     .execute(net)
+)
+```
+
+---
+
+## Uncertainty Quantification
+
+py3plex provides first-class uncertainty quantification for network metrics.
+
+### Methods
+
+**Bootstrap Resampling**:
+```python
+result = (
+    Q.nodes()
+     .compute("pagerank", "betweenness_centrality")
+     .uq(method="bootstrap", n_samples=100, ci=0.95, seed=42)
+     .execute(net)
+)
+```
+
+**Perturbation**:
+```python
+result = (
+    Q.nodes()
+     .compute("degree", "clustering")
+     .uq(method="perturbation", n_samples=50, noise_level=0.1, seed=42)
+     .execute(net)
+)
+```
+
+**Multi-seed (Deterministic Metrics)**:
+```python
+result = (
+    Q.nodes()
+     .compute("louvain_community")
+     .uq(method="seed", n_samples=20, seed=42)
+     .execute(net)
+)
+```
+
+### Bootstrap Units
+
+```python
+# Resample edges
+.uq(method="bootstrap", bootstrap_unit="edges", n_samples=100)
+
+# Resample nodes
+.uq(method="bootstrap", bootstrap_unit="nodes", n_samples=100)
+
+# Resample layers (entire layers)
+.uq(method="bootstrap", bootstrap_unit="layers", n_samples=50)
+```
+
+### Bootstrap Modes
+
+```python
+# Resample with replacement
+.uq(method="bootstrap", bootstrap_mode="resample", n_samples=100)
+
+# Permutation (shuffle labels)
+.uq(method="bootstrap", bootstrap_mode="permute", n_samples=100)
+```
+
+### Result Expansion
+
+```python
+result = Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, ci=0.95, seed=42).execute(net)
+
 df = result.to_pandas(expand_uncertainty=True)
-print(df[["node", "betweenness_centrality", "betweenness_centrality_std",
-          "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high"]])
+# Columns: node, layer, pagerank_mean, pagerank_std, pagerank_ci95_low, pagerank_ci95_high
 ```
 
-**Output:**
-```
-  node  betweenness_centrality  betweenness_centrality_std  ci95_low  ci95_high
-0    B                0.500000                    0.021134  0.458820   0.541102
-1    C                0.333333                    0.018051  0.297902   0.368934
-...
-```
-
----
-
-### Example 3: Layer Algebra with L Builder
+### Null Model Comparison
 
 ```python
-from py3plex.dsl import L
+from py3plex.nullmodels import configuration_model
 
-# Layer expressions
-all_social = L["facebook"] + L["twitter"] + L["linkedin"]
-work_layers = L["email"] + L["slack"]
-all_layers = all_social + work_layers
+# Generate null model
+null_net = configuration_model(net, seed=42)
 
-# Use in query
-result = (
-    Q.nodes()
-     .from_layers(all_social)
-     .where(degree__gt=5)
-     .execute(net)
-)
+# Compute metric on observed and null
+observed = Q.nodes().compute("betweenness").execute(net)
+null_result = Q.nodes().compute("betweenness").execute(null_net)
+
+# Compare distributions
+import scipy.stats as stats
+z_score = (observed.attributes['betweenness'] - null_result.attributes['betweenness'].mean()) / null_result.attributes['betweenness'].std()
 ```
 
----
-
-### Example 4: Per-Layer Grouping and Coverage
+### Global UQ Defaults
 
 ```python
-# Group by layer and find cross-layer hubs
-result = (
-    Q.nodes()
-     .where(degree__gt=3)
-     .per_layer()
-        .compute("betweenness_centrality")
-        .top_k(20, "betweenness_centrality__mean")
-     .end_grouping()
-     .coverage(mode="at_least", k=2)  # Present in ≥2 layers
+from py3plex.dsl import UQ
+
+# Set defaults
+UQ.defaults(method="bootstrap", n_samples=100, ci=0.95, seed=42, bootstrap_unit="edges")
+
+# Now all queries with uncertainty=True use these
+Q.nodes().compute("pagerank", uncertainty=True).execute(net)
+```
+
+### Sensitivity Analysis
+
+**PSEUDOCODE** (Feature planned):
+```python
+sensitivity = (
+    Q.sensitivity()
+     .on_metric("pagerank")
+     .perturb_edges(fraction=0.1, n_trials=50)
+     .measure_ranking_stability()
      .execute(net)
 )
 
-# Get summary by layer
-summary_df = result.group_summary()
-print(summary_df)
-```
-
-**Output:**
-```
-    layer  count  avg_betweenness_centrality
-0  social     15                    0.234567
-1    work     12                    0.198234
-...
+print(f"Ranking correlation: {sensitivity.kendall_tau_mean}")
 ```
 
 ---
 
-### Example 5: Enrichment with Explain
+## Temporal Networks
+
+py3plex supports time-stamped edges and temporal queries.
+
+### TemporalMultiLayerNetwork
 
 ```python
-# Enrich results with explanatory features
+from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+
+# Create temporal network
+tnet = TemporalMultiLayerNetwork()
+
+# Add edges with time attributes
+tnet.add_edge('A', 'B', layer='social', t_start=100.0, t_end=200.0)
+tnet.add_edge('B', 'C', layer='social', t=150.0)  # Point-in-time
+tnet.add_edge('C', 'D', layer='work', t_start=120.0, t_end=180.0)
+```
+
+### Temporal Queries
+
+**Snapshot at time t**:
+```python
+result = Q.edges().at(150.0).execute(tnet)
+```
+
+**Time range**:
+```python
+result = Q.edges().during(100.0, 200.0).execute(tnet)
+```
+
+**Before/After**:
+```python
+result = Q.edges().before(150.0).execute(tnet)
+result = Q.edges().after(100.0).execute(tnet)
+```
+
+**Sliding Windows**:
+```python
 result = (
-    Q.nodes()
-     .where(degree__gt=5)
-     .compute("betweenness_centrality")
-     .explain(neighbors_top=5, include_community=True)
-     .execute(net)
+    Q.edges()
+     .window(size=100.0, stride=50.0)  # 100-unit windows, 50-unit stride
+     .per_window()
+     .aggregate(edge_count="count()", avg_weight="mean(weight)")
+     .execute(tnet)
 )
-
-df = result.to_pandas(expand_explanations=True)
-print(df[["node", "betweenness_centrality", "community_id", "top_neighbors"]])
 ```
 
-**Output:**
-```
-  node  betweenness_centrality  community_id                     top_neighbors
-0    B                0.500000            42  [{'id': 'A', 'weight': 2.3}, ...]
-...
-```
-
----
-
-### Example 6: Network Comparison
+### Temporal Snapshots
 
 ```python
-from py3plex.dsl import C
+# Get snapshot as static network
+snapshot = tnet.get_snapshot(time_range=(100.0, 150.0))
 
-# Compare two networks
-comparison = (
-    C.compare("baseline", "treatment")
-     .using("multiplex_jaccard")
-     .by_layer()
-     .execute({"baseline": net1, "treatment": net2})
+# Query snapshot
+result = Q.nodes().compute("degree").execute(snapshot)
+```
+
+### Temporal Aggregation
+
+```python
+# Count edges per time window per layer
+result = (
+    Q.edges()
+     .window(size=50.0, stride=50.0)
+     .per_layer_pair()
+     .aggregate(
+         edge_count="count()",
+         active_nodes="count_unique(source)"
+     )
+     .execute(tnet)
 )
-
-print(f"Jaccard similarity: {comparison.similarity}")
-print(f"Layer-wise: {comparison.by_layer}")
 ```
 
 ---
 
-### Example 7: Null Models
+## Null Models and Statistical Testing
+
+py3plex provides null model generators for hypothesis testing.
+
+### Configuration Model
+
+```python
+from py3plex.nullmodels import configuration_model
+
+# Generate degree-preserving null model
+null_net = configuration_model(net, seed=42)
+
+# Multiple replicates
+null_nets = [configuration_model(net, seed=i) for i in range(100)]
+```
+
+**Properties**:
+- Preserves degree sequence
+- Randomizes edge placement
+- Preserves layer structure
+
+### Erdős-Rényi Model
+
+```python
+from py3plex.nullmodels import erdos_renyi_multilayer
+
+null_net = erdos_renyi_multilayer(
+    n_nodes=100,
+    n_layers=3,
+    p=0.1,  # Edge probability
+    seed=42
+)
+```
+
+### Random Graph with Layer Structure
+
+```python
+from py3plex.nullmodels import random_multilayer
+
+null_net = random_multilayer(
+    n_nodes=100,
+    layers=['social', 'work', 'family'],
+    p_intra=0.15,  # Intra-layer edge prob
+    p_inter=0.01,  # Inter-layer edge prob
+    seed=42
+)
+```
+
+### Statistical Testing Pattern
+
+```python
+# Compute observed statistic
+observed_stat = Q.nodes().compute("betweenness").execute(net).attributes['betweenness'].mean()
+
+# Generate null distribution
+null_stats = []
+for i in range(100):
+    null_net = configuration_model(net, seed=i)
+    null_stat = Q.nodes().compute("betweenness").execute(null_net).attributes['betweenness'].mean()
+    null_stats.append(null_stat)
+
+# p-value
+p_value = sum(ns >= observed_stat for ns in null_stats) / len(null_stats)
+print(f"p-value: {p_value}")
+```
+
+### Null Model Builder (DSL Extension)
 
 ```python
 from py3plex.dsl import N
 
-# Generate configuration model null models
+# Generate null models via DSL
 null_models = (
     N.configuration()
      .samples(100)
@@ -1070,39 +2364,312 @@ null_models = (
      .execute(net)
 )
 
-# Use for statistical testing
-observed_stat = compute_network_statistic(net)
-null_distribution = [compute_network_statistic(nm) for nm in null_models]
-p_value = sum(ns >= observed_stat for ns in null_distribution) / len(null_distribution)
+# Use for testing
+for null_net in null_models:
+    # Analyze null network
+    pass
 ```
 
 ---
 
-### Example 8: Path Queries
+## Counterexample Generation
+
+Find violations of network invariants with minimal witness subgraphs.
+
+### Basic Usage
 
 ```python
-from py3plex.dsl import P
+from py3plex.dsl import Q
 
-# Find shortest paths across layers
-paths = (
-    P.shortest("Alice", "Bob")
-     .crossing_layers()
-     .max_length(5)
+cex = (
+    Q.counterexample()
+     .claim("degree__ge(k) -> pagerank__rank_le(r)")
+     .params(k=10, r=50)
+     .seed(42)
      .execute(net)
 )
 
-for path in paths.paths:
-    print(f"Path: {' -> '.join(path)}, Length: {len(path)-1}")
+if cex:
+    print(cex.explain())
+    witness = cex.subgraph  # Minimal subgraph demonstrating violation
+```
+
+### Claim Language
+
+**Format**: `antecedent -> consequent`
+
+**Value-based predicates**:
+- `degree__ge(k)` - degree >= k
+- `degree__gt(k)` - degree > k
+- `pagerank__lt(x)` - pagerank < x
+- `betweenness_centrality__ge(x)` - betweenness >= x
+
+**Rank-based predicates**:
+- `pagerank__rank_gt(r)` - pagerank rank > r (lower rank)
+- `pagerank__rank_le(r)` - pagerank rank <= r (higher or equal rank)
+
+**Comparators**: `gt`, `ge`, `gte`, `lt`, `le`, `lte`, `eq`, `ne`
+
+### Examples
+
+```python
+# High degree doesn't guarantee high PageRank
+cex = Q.counterexample().claim("degree__ge(10) -> pagerank__rank_le(50)").params(k=10, r=50).seed(42).execute(net)
+
+# High betweenness doesn't guarantee low rank
+cex = Q.counterexample().claim("betweenness_centrality__ge(0.1) -> pagerank__rank_gt(100)").params(x=0.1, r=100).seed(42).execute(net)
+```
+
+### Counterexample Object
+
+**Attributes**:
+- `cex.subgraph` - Witness network (multi_layer_network)
+- `cex.violation` - Violation details (node, metrics, margins)
+- `cex.witness_nodes` - Set of (node, layer) tuples
+- `cex.witness_edges` - Set of edge tuples
+- `cex.minimization` - Minimization report (is_minimal, tests_used, strategy)
+- `cex.meta['provenance']` - Full provenance
+
+**Methods**:
+- `cex.explain()` - Human-readable explanation
+- `cex.to_dict()` - JSON-serializable representation
+
+### Configuration
+
+```python
+cex = (
+    Q.counterexample()
+     .claim("degree__ge(k) -> pagerank__rank_le(r)")
+     .params(k=10, r=50)
+     .seed(42)
+     .find_minimal(True)  # Enable minimization (default: True)
+     .budget(max_tests=200, max_witness_size=500)
+     .layers(L["social"] + L["work"])  # Restrict search to specific layers
+     .execute(net)
+)
+```
+
+### Integration with Query Results
+
+```python
+result = Q.nodes().compute("degree", "pagerank").execute(net)
+
+cex = result.counterexample(
+    claim="degree__ge(k) -> pagerank__rank_le(r)",
+    params={"k": 10, "r": 50},
+    seed=42
+)
+```
+
+### Error Handling
+
+```python
+from py3plex.counterexamples.claim_lang import ClaimParseError
+from py3plex.counterexamples.engine import CounterexampleNotFound
+
+try:
+    cex = Q.counterexample().claim("invalid syntax").execute(net)
+except ClaimParseError as e:
+    print(f"Invalid claim: {e}")
+
+try:
+    cex = Q.counterexample().claim("degree__ge(k) -> pagerank__rank_le(r)").params(k=100, r=1).execute(net)
+except CounterexampleNotFound:
+    print("No violation found - claim holds for this network")
 ```
 
 ---
 
-### Example 9: Pattern Matching (Cypher-like)
+## Claim Learning (Hypothesis Discovery)
+
+Automatically discover plausible, interpretable claims from network data.
+
+### Basic Usage
 
 ```python
-from py3plex.dsl import PatternQueryBuilder
+from py3plex.dsl import Q
 
-# Find triangles in social layer
+claims = (
+    Q.learn_claims()
+     .from_metrics(["degree", "pagerank", "betweenness_centrality"])
+     .min_support(0.9)      # At least 90% support
+     .min_coverage(0.05)    # At least 5% of nodes
+     .max_claims(20)        # Return top 20
+     .seed(42)              # Deterministic
+     .execute(net)
+)
+
+for claim in claims:
+    print(f"{claim.claim_string}")
+    print(f"  Support: {claim.support:.3f}, Coverage: {claim.coverage:.3f}")
+```
+
+### Advanced Configuration
+
+```python
+claims = (
+    Q.learn_claims()
+     .from_metrics(["degree", "strength", "pagerank", "betweenness"])
+     .cheap_metrics(["degree", "strength"])      # Use for antecedents
+     .target_metrics(["pagerank", "betweenness"]) # Use for consequents
+     .layers(L["social"] + L["work"])             # Learn for specific layers
+     .min_support(0.85)
+     .min_coverage(0.1)
+     .max_antecedents(1)  # MVP: only 1 antecedent term supported
+     .seed(42)
+     .execute(net)
+)
+```
+
+### Claim Object
+
+**Attributes**:
+- `claim_string` - DSL-compatible claim (e.g., "degree__gte(10.0) -> pagerank__rank_lte(50)")
+- `antecedent` - Antecedent predicate
+- `consequent` - Consequent predicate
+- `support` - Statistical support (0.0-1.0)
+- `coverage` - Coverage (0.0-1.0)
+- `score` - ClaimScore with detailed statistics
+- `meta['provenance']` - Full provenance
+
+**Methods**:
+- `claim.counterexample(net, **kwargs)` - Find counterexample
+- `claim.to_dict()` - JSON-serializable
+
+### Integration with Counterexamples
+
+```python
+# Learn claims
+claims = Q.learn_claims().from_metrics(["degree", "pagerank"]).min_support(0.8).execute(net)
+
+# Test each claim
+for claim in claims:
+    cex = claim.counterexample(net, seed=42)
+    if cex:
+        print(f"✗ {claim.claim_string}: falsified")
+    else:
+        print(f"✓ {claim.claim_string}: holds (support={claim.support:.3f})")
+```
+
+### Interpretation Warning
+
+**Claims are hypotheses, not truths.**
+
+- Support < 1.0 means exceptions exist
+- High support ≠ causation
+- Claims are inductive (summarize observed patterns)
+- Always validate on held-out data or additional networks
+- Document provenance for audit trails
+
+**Best Practices**:
+1. Use min_support >= 0.9 for reliable claims
+2. Use min_coverage >= 0.05 to avoid overfitting
+3. Always set seed for reproducibility
+4. Test with counterexample engine
+5. Validate on multiple networks
+
+---
+
+
+## Semiring Algebra (Paths, Closure, Fixed-Point)
+
+**PSEUDOCODE SECTION** - Semiring algebra is implemented but simplified here for agent guidance.
+
+### Concept
+
+Semirings generalize shortest-path algorithms to solve problems like:
+- Shortest paths (min-plus semiring)
+- Most reliable paths (max-times semiring)
+- Reachability (boolean semiring)
+
+### S — Semiring Builder
+
+```python
+from py3plex.dsl import S, L
+
+# Shortest paths
+result = (
+    S.paths()
+     .from_node("Alice")
+     .to_node("Bob")
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .from_layers(L["social"] + L["work"])
+     .execute(net)
+)
+
+# Reachability
+result = (
+    S.paths()
+     .from_node("Alice")
+     .semiring("boolean")
+     .execute(net)
+)
+
+# All-pairs shortest paths
+result = (
+    S.closure()
+     .semiring("min_plus")
+     .lift(attr="weight", default=1.0)
+     .execute(net)
+)
+```
+
+---
+
+## Community Detection and Queries
+
+### Detect Communities
+
+```python
+from py3plex.algorithms.community_detection import louvain, leiden, label_propagation
+
+# Louvain
+communities = louvain(net, resolution=1.0, seed=42)
+
+# Leiden (higher quality)
+communities = leiden(net, resolution=1.0, seed=42)
+
+# Label propagation (fast)
+communities = label_propagation(net, seed=42)
+```
+
+### Query Communities
+
+```python
+from py3plex.dsl import Q
+
+# Detect first
+communities = louvain(net, seed=42)
+
+# Query large communities
+result = (
+    Q.communities()
+     .where(size__gt=10)
+     .compute("conductance", "modularity_contribution")
+     .execute(net)
+)
+
+# Get members of large communities
+result = (
+    Q.communities()
+     .where(size__gt=10)
+     .members()  # Switch to node query
+     .compute("degree", "betweenness")
+     .execute(net)
+)
+```
+
+---
+
+## Pattern Matching (Cypher-like)
+
+**PSEUDOCODE** - Feature is implemented but simplified here.
+
+```python
+from py3plex.dsl.patterns import PatternQueryBuilder
+
+# Find triangles
 pattern = (
     PatternQueryBuilder()
      .node("a", layer="social")
@@ -1119,4320 +2686,241 @@ for match in matches:
 
 ---
 
-### Example 10: Aggregations and Statistical Operators
-
-py3plex DSL v2 provides first-class support for aggregations with a rich set of statistical operators:
+## Network Comparison and Diff
 
 ```python
-from py3plex.dsl import Q, L
+from py3plex.dsl import C
 
-# Basic aggregations on nodes
-result = (
-    Q.nodes()
-     .compute("degree", "betweenness_centrality")
-     .summarize(
-         total_nodes="count()",
-         avg_degree="mean(degree)",
-         median_degree="median(degree)",
-         std_degree="std(degree)",
-         q95_degree="quantile(degree, 0.95)",
-         max_bc="max(betweenness_centrality)"
-     )
-     .execute(net)
+comparison = (
+    C.compare("baseline", "treatment")
+     .using("multiplex_jaccard")
+     .by_layer()
+     .execute({"baseline": net1, "treatment": net2})
 )
 
-# Per-layer aggregations
-result = (
-    Q.nodes()
-     .compute("degree")
-     .per_layer()
-     .aggregate(
-         node_count="count()",
-         avg_degree="mean(degree)",
-         median_degree="median(degree)",
-         q25="quantile(degree, 0.25)",
-         q75="quantile(degree, 0.75)"
-     )
-     .execute(net)
-)
-
-# Edge aggregations per layer pair
-result = (
-    Q.edges()
-     .per_layer_pair()
-     .aggregate(
-         edge_count="count()",
-         total_weight="sum(weight)",
-         avg_weight="mean(weight)",
-         median_weight="median(weight)",
-         max_weight="max(weight)"
-     )
-     .execute(net)
-)
-
-# Convert to pandas for further analysis
-df = result.to_pandas()
-print(df)
-```
-
-**Supported aggregation functions:**
-- `count()` / `n()`: Count of items in group
-- `mean(attr)`: Arithmetic mean
-- `median(attr)`: Median value
-- `sum(attr)`: Sum of values
-- `min(attr)` / `max(attr)`: Minimum/maximum values
-- `std(attr)` / `var(attr)`: Standard deviation and variance
-- `quantile(attr, p)`: p-th quantile (e.g., `quantile(degree, 0.95)` for 95th percentile)
-
-**Output:**
-```
-  layer  node_count  avg_degree  median_degree   q25   q75
-0  social         5       2.400          2.0   2.0   3.0
-1  work           3       2.000          2.0   2.0   2.0
+print(f"Jaccard similarity: {comparison.similarity}")
+print(f"Layer-wise: {comparison.by_layer}")
 ```
 
 ---
 
-### Example 11: Advanced Edge Queries with Endpoint Properties
+## CLI Tool
 
-Edge queries now support full parity with node queries, including filtering on endpoint properties:
+py3plex provides a full-featured CLI for shell scripts and automation.
 
-```python
-from py3plex.dsl import Q, L
-
-# Filter edges by source node degree
-high_degree_edges = (
-    Q.edges()
-     .where(src_degree__gt=3)
-     .execute(net)
-)
-
-# Filter by both source and target degrees
-result = (
-    Q.edges()
-     .where(src_degree__ge=2, dst_degree__ge=2)
-     .execute(net)
-)
-
-# Combine endpoint properties with edge attributes
-result = (
-    Q.edges()
-     .where(weight__gt=1.5, src_degree__gt=2)
-     .order_by("-weight")
-     .limit(10)
-     .execute(net)
-)
-
-# Aggregate endpoint properties per layer pair
-result = (
-    Q.edges()
-     .per_layer_pair()
-     .aggregate(
-         edge_count="count()",
-         avg_src_degree="mean(src_degree)",
-         avg_dst_degree="mean(dst_degree)",
-         max_src_degree="max(src_degree)",
-         avg_weight="mean(weight)"
-     )
-     .execute(net)
-)
-
-# Export to pandas
-df = result.to_pandas()
-print(df)
-```
-
-**Available endpoint properties for edges:**
-- `src_degree` / `source_degree`: Degree of source node
-- `dst_degree` / `target_degree`: Degree of target node
-- `source_layer`: Layer of source node
-- `target_layer`: Layer of target node
-- `weight`: Edge weight (default: 1.0)
-- Any custom edge attributes
-
-**Output:**
-```
-  source_layer target_layer  edge_count  avg_src_degree  avg_dst_degree  avg_weight
-0      social       social           4            2.75            2.75        2.50
-1      work         work             3            2.00            2.00        6.00
-```
-
----
-
-### Example 12: Edge Coverage Analysis
-
-Analyze edges that appear across multiple layer pairs:
-
-```python
-from py3plex.dsl import Q, L
-
-# Find edges present in multiple layer pairs
-result = (
-    Q.edges()
-     .per_layer_pair()
-     .coverage(mode="at_least", k=2)  # Edges in at least 2 layer pairs
-     .aggregate(
-         layer_pair_count="count()",
-         avg_weight="mean(weight)"
-     )
-     .execute(net)
-)
-
-# Get summary of grouped edges
-summary = result.group_summary()
-print(summary)
-```
-
-**Output:**
-```
-  edge              layer_pairs  count  avg_weight
-0 (A, B)           2            2      3.0
-1 (B, C)           2            2      4.0
-```
-
----
-
-### DSL v2 vs Legacy DSL
-
-| Feature | Legacy DSL | DSL v2 |
-|---------|-----------|--------|
-| Syntax | String-based | Builder API (+ string) |
-| Layer algebra | Limited | Full algebra (L[...] + L[...]) |
-| Uncertainty | Not supported | First-class (.uq()) |
-| Grouping | Not supported | per_layer(), per_layer_pair(), coverage() |
-| Aggregations | Not supported | Full suite (mean, median, quantile, etc.) |
-| Edge queries | Limited | Full parity with node queries |
-| Endpoint properties | Not supported | src_degree, dst_degree, etc. |
-| Pattern matching | Basic MATCH | Full Cypher-like |
-| Dynamics | Not supported | D.process(...) |
-| Null models | Not supported | N.configuration() |
-| Type safety | Runtime errors | IDE autocomplete |
-
-### DSL v2 Architecture
-
-DSL v2 uses a unified AST (Abstract Syntax Tree) compilation model:
-
-```
-Builder API (Q, L, etc.)  ─┐
-                          ├─→ AST ─→ Executor ─→ QueryResult
-String DSL                ─┘
-```
-
-Both frontends compile to the same AST, ensuring consistent behavior.
-
----
-
-## Dplyr-Style Chainable Graph Operations API
-
-py3plex provides a dplyr-inspired API for fluent, method-chaining operations on nodes and edges. This allows functional-style data manipulation similar to R's dplyr or Python's pandas.
-
-**NOTE:** As of version 1.1.0, the dplyr-style methods have been integrated directly into the DSL v2 builder (`Q.nodes()` and `Q.edges()`), providing a unified API. The standalone `graph_ops` module is still available for backward compatibility, but the recommended approach is to use the DSL builder with dplyr-style methods like `.filter()`, `.head()`, `.tail()`, `.sample()`, etc.
-
-### Using Dplyr-Style Methods in DSL Builder
-
-```python
-from py3plex.dsl import Q, L
-from py3plex.core import multinet
-
-# Create network
-net = multinet.multi_layer_network(directed=False)
-net.add_edges([
-    {'source': 'A', 'target': 'B', 'source_type': 'ppi', 'target_type': 'ppi'},
-    {'source': 'B', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
-    {'source': 'A', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
-])
-
-# Unified API with dplyr-style methods
-df = (
-    Q.nodes()
-     .from_layers(L["ppi"])
-     .compute("degree")
-     .filter(degree__gt=1)               # Dplyr-style filter
-     .mutate(norm_deg=lambda r: r["degree"] / 3)  # Mutate with lambdas
-     .arrange("-degree")                  # Sort descending
-     .head(3)                             # Take top 3
-     .execute(net)
-     .to_pandas()
-)
-```
-
-**New Dplyr-Style Methods in DSL Builder:**
-- `.filter()` - Alias for `.where()`, traditional dplyr naming
-- `.filter_expr(expr)` - String-based filtering: `filter_expr("degree > 10 and layer == 'ppi'")`
-- `.head(n)` - Keep first n results
-- `.tail(n)` - Keep last n results  
-- `.take(n)` - Alias for `.head(n)`, SQL-style
-- `.sample(n, seed)` - Random sampling with optional seed
-- `.slice(start, end)` - Array slicing like Python `[start:end]`
-- `.first()` - Return only first result (limits to 1)
-- `.last()` - Return only last result
-- `.pluck(field)` - Extract single column
-- `.collect()` - No-op for API compatibility
-
-### Core Components (Standalone graph_ops)
-
-```python
-from py3plex.graph_ops import (
-    nodes,           # Create NodeFrame from network
-    edges,           # Create EdgeFrame from network
-    NodeFrame,       # Chainable view over nodes
-    EdgeFrame,       # Chainable view over edges
-    GroupedNodeFrame,  # For group_by + summarise
-    GroupedEdgeFrame,  # For group_by + summarise on edges
-)
-```
-
-### Supported Verbs (dplyr Mapping)
-
-| dplyr          | py3plex              | Description                          |
-|----------------|----------------------|--------------------------------------|
-| `filter()`     | `.filter(pred)`      | Keep rows matching predicate         |
-| `select()`     | `.select(*cols)`     | Keep only specified columns          |
-| `mutate()`     | `.mutate(**funcs)`   | Add/modify columns                   |
-| `arrange()`    | `.arrange(key)`      | Sort by column or function           |
-| `head()`       | `.head(n)`           | Keep first n rows                    |
-| `group_by()`   | `.group_by(*cols)`   | Group for aggregation                |
-| `summarise()`  | `.summarise(**aggs)` | Compute group summaries              |
-
-### Example 1: Basic Node Operations
-
-```python
-from py3plex.core import multinet
-from py3plex.graph_ops import nodes
-import numpy as np
-
-# Create network
-net = multinet.multi_layer_network(directed=False)
-net.add_edges([
-    {'source': 'A', 'target': 'B', 'source_type': 'ppi', 'target_type': 'ppi'},
-    {'source': 'B', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
-    {'source': 'A', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
-    {'source': 'C', 'target': 'D', 'source_type': 'ppi', 'target_type': 'ppi'},
-])
-
-# Chainable operations
-df = (
-    nodes(net, layers=["ppi"])
-    .filter(lambda n: n["degree"] > 1)
-    .mutate(normalized_degree=lambda n: n["degree"] / 4)  # Normalize by total node count
-    .arrange("degree", reverse=True)
-    .head(3)
-    .to_pandas()
-)
-
-print(df)
-```
-
-**Output:**
-```
-   id layer  degree  normalized_degree
-0   C   ppi       3               0.75
-1   A   ppi       2               0.50
-2   B   ppi       2               0.50
-```
-
----
-
-### Example 2: Group By and Summarise
-
-```python
-from py3plex.graph_ops import nodes
-import numpy as np
-
-# Create multi-layer network
-net = multinet.multi_layer_network(directed=False)
-net.add_edges([
-    {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social'},
-    {'source': 'A', 'target': 'B', 'source_type': 'work', 'target_type': 'work'},
-    {'source': 'B', 'target': 'C', 'source_type': 'work', 'target_type': 'work'},
-    {'source': 'C', 'target': 'D', 'source_type': 'work', 'target_type': 'work'},
-])
-
-# Group by layer and compute statistics
-df = (
-    nodes(net)
-    .group_by("layer")
-    .summarise(
-        avg_degree=("degree", np.mean),
-        max_degree=("degree", max),
-        n_nodes=("id", len),
-    )
-    .to_pandas()
-)
-
-print(df)
-```
-
-**Output:**
-```
-    layer  avg_degree  max_degree  n_nodes
-0  social    1.333333           2        3
-1    work    1.500000           3        4
-```
-
----
-
-### Example 3: Edge Operations
-
-```python
-from py3plex.graph_ops import edges
-
-# Filter and analyze edges
-df_edges = (
-    edges(net, layers=["work"])
-    .filter(lambda e: e.get("weight", 1) >= 1)
-    .select("source", "target", "source_layer")
-    .head(10)
-    .to_pandas()
-)
-
-print(df_edges)
-```
-
-**Output:**
-```
-  source target source_layer
-0      A      B         work
-1      B      C         work
-2      C      D         work
-```
-
----
-
-### Example 4: Filter with Expression Strings
-
-```python
-# Use filter_expr for simple string-based filtering
-df = (
-    nodes(net)
-    .filter_expr("degree > 1 and layer == 'work'")
-    .to_pandas()
-)
-```
-
----
-
-### Example 5: Extract Subgraph from Selection
-
-```python
-# Create a subgraph containing only high-degree nodes
-subgraph = (
-    nodes(net)
-    .filter(lambda n: n["degree"] > 2)
-    .to_subgraph()
-)
-
-print(f"Subgraph has {subgraph.node_count} nodes and {subgraph.edge_count} edges")
-```
-
----
-
-## Method Chaining for Network Construction
-
-py3plex supports fluent method chaining for network construction:
-
-```python
-from py3plex.core import multinet
-
-# Fluent network construction
-net = (
-    multinet.multi_layer_network(directed=False)
-    .add_nodes([
-        {'source': 'A', 'type': 'layer1'},
-        {'source': 'B', 'type': 'layer1'},
-        {'source': 'C', 'type': 'layer2'},
-    ])
-    .add_edges([
-        {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'},
-        {'source': 'B', 'target': 'C', 'source_type': 'layer1', 'target_type': 'layer2'},
-    ])
-    .add_nodes([
-        {'source': 'D', 'type': 'layer2'},
-    ])
-    .add_edges([
-        {'source': 'C', 'target': 'D', 'source_type': 'layer2', 'target_type': 'layer2'},
-    ])
-)
-
-print(net)
-# <multi_layer_network: type=multilayer, directed=False, nodes=4, edges=3, layers=2>
-```
-
----
-
-## Pythonic Interface Features
-
-py3plex's `multi_layer_network` class implements Python's special methods for intuitive usage:
-
-### Dunder Methods
-
-```python
-net = multinet.multi_layer_network()
-net.add_nodes([{'source': 'A', 'type': 'layer1'}])
-
-# __len__: Get node count
-len(net)  # Returns 1
-
-# __bool__: Check if network is non-empty
-if net:
-    print("Network has nodes")
-
-# __contains__: Check for node existence
-('A', 'layer1') in net  # Returns True
-('B', 'layer1') in net  # Returns False
-
-# __iter__: Iterate over nodes
-for node in net:
-    print(node)  # Prints ('A', 'layer1')
-```
-
-### Property Accessors
-
-```python
-net.node_count   # Number of nodes
-net.edge_count   # Number of edges
-net.layer_count  # Number of unique layers
-net.layers       # Sorted list of layer names
-net.is_empty     # True if no nodes
-```
-
-### Factory Methods
-
-```python
-# Create from edges directly
-net = multinet.multi_layer_network.from_edges([
-    {'source': 'A', 'target': 'B', 'source_type': 'l1', 'target_type': 'l1'}
-])
-
-# Create from NetworkX graph
-import networkx as nx
-G = nx.Graph()
-G.add_edge(('A', 'layer1'), ('B', 'layer1'))
-net = multinet.multi_layer_network.from_networkx(G)
-```
-
----
-
-## Sklearn-Style Pipeline API
-
-py3plex provides a scikit-learn style pipeline for composable network analysis workflows:
-
-### Core Components
-
-```python
-from py3plex.pipeline import (
-    Pipeline,        # Main pipeline class
-    PipelineStep,    # Base class for custom steps
-    LoadStep,        # Load network from file/generator
-    AggregateLayers, # Aggregate across layers
-    LeidenMultilayer,# Community detection
-    LouvainCommunity,# Louvain community detection
-    ComputeStats,    # Compute network statistics
-    FilterNodes,     # Filter by degree/list
-    SaveNetwork,     # Save to file
-)
-```
-
-### Pipeline Example
-
-```python
-from py3plex.pipeline import Pipeline, LoadStep, ComputeStats, FilterNodes
-
-# Define analysis pipeline
-pipe = Pipeline([
-    ("load", LoadStep(generator='random_er', num_nodes=100, num_layers=3, edge_prob=0.1)),
-    ("filter", FilterNodes(min_degree=2)),
-    ("stats", ComputeStats(include_layer_stats=True)),
-])
-
-# Execute pipeline
-result = pipe.run()
-print(result)
-```
-
-**Output:**
-```
-{'nodes': 87, 'edges': 312, 'density': 0.083, 'layers': 3, 
- 'layer_densities': {'layer_0': 0.092, 'layer_1': 0.078, 'layer_2': 0.081}}
-```
-
-### Custom Pipeline Steps
-
-```python
-from py3plex.pipeline import PipelineStep
-
-class ComputeCentrality(PipelineStep):
-    def __init__(self, measure='betweenness'):
-        self.measure = measure
-    
-    def transform(self, network):
-        import networkx as nx
-        if self.measure == 'betweenness':
-            centrality = nx.betweenness_centrality(network.core_network)
-        return {'network': network, 'centrality': centrality}
-
-# Use in pipeline
-pipe = Pipeline([
-    ("load", LoadStep(path="network.graphml")),
-    ("centrality", ComputeCentrality(measure='betweenness')),
-])
-```
-
----
-
-## Config-Driven Workflows
-
-For reproducible research, py3plex supports YAML-based workflow configuration:
-
-```python
-from py3plex.workflows import WorkflowConfig, run_workflow
-
-# Define workflow in YAML
-config_yaml = """
-name: my_analysis
-steps:
-  - name: load
-    type: load
-    params:
-      path: network.graphml
-      input_type: graphml
-  - name: community
-    type: community
-    params:
-      algorithm: louvain
-  - name: stats
-    type: stats
-output:
-  format: json
-  path: results.json
-"""
-
-# Run workflow
-result = run_workflow(config_yaml)
-```
-
----
-
-## First-Class DSL Method on Network
-
-The DSL can be accessed directly as a method on the network object:
-
-```python
-net = multinet.multi_layer_network()
-# ... add nodes and edges ...
-
-# Execute query directly on network
-result = net.execute_query('SELECT nodes WHERE layer="social" AND degree > 2')
-
-# With MATCH syntax (Cypher-like pattern matching, also supported by DSL)
-result = net.execute_query('MATCH (a:layer1)-[r]->(b:layer1) RETURN a, b')
-```
-
----
-
-## Command-Line Interface (CLI)
-
-py3plex provides a comprehensive CLI tool for multilayer network analysis. Run `py3plex --help` to see all available commands.
-
-### Available Commands
-
-| Command | Description |
-|---------|-------------|
-| `help` | Show detailed help information |
-| `check` | Lint and validate graph data files |
-| `create` | Create a new multilayer network |
-| `load` | Load and inspect a multilayer network |
-| `community` | Detect communities in the network |
-| `centrality` | Compute node centrality measures |
-| `stats` | Compute multilayer network statistics |
-| `visualize` | Visualize the multilayer network |
-| `aggregate` | Aggregate multilayer network into single layer |
-| `convert` | Convert network between different formats |
-| `selftest` | Run self-test to verify installation |
-| `quickstart` | Interactive demo with example graph |
-| `run-config` | Run workflow from YAML/JSON configuration |
-
-### CLI Examples
+### Basic Commands
 
 ```bash
-# Quick start - interactive demo
-py3plex quickstart
+# Get help
+py3plex --help
 
-# Create a random multilayer network
-py3plex create --nodes 100 --layers 3 --type random --probability 0.1 --output network.edgelist
+# Create random network
+py3plex create --nodes 100 --layers 3 --p-intra 0.1 --p-inter 0.01 --output network.edgelist
 
-# Load and inspect network
-py3plex load network.edgelist --info --stats
+# Compute statistics
+py3plex stats network.edgelist --output stats.csv
 
-# Detect communities
-py3plex community network.edgelist --algorithm louvain --output communities.json
+# Query network
+py3plex query network.edgelist --query "SELECT nodes WHERE degree > 5" --output filtered.csv
 
-# Compute centrality measures
-py3plex centrality network.edgelist --measure betweenness --top 20
-
-# Visualize the network
-py3plex visualize network.edgelist --output network.png --layout multilayer
-
-# Convert between formats
-py3plex convert network.edgelist --output network.graphml
-
-# Validate a data file
-py3plex check network.csv --strict
+# Convert format
+py3plex convert network.edgelist --output network.graphml --format graphml
 ```
 
----
+### Advanced Features
 
-## Built-in Datasets
+```bash
+# Community detection
+py3plex communities network.edgelist --algorithm louvain --output communities.csv
 
-py3plex provides built-in datasets similar to scikit-learn, making it easy to get started with examples and testing.
-
-### Available Functions
-
-```python
-from py3plex.datasets import (
-    # Bundled datasets
-    load_aarhus_cs,           # Aarhus CS department social network (61 nodes, 5 layers)
-    load_synthetic_multilayer, # Synthetic multilayer network (50 nodes, 3 layers)
-    
-    # Synthetic generators
-    make_random_multilayer,   # Random multilayer Erdős-Rényi
-    make_random_multiplex,    # Random multiplex Erdős-Rényi
-    make_clique_multiplex,    # Multiplex with clique structure
-    make_social_network,      # Synthetic social network
-    
-    # Utilities
-    list_datasets,            # List all available datasets
-    get_data_dir,             # Get path to data directory
-)
-```
-
-### Example Usage
-
-```python
-from py3plex.datasets import load_aarhus_cs, make_random_multilayer, list_datasets
-
-# List available datasets
-for name, desc in list_datasets():
-    print(f"{name}: {desc}")
-
-# Load bundled dataset
-network = load_aarhus_cs()
-print(f"Nodes: {len(list(network.get_nodes()))}")
-print(f"Layers: {network.get_layers()}")
-
-# Generate synthetic network
-net = make_random_multilayer(n_nodes=100, n_layers=3, p=0.1, random_state=42)
-```
-
-**Output:**
-```
-aarhus_cs: Social network of Aarhus CS department (61 nodes, 5 layers)
-synthetic_multilayer: Synthetic multilayer network (50 nodes, 3 layers)
-Nodes: 305
-Layers: ['coauthor', 'facebook', 'leisure', 'lunch', 'work']
+# Centrality with uncertainty
+py3plex centrality network.edgelist --metric pagerank --uq bootstrap --n-samples 100 --output centrality.csv
 ```
 
 ---
 
 ## Plugin System
 
-py3plex supports a plugin architecture for extending functionality with custom algorithms.
+Extend py3plex with custom operators.
 
-### Plugin Types
+### Register Custom Operator
 
 ```python
-from py3plex.plugins import (
-    BasePlugin,        # Abstract base for all plugins
-    CentralityPlugin,  # For custom centrality measures
-    CommunityPlugin,   # For custom community detection
-    LayoutPlugin,      # For custom layout algorithms
-    MetricPlugin,      # For custom network metrics
-    PluginRegistry,    # Registry for managing plugins
-    discover_plugins,  # Auto-discover installed plugins
-)
+from py3plex.dsl import dsl_operator, DSLExecutionContext
+
+@dsl_operator("my_metric", description="Custom metric", category="centrality")
+def my_custom_metric(context: DSLExecutionContext, alpha: float = 0.5):
+    """Compute custom metric with parameter alpha."""
+    graph = context.graph
+    layers = context.current_layers
+    
+    # Your computation here
+    result = {}
+    for node in graph.nodes():
+        result[node] = compute_value(node, alpha)
+    
+    return result
+
+# Use in DSL
+result = Q.nodes().compute("my_metric", alpha=0.8).execute(net)
 ```
 
-### Creating a Custom Plugin
+### Query Registered Operators
 
 ```python
-from py3plex.plugins import CentralityPlugin
+from py3plex.dsl import list_operators, describe_operator
 
-class MyCustomCentrality(CentralityPlugin):
-    @property
-    def name(self) -> str:
-        return "my_custom_centrality"
-    
-    @property
-    def description(self) -> str:
-        return "A custom centrality measure"
-    
-    def compute(self, network, **kwargs):
-        # Implement your centrality algorithm
-        centrality = {}
-        for node in network.get_nodes():
-            centrality[node] = network.core_network.degree(node)
-        return centrality
+# List all operators
+operators = list_operators()
 
-# Register and use
-from py3plex.plugins import PluginRegistry
-registry = PluginRegistry()
-registry.register(MyCustomCentrality())
-
-# Use the plugin
-plugin = registry.get("my_custom_centrality")
-result = plugin.compute(network)
+# Get operator details
+info = describe_operator("my_metric")
+print(info["description"])
 ```
 
 ---
 
-## I/O API
+## Configuration and Profiling
 
-py3plex provides a flexible I/O system with format detection and a registry for custom formats.
-
-### Supported Formats
-
-| Format | Extension | Read | Write |
-|--------|-----------|------|-------|
-| EdgeList | `.edgelist`, `.txt` | ✓ | ✓ |
-| Multi-EdgeList | `.multiedgelist` | ✓ | ✓ |
-| GraphML | `.graphml` | ✓ | ✓ |
-| GML | `.gml` | ✓ | ✓ |
-| JSON | `.json` | ✓ | ✓ |
-| CSV | `.csv` | ✓ | ✓ |
-| Apache Arrow | `.arrow`, `.parquet` | ✓ | ✓ |
-
-### I/O Functions
+### Configuration
 
 ```python
-from py3plex.io.api import (
-    register_reader,    # Register custom reader
-    register_writer,    # Register custom writer
-)
-from py3plex.io.schema import MultiLayerGraph  # Schema for graph data
+from py3plex import config
+
+# Get configuration
+print(config.get("default_directed"))
+
+# Set configuration (if mutable)
+# config.set("default_directed", False)  # Most configs are constants
 ```
 
-### Loading and Saving Networks
+### Profiling
 
 ```python
-from py3plex.core import multinet
-
-# Load from file
-network = multinet.multi_layer_network().load_network(
-    "network.edgelist",
-    input_type="multiedgelist",
-    directed=False
-)
-
-# Save to file (via NetworkX)
-import networkx as nx
-nx.write_graphml(network.core_network, "network.graphml")
-```
-
----
-
-## Profiling Utilities
-
-py3plex includes built-in performance profiling tools for optimization and benchmarking.
-
-### Available Functions
-
-```python
-from py3plex.profiling import (
-    profile_performance,  # Decorator for timing functions
-    timed_section,        # Context manager for timing code blocks
-    benchmark,            # Decorator for benchmarking
-    get_monitor,          # Get global performance monitor
-)
-```
-
-### Example Usage
-
-```python
-from py3plex.profiling import profile_performance, timed_section, get_monitor
+from py3plex.profiling import profile_performance, timed_section
 
 @profile_performance
-def compute_centrality(network):
-    # ... computation
-    pass
+def my_analysis(network):
+    result = Q.nodes().compute("betweenness").execute(network)
+    return result
 
-# Time a specific code block
+# Timed sections
 with timed_section("community_detection"):
-    communities = detect_communities(network)
-
-# Get performance report
-monitor = get_monitor()
-print(monitor.get_report())
-```
-
-**Output:**
-```
-Performance Report
-================================================================================
-Function                                   Calls   Total(s)     Avg(ms)     Min(ms)     Max(ms)
---------------------------------------------------------------------------------
-compute_centrality                            10      1.234      123.4       100.2       150.3
+    communities = louvain(net)
 ```
 
 ---
 
 ## Exception Hierarchy
 
-py3plex provides domain-specific exceptions for better error handling:
-
-```python
-from py3plex.exceptions import (
-    # Base exception
-    Py3plexException,           # Base for all py3plex exceptions
-    
-    # Network construction
-    NetworkConstructionError,   # Network construction failures
-    InvalidLayerError,          # Invalid layer specification
-    InvalidNodeError,           # Invalid node specification
-    InvalidEdgeError,           # Invalid edge specification
-    
-    # Parsing and I/O
-    ParsingError,               # Input data parsing failures
-    Py3plexIOError,             # File I/O failures
-    Py3plexFormatError,         # Invalid format errors
-    
-    # Algorithm errors
-    AlgorithmError,             # Algorithm execution failures
-    CommunityDetectionError,    # Community detection failures
-    CentralityComputationError, # Centrality computation failures
-    DecompositionError,         # Network decomposition failures
-    EmbeddingError,             # Embedding generation failures
-    
-    # Other errors
-    VisualizationError,         # Visualization failures
-    ConversionError,            # Format conversion failures
-    IncompatibleNetworkError,   # Incompatible network format
-    Py3plexMatrixError,         # Matrix operation failures
-    Py3plexLayoutError,         # Layout computation failures
-    ExternalToolError,          # External tool execution failures
-)
-```
-
-### Example Usage
-
-```python
-from py3plex.exceptions import ParsingError, InvalidLayerError
-
-try:
-    network.load_network("invalid_file.csv", input_type="csv")
-except ParsingError as e:
-    print(f"Failed to parse file: {e}")
-
-try:
-    result = execute_query(network, 'SELECT nodes WHERE layer="nonexistent"')
-except InvalidLayerError as e:
-    print(f"Layer not found: {e}")
-```
-
----
-
-## Configuration
-
-py3plex provides centralized configuration for visualization and layout settings:
-
-```python
-from py3plex import config
-
-# Visualization settings
-config.DEFAULT_NODE_SIZE = 15
-config.DEFAULT_EDGE_ALPHA = 0.5
-config.DEFAULT_LAYER_ALPHA = 0.15
-
-# Color palettes
-config.COLOR_PALETTES  # Dict of available palettes: 'rainbow', 'pastel', 'vibrant', 'colorblind_safe', 'wong'
-
-# Multilayer geometry
-config.MULTILAYER_LAYER_OFFSET = 1.5  # Spacing between layers
-config.MULTILAYER_CIRCLE_SIZE = 1.05  # Layer background radius
-```
-
----
-
-## Linter and Validation
-
-py3plex includes tools for validating graph data files before loading.
-
-### File Linter
-
-```python
-from py3plex.linter import GraphFileLinter, LintIssue
-
-# Lint a data file
-linter = GraphFileLinter("network.csv")
-issues = linter.lint()
-
-for issue in issues:
-    print(issue)
-    # [WARNING] Line 5: Duplicate edge detected
-    #   → Suggestion: Remove duplicate edges or use weighted edges
-```
-
-### Input Validation
-
-```python
-from py3plex.validation import (
-    validate_file_exists,
-    validate_csv_columns,
-)
-
-# Validate file exists
-validate_file_exists("network.csv")
-
-# Validate CSV has required columns
-validate_csv_columns(
-    "network.csv",
-    required_columns=["source", "target", "source_type", "target_type"],
-    optional_columns=["weight"]
-)
-```
-
----
-
-## R Interoperability
-
-py3plex can be used from R via the reticulate package:
-
-```r
-library(reticulate)
-library(igraph)
-
-py3plex <- import("py3plex")
-r_interop <- import("py3plex.wrappers.r_interop")
-
-# Create network
-net <- py3plex$multi_layer_network()
-net$add_nodes(list(
-  list(source='Alice', type='social'),
-  list(source='Bob', type='social')
-))
-
-# Convert to igraph for R analysis
-g <- r_interop$to_igraph_for_r(net, mode='union')
-
-# Use R igraph functions
-deg <- degree(g)
-between <- betweenness(g)
-```
-
-### R Interop Functions
-
-| Function | Description |
-|----------|-------------|
-| `to_igraph_for_r()` | Convert py3plex network to igraph |
-| `export_edgelist()` | Export edges as R data frame structure |
-| `export_nodelist()` | Export nodes as R data frame structure |
-| `export_adjacency()` | Export adjacency matrix |
-| `get_network_stats()` | Get network statistics |
-| `get_layer_names()` | Get layer names |
-
----
-
-## Dynamics Simulations
-
-py3plex provides a comprehensive framework for simulating dynamical processes on multilayer networks.
-
-### Core Components
-
-```python
-from py3plex.dynamics import (
-    D,                      # Dynamics builder
-    SIS, SIR, SEIR,        # Compartmental models
-    RandomWalk,             # Random walk process
-    DynamicsProcess,        # Base class for custom dynamics
-    SimulationResult,       # Result container
-)
-```
-
-### Example 1: Basic SIS Simulation
-
-```python
-from py3plex.dynamics import D, SIS
-
-# Define and run SIS simulation
-sim = (
-    D.process(SIS(beta=0.3, mu=0.1))
-     .initial(infected=0.01)  # 1% initially infected
-     .steps(100)
-     .measure("prevalence", "incidence")
-     .replicates(20)
-     .seed(42)
-)
-
-result = sim.run(network)
-df = result.to_pandas()  # Tidy DataFrame with time series
-
-print(df.head())
-# time  replicate  prevalence  incidence
-# 0     0          0.010000    0.010000
-# 1     0          0.015234    0.005234
-# ...
-```
-
----
-
-### Example 2: Multilayer SIR with Coupling
-
-```python
-from py3plex.dynamics import D, SIR
-from py3plex.dsl import L
-
-# SIR on multiple layers with node coupling
-sim = (
-    D.process(SIR(beta=0.2, gamma=0.05))
-     .on_layers(L["offline"] + L["online"])
-     .coupling(node_replicas="strong")  # State syncs across layers
-     .initial(infected=0.01)
-     .steps(200)
-     .measure("prevalence", "prevalence_by_layer")
-     .replicates(10)
-)
-
-result = sim.run(network)
-df = result.to_pandas()
-```
-
----
-
-### Example 3: Random Walk Dynamics
-
-```python
-from py3plex.dynamics import D, RandomWalk
-
-# Random walk with layer transitions
-sim = (
-    D.process(RandomWalk(transition_prob=0.1))  # 10% chance to switch layers
-     .initial(walkers={"A": 1.0})  # Start walker at node A
-     .steps(1000)
-     .measure("visit_counts", "stationary_distribution")
-)
-
-result = sim.run(network)
-```
-
----
-
-### Example 4: Custom Dynamics Process
-
-```python
-from py3plex.dynamics import DynamicsProcess
-import numpy as np
-
-class ThresholdDynamics(DynamicsProcess):
-    """Custom threshold activation model."""
-    
-    def __init__(self, threshold=0.3):
-        self.threshold = threshold
-    
-    def step(self, network, state):
-        """Execute one time step."""
-        new_state = state.copy()
-        
-        for node in network.get_nodes():
-            neighbors = list(network.core_network.neighbors(node))
-            if not neighbors:
-                continue
-            
-            active_neighbors = sum(state.get(n, 0) for n in neighbors)
-            fraction_active = active_neighbors / len(neighbors)
-            
-            if fraction_active >= self.threshold:
-                new_state[node] = 1
-        
-        return new_state
-
-# Use custom dynamics
-sim = (
-    D.process(ThresholdDynamics(threshold=0.3))
-     .initial(active={"A": 1, "B": 1})
-     .steps(50)
-     .measure("active_count")
-)
-
-result = sim.run(network)
-```
-
----
-
-### Available Process Models
-
-| Model | Description | Parameters |
-|-------|-------------|------------|
-| `SIS` | Susceptible-Infected-Susceptible | `beta` (infection), `mu` (recovery) |
-| `SIR` | Susceptible-Infected-Recovered | `beta` (infection), `gamma` (recovery) |
-| `SEIR` | With Exposed state | `beta`, `sigma` (incubation), `gamma` |
-| `RandomWalk` | Random walker on network | `transition_prob` (layer switch) |
-
-### Available Measurements
-
-- `prevalence`: Fraction of infected nodes
-- `incidence`: New infections per step
-- `prevalence_by_layer`: Prevalence separated by layer
-- `visit_counts`: Node visit frequency (for random walks)
-- `stationary_distribution`: Long-term visit probabilities
-
----
-
-## Uncertainty Quantification
-
-py3plex features first-class uncertainty support, treating uncertainty as a native property of statistics rather than an add-on.
-
-### Core Components
-
-```python
-from py3plex.uncertainty import (
-    StatSeries,             # Universal statistic type
-    StatMatrix,             # Matrix statistics
-    CommunityStats,         # Community detection results
-    ResamplingStrategy,     # Resampling methods
-    estimate_uncertainty,   # Generic uncertainty estimator
-    uncertainty_enabled,    # Context manager
-)
-```
-
-### Example 1: Explicit Uncertainty Parameter
-
-```python
-from py3plex.algorithms.centrality_toolkit import multilayer_pagerank
-from py3plex.uncertainty import ResamplingStrategy
-
-# Compute PageRank with uncertainty
-result = multilayer_pagerank(
-    network,
-    uncertainty=True,
-    n_runs=100,
-    resampling=ResamplingStrategy.PERTURBATION,
-    random_seed=42
-)
-
-# Access statistics
-print(f"Mean: {result.mean}")
-print(f"Std: {result.std}")
-print(f"95% CI: {result.quantiles[0.025]} - {result.quantiles[0.975]}")
-print(f"Certainty: {result.certainty}")  # 0.0 = uncertain, 1.0 = deterministic
-```
-
----
-
-### Example 2: Context Manager for Global Uncertainty
-
-```python
-from py3plex.uncertainty import uncertainty_enabled
-
-# Enable uncertainty for entire pipeline
-with uncertainty_enabled(n_runs=50):
-    pr = multilayer_pagerank(network)
-    bc = multilayer_betweenness_centrality(network)
-    # Both have uncertainty information
-
-    print(f"PageRank std: {pr.std}")
-    print(f"Betweenness std: {bc.std}")
-```
-
----
-
-### Example 3: Custom Metric with Uncertainty
-
-```python
-from py3plex.uncertainty import estimate_uncertainty, ResamplingStrategy
-
-def my_custom_metric(net):
-    """Compute average clustering coefficient."""
-    import networkx as nx
-    clustering = nx.clustering(net.core_network)
-    return sum(clustering.values()) / len(clustering)
-
-# Estimate uncertainty
-result = estimate_uncertainty(
-    network,
-    my_custom_metric,
-    n_runs=50,
-    resampling=ResamplingStrategy.PERTURBATION,
-    perturbation_params={
-        "edge_drop_p": 0.1,  # Drop 10% of edges per sample
-        "node_drop_p": 0.05  # Drop 5% of nodes per sample
-    }
-)
-
-print(f"Metric: {result['mean']:.4f} ± {result['std']:.4f}")
-```
-
----
-
-### Example 4: StatSeries for Backward Compatibility
-
-```python
-# StatSeries implements __array__ for numpy compatibility
-result = multilayer_pagerank(network, uncertainty=True, n_runs=50)
-
-# Works with numpy
-import numpy as np
-arr = np.array(result)  # Extracts mean values
-
-# Dictionary-like access
-node = result.index[0]
-stats = result[node]
-# {'mean': 0.25, 'std': 0.02, 'quantiles': {...}}
-```
-
----
-
-### Resampling Strategies
-
-| Strategy | Description | Use Case |
-|----------|-------------|----------|
-| `SEED` | Multiple random seeds | Stochastic algorithms |
-| `PERTURBATION` | Drop edges/nodes | Structural uncertainty |
-| `BOOTSTRAP` | Resample with replacement | Statistical inference |
-| `JACKKNIFE` | Leave-one-out | Influence analysis |
-
----
-
-## Query Sensitivity Analysis
-
-**Query Sensitivity Analysis** tests the robustness of query CONCLUSIONS (rankings, sets, communities) under controlled perturbations. This is fundamentally DISTINCT from Uncertainty Quantification (UQ):
-
-| Aspect | UQ (.uq()) | Sensitivity (.sensitivity()) |
-|--------|------------|------------------------------|
-| **Purpose** | Estimate uncertainty of metric VALUES | Assess stability of CONCLUSIONS |
-| **Question** | "What is the uncertainty in this measurement?" | "Is this result robust to perturbations?" |
-| **Output** | mean ± std, confidence intervals | stability curves, tipping points, influence scores |
-| **Reports** | Distributional statistics (mean, std, quantiles) | Agreement metrics (Jaccard@k, Kendall-τ, VI) |
-| **Focus** | Value dispersion | Conclusion stability |
-
-### Key Concepts
-
-- **Stability Curves**: How conclusions change as perturbation strength varies
-- **Ranking Stability**: Jaccard@k (set overlap), Kendall-τ (ranking correlation)
-- **Community Stability**: Variation of Information, flip probability
-- **Local Influence**: Per-node/per-layer attribution of instability
-- **Tipping Points**: Perturbation thresholds where conclusions collapse
-
-### Core Components
-
-```python
-from py3plex.dsl import Q
-from py3plex.sensitivity import (
-    SensitivityResult,      # Result container with stability curves
-    PerturbationSpec,       # Perturbation specification
-    edge_drop,              # Drop edges randomly
-    degree_preserving_rewire,  # Rewire preserving degrees
-    jaccard_at_k,           # Top-k set agreement
-    kendall_tau,            # Ranking correlation
-    variation_of_information,  # Partition distance
-)
-```
-
----
-
-### Example 1: Centrality Ranking Robustness
-
-```python
-from py3plex.dsl import Q
-
-# Test how stable the top-20 centrality ranking is under edge removal
-result = (
-    Q.nodes()
-     .compute("betweenness_centrality")
-     .order_by("-betweenness_centrality")
-     .limit(20)
-     .sensitivity(
-         perturb="edge_drop",                      # Perturbation method
-         grid=[0.0, 0.05, 0.1, 0.15, 0.2],        # Perturbation strengths
-         n_samples=30,                             # Samples per grid point
-         metrics=["jaccard_at_k(20)", "kendall_tau"],  # Stability metrics
-         seed=42                                   # For reproducibility
-     )
-     .execute(network)
-)
-
-# Access stability curves
-print(result.sensitivity_curves)
-# {
-#   'jaccard_at_k(20)': StabilityCurve(...),
-#   'kendall_tau': StabilityCurve(...)
-# }
-
-# Check for collapse points (where stability drops below 0.5)
-collapse_points = result.sensitivity_result.get_collapse_points()
-print(f"Ranking collapses at: {collapse_points['kendall_tau']}")
-
-# Export stability curves to pandas
-df = result.sensitivity_result.to_pandas(expand_sensitivity=False)
-print(df)
-#          metric  perturbation_strength  stability  stability_std
-# jaccard_at_k(20)                   0.00       1.00           0.00
-# jaccard_at_k(20)                   0.05       0.95           0.02
-# jaccard_at_k(20)                   0.10       0.87           0.04
-# ...
-```
-
----
-
-### Example 2: Community Detection Stability
-
-```python
-# Test community detection robustness under topology changes
-result = (
-    Q.communities()
-     .detect("louvain")
-     .sensitivity(
-         perturb="degree_preserving_rewire",  # Preserve degree sequence
-         grid=[0.0, 0.1, 0.2, 0.3],
-         n_samples=50,
-         metrics=["variation_of_information"],  # Partition distance
-         seed=42
-     )
-     .execute(network)
-)
-
-# Check stability
-for metric, curve in result.sensitivity_curves.items():
-    print(f"\n{metric}:")
-    for p, stability in zip(curve.grid, curve.values):
-        print(f"  Rewire fraction {p:.2f}: VI={stability:.4f}")
-```
-
----
-
-### Example 3: Comparing UQ and Sensitivity
-
-```python
-# UQ: Uncertainty of centrality VALUES
-uq_result = (
-    Q.nodes()
-     .uq(method="perturbation", n_samples=50, ci=0.95, seed=42)
-     .compute("degree")
-     .execute(network)
-)
-# → Returns: degree mean ± std, 95% CI for each node
-
-# Sensitivity: Stability of top-k RANKING
-sens_result = (
-    Q.nodes()
-     .compute("degree")
-     .order_by("-degree")
-     .limit(10)
-     .sensitivity(
-         perturb="edge_drop",
-         grid=[0.0, 0.1, 0.2],
-         metrics=["jaccard_at_k(10)"],
-         seed=42
-     )
-     .execute(network)
-)
-# → Returns: stability curves showing how top-10 set changes
-```
-
----
-
-### Supported Perturbations
-
-| Method | Description | Parameters |
-|--------|-------------|------------|
-| `edge_drop` | Randomly drop edges | `fraction` (0.0-1.0), `layer_aware` |
-| `degree_preserving_rewire` | Rewire while preserving degrees | `fraction`, `max_attempts`, `layer_aware` |
-
-Both perturbations:
-- Are seeded for reproducibility
-- Preserve multilayer structure (when `layer_aware=True`)
-- Log parameters to provenance
-
----
-
-### Stability Metrics
-
-| Metric | Type | Range | Interpretation |
-|--------|------|-------|----------------|
-| `jaccard_at_k(k)` | Set agreement | [0, 1] | 1.0 = identical top-k sets |
-| `kendall_tau` | Ranking correlation | [-1, 1] | 1.0 = perfect agreement, -1.0 = reversed |
-| `variation_of_information` | Partition distance | [0, ∞) | 0.0 = identical partitions |
-
----
-
-### Local Influence (Per-Node/Per-Layer)
-
-```python
-result = (
-    Q.nodes()
-     .compute("betweenness_centrality")
-     .order_by("-betweenness_centrality")
-     .sensitivity(
-         perturb="edge_drop",
-         grid=[0.0, 0.1, 0.2],
-         scope="per_node",  # Enable local influence
-         seed=42
-     )
-     .execute(network)
-)
-
-# Access per-node influence scores
-influence = result.sensitivity_result.influence
-for node_influence in influence["node"]:
-    print(f"Node {node_influence.entity_id}: "
-          f"influence={node_influence.influence_score:.4f}")
-```
-
----
-
-### Interpretation Guidelines
-
-**When to use Sensitivity:**
-- "How robust is this top-10 ranking to edge noise?"
-- "At what perturbation level does my community detection fail?"
-- "Which nodes are most influential on ranking stability?"
-
-**When to use UQ:**
-- "How confident am I in this centrality value?"
-- "What is the measurement uncertainty?"
-- "Do these two groups differ significantly?"
-
-**Both are complementary:**
-- UQ: "Node A has betweenness 0.42 ± 0.03"
-- Sensitivity: "Node A stays in top-20 with 90% stability up to 15% edge removal"
-
----
-
-## Replayable Provenance and Query Replay
-
-py3plex provides **replayable provenance** that captures sufficient information to deterministically reproduce query results. This enables reproducible research, debugging, and result verification.
-
-### Key Concepts
-
-**Provenance Modes:**
-- **log** (default): Lightweight metadata tracking (timestamps, network fingerprint, timing)
-- **replayable**: Full provenance with network snapshot, AST serialization, and seed capture
-
-**Capture Methods:**
-- **auto**: Automatically decide based on network size (inline for small, fingerprint for large)
-- **fingerprint**: Only capture metadata (node/edge counts, layers)
-- **snapshot**: Always capture full network snapshot
-- **delta**: Capture changes from a base network (future feature)
-
-### Basic Usage
-
-```python
-from py3plex.dsl import Q
-
-# Execute query with replayable provenance
-result = (
-    Q.nodes()
-     .provenance(mode="replayable", capture="auto", seed=42)
-     .compute("degree", "betweenness_centrality")
-     .execute(network)
-)
-
-# Check if replayable
-print(result.is_replayable)  # True
-
-# Access provenance
-prov = result.provenance
-print(prov['mode'])  # "replayable"
-print(prov['network_capture']['capture_method'])  # "snapshot_graph"
-
-# Replay to reproduce results
-result2 = result.replay(strict=False)
-assert result.count == result2.count  # Deterministic reproduction
-```
-
-### Convenience Method
-
-Use `.reproducible()` for simpler syntax:
-
-```python
-# Equivalent to .provenance(mode="replayable", capture="auto", seed=42)
-result = (
-    Q.nodes()
-     .reproducible(True, seed=42)
-     .compute("degree")
-     .execute(network)
-)
-```
-
-### Bundle Export and Import
-
-Export results with provenance as portable bundles:
-
-```python
-from py3plex.provenance import replay_from_bundle
-
-# Export bundle (compressed JSON)
-result.export_bundle("result.json.gz", compress=True)
-
-# Load and replay from bundle
-result2 = replay_from_bundle("result.json.gz", strict=False)
-
-# Or load without replaying
-from py3plex.provenance import load_bundle
-bundle = load_bundle("result.json.gz")
-prov = bundle["provenance"]
-```
-
-### Provenance Schema (v1.0)
-
-Replayable provenance includes:
-
-1. **Query Information:**
-   - Serialized AST for exact query reconstruction
-   - Parameter bindings
-   - Execution plan (stages and toggles)
-
-2. **Network Snapshot:**
-   - Nodes (id, layer, attributes)
-   - Edges (source, target, layers, weight, attributes)
-   - Stable ordering for hashing
-
-3. **Randomness Configuration:**
-   - Base seed for reproducibility
-   - Derived seeds per stage (UQ, community detection, etc.)
-   - SeedSequence entropy for advanced scenarios
-
-4. **Environment:**
-   - py3plex version
-   - Python version and platform
-   - Dependency versions (numpy, networkx, etc.)
-
-5. **Performance:**
-   - Timing per stage (bind_parameters, filter, compute, etc.)
-
-### Deterministic Replay with Uncertainty
-
-When using uncertainty quantification (.uq()), replayable provenance ensures identical confidence intervals:
-
-```python
-# Original query
-result1 = (
-    Q.nodes()
-     .reproducible(True, seed=42)
-     .uq(method="bootstrap", n_samples=100)
-     .compute("betweenness_centrality")
-     .execute(network)
-)
-
-# Replay produces identical CI bounds
-result2 = result1.replay()
-
-# Check mean and CI match
-for node in result1.items:
-    stats1 = result1.attributes['betweenness_centrality'][node]
-    stats2 = result2.attributes['betweenness_centrality'][node]
-    assert stats1['mean'] == stats2['mean']
-    assert stats1['quantiles'] == stats2['quantiles']
-```
-
-### Size Guardrails
-
-Provenance respects size limits to avoid memory issues:
-
-```python
-# Default thresholds
-# - 10,000 nodes or 50,000 edges: inline snapshot
-# - Above: fingerprint only (unless explicitly set to snapshot)
-
-# Explicit control
-result = (
-    Q.nodes()
-     .provenance(
-         mode="replayable",
-         capture="snapshot",  # Force snapshot even for large graphs
-         max_bytes=20*1024*1024  # 20MB limit
-     )
-     .execute(network)
-)
-```
-
-### Backward Compatibility
-
-Queries without provenance config use log mode by default:
-
-```python
-# Legacy behavior (still works)
-result = Q.nodes().compute("degree").execute(network)
-
-# Has provenance but not replayable
-assert result.provenance is not None
-assert not result.is_replayable  # False (log mode)
-```
-
-### Limitations
-
-- **Large Networks:** Auto-capture uses fingerprint for >10k nodes. Export to external bundle for replay.
-- **Version Compatibility:** `strict=True` in replay() enforces exact version match. Use `strict=False` for minor versions.
-- **Non-Deterministic Operations:** Some operations (e.g., hash-based ordering) may differ across Python versions.
-
-### Agent Guidance
-
-**When writing code that produces query results:**
-1. Use `.reproducible(True, seed=...)` when reproducibility matters (papers, reports, debugging).
-2. Default (log mode) is fine for exploratory analysis.
-3. Always check `result.is_replayable` before calling `.replay()`.
-4. Use `.export_bundle()` to save results for later verification.
-
-**When reviewing provenance-related code:**
-1. Preserve backward compatibility: existing queries must not break.
-2. Add size warnings when capture exceeds thresholds.
-3. Ensure determinism: use explicit seeds for all stochastic operations.
-4. Test replay with bundle export/import roundtrips.
-## Counterfactual Reasoning vs Uncertainty Quantification
-
-py3plex provides distinct tools for **uncertainty quantification (UQ)** and **counterfactual reasoning**. Understanding the difference is crucial for correct analysis:
-
-**Uncertainty Quantification (UQ):**
-- **Question:** "What is the error bar on this estimate?"
-- **Purpose:** Quantify uncertainty of a measurement/statistic
-- **Output:** Confidence intervals, standard deviations
-- **Example:** "PageRank is 0.25 ± 0.02 (95% CI: [0.21, 0.29])"
-
-**Counterfactual Reasoning:**
-- **Question:** "Would my conclusion hold if I perturbed the network?"
-- **Purpose:** Test sensitivity of analytical conclusions to structural interventions
-- **Output:** Robustness reports, stability metrics
-- **Example:** "Node A is stably in top-5 across 80% of perturbations"
-
-### When to Use Each
-
-Use **UQ (`.uq()`)** when you need to:
-- Report confidence intervals on metrics
-- Quantify measurement uncertainty
-- Compare statistics with error bars
-- Assess reliability of estimates
-
-Use **Counterfactual (`.robustness_check()`)** when you need to:
-- Test if rankings are stable
-- Validate conclusions under perturbations
-- Identify fragile vs robust nodes/communities
-- Assess sensitivity to network structure
-
-### Example 1: Counterfactual Robustness Check
-
-```python
-from py3plex.dsl import Q
-from py3plex.core import multinet
-
-# Create network
-net = multinet.multi_layer_network(directed=False)
-net.add_edges([
-    ['A', 'social', 'B', 'social', 1.0],
-    ['B', 'social', 'C', 'social', 1.0],
-    ['C', 'social', 'D', 'social', 1.0],
-    # ... more edges
-])
-
-# Test if top-5 PageRank nodes are stable under perturbations
-report = (Q.nodes()
-         .compute("pagerank")
-         .robustness_check(net, strength="medium", repeats=30, seed=42))
-
-# Show human-readable report
-report.show()
-
-# Find stably-ranked nodes
-stable_top_5 = report.stable_top_k(k=5, threshold=0.8)
-print(f"Stable top-5: {stable_top_5}")
-
-# Find fragile nodes (high variability)
-fragile = report.fragile(n=5)
-print(f"Most fragile nodes: {fragile}")
-```
-
-### Example 2: Comparing UQ vs Counterfactual
-
-```python
-# UQ: Estimate PageRank with uncertainty
-uq_result = (Q.nodes()
-            .uq(method="perturbation", n_samples=100, seed=42)
-            .compute("pagerank")
-            .execute(net))
-
-# Access uncertainty estimates
-df_uq = uq_result.to_pandas(expand_uncertainty=True)
-print(df_uq[['id', 'pagerank', 'pagerank_std', 'pagerank_ci95_low', 'pagerank_ci95_high']])
-# Output: Node A has PageRank 0.25 ± 0.02 (CI: [0.21, 0.29])
-
-# Counterfactual: Test conclusion stability
-cf_report = (Q.nodes()
-            .compute("pagerank")
-            .robustness_check(net, strength="medium", repeats=30, seed=42))
-
-# Check if "A is in top-5" is a robust conclusion
-stable = cf_report.stable_top_k(k=5, threshold=0.8)
-print(f"Is A stably top-5? {'Yes' if 'A' in stable else 'No'}")
-# Output: Tests the CONCLUSION ("A is top-5"), not the ESTIMATE ("A has PageRank X")
-```
-
-### Example 3: Try Different Intervention Strengths
-
-```python
-# Compare light/medium/heavy interventions
-summary = (Q.nodes()
-          .compute("degree", "betweenness_centrality")
-          .try_strengths(net, repeats=30, seed=42))
-
-print(summary)
-# Output DataFrame:
-#   strength  degree_avg_cv  degree_max_cv  betweenness_avg_cv  ...
-#   light     0.05          0.12           0.08                ...
-#   medium    0.12          0.25           0.18                ...
-#   heavy     0.28          0.54           0.35                ...
-```
-
-### Example 4: Advanced Custom Interventions
-
-```python
-from py3plex.counterfactual import RemoveEdgesSpec, RewireDegreePreservingSpec
-
-# Custom intervention: remove 15% of edges randomly
-spec = RemoveEdgesSpec(proportion=0.15, mode="random")
-
-result = (Q.nodes()
-         .compute("closeness_centrality")
-         .counterfactualize(net, spec, repeats=100, seed=42))
-
-# Convert to report
-report = result.to_report()
-report.show()
-
-# Or use degree-preserving rewiring
-spec2 = RewireDegreePreservingSpec(n_swaps=100)
-result2 = (Q.nodes()
-          .compute("betweenness_centrality")
-          .counterfactualize(net, spec2, repeats=50, seed=42))
-```
-
-### Intervention Presets
-
-Py3plex provides dummy-proof presets for common interventions:
-
-| Preset | Description | Use Case |
-|--------|-------------|----------|
-| `"quick"` | Minimal edge removal (2-10%) | Fast exploration |
-| `"degree_safe"` | Degree-preserving rewiring (DEFAULT) | Test topology sensitivity |
-| `"layer_safe"` | Preserve per-layer edge counts | Test layer-specific effects |
-| `"weight_only"` | Shuffle weights only | Test weight sensitivity |
-| `"targeted"` | Remove high-weight edges | Test hub importance |
-
-```python
-# Use preset with strength parameter
-report = (Q.nodes()
-         .compute("eigenvector_centrality")
-         .robustness_check(
-             net,
-             shake="degree_safe",  # Preset
-             strength="heavy",      # light/medium/heavy
-             repeats=50,
-             seed=42
-         ))
-```
-
-### RobustnessReport Methods
-
-```python
-report = Q.nodes().compute("degree").robustness_check(net)
-
-# Display human-readable summary
-report.show(top_n=20, precision=4)
-
-# Statistical summary
-report.describe()
-
-# Find stable top-k items
-stable = report.stable_top_k(k=10, threshold=0.8)
-
-# Find most fragile items
-fragile = report.fragile(n=5)
-
-# Per-layer sensitivity (if applicable)
-layer_sens = report.layer_sensitivity()
-
-# Export to pandas
-df = report.to_pandas()
-
-# Compare specific item across runs
-comparison = report.compare_items(item_id='A')
-print(comparison)
-# {'item_id': 'A', 
-#  'baseline': {'degree': 5}, 
-#  'counterfactuals': {'degree': {'mean': 4.8, 'std': 0.6, ...}}}
-```
-
-### Key Differences Summary
-
-| Aspect | UQ | Counterfactual |
-|--------|----|--------------  |
-| **What it tests** | Estimate uncertainty | Conclusion stability |
-| **Output type** | Error bars, CIs | Stability metrics |
-| **DSL method** | `.uq()` | `.robustness_check()` |
-| **Provenance** | `provenance.uncertainty` | `provenance.counterfactual` |
-| **Use for** | Reporting metrics | Validating conclusions |
-
-**Summary:** Use `.uq()` to quantify error bars, use `.robustness_check()` or `.contract()` to test conclusion stability.
-
----
-
-## Robustness Contracts (Certification-Grade)
-
-py3plex provides **robustness contracts** that ensure query conclusions are stable under structural perturbations. Contracts are designed for certification-grade reproducibility with sensible defaults and explicit failure modes.
-
-### Contracts vs UQ vs Counterfactual
-
-**Contracts (`.contract()`):**
-- **Question:** "Can I certify this conclusion is stable?"
-- **Purpose:** Formal certification with typed failure modes
-- **Output:** Pass/fail with evidence, repair mechanisms, reproducible provenance
-- **Example:** "Top-5 PageRank is stable (Jaccard ≥ 0.85 for all p ≤ 0.1)"
-
-**Key Differences:**
-- **Typed failure modes**: 8 explicit modes (INSUFFICIENT_BASELINE, CONTRACT_VIOLATION, etc.)
-- **Auto-inference**: Predicates, grid, samples auto-selected from query structure
-- **Repair mechanisms**: Stable cores, ranking tiers, stable communities
-- **Determinism by default**: seed=0 ensures reproducibility
-- **1-line usage**: Minimal syntax with all defaults
-
-### Minimal Usage (1-Line with Defaults)
-
-```python
-from py3plex.dsl import Q
-from py3plex.contracts import Robustness
-
-# Top-k stability with all defaults
-result = (Q.nodes()
-          .compute("pagerank")
-          .order_by("pagerank", desc=True)
-          .limit(20)
-          .contract(Robustness())
-          .execute(net))
-
-if result.contract_ok:
-    print("✓ Top-20 PageRank is stable!")
-else:
-    print(f"✗ Failed: {result.failure_mode.value}")
-    print(f"Stable core: {result.repair.stable_core}")
-```
-
-### Default Inference Table
-
-| **Parameter** | **Default Value** | **Adaptive Rules** |
-|--------------|-------------------|-------------------|
-| `perturb` | `"edge_drop"` | Layer-aware edge removal |
-| `p_max` | `0.10` (10%) | `0.05` if E < 20 |
-| `grid` | `[0.0, 0.05, 0.10]` | Always includes 0 and p_max |
-| `n_samples` | `30` | `50` if N≤100 & E≤1000 |
-| `seed` | `0` | Deterministic by default |
-| `mode` | `"soft"` | Returns ContractResult |
-| `repair` | `True` | Enabled by default |
-
-**Auto-Predicate Selection:**
-
-| **Query Type** | **Predicate** | **Threshold** |
-|---------------|--------------|--------------|
-| Top-k | `JaccardAtK(k) >= 0.85` | 0.85 |
-| Ranking | `KendallTau >= 0.8` | 0.8 |
-| Community | `PartitionVI <= 0.25` | 0.25 |
-
-### Failure Modes
-
-8 typed failure modes: INSUFFICIENT_BASELINE, NONDETERMINISM_LEAK, PERTURBATION_INVALID, METRIC_UNDEFINED, CONTRACT_VIOLATION, REPAIR_IMPOSSIBLE, RESOURCE_LIMIT, EXECUTION_ERROR.
-
----
-
-## Distributional Community Detection
-
-**New in v1.1:** Uncertainty-aware community detection via distributional partitions.
-
-py3plex now supports distributional community detection that runs community detection multiple times (with resampling or different seeds) to produce a distribution over partitions. This enables:
-
-- **Co-association matrices**: P(node_i and node_j in same community)
-- **Consensus partitions**: Representative partition (medoid or clustering-based)
-- **Node confidence scores**: Per-node stability measures
-- **Boundary node identification**: Nodes with uncertain assignments
-
-### Core Functions and Types
-
-```python
-from py3plex.algorithms.community_detection import multilayer_louvain_distribution
-from py3plex.uncertainty import CommunityDistribution, perturb_network_edges, bootstrap_network_edges
-```
-
-### API Signature
-
-```python
-def multilayer_louvain_distribution(
-    network: multi_layer_network,
-    *,
-    n_runs: int = 100,
-    resampling: str = "seed",  # "seed" | "perturbation" | "bootstrap"
-    perturbation_params: Optional[Dict[str, Any]] = None,  # e.g., {"edge_drop_p": 0.05}
-    gamma: Union[float, Dict[Any, float]] = 1.0,
-    gamma_grid: Optional[List[float]] = None,
-    omega: Union[float, np.ndarray] = 1.0,
-    weight: str = "weight",
-    max_iter: int = 100,
-    seed: Optional[int] = None,
-    n_jobs: int = 1,
-    weight_by: Optional[str] = "modularity",  # "modularity" | None
-    coassoc_mode: str = "auto",  # "auto" | "dense" | "sparse"
-    topk: int = 50,
-) -> CommunityDistribution
-```
-
-### Return Type: CommunityDistribution
-
-```python
-class CommunityDistribution:
-    # Properties
-    n_nodes: int
-    n_partitions: int
-    nodes: List[Any]
-    partitions: List[np.ndarray]
-    weights: np.ndarray
-    meta: Dict[str, Any]
-    
-    # Methods
-    coassociation(mode="dense"|"sparse", topk=50) -> Union[np.ndarray, Dict]
-    consensus_partition(method="medoid"|"cluster_coassoc") -> np.ndarray
-    node_confidence(consensus=None) -> np.ndarray
-    node_entropy(aligned=False) -> np.ndarray
-    node_margin(consensus=None) -> np.ndarray
-    align_labels(reference="medoid"|"first"|array, metric="overlap"|"nmi")
-    node_membership_probs() -> np.ndarray  # Requires alignment
-    to_dict(node_id) -> Dict[str, Any]
-```
-
-### Provenance Fields
-
-The `meta` dict in `CommunityDistribution` contains provenance information:
-
-```python
-{
-    'method': 'multilayer_louvain',
-    'n_runs': 100,
-    'resampling': 'perturbation',  # or 'seed', 'bootstrap'
-    'gamma': 1.0,
-    'gamma_grid': None,  # Optional: list of gamma values
-    'omega': 1.0,
-    'seed': 42,
-    'n_jobs': 2,
-    'weight_by': 'modularity',
-    'layers': ['L1', 'L2'],
-    'perturbation_params': {'edge_drop_p': 0.05},  # If perturbation
-    'mean_modularity': 0.42,
-    'std_modularity': 0.05,
-}
-```
-
-### Example 1: Basic Distributional Community Detection
-
-```python
-from py3plex.core import multinet
-from py3plex.algorithms.community_detection import multilayer_louvain_distribution
-
-# Create or load network
-net = multinet.multi_layer_network(directed=False)
-net.add_edges([
-    ['A', 'L1', 'B', 'L1', 1],
-    ['B', 'L1', 'C', 'L1', 1],
-    ['C', 'L1', 'D', 'L1', 1],
-], input_type='list')
-
-# Run distributional community detection
-dist = multilayer_louvain_distribution(
-    net,
-    n_runs=100,
-    resampling='perturbation',
-    perturbation_params={'edge_drop_p': 0.05},
-    seed=42,
-    n_jobs=2
-)
-
-# Get consensus partition
-consensus = dist.consensus_partition()
-print(f"Communities: {consensus}")
-
-# Get node confidence (stability)
-confidence = dist.node_confidence()
-print(f"Confidence: {confidence}")
-```
-
----
-
-### Example 2: Identifying Stable vs Boundary Nodes
-
-```python
-# Get confidence scores
-confidence = dist.node_confidence()
-entropy = dist.node_entropy()
-
-# Identify stable core (high confidence)
-stable_mask = confidence >= 0.8
-stable_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if stable_mask[i]]
-
-# Identify boundary nodes (low confidence)
-boundary_mask = confidence < 0.5
-boundary_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if boundary_mask[i]]
-
-print(f"Stable core: {len(stable_nodes)} nodes")
-print(f"Boundary: {len(boundary_nodes)} nodes")
-```
-
----
-
-### Example 3: Co-Association Matrix
-
-```python
-# Compute co-association matrix P(i, j in same community)
-coassoc = dist.coassociation(mode='dense')
-
-# Find nodes strongly associated with node 0
-node_idx = 0
-strong_assoc = [(i, coassoc[node_idx, i]) for i in range(dist.n_nodes) 
-                 if i != node_idx and coassoc[node_idx, i] > 0.8]
-
-print(f"Nodes strongly associated with {dist.nodes[node_idx]}:")
-for i, prob in sorted(strong_assoc, key=lambda x: x[1], reverse=True):
-    print(f"  {dist.nodes[i]}: P={prob:.3f}")
-```
-
----
-
-### Best Practices
-
-1. **Use co-association for large networks**:
-   - For n_nodes > 2000, use `coassoc_mode='sparse'` or `mode='auto'`
-   - Dense co-association is O(n²) memory
-
-2. **Prefer co-association-based confidence over aligned label probs**:
-   - Co-association is label-permutation invariant (no alignment needed)
-   - Alignment can be expensive and introduce artifacts
-
-3. **Always set seed for reproducibility**:
-   - Deterministic: same seed => identical results regardless of n_jobs
-   - Uses numpy SeedSequence for proper parallel seed spawning
-
-4. **Choose resampling strategy wisely**:
-   - `'seed'`: Algorithm stochasticity (fastest, recommended default)
-   - `'perturbation'`: Structural uncertainty (edge drop, slower)
-   - `'bootstrap'`: Statistical bootstrap (slowest, edge resampling)
-
-5. **Weight by modularity for quality-aware consensus**:
-   - `weight_by='modularity'` weights better partitions more heavily
-   - Set `weight_by=None` for uniform weighting
-
-6. **Parallel execution preserves determinism**:
-   - `n_jobs=1`: Serial execution
-   - `n_jobs>1`: Parallel with deterministic seed spawning
-   - Same seed + same n_runs => identical output regardless of n_jobs
-
-### Copy/Paste Snippet
-
-```python
-# Quick start: uncertainty-aware community detection
-from py3plex.core import multinet
-from py3plex.algorithms.community_detection import multilayer_louvain_distribution
-
-net = multinet.multi_layer_network(directed=False)
-net.load_network('my_network.edgelist', directed=False, input_type='edgelist_hash')
-
-# Run with 100 iterations, perturbation resampling
-dist = multilayer_louvain_distribution(
-    net,
-    n_runs=100,
-    resampling='perturbation',
-    perturbation_params={'edge_drop_p': 0.05},
-    seed=42,
-    n_jobs=4  # Parallel
-)
-
-# Get results
-consensus = dist.consensus_partition()
-confidence = dist.node_confidence()
-
-# Filter stable core
-stable_mask = confidence >= 0.8
-stable_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if stable_mask[i]]
-
-print(f"Communities: {len(set(consensus))}")
-print(f"Stable core: {len(stable_nodes)}/{dist.n_nodes} nodes")
-```
-
----
-
-## Temporal Networks
-
-py3plex provides native support for temporal multilayer networks with time-stamped edges and temporal queries.
-
-### Core Components
-
-```python
-from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
-from py3plex.temporal_utils import EdgeTimeInterval, extract_edge_time
-```
-
-### Example 1: Creating Temporal Networks
-
-```python
-from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
-
-# Create temporal network
-tnet = TemporalMultiLayerNetwork()
-
-# Add time-stamped edges
-tnet.add_edge('A', 'B', layer='social', time=100.0)
-tnet.add_edge('B', 'C', layer='social', time=200.0)
-tnet.add_edge('A', 'C', layer='social', time=150.0)
-
-# Add interval edges
-tnet.add_edge('A', 'B', layer='work', t_start=100.0, t_end=200.0)
-```
-
----
-
-### Example 2: Temporal Snapshots
-
-```python
-# Get snapshot at specific time
-snapshot = tnet.snapshot_at(150.0)
-print(f"Snapshot at t=150: {snapshot.number_of_nodes()} nodes, {snapshot.number_of_edges()} edges")
-
-# Get snapshot for time range
-snapshot = tnet.get_snapshot(time_range=(100.0, 200.0))
-```
-
----
-
-### Example 3: Sliding Windows
-
-```python
-# Iterate over temporal windows
-for t_start, t_end, window_net in tnet.window_iter(window_size=50, step=25):
-    print(f"Window [{t_start}, {t_end}]:")
-    print(f"  Nodes: {window_net.number_of_nodes()}")
-    print(f"  Edges: {window_net.number_of_edges()}")
-    
-    # Compute statistics on window
-    avg_degree = sum(dict(window_net.degree()).values()) / window_net.number_of_nodes()
-    print(f"  Avg degree: {avg_degree:.2f}")
-```
-
----
-
-### Example 4: Temporal DSL Queries
-
-```python
-from py3plex.dsl import Q
-
-# Query edges in time window
-result = (
-    Q.edges()
-     .where(t__between=(100.0, 200.0))
-     .from_layers(L["social"])
-     .execute(tnet.base_network)
-)
-
-# Query nodes active in time range
-result = (
-    Q.nodes()
-     .where(t__gte=100.0, t__lte=200.0)
-     .compute("degree")
-     .execute(tnet.base_network)
-)
-```
-
----
-
-### Example 5: Temporal Aggregation
-
-```python
-# Aggregate temporal network over time windows
-import pandas as pd
-
-time_windows = [(0, 100), (100, 200), (200, 300)]
-stats = []
-
-for t_start, t_end in time_windows:
-    snapshot = tnet.get_snapshot(time_range=(t_start, t_end))
-    stats.append({
-        'window': f"{t_start}-{t_end}",
-        'nodes': snapshot.number_of_nodes(),
-        'edges': snapshot.number_of_edges(),
-        'density': snapshot.number_of_edges() / (snapshot.number_of_nodes() ** 2)
-    })
-
-df = pd.DataFrame(stats)
-print(df)
-```
-
----
-
-## Null Models
-
-py3plex provides null model implementations for statistical testing and comparison.
-
-### Core Components
-
-```python
-from py3plex.nullmodels import (
-    configuration_model,      # Preserve degree sequence
-    erdos_renyi_model,       # Random graph
-    barabasi_albert_model,   # Preferential attachment
-    stochastic_block_model,  # Community structure
-)
-```
-
-### Example 1: Configuration Model
-
-```python
-from py3plex.nullmodels import configuration_model
-
-# Generate configuration model null model
-null_net = configuration_model(network, preserve_layers=True)
-
-# Compute observed statistic
-observed_clustering = compute_clustering(network)
-
-# Generate null distribution
-null_distribution = []
-for i in range(100):
-    null_net = configuration_model(network, preserve_layers=True, seed=i)
-    null_clustering = compute_clustering(null_net)
-    null_distribution.append(null_clustering)
-
-# Compute p-value
-import numpy as np
-p_value = sum(nc >= observed_clustering for nc in null_distribution) / len(null_distribution)
-print(f"p-value: {p_value:.4f}")
-```
-
----
-
-### Example 2: DSL Integration with Null Models
-
-```python
-from py3plex.dsl import N
-
-# Generate null models via DSL
-null_models = (
-    N.configuration()
-     .samples(100)
-     .seed(42)
-     .preserve_layers(True)
-     .preserve_degree_sequence(True)
-     .execute(network)
-)
-
-# Use for statistical testing
-observed = compute_statistic(network)
-null_stats = [compute_statistic(nm) for nm in null_models]
-
-# Compute z-score
-import numpy as np
-z_score = (observed - np.mean(null_stats)) / np.std(null_stats)
-print(f"Z-score: {z_score:.2f}")
-```
-
----
-
-## Internal Parallelization
-
-**Note: Parallelization is fully internal and transparent - no API changes required.**
-
-py3plex implements deterministic parallel execution for computationally expensive operations including null model generation and uncertainty quantification. The parallelization is completely internal and maintains full backward compatibility.
-
----
-
-## Probabilistic Community Detection
-
-py3plex provides probabilistic community detection with first-class uncertainty quantification, going beyond "hard labels" to provide membership distributions, node-level confidence, and community stability metrics.
-
-### Key Features
-
-- **Backward Compatible**: Deterministic mode returns hard labels as before
-- **Probabilistic Memberships**: Per-node membership probability distributions
-- **Node Uncertainty Metrics**: Entropy, confidence, margin for each node
-- **Community Stability**: Persistence, size variability across ensemble
-- **Partition Variability**: VI/ARI/NMI distributions between partitions
-- **Multiple UQ Methods**: SEED (algorithmic stochasticity), PERTURBATION (structural uncertainty), BOOTSTRAP (resampling)
-- **DSL Integration**: Works seamlessly with `.uq()` chaining
-
-### Core Components
-
-```python
-from py3plex.uncertainty import (
-    generate_community_ensemble,      # Generate partition ensemble
-    ProbabilisticCommunityResult,     # Probabilistic result wrapper
-    CommunityDistribution,            # Low-level distribution object
-)
-```
-
-### Example 1: Deterministic Community Detection (Backward Compatible)
-
-```python
-from py3plex.dsl import Q
-from py3plex.core import multinet
-
-# Create network
-net = multinet.multi_layer_network(directed=False)
-# ... add nodes and edges ...
-
-# Standard deterministic community detection
-result = Q.nodes().compute("communities").execute(net)
-communities = result.attributes['communities']
-
-# Hard labels: Dict[node, community_id]
-for node, comm_id in communities.items():
-    print(f"{node} -> Community {comm_id}")
-```
-
-### Example 2: Probabilistic Communities with SEED Method
-
-```python
-# Probabilistic community detection (algorithmic stochasticity)
-result = (
-    Q.nodes()
-    .uq(method="seed", n_samples=50, seed=42)
-    .compute("communities")
-    .execute(net)
-)
-
-communities = result.attributes['communities']
-
-# Each node has uncertainty information
-for node, data in communities.items():
-    print(f"{node}:")
-    print(f"  Hard label: {data['mean']}")
-    print(f"  Confidence: {data['confidence']:.3f}")
-    print(f"  Entropy: {data['entropy']:.3f}")
-    print(f"  Margin: {data['margin']:.3f}")
-    
-    # Membership probabilities
-    if 'probs' in data:
-        print(f"  Probabilities: {data['probs']}")
-```
-
-### Example 3: Comparing Uncertainty Methods
-
-```python
-# SEED method: Algorithmic stochasticity (multiple random seeds)
-result_seed = (
-    Q.nodes()
-    .uq(method="seed", n_samples=50, seed=42)
-    .compute("communities")
-    .execute(net)
-)
-
-# PERTURBATION method: Structural uncertainty (perturb edges)
-result_pert = (
-    Q.nodes()
-    .uq(method="perturbation", n_samples=50, seed=42)
-    .compute("communities")
-    .execute(net)
-)
-
-# Compare entropy (uncertainty)
-for node in result_seed.attributes['communities'].keys():
-    ent_seed = result_seed.attributes['communities'][node]['entropy']
-    ent_pert = result_pert.attributes['communities'][node]['entropy']
-    print(f"{node}: SEED={ent_seed:.3f}, PERT={ent_pert:.3f}")
-```
-
-### Example 4: Accessing Advanced Metrics
-
-```python
-# Generate ensemble and get full result object
-from py3plex.uncertainty import generate_community_ensemble, ProbabilisticCommunityResult
-
-dist = generate_community_ensemble(
-    net,
-    algorithm='louvain',
-    method='seed',
-    n_samples=100,
-    seed=42,
-    verbose=True
-)
-
-result = ProbabilisticCommunityResult(dist)
-
-# Node-level metrics
-labels = result.labels              # Dict[node, community_id]
-probs = result.probs               # Dict[node, Dict[comm_id, prob]]
-entropy = result.entropy           # Dict[node, float]
-confidence = result.confidence     # Dict[node, float]
-margin = result.margin             # Dict[node, float]
-
-# Community-level stability metrics
-stability = result.community_stability
-for comm_id, metrics in stability.items():
-    print(f"Community {comm_id}:")
-    print(f"  Persistence: {metrics['persistence']:.3f}")
-    print(f"  Size (mean ± std): {metrics['size_mean']:.1f} ± {metrics['size_std']:.1f}")
-    print(f"  Coefficient of variation: {metrics['size_cv']:.3f}")
-
-# Partition-space variability metrics
-part_metrics = result.partition_metrics
-print(f"Variation of Information (VI):")
-print(f"  Mean: {part_metrics['vi_mean']:.3f}")
-print(f"  Std: {part_metrics['vi_std']:.3f}")
-
-if 'ari_mean' in part_metrics:
-    print(f"Adjusted Rand Index (ARI):")
-    print(f"  Mean: {part_metrics['ari_mean']:.3f}")
-    print(f"  Std: {part_metrics['ari_std']:.3f}")
-```
-
-### Example 5: Filtering by Uncertainty
-
-```python
-# Find boundary nodes (high uncertainty)
-result = (
-    Q.nodes()
-    .uq(method="seed", n_samples=50, seed=42)
-    .compute("communities")
-    .execute(net)
-)
-
-communities = result.attributes['communities']
-
-# High-uncertainty nodes (entropy > threshold)
-boundary_nodes = [
-    node for node, data in communities.items()
-    if data['entropy'] > 0.5
-]
-
-# Confident core nodes (high confidence)
-core_nodes = [
-    node for node, data in communities.items()
-    if data['confidence'] > 0.9
-]
-
-print(f"Boundary nodes: {boundary_nodes}")
-print(f"Core nodes: {core_nodes}")
-```
-
-### Example 6: Pandas Export with Uncertainty
-
-```python
-import pandas as pd
-
-result = (
-    Q.nodes()
-    .uq(method="seed", n_samples=50, seed=42)
-    .compute("communities")
-    .execute(net)
-)
-
-# Manual expansion of uncertainty columns
-data = []
-for node, comm_data in result.attributes['communities'].items():
-    row = {
-        'node': node[0],
-        'layer': node[1],
-        'community_id': comm_data['mean'],
-        'community_confidence': comm_data['confidence'],
-        'membership_entropy': comm_data['entropy'],
-        'membership_margin': comm_data['margin'],
-    }
-    
-    # Add top-k membership probabilities
-    if 'probs' in comm_data and comm_data['probs']:
-        sorted_probs = sorted(comm_data['probs'].items(), 
-                            key=lambda x: x[1], reverse=True)
-        for k, (comm_id, prob) in enumerate(sorted_probs[:3]):
-            row[f'p_comm_{comm_id}'] = prob
-    
-    data.append(row)
-
-df = pd.DataFrame(data)
-print(df)
-```
-
-### Uncertainty Structure
-
-When uncertainty is enabled, each node's community data is a dict with:
-
-```python
-{
-    'mean': int,              # Hard label (most likely community)
-    'label': int,             # Alias for 'mean'
-    'probs': Dict[int, float], # Membership probabilities {comm_id: prob}
-    'entropy': float,         # Entropy of membership distribution (bits)
-    'confidence': float,      # Max probability (most likely community)
-    'margin': float,          # Difference between top 2 probabilities
-    'std': 0.0,              # Always 0 (communities are categorical)
-    'certainty': float,       # Alias for 'confidence'
-    'quantiles': {},          # Empty (not meaningful for categorical)
-}
-```
-
-### UQ Methods
-
-#### SEED Method (Algorithmic Stochasticity)
-```python
-.uq(method="seed", n_samples=50, seed=42)
-```
-Runs community detection with different random seeds. Captures algorithmic randomness (e.g., Louvain's randomized order). Best for assessing algorithm stability.
-
-#### PERTURBATION Method (Structural Uncertainty)
-```python
-.uq(method="perturbation", n_samples=50, seed=42)
-```
-Perturbs network structure (adds/removes edges) before each run. Captures structural uncertainty. Best for assessing robustness to noise.
-
-#### BOOTSTRAP Method (Resampling)
-```python
-.uq(method="bootstrap", n_samples=50, seed=42, 
-    bootstrap_unit="edges")
-```
-Resamples edges or nodes with replacement. Captures sampling uncertainty. Best for assessing statistical variability.
-
-### Supported Algorithms
-
-- **Louvain** (default): Fast modularity optimization
-- **Label Propagation**: Simple and fast spreading algorithm
-- **Infomap**: Information-theoretic community detection (requires `infomap` package)
-
-Specify algorithm in low-level API:
-```python
-from py3plex.uncertainty import generate_community_ensemble
-
-dist = generate_community_ensemble(
-    net,
-    algorithm='infomap',  # or 'louvain', 'label_propagation'
-    method='seed',
-    n_samples=50,
-    seed=42
-)
-```
-
-### Interpretation Guidelines
-
-#### Node Metrics
-- **Entropy**: Measures assignment uncertainty
-  - 0 = deterministic assignment
-  - High = node is on community boundary
-- **Confidence**: Probability of most likely community
-  - 1.0 = always assigned to same community
-  - <0.8 = uncertain, possibly boundary node
-- **Margin**: Confidence gap between top 2 communities
-  - High = clear winner
-  - Low = competing communities
-
-#### Community Metrics
-- **Persistence**: Fraction of runs where community exists
-  - High = stable community
-  - Low = unstable, may split/merge
-- **Size Variability (CV)**: Coefficient of variation of size
-  - Low = stable size
-  - High = growing/shrinking community
-
-#### Partition Metrics
-- **VI (Variation of Information)**: Distance between partitions
-  - 0 = identical partitions
-  - High = very different partitions
-- **ARI (Adjusted Rand Index)**: Similarity between partitions
-  - 1.0 = perfect agreement
-  - 0 = random agreement
-
-### Performance Considerations
-
-- **n_samples**: More samples = better uncertainty estimates, but slower
-  - 25-50 samples: Fast, good for exploration
-  - 100+ samples: More accurate, publishable results
-- **Algorithm**: Louvain is fastest, Infomap most accurate but slower
-- **Method**: SEED is fastest, PERTURBATION adds overhead for network modification
-- **Network size**: Scales linearly with n_samples
-
-### Best Practices
-
-1. **Always set seed** for reproducibility: `seed=42`
-2. **Use enough samples**: At least 25 for exploration, 100+ for publication
-3. **Choose method based on goal**:
-   - SEED: Algorithm stability
-   - PERTURBATION: Robustness to noise
-   - BOOTSTRAP: Statistical significance
-4. **Inspect high-entropy nodes**: They're often boundary nodes or bridges
-5. **Check community persistence**: Low persistence suggests over-partitioning
-6. **Compare methods**: Different methods highlight different uncertainty sources
-
-### Backward Compatibility
-
-The system is fully backward compatible:
-- `Q.nodes().compute("communities")` returns hard labels as before
-- Adding `.uq(...)` enables probabilistic mode
-- Without `.uq()`, deterministic Louvain is used (single run)
-- Deterministic mode returns `certainty=1.0`, `entropy=0.0`
-
-### Related Documentation
-
-- **Example**: `examples/network_analysis/example_dsl_probabilistic_communities.py`
-- **Tests**: `tests/property/test_probabilistic_communities_properties.py`
-- **Module**: `py3plex.uncertainty.community_result`
-
----
-
-## Multilayer Leiden Algorithm with UQ
-
-py3plex provides a production-quality multilayer/multiplex Leiden community detection algorithm with first-class uncertainty quantification (UQ) and DSL integration.
-
-### Key Features
-
-- **Deterministic by Default**: random_state=None becomes seed=0 for reproducibility
-- **Multilayer Modularity**: Optimizes Q with resolution γ and coupling ω parameters
-- **Uncertainty Quantification**: Ensemble runs with consensus partitions and stability metrics
-- **Multiple UQ Methods**: SEED (Monte Carlo), PERTURBATION (structural), BOOTSTRAP (resampling)
-- **DSL Integration**: Works seamlessly with `.community(method="leiden")` and `.uq()`
-- **Comprehensive Diagnostics**: Timing, convergence info, stability metrics
-
-### Core API
-
-```python
-from py3plex.algorithms.community_detection import (
-    multilayer_leiden,         # Main algorithm
-    multilayer_leiden_uq,      # With uncertainty quantification
-    UQResult,                  # UQ result container
-    canonicalize_partition,    # Utility for partition labels
-)
-```
-
-### Multilayer Modularity Objective
-
-The algorithm optimizes multilayer modularity:
-
-```
-Q = (1/2μ) Σ_{ijsr} [(A_{ijs} - γ_s k_{is}k_{js}/2m_s) δ_{sr} + δ_{ij} ω_{sr}] δ(g_{is}, g_{jr})
-```
-
-Where:
-- `A_{ijs}`: adjacency matrix element for nodes i,j in layer s
-- `γ_s`: resolution parameter for layer s (higher → more communities)
-- `k_{is}`: degree of node i in layer s
-- `m_s`: total edge weight in layer s
-- `ω_{sr}`: interlayer coupling between layers s and r (higher → stronger coupling)
-- `δ(g_{is}, g_{jr})`: 1 if node-layers are in same community, else 0
-- `μ`: total weight in supra-network
-
-### Example 1: Basic Multilayer Leiden
-
-```python
-from py3plex.core import multinet
-from py3plex.algorithms.community_detection import multilayer_leiden
-
-# Create network
-net = multinet.multi_layer_network(directed=False)
-net.add_edges([
-    ['A', 'L1', 'B', 'L1', 1],
-    ['B', 'L1', 'C', 'L1', 1],
-    ['A', 'L2', 'C', 'L2', 1],
-], input_type='list')
-
-# Run Leiden
-partition, Q = multilayer_leiden(
-    net,
-    gamma=1.0,      # Resolution parameter
-    omega=1.0,      # Interlayer coupling
-    n_iterations=2, # Leiden iterations
-    random_state=42 # Seed for reproducibility
-)
-
-print(f"Modularity: {Q:.4f}")
-print(f"Communities: {len(set(partition.values()))}")
-
-# Partition is Dict[(node, layer), community_id]
-for (node, layer), comm_id in partition.items():
-    print(f"  ({node}, {layer}) → Community {comm_id}")
-```
-
-### Example 2: Leiden with Diagnostics
-
-```python
-partition, Q, diagnostics = multilayer_leiden(
-    net,
-    gamma=1.0,
-    omega=1.0,
-    random_state=42,
-    return_diagnostics=True
-)
-
-print(f"Runtime: {diagnostics['timing']:.4f}s")
-print(f"Iterations: {diagnostics['convergence_info']['iterations']}")
-print(f"Converged: {diagnostics['convergence_info']['converged']}")
-print(f"Backend: {diagnostics['backend_used']}")
-print(f"#Communities: {diagnostics['n_communities']}")
-```
-
-### Example 3: Multilayer Leiden with UQ
-
-```python
-from py3plex.algorithms.community_detection import multilayer_leiden_uq
-
-# Run ensemble with uncertainty quantification
-result = multilayer_leiden_uq(
-    net,
-    gamma=1.0,
-    omega=1.0,
-    n_runs=50,                # Number of ensemble runs
-    method="seed",            # UQ method: "seed", "perturbation", "bootstrap"
-    ci=0.95,                  # Confidence interval level
-    random_state=42           # Base seed (generates n_runs seeds deterministically)
-)
-
-# Summary statistics
-print(f"Score mean: {result.summary['score_mean']:.4f}")
-print(f"Score std: {result.summary['score_std']:.4f}")
-print(f"Score 95% CI: [{result.ci['score'][0]:.4f}, {result.ci['score'][1]:.4f}]")
-print(f"#Communities mean: {result.summary['n_communities_mean']:.2f}")
-
-# Stability metrics
-print(f"VI mean: {result.stability_metrics['vi_mean']:.4f}")
-print(f"NMI mean: {result.stability_metrics['nmi_mean']:.4f}")
-print(f"Pairwise agreement: {result.stability_metrics['pairwise_agreement']:.4f}")
-
-# Per-node uncertainty (entropy)
-node_entropy = result.stability_metrics['node_entropy']
-for i, (node, layer) in enumerate(sorted(result.consensus_partition.keys())):
-    print(f"({node}, {layer}): entropy = {node_entropy[i]:.4f}")
-
-# Consensus partition
-for (node, layer), comm_id in result.consensus_partition.items():
-    print(f"  ({node}, {layer}) → Community {comm_id}")
-```
-
-### Example 4: DSL Integration
-
-```python
-from py3plex.dsl import Q
-
-# Basic community detection via DSL
-result = (
-    Q.nodes()
-     .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
-     .execute(net)
-)
-
-# With uncertainty quantification
-result = (
-    Q.nodes()
-     .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
-     .uq(method="ensemble", n_samples=50, seed=42)
-     .execute(net)
-)
-
-# Result metadata includes consensus partition and stability metrics
-print(f"Consensus partition: {result.meta['consensus_partition']}")
-print(f"Score CI: {result.meta['score_ci']}")
-```
-
-### Parameters
-
-#### multilayer_leiden
-
-- **gamma** (float or Dict[layer, float]): Resolution parameter. Higher → more communities. Default: 1.0
-- **omega** (float or np.ndarray): Interlayer coupling. Higher → stronger coupling. Default: 1.0
-- **n_iterations** (int): Maximum Leiden iterations. Default: 2
-- **random_state** (int or None): Random seed. None → 0 (deterministic). Default: None
-- **init_partition** (Dict or None): Initial partition. Default: None (singleton)
-- **allow_isolates** (bool): Whether isolates can form their own communities. Default: True
-- **return_diagnostics** (bool): Return diagnostics dict. Default: False
-- **backend** (str): Algorithm backend ("auto", "native", "igraph"). Default: "auto"
-
-#### multilayer_leiden_uq
-
-- **gamma, omega, n_iterations, random_state**: Same as multilayer_leiden
-- **n_runs** (int): Number of ensemble runs. Default: 20
-- **seeds** (List[int] or None): Explicit seeds. None → auto-generate. Default: None
-- **agg** (str): Consensus method ("consensus"=medoid, "coassignment"=clustering). Default: "consensus"
-- **ci** (float): Confidence interval level (0 < ci < 1). Default: 0.95
-- **return_all** (bool): Include all partitions in result. Default: False
-- **method** (str): UQ strategy ("seed", "perturbation", "bootstrap"). Default: "seed"
-- **perturbation_rate** (float): For method="perturbation", edge drop fraction. Default: 0.05
-
-### UQResult Structure
-
-```python
-@dataclass
-class UQResult:
-    partitions: Optional[List[Dict]]       # All partitions (if return_all=True)
-    scores: List[float]                    # Modularity scores
-    consensus_partition: Dict              # Consensus partition
-    membership_probs: np.ndarray           # Co-assignment matrix
-    stability_metrics: Dict                # VI, NMI, node entropy, pairwise agreement
-    ci: Dict                               # Confidence intervals
-    summary: Dict                          # Mean/std statistics
-    diagnostics: Dict                      # Seeds, runtime, failures
-```
-
-### Defaults and Invariants
-
-#### Determinism
-
-- **Same seed → identical results**: Fixed random_state yields bit-identical partition and score
-- **Default seed is 0**: If random_state=None, uses seed=0 for deterministic behavior
-- **Stable node ordering**: Nodes sorted consistently across runs and machines
-- **Canonical labels**: Community IDs relabeled 0, 1, 2, ... by order of first appearance
-
-#### UQ Ensemble
-
-- **Deterministic seed generation**: Seeds derived from base random_state using spawn_seeds()
-- **Consensus partition**: Medoid (default) minimizes mean VI distance to all partitions
-- **Co-assignment matrix**: P(node_i, node_j in same community) across ensemble
-- **Stability metrics**: VI/NMI distributions, pairwise agreement, per-node entropy
-
-### Performance Notes
-
-- **Native backend**: Pure Python implementation, no external dependencies
-- **Supra-graph formulation**: Builds supra-adjacency with interlayer coupling
-- **Time complexity**: O(n log n) per iteration for sparse networks
-- **Memory**: O(n + m) for network with n nodes, m edges
-- **Consensus computation**: Medoid is O(n² × n_runs) for VI distances
-- **Co-assignment**: Dense O(n²) or sparse approximation for large networks
-
-### Error Handling
-
-The API validates inputs and provides helpful error messages:
-
-```python
-# Invalid gamma
-multilayer_leiden(net, gamma=-1.0)  # Raises AlgorithmError with suggestions
-
-# Invalid omega
-multilayer_leiden(net, omega=-1.0)  # Raises AlgorithmError
-
-# Invalid n_iterations
-multilayer_leiden(net, n_iterations=0)  # Raises AlgorithmError
-
-# Invalid UQ parameters
-multilayer_leiden_uq(net, n_runs=0)  # Raises AlgorithmError
-multilayer_leiden_uq(net, method="invalid")  # Raises AlgorithmError
-multilayer_leiden_uq(net, agg="invalid")  # Raises AlgorithmError
-multilayer_leiden_uq(net, ci=1.5)  # Raises AlgorithmError
-```
-
-### Testing Strategy
-
-Comprehensive test suite in `tests/test_multilayer_leiden_uq.py`:
-
-1. **Unit tests**: Basic execution, diagnostics, canonicalization
-2. **Determinism tests**: Same seed → identical results
-3. **Parameter sweeps**: Gamma and omega effects
-4. **Property-based tests**: Partition validity, coverage, finite scores
-5. **UQ tests**: Ensemble, stability metrics, confidence intervals
-6. **Method tests**: Seed, perturbation, bootstrap strategies
-7. **Regression fixtures**: Fixed seed + expected outputs
-
-Run tests:
-```bash
-python -m unittest tests.test_multilayer_leiden_uq -v
-```
-
-### Related Documentation
-
-- **Example**: `examples/network_analysis/example_multilayer_leiden_uq.py`
-- **Tests**: `tests/test_multilayer_leiden_uq.py`
-- **Module**: `py3plex.algorithms.community_detection.leiden_uq`
-- **Base Algorithm**: `py3plex.algorithms.community_detection.leiden_multilayer`
-
-- **Engine**: `py3plex.uncertainty.community_ensemble`
-
----
-
-## Internal Parallelization (continued)
-
-### Key Features
-
-- **Deterministic Results**: Same seed produces identical results regardless of `n_jobs` setting or execution order
-- **Serial by Default**: No multiprocessing overhead when not needed (`n_jobs=1` by default)
-- **Optional Parallelization**: Use `n_jobs` parameter to enable parallel execution
-- **Platform Safe**: Uses spawn context for Windows compatibility
-- **No API Changes**: All parallelization is internal; existing code works unchanged
-
-### Configuration
-
-Parallel execution defaults can be set in `py3plex.config`:
-
-```python
-from py3plex import config
-
-# Set default number of parallel jobs (default: 1 for serial execution)
-config.DEFAULT_N_JOBS = 4
-
-# Set parallel backend (default: "multiprocessing")
-config.DEFAULT_PARALLEL_BACKEND = "multiprocessing"  # or "joblib" if installed
-```
-
-### Parallelized Operations
-
-The following operations support optional parallel execution via the `n_jobs` parameter:
-
-**1. Null Model Generation:**
-```python
-from py3plex.nullmodels import generate_null_model
-
-# Serial execution (default)
-result = generate_null_model(network, model="configuration", num_samples=100, seed=42)
-
-# Parallel execution
-result = generate_null_model(network, model="configuration", num_samples=100, seed=42, n_jobs=4)
-# Same deterministic result as serial execution
-```
-
-**2. Bootstrap Uncertainty Estimation:**
-```python
-from py3plex.uncertainty import bootstrap_metric
-
-def degree_metric(net):
-    return {node: net.core_network.degree(node) for node in net.get_nodes()}
-
-# Serial execution (default)
-boot = bootstrap_metric(network, degree_metric, n_boot=100, random_state=42)
-
-# Parallel execution
-boot = bootstrap_metric(network, degree_metric, n_boot=100, random_state=42, n_jobs=4)
-# Same deterministic result as serial execution
-```
-
-**3. Null Model Statistical Testing:**
-```python
-from py3plex.uncertainty import null_model_metric
-
-def degree_metric(net):
-    return {node: net.core_network.degree(node) for node in net.get_nodes()}
-
-# Serial execution (default)
-null_stats = null_model_metric(network, degree_metric, n_null=200, random_state=42)
-
-# Parallel execution
-null_stats = null_model_metric(network, degree_metric, n_null=200, random_state=42, n_jobs=4)
-# Same deterministic result as serial execution
-```
-
-### Determinism Guarantees
-
-The parallel implementation uses numpy's `SeedSequence` to spawn independent, reproducible child seeds for each parallel task:
-
-```python
-# Example: Same seed produces identical results
-result_serial = generate_null_model(network, num_samples=100, seed=42, n_jobs=1)
-result_parallel = generate_null_model(network, num_samples=100, seed=42, n_jobs=4)
-
-# Results are identical (same structure, node counts, edge counts)
-assert len(result_serial.samples) == len(result_parallel.samples)
-```
-
-### Performance Considerations
-
-- **Serial Default**: `n_jobs=1` runs without multiprocessing overhead
-- **Optimal Parallelization**: Use `n_jobs=-1` to use all CPU cores
-- **Task Granularity**: Parallel execution is most beneficial for:
-  - Large numbers of samples (num_samples ≥ 10)
-  - Complex networks (>100 nodes)
-  - Expensive metric functions
-- **Overhead**: Small networks or few samples may be faster in serial mode
-
-### Picklability Requirements
-
-**Important**: When using `n_jobs > 1`, custom metric functions must be picklable:
-
-```python
-# ✓ GOOD: Module-level function (picklable)
-def my_metric(network):
-    return {node: network.core_network.degree(node) for node in network.get_nodes()}
-
-# Use with parallel execution
-result = bootstrap_metric(network, my_metric, n_boot=100, n_jobs=4)
-```
-
-```python
-# ✗ BAD: Local function (not picklable for multiprocessing)
-def run_analysis():
-    def my_metric(network):  # Defined inside function - not picklable!
-        return {node: network.core_network.degree(node) for node in network.get_nodes()}
-    
-    # This will fail with n_jobs > 1
-    result = bootstrap_metric(network, my_metric, n_boot=100, n_jobs=4)
-```
-
-**Solution**: Define metric functions at module level or use `n_jobs=1` for serial execution (no pickling required).
-
-### Implementation Notes
-
-The parallel infrastructure is located in `py3plex/_parallel.py` (internal module, not part of public API):
-- `parallel_map()`: Parallel execution with serial fallback
-- `spawn_seeds()`: Deterministic seed spawning via numpy's SeedSequence
-- Supports multiprocessing (default) and joblib backends
-- Optional tqdm progress bars (if tqdm is installed)
-
-All parallel execution maintains order-independent aggregation to ensure deterministic results regardless of task completion order.
-
----
-
-## Semiring Algebra (S Builder): Paths, Closure, Fixed-Point
-
-**Location**: `py3plex.dsl.S`, `py3plex.algebra`
-
-py3plex provides a comprehensive semiring algebra framework for generic path computation and graph analysis. A **semiring** is an algebraic structure (S, ⊕, ⊗, 0, 1) that generalizes different notions of "best path":
-
-- **Boolean semiring**: reachability (path existence)
-- **Min-plus (tropical)**: shortest paths (minimize distance)
-- **Max-times**: most reliable paths (maximize probability product)
-- **Max-plus**: longest/best paths (maximize value)
-
-The S builder integrates seamlessly with DSL v2, multilayer networks, layer algebra, and provenance tracking.
-
-### Core Concept
-
-A semiring defines:
-- `add` (⊕): how to combine alternative paths
-- `mul` (⊗): how to extend a path with an edge
-- `zero` (0): identity for add (no path)
-- `one` (1): identity for mul (empty path)
-
-**Example**: In min-plus semiring for shortest paths:
-- `add(a, b) = min(a, b)` (choose shorter path)
-- `mul(a, b) = a + b` (extend path by adding edge weight)
-- `zero = +∞` (no path has infinite cost)
-- `one = 0` (empty path has zero cost)
-
-### Public API
-
-#### Import
-
-```python
-from py3plex.dsl import S, L
-from py3plex.algebra import (
-    get_semiring,
-    list_semirings,
-    WeightLiftSpec,
-)
-```
-
-#### Built-in Semirings
-
-Available via `get_semiring(name)` or `list_semirings()`:
-
-| Name | Add (⊕) | Mul (⊗) | Zero | One | Use Case |
-|------|---------|---------|------|-----|----------|
-| `boolean` | OR | AND | False | True | Reachability |
-| `min_plus` | min | + | +∞ | 0 | Shortest paths |
-| `max_plus` | max | + | -∞ | 0 | Longest paths |
-| `max_times` | max | * | 0 | 1 | Most reliable paths |
-
-#### S.paths() - Semiring Path Queries
-
-Find best paths using semiring operations:
-
-```python
-# Shortest path (min-plus semiring)
-result = (
-    S.paths()
-     .from_node("Alice")
-     .to_node("Bob")
-     .semiring("min_plus")
-     .lift(attr="weight", default=1.0)
-     .from_layers(L["social"] + L["work"])
-     .crossing_layers(mode="allowed")
-     .max_hops(5)
-     .witness(True)  # Track path for reconstruction
-     .execute(network)
-)
-
-# Access results
-df = result.to_pandas()  # Columns: node, value, path (if witness=True)
-print(df[df['node'] == 'Bob']['value'].iloc[0])  # Shortest distance
-print(df[df['node'] == 'Bob']['path'].iloc[0])   # Actual path
-```
-
-**Builder Methods**:
-- `.from_node(source)`: Set source node
-- `.to_node(target)`: Set target node (optional for SSSP)
-- `.semiring(name)`: Choose semiring ("min_plus", "boolean", "max_times", etc.)
-- `.lift(attr, default, transform)`: Extract edge weights
-  - `attr`: Edge attribute name (e.g., "weight", "cost")
-  - `default`: Default value if missing
-  - `transform`: Optional transformation ("log" or callable)
-- `.from_layers(L[...])`: Filter by layers (layer algebra)
-- `.crossing_layers(mode, penalty)`: Handle cross-layer edges
-  - `mode`: "allowed", "forbidden", "penalty"
-  - `penalty`: Additional cost for cross-layer edges
-- `.max_hops(n)`: Limit path length
-- `.k_best(k)`: Find k best paths (experimental)
-- `.witness(True)`: Enable path reconstruction
-- `.backend("graph"|"matrix")`: Choose backend (default: "graph")
-
-#### Reachability Example (Boolean Semiring)
-
-```python
-# Check which nodes are reachable from a source
-result = (
-    S.paths()
-     .from_node("Alice")
-     .semiring("boolean")
-     .lift(attr=None, default=True)  # No weights needed
-     .execute(network)
-)
-
-reachable = result.to_pandas()
-print(reachable[reachable['value'] == True]['node'].tolist())
-```
-
-#### Most Reliable Path (Max-Times Semiring)
-
-```python
-# Find path maximizing product of edge reliabilities
-result = (
-    S.paths()
-     .from_node("Alice")
-     .to_node("Bob")
-     .semiring("max_times")
-     .lift(attr="reliability", default=1.0)
-     .execute(network)
-)
-
-reliability = result.to_pandas()
-print(reliability[reliability['node'] == 'Bob']['value'].iloc[0])
-```
-
-#### S.closure() - Transitive Closure
-
-Compute all-pairs relationships:
-
-```python
-# Reachability closure (boolean semiring)
-result = (
-    S.closure()
-     .semiring("boolean")
-     .from_layers(L["social"])
-     .method("auto")  # "floyd_warshall", "iterative", or "auto"
-     .execute(network)
-)
-
-df = result.to_pandas()  # Columns: source, target, value
-reachable_pairs = df[df['value'] == True][['source', 'target']]
-
-# All-pairs shortest paths (min-plus semiring)
-result = (
-    S.closure()
-     .semiring("min_plus")
-     .lift(attr="weight", default=1.0)
-     .method("floyd_warshall")
-     .execute(network)
-)
-
-distances = result.to_pandas()
-```
-
-### Multilayer Integration
-
-#### Layer Filtering
-
-```python
-# Shortest paths only within "social" layer
-result = (
-    S.paths()
-     .from_node("Alice")
-     .semiring("min_plus")
-     .lift(attr="weight", default=1.0)
-     .from_layers(L["social"])  # Single layer
-     .execute(network)
-)
-
-# Paths across social OR work layers
-result = (
-    S.paths()
-     .from_node("Alice")
-     .semiring("min_plus")
-     .from_layers(L["social"] + L["work"])  # Union
-     .execute(network)
-)
-```
-
-#### Cross-Layer Edge Handling
-
-```python
-# Allow cross-layer edges
-result = (
-    S.paths()
-     .from_node("Alice")
-     .semiring("min_plus")
-     .crossing_layers(mode="allowed")
-     .execute(network)
-)
-
-# Forbid cross-layer edges (intralayer paths only)
-result = (
-    S.paths()
-     .from_node("Alice")
-     .crossing_layers(mode="forbidden")
-     .execute(network)
-)
-
-# Penalize cross-layer edges (+10 cost)
-result = (
-    S.paths()
-     .from_node("Alice")
-     .crossing_layers(mode="penalty", penalty=10.0)
-     .execute(network)
-)
-```
-
-#### Per-Layer Semirings (Advanced)
-
-```python
-# Different semirings for different layers
-result = (
-    S.paths()
-     .from_node("Alice")
-     .semiring({
-         "social": "min_plus",
-         "work": "max_times",
-     })
-     .execute(network)
-)
-# Note: Per-layer semiring combination is experimental
-```
-
-### Provenance and Metadata
-
-All semiring queries include comprehensive provenance:
-
-```python
-result = S.paths().from_node("Alice").semiring("min_plus").execute(network)
-
-prov = result.meta['provenance']['algebra']
-
-# Semiring info
-print(prov['semiring']['name'])           # "min_plus"
-print(prov['semiring']['properties'])     # {idempotent_add: True, ...}
-
-# Weight lifting
-print(prov['lift']['attr'])               # "weight"
-print(prov['lift']['default'])            # 1.0
-
-# Problem specification
-print(prov['problem']['kind'])            # "paths"
-print(prov['problem']['source'])          # "Alice"
-print(prov['problem']['max_hops'])        # None or value
-
-# Multilayer config
-print(prov['multilayer']['layers_included'])        # ["social", "work"]
-print(prov['multilayer']['crossing_layers_mode'])   # "allowed"
-
-# Backend and algorithm
-print(prov['backend']['name'])            # "graph"
-print(prov['backend']['algorithm'])       # "dijkstra" or "bellman_ford"
-
-# Performance
-print(prov['performance']['total_time'])  # Execution time
-print(prov['performance']['iterations'])  # Algorithm iterations
-
-# Determinism
-print(prov['determinism']['converged'])   # True/False
-print(prov['determinism']['stable_ordering'])  # True
-```
-
-### Determinism and Performance
-
-#### Algorithm Selection
-
-The system automatically chooses the best algorithm based on semiring properties:
-
-- **Dijkstra-like**: For idempotent+monotone semirings (min_plus, max_times)
-  - O(E log V) with priority queue
-  - Optimal for non-negative weights
-- **Bellman-Ford**: For general semirings
-  - O(V·E) iterations
-  - Handles negative weights, detects convergence
-
-Override with `.backend("graph")` or force algorithm selection via internal parameters.
-
-#### Determinism Guarantees
-
-- Node/edge iteration in stable order (sorted layer names, sorted node IDs)
-- Tie-breaking uses semiring.better() or lexicographic node ID
-- Parallel execution (via UQ) uses deterministic seed spawning
-- Provenance includes determinism metadata
-
-#### Performance Notes
-
-- **Small graphs (<100 nodes)**: Floyd-Warshall for closure (O(n³))
-- **Large graphs**: Iterative SSSP (O(n·algorithm_cost))
-- **Sparse graphs**: Graph backend is efficient
-- **Dense graphs**: Matrix backend (future) may be faster
-
-### Backward Compatibility
-
-The existing `P.shortest()` builder is powered by the semiring engine internally:
-
-```python
-# Equivalent calls:
-result1 = P.shortest("Alice", "Bob").execute(network)
-
-result2 = (
-    S.paths()
-     .from_node("Alice")
-     .to_node("Bob")
-     .semiring("min_plus")
-     .lift(attr="weight", default=1.0)
-     .execute(network)
-)
-# result1 uses semiring engine under the hood (future integration)
-```
-
-### Configuration
-
-Default backend and semiring settings can be configured:
-
-```python
-from py3plex import config
-
-# Future: config.set("algebra.default_backend", "graph")
-# Future: config.set("algebra.default_semiring", "min_plus")
-```
-
-Current defaults:
-- Backend: "graph"
-- Semiring: "min_plus" for paths, "boolean" for closure
-
-### Implementation Details
-
-**Location**: `py3plex/algebra/`
-- `semiring.py`: Semiring protocol and built-ins
-- `registry.py`: Semiring registry
-- `lift.py`: Weight lifting specifications
-- `paths.py`: Generic SSSP/APSP solvers
-- `closure.py`: Kleene star / transitive closure
-- `backend.py`: Backend dispatch (graph/matrix)
-- `witness.py`: Path witness tracking
-- `fixed_point.py`: Fixed-point iteration engine
-
-**DSL Integration**: `py3plex/dsl/`
-- `ast.py`: Semiring AST nodes (SemiringPathStmt, SemiringClosureStmt, etc.)
-- `builder.py`: S builder classes
-- `executor_semiring.py`: Executor for semiring queries
-
-### Advanced: Custom Semirings
-
-Register custom semirings for domain-specific problems:
-
-```python
-from py3plex.algebra import register_semiring
-from dataclasses import dataclass
-
-@dataclass
-class FuzzySemiring:
-    name: str = "fuzzy"
-    
-    def add(self, a, b):
-        return max(a, b)  # max for fuzzy union
-    
-    def mul(self, a, b):
-        return min(a, b)  # min for fuzzy intersection
-    
-    def zero(self):
-        return 0.0
-    
-    def one(self):
-        return 1.0
-    
-    def better(self, a, b):
-        return a > b
-    
-    @property
-    def props(self):
-        return {
-            "commutative_add": True,
-            "idempotent_add": True,
-            "monotone": True,
-        }
-
-# Register
-register_semiring("fuzzy", FuzzySemiring(), overwrite=False)
-
-# Use
-result = (
-    S.paths()
-     .from_node("Alice")
-     .semiring("fuzzy")
-     .lift(attr="membership", default=1.0)
-     .execute(network)
-)
-```
-
----
-
-## Network Counterexample Generation
-
-The **counterexample generation engine** finds violations of network invariants and provides minimal witness subgraphs that demonstrate the violation. This is useful for:
-
-- **Testing network hypotheses**: Does high degree imply high centrality?
-- **Understanding network structure**: Find unexpected patterns
-- **Debugging algorithms**: Identify edge cases that violate assumptions
-- **Educational purposes**: Demonstrate counterintuitive network properties
-
-### Core Concepts
-
-**Claim**: An implication between node metrics or structural properties
-- Format: `antecedent -> consequent`
-- Example: `degree__ge(k) -> pagerank__rank_le(r)`
-
-**Violation**: A specific node that satisfies the antecedent but violates the consequent
-
-**Witness**: A minimal subgraph containing the violation
-
-**Minimization**: Delta debugging (ddmin) to find the smallest witness
-
-### DSL Integration
-
-Use `Q.counterexample()` builder:
-
-```python
-from py3plex.dsl import Q, L
-from py3plex.core import multinet
-
-# Build network
-net = multinet.multi_layer_network(directed=False)
-# ... add nodes and edges ...
-
-# Find counterexample
-cex = (Q.counterexample()
-         .claim("degree__ge(k) -> pagerank__rank_le(r)")
-         .params(k=10, r=50)
-         .seed(42)
-         .find_minimal(True)
-         .budget(max_tests=200, max_witness_size=500)
-         .execute(net))
-
-if cex:
-    print(cex.explain())
-    witness = cex.subgraph
-```
-
-### Claim Language (MVP)
-
-Supported formats:
-
-**Value-based predicates:**
-- `degree__ge(k)` - degree >= k
-- `degree__gt(k)` - degree > k
-- `pagerank__lt(x)` - pagerank < x
-- `betweenness_centrality__ge(x)` - betweenness >= x
-
-**Rank-based predicates:**
-- `pagerank__rank_gt(r)` - pagerank rank > r
-- `pagerank__rank_le(r)` - pagerank rank <= r
-
-**Comparators:** `gt`, `ge`, `gte`, `lt`, `le`, `lte`, `eq`, `ne`
-
-**Example claims:**
-```python
-# High degree doesn't guarantee high PageRank
-"degree__ge(10) -> pagerank__rank_le(50)"
-
-# High betweenness doesn't guarantee low rank
-"betweenness_centrality__ge(0.1) -> pagerank__rank_gt(100)"
-```
-
-### QueryResult Integration
-
-Generate counterexamples from query results:
-
-```python
-result = Q.nodes().compute("degree", "pagerank").execute(net)
-
-# Find counterexample using result context
-cex = result.counterexample(
-    claim="degree__ge(k) -> pagerank__rank_gt(r)",
-    params={"k": 10, "r": 50},
-    seed=42
-)
-```
-
-### Counterexample Object
-
-The returned `Counterexample` object provides:
-
-**Attributes:**
-- `subgraph`: Witness as `multi_layer_network`
-- `violation`: Violation details (node, layer, metrics)
-- `witness_nodes`: Set of (node, layer) tuples
-- `witness_edges`: Set of edge tuples
-- `minimization`: MinimizationReport (is_minimal, tests_used, strategy)
-- `meta["provenance"]`: Full provenance record
-
-**Methods:**
-- `explain()`: Human-readable explanation
-- `to_dict()`: JSON-serializable representation
-
-**Example output:**
-```python
-cex.explain()
-# ======================================================================
-# COUNTEREXAMPLE FOUND
-# ======================================================================
-# 
-# Violating Node: Alice
-# Layer: social
-# 
-# Antecedent (satisfied):
-#   degree: 12
-# 
-# Consequent (violated):
-#   pagerank: 0.03
-#   pagerank_rank: 67
-#   violation_margin: 12.0000
-# 
-# Witness subgraph:
-#   nodes: 8
-#   edges: 11
-# 
-# Minimization:
-#   is_minimal: True
-#   tests_used: 45 / 200
-#   strategy: ddmin_edges
-#   reduction: 25 -> 11 edges
-# ...
-```
-
-### Provenance
-
-Counterexamples include comprehensive provenance:
-
-```python
-prov = cex.meta["provenance"]
-# {
-#     "engine": "counterexample_engine",
-#     "py3plex_version": "1.1.0",
-#     "timestamp_utc": "2026-01-07T04:30:00.000Z",
-#     "claim": {
-#         "claim_str": "degree__ge(10) -> pagerank__rank_le(50)",
-#         "claim_hash": "a1b2c3...",
-#         "params": {"k": 10, "r": 50}
-#     },
-#     "randomness": {"seed": 42},
-#     "network_fingerprint": {
-#         "node_count": 100,
-#         "edge_count": 250,
-#         "layer_count": 2,
-#         "layers": ["social", "work"]
-#     },
-#     "performance": {
-#         "find_violation_ms": 15.2,
-#         "extract_witness_ms": 3.5,
-#         "minimize_ms": 127.8,
-#         "total_ms": 146.5
-#     },
-#     "minimization": {
-#         "max_tests": 200,
-#         "tests_used": 45,
-#         "is_minimal": True,
-#         "strategy": "ddmin_edges",
-#         "final_size": {"nodes": 8, "edges": 11}
-#     },
-#     "budget": {
-#         "max_tests": 200,
-#         "max_witness_size": 500
-#     }
-# }
-```
-
-### Determinism
-
-Counterexample generation is **fully deterministic** given a seed:
-
-- Same seed → same violating node
-- Same witness extraction
-- Same minimization path
-- Stable sorting for tie-breaking
-
-```python
-# Same seed produces identical results
-cex1 = Q.counterexample().claim(...).seed(42).execute(net)
-cex2 = Q.counterexample().claim(...).seed(42).execute(net)
-assert cex1.violation.node == cex2.violation.node
-```
-
-### Budget Control
-
-Control resource usage with budgets:
-
-```python
-cex = (Q.counterexample()
-         .claim("degree__ge(k) -> pagerank__rank_gt(r)")
-         .params(k=10, r=50)
-         .budget(
-             max_tests=100,         # Max minimization tests
-             max_witness_size=300   # Max nodes in witness
-         )
-         .execute(net))
-
-# Check if minimization completed
-if not cex.minimization.is_minimal:
-    print("Budget exhausted - witness may not be minimal")
-```
-
-### Layer Selection
-
-Restrict search to specific layers:
-
-```python
-from py3plex.dsl import L
-
-cex = (Q.counterexample()
-         .claim("degree__ge(k) -> pagerank__rank_le(r)")
-         .params(k=5, r=10)
-         .layers(L["social"] + L["work"])
-         .execute(net))
-```
-
-### Algorithm Details
-
-**1. Violation Finding:**
-- Uses DSL v2 to compute metrics efficiently
-- Antecedent: cheap metrics (degree, strength)
-- Consequent: computed metrics (pagerank, betweenness)
-- Deterministic selection: highest antecedent margin, worst consequent violation
-
-**2. Witness Extraction:**
-- Ego subgraph (radius=2 by default) around violating node
-- Includes all relevant layers
-- Trims to max_witness_size by keeping high-degree neighbors
-- Always includes violating node
-
-**3. Delta Debugging (ddmin):**
-- Minimizes edges in chunks
-- Binary search for minimal subset
-- Budget-aware (stops at max_tests)
-- Returns best-effort witness if budget exceeded
-
-### Common Pitfalls
-
-**1. No violation exists**
-```python
-try:
-    cex = Q.counterexample().claim(...).execute(net)
-except CounterexampleNotFound:
-    print("Claim holds for this network")
-```
-
-**2. Expensive metrics**
-- PageRank, betweenness are expensive on large networks
-- Use smaller networks for exploration
-- Increase budgets for complex claims
-
-**3. Rank ties**
-- Ranks are deterministic with stable sorting
-- Ties broken by (node_id, layer) lexicographically
-
-**4. Budget tuning**
-- Start with default budget (max_tests=200)
-- Increase if `is_minimal=False` and witness is large
-- Decrease for faster (less minimal) results
-
-**5. Claim syntax**
-- Must include `->` separator
-- Parameters must be provided in `params()`
-- Use double underscore: `metric__comparator(param)`
-
-### Performance Tips
-
-- **Small networks first**: Test claims on small networks before scaling
-- **Disable minimization**: Use `find_minimal(False)` for faster results
-- **Adjust radius**: Smaller radius → smaller witnesses → faster
-- **Layer filtering**: Restrict to relevant layers
-
-### Error Handling
-
-Counterexample generation uses domain exceptions:
-
-```python
-from py3plex.counterexamples.claim_lang import ClaimParseError
-from py3plex.counterexamples.engine import CounterexampleNotFound
-
-try:
-    cex = Q.counterexample().claim("invalid").execute(net)
-except ClaimParseError as e:
-    print(f"Invalid claim: {e}")
-except CounterexampleNotFound:
-    print("No violation found")
-```
-
-### Use Cases
-
-**1. Hypothesis testing:**
-```python
-# Test: "Hub nodes have high PageRank"
-cex = Q.counterexample().claim("degree__ge(k) -> pagerank__rank_le(r)") \
-       .params(k=20, r=10).execute(net)
-if cex:
-    print(f"Counterexample: {cex.violation.node} has high degree but low PageRank")
-```
-
-**2. Algorithm debugging:**
-```python
-# Test: "My algorithm preserves this invariant"
-def test_invariant(net):
-    try:
-        cex = Q.counterexample().claim("my_metric__ge(k) -> other_metric__le(x)") \
-               .params(k=5, x=100).execute(net)
-        return False  # Invariant violated
-    except CounterexampleNotFound:
-        return True  # Invariant holds
-```
-
-**3. Educational examples:**
-```python
-# Demonstrate counterintuitive network property
-cex = Q.counterexample().claim("betweenness_centrality__ge(x) -> degree__ge(k)") \
-       .params(x=0.1, k=10).execute(net)
-print(cex.explain())
-# Shows node with high betweenness but low degree (bridge node)
-```
-
-### Files
-
-- `py3plex/counterexamples/types.py` - Data structures
-- `py3plex/counterexamples/claim_lang.py` - Claim parser
-- `py3plex/counterexamples/witness.py` - Witness extraction
-- `py3plex/counterexamples/ddmin.py` - Minimization
-- `py3plex/counterexamples/engine.py` - Main engine
-- `py3plex/dsl/builder.py` - `Q.counterexample()` builder
-- `py3plex/dsl/result.py` - `QueryResult.counterexample()`
-
----
-
-## Learning Claims from Data
-
-The **claim learning engine** automatically discovers plausible, interpretable implication-style claims from multilayer network data through **inductive reasoning**. This feature enables:
-
-- **Hypothesis generation**: Discover patterns and relationships in network data
-- **Network understanding**: Find general rules that characterize network structure
-- **Scientific method in code**: Generate falsifiable hypotheses with statistical support
-- **Integration with counterexamples**: Learned claims can be tested and falsified
-
-### Core Concepts
-
-**Claim**: An executable implication between network metrics
-- Format: `antecedent -> consequent`
-- Example: `degree__gte(10.0) -> pagerank__rank_lte(50)`
-
-**Antecedent**: Left side of implication (cheap-to-compute properties)
-- Threshold predicates: `degree >= k`, `strength >= x`
-- Top-p predicates: `top_p(degree, 0.1)` (top 10% by degree)
-- Layer count: `layer_count >= 2`
-
-**Consequent**: Right side of implication (target metrics)
-- Threshold predicates: `pagerank >= x`, `betweenness >= y`
-- Rank predicates: `pagerank_rank <= r` (top-r nodes by PageRank)
-
-**Support**: P(consequent | antecedent) - fraction of nodes satisfying both
-**Coverage**: P(antecedent) - fraction of nodes satisfying antecedent
-
-**Provenance**: Full metadata including seed, network fingerprint, metrics used
-
-### DSL Integration
-
-Use `Q.learn_claims()` builder:
-
-```python
-from py3plex.dsl import Q, L
-from py3plex.core import multinet
-
-# Build network
-net = multinet.multi_layer_network(directed=False)
-# ... add nodes and edges ...
-
-# Learn claims
-claims = (
-    Q.learn_claims()
-     .from_metrics(["degree", "pagerank", "betweenness_centrality"])
-     .min_support(0.9)           # At least 90% support
-     .min_coverage(0.05)         # At least 5% coverage
-     .max_claims(20)             # Return top 20 claims
-     .seed(42)                   # Deterministic
-     .execute(net)
-)
-
-# Examine claims
-for claim in claims:
-    print(f"{claim.claim_string}")
-    print(f"  Support: {claim.support:.3f}, Coverage: {claim.coverage:.3f}")
-```
-
-### Layer-Restricted Learning
-
-Learn claims for specific layers:
-
-```python
-claims = (
-    Q.learn_claims()
-     .from_metrics(["degree", "pagerank"])
-     .layers(L["social"] + L["work"])  # Only these layers
-     .min_support(0.85)
-     .min_coverage(0.1)
-     .seed(42)
-     .execute(net)
-)
-```
-
-### Advanced Options
-
-Control antecedent vs consequent metrics:
-
-```python
-claims = (
-    Q.learn_claims()
-     .from_metrics(["degree", "strength", "pagerank", "betweenness"])
-     .cheap_metrics(["degree", "strength"])      # Use for antecedents
-     .target_metrics(["pagerank", "betweenness"]) # Use for consequents
-     .min_support(0.9)
-     .min_coverage(0.05)
-     .max_antecedents(1)  # MVP: only 1 antecedent term supported
-     .seed(42)
-     .execute(net)
-)
-```
-
-### Claim Object
-
-Each returned `Claim` object provides:
-
-**Attributes:**
-- `claim_string`: DSL-compatible claim string (e.g., `"degree__gte(10.0) -> pagerank__rank_lte(50)"`)
-- `antecedent`: Antecedent predicate object
-- `consequent`: Consequent predicate object
-- `support`: Statistical support (0.0 to 1.0)
-- `coverage`: Coverage (0.0 to 1.0)
-- `score`: ClaimScore with detailed statistics
-- `meta["provenance"]`: Full provenance metadata
-
-**Methods:**
-- `counterexample(net, **kwargs)`: Lazily find counterexample using engine (#34)
-- `to_dict()`: JSON-serializable representation
-
-**Example:**
-```python
-for claim in claims:
-    print(claim.claim_string)
-    # degree__gte(5.0) -> pagerank__rank_lte(20)
-    
-    print(f"Support: {claim.support:.3f}")   # 0.952
-    print(f"Coverage: {claim.coverage:.3f}") # 0.120
-    
-    # Test with counterexample engine
-    cex = claim.counterexample(net, seed=42)
-    if cex:
-        print(f"Counterexample found: {cex.explain()}")
-    else:
-        print("No counterexample found (claim holds)")
-```
-
-### Provenance
-
-Claims include comprehensive provenance:
-
-```python
-claim = claims[0]
-prov = claim.meta["provenance"]
-# {
-#     "engine": "claim_learner",
-#     "py3plex_version": "1.1.0",
-#     "timestamp_utc": "2026-01-07T05:00:00.000Z",
-#     "network_fingerprint": {
-#         "n_nodes": 100,
-#         "n_edges": 250,
-#         "n_layers": 2
-#     },
-#     "metrics_used": ["degree", "pagerank"],
-#     "cheap_metrics": ["degree"],
-#     "target_metrics": ["pagerank"],
-#     "parameters": {
-#         "min_support": 0.9,
-#         "min_coverage": 0.05,
-#         "max_antecedents": 1,
-#         "max_claims": 20
-#     },
-#     "randomness": {"seed": 42}
-# }
-```
-
-### Determinism
-
-Claim learning is **fully deterministic** given a seed:
-
-```python
-claims1 = Q.learn_claims().from_metrics(["degree", "pagerank"]).seed(42).execute(net)
-claims2 = Q.learn_claims().from_metrics(["degree", "pagerank"]).seed(42).execute(net)
-
-# Identical results
-assert len(claims1) == len(claims2)
-for c1, c2 in zip(claims1, claims2):
-    assert c1.claim_string == c2.claim_string
-    assert c1.support == c2.support
-    assert c1.coverage == c2.coverage
-```
-
-### Claim Ranking
-
-Claims are ranked by:
-1. **Support** (descending) - higher support first
-2. **Coverage** (descending) - higher coverage first
-3. **Simplicity** (descending) - threshold > layer_count > top_p
-4. **Lexicographic** - stable tie-breaking
-
-This ensures the most statistically significant and interpretable claims appear first.
-
-### Integration with Counterexamples
-
-Learned claims can be falsified using the counterexample engine:
-
-```python
-# Learn claims
-claims = Q.learn_claims() \
-    .from_metrics(["degree", "pagerank"]) \
-    .min_support(0.8) \
-    .execute(net)
-
-# Test each claim
-for claim in claims:
-    print(f"Testing: {claim.claim_string}")
-    
-    # Lazy counterexample search
-    cex = claim.counterexample(net, seed=42)
-    
-    if cex:
-        print(f"  ✗ Falsified: {cex.violation.node} violates claim")
-        print(f"    Witness has {len(cex.witness_edges)} edges")
-    else:
-        print(f"  ✓ No counterexample found (support={claim.support:.3f})")
-```
-
-### Warning: Interpretation
-
-**Claims are hypotheses, not truths.**
-
-- **Support < 1.0** means claims can have exceptions
-- High support does NOT imply causation
-- Claims are **inductive** - they summarize observed data patterns
-- Always validate claims on held-out data or additional networks
-- Use counterexample engine to understand when claims fail
-- Claims are **falsifiable** - this is a feature, not a bug
-
-**Best Practices:**
-1. Use `min_support >= 0.9` for reliable claims
-2. Use `min_coverage >= 0.05` to avoid overfitting to rare patterns
-3. Always set a `seed` for reproducibility
-4. Test claims with counterexample engine
-5. Validate on multiple networks before drawing conclusions
-6. Document provenance metadata for audit trails
-
-### Supported Metrics
-
-**Cheap Metrics (for antecedents):**
-- `degree`: Node degree
-- `strength`: Weighted degree
-- `layer_count`: Number of layers node appears in
-- Custom metrics computed via DSL
-
-**Target Metrics (for consequents):**
-- `pagerank`: PageRank centrality
-- `betweenness_centrality`: Betweenness centrality
-- `closeness_centrality`: Closeness centrality
-- `eigenvector_centrality`: Eigenvector centrality
-- Custom metrics computed via DSL
-
-### Use Cases
-
-**1. Pattern discovery:**
-```python
-# Discover degree-centrality relationships
-claims = Q.learn_claims() \
-    .from_metrics(["degree", "pagerank", "betweenness_centrality"]) \
-    .min_support(0.85) \
-    .execute(net)
-
-for claim in claims[:5]:
-    print(claim.claim_string)
-# degree__gte(8.0) -> pagerank__rank_lte(50)
-# degree__gte(12.0) -> betweenness_centrality__gte(0.05)
-```
-
-**2. Hypothesis generation for research:**
-```python
-# Generate testable hypotheses
-claims = Q.learn_claims() \
-    .from_metrics(["degree", "clustering", "pagerank"]) \
-    .layers(L["social"]) \
-    .min_support(0.9) \
-    .min_coverage(0.1) \
-    .seed(42) \
-    .execute(net)
-
-# Export for research paper
-for claim in claims:
-    print(f"{claim.claim_string} (support={claim.support:.3f}, n={claim.score.n_antecedent})")
-```
-
-**3. Network characterization:**
-```python
-# Characterize multilayer structure
-claims = Q.learn_claims() \
-    .from_metrics(["layer_count", "degree", "pagerank"]) \
-    .min_support(0.8) \
-    .execute(multilayer_net)
-
-# Find claims about multilayer nodes
-for claim in claims:
-    if "layer_count" in claim.claim_string:
-        print(claim.claim_string)
-        # layer_count__gte(2) -> pagerank__gte(0.015)
-```
-
-**4. Automated hypothesis testing:**
-```python
-# Learn claims on training data
-train_claims = Q.learn_claims() \
-    .from_metrics(["degree", "pagerank"]) \
-    .min_support(0.9) \
-    .seed(42) \
-    .execute(train_net)
-
-# Test on held-out data
-for claim in train_claims:
-    # Re-evaluate support on test network
-    test_cex = claim.counterexample(test_net, seed=42)
-    if test_cex:
-        print(f"Claim doesn't generalize: {claim.claim_string}")
-```
-
-### Error Handling
-
-Claim learning uses domain exceptions:
-
-```python
-from py3plex.claims.learner import ClaimLearningError
-
-try:
-    claims = Q.learn_claims().execute(net)  # No metrics specified
-except ClaimLearningError as e:
-    print(f"Error: {e}")
-    # "No metrics specified for claim learning"
-
-try:
-    claims = Q.learn_claims() \
-        .from_metrics(["degree"]) \
-        .max_antecedents(2) \  # Not supported in MVP
-        .execute(net)
-except ClaimLearningError as e:
-    print(f"Error: {e}")
-    # "max_antecedents must be 1 in MVP (got 2)"
-```
-
-### Files
-
-- `py3plex/claims/types.py` - Data structures (Claim, Antecedent, Consequent, ClaimScore)
-- `py3plex/claims/generator.py` - Candidate generation
-- `py3plex/claims/scorer.py` - Support/coverage calculation and ranking
-- `py3plex/claims/learner.py` - Main orchestration
-- `py3plex/dsl/builder.py` - `Q.learn_claims()` builder
-- `tests/test_claim_learning.py` - Comprehensive test suite (25 tests)
-
----
-
-## Version Information
-
-```python
-import py3plex
-
-print(py3plex.__version__)      # Current version: "1.1.0"
-```
-
-**Version History:**
-- **1.1.0** (Current): DSL v2, Dynamics, Uncertainty, Temporal networks, Null models
-- **1.0.0**: Initial stable release with DSL v1, pipelines, CLI
-- **0.96**: Pre-release version
-
----
-
-## File Locations
-
-- **Core Modules:**
-  - `py3plex/core/multinet.py` - Main multi_layer_network class
-  - `py3plex/core/temporal_multinet.py` - Temporal multilayer networks
-  - `py3plex/dsl/` - DSL v2 implementation (builder API, AST, executor)
-  - `py3plex/dsl_legacy.py` - Legacy string-based DSL (backward compatibility)
-  - `py3plex/graph_ops.py` - Dplyr-style chainable API
-  - `py3plex/pipeline.py` - Sklearn-style pipeline
-  - `py3plex/workflows.py` - Config-driven workflows
-
-- **Advanced Features:**
-  - `py3plex/dynamics/` - Dynamics simulations (SIS, SIR, RandomWalk, custom)
-  - `py3plex/uncertainty/` - Uncertainty quantification (StatSeries, bootstrap, null models)
-  - `py3plex/temporal_utils.py` - Temporal network utilities
-  - `py3plex/nullmodels/` - Null model implementations
-
-- **Utilities:**
-  - `py3plex/cli.py` - Command-line interface
-  - `py3plex/config.py` - Centralized configuration
-  - `py3plex/exceptions.py` - Exception hierarchy
-  - `py3plex/validation.py` - Input validation
-  - `py3plex/linter.py` - File linting
-  - `py3plex/profiling.py` - Performance profiling
-  - `py3plex/logging_config.py` - Logging configuration
-
-- **I/O and Data:**
-  - `py3plex/io/` - I/O API and format handlers
-  - `py3plex/datasets/` - Built-in datasets and generators
-
-- **Extensibility:**
-  - `py3plex/plugins/` - Plugin system
-
-- **Interoperability:**
-  - `py3plex/wrappers/r_interop.py` - R interoperability
-
-- **Algorithms:**
-  - `py3plex/algorithms/` - Network algorithms
-    - `centrality/` - Centrality measures
-    - `community_detection/` - Community detection algorithms
-    - `temporal/` - Temporal network algorithms
-    - `general/` - General graph algorithms
-
-- **Visualization:**
-  - `py3plex/visualization/` - Visualization tools and layouts
-
-- **Documentation:**
-  - `docfiles/user_guide/dsl.rst` - DSL documentation
-  - `docfiles/r_interop.rst` - R interoperability guide
-  - `AGENTS.md` - AI agent documentation (this file)
-  - `README.md` - Quick start and flagship example
-
-- **Examples:**
-  - `examples/getting_started/` - Getting started tutorials
-  - `examples/network_analysis/` - Network analysis examples
-  - `examples/pipelines/` - Pipeline examples
-  - `examples/workflows/` - Workflow examples
-  - `examples/visualization/` - Visualization examples
-  - `examples/dynamics/` - Dynamics simulation examples
-  - `examples/uncertainty/` - Uncertainty quantification examples
-  - `examples/temporal/` - Temporal network examples
-
-- **Tests:**
-  - `tests/test_dsl.py` - DSL tests
-  - `tests/test_graph_ops.py` - Graph operations tests
-  - `tests/test_pipeline.py` - Pipeline tests
-  - `tests/test_ergonomics.py` - Ergonomics tests
-  - `tests/test_cli.py` - CLI tests
-  - `tests/test_plugin_system.py` - Plugin system tests
-  - `tests/test_workflows.py` - Workflow tests
-  - `tests/test_dynamics.py` - Dynamics tests
-  - `tests/test_uncertainty.py` - Uncertainty tests
-  - `tests/test_temporal.py` - Temporal network tests
-
----
-
-## API-Specific Patterns and Best Practices
-
-### Multi_layer_network API
-
-**Node and Edge Addition:**
-- The API uses `add_nodes()` and `add_edges()` (plural) - the `multi_layer_network` class doesn't expose singular forms
-- Use `add_edges([...])` with list of dicts, NOT individual edge additions
-- When serializing to JSON format with `to_json()`, the output uses `'edges'` key, not `'links'`
-- Method signature: `add_edges([{'source': ..., 'target': ..., 'source_type': ..., 'target_type': ...}])`
-
-**Example:**
-```python
-# Correct
-net.add_edges([
-    {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'},
-    {'source': 'B', 'target': 'C', 'source_type': 'layer1', 'target_type': 'layer1'},
-])
-
-# Incorrect - singular form doesn't exist
-# net.add_edge('A', 'B', 'layer1', 'layer1')  # Don't do this!
-```
-
----
-
-### DSL Architecture Patterns
-
-**DSL v2 vs Legacy:**
-- **DSL v2:** Modern builder API in `py3plex/dsl/` (preferred) - use Q, L, UQ builders
-- **Legacy DSL:** String-based parsing in `py3plex/dsl_legacy.py` (backward compatibility)
-- Use `Q.nodes()` for builder API, `execute_query()` for legacy string queries
-- DSL supports autocompute of centrality metrics - set `autocompute=False` to disable
-
-**Layer Selection:**
-- Canonical: `FROM layer="name"` or `Q.from_layers(L["name"])`
-- Backward compat: `WHERE layer="name"`
-
-**Edge Grouping and Coverage:**
-- Use `per_layer()` for node queries to group by layer
-- Use `per_layer_pair()` for edge queries to group by layer pairs
-- Edge grouping groups by (src_layer, dst_layer) pairs
-- Coverage filtering works for both nodes and edges: `coverage(mode="at_least", k=2)`
-- QueryResult.meta["grouping"] contains structured grouping metadata
-- Use `result.group_summary()` to get DataFrame summary of groups
-
-**Temporal Extensions:**
-- DSL supports temporal queries via `.window()` builder method
-- Temporal filters: `t__between`, `t__gte`, `t__lte`, `t__gt`, `t__lt` in `where()` clause
-- WindowSpec AST node represents temporal query specifications
-
-**Example:**
-```python
-# DSL v2 with layer algebra
-result = (
-    Q.nodes()
-     .from_layers(L["social"] + L["work"])
-     .where(degree__gt=5)
-     .per_layer()
-        .compute("betweenness_centrality")
-        .top_k(10, "betweenness_centrality")
-     .end_grouping()
-     .coverage(mode="at_least", k=2)
-     .execute(net)
-)
-
-# Temporal query
-result = (
-    Q.edges()
-     .where(t__between=(100.0, 200.0))
-     .from_layers(L["social"])
-     .execute(temporal_net)
-)
-```
-
----
-
-### Error Handling Best Practices
-
 Always use domain-specific exceptions:
 
 ```python
 from py3plex.exceptions import (
-    Py3plexIOError,           # For I/O errors
-    Py3plexException,         # For general errors
-    NetworkConstructionError, # For network construction failures
-    ParsingError,             # For input parsing failures
+    Py3plexException,           # Base exception
+    Py3plexIOError,             # I/O errors
+    NetworkConstructionError,   # Network construction failures
+    ParsingError,               # Input parsing failures
 )
 
-# For I/O errors
+# DSL exceptions
+from py3plex.dsl import (
+    DslError,                   # Base DSL error
+    DslSyntaxError,             # Syntax errors
+    DslExecutionError,          # Execution errors
+    UnknownAttributeError,      # Unknown attribute referenced
+    UnknownMeasureError,        # Unknown measure
+    UnknownLayerError,          # Unknown layer
+    ParameterMissingError,      # Parameter binding error
+    TypeMismatchError,          # Type mismatch
+    GroupingError,              # Grouping configuration error
+)
+```
+
+**Best Practice**:
+```python
+from py3plex.exceptions import Py3plexIOError
+
 try:
     net.load_network("file.csv")
 except Py3plexIOError as e:
-    print(f"Failed to read file: {e}")
-
-# For general errors
-try:
-    result = execute_query(net, query)
-except Py3plexException as e:
-    print(f"Query failed: {e}")
+    print(f"Failed to load network: {e}")
 ```
 
-**Never use generic exceptions for domain-specific errors:**
-- Use `Py3plexIOError` instead of `FileNotFoundError` for I/O
-- Use `NetworkConstructionError` instead of `ValueError` for construction errors
+**Don't use generic exceptions for domain errors**:
+- ✗ `FileNotFoundError` → ✓ `Py3plexIOError`
+- ✗ `ValueError` → ✓ `NetworkConstructionError`
+
+---
+
+## Performance Guidelines
+
+### Network Size Recommendations
+
+| Network Size | Recommended Actions |
+|--------------|---------------------|
+| < 1,000 nodes | All operations fast, no special considerations |
+| 1,000-10,000 nodes | Disable autocompute for repeated queries, use layer filtering |
+| 10,000-100,000 nodes | Avoid betweenness/closeness, use sampling, enable progress logging |
+| > 100,000 nodes | Use NetworkX backend optimizations, consider graph-tool for centrality |
+
+### Metric Complexity
+
+| Metric | Time Complexity | Space | Notes |
+|--------|----------------|-------|-------|
+| degree | O(m) | O(1) | Very fast |
+| pagerank | O(m * k) | O(n) | k iterations, usually fast |
+| betweenness | O(n * m) | O(n²) | Expensive for large graphs |
+| closeness | O(n * m) | O(n²) | Expensive for large graphs |
+| clustering | O(n * d²) | O(1) | d = avg degree |
+
+**Optimization Tips**:
+1. **Filter early**: Use `.where()` before `.compute()` to reduce node set
+2. **Layer filtering**: Use `.from_layers()` to work on subnetworks
+3. **Disable autocompute**: If metrics are pre-computed, set `autocompute=False`
+4. **Batch computations**: Compute multiple metrics in one `.compute()` call
+5. **UQ sampling**: Start with n_samples=10 for development
+6. **Progress logging**: Use `progress=True` for long-running queries
+
+---
+
+## Reproducibility Policy
+
+### Determinism Guarantees
+
+py3plex guarantees deterministic results when:
+1. **Seed is set**: All randomized operations accept `seed` parameter
+2. **Same network**: Identical input network structure
+3. **Same version**: py3plex version and dependencies unchanged
+4. **Same parameters**: All parameters (including hyperparameters) identical
+
+### Provenance
+
+Every query execution records provenance:
+
+```python
+result = Q.nodes().compute("pagerank").execute(net)
+
+prov = result.meta['provenance']
+
+# Key provenance fields
+print(prov['engine'])             # "dsl_v2_executor"
+print(prov['py3plex_version'])    # "1.1.0"
+print(prov['timestamp_utc'])      # ISO8601 timestamp
+print(prov['network_fingerprint']) # Node/edge counts, layers
+print(prov['query']['ast_hash'])  # Stable hash of query AST
+print(prov['randomness']['seed']) # Random seed if used
+print(prov['performance']['total_ms']) # Execution time
+```
+
+### Reproducibility Checklist
+
+- [ ] Set `seed` parameter for all randomized operations
+- [ ] Document `py3plex.__version__` in code/paper
+- [ ] Save provenance metadata: `result.meta['provenance']`
+- [ ] Archive network data with checksums
+- [ ] Document Python and dependency versions
+- [ ] Use parameterized queries with Param.ref() for reusability
 
 ---
 
@@ -5440,48 +2928,45 @@ except Py3plexException as e:
 
 ### 1. NetworkX MultiGraph Limitations
 
-**Problem:** NetworkX's `clustering()` doesn't support MultiGraph.
+**Problem**: `clustering()` doesn't support MultiGraph
 
-**Solution:** Convert to simple Graph first by merging parallel edges.
+**Solution**: Convert to simple graph first
 
 ```python
 import networkx as nx
 
-# Wrong - will fail on MultiGraph
+# Wrong
 # clustering = nx.clustering(net.core_network)
 
-# Correct - convert to simple graph first
+# Correct
 simple_graph = nx.Graph(net.core_network)
 clustering = nx.clustering(simple_graph)
 ```
 
 ---
 
-### 2. Forward References in DSL
+### 2. Forward References in Type Hints
 
-**Problem:** Type hints for classes defined later in the same file cause NameError.
+**Problem**: Type hints for classes defined later cause NameError
 
-**Solution:** Use string type hints for forward references.
+**Solution**: Use string type hints
 
 ```python
 # Correct
-def dynamics(self) -> "DynamicsBuilder":
-    return DynamicsBuilder()
-
-# Wrong - causes NameError
-# def dynamics(self) -> DynamicsBuilder:  # DynamicsBuilder not defined yet
+def method(self) -> "ClassName":
+    return ClassName()
 ```
 
 ---
 
-### 3. DSL Builder Method Chaining
+### 3. Forgetting .execute()
 
-**Problem:** Forgetting to call `.execute()` returns builder object, not results.
+**Problem**: Query builder returned instead of results
 
-**Solution:** Always end query chains with `.execute(network)`.
+**Solution**: Always end with `.execute(network)`
 
 ```python
-# Wrong - returns QueryBuilder, not results
+# Wrong - returns QueryBuilder
 result = Q.nodes().where(degree__gt=5)
 
 # Correct - returns QueryResult
@@ -5490,271 +2975,344 @@ result = Q.nodes().where(degree__gt=5).execute(network)
 
 ---
 
-### 4. Uncertainty Context Scope
+### 4. Empty Layer Expressions
 
-**Problem:** Uncertainty context doesn't affect code outside the `with` block.
+**Problem**: Layer algebra that matches no layers → empty result
 
-**Solution:** Ensure all uncertainty-enabled code is inside the context manager.
+**Solution**: Check layer names or use `L["*"]` to see all layers
 
 ```python
-from py3plex.uncertainty import uncertainty_enabled
+# Check available layers first
+print(net.get_layers())
 
-# Wrong - pagerank computed outside context, no uncertainty
-result = multilayer_pagerank(network)
-with uncertainty_enabled(n_runs=50):
-    pass
-
-# Correct - all computations inside context
-with uncertainty_enabled(n_runs=50):
-    result = multilayer_pagerank(network)
-    print(f"Std: {result.std}")
+# Or use wildcard
+Q.nodes().from_layers(L["*"]).execute(net)
 ```
 
 ---
 
 ### 5. Temporal Edge Attributes
 
-**Problem:** Mixing `t` with `t_start`/`t_end` causes confusion.
+**Problem**: Mixing `t` with `t_start`/`t_end`
 
-**Solution:** Use interval form (`t_start`, `t_end`) for consistency, or stick to one convention.
+**Solution**: Stick to one convention (prefer interval form)
 
 ```python
-# Preferred - interval form
+# Consistent - interval form
 tnet.add_edge('A', 'B', layer='social', t_start=100.0, t_end=200.0)
+tnet.add_edge('C', 'D', layer='social', t_start=120.0, t_end=180.0)
 
-# Also valid - point-in-time
+# Also valid - point-in-time (but don't mix)
 tnet.add_edge('A', 'B', layer='social', t=150.0)
-
-# Don't mix both on same edge
 ```
 
 ---
 
-### 6. Null Model Randomization
+### 6. Coverage Without Grouping
 
-**Problem:** Forgetting to set random seed makes results non-reproducible.
+**Problem**: `.coverage()` called without `.per_layer()`
 
-**Solution:** Always specify `seed` parameter for reproducibility.
+**Solution**: Always group before coverage
 
 ```python
-# Non-reproducible
-null_net = configuration_model(network)
+# Wrong
+# Q.nodes().top_k(5).coverage(mode="all").execute(net)
 
-# Reproducible
-null_net = configuration_model(network, seed=42)
+# Correct
+Q.nodes().per_layer().top_k(5).end_grouping().coverage(mode="all").execute(net)
 ```
 
 ---
 
-### 7. Layer Names with Special Characters
+### 7. Aggregate vs Compute Confusion
 
-**Problem:** Layer names with spaces or special characters break DSL queries.
+**Problem**: Using `.aggregate()` when `.compute()` is needed
 
-**Solution:** Use underscores or quote layer names.
+**Solution**: Remember the distinction
 
 ```python
-# Wrong - spaces break parsing
-# L["social media"]
+# Compute - per item (node/edge)
+Q.nodes().compute("degree").execute(net)  # Each node gets a degree value
 
-# Correct - use underscores
-L["social_media"]
-
-# Also correct - quote if needed
-net.add_nodes([{'source': 'A', 'type': 'social_media'}])
+# Aggregate - per group
+Q.nodes().per_layer().aggregate(avg_degree="mean(degree)").execute(net)  # One value per layer
 ```
 
 ---
 
-### 8. Test Dependencies
+### 8. UQ Seed Omission
 
-**Problem:** Some tests require optional dependencies not in core install.
+**Problem**: Non-reproducible uncertainty results
 
-**Solution:** Install test extras or check for missing dependencies.
+**Solution**: Always set seed
 
-```bash
-# Install test dependencies
-pip install py3plex[tests]
-
-# Or install specific extras
-pip install py3plex[infomap,algos]
-```
-
-**Note:** Tests require `pytest-benchmark` (in `dev` dependencies). Some examples may use `sympy`.
-
----
-
-### 9. Type Checking Requirements
-
-**Problem:** mypy requires Python 3.9+ while project supports 3.8+.
-
-**Solution:** Use Python 3.9+ for type checking, 3.8+ for runtime.
-
-```bash
-# Development with type checking
-python3.9 -m mypy py3plex/
-
-# Runtime supports 3.8+
-python3.8 -m pytest tests/
-```
-
----
-
-### 10. Excluded Files from Linting
-
-**Problem:** `powerlaw.py` intentionally excluded from linting due to legacy issues.
-
-**Solution:** Don't try to fix linting in excluded files - they work as-is.
-
-**Files excluded from linting:**
-- `py3plex/algorithms/statistics/powerlaw.py`
-- `examples/` directory (intentional)
-
----
-
-## Security Guidelines
-
-1. **Input Validation:** Always validate file paths and network data before processing
-2. **No Arbitrary Code Execution:** Don't use `eval()` or `exec()` on user input
-3. **File Operations:** Use safe file operations with proper error handling
-4. **Dependencies:** Check new dependencies for known vulnerabilities with `gh-advisory-database` tool
-5. **Domain Exceptions:** Use `Py3plexIOError` and related exceptions, never expose raw system errors to users
-
-**Example of secure file loading:**
 ```python
-from py3plex.exceptions import Py3plexIOError
-from py3plex.validation import validate_file_exists
-import os
+# Wrong - non-reproducible
+Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100).execute(net)
 
-def safe_load_network(path: str):
-    # Validate input
-    if not path or '..' in path:
-        raise Py3plexIOError("Invalid file path")
-    
-    # Check file exists
-    validate_file_exists(path)
-    
-    # Load with error handling
-    try:
-        net = multinet.multi_layer_network()
-        net.load_network(path, input_type="edgelist")
-        return net
-    except Exception as e:
-        raise Py3plexIOError(f"Failed to load network: {e}")
+# Correct - reproducible
+Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).execute(net)
 ```
 
 ---
 
 ## Testing Strategy
 
-**Test Organization:**
-- **Unit Tests:** Fast, isolated tests in `tests/test_*.py`
-- **Property Tests:** Hypothesis-based tests marked with `@pytest.mark.property`
-- **Integration Tests:** Multi-component tests marked with `@pytest.mark.integration`
-- **Slow Tests:** Marked with `@pytest.mark.slow` - skip during development
+### Test Organization
 
-**Running Tests:**
+- **Unit Tests**: Fast tests in `tests/test_*.py`
+- **Property Tests**: Hypothesis-based, marked `@pytest.mark.property`
+- **Integration Tests**: Multi-component, marked `@pytest.mark.integration`
+- **Slow Tests**: Marked `@pytest.mark.slow` - skip during development
+
+### Running Tests
+
 ```bash
-# Run all tests
+# All tests
 pytest tests/
 
-# Run specific test file
-pytest tests/test_dsl.py
+# Specific file
+pytest tests/test_dsl_v2.py
 
-# Run with coverage
+# With coverage
 pytest tests/ --cov=py3plex
 
 # Skip slow tests
 pytest tests/ -m "not slow"
 
-# Run only property tests
+# Only property tests
 pytest tests/ -m property
 
-# Run targeted test
-pytest tests/test_dsl.py -k "test_specific_function"
+# Targeted test
+pytest tests/test_dsl_v2.py::test_query_builder_basic
 ```
 
-**Test Markers:**
-- `@pytest.mark.property` - Property-based tests (Hypothesis)
+### Test Markers
+
+- `@pytest.mark.property` - Property-based (Hypothesis)
 - `@pytest.mark.integration` - Integration tests
-- `@pytest.mark.slow` - Potentially slow tests (>1 second)
+- `@pytest.mark.slow` - Slow tests (>1 second)
 - `@pytest.mark.unit` - Fast unit tests
 
 ---
 
-## Performance Considerations
+## File Locations
 
-1. **Large Networks:** Consider memory usage for networks with >10k nodes
-2. **Centrality Computation:** Betweenness/closeness are O(n³) for large networks
-3. **DSL Autocompute:** Disable with `autocompute=False` if metrics are pre-computed
-4. **Uncertainty Sampling:** Start with n_runs=10-20 for development, increase for production
-5. **Temporal Snapshots:** Cache snapshots if querying same time range repeatedly
-6. **Null Models:** Generate in parallel when possible using multiprocessing
+### Core Modules
 
-**Benchmarking:**
-```bash
-# Run benchmarks
-pytest benchmarks/ --benchmark-only
+- `py3plex/core/multinet.py` - Main multi_layer_network class
+- `py3plex/core/temporal_multinet.py` - Temporal networks
+- `py3plex/dsl/` - DSL v2 (builder API, AST, executor)
+- `py3plex/dsl_legacy.py` - Legacy string-based DSL
+- `py3plex/graph_ops.py` - Dplyr-style chainable API
+- `py3plex/pipeline.py` - Sklearn-style pipeline
+- `py3plex/workflows.py` - Config-driven workflows
 
-# Compare against baseline
-pytest benchmarks/ --benchmark-compare
+### DSL v2 Internals
+
+- `py3plex/dsl/__init__.py` - Public API exports
+- `py3plex/dsl/builder.py` - Q, L, UQ, Param builders (4600+ lines)
+- `py3plex/dsl/ast.py` - AST node definitions
+- `py3plex/dsl/executor.py` - Query execution engine
+- `py3plex/dsl/result.py` - QueryResult class
+- `py3plex/dsl/layers.py` - Layer algebra (LayerSet)
+- `py3plex/dsl/expressions.py` - F field expressions
+- `py3plex/dsl/errors.py` - DSL-specific exceptions
+
+### Advanced Features
+
+- `py3plex/dynamics/` - Dynamics simulations
+- `py3plex/uncertainty/` - Uncertainty quantification
+- `py3plex/temporal_utils.py` - Temporal utilities
+- `py3plex/nullmodels/` - Null model implementations
+- `py3plex/counterexamples/` - Counterexample engine
+- `py3plex/claims/` - Claim learning
+- `py3plex/algebra/` - Semiring algebra
+
+### Algorithms
+
+- `py3plex/algorithms/centrality/` - Centrality measures
+- `py3plex/algorithms/community_detection/` - Community detection
+- `py3plex/algorithms/temporal/` - Temporal algorithms
+
+### I/O and Data
+
+- `py3plex/io/` - I/O handlers
+- `py3plex/datasets/` - Built-in datasets
+
+### Utilities
+
+- `py3plex/cli.py` - CLI entry point
+- `py3plex/config.py` - Configuration constants
+- `py3plex/exceptions.py` - Exception hierarchy
+- `py3plex/validation.py` - Input validation
+- `py3plex/profiling.py` - Performance profiling
+
+### Documentation
+
+- `AGENTS.md` - AI agent documentation (this file)
+- `README.md` - Quick start
+- `docfiles/` - Documentation source
+- `examples/` - 50+ example scripts
+
+### Tests
+
+- `tests/test_dsl_v2.py` - DSL v2 tests
+- `tests/test_dsl_extensions.py` - DSL extensions
+- `tests/test_graph_ops.py` - Dplyr-style tests
+- `tests/test_pipeline.py` - Pipeline tests
+- `tests/test_dynamics.py` - Dynamics tests
+- `tests/test_uncertainty.py` - UQ tests
+- `tests/test_temporal.py` - Temporal tests
+- `tests/test_counterexamples.py` - Counterexample tests
+- `tests/test_claim_learning.py` - Claim learning tests
+
+---
+
+## API-Specific Patterns (CRITICAL)
+
+### Multi_layer_network API
+
+**Node and Edge Addition**:
+- Use `add_nodes([...])` and `add_edges([...])` (**plural**)
+- Singular forms don't exist
+- Edge dict: `{'source': ..., 'target': ..., 'source_type': ..., 'target_type': ...}`
+- Node dict: `{'source': ..., 'type': ...}`
+
+```python
+# Correct
+net.add_edges([{'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}])
+
+# Wrong - singular form doesn't exist
+# net.add_edge('A', 'B', 'layer1', 'layer1')
 ```
 
-**Profiling:**
+### DSL Architecture
+
+- **DSL v2**: Modern builder API (preferred) - use Q, L, UQ
+- **Legacy DSL**: String-based (backward compat) - use execute_query()
+- Canonical layer selection: `FROM layer="name"` or `.from_layers(L["name"])`
+- Backward compat: `WHERE layer="name"`
+
+### Error Handling
+
+Always use domain-specific exceptions:
+
 ```python
-from py3plex.profiling import profile_performance, timed_section
+from py3plex.exceptions import Py3plexIOError, Py3plexException
 
-@profile_performance
-def my_analysis(network):
-    # Your code here
-    pass
+# For I/O
+raise Py3plexIOError(f"Failed to read: {path}")
 
-with timed_section("community_detection"):
-    communities = detect_communities(network)
+# For general errors
+raise Py3plexException("Invalid configuration")
 ```
 
 ---
 
-## References and Learning Resources
+## Version Information
 
-- **README.md:** Quick start with flagship biological network example
-- **AGENTS.md:** Comprehensive AI agent documentation (this file)
-- **docfiles/:** Detailed documentation source files
-- **examples/:** 50+ working examples demonstrating all features
-- **pyproject.toml:** All dependencies, build config, and tool settings
-- **Technical Book:** `docs/py3plex_book.pdf` - 106-page handbook
+```python
+import py3plex
 
-**Key Examples to Study:**
-- `examples/getting_started/quickstart.py` - Basic usage
-- `examples/network_analysis/dsl_queries.py` - DSL examples
-- `examples/uncertainty/uncertainty_quantification.py` - UQ examples
-- `examples/dynamics/sir_simulation.py` - Dynamics examples
-- `examples/temporal/temporal_analysis.py` - Temporal networks
+print(py3plex.__version__)  # "1.1.0"
+```
+
+**Version History**:
+- **1.1.0** (Current): DSL v2, Dynamics, UQ, Temporal, Null models, Counterexamples, Claim learning
+- **1.0.0**: Initial stable release
+- **0.96**: Pre-release
+
+---
+
+## References
+
+- **README.md**: Quick start and flagship example
+- **AGENTS.md**: Comprehensive AI agent documentation (this file)
+- **docfiles/**: Detailed documentation
+- **examples/**: 50+ working examples
+- **pyproject.toml**: Dependencies and build config
+- **Technical Book**: `docs/py3plex_book.pdf` (106 pages)
 
 ---
 
 ## Contributing Guidelines
 
-When adding new features:
+When adding features:
 
-1. **Minimal Changes:** Make the smallest possible change to achieve the goal
-2. **Type Hints:** Add type hints for all public functions
-3. **Docstrings:** Use Google-style docstrings
-4. **Tests:** Add tests to `tests/` for new features
-5. **Documentation:** Update AGENTS.md and relevant docfiles
-6. **Backward Compatibility:** Never break existing APIs without deprecation
-7. **Domain Exceptions:** Use exceptions from `py3plex.exceptions`
-8. **Dependencies:** Check with `gh-advisory-database` before adding new dependencies
+1. **Type Hints**: Add for all public functions
+2. **Docstrings**: Use Google-style
+3. **Tests**: Add to `tests/` directory
+4. **Documentation**: Update AGENTS.md
+5. **Backward Compatibility**: Never break without deprecation
+6. **Domain Exceptions**: Use exceptions from `py3plex.exceptions`
+7. **Dependencies**: Check with gh-advisory-database before adding
 
-**Code Style:**
+**Code Style**:
 ```bash
-# Format code
 black py3plex/
-
-# Lint
 ruff check py3plex/
-
-# Type check
-mypy py3plex/
+mypy py3plex/  # Requires Python 3.9+
 ```
 
 ---
+
+## Summary: DSL v2 Mental Model
+
+**1. Builder Lifecycle**
+```
+Q.nodes() → configure (.where, .compute, etc.) → .execute(net) → QueryResult
+  lazy         lazy                                 eager          rich object
+```
+
+**2. Grouping Pattern**
+```
+.per_layer() → .top_k(k) → .end_grouping() → .coverage(mode) → .execute()
+  group         per-group     marker           cross-group        run
+```
+
+**3. Compute vs Aggregate**
+```
+.compute("degree")  # Per-item metric (each node/edge)
+.aggregate(avg_degree="mean(degree)")  # Per-group statistic
+```
+
+**4. Layer Algebra**
+```
+L["a"] + L["b"]  # Union
+L["a"] - L["b"]  # Difference
+L["a"] & L["b"]  # Intersection
+L["*"]           # All layers
+```
+
+**5. Uncertainty**
+```
+.uq(method="bootstrap", n_samples=100, ci=0.95, seed=42)
+→ Adds _mean, _std, _ci95_low, _ci95_high columns
+```
+
+**6. Error Handling**
+```
+UnknownLayerError      # Bad layer name
+UnknownAttributeError  # Bad attribute name
+GroupingError          # Grouping misconfiguration
+ParameterMissingError  # Param binding failed
+```
+
+**7. Performance**
+- Filter early with `.where()`
+- Use `.from_layers()` to reduce network size
+- Disable autocompute if metrics pre-computed
+- Start UQ with small n_samples (10-20) for development
+
+**8. Reproducibility**
+- Always set `seed` for randomized operations
+- Save `result.meta['provenance']`
+- Document py3plex version
+
+---
+
+**End of py3plex AI Agent Documentation**
+
+**Last Updated**: 2026-01-07 (for py3plex v1.1.0)
+
