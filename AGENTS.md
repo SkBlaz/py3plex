@@ -2573,47 +2573,157 @@ for claim in claims:
 
 ## Semiring Algebra (Paths, Closure, Fixed-Point)
 
-**PSEUDOCODE SECTION** - Semiring algebra is implemented but simplified here for agent guidance.
+**Formal Definitions (Verbatim from Specification)**
 
-### Concept
+**Definition (Semiring).**
+A semiring is a tuple (K, ⊕, ⊗, 0, 1) where K is a set and ⊕, ⊗ are binary operations on K such that:
+1) (K, ⊕, 0) is a commutative monoid: ⊕ is associative and commutative, and 0 is the identity (a ⊕ 0 = a).
+2) (K, ⊗, 1) is a monoid: ⊗ is associative and 1 is the identity (a ⊗ 1 = 1 ⊗ a = a).
+3) ⊗ distributes over ⊕: a ⊗ (b ⊕ c) = (a ⊗ b) ⊕ (a ⊗ c), and (b ⊕ c) ⊗ a = (b ⊗ a) ⊕ (c ⊗ a).
+4) 0 is absorbing for ⊗: 0 ⊗ a = a ⊗ 0 = 0.
 
-Semirings generalize shortest-path algorithms to solve problems like:
-- Shortest paths (min-plus semiring)
-- Most reliable paths (max-times semiring)
-- Reachability (boolean semiring)
+**Note**: Some useful semirings relax commutativity of ⊕; this library supports both "strict" and "relaxed" modes.
+
+**Definition (Lift).**
+Given an edge e, lift : Edge → K maps edge attributes into semiring space.
+
+**Definition (Path algebra).**
+For a walk w = (e1, e2, ..., ek), its semiring weight is: W(w) = lift(e1) ⊗ lift(e2) ⊗ ... ⊗ lift(ek).
+
+**Definition (Closure).**
+A* = I ⊕ A ⊕ A^2 ⊕ A^3 ⊕ ... where I[u,u]=1 and I[u,v]=0 for u≠v.
+
+### Package Structure
+
+- **py3plex/semiring/core.py** - SemiringSpec dataclass with bounded validation
+- **py3plex/semiring/registry.py** - Registry with built-in semirings
+- **py3plex/semiring/types.py** - Type definitions (EdgeView, LiftFn, PathResult)
+- **py3plex/semiring/engine.py** - Path and closure algorithms
+- **py3plex/semiring/pareto.py** - Multiobjective Pareto frontier support
+- **py3plex/dsl/builder.py** - S builder (lines 3869-4255)
+- **py3plex/dsl/executor_semiring.py** - Execution logic
+
+### Built-in Semirings
+
+1. **min_plus** - Shortest paths (K=ℝ∪{∞}, ⊕=min, ⊗=+, 0=∞, 1=0)
+2. **boolean** - Reachability (K={False,True}, ⊕=or, ⊗=and, 0=False, 1=True)
+3. **max_times** - Most reliable paths (K=[0,1], ⊕=max, ⊗=×, 0=0, 1=1)
+4. **tropical_lex** - Lexicographic (K=(cost, switches), ⊕=lex-min, ⊗=component-add)
 
 ### S — Semiring Builder
 
 ```python
 from py3plex.dsl import S, L
 
-# Shortest paths
+# Shortest paths (min_plus)
 result = (
     S.paths()
      .from_node("Alice")
-     .to_node("Bob")
+     .to_node("Bob")                    # Optional: omit for all-pairs
      .semiring("min_plus")
      .lift(attr="weight", default=1.0)
      .from_layers(L["social"] + L["work"])
+     .max_hops(10)                      # Required for non-idempotent semirings without leq
+     .witness(True)                     # Request path witnesses
+     .algorithm("auto")                 # auto|dijkstra|bellman_ford
      .execute(net)
 )
 
-# Reachability
+# Boolean reachability
 result = (
     S.paths()
      .from_node("Alice")
      .semiring("boolean")
+     .lift(attr=None, default=True)     # All edges contribute True
      .execute(net)
 )
 
-# All-pairs shortest paths
+# All-pairs closure
 result = (
     S.closure()
      .semiring("min_plus")
      .lift(attr="weight", default=1.0)
+     .max_hops(10)                      # Required for large networks
      .execute(net)
 )
+
+# Custom semiring
+from py3plex.semiring import SemiringSpec, register_semiring
+import math
+
+custom = SemiringSpec(
+    name="my_semiring",
+    zero=math.inf,
+    one=0.0,
+    plus=lambda a, b: min(a, b),
+    times=lambda a, b: a + b,
+    strict=True,
+    is_idempotent_plus=True,
+    examples=(0.0, 1.0, 2.0, math.inf),
+)
+register_semiring(custom, overwrite=True)
+
+result = S.paths().from_node('A').semiring('my_semiring').execute(net)
 ```
+
+### Key Methods
+
+**S.paths()** - Create semiring path query:
+- `.from_node(source)` - Required: source node
+- `.to_node(target)` - Optional: target node (omit for all nodes)
+- `.semiring(name)` - Semiring name or spec
+- `.lift(attr="weight", default=1.0)` - Edge weight extraction
+- `.from_layers(L[...])` - Layer filter
+- `.max_hops(n)` - Maximum path length (required for non-idempotent without leq)
+- `.witness(True)` - Request path witnesses
+- `.algorithm("auto"|"dijkstra"|"bellman_ford")` - Algorithm selection
+- `.execute(net)` - Execute query
+
+**S.closure()** - Create closure query:
+- `.semiring(name)` - Semiring name
+- `.lift(attr="weight", default=1.0)` - Edge weight extraction
+- `.from_layers(L[...])` - Layer filter
+- `.max_hops(n)` - Required for large networks (default threshold: 100 nodes)
+- `.execute(net)` - Execute query
+
+### Critical Implementation Notes
+
+**max_hops Requirement**:
+- Non-idempotent semirings WITHOUT `leq` ordering REQUIRE explicit `max_hops`
+- If omitted, error is raised with actionable message
+- If non-idempotent WITH `leq` ordering but no `max_hops`: warning issued, safe default used
+- Closure on networks > 100 nodes requires `max_hops` unless size_threshold increased
+
+**Algorithm Selection (auto mode)**:
+- Uses Dijkstra for: min_plus OR (idempotent_plus AND leq exists)
+- Falls back to Bellman-Ford otherwise
+- Explicit override with `.algorithm("dijkstra"|"bellman_ford")`
+
+**Determinism**:
+- All operations deterministic with fixed random seeds
+- Registry ordering: alphabetical (stable)
+- Pareto frontier: deterministic ordering via stable sort
+
+**Provenance**:
+- `result.meta['provenance']['algebra']['semiring']['name']` - Semiring used
+- `result.meta['provenance']['algorithm']` - Algorithm selected
+- `result.meta['provenance']['relaxations']` - Iteration count
+- `result.meta['provenance']['performance']['total_ms']` - Timing
+
+### Common Pitfalls
+
+1. **Forgetting max_hops for non-idempotent semirings**: Will raise SemiringExecutionError
+2. **Large closure without max_hops**: Network > 100 nodes requires explicit bound
+3. **Assuming all semirings use Dijkstra**: Only works for monotone ordered semirings
+4. **Path witnesses without .witness(True)**: Path reconstruction requires explicit request
+
+### File Locations
+
+- Core: `py3plex/semiring/{core,registry,types,engine,pareto}.py`
+- DSL: `py3plex/dsl/{builder,executor_semiring}.py` (S builder)
+- Tests: `tests/test_semiring_*.py` (verification, negative cases, etc.)
+- Examples: `examples/network_analysis/semiring_{paths,boolean,tropical_lex,pareto}.py`
+- Docs: `docfiles/user_guide/dsl.rst` (Semiring Algebra section)
 
 ---
 
