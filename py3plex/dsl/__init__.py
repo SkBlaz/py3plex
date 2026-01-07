@@ -128,6 +128,8 @@ from .builder import (
     S,
     SemiringPathBuilder,
     SemiringClosureBuilder,
+    # Counterexample builder
+    CounterexampleBuilder,
 )
 
 from .layers import (
@@ -305,6 +307,8 @@ __all__ = [
     "S",
     "SemiringPathBuilder",
     "SemiringClosureBuilder",
+    # Counterexample Builder
+    "CounterexampleBuilder",
     # Pattern Matching
     "PatternNode",
     "PatternEdge",

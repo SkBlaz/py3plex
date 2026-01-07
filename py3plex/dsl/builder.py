@@ -2798,6 +2798,24 @@ class Q:
             ... )
         """
         return TrajectoriesBuilder(process_ref)
+    
+    @staticmethod
+    def counterexample() -> "CounterexampleBuilder":
+        """Create a counterexample query builder.
+        
+        Returns:
+            CounterexampleBuilder for finding network counterexamples
+            
+        Example:
+            >>> cex = (
+            ...     Q.counterexample()
+            ...      .claim("degree__ge(k) -> pagerank__rank_gt(r)")
+            ...      .params(k=10, r=50)
+            ...      .seed(42)
+            ...      .execute(network)
+            ... )
+        """
+        return CounterexampleBuilder()
 
     @staticmethod
     def pattern() -> "PatternQueryBuilder":
@@ -4148,3 +4166,172 @@ class S:
     def closure() -> SemiringClosureBuilder:
         """Create a semiring closure query builder."""
         return SemiringClosureBuilder()
+
+
+# ============================================================================
+# Counterexample Builder
+# ============================================================================
+
+
+class CounterexampleBuilder:
+    """Builder for counterexample queries.
+    
+    Example:
+        >>> from py3plex.dsl import Q
+        >>> cex = (Q.counterexample()
+        ...          .claim("degree__ge(k) -> pagerank__rank_gt(r)")
+        ...          .params(k=10, r=50)
+        ...          .seed(42)
+        ...          .execute(net))
+    """
+    
+    def __init__(self):
+        """Initialize counterexample builder."""
+        self._claim_str: Optional[str] = None
+        self._params: Dict[str, Any] = {}
+        self._layers: Optional[List[str]] = None
+        self._seed: int = 42
+        self._find_minimal: bool = True
+        self._budget_max_tests: int = 200
+        self._budget_max_witness_size: int = 500
+        self._initial_radius: int = 2
+    
+    def claim(self, claim_str: str) -> "CounterexampleBuilder":
+        """Set the claim to check.
+        
+        Args:
+            claim_str: Claim string (e.g., "degree__ge(k) -> pagerank__rank_gt(r)")
+            
+        Returns:
+            Self for chaining
+        """
+        self._claim_str = claim_str
+        return self
+    
+    def params(self, **kwargs) -> "CounterexampleBuilder":
+        """Set parameter bindings for the claim.
+        
+        Args:
+            **kwargs: Parameter bindings (e.g., k=10, r=50)
+            
+        Returns:
+            Self for chaining
+        """
+        self._params.update(kwargs)
+        return self
+    
+    def layers(self, layer_expr: Any) -> "CounterexampleBuilder":
+        """Set layers to consider.
+        
+        Args:
+            layer_expr: Layer expression (e.g., L["social"] + L["work"])
+            
+        Returns:
+            Self for chaining
+        """
+        # Extract layer names from layer expression
+        if hasattr(layer_expr, 'to_ast'):
+            # LayerExprBuilder
+            ast = layer_expr.to_ast()
+            self._layers = self._extract_layer_names(ast)
+        elif isinstance(layer_expr, list):
+            self._layers = layer_expr
+        else:
+            self._layers = [str(layer_expr)]
+        return self
+    
+    def seed(self, seed: int) -> "CounterexampleBuilder":
+        """Set random seed for determinism.
+        
+        Args:
+            seed: Random seed
+            
+        Returns:
+            Self for chaining
+        """
+        self._seed = seed
+        return self
+    
+    def find_minimal(self, minimal: bool = True) -> "CounterexampleBuilder":
+        """Set whether to minimize witness.
+        
+        Args:
+            minimal: Whether to find minimal witness
+            
+        Returns:
+            Self for chaining
+        """
+        self._find_minimal = minimal
+        return self
+    
+    def budget(self, max_tests: int = 200, max_witness_size: int = 500) -> "CounterexampleBuilder":
+        """Set resource budgets.
+        
+        Args:
+            max_tests: Maximum violation tests during minimization
+            max_witness_size: Maximum witness size (nodes)
+            
+        Returns:
+            Self for chaining
+        """
+        self._budget_max_tests = max_tests
+        self._budget_max_witness_size = max_witness_size
+        return self
+    
+    def initial_radius(self, radius: int) -> "CounterexampleBuilder":
+        """Set initial ego subgraph radius.
+        
+        Args:
+            radius: Ego subgraph radius (default: 2)
+            
+        Returns:
+            Self for chaining
+        """
+        self._initial_radius = radius
+        return self
+    
+    def execute(self, network: Any) -> Optional[Any]:
+        """Execute counterexample search.
+        
+        Args:
+            network: py3plex multi_layer_network object
+            
+        Returns:
+            Counterexample object if found, None otherwise
+            
+        Raises:
+            CounterexampleNotFound: If no violation exists
+        """
+        from py3plex.counterexamples import find_counterexample
+        from py3plex.counterexamples.types import Budget
+        
+        if self._claim_str is None:
+            raise ValueError("Claim must be set before executing")
+        
+        budget = Budget(
+            max_tests=self._budget_max_tests,
+            max_witness_size=self._budget_max_witness_size,
+        )
+        
+        return find_counterexample(
+            network=network,
+            claim_str=self._claim_str,
+            params=self._params,
+            layers=self._layers,
+            seed=self._seed,
+            find_minimal=self._find_minimal,
+            budget=budget,
+            initial_radius=self._initial_radius,
+        )
+    
+    def _extract_layer_names(self, layer_ast: Any) -> List[str]:
+        """Extract layer names from layer AST."""
+        from .ast import LayerExpr, LayerTerm
+        
+        names = []
+        if isinstance(layer_ast, LayerExpr):
+            for term in layer_ast.terms:
+                names.extend(self._extract_layer_names(term))
+        elif isinstance(layer_ast, LayerTerm):
+            names.append(layer_ast.name)
+        return names
