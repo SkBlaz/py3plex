@@ -1055,6 +1055,72 @@ class QueryBuilder:
 
         return self
 
+    def contract(self, contract: "Robustness") -> "QueryBuilder":
+        """Attach a robustness contract to the query (certification-grade).
+        
+        Contracts ensure that query conclusions are stable under structural
+        perturbations. This is distinct from uncertainty quantification:
+        - UQ quantifies uncertainty of estimates (error bars)
+        - Contracts certify robustness of conclusions (stable/unstable)
+        
+        Contracts provide:
+        - **Typed failure modes**: Clear classification of why a contract might fail
+        - **Auto-inference**: Sensible defaults for perturbation, predicates, samples
+        - **Repair mechanisms**: Stable cores, tiers, stable nodes
+        - **Determinism**: Default seed=0 ensures reproducibility
+        - **Provenance**: Full replay capability
+        
+        Args:
+            contract: Robustness contract object from py3plex.contracts
+            
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> from py3plex.contracts import Robustness
+            >>> 
+            >>> # Minimal usage - all defaults
+            >>> result = (Q.nodes()
+            ...           .compute("pagerank")
+            ...           .top_k(20, "pagerank")
+            ...           .contract(Robustness())
+            ...           .execute(net))
+            >>> 
+            >>> if result.contract_ok:
+            ...     print("Top-20 PageRank is stable!")
+            ... else:
+            ...     print(f"Contract failed: {result.failure_mode}")
+            ...     print("Stable core:", result.stable_core)
+            >>> 
+            >>> # Override defaults
+            >>> result = (Q.nodes()
+            ...           .compute("degree")
+            ...           .top_k(10, "degree")
+            ...           .contract(Robustness(n_samples=100, p_max=0.2))
+            ...           .execute(net))
+            >>> 
+            >>> # Ranking stability
+            >>> result = (Q.nodes()
+            ...           .compute("betweenness_centrality")
+            ...           .order_by("betweenness_centrality", desc=True)
+            ...           .contract(Robustness())
+            ...           .execute(net))
+            >>> 
+            >>> # Community stability
+            >>> result = (Q.nodes()
+            ...           .community()
+            ...           .contract(Robustness())
+            ...           .execute(net))
+        
+        Note:
+            Only one contract per query is supported. Calling .contract() multiple
+            times will replace the previous contract.
+        """
+        from .ast import ContractSpec
+        
+        self._select.contract_spec = ContractSpec(contract=contract)
+        return self
+    
     def explain(
         self,
         neighbors_top: Optional[int] = None,
