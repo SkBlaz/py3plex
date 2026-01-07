@@ -1919,6 +1919,254 @@ Example performance optimization::
         high_degree = [n for n in result['nodes'] 
                       if network.core_network.degree(n) > threshold]
 
+Replayable Provenance and Query Replay
+---------------------------------------
+
+**New in v1.1:** py3plex provides replayable provenance that captures sufficient information to deterministically reproduce query results. This enables reproducible research, debugging, and result verification.
+
+Basic Usage
+~~~~~~~~~~~
+
+Execute queries with replayable provenance using the ``.provenance()`` method:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    # Execute with replayable provenance
+    result = (
+        Q.nodes()
+         .provenance(mode="replayable", capture="auto", seed=42)
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+    )
+    
+    # Check if replayable
+    print(result.is_replayable)  # True
+    
+    # Replay to reproduce results
+    result2 = result.replay(strict=False)
+    assert result.count == result2.count
+
+Provenance Modes
+~~~~~~~~~~~~~~~~
+
+- **log** (default): Lightweight metadata tracking for development
+- **replayable**: Full provenance with network snapshot and AST serialization
+
+Capture Methods
+~~~~~~~~~~~~~~~
+
+- **auto**: Automatically decide based on network size (recommended)
+- **fingerprint**: Only capture metadata (for very large networks)
+- **snapshot**: Always capture full network state
+- **delta**: Capture changes from base (future feature)
+
+.. code-block:: python
+
+    # Auto-capture (recommended)
+    result = Q.nodes().provenance(mode="replayable", capture="auto", seed=42).execute(network)
+    
+    # Force snapshot for complete replay
+    result = Q.nodes().provenance(mode="replayable", capture="snapshot").execute(network)
+    
+    # Fingerprint only (lightweight)
+    result = Q.nodes().provenance(mode="log", capture="fingerprint").execute(network)
+
+Convenience Method: reproducible()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For simpler syntax, use the ``.reproducible()`` method:
+
+.. code-block:: python
+
+    # Equivalent to .provenance(mode="replayable", capture="auto", seed=42)
+    result = (
+        Q.nodes()
+         .reproducible(True, seed=42)
+         .compute("degree")
+         .execute(network)
+    )
+    
+    # Disable reproducibility
+    result = Q.nodes().reproducible(False).compute("degree").execute(network)
+
+Bundle Export and Import
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Export results with provenance as portable bundles:
+
+.. code-block:: python
+
+    from py3plex.provenance import replay_from_bundle
+    
+    # Export bundle (compressed JSON)
+    result.export_bundle("result.json.gz", compress=True)
+    
+    # Load and replay from bundle
+    result2 = replay_from_bundle("result.json.gz", strict=False)
+    
+    # Or load without replaying
+    from py3plex.provenance import load_bundle
+    bundle = load_bundle("result.json.gz")
+    prov = bundle["provenance"]
+
+Deterministic Replay with Uncertainty
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Replayable provenance works seamlessly with uncertainty quantification:
+
+.. code-block:: python
+
+    # Original query
+    result1 = (
+        Q.nodes()
+         .reproducible(True, seed=42)
+         .uq(method="bootstrap", n_samples=100)
+         .compute("betweenness_centrality")
+         .execute(network)
+    )
+    
+    # Replay produces identical confidence intervals
+    result2 = result1.replay()
+    
+    # Verify deterministic reproduction
+    for node in result1.items:
+        stats1 = result1.attributes['betweenness_centrality'][node]
+        stats2 = result2.attributes['betweenness_centrality'][node]
+        assert stats1['mean'] == stats2['mean']
+
+Accessing Provenance
+~~~~~~~~~~~~~~~~~~~~~
+
+Query results include structured provenance metadata:
+
+.. code-block:: python
+
+    # Access provenance
+    prov = result.provenance
+    
+    # Schema information
+    print(prov['schema_version'])  # "1.0"
+    print(prov['mode'])  # "replayable"
+    
+    # Query information
+    print(prov['query']['engine'])  # "dsl_v2_executor"
+    print(prov['query']['ast_summary'])  # Human-readable summary
+    
+    # Network snapshot
+    nc = prov['network_capture']
+    print(nc['node_count'], nc['edge_count'])
+    print(nc['capture_method'])  # "snapshot_graph"
+    
+    # Randomness configuration
+    if prov['randomness']['used']:
+        print(prov['randomness']['base_seed'])
+    
+    # Performance timing
+    for stage, time_ms in prov['performance'].items():
+        print(f"{stage}: {time_ms:.2f}ms")
+
+Size Guardrails
+~~~~~~~~~~~~~~~
+
+Provenance respects size limits to avoid memory issues:
+
+- Networks ≤10,000 nodes and ≤50,000 edges: inline snapshot
+- Larger networks: fingerprint only (unless explicitly set to snapshot)
+- Configurable via ``max_bytes`` parameter
+
+.. code-block:: python
+
+    # Custom size limits
+    result = (
+        Q.nodes()
+         .provenance(
+             mode="replayable",
+             capture="auto",
+             max_bytes=20*1024*1024  # 20MB limit
+         )
+         .execute(network)
+    )
+
+Backward Compatibility
+~~~~~~~~~~~~~~~~~~~~~~
+
+Queries without provenance configuration use log mode by default:
+
+.. code-block:: python
+
+    # Legacy behavior (still works)
+    result = Q.nodes().compute("degree").execute(network)
+    
+    # Has provenance but not replayable
+    assert result.provenance is not None
+    assert not result.is_replayable  # False (log mode)
+
+Best Practices
+~~~~~~~~~~~~~~
+
+**When to use replayable provenance:**
+
+- Publishing research results (papers, reports)
+- Debugging complex queries
+- Archiving analysis results
+- Collaborative workflows requiring verification
+
+**When log mode is sufficient:**
+
+- Exploratory analysis
+- Development and testing
+- Interactive sessions
+- Performance-critical applications
+
+.. code-block:: python
+
+    # Research/production: enable reproducibility
+    result = Q.nodes().reproducible(True, seed=42).compute("degree").execute(network)
+    result.export_bundle("paper_results/network_analysis.json.gz")
+    
+    # Development: use default log mode
+    result = Q.nodes().compute("degree").execute(network)
+
+Limitations
+~~~~~~~~~~~
+
+- **Large Networks:** Auto-capture uses fingerprint for >10k nodes
+- **Version Compatibility:** ``strict=True`` enforces exact version match
+- **Non-Deterministic Operations:** Some hash-based operations may differ across Python versions
+
+Example: Complete Reproducible Workflow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    from py3plex.provenance import replay_from_bundle
+    
+    # Step 1: Execute analysis with reproducibility
+    result = (
+        Q.nodes()
+         .reproducible(True, seed=42)
+         .from_layers(L["social"])
+         .where(degree__gt=3)
+         .uq(method="bootstrap", n_samples=100)
+         .compute("betweenness_centrality", "clustering")
+         .order_by("-betweenness_centrality")
+         .limit(20)
+         .execute(network)
+    )
+    
+    # Step 2: Export bundle for archival
+    result.export_bundle("top_nodes_analysis.json.gz")
+    
+    # Step 3: Later, replay from bundle
+    result2 = replay_from_bundle("top_nodes_analysis.json.gz")
+    
+    # Step 4: Verify deterministic reproduction
+    assert result.count == result2.count
+    assert result.items == result2.items
+
 Further Reading
 ---------------
 
@@ -1934,3 +2182,77 @@ See Also
 - NetworkX documentation for centrality measures
 - Examples directory for complete use cases
 - API documentation for detailed function signatures
+
+Counterexample Generation
+--------------------------
+
+Py3plex's DSL v2 includes a **counterexample generation engine** that finds violations of network invariants and provides minimal witness subgraphs.
+
+Use Cases
+~~~~~~~~~
+
+- **Hypothesis Testing**: Verify or refute claims about network properties
+- **Algorithm Debugging**: Find edge cases that violate assumptions
+- **Network Understanding**: Discover counterintuitive patterns
+
+Basic Usage
+~~~~~~~~~~~
+
+Use ``Q.counterexample()`` to find violations:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    from py3plex.core import multinet
+    
+    # Build network
+    net = multinet.multi_layer_network(directed=False)
+    # ... add nodes and edges ...
+    
+    # Find counterexample
+    cex = (Q.counterexample()
+             .claim("degree__ge(k) -> pagerank__rank_le(r)")
+             .params(k=10, r=50)
+             .seed(42)
+             .execute(net))
+    
+    if cex:
+        print(cex.explain())
+        witness = cex.subgraph
+
+Claim Syntax
+~~~~~~~~~~~~
+
+Claims are implications in the format: ``antecedent -> consequent``
+
+**Supported comparators**: ``gt``, ``ge``, ``gte``, ``lt``, ``le``, ``lte``, ``eq``, ``ne``
+
+**Examples**:
+
+.. code-block:: python
+
+    # Value-based predicates
+    "degree__ge(k) -> pagerank__gt(x)"
+    "betweenness_centrality__ge(x) -> degree__ge(k)"
+    
+    # Rank-based predicates  
+    "degree__ge(k) -> pagerank__rank_le(r)"
+    "betweenness_centrality__gt(x) -> pagerank__rank_gt(r)"
+
+Configuration Options
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    cex = (Q.counterexample()
+             .claim("degree__ge(k) -> pagerank__rank_le(r)")
+             .params(k=10, r=50)
+             .seed(42)                          # Determinism
+             .find_minimal(True)                # Minimize witness
+             .budget(max_tests=200,             # Minimization budget
+                    max_witness_size=500)      # Max witness nodes
+             .initial_radius(2)                 # Ego subgraph radius
+             .layers(L["social"] + L["work"])  # Layer selection
+             .execute(net))
+
+For more details, see the **AGENTS.md** file.

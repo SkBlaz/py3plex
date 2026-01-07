@@ -203,6 +203,11 @@
 </li>
 <li><p><a class="reference internal" href="#see-also" id="id31">See Also</a></p></li>
 <li><p><a class="reference internal" href="#references" id="id32">References</a></p></li>
+<li><p><a class="reference internal" href="#distributional-community-detection" id="id33">Distributional Community Detection</a></p>
+<ul>
+<li><p><a class="reference internal" href="#quick-example" id="id34">Quick Example</a></p></li>
+</ul>
+</li>
 </ul>
 </nav>
 <section id="overview">
@@ -776,6 +781,34 @@
 <li><p>Efron, B., &amp; Tibshirani, R. J. (1994). <em>An Introduction to the Bootstrap</em>. CRC press.</p></li>
 <li><p>Milo, R., et al. (2002). “Network motifs: simple building blocks of complex networks.” <em>Science</em>, 298(5594), 824-827.</p></li>
 </ul>
+</section>
+<section id="distributional-community-detection">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Distributional Community Detection</a><a class="headerlink" href="#distributional-community-detection" title="Link to this heading"></a></h2>
+<p><strong>New in v1.1</strong>: Uncertainty-aware community detection.</p>
+<p>Beyond metrics, py3plex now supports distributional community detection that quantifies uncertainty in community assignments.</p>
+<section id="quick-example">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Quick Example</a><a class="headerlink" href="#quick-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_louvain_distribution</span>
+
+<span class="c1"># Run distributional community detection</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">multilayer_louvain_distribution</span><span class="p">(</span>
+    <span class="n">net</span><span class="p">,</span>
+    <span class="n">n_runs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">resampling</span><span class="o">=</span><span class="s1">&#39;perturbation&#39;</span><span class="p">,</span>
+    <span class="n">perturbation_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;edge_drop_p&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Get consensus and confidence</span>
+<span class="n">consensus</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">consensus_partition</span><span class="p">()</span>
+<span class="n">confidence</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">node_confidence</span><span class="p">()</span>
+
+<span class="c1"># Filter stable core (high confidence nodes)</span>
+<span class="n">stable_mask</span> <span class="o">=</span> <span class="n">confidence</span> <span class="o">&gt;=</span> <span class="mf">0.8</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../user_guide/community_detection.html"><span class="doc">Community Detection</span></a> for complete documentation.</p>
+</section>
 </section>
 </section>
 

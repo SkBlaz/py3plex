@@ -749,3 +749,76 @@ What's Next?
 
 * ``examples/communities/example_community_detection.py`` — Complete workflow
 * ``examples/communities/example_multilayer_louvain.py`` — Parameter tuning
+
+----
+
+Distributional Community Detection (New in v1.1)
+-------------------------------------------------
+
+**Uncertainty-aware community detection** via distributional partitions.
+
+Traditional community detection returns a single partition. But what if the structure is uncertain? **Distributional community detection** runs the algorithm multiple times (with different seeds or on perturbed networks) to produce a **distribution over partitions**.
+
+This enables:
+
+- **Co-association matrices**: P(node_i and node_j in same community)
+- **Consensus partitions**: Representative partition (medoid)
+- **Node confidence scores**: Per-node stability measures
+- **Boundary node identification**: Nodes with uncertain assignments
+
+Basic Usage
+~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.community_detection import multilayer_louvain_distribution
+    
+    # Load network
+    net = multinet.multi_layer_network(directed=False)
+    net.load_network("data.edgelist", directed=False, input_type="edgelist_hash")
+    
+    # Run distributional community detection
+    dist = multilayer_louvain_distribution(
+        net,
+        n_runs=100,
+        resampling='perturbation',
+        perturbation_params={'edge_drop_p': 0.05},
+        seed=42,
+        n_jobs=4
+    )
+    
+    # Get consensus partition
+    consensus = dist.consensus_partition()
+    
+    # Get per-node confidence scores
+    confidence = dist.node_confidence()
+    
+    # Identify stable vs boundary nodes
+    stable_mask = confidence >= 0.8
+    stable_nodes = [dist.nodes[i] for i in range(dist.n_nodes) if stable_mask[i]]
+    
+    print(f"Communities: {len(set(consensus))}")
+    print(f"Stable core: {len(stable_nodes)}/{dist.n_nodes} nodes")
+
+Resampling Strategies
+~~~~~~~~~~~~~~~~~~~~~
+
+**Seed-only** (``resampling='seed'``):
+  Run algorithm multiple times with different random seeds. **Fastest**, captures algorithm stochasticity.
+
+**Perturbation** (``resampling='perturbation'``):
+  Randomly drop edges before each run (e.g., ``edge_drop_p=0.05``). **Assesses structural uncertainty**.
+
+**Bootstrap** (``resampling='bootstrap'``):
+  Resample edges with replacement. **Statistical bootstrap** for formal inference.
+
+Best Practices
+~~~~~~~~~~~~~~
+
+1. Use ``coassoc_mode='auto'`` for large networks (sparse for n_nodes > 2000)
+2. Always set seed for reproducibility
+3. Use ``resampling='seed'`` as default (fastest)
+4. Use ``weight_by='modularity'`` to weight better partitions more heavily
+
+See ``examples/communities/example_distributional_community_detection.py`` for complete example.

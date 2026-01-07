@@ -847,6 +847,74 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">examples/communities/example_multilayer_louvain.py</span></code> — Parameter tuning</p></li>
 </ul>
 </section>
+<hr class="docutils" />
+<section id="distributional-community-detection-new-in-v1-1">
+<h2>Distributional Community Detection (New in v1.1)<a class="headerlink" href="#distributional-community-detection-new-in-v1-1" title="Link to this heading"></a></h2>
+<p><strong>Uncertainty-aware community detection</strong> via distributional partitions.</p>
+<p>Traditional community detection returns a single partition. But what if the structure is uncertain? <strong>Distributional community detection</strong> runs the algorithm multiple times (with different seeds or on perturbed networks) to produce a <strong>distribution over partitions</strong>.</p>
+<p>This enables:</p>
+<ul class="simple">
+<li><p><strong>Co-association matrices</strong>: P(node_i and node_j in same community)</p></li>
+<li><p><strong>Consensus partitions</strong>: Representative partition (medoid)</p></li>
+<li><p><strong>Node confidence scores</strong>: Per-node stability measures</p></li>
+<li><p><strong>Boundary node identification</strong>: Nodes with uncertain assignments</p></li>
+</ul>
+<section id="id8">
+<h3>Basic Usage<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_louvain_distribution</span>
+
+<span class="c1"># Load network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist_hash&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run distributional community detection</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">multilayer_louvain_distribution</span><span class="p">(</span>
+    <span class="n">net</span><span class="p">,</span>
+    <span class="n">n_runs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">resampling</span><span class="o">=</span><span class="s1">&#39;perturbation&#39;</span><span class="p">,</span>
+    <span class="n">perturbation_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;edge_drop_p&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span>
+<span class="p">)</span>
+
+<span class="c1"># Get consensus partition</span>
+<span class="n">consensus</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">consensus_partition</span><span class="p">()</span>
+
+<span class="c1"># Get per-node confidence scores</span>
+<span class="n">confidence</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">node_confidence</span><span class="p">()</span>
+
+<span class="c1"># Identify stable vs boundary nodes</span>
+<span class="n">stable_mask</span> <span class="o">=</span> <span class="n">confidence</span> <span class="o">&gt;=</span> <span class="mf">0.8</span>
+<span class="n">stable_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dist</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">stable_mask</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">consensus</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stable core: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stable_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">n_nodes</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="resampling-strategies">
+<h3>Resampling Strategies<a class="headerlink" href="#resampling-strategies" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Seed-only</strong> (<code class="docutils literal notranslate"><span class="pre">resampling='seed'</span></code>):</dt><dd><p>Run algorithm multiple times with different random seeds. <strong>Fastest</strong>, captures algorithm stochasticity.</p>
+</dd>
+<dt><strong>Perturbation</strong> (<code class="docutils literal notranslate"><span class="pre">resampling='perturbation'</span></code>):</dt><dd><p>Randomly drop edges before each run (e.g., <code class="docutils literal notranslate"><span class="pre">edge_drop_p=0.05</span></code>). <strong>Assesses structural uncertainty</strong>.</p>
+</dd>
+<dt><strong>Bootstrap</strong> (<code class="docutils literal notranslate"><span class="pre">resampling='bootstrap'</span></code>):</dt><dd><p>Resample edges with replacement. <strong>Statistical bootstrap</strong> for formal inference.</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h3>Best Practices<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">coassoc_mode='auto'</span></code> for large networks (sparse for n_nodes &gt; 2000)</p></li>
+<li><p>Always set seed for reproducibility</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">resampling='seed'</span></code> as default (fastest)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">weight_by='modularity'</span></code> to weight better partitions more heavily</p></li>
+</ol>
+<p>See <code class="docutils literal notranslate"><span class="pre">examples/communities/example_distributional_community_detection.py</span></code> for complete example.</p>
+</section>
+</section>
 </section>
 
 
