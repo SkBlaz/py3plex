@@ -9,19 +9,19 @@ This module defines the core dataclasses used in counterexample generation:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
-import hashlib
+from typing import Any, Callable, Dict, Optional, Set, Tuple
 
 
 @dataclass
 class Budget:
     """Resource limits for counterexample generation.
-    
+
     Attributes:
         max_tests: Maximum number of violation tests during minimization
         max_witness_size: Maximum nodes/edges in witness (enforced during extraction)
         timeout_seconds: Optional timeout for entire process
     """
+
     max_tests: int = 200
     max_witness_size: int = 500
     timeout_seconds: Optional[float] = None
@@ -30,10 +30,10 @@ class Budget:
 @dataclass
 class Claim:
     """Represents a network invariant claim.
-    
+
     A claim is typically an implication: antecedent -> consequent
     For MVP: degree__ge(k) -> pagerank__rank_gt(r)
-    
+
     Attributes:
         claim_str: Original claim string
         claim_hash: Stable hash of normalized claim
@@ -42,13 +42,14 @@ class Claim:
         params: Parameter bindings (e.g., {"k": 10, "r": 50})
         description: Human-readable description
     """
+
     claim_str: str
     claim_hash: str
     antecedent: Callable[[Any], bool]
     consequent: Callable[[Any, Dict[str, Any]], bool]
     params: Dict[str, Any] = field(default_factory=dict)
     description: str = ""
-    
+
     def __post_init__(self):
         """Set description from claim_str if not provided."""
         if not self.description:
@@ -58,7 +59,7 @@ class Claim:
 @dataclass
 class Violation:
     """Represents a specific violation of a claim.
-    
+
     Attributes:
         node: Node identifier
         layer: Layer where violation occurs
@@ -66,6 +67,7 @@ class Violation:
         consequent_values: Metric values that violate consequent
         margin: How badly the consequent is violated (higher = worse)
     """
+
     node: Any
     layer: str
     antecedent_values: Dict[str, Any]
@@ -76,7 +78,7 @@ class Violation:
 @dataclass
 class MinimizationReport:
     """Report on minimization process.
-    
+
     Attributes:
         is_minimal: Whether witness is provably minimal within budget
         tests_used: Number of violation tests performed
@@ -88,6 +90,7 @@ class MinimizationReport:
         strategy: Minimization strategy used (e.g., "ddmin_edges")
         time_ms: Time spent in minimization (milliseconds)
     """
+
     is_minimal: bool
     tests_used: int
     max_tests: int
@@ -102,7 +105,7 @@ class MinimizationReport:
 @dataclass
 class Counterexample:
     """Complete counterexample with witness subgraph and provenance.
-    
+
     Attributes:
         subgraph: Witness subgraph (py3plex multi_layer_network)
         violation: The violation found
@@ -111,16 +114,17 @@ class Counterexample:
         minimization: Report on minimization process
         meta: Metadata including provenance
     """
+
     subgraph: Any  # multi_layer_network object
     violation: Violation
     witness_nodes: Set[Tuple[Any, str]]
     witness_edges: Set[Tuple[Any, Any, str, str]]
     minimization: MinimizationReport
     meta: Dict[str, Any] = field(default_factory=dict)
-    
+
     def explain(self) -> str:
         """Generate human-readable explanation of counterexample.
-        
+
         Returns:
             Multi-line string explaining the counterexample
         """
@@ -129,39 +133,43 @@ class Counterexample:
         lines.append("COUNTEREXAMPLE FOUND")
         lines.append("=" * 70)
         lines.append("")
-        
+
         # Violation details
         lines.append(f"Violating Node: {self.violation.node}")
         lines.append(f"Layer: {self.violation.layer}")
         lines.append("")
-        
+
         # Antecedent
         lines.append("Antecedent (satisfied):")
         for key, val in self.violation.antecedent_values.items():
             lines.append(f"  {key}: {val}")
         lines.append("")
-        
+
         # Consequent
         lines.append("Consequent (violated):")
         for key, val in self.violation.consequent_values.items():
             lines.append(f"  {key}: {val}")
         lines.append(f"  violation_margin: {self.violation.margin:.4f}")
         lines.append("")
-        
+
         # Witness stats
         lines.append("Witness subgraph:")
         lines.append(f"  nodes: {len(self.witness_nodes)}")
         lines.append(f"  edges: {len(self.witness_edges)}")
         lines.append("")
-        
+
         # Minimization
         lines.append("Minimization:")
         lines.append(f"  is_minimal: {self.minimization.is_minimal}")
-        lines.append(f"  tests_used: {self.minimization.tests_used} / {self.minimization.max_tests}")
+        lines.append(
+            f"  tests_used: {self.minimization.tests_used} / {self.minimization.max_tests}"
+        )
         lines.append(f"  strategy: {self.minimization.strategy}")
-        lines.append(f"  reduction: {self.minimization.initial_edges} -> {self.minimization.final_edges} edges")
+        lines.append(
+            f"  reduction: {self.minimization.initial_edges} -> {self.minimization.final_edges} edges"
+        )
         lines.append("")
-        
+
         # Provenance
         if "provenance" in self.meta:
             prov = self.meta["provenance"]
@@ -169,13 +177,13 @@ class Counterexample:
             lines.append(f"  engine: {prov.get('engine', 'unknown')}")
             lines.append(f"  seed: {prov.get('randomness', {}).get('seed', 'none')}")
             lines.append(f"  timestamp: {prov.get('timestamp_utc', 'unknown')}")
-        
+
         lines.append("=" * 70)
         return "\n".join(lines)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert counterexample to JSON-serializable dictionary.
-        
+
         Returns:
             Dictionary representation (without subgraph object)
         """

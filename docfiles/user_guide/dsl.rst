@@ -2182,3 +2182,77 @@ See Also
 - NetworkX documentation for centrality measures
 - Examples directory for complete use cases
 - API documentation for detailed function signatures
+
+Counterexample Generation
+--------------------------
+
+Py3plex's DSL v2 includes a **counterexample generation engine** that finds violations of network invariants and provides minimal witness subgraphs.
+
+Use Cases
+~~~~~~~~~
+
+- **Hypothesis Testing**: Verify or refute claims about network properties
+- **Algorithm Debugging**: Find edge cases that violate assumptions
+- **Network Understanding**: Discover counterintuitive patterns
+
+Basic Usage
+~~~~~~~~~~~
+
+Use ``Q.counterexample()`` to find violations:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    from py3plex.core import multinet
+    
+    # Build network
+    net = multinet.multi_layer_network(directed=False)
+    # ... add nodes and edges ...
+    
+    # Find counterexample
+    cex = (Q.counterexample()
+             .claim("degree__ge(k) -> pagerank__rank_le(r)")
+             .params(k=10, r=50)
+             .seed(42)
+             .execute(net))
+    
+    if cex:
+        print(cex.explain())
+        witness = cex.subgraph
+
+Claim Syntax
+~~~~~~~~~~~~
+
+Claims are implications in the format: ``antecedent -> consequent``
+
+**Supported comparators**: ``gt``, ``ge``, ``gte``, ``lt``, ``le``, ``lte``, ``eq``, ``ne``
+
+**Examples**:
+
+.. code-block:: python
+
+    # Value-based predicates
+    "degree__ge(k) -> pagerank__gt(x)"
+    "betweenness_centrality__ge(x) -> degree__ge(k)"
+    
+    # Rank-based predicates  
+    "degree__ge(k) -> pagerank__rank_le(r)"
+    "betweenness_centrality__gt(x) -> pagerank__rank_gt(r)"
+
+Configuration Options
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    cex = (Q.counterexample()
+             .claim("degree__ge(k) -> pagerank__rank_le(r)")
+             .params(k=10, r=50)
+             .seed(42)                          # Determinism
+             .find_minimal(True)                # Minimize witness
+             .budget(max_tests=200,             # Minimization budget
+                    max_witness_size=500)      # Max witness nodes
+             .initial_radius(2)                 # Ego subgraph radius
+             .layers(L["social"] + L["work"])  # Layer selection
+             .execute(net))
+
+For more details, see the **AGENTS.md** file.

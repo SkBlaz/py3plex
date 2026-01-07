@@ -36,8 +36,9 @@
 30. [Multilayer Leiden Algorithm with UQ](#multilayer-leiden-algorithm-with-uq)
 31. [Community Queries (First-Class Communities)](#community-queries-first-class-communities)
 32. [Semiring Algebra (S Builder): Paths, Closure, Fixed-Point](#semiring-algebra-s-builder-paths-closure-fixed-point)
-33. [Version Information](#version-information)
-34. [File Locations](#file-locations)
+33. [Network Counterexample Generation](#network-counterexample-generation)
+34. [Version Information](#version-information)
+35. [File Locations](#file-locations)
 
 ---
 
@@ -4485,6 +4486,346 @@ result = (
      .execute(network)
 )
 ```
+
+---
+
+## Network Counterexample Generation
+
+The **counterexample generation engine** finds violations of network invariants and provides minimal witness subgraphs that demonstrate the violation. This is useful for:
+
+- **Testing network hypotheses**: Does high degree imply high centrality?
+- **Understanding network structure**: Find unexpected patterns
+- **Debugging algorithms**: Identify edge cases that violate assumptions
+- **Educational purposes**: Demonstrate counterintuitive network properties
+
+### Core Concepts
+
+**Claim**: An implication between node metrics or structural properties
+- Format: `antecedent -> consequent`
+- Example: `degree__ge(k) -> pagerank__rank_le(r)`
+
+**Violation**: A specific node that satisfies the antecedent but violates the consequent
+
+**Witness**: A minimal subgraph containing the violation
+
+**Minimization**: Delta debugging (ddmin) to find the smallest witness
+
+### DSL Integration
+
+Use `Q.counterexample()` builder:
+
+```python
+from py3plex.dsl import Q, L
+from py3plex.core import multinet
+
+# Build network
+net = multinet.multi_layer_network(directed=False)
+# ... add nodes and edges ...
+
+# Find counterexample
+cex = (Q.counterexample()
+         .claim("degree__ge(k) -> pagerank__rank_le(r)")
+         .params(k=10, r=50)
+         .seed(42)
+         .find_minimal(True)
+         .budget(max_tests=200, max_witness_size=500)
+         .execute(net))
+
+if cex:
+    print(cex.explain())
+    witness = cex.subgraph
+```
+
+### Claim Language (MVP)
+
+Supported formats:
+
+**Value-based predicates:**
+- `degree__ge(k)` - degree >= k
+- `degree__gt(k)` - degree > k
+- `pagerank__lt(x)` - pagerank < x
+- `betweenness_centrality__ge(x)` - betweenness >= x
+
+**Rank-based predicates:**
+- `pagerank__rank_gt(r)` - pagerank rank > r
+- `pagerank__rank_le(r)` - pagerank rank <= r
+
+**Comparators:** `gt`, `ge`, `gte`, `lt`, `le`, `lte`, `eq`, `ne`
+
+**Example claims:**
+```python
+# High degree doesn't guarantee high PageRank
+"degree__ge(10) -> pagerank__rank_le(50)"
+
+# High betweenness doesn't guarantee low rank
+"betweenness_centrality__ge(0.1) -> pagerank__rank_gt(100)"
+```
+
+### QueryResult Integration
+
+Generate counterexamples from query results:
+
+```python
+result = Q.nodes().compute("degree", "pagerank").execute(net)
+
+# Find counterexample using result context
+cex = result.counterexample(
+    claim="degree__ge(k) -> pagerank__rank_gt(r)",
+    params={"k": 10, "r": 50},
+    seed=42
+)
+```
+
+### Counterexample Object
+
+The returned `Counterexample` object provides:
+
+**Attributes:**
+- `subgraph`: Witness as `multi_layer_network`
+- `violation`: Violation details (node, layer, metrics)
+- `witness_nodes`: Set of (node, layer) tuples
+- `witness_edges`: Set of edge tuples
+- `minimization`: MinimizationReport (is_minimal, tests_used, strategy)
+- `meta["provenance"]`: Full provenance record
+
+**Methods:**
+- `explain()`: Human-readable explanation
+- `to_dict()`: JSON-serializable representation
+
+**Example output:**
+```python
+cex.explain()
+# ======================================================================
+# COUNTEREXAMPLE FOUND
+# ======================================================================
+# 
+# Violating Node: Alice
+# Layer: social
+# 
+# Antecedent (satisfied):
+#   degree: 12
+# 
+# Consequent (violated):
+#   pagerank: 0.03
+#   pagerank_rank: 67
+#   violation_margin: 12.0000
+# 
+# Witness subgraph:
+#   nodes: 8
+#   edges: 11
+# 
+# Minimization:
+#   is_minimal: True
+#   tests_used: 45 / 200
+#   strategy: ddmin_edges
+#   reduction: 25 -> 11 edges
+# ...
+```
+
+### Provenance
+
+Counterexamples include comprehensive provenance:
+
+```python
+prov = cex.meta["provenance"]
+# {
+#     "engine": "counterexample_engine",
+#     "py3plex_version": "1.1.0",
+#     "timestamp_utc": "2026-01-07T04:30:00.000Z",
+#     "claim": {
+#         "claim_str": "degree__ge(10) -> pagerank__rank_le(50)",
+#         "claim_hash": "a1b2c3...",
+#         "params": {"k": 10, "r": 50}
+#     },
+#     "randomness": {"seed": 42},
+#     "network_fingerprint": {
+#         "node_count": 100,
+#         "edge_count": 250,
+#         "layer_count": 2,
+#         "layers": ["social", "work"]
+#     },
+#     "performance": {
+#         "find_violation_ms": 15.2,
+#         "extract_witness_ms": 3.5,
+#         "minimize_ms": 127.8,
+#         "total_ms": 146.5
+#     },
+#     "minimization": {
+#         "max_tests": 200,
+#         "tests_used": 45,
+#         "is_minimal": True,
+#         "strategy": "ddmin_edges",
+#         "final_size": {"nodes": 8, "edges": 11}
+#     },
+#     "budget": {
+#         "max_tests": 200,
+#         "max_witness_size": 500
+#     }
+# }
+```
+
+### Determinism
+
+Counterexample generation is **fully deterministic** given a seed:
+
+- Same seed → same violating node
+- Same witness extraction
+- Same minimization path
+- Stable sorting for tie-breaking
+
+```python
+# Same seed produces identical results
+cex1 = Q.counterexample().claim(...).seed(42).execute(net)
+cex2 = Q.counterexample().claim(...).seed(42).execute(net)
+assert cex1.violation.node == cex2.violation.node
+```
+
+### Budget Control
+
+Control resource usage with budgets:
+
+```python
+cex = (Q.counterexample()
+         .claim("degree__ge(k) -> pagerank__rank_gt(r)")
+         .params(k=10, r=50)
+         .budget(
+             max_tests=100,         # Max minimization tests
+             max_witness_size=300   # Max nodes in witness
+         )
+         .execute(net))
+
+# Check if minimization completed
+if not cex.minimization.is_minimal:
+    print("Budget exhausted - witness may not be minimal")
+```
+
+### Layer Selection
+
+Restrict search to specific layers:
+
+```python
+from py3plex.dsl import L
+
+cex = (Q.counterexample()
+         .claim("degree__ge(k) -> pagerank__rank_le(r)")
+         .params(k=5, r=10)
+         .layers(L["social"] + L["work"])
+         .execute(net))
+```
+
+### Algorithm Details
+
+**1. Violation Finding:**
+- Uses DSL v2 to compute metrics efficiently
+- Antecedent: cheap metrics (degree, strength)
+- Consequent: computed metrics (pagerank, betweenness)
+- Deterministic selection: highest antecedent margin, worst consequent violation
+
+**2. Witness Extraction:**
+- Ego subgraph (radius=2 by default) around violating node
+- Includes all relevant layers
+- Trims to max_witness_size by keeping high-degree neighbors
+- Always includes violating node
+
+**3. Delta Debugging (ddmin):**
+- Minimizes edges in chunks
+- Binary search for minimal subset
+- Budget-aware (stops at max_tests)
+- Returns best-effort witness if budget exceeded
+
+### Common Pitfalls
+
+**1. No violation exists**
+```python
+try:
+    cex = Q.counterexample().claim(...).execute(net)
+except CounterexampleNotFound:
+    print("Claim holds for this network")
+```
+
+**2. Expensive metrics**
+- PageRank, betweenness are expensive on large networks
+- Use smaller networks for exploration
+- Increase budgets for complex claims
+
+**3. Rank ties**
+- Ranks are deterministic with stable sorting
+- Ties broken by (node_id, layer) lexicographically
+
+**4. Budget tuning**
+- Start with default budget (max_tests=200)
+- Increase if `is_minimal=False` and witness is large
+- Decrease for faster (less minimal) results
+
+**5. Claim syntax**
+- Must include `->` separator
+- Parameters must be provided in `params()`
+- Use double underscore: `metric__comparator(param)`
+
+### Performance Tips
+
+- **Small networks first**: Test claims on small networks before scaling
+- **Disable minimization**: Use `find_minimal(False)` for faster results
+- **Adjust radius**: Smaller radius → smaller witnesses → faster
+- **Layer filtering**: Restrict to relevant layers
+
+### Error Handling
+
+Counterexample generation uses domain exceptions:
+
+```python
+from py3plex.counterexamples.claim_lang import ClaimParseError
+from py3plex.counterexamples.engine import CounterexampleNotFound
+
+try:
+    cex = Q.counterexample().claim("invalid").execute(net)
+except ClaimParseError as e:
+    print(f"Invalid claim: {e}")
+except CounterexampleNotFound:
+    print("No violation found")
+```
+
+### Use Cases
+
+**1. Hypothesis testing:**
+```python
+# Test: "Hub nodes have high PageRank"
+cex = Q.counterexample().claim("degree__ge(k) -> pagerank__rank_le(r)") \
+       .params(k=20, r=10).execute(net)
+if cex:
+    print(f"Counterexample: {cex.violation.node} has high degree but low PageRank")
+```
+
+**2. Algorithm debugging:**
+```python
+# Test: "My algorithm preserves this invariant"
+def test_invariant(net):
+    try:
+        cex = Q.counterexample().claim("my_metric__ge(k) -> other_metric__le(x)") \
+               .params(k=5, x=100).execute(net)
+        return False  # Invariant violated
+    except CounterexampleNotFound:
+        return True  # Invariant holds
+```
+
+**3. Educational examples:**
+```python
+# Demonstrate counterintuitive network property
+cex = Q.counterexample().claim("betweenness_centrality__ge(x) -> degree__ge(k)") \
+       .params(x=0.1, k=10).execute(net)
+print(cex.explain())
+# Shows node with high betweenness but low degree (bridge node)
+```
+
+### Files
+
+- `py3plex/counterexamples/types.py` - Data structures
+- `py3plex/counterexamples/claim_lang.py` - Claim parser
+- `py3plex/counterexamples/witness.py` - Witness extraction
+- `py3plex/counterexamples/ddmin.py` - Minimization
+- `py3plex/counterexamples/engine.py` - Main engine
+- `py3plex/dsl/builder.py` - `Q.counterexample()` builder
+- `py3plex/dsl/result.py` - `QueryResult.counterexample()`
 
 ---
 
