@@ -128,6 +128,10 @@ def execute_selection_with_uq(
         items = result.items
         target = result.meta.get("target", "nodes")
         
+        # Warn if no items were selected
+        if not items:
+            logger.debug("Query produced no items in this sample")
+        
         # Extract scores if available (from order_by attribute)
         scores = None
         ranks = None
@@ -204,8 +208,33 @@ def execute_selection_with_uq(
         if len(selection_uq_result) > 0:
             selection_uq = list(selection_uq_result.values())[0]
         else:
-            # Empty result
-            raise ValueError("Grouped SelectionUQ returned no groups")
+            # Empty result - query produced no groups (e.g., no items, no matches)
+            # Fall back to creating an empty SelectionUQ
+            logger.warning(
+                "Query configured for grouping but produced no groups. "
+                "This may indicate no items matched the selection criteria."
+            )
+            from py3plex.uncertainty import SelectionUQ
+            # Create an empty SelectionUQ with safe defaults
+            selection_uq = SelectionUQ(
+                n_samples=n_samples,
+                items_universe=[],
+                samples_seen=0,
+                present_prob={},
+                size_stats={"mean": 0.0, "std": 0.0},
+                stability_stats={"jaccard_mean": 1.0, "jaccard_std": 0.0, "consensus_size": 0},
+                target="nodes",
+                store_mode=store_mode,
+                ci_method="wilson",
+                meta={
+                    "method": uq_method,
+                    "n_samples": n_samples,
+                    "seed": seed,
+                    "ci_level": ci,
+                    "noise_model": str(noise_model) if noise_model else None,
+                    "warning": "No groups produced by query"
+                }
+            )
     else:
         # Ungrouped result
         selection_uq = selection_uq_result
