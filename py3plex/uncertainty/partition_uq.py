@@ -399,6 +399,121 @@ class PartitionUQ:
             meta=meta or {}
         )
     
+    @classmethod
+    def from_uq_result(
+        cls,
+        uq_result,
+        node_ids: List[Any],
+        meta: Optional[Dict[str, Any]] = None
+    ) -> PartitionUQ:
+        """Create PartitionUQ from UQResult (UQ spine integration).
+        
+        This factory method creates a PartitionUQ from a UQResult produced
+        by run_uq() with the appropriate reducers. It expects:
+        - NodeMarginalReducer output
+        - StabilityReducer output (optional)
+        
+        Parameters
+        ----------
+        uq_result : UQResult
+            Result from run_uq() execution
+        node_ids : list
+            Ordered node identifiers
+        meta : dict, optional
+            Additional metadata to attach
+            
+        Returns
+        -------
+        PartitionUQ
+            Constructed PartitionUQ object
+            
+        Examples
+        --------
+        >>> from py3plex.uncertainty.runner import run_uq
+        >>> from py3plex.uncertainty.plan import UQPlan
+        >>> from py3plex.uncertainty.partition_reducers import NodeMarginalReducer
+        >>> 
+        >>> # Create plan with reducers
+        >>> marginal_reducer = NodeMarginalReducer(n_nodes=4, node_ids=['A', 'B', 'C', 'D'])
+        >>> plan = UQPlan(
+        ...     base_callable=my_algorithm,
+        ...     strategy="seed",
+        ...     noise_model=NoNoise(),
+        ...     n_samples=50,
+        ...     seed=42,
+        ...     reducers=[marginal_reducer]
+        ... )
+        >>> 
+        >>> # Execute UQ
+        >>> result = run_uq(plan, network)
+        >>> 
+        >>> # Create PartitionUQ from result
+        >>> partition_uq = PartitionUQ.from_uq_result(
+        ...     uq_result=result,
+        ...     node_ids=['A', 'B', 'C', 'D']
+        ... )
+        """
+        from py3plex.uncertainty.plan import UQResult
+        
+        if not isinstance(uq_result, UQResult):
+            raise TypeError(f"Expected UQResult, got {type(uq_result)}")
+        
+        n_nodes = len(node_ids)
+        
+        # Extract marginal reducer output
+        if 'NodeMarginalReducer' not in uq_result.reducer_outputs:
+            raise ValueError(
+                "UQResult must contain NodeMarginalReducer output. "
+                "Ensure NodeMarginalReducer was included in UQPlan.reducers"
+            )
+        
+        marginal_output = uq_result.reducer_outputs['NodeMarginalReducer']
+        
+        # Extract node-level statistics
+        entropy = marginal_output['entropy']
+        p_max = marginal_output['p_max']
+        consensus = marginal_output['consensus_labels']
+        
+        # Extract stability statistics if available
+        vi_mean = 0.0
+        vi_std = 0.0
+        nmi_mean = 1.0
+        nmi_std = 0.0
+        
+        if 'StabilityReducer' in uq_result.reducer_outputs:
+            stability_output = uq_result.reducer_outputs['StabilityReducer']
+            vi_mean = stability_output.get('vi_mean', 0.0)
+            vi_std = stability_output.get('vi_std', 0.0)
+            nmi_mean = stability_output.get('nmi_mean', 1.0)
+            nmi_std = stability_output.get('nmi_std', 0.0)
+        
+        # Get storage mode from provenance
+        store_mode = "sketch"
+        if 'execution' in uq_result.provenance:
+            store_mode = uq_result.provenance['execution'].get('storage_mode', 'sketch')
+        
+        # Merge metadata
+        merged_meta = meta or {}
+        if uq_result.provenance:
+            merged_meta['provenance'] = uq_result.provenance
+        
+        # Create PartitionUQ
+        return cls(
+            node_ids=node_ids,
+            n_samples=uq_result.n_samples,
+            consensus_partition=consensus,
+            membership_entropy=entropy,
+            p_max_membership=p_max,
+            vi_mean=vi_mean,
+            vi_std=vi_std,
+            nmi_mean=nmi_mean,
+            nmi_std=nmi_std,
+            coassoc_matrix=None,  # Not computed by default
+            store_mode=store_mode,
+            samples=uq_result.samples,
+            meta=merged_meta
+        )
+    
     def node_summary(self, node_id: Any) -> Dict[str, Any]:
         """Get UQ summary for a specific node.
         
