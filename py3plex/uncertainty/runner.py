@@ -122,8 +122,8 @@ def run_uq(plan: UQPlan, network: Any) -> UQResult:
             noise_seed = int(sample_rng.integers(0, 2**31))
             net_i = plan.noise_model.apply(network, seed=noise_seed)
         else:
-            # No noise model - use original network
-            net_i = copy.deepcopy(network)
+            # No noise model - use original network directly (no copy needed)
+            net_i = network
         
         # Step 2c: Call base_callable with perturbed network and RNG
         sample_output = plan.base_callable(net_i, sample_rng)

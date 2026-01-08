@@ -410,8 +410,17 @@ class PartitionUQ:
         
         This factory method creates a PartitionUQ from a UQResult produced
         by run_uq() with the appropriate reducers. It expects:
-        - NodeMarginalReducer output
+        - NodeMarginalReducer output (required)
         - StabilityReducer output (optional)
+        
+        Note: Co-assignment matrix computation
+        --------------------------------------
+        By default, the co-assignment matrix is NOT computed when using the
+        UQ spine approach. This is intentional for memory efficiency. If you
+        need the co-assignment matrix, you must:
+        1. Add CoAssignmentReducer to your UQPlan.reducers list
+        2. Extract the result from uq_result.reducer_outputs['CoAssignmentReducer']
+        3. Manually set it on the PartitionUQ object after construction
         
         Parameters
         ----------
