@@ -104,6 +104,30 @@ from .partition_metrics import (
     ari,
     pairwise_partition_distances,
 )
+from .selection_types import (
+    SelectionOutput,
+)
+from .selection_uq import (
+    SelectionUQ,
+)
+from .selection_reducers import (
+    SelectionReducer,
+    InclusionReducer,
+    SizeReducer,
+    StabilityReducer,
+    RankReducer,
+    TopKOverlapReducer,
+    GroupedReducer,
+)
+from .selection_execution import (
+    execute_selection_uq,
+)
+from .ci_utils import (
+    wilson_score_interval,
+    clopper_pearson_interval,
+    binomial_proportion_ci,
+    rank_ci_from_samples,
+)
 
 __all__ = [
     # Core stat types
@@ -157,4 +181,20 @@ __all__ = [
     "nmi",
     "ari",
     "pairwise_partition_distances",
+    # Selection UQ
+    "SelectionOutput",
+    "SelectionUQ",
+    "SelectionReducer",
+    "InclusionReducer",
+    "SizeReducer",
+    "StabilityReducer",
+    "RankReducer",
+    "TopKOverlapReducer",
+    "GroupedReducer",
+    "execute_selection_uq",
+    # CI utilities
+    "wilson_score_interval",
+    "clopper_pearson_interval",
+    "binomial_proportion_ci",
+    "rank_ci_from_samples",
 ]
