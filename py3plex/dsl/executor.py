@@ -1276,6 +1276,23 @@ def _execute_select(
     # Check if this is a bridge query from communities
     if hasattr(select, "_from_communities") and select._from_communities is not None:
         return _execute_community_bridge(network, select, params, progress=progress)
+    
+    # Check if community detection with UQ is requested
+    if hasattr(select, "community_config") and select.community_config:
+        # Check if UQ is also requested
+        if hasattr(select, "uq_config") and select.uq_config and select.uq_config.method:
+            return _execute_nodes_with_community_uq(
+                network, select, params, progress=progress,
+                provenance_builder=provenance_builder,
+                provenance_record=provenance_record
+            )
+        else:
+            # Community detection without UQ (deterministic)
+            return _execute_nodes_with_community(
+                network, select, params, progress=progress,
+                provenance_builder=provenance_builder,
+                provenance_record=provenance_record
+            )
 
     # Step 1: Get initial items
     stage_start = time.monotonic()
@@ -4270,3 +4287,206 @@ def _apply_trajectory_ordering(
 
     # Return sorted items and metadata
     return [x[0] for x in indexed_items], [x[1] for x in indexed_items]
+
+
+def _execute_nodes_with_community(
+    network: Any,
+    select: SelectStmt,
+    params: Optional[Dict[str, Any]] = None,
+    progress: bool = False,
+    provenance_builder: Optional[ProvenanceBuilder] = None,
+    provenance_record: Optional[Any] = None,
+) -> QueryResult:
+    """Execute nodes query with deterministic community detection.
+    
+    This handler runs community detection once and attaches the partition
+    to the network, then continues with normal node query execution.
+    """
+    logger = logging.getLogger(__name__)
+    
+    # Extract community config
+    config = select.community_config
+    method = config.get("method", "leiden")
+    partition_name = config.get("partition_name", "default")
+    
+    if progress:
+        logger.info(f"Running {method} community detection (deterministic)")
+    
+    # Get community detection function
+    from .community_uq import _get_community_function
+    
+    community_func = _get_community_function(method)
+    
+    # Run once deterministically
+    random_state = config.get("random_state", 0)
+    partition_dict = community_func(
+        network,
+        seed=random_state,
+        gamma=config.get("gamma", 1.0),
+        omega=config.get("omega", 1.0),
+        n_iterations=config.get("n_iterations", 2),
+    )
+    
+    # Attach partition to network
+    network.assign_partition(partition_dict, name=partition_name)
+    
+    if progress:
+        n_communities = len(set(partition_dict.values()))
+        logger.info(f"Detected {n_communities} communities, attached as '{partition_name}'")
+    
+    # Now execute normal node query
+    # Clear community_config to avoid recursion
+    select.community_config = None
+    
+    result = _execute_select(
+        network, select, params, progress,
+        provenance_builder=provenance_builder,
+        provenance_record=provenance_record
+    )
+    
+    # Add community metadata
+    result.meta["community_detection"] = {
+        "method": method,
+        "partition_name": partition_name,
+        "n_communities": n_communities,
+        "parameters": {
+            "gamma": config.get("gamma", 1.0),
+            "omega": config.get("omega", 1.0),
+            "random_state": random_state,
+        }
+    }
+    
+    return result
+
+
+def _execute_nodes_with_community_uq(
+    network: Any,
+    select: SelectStmt,
+    params: Optional[Dict[str, Any]] = None,
+    progress: bool = False,
+    provenance_builder: Optional[ProvenanceBuilder] = None,
+    provenance_record: Optional[Any] = None,
+) -> QueryResult:
+    """Execute nodes query with community detection + UQ.
+    
+    This handler runs community detection with UQ, attaches the consensus
+    partition to the network, then returns node-level results with UQ columns.
+    """
+    import time
+    logger = logging.getLogger(__name__)
+    
+    # Extract configs
+    comm_config = select.community_config
+    uq_config = select.uq_config
+    
+    method = comm_config.get("method", "leiden")
+    partition_name = comm_config.get("partition_name", "default")
+    uq_method = uq_config.method or "seed"
+    n_samples = uq_config.n_samples or 50
+    seed = uq_config.seed or 42
+    
+    if progress:
+        logger.info(
+            f"Running {method} community detection with UQ "
+            f"(method={uq_method}, n_samples={n_samples})"
+        )
+    
+    # Extract noise model from uq_config.kwargs if present
+    noise_model = uq_config.kwargs.get("noise_model") if uq_config.kwargs else None
+    
+    # Run community detection with UQ
+    from .community_uq import execute_community_with_uq
+    
+    stage_start = time.monotonic()
+    
+    consensus_partition, partition_uq = execute_community_with_uq(
+        network=network,
+        method=method,
+        uq_method=uq_method,
+        n_samples=n_samples,
+        seed=seed,
+        noise_model=noise_model,
+        store=uq_config.kwargs.get("store", "sketch") if uq_config.kwargs else "sketch",
+        progress=progress,
+        gamma=comm_config.get("gamma", 1.0),
+        omega=comm_config.get("omega", 1.0),
+        n_iterations=comm_config.get("n_iterations", 2),
+    )
+    
+    uq_duration_ms = (time.monotonic() - stage_start) * 1000
+    
+    if progress:
+        logger.info(
+            f"UQ complete in {uq_duration_ms:.0f}ms: "
+            f"{partition_uq.n_communities} communities, "
+            f"VI={partition_uq.vi_mean:.3f}±{partition_uq.vi_std:.3f}"
+        )
+    
+    # Attach consensus partition to network
+    network.assign_partition(consensus_partition, name=partition_name)
+    
+    # Execute normal node query to get base results
+    # Clear configs to avoid recursion
+    select.community_config = None
+    select.uq_config = None
+    
+    result = _execute_select(
+        network, select, params, progress,
+        provenance_builder=provenance_builder,
+        provenance_record=provenance_record
+    )
+    
+    # Add community UQ columns to result
+    # Map node IDs to UQ data
+    node_to_uq = {}
+    for i, node_id in enumerate(partition_uq.node_ids):
+        node_to_uq[node_id] = {
+            "community_id": int(partition_uq.consensus_partition[i]),
+            "community_entropy": float(partition_uq.membership_entropy[i]),
+            "community_confidence": float(partition_uq.p_max_membership[i]),
+        }
+    
+    # Add UQ columns to attributes
+    result.attributes["community_id"] = {
+        item: node_to_uq.get(item, {}).get("community_id", -1)
+        for item in result.items
+    }
+    result.attributes["community_entropy"] = {
+        item: node_to_uq.get(item, {}).get("community_entropy", 0.0)
+        for item in result.items
+    }
+    result.attributes["community_confidence"] = {
+        item: node_to_uq.get(item, {}).get("community_confidence", 1.0)
+        for item in result.items
+    }
+    
+    # Add UQ metadata
+    boundary_nodes = partition_uq.boundary_nodes(threshold=0.5, metric="confidence")
+    
+    result.meta["uq"] = {
+        "type": "partition",
+        "n_samples": n_samples,
+        "method": uq_method,
+        "noise_model": str(noise_model) if noise_model else None,
+        "stability": partition_uq.stability_summary(),
+        "boundary_nodes": boundary_nodes[:100],  # Limit to first 100
+        "duration_ms": uq_duration_ms,
+    }
+    
+    # Store full PartitionUQ object
+    result.meta["partition_uq"] = partition_uq
+    
+    # Add provenance
+    if provenance_record is not None:
+        provenance_record.metadata["randomness"] = {
+            "method": uq_method,
+            "noise_model": str(noise_model) if noise_model else None,
+            "n_samples": n_samples,
+            "seed": seed,
+        }
+        provenance_record.metadata["uq"] = {
+            "type": "partition",
+            "storage_mode": partition_uq.store_mode,
+        }
+    
+    return result

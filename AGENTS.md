@@ -2192,6 +2192,65 @@ UQ.defaults(method="bootstrap", n_samples=100, ci=0.95, seed=42, bootstrap_unit=
 Q.nodes().compute("pagerank", uncertainty=True).execute(net)
 ```
 
+
+
+### 9.2 Partition UQ (Community Detection) — **NEW in v1.1**
+
+**Goal**: Quantify uncertainty in community partitions, not just numeric scores.
+
+Answers: (1) How stable is the partition? (2) Which nodes are ambiguous? (3) Which pairs reliably co-cluster? (4) What is consensus?
+
+#### Basic Usage
+
+```python
+from py3plex.dsl import Q
+from py3plex.uncertainty.noise_models import EdgeDrop
+
+result = (
+    Q.nodes()
+     .community(method="leiden", gamma=1.2, random_state=42)
+     .uq(
+        method="perturbation",
+        noise_model=EdgeDrop(p=0.1),
+        n_samples=100,
+        seed=42
+     )
+     .execute(net)
+)
+
+df = result.to_pandas()
+print(df[["node", "community_id", "community_entropy", "community_confidence"]])
+print(result.meta["uq"]["stability"])  # VI, NMI, etc.
+```
+
+#### UQ Methods
+
+**Seed** (fastest): `.uq(method="seed", n_samples=50, seed=42)` - Algorithm stochasticity  
+**Perturbation** (most informative): `.uq(method="perturbation", noise_model=EdgeDrop(p=0.1), n_samples=100)` - Network robustness  
+**Noise Models**: `EdgeDrop(p)`, `WeightNoise(dist, sigma)`, `LayerDrop(p)`
+
+#### Storage Modes
+
+- `store="none"`: Only summary stats (minimal memory)
+- `store="sketch"`: Sparse co-assignment matrix (default)
+- `store="samples"`: Full samples (only for small networks)
+
+#### Output
+
+**Attributes per node**: `community_id`, `community_entropy`, `community_confidence`  
+**Metadata**: `result.meta["uq"]["stability"]` (VI, NMI, mean_entropy, boundary_nodes)  
+**PartitionUQ object**: `result.meta["partition_uq"]` (consensus, co-assignment, node summaries)
+
+#### Interpreting Results
+
+- **Stable**: VI < 0.2, NMI > 0.9, mean_confidence > 0.85
+- **Moderate**: VI < 0.5, NMI > 0.8, mean_confidence > 0.7
+- **Unstable**: VI > 0.5 or NMI < 0.7 → Tune γ or refine data
+
+**Node Entropy**: Low (<0.5) = consistent, High (>1.0) = ambiguous  
+**Confidence**: High (>0.8) = clear, Low (<0.6) = boundary node
+
+
 ### Sensitivity Analysis
 
 **PSEUDOCODE** (Feature planned):

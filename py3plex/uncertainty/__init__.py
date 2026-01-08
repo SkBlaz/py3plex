@@ -77,6 +77,33 @@ from .resampling_graph import (
     bootstrap_network_edges,
     resample_network_nodes,
 )
+from .noise_models import (
+    NoiseModel,
+    EdgeDrop,
+    WeightNoise,
+    LayerDrop,
+    TemporalWindowBootstrap,
+    noise_model_from_dict,
+)
+from .partition_uq import (
+    PartitionUQ,
+)
+from .partition_reducers import (
+    PartitionReducer,
+    NodeEntropyReducer,
+    CoAssignmentReducer,
+    PartitionDistanceReducer,
+    ConsensusReducer,
+)
+from .partition_metrics import (
+    variation_of_information,
+    normalized_mutual_information,
+    adjusted_rand_index,
+    vi,
+    nmi,
+    ari,
+    pairwise_partition_distances,
+)
 
 __all__ = [
     # Core stat types
@@ -107,4 +134,27 @@ __all__ = [
     "perturb_network_edges",
     "bootstrap_network_edges",
     "resample_network_nodes",
+    # Noise models
+    "NoiseModel",
+    "EdgeDrop",
+    "WeightNoise",
+    "LayerDrop",
+    "TemporalWindowBootstrap",
+    "noise_model_from_dict",
+    # Partition UQ
+    "PartitionUQ",
+    # Partition reducers
+    "PartitionReducer",
+    "NodeEntropyReducer",
+    "CoAssignmentReducer",
+    "PartitionDistanceReducer",
+    "ConsensusReducer",
+    # Partition metrics
+    "variation_of_information",
+    "normalized_mutual_information",
+    "adjusted_rand_index",
+    "vi",
+    "nmi",
+    "ari",
+    "pairwise_partition_distances",
 ]
