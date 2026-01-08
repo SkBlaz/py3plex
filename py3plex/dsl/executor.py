@@ -1293,6 +1293,34 @@ def _execute_select(
                 provenance_builder=provenance_builder,
                 provenance_record=provenance_record
             )
+    
+    # Check if selection query with UQ is requested
+    if hasattr(select, "uq_config") and select.uq_config and select.uq_config.method:
+        from .selection_uq import is_selection_query, execute_selection_with_uq
+        
+        if is_selection_query(select):
+            if progress:
+                logger.info("Detected selection query with UQ - routing to SelectionUQ")
+            result = execute_selection_with_uq(
+                network, select, params, progress=progress
+            )
+            # Add provenance
+            if provenance_record is not None:
+                provenance_record.metadata["randomness"] = {
+                    "method": select.uq_config.method,
+                    "noise_model": str(select.uq_config.kwargs.get("noise_model")) if select.uq_config.kwargs else None,
+                    "n_samples": select.uq_config.n_samples,
+                    "seed": select.uq_config.seed,
+                }
+                provenance_record.metadata["uq"] = {
+                    "type": "selection",
+                    "storage_mode": select.uq_config.kwargs.get("store", "sketch") if select.uq_config.kwargs else "sketch",
+                    "ci_method": "wilson",
+                }
+                result.meta["provenance"] = provenance_record.to_dict()
+            elif provenance_builder is not None:
+                result.meta["provenance"] = provenance_builder.build()
+            return result
 
     # Step 1: Get initial items
     stage_start = time.monotonic()
