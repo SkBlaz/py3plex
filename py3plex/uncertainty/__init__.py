@@ -79,6 +79,7 @@ from .resampling_graph import (
 )
 from .noise_models import (
     NoiseModel,
+    NoNoise,
     EdgeDrop,
     WeightNoise,
     LayerDrop,
@@ -88,12 +89,18 @@ from .noise_models import (
 from .partition_uq import (
     PartitionUQ,
 )
+from .partition_types import (
+    PartitionOutput,
+)
 from .partition_reducers import (
     PartitionReducer,
     NodeEntropyReducer,
+    NodeMarginalReducer,
     CoAssignmentReducer,
     PartitionDistanceReducer,
     ConsensusReducer,
+    ConsensusPartitionReducer,
+    StabilityReducer,
 )
 from .partition_metrics import (
     variation_of_information,
@@ -128,6 +135,16 @@ from .ci_utils import (
     binomial_proportion_ci,
     rank_ci_from_samples,
 )
+from .plan import (
+    UQPlan,
+    UQResult,
+)
+from .runner import (
+    run_uq,
+)
+from .reducers.base import (
+    Reducer,
+)
 
 __all__ = [
     # Core stat types
@@ -160,6 +177,7 @@ __all__ = [
     "resample_network_nodes",
     # Noise models
     "NoiseModel",
+    "NoNoise",
     "EdgeDrop",
     "WeightNoise",
     "LayerDrop",
@@ -167,12 +185,16 @@ __all__ = [
     "noise_model_from_dict",
     # Partition UQ
     "PartitionUQ",
+    "PartitionOutput",
     # Partition reducers
     "PartitionReducer",
     "NodeEntropyReducer",
+    "NodeMarginalReducer",
     "CoAssignmentReducer",
     "PartitionDistanceReducer",
     "ConsensusReducer",
+    "ConsensusPartitionReducer",
+    "StabilityReducer",
     # Partition metrics
     "variation_of_information",
     "normalized_mutual_information",
@@ -197,4 +219,9 @@ __all__ = [
     "clopper_pearson_interval",
     "binomial_proportion_ci",
     "rank_ci_from_samples",
+    # UQ execution spine
+    "UQPlan",
+    "UQResult",
+    "run_uq",
+    "Reducer",
 ]
