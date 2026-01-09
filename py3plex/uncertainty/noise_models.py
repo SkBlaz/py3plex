@@ -85,6 +85,44 @@ class NoiseModel(ABC):
 
 
 @dataclass
+class NoNoise(NoiseModel):
+    """No-op noise model for deterministic execution.
+    
+    This noise model returns an unmodified copy of the network.
+    It is useful for seed-based UQ strategies where the network
+    structure is fixed and only algorithm randomness varies.
+    
+    Examples
+    --------
+    >>> noise = NoNoise()
+    >>> net_copy = noise.apply(network, seed=42)
+    >>> # net_copy is a deep copy of network with no perturbations
+    """
+    
+    def apply(self, network: Any, seed: Optional[int] = None) -> Any:
+        """Return an unmodified copy of the network.
+        
+        Parameters
+        ----------
+        network : multi_layer_network
+            Input network
+        seed : int, optional
+            Random seed (unused, for interface compatibility)
+            
+        Returns
+        -------
+        multi_layer_network
+            Deep copy of the network
+        """
+        import copy
+        return copy.deepcopy(network)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize to dict."""
+        return {"type": "NoNoise"}
+
+
+@dataclass
 class EdgeDrop(NoiseModel):
     """Drop edges uniformly at random.
     
@@ -458,9 +496,12 @@ def noise_model_from_dict(data: Dict[str, Any]) -> NoiseModel:
     >>> isinstance(noise, EdgeDrop)
     True
     """
+    data = data.copy()  # Don't mutate input
     model_type = data.pop("type")
     
-    if model_type == "EdgeDrop":
+    if model_type == "NoNoise":
+        return NoNoise(**data)
+    elif model_type == "EdgeDrop":
         return EdgeDrop(**data)
     elif model_type == "WeightNoise":
         return WeightNoise(**data)

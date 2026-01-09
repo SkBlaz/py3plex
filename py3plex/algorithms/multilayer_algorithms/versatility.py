@@ -159,6 +159,16 @@ def _power_iteration(
         ValueError: If zero vector encountered (disconnected graph)
         RuntimeWarning: If not converged within max_iter
     """
+    # Input validation
+    if S is None or not hasattr(S, 'shape'):
+        raise ValueError("Expected a matrix-like object for S.")
+    if len(S.shape) != 2:
+        raise ValueError("Input matrix S must be two-dimensional.")
+    if S.shape[0] < 1 or S.shape[1] < 1:
+        raise ValueError("Input matrix S must be non-empty.")
+    if S.shape[0] != S.shape[1]:
+        raise ValueError("Input matrix S must be square.")
+    
     rng = np.random.default_rng(seed)
     x = rng.random(S.shape[0])
     x = x / x.sum()

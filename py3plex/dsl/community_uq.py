@@ -3,6 +3,9 @@
 This module provides the execution logic for running community detection
 with UQ enabled, integrating with the DSL .community().uq() pattern.
 
+This implementation uses the canonical UQ execution spine (run_uq) for
+consistency and maintainability.
+
 Examples
 --------
 >>> from py3plex.dsl import Q
@@ -32,7 +35,14 @@ from py3plex.uncertainty import (
     PartitionUQ,
     partition_dict_to_array,
 )
-from py3plex.uncertainty.noise_models import NoiseModel
+from py3plex.uncertainty.noise_models import NoiseModel, NoNoise
+from py3plex.uncertainty.plan import UQPlan
+from py3plex.uncertainty.runner import run_uq
+from py3plex.uncertainty.partition_types import PartitionOutput
+from py3plex.uncertainty.partition_reducers import (
+    NodeMarginalReducer,
+    StabilityReducer,
+)
 from py3plex.exceptions import AlgorithmError
 
 
@@ -57,6 +67,9 @@ def execute_community_with_uq(
     This function runs community detection multiple times with different
     randomness sources (seed variation or network perturbation) to quantify
     uncertainty in the partition.
+    
+    This implementation uses the canonical UQ execution spine for consistency
+    with the PartitionUQ specification.
     
     Parameters
     ----------
@@ -133,61 +146,87 @@ def execute_community_with_uq(
     
     # Generate node ordering (canonical)
     node_ids = list(network.get_nodes())
+    n_nodes = len(node_ids)
     
-    # Collect partition samples
-    partitions = []
+    # Create node ID to index mapping for later use
+    node_to_idx = {nid: i for i, nid in enumerate(node_ids)}
     
-    if progress:
-        logger.info(f"Generating {n_samples} partition samples...")
-    
-    for i in range(n_samples):
-        # Determine seed for this sample
-        sample_seed = seed + i if seed is not None else None
+    # Define base callable for UQ spine
+    def base_callable(net, rng):
+        """Run community detection once with given RNG.
         
-        # Generate sample network
-        if uq_method == "seed":
-            # Pure seed variation (no network modification)
-            sample_net = network
-        elif uq_method == "perturbation":
-            # Apply noise model
-            sample_net = noise_model.apply(network, seed=sample_seed)
-        elif uq_method == "bootstrap":
-            # TODO: Implement bootstrap resampling
-            warnings.warn(
-                "Bootstrap UQ not yet fully implemented, falling back to seed variation",
-                stacklevel=2
-            )
-            sample_net = network
-        else:
-            raise AlgorithmError(
-                f"Unknown UQ method: {uq_method}",
-                valid_algorithms=["seed", "perturbation", "bootstrap"]
-            )
+        This is the base_callable for UQPlan. It must:
+        - Be deterministic given RNG
+        - Return PartitionOutput
+        """
+        # Generate seed from RNG for community algorithm
+        algo_seed = int(rng.integers(0, 2**31)) if rng is not None else None
         
         # Run community detection
         partition_dict = community_func(
-            sample_net,
-            seed=sample_seed,
+            net,
+            seed=algo_seed,
             **algorithm_params
         )
         
-        # Convert to array with canonical node ordering
-        partition_array = partition_dict_to_array(partition_dict, node_ids)
-        partitions.append(partition_array)
-        
-        if progress and (i + 1) % max(1, n_samples // 10) == 0:
-            logger.info(f"  Generated {i + 1}/{n_samples} samples")
+        # Convert to PartitionOutput
+        return PartitionOutput(labels=partition_dict)
+    
+    # Set up noise model
+    if uq_method == "seed":
+        noise_model_actual = NoNoise()
+        strategy = "seed"
+    elif uq_method == "perturbation":
+        if noise_model is None:
+            raise AlgorithmError("noise_model required for perturbation")
+        noise_model_actual = noise_model
+        strategy = "perturbation"
+    elif uq_method == "bootstrap":
+        warnings.warn(
+            "Bootstrap UQ not yet fully implemented, falling back to seed variation",
+            stacklevel=2
+        )
+        noise_model_actual = NoNoise()
+        strategy = "bootstrap"
+    else:
+        raise AlgorithmError(
+            f"Unknown UQ method: {uq_method}",
+            valid_algorithms=["seed", "perturbation", "bootstrap"]
+        )
+    
+    # Create reducers
+    marginal_reducer = NodeMarginalReducer(n_nodes=n_nodes, node_ids=node_ids)
+    
+    # For two-pass approach with StabilityReducer:
+    # 1. First pass: compute marginals and consensus
+    # 2. Second pass: compute stability against consensus
+    # For now, use marginal_reducer only (matches from_samples behavior)
+    
+    # Create UQ plan
+    plan = UQPlan(
+        base_callable=base_callable,
+        strategy=strategy,
+        noise_model=noise_model_actual,
+        n_samples=n_samples,
+        seed=seed if seed is not None else 42,
+        reducers=[marginal_reducer],
+        storage_mode=store,
+        backend="python"
+    )
     
     if progress:
-        logger.info("Computing UQ statistics...")
+        logger.info(f"Running UQ spine with {n_samples} samples...")
     
-    # Create PartitionUQ from samples
-    partition_uq = PartitionUQ.from_samples(
-        partitions=partitions,
+    # Execute UQ
+    uq_result = run_uq(plan, network)
+    
+    if progress:
+        logger.info("Creating PartitionUQ from results...")
+    
+    # Create PartitionUQ from UQ result
+    partition_uq = PartitionUQ.from_uq_result(
+        uq_result=uq_result,
         node_ids=node_ids,
-        store=store,
-        sparse_topk=sparse_topk,
-        sparse_threshold=sparse_threshold,
         meta={
             "method": method,
             "uq_method": uq_method,
