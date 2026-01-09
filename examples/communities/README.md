@@ -15,6 +15,7 @@ This directory contains examples for detecting and analyzing community structure
 - **`example_auto_select_basic.py`** - Automatic algorithm selection with multi-metric evaluation
 - **`example_auto_select_uq.py`** - Auto-select with uncertainty quantification for stability
 - **`example_auto_select_custom.py`** - Custom metrics and candidates for tailored selection
+- **`example_auto_select_custom_algorithm.py`** - How to add and use custom community detection algorithms
 
 ### Modularity-Based Methods
 - **`example_multilayer_modularity.py`** - Compute multilayer modularity and detect communities
@@ -62,6 +63,40 @@ partition = result.partition
 print(result.explain())
 print(result.leaderboard)
 ```
+
+### Adding Custom Algorithms
+
+You can implement your own community detection algorithms and use them with `auto_select_community`:
+
+```python
+from py3plex.selection.community_registry import CandidateSpec
+
+# Implement your algorithm
+def my_custom_algorithm(network, param1=1.0, seed=None):
+    # Your algorithm logic here
+    # Must return Dict[(node, layer), community_id]
+    partition = {}
+    # ... detect communities ...
+    return partition
+
+# Register it with auto_select
+custom_candidate = CandidateSpec(
+    name="my_algorithm",
+    callable=my_custom_algorithm,
+    params={"param1": 1.5},
+    supports_multilayer=True,
+    seed_param_name="seed"
+)
+
+# Use in auto_select
+result = auto_select_community(
+    network,
+    custom_candidates=[custom_candidate],
+    seed=42
+)
+```
+
+See `example_auto_select_custom_algorithm.py` for complete examples.
 
 ## Algorithm Characteristics
 
