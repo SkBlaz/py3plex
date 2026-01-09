@@ -95,6 +95,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#cli-cross-reference-optional">CLI Cross-Reference (Optional)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#automatic-algorithm-selection-autocommunity">Automatic Algorithm Selection (AutoCommunity)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
@@ -2452,6 +2453,58 @@ py3plex<span class="w"> </span>community<span class="w"> </span>network.edgelist
 <li><p><strong>Overfitting:</strong> Too many tiny communities suggests over-segmentation; try lower resolution</p></li>
 <li><p><strong>Layer coupling:</strong> For multilayer networks, always try multiple <span class="math notranslate nohighlight">\(\omega\)</span> values</p></li>
 </ul>
+</section>
+<section id="automatic-algorithm-selection-autocommunity">
+<h2>Automatic Algorithm Selection (AutoCommunity)<a class="headerlink" href="#automatic-algorithm-selection-autocommunity" title="Link to this heading"></a></h2>
+<p><strong>When you don’t know which algorithm to use:</strong> py3plex provides automatic algorithm selection that evaluates multiple algorithms on multiple quality metrics and picks the winner using a “most wins” decision engine.</p>
+<p><strong>Quick example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">auto_select_community</span>
+
+<span class="c1"># Automatically select best algorithm</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">auto_select_community</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">fast</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># See why it won</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">explain</span><span class="p">())</span>
+
+<span class="c1"># View leaderboard</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">leaderboard</span><span class="p">)</span>
+
+<span class="c1"># Use the partition</span>
+<span class="n">network</span><span class="o">.</span><span class="n">assign_partition</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">partition</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>With DSL:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">communities</span><span class="p">()</span><span class="o">.</span><span class="n">auto_select</span><span class="p">(</span><span class="n">fast</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">explain</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><strong>How it works:</strong></p>
+<ol class="arabic simple">
+<li><p>Detects available algorithms (Leiden, Louvain, etc.)</p></li>
+<li><p>Runs candidates with parameter grids (gamma, omega)</p></li>
+<li><p>Evaluates on multiple metrics (modularity, coverage, stability, etc.)</p></li>
+<li><p>Selects winner by pairwise “most wins” across metrics</p></li>
+<li><p>Applies bucket caps to prevent any metric category from dominating</p></li>
+</ol>
+<p><strong>Key parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fast=True</span></code>: Use smaller parameter grids (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_candidates=10</span></code>: Maximum algorithms to evaluate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed=0</span></code>: Random seed for determinism</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uq=False</span></code>: Enable uncertainty quantification for stability metrics</p></li>
+</ul>
+<p><strong>Result object:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">result.partition</span></code>: Winning partition</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.algorithm</span></code>: Algorithm name and parameters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.leaderboard</span></code>: DataFrame ranking all candidates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.explain()</span></code>: Natural language explanation of why it won</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.to_dict()</span></code>: Serializable dictionary</p></li>
+</ul>
+<p><strong>When to use:</strong> Exploratory analysis, comparing algorithms fairly, reproducible algorithm choice with provenance.</p>
+<p>See AGENTS.md for complete API documentation.</p>
 <p><strong>Community detection checklist:</strong></p>
 <ul class="simple">
 <li><p>[ ] Run at least 2 different algorithms</p></li>

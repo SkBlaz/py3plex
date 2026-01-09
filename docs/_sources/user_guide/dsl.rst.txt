@@ -2256,3 +2256,244 @@ Configuration Options
              .execute(net))
 
 For more details, see the **AGENTS.md** file.
+
+Semiring Algebra (S builder)
+-----------------------------
+
+**Definition (Semiring).**
+A semiring is a tuple (K, ⊕, ⊗, 0, 1) where K is a set and ⊕, ⊗ are binary operations on K such that:
+
+1) (K, ⊕, 0) is a commutative monoid: ⊕ is associative and commutative, and 0 is the identity (a ⊕ 0 = a).
+2) (K, ⊗, 1) is a monoid: ⊗ is associative and 1 is the identity (a ⊗ 1 = 1 ⊗ a = a).
+3) ⊗ distributes over ⊕: a ⊗ (b ⊕ c) = (a ⊗ b) ⊕ (a ⊗ c), and (b ⊕ c) ⊗ a = (b ⊗ a) ⊕ (c ⊗ a).
+4) 0 is absorbing for ⊗: 0 ⊗ a = a ⊗ 0 = 0.
+
+**Note**: Some useful semirings relax commutativity of ⊕; therefore this library supports both "strict semiring" and "relaxed semiring" modes via flags.
+
+**Definition (Lift).**
+Given an edge e, lift : Edge → K maps edge attributes (weight, layer, time, etc.) into semiring space.
+
+**Definition (Path algebra).**
+For a walk w = (e1, e2, ..., ek), its semiring weight is:
+W(w) = lift(e1) ⊗ lift(e2) ⊗ ... ⊗ lift(ek).
+For two alternative walks w and w', the combined value is W(w) ⊕ W(w').
+
+**Definition (Closure).**
+Given semiring adjacency A (where A[u,v] aggregates all edges u→v via ⊕), the closure is:
+A* = I ⊕ A ⊕ A^2 ⊕ A^3 ⊕ ...
+where I has I[u,u]=1 and I[u,v]=0 for u≠v, and multiplication/addition are semiring matrix ops.
+
+Overview
+~~~~~~~~
+
+The **S builder** provides semiring-based path and closure computations for multilayer networks. Semirings generalize shortest paths, reachability, reliability, and multiobjective optimization into a unified algebraic framework.
+
+Built-in Semirings
+~~~~~~~~~~~~~~~~~~
+
+- **min_plus**: Shortest paths (tropical semiring)
+- **boolean**: Reachability
+- **max_times**: Most reliable paths (probability products)
+- **tropical_lex**: Lexicographic optimization (cost, then layer switches)
+
+Example 1: Min-Plus Shortest Paths
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Compute shortest paths using the min-plus (tropical) semiring:
+
+.. code-block:: python
+
+    from py3plex.dsl import S, L
+    from py3plex.core import multinet
+    
+    # Create network
+    net = multinet.multi_layer_network(directed=False)
+    net.add_nodes([
+        {'source': 'A', 'type': 'transport'},
+        {'source': 'B', 'type': 'transport'},
+        {'source': 'C', 'type': 'transport'},
+    ])
+    net.add_edges([
+        {'source': 'A', 'target': 'B', 'source_type': 'transport', 
+         'target_type': 'transport', 'weight': 1.0},
+        {'source': 'B', 'target': 'C', 'source_type': 'transport', 
+         'target_type': 'transport', 'weight': 2.0},
+    ])
+    
+    # Compute shortest paths from A
+    result = (
+        S.paths()
+         .from_node('A')
+         .semiring('min_plus')
+         .lift(attr='weight', default=1.0)
+         .from_layers(L['transport'])
+         .witness(True)  # Request path witnesses
+         .execute(net)
+    )
+    
+    # Access results
+    for item in result.items:
+        print(f"{item['node']}: distance={item['value']}, path={item['path']}")
+
+Example 2: Boolean Reachability
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Check which nodes are reachable from a source:
+
+.. code-block:: python
+
+    from py3plex.dsl import S, L
+    
+    # Compute reachability from A using boolean semiring
+    result = (
+        S.paths()
+         .from_node('A')
+         .semiring('boolean')
+         .lift(attr=None, default=True)  # All edges contribute True
+         .from_layers(L['social'])
+         .execute(net)
+    )
+    
+    # Check reachability
+    for item in result.items:
+        node = item['node']
+        reachable = item['value']
+        print(f"{node}: {'reachable' if reachable else 'unreachable'}")
+
+Example 3: Tropical Lexicographic (Layer-Switch Counting)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Optimize for both path cost and number of layer switches:
+
+.. code-block:: python
+
+    from py3plex.dsl import S
+    
+    # Use tropical_lex for multiobjective optimization
+    # Minimizes (cost, layer_switches) lexicographically
+    result = (
+        S.paths()
+         .from_node('A')
+         .to_node('C')
+         .semiring('tropical_lex')
+         .lift(attr='weight', default=1.0)
+         .crossing_layers(mode='penalize')  # Count layer switches
+         .execute(net)
+    )
+    
+    # Result: (cost, switches) tuple
+    for item in result.items:
+        cost, switches = item['value']
+        print(f"{item['node']}: cost={cost}, switches={switches}")
+
+S Builder API Reference
+~~~~~~~~~~~~~~~~~~~~~~~
+
+**Path queries**:
+
+.. code-block:: python
+
+    S.paths()
+      .from_node(source)           # Required: source node
+      .to_node(target)              # Optional: target node (all if omitted)
+      .semiring(name)               # Semiring name or spec
+      .lift(attr="weight", default=1.0)  # Edge attribute extraction
+      .from_layers(L[...])          # Layer filter
+      .max_hops(n)                  # Maximum path length
+      .witness(True)                # Request path witnesses
+      .algorithm("auto"|"dijkstra"|"bellman_ford")
+      .execute(network)
+
+**Closure queries**:
+
+.. code-block:: python
+
+    S.closure()
+      .semiring(name)
+      .lift(attr="weight", default=1.0)
+      .from_layers(L[...])
+      .max_hops(n)
+      .execute(network)
+
+Custom Semirings
+~~~~~~~~~~~~~~~~
+
+Define custom semirings using ``SemiringSpec``:
+
+.. code-block:: python
+
+    from py3plex.semiring import SemiringSpec, register_semiring
+    import math
+    
+    # Define custom semiring
+    custom = SemiringSpec(
+        name="my_semiring",
+        zero=math.inf,
+        one=0.0,
+        plus=lambda a, b: min(a, b),
+        times=lambda a, b: a + b,
+        strict=True,
+        is_idempotent_plus=True,
+        examples=(0.0, 1.0, 2.0, math.inf),
+    )
+    
+    # Register for use
+    register_semiring(custom, overwrite=True)
+    
+    # Use in queries
+    result = S.paths().from_node('A').semiring('my_semiring').execute(net)
+
+Provenance and Metadata
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Semiring queries include detailed provenance:
+
+.. code-block:: python
+
+    result = S.paths().from_node('A').semiring('min_plus').execute(net)
+    
+    # Access provenance
+    prov = result.meta['provenance']
+    print(f"Semiring: {prov['algebra']['semiring']['name']}")
+    print(f"Algorithm: {prov['algorithm']}")
+    print(f"Iterations: {prov['relaxations']}")
+    print(f"Time: {prov['performance']['total_ms']}ms")
+
+Algorithm Selection
+~~~~~~~~~~~~~~~~~~~
+
+The ``algorithm`` parameter controls path-finding strategy:
+
+- **"auto"** (default): Automatically selects based on semiring properties
+  
+  - Uses Dijkstra for min_plus or idempotent semirings with ordering
+  - Falls back to Bellman-Ford otherwise
+
+- **"dijkstra"**: Efficient for monotone, ordered semirings (e.g., min_plus, max_times)
+
+- **"bellman_ford"**: General-purpose relaxation, works for all semirings
+
+max_hops Parameter
+~~~~~~~~~~~~~~~~~~
+
+**Important**: Non-idempotent semirings without ordering **require** explicit ``max_hops``:
+
+.. code-block:: python
+
+    # Non-idempotent semiring without leq ordering
+    result = (
+        S.paths()
+         .from_node('A')
+         .semiring('my_custom_semiring')
+         .max_hops(10)  # REQUIRED for termination guarantee
+         .execute(net)
+    )
+
+If ``max_hops`` is omitted for such semirings, a warning is issued and a safe default is used.
+
+See also:
+
+- ``examples/network_analysis/semiring_paths.py`` - Min-plus shortest paths
+- ``examples/network_analysis/semiring_boolean.py`` - Boolean reachability
+- ``examples/network_analysis/semiring_tropical_lex.py`` - Multiobjective optimization
+- ``examples/network_analysis/semiring_pareto.py`` - Pareto frontier example
