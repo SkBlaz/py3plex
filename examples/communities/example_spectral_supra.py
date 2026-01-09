@@ -91,7 +91,14 @@ result = (
 
 df = result.to_pandas()
 print("Community assignments:")
-print(df[["node", "layer", "community_id"]].sort_values(["node", "layer"]))
+
+# Get partition from network (attached by community detection)
+partition = net.get_partition_by_name("default")
+
+# Add community_id to the dataframe
+df["community_id"] = df.apply(lambda row: partition.get((row["id"], row["layer"]), -1), axis=1)
+
+print(df[["id", "layer", "community_id"]].sort_values(["id", "layer"]))
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Example 2: Inspect Embeddings

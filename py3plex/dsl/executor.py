@@ -4347,12 +4347,23 @@ def _execute_nodes_with_community(
     
     # Run once deterministically
     random_state = config.get("random_state", 0)
+    
+    # Extract parameters to pass to community function
+    call_params = {
+        "seed": random_state,
+        "gamma": config.get("gamma", 1.0),
+        "omega": config.get("omega", 1.0),
+        "n_iterations": config.get("n_iterations", 2),
+    }
+    
+    # Add any extra kwargs (like k for spectral methods)
+    for key, value in config.items():
+        if key not in ["method", "partition_name", "random_state", "gamma", "omega", "n_iterations"]:
+            call_params[key] = value
+    
     partition_dict = community_func(
         network,
-        seed=random_state,
-        gamma=config.get("gamma", 1.0),
-        omega=config.get("omega", 1.0),
-        n_iterations=config.get("n_iterations", 2),
+        **call_params
     )
     
     # Attach partition to network
@@ -4427,6 +4438,18 @@ def _execute_nodes_with_community_uq(
     
     stage_start = time.monotonic()
     
+    # Build algorithm params dict
+    algorithm_params = {
+        "gamma": comm_config.get("gamma", 1.0),
+        "omega": comm_config.get("omega", 1.0),
+        "n_iterations": comm_config.get("n_iterations", 2),
+    }
+    
+    # Add any extra kwargs (like k for spectral methods)
+    for key, value in comm_config.items():
+        if key not in ["method", "partition_name", "random_state", "gamma", "omega", "n_iterations"]:
+            algorithm_params[key] = value
+    
     consensus_partition, partition_uq = execute_community_with_uq(
         network=network,
         method=method,
@@ -4436,9 +4459,7 @@ def _execute_nodes_with_community_uq(
         noise_model=noise_model,
         store=uq_config.kwargs.get("store", "sketch") if uq_config.kwargs else "sketch",
         progress=progress,
-        gamma=comm_config.get("gamma", 1.0),
-        omega=comm_config.get("omega", 1.0),
-        n_iterations=comm_config.get("n_iterations", 2),
+        **algorithm_params
     )
     
     uq_duration_ms = (time.monotonic() - stage_start) * 1000

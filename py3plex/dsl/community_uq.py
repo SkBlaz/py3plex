@@ -321,6 +321,10 @@ def _get_community_function(method: str):
                     suggestions=["Provide k=<number_of_communities>"]
                 )
             
+            # Filter out parameters not used by spectral methods
+            kwargs.pop('n_iterations', None)
+            kwargs.pop('gamma', None)  # spectral doesn't use gamma
+            
             partition, metadata = spectral_multilayer_supra(
                 network,
                 k=k,
@@ -346,6 +350,11 @@ def _get_community_function(method: str):
                     "spectral_multilayer_multiplex requires 'k' parameter",
                     suggestions=["Provide k=<number_of_communities>"]
                 )
+            
+            # Filter out parameters not used by spectral methods
+            kwargs.pop('n_iterations', None)
+            kwargs.pop('gamma', None)  # spectral doesn't use gamma
+            kwargs.pop('omega', None)  # multiplex doesn't use omega
             
             # Multiplex variant doesn't use omega or gamma
             partition, metadata = spectral_multilayer_multiplex(
