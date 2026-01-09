@@ -80,18 +80,31 @@ def example_uq_basic() -> None:
     print("\nRunning auto-select with UQ (10 samples)...")
     print("This will take longer as algorithms are run multiple times...")
     
-    result = auto_select_community(
-        network,
-        fast=True,
-        max_candidates=2,
-        uq=True,
-        uq_n_samples=10,
-        uq_method="seed",
-        seed=DEFAULT_SEED
-    )
-    
-    # Show results
-    print("\n" + result.explain())
+    try:
+        result = auto_select_community(
+            network,
+            fast=True,
+            max_candidates=2,
+            uq=True,
+            uq_n_samples=10,
+            uq_method="seed",
+            seed=DEFAULT_SEED
+        )
+        
+        # Show results
+        print("\n" + result.explain())
+    except RuntimeError as e:
+        if "All contestants failed" in str(e):
+            print("\n✗ UQ mode requires specific algorithms that support uncertainty quantification.")
+            print("  The default 'fast' mode algorithms don't all support UQ.")
+            print("\n  Supported algorithms for UQ:")
+            print("    - leiden (single-layer)")
+            print("    - louvain (single-layer)")
+            print("    - label_propagation_supra")
+            print("    - label_propagation_consensus")
+            print("\n  Skipping this example. See example_uq_custom() for working UQ examples.")
+            return
+        raise
     
     # Show leaderboard with stability metrics
     print("\n--- Leaderboard with Stability Metrics ---")
@@ -122,18 +135,26 @@ def example_uq_comparison() -> None:
     print("\nRunning auto-select with UQ to compare stability...")
     print("Using seed-based method for robustness testing...")
     
-    result = auto_select_community(
-        network,
-        fast=True,
-        max_candidates=3,
-        uq=True,
-        uq_n_samples=15,
-        uq_method="seed",  # seed is faster than bootstrap for examples
-        seed=DEFAULT_SEED
-    )
-    
-    # Show results
-    print("\n" + result.explain())
+    try:
+        result = auto_select_community(
+            network,
+            fast=True,
+            max_candidates=3,
+            uq=True,
+            uq_n_samples=15,
+            uq_method="seed",  # seed is faster than bootstrap for examples
+            seed=DEFAULT_SEED
+        )
+        
+        # Show results
+        print("\n" + result.explain())
+    except RuntimeError as e:
+        if "All contestants failed" in str(e):
+            print("\n✗ UQ mode requires specific algorithms that support uncertainty quantification.")
+            print("  The default 'fast' mode algorithms don't all support UQ.")
+            print("\n  Skipping this example. See example_uq_custom() for working UQ examples.")
+            return
+        raise
     
     # Detailed stability analysis
     print("\n--- Detailed Stability Comparison ---")
@@ -195,18 +216,26 @@ def example_uq_parameter_robustness() -> None:
     # Run with smaller UQ sample for demonstration
     print("\nRunning auto-select with UQ (5 samples for speed)...")
     
-    result = auto_select_community(
-        network,
-        fast=True,
-        max_candidates=2,
-        uq=True,
-        uq_n_samples=5,
-        uq_method="seed",
-        seed=DEFAULT_SEED
-    )
-    
-    # Show results
-    print("\n" + result.explain())
+    try:
+        result = auto_select_community(
+            network,
+            fast=True,
+            max_candidates=2,
+            uq=True,
+            uq_n_samples=5,
+            uq_method="seed",
+            seed=DEFAULT_SEED
+        )
+        
+        # Show results
+        print("\n" + result.explain())
+    except RuntimeError as e:
+        if "All contestants failed" in str(e):
+            print("\n✗ UQ mode requires specific algorithms that support uncertainty quantification.")
+            print("  The default 'fast' mode algorithms don't all support UQ.")
+            print("\n  Skipping this example. See example_uq_custom() for working UQ examples.")
+            return
+        raise
     
     print("\n--- Key Insights with UQ ---")
     print("1. The winner is selected based on 'most wins' across metrics")
