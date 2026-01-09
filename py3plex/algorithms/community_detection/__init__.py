@@ -35,6 +35,7 @@ from .distributional import (
     multilayer_leiden_distribution,
 )
 from .auto_select import auto_select_community
+from .autocommunity import AutoCommunity, AutoCommunityResult, CommunityStats
 
 
 def multilayer_louvain(
@@ -128,4 +129,7 @@ __all__ = [
     "multilayer_louvain_distribution",
     "multilayer_leiden_distribution",
     "auto_select_community",
+    "AutoCommunity",
+    "AutoCommunityResult",
+    "CommunityStats",
 ]

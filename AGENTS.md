@@ -2898,6 +2898,242 @@ result = (
 - Need reproducible algorithm choice with provenance
 - Comparing algorithms fairly across multiple quality dimensions
 
+### AutoCommunity Meta-Algorithm (v2.0) — **NEW Design**
+
+**Purpose**: Multi-objective, uncertainty-aware, null-model-calibrated meta-algorithm for principled community detection in multilayer networks.
+
+**Key Design Principles**:
+1. **No single scalar objective** - Uses multi-objective evaluation with Pareto dominance
+2. **Uncertainty is first-class** - Node-level confidence, entropy, and stability
+3. **Null-model calibration mandatory** - Statistical significance via Z-scores
+4. **Multilayer-native** - Preserves layer semantics in metrics and stability
+5. **Reproducible and inspectable** - Full provenance and regime diagnostics
+
+**Builder API**:
+```python
+from py3plex.algorithms.community_detection import AutoCommunity
+
+# Full pipeline with all features
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden", "infomap")
+      .metrics("modularity", "stability", "coverage", "entropy")
+      .uq(method="perturbation", n_samples=50)
+      .null_model(type="configuration", samples=50)
+      .pareto()
+      .seed(42)
+      .execute(network)
+)
+
+# Access results
+print(result.explain())                    # Selection rationale
+print(result.pareto_front)                 # Non-dominated algorithms
+print(result.consensus_partition)          # Final partition
+print(result.community_stats.node_confidence)  # Node-level confidence
+```
+
+**Minimal Configuration**:
+```python
+# Simplest usage (uses defaults)
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden")
+      .metrics("modularity", "coverage")
+      .seed(42)
+      .execute(network)
+)
+```
+
+**Result Object** (`AutoCommunityResult`):
+- `result.algorithms_tested`: List of all algorithms evaluated
+- `result.pareto_front`: Non-dominated algorithms (Pareto optimal)
+- `result.selected`: ID of selected algorithm or "consensus"
+- `result.consensus_partition`: Final partition (dict: (node, layer) -> community_id)
+- `result.community_stats`: Structured statistics with uncertainty
+  - `n_communities`: Number of communities
+  - `community_sizes`: List of community sizes
+  - `coverage`: Fraction of nodes in non-singleton communities
+  - `orphan_nodes`: List of singleton community nodes
+  - `node_confidence`: Per-node confidence scores (dict)
+  - `node_entropy`: Per-node uncertainty scores (dict)
+  - `stability_score`: Overall partition stability
+- `result.evaluation_matrix`: DataFrame with all metrics for all algorithms
+- `result.null_model_results`: Null model Z-scores (if enabled)
+- `result.graph_regime`: Network regime features
+- `result.provenance`: Full configuration and seed information
+
+**Evaluation Axes** (Built-in Metrics):
+| Metric | Description | Direction |
+|--------|-------------|-----------|
+| `modularity` | Layer-aware multilayer modularity | Maximize |
+| `stability` | Node assignment stability under perturbation | Maximize |
+| `coverage` | Fraction of nodes in non-singleton communities | Maximize |
+| `entropy` | Node-level assignment uncertainty (mean) | Minimize |
+| `mdl` | Minimum description length (if available) | Minimize |
+
+**Pareto Selection Logic**:
+- Algorithm A **dominates** B if: A ≥ B on all objectives AND A > B on at least one
+- **Pareto front**: Set of all non-dominated algorithms
+- If multiple non-dominated → **Consensus partition** computed via co-assignment
+- If single non-dominated → That algorithm is selected
+
+**Consensus Communities** (When Multiple Are Non-Dominated):
+```python
+# Consensus is automatically computed when len(pareto_front) > 1
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden")
+      .metrics("modularity", "stability", "coverage")
+      .uq(method="perturbation", n_samples=30)
+      .execute(network)
+)
+
+if result.selected == "consensus":
+    print("Multiple algorithms were non-dominated!")
+    print(f"Algorithms in consensus: {result.pareto_front}")
+    
+    # Identify core vs. peripheral nodes
+    confidence = result.community_stats.node_confidence
+    core_nodes = {node for node, conf in confidence.items() if conf > 0.8}
+    print(f"Core nodes (high confidence): {len(core_nodes)}")
+    
+    # Check node-level entropy
+    entropy = result.community_stats.node_entropy
+    uncertain_nodes = {node for node, ent in entropy.items() if ent > 1.0}
+    print(f"Uncertain nodes: {len(uncertain_nodes)}")
+```
+
+**Null Model Calibration**:
+```python
+# Compare to null models to ensure significance
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden")
+      .metrics("modularity", "coverage")
+      .null_model(type="configuration", samples=50)
+      .seed(42)
+      .execute(network)
+)
+
+# Check Z-scores
+if result.null_model_results:
+    z_scores = result.null_model_results['z_scores']
+    for algo_id, z_score in z_scores.items():
+        print(f"{algo_id}: Z={z_score:.2f}")
+        if z_score > 3.0:
+            print("  → Highly significant (p < 0.001)")
+        elif z_score > 2.0:
+            print("  → Significant (p < 0.05)")
+        else:
+            print("  → Weak signal (may be filtered)")
+```
+
+**Graph Regime Diagnostics**:
+```python
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden")
+      .metrics("modularity")
+      .execute(network)
+)
+
+# Check what type of network this is
+regime = result.graph_regime
+print(f"Degree heterogeneity: {regime.get('degree_heterogeneity', 0):.3f}")
+print(f"Layer density variance: {regime.get('layer_density_variance', 0):.3f}")
+print(f"Inter-layer coupling: {regime.get('coupling_strength', 0):.3f}")
+
+# High degree heterogeneity → Scale-free network
+# High coupling strength → Strongly multiplex network
+```
+
+**Export and Serialization**:
+```python
+# Export to DataFrame
+df = result.to_pandas()
+# Columns: node, layer, community, confidence, entropy, margin
+
+# Export to dictionary (JSON-serializable)
+result_dict = result.to_dict()
+
+# Save provenance
+import json
+with open("community_provenance.json", "w") as f:
+    json.dump({
+        'provenance': result.provenance,
+        'graph_regime': result.graph_regime,
+        'null_results': result.null_model_results,
+    }, f, indent=2)
+```
+
+**DSL Integration** (Planned):
+```python
+from py3plex.dsl import Q
+
+# Query communities with confidence filtering
+result = (
+    Q.communities()
+     .auto()
+     .confidence__gt(0.9)  # Only high-confidence assignments
+     .execute(network)
+)
+
+# Combine with other DSL operations
+result = (
+    Q.nodes()
+     .community_auto()
+     .where(community_size__gt=10)  # Large communities only
+     .compute("pagerank")
+     .execute(network)
+)
+```
+
+**Anti-Patterns to Avoid**:
+- ❌ Using single metric (e.g., only modularity) → Use multi-objective
+- ❌ Ignoring uncertainty → Always use `.uq()` for stability
+- ❌ No null calibration → Use `.null_model()` for significance
+- ❌ Treating all nodes equally → Check `node_confidence` for reliability
+- ❌ Ignoring orphan nodes → Examine `community_stats.orphan_nodes`
+
+**When to Use AutoCommunity Meta-Algorithm**:
+- Need principled selection across competing quality objectives
+- Want statistical confidence in community assignments
+- Need to distinguish real structure from noise (null models)
+- Working with multilayer networks where layer semantics matter
+- Require full provenance and reproducibility
+- Need to identify core vs. peripheral community members
+
+**Comparison: Old vs. New AutoCommunity**:
+| Feature | Old (auto_select) | New (AutoCommunity) |
+|---------|-------------------|---------------------|
+| Objective | Single scalar (most wins) | Multi-objective (Pareto) |
+| Uncertainty | Optional, metric-level | First-class, node-level |
+| Null models | Not integrated | Mandatory calibration |
+| Selection | Weighted sum | Pareto dominance |
+| Consensus | Not available | Automatic when needed |
+| Provenance | Partial | Complete with regime |
+| Node confidence | No | Yes (with UQ) |
+| Multilayer semantics | Partial | Full (layer-aware metrics) |
+
+**Backward Compatibility**:
+The original `auto_select_community()` function is still available for backward compatibility, but the new `AutoCommunity` class is recommended for all new code.
+
+```python
+# Old API (still works)
+from py3plex.algorithms.community_detection import auto_select_community
+result = auto_select_community(network, fast=True, seed=42)
+
+# New API (recommended)
+from py3plex.algorithms.community_detection import AutoCommunity
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden")
+      .metrics("modularity", "stability")
+      .seed(42)
+      .execute(network)
+)
+```
+
 **Notes**:
 - Returns `AutoCommunityResult` instead of regular `QueryResult`
 - Detected algorithms depend on what's installed in py3plex
