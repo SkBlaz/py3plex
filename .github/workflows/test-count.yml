@@ -1,0 +1,85 @@
+name: Test Count
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  count-tests:
+    name: Count Test Functions
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 2
+    
+    - name: Count test functions
+      run: |
+        python3 .github/scripts/count_tests.py --test-dir tests --json test-stats.json
+      timeout-minutes: 1
+    
+    - name: Display test statistics
+      run: |
+        echo "Test Count Statistics:"
+        cat test-stats.json | python3 -m json.tool
+      timeout-minutes: 1
+    
+    - name: Upload test count report
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-count-report
+        path: test-stats.json
+        retention-days: 90
+      timeout-minutes: 2
+    
+    - name: Generate badge values
+      run: |
+        TOTAL_TESTS=$(cat test-stats.json | python3 -c "import sys, json; print(json.load(sys.stdin)['total_tests'])")
+        FORMATTED_TESTS=$(cat test-stats.json | python3 -c "import sys, json; print(json.load(sys.stdin)['total_tests_formatted'])")
+        echo "TOTAL_TESTS=$TOTAL_TESTS" >> $GITHUB_ENV
+        echo "FORMATTED_TESTS=$FORMATTED_TESTS" >> $GITHUB_ENV
+        echo "Total tests: $FORMATTED_TESTS ($TOTAL_TESTS)"
+      timeout-minutes: 1
+    
+    - name: Update README badge
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+      run: |
+        # Update the test count badge in README.md
+        # Pattern matches plain numbers or numbers with K/M suffix (e.g., 999, 6.1K, 1.2M)
+        sed -i "s/tests-[0-9.]*[KM]\?-blue/tests-$FORMATTED_TESTS-blue/" README.md
+        
+        # Check if README was actually changed
+        if git diff --quiet README.md; then
+          echo "README.md is already up to date"
+        else
+          echo "README.md updated with new test count: $FORMATTED_TESTS"
+        fi
+      timeout-minutes: 1
+    
+    - name: Commit and push changes
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        if git diff --quiet README.md; then
+          echo "No changes to commit"
+        else
+          git add README.md
+          git commit -m "chore: update test count badge to $FORMATTED_TESTS [skip ci]"
+          git push
+        fi
+      timeout-minutes: 2
