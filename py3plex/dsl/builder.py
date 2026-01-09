@@ -1120,6 +1120,71 @@ class QueryBuilder:
         
         self._select.contract_spec = ContractSpec(contract=contract)
         return self
+
+    def community_auto(
+        self,
+        seed: Optional[int] = None,
+        fast: bool = True,
+        **kwargs
+    ) -> "QueryBuilder":
+        """Automatically detect communities and join annotations to nodes.
+        
+        Extends the node query with community assignment annotations:
+        - community: Community assignment
+        - confidence: Assignment confidence (0-1)
+        - entropy: Assignment entropy (uncertainty measure)
+        - margin: Margin between top two community assignments
+        - community_size: Size of the assigned community
+        - layer: Layer name (nullable for single-layer networks)
+        
+        These annotations can be filtered with .where() like any other attribute.
+        
+        Args:
+            seed: Random seed for reproducibility (default: None)
+            fast: Use fast mode with smaller parameter grids (default: True)
+            **kwargs: Additional parameters passed to auto_select_community
+        
+        Returns:
+            Self for chaining (execute() will run auto detection and join)
+        
+        Examples:
+            >>> # Basic usage
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community_auto(seed=42)
+            ...      .execute(network)
+            ... )
+            >>> df = result.to_pandas()
+            >>> print(df[['node', 'community', 'confidence', 'community_size']])
+            >>> 
+            >>> # With filtering and computation
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community_auto(seed=42, fast=True)
+            ...      .where(community_size__gt=10, confidence__gt=0.8)
+            ...      .compute("pagerank")
+            ...      .execute(network)
+            ... )
+        
+        Notes:
+            - Caching: Auto community detection runs once per execute() call
+            - Filtering: All annotation fields support predicate filters
+            - Computation: Can chain .compute() after community_auto()
+        """
+        from .ast import AutoCommunityConfig
+        
+        # Create auto community config
+        config = AutoCommunityConfig(
+            enabled=True,
+            kind="nodes_join",
+            seed=seed,
+            fast=fast,
+            params=kwargs,
+        )
+        
+        self._select.auto_community_config = config
+        
+        return self
     
     def explain(
         self,
@@ -2813,6 +2878,65 @@ class CommunityQueryBuilder(QueryBuilder):
             "max_candidates": max_candidates,
             "seed": seed,
         }
+        
+        return self
+    
+    def auto(
+        self,
+        seed: Optional[int] = None,
+        fast: bool = True,
+        **kwargs
+    ) -> "CommunityQueryBuilder":
+        """Automatically detect communities using the AutoCommunity meta-algorithm.
+        
+        Returns an assignment table with columns:
+        - node: Node identifier
+        - layer: Layer name (nullable for single-layer networks)
+        - community: Community assignment
+        - confidence: Assignment confidence (0-1)
+        - entropy: Assignment entropy (uncertainty measure)
+        - margin: Margin between top two community assignments
+        - community_size: Size of the assigned community
+        
+        Args:
+            seed: Random seed for reproducibility (default: None)
+            fast: Use fast mode with smaller parameter grids (default: True)
+            **kwargs: Additional parameters passed to auto_select_community
+        
+        Returns:
+            Self for chaining (execute() will run auto community detection)
+        
+        Examples:
+            >>> # Basic usage
+            >>> result = Q.communities().auto(seed=42).execute(network)
+            >>> df = result.to_pandas()
+            >>> print(df.columns)  # node, layer, community, confidence, entropy, margin, community_size
+            >>> 
+            >>> # With filtering
+            >>> result = (
+            ...     Q.communities()
+            ...      .auto(seed=42, fast=True)
+            ...      .where(confidence__gt=0.9, community_size__gt=10)
+            ...      .execute(network)
+            ... )
+        
+        Notes:
+            - Caching: Auto community detection runs once per execute() call
+            - UQ: Combine with .uq() to enable uncertainty quantification
+            - Filtering: All assignment table columns support predicate filters
+        """
+        from .ast import AutoCommunityConfig
+        
+        # Create auto community config
+        config = AutoCommunityConfig(
+            enabled=True,
+            kind="communities",
+            seed=seed,
+            fast=fast,
+            params=kwargs,
+        )
+        
+        self._select.auto_community_config = config
         
         return self
     
