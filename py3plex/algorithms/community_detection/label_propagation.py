@@ -115,39 +115,27 @@ def multilayer_label_propagation_supra(
     seed = random_state if random_state is not None else 0
     rng = np.random.Generator(np.random.PCG64(seed))
     
-    # Get network structure
-    nodes = list(network.get_nodes())
-    if not nodes:
+    # Get network structure - nodes returns (node_id, layer) tuples
+    node_layer_tuples = list(network.get_nodes())
+    if not node_layer_tuples:
         raise CommunityDetectionError(
             "Network has no nodes",
             suggestions=["Add nodes to the network before running community detection"]
         )
     
-    # Get layers
-    layers = network.get_layers()
+    # Extract unique nodes and layers
+    nodes = sorted(set(node_id for node_id, layer in node_layer_tuples))
+    layers = sorted(set(layer for node_id, layer in node_layer_tuples))
+    
     if not layers:
         raise CommunityDetectionError(
             "Network has no layers",
             suggestions=["Add edges to create layers"]
         )
     
-    # Build replica list: (node_id, layer)
-    replicas = []
-    replica_to_idx = {}
-    for node in nodes:
-        for layer in layers:
-            # Check if this replica exists (node is in this layer)
-            if network.get_nodes(layer=[layer]) and node in network.get_nodes(layer=[layer]):
-                replica = (node, layer)
-                replica_to_idx[replica] = len(replicas)
-                replicas.append(replica)
-    
-    if not replicas:
-        raise CommunityDetectionError(
-            "No node-layer replicas found",
-            suggestions=["Ensure network has edges connecting nodes in layers"]
-        )
-    
+    # Build replica list: use the actual (node_id, layer) tuples from network
+    replicas = node_layer_tuples
+    replica_to_idx = {replica: i for i, replica in enumerate(replicas)}
     n_replicas = len(replicas)
     
     # Initialize labels: unique label per replica
@@ -360,37 +348,27 @@ def multiplex_label_propagation_consensus(
     seed = random_state if random_state is not None else 0
     rng = np.random.Generator(np.random.PCG64(seed))
     
-    # Get network structure
-    nodes = list(network.get_nodes())
-    if not nodes:
+    # Get network structure - nodes returns (node_id, layer) tuples
+    node_layer_tuples = list(network.get_nodes())
+    if not node_layer_tuples:
         raise CommunityDetectionError(
             "Network has no nodes",
             suggestions=["Add nodes to the network before running community detection"]
         )
     
-    layers = network.get_layers()
+    # Extract unique nodes and layers
+    nodes = sorted(set(node_id for node_id, layer in node_layer_tuples))
+    layers = sorted(set(layer for node_id, layer in node_layer_tuples))
+    
     if not layers:
         raise CommunityDetectionError(
             "Network has no layers",
             suggestions=["Add edges to create layers"]
         )
     
-    # Build replica list and mappings
-    replicas = []
-    replica_to_idx = {}
-    for node in nodes:
-        for layer in layers:
-            if network.get_nodes(layer=[layer]) and node in network.get_nodes(layer=[layer]):
-                replica = (node, layer)
-                replica_to_idx[replica] = len(replicas)
-                replicas.append(replica)
-    
-    if not replicas:
-        raise CommunityDetectionError(
-            "No node-layer replicas found",
-            suggestions=["Ensure network has edges connecting nodes in layers"]
-        )
-    
+    # Build replica list and mappings - use actual node-layer tuples
+    replicas = node_layer_tuples
+    replica_to_idx = {replica: i for i, replica in enumerate(replicas)}
     n_replicas = len(replicas)
     
     # Initialize labels: unique label per replica

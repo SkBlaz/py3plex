@@ -344,8 +344,10 @@ def _get_community_function(method: str):
                 inner_max_iter=inner_max_iter,
                 random_state=seed,
             )
-            # Return node-level partition for consensus method
-            return result.get("partition_nodes", {})
+            # Consensus algorithm returns node-level partition
+            # But DSL expects (node, layer) tuples
+            # Use labels_by_layer which has the correct format
+            return result.get("labels_by_layer", {})
         
         return lp_consensus_wrapper
     
