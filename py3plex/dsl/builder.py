@@ -2743,6 +2743,39 @@ class QueryBuilder:
 
         return ast_to_dsl(self.to_ast())
 
+    def __getattr__(self, name: str):
+        """Enable attribute sugar for predicate filters.
+        
+        This allows calling filter predicates as methods, e.g.:
+            .confidence__gt(0.9) instead of .where(confidence__gt=0.9)
+            .degree__lt(5) instead of .where(degree__lt=5)
+        
+        Args:
+            name: Attribute name (should be in format: field__operator)
+        
+        Returns:
+            A callable that applies the filter
+        
+        Raises:
+            AttributeError: If name doesn't match the predicate pattern
+        """
+        # Check if this looks like a predicate (field__operator)
+        if "__" in name:
+            # Split into field and operator
+            parts = name.rsplit("__", 1)
+            if len(parts) == 2:
+                field, operator = parts
+                # Valid operators
+                valid_ops = ["gt", "gte", "lt", "lte", "eq", "ne", "in", "contains"]
+                if operator in valid_ops:
+                    # Return a function that adds this as a where clause
+                    def predicate_method(value):
+                        return self.where(**{name: value})
+                    return predicate_method
+        
+        # Not a predicate pattern, raise AttributeError as usual
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+    
     def __repr__(self) -> str:
         return f"QueryBuilder(target={self._select.target.value})"
 
