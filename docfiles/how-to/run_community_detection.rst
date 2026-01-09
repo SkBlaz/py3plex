@@ -2470,6 +2470,65 @@ Next Steps
 * **Overfitting:** Too many tiny communities suggests over-segmentation; try lower resolution
 * **Layer coupling:** For multilayer networks, always try multiple :math:`\omega` values
 
+Automatic Algorithm Selection (AutoCommunity)
+----------------------------------------------
+
+**When you don't know which algorithm to use:** py3plex provides automatic algorithm selection that evaluates multiple algorithms on multiple quality metrics and picks the winner using a "most wins" decision engine.
+
+**Quick example:**
+
+.. code-block:: python
+
+    from py3plex.algorithms.community_detection import auto_select_community
+    
+    # Automatically select best algorithm
+    result = auto_select_community(network, fast=True, seed=42)
+    
+    # See why it won
+    print(result.explain())
+    
+    # View leaderboard
+    print(result.leaderboard)
+    
+    # Use the partition
+    network.assign_partition(result.partition)
+
+**With DSL:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    result = Q.communities().auto_select(fast=True, seed=42).execute(network)
+    print(result.explain())
+
+**How it works:**
+
+1. Detects available algorithms (Leiden, Louvain, etc.)
+2. Runs candidates with parameter grids (gamma, omega)
+3. Evaluates on multiple metrics (modularity, coverage, stability, etc.)
+4. Selects winner by pairwise "most wins" across metrics
+5. Applies bucket caps to prevent any metric category from dominating
+
+**Key parameters:**
+
+* ``fast=True``: Use smaller parameter grids (default)
+* ``max_candidates=10``: Maximum algorithms to evaluate
+* ``seed=0``: Random seed for determinism
+* ``uq=False``: Enable uncertainty quantification for stability metrics
+
+**Result object:**
+
+* ``result.partition``: Winning partition
+* ``result.algorithm``: Algorithm name and parameters
+* ``result.leaderboard``: DataFrame ranking all candidates
+* ``result.explain()``: Natural language explanation of why it won
+* ``result.to_dict()``: Serializable dictionary
+
+**When to use:** Exploratory analysis, comparing algorithms fairly, reproducible algorithm choice with provenance.
+
+See AGENTS.md for complete API documentation.
+
 **Community detection checklist:**
 
 - [ ] Run at least 2 different algorithms
