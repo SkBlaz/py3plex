@@ -2788,6 +2788,125 @@ result = S.paths().from_node('A').semiring('my_semiring').execute(net)
 
 ## Community Detection and Queries
 
+### Basic Community Detection
+
+```python
+from py3plex.dsl import Q
+
+# Run Leiden algorithm
+result = (
+    Q.nodes()
+     .community(method="leiden", gamma=1.2, random_state=42)
+     .execute(network)
+)
+
+# With UQ for stability
+result = (
+    Q.nodes()
+     .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
+     .uq(method="ensemble", n_samples=50, seed=42)
+     .execute(network)
+)
+print(f"Consensus partition: {result.meta['consensus_partition']}")
+print(f"Score CI: {result.meta['score_ci']}")
+```
+
+### AutoCommunity: Automatic Algorithm Selection
+
+**Purpose**: Automatically select the best community detection algorithm based on multi-metric evaluation and a "most wins" decision engine.
+
+**How it works**:
+1. Detects available algorithms (Leiden, Louvain, etc.) and metrics (modularity, coverage, stability, etc.)
+2. Runs candidate algorithms with parameter grids
+3. Evaluates on multiple quality metrics (bucketed by category)
+4. Selects winner using pairwise "most wins" logic with bucket caps
+5. Optionally uses UQ to gate wins by statistical significance
+
+**Functional API**:
+```python
+from py3plex.algorithms.community_detection import auto_select_community
+
+# Basic auto-selection
+result = auto_select_community(network, fast=True, seed=42)
+
+# Access results
+print(result.explain())              # Why this algorithm won
+print(result.leaderboard)            # Rankings of all candidates
+net.assign_partition(result.partition)
+
+# With UQ for stability-aware selection
+result = auto_select_community(
+    network, 
+    uq=True, 
+    uq_n_samples=50, 
+    uq_method="seed",
+    seed=42
+)
+```
+
+**DSL API**:
+```python
+from py3plex.dsl import Q
+
+# Auto-select via DSL
+result = Q.communities().auto_select(fast=True, seed=42).execute(network)
+print(result.explain())
+print(result.leaderboard)
+
+# With UQ
+result = (
+    Q.communities()
+     .auto_select(fast=True, seed=42)
+     .uq(method="seed", n_samples=50, seed=42)
+     .execute(network)
+)
+```
+
+**Result Object** (`AutoCommunityResult`):
+- `result.partition`: Winning partition
+- `result.algorithm`: Algorithm name and parameters
+- `result.leaderboard`: DataFrame with all candidates ranked by wins
+- `result.explain(n=5)`: Natural language explanation of why the winner won
+- `result.provenance`: Full detection and selection metadata
+- `result.to_dict()`: Serializable dictionary
+
+**Key Parameters**:
+- `fast=True`: Use smaller parameter grids (default)
+- `max_candidates=10`: Maximum number of algorithms to evaluate
+- `seed=0`: Master random seed for deterministic results
+- `uq=False`: Enable uncertainty quantification (stability metrics)
+- `uq_method="seed"`: UQ method (seed, perturbation, bootstrap)
+- `uq_n_samples=10`: Number of UQ samples
+
+**Selection Logic**:
+- **Pairwise wins**: Each metric compares all pairs of contestants (winner gets 1, loser gets 0, ties get 0.5 each)
+- **Bucket caps**: Prevents any single metric category from dominating (e.g., max 30 points from "objective" metrics)
+- **Tie-breaking**: (1) Total wins, (2) Stability wins, (3) Lower runtime, (4) Lexicographic by ID
+- **UQ gating** (optional): Wins only count if statistically significant under perturbation
+
+**Metric Buckets**:
+- `objective`: Modularity, objective scores (cap: 30)
+- `structure`: Coverage, cut ratio, density (cap: 30)
+- `sanity`: Singleton fraction, size entropy, community count deviation (cap: 30)
+- `stability`: Node entropy, VI, NMI from UQ (cap: 30, requires `uq=True`)
+- `runtime`: Execution time (cap: 10)
+- `predictive`: Reserved for future use (cap: 30)
+
+**When to use**:
+- Exploring new datasets without prior knowledge of best algorithm
+- Want statistically-backed algorithm selection
+- Need reproducible algorithm choice with provenance
+- Comparing algorithms fairly across multiple quality dimensions
+
+**Notes**:
+- Returns `AutoCommunityResult` instead of regular `QueryResult`
+- Detected algorithms depend on what's installed in py3plex
+- Deterministic with fixed `seed`
+- Defaults are fast and safe (small grids, 10 candidates)
+- UQ adds stability metrics but increases runtime
+
+### Community Queries
+
 ### Detect Communities
 
 ```python
