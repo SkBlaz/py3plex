@@ -882,19 +882,29 @@ class QueryBuilder:
             - "leiden": Multilayer Leiden algorithm (production-ready with UQ)
             - "louvain": Multilayer Louvain algorithm
             - "infomap": Infomap (if available)
-            - "label_propagation": Label propagation
+            - "label_propagation_supra": Supra-graph label propagation (hard labels)
+            - "label_propagation_consensus": Multiplex consensus label propagation (hard labels)
             
         For Leiden specifically, use in combination with .uq() for uncertainty
-        quantification:
+        quantification. Label propagation algorithms support deterministic execution
+        with random_state for reproducibility.
         
         Args:
             method: Community detection algorithm (default: "leiden")
             gamma: Resolution parameter(s). Higher -> more communities. (default: 1.0)
+                   Not used for label_propagation algorithms.
             omega: Interlayer coupling strength. Higher -> stronger coupling. (default: 1.0)
+                   For label_propagation_supra: weight of identity links between layers.
+                   Not used for label_propagation_consensus.
             n_iterations: Number of iterations for iterative methods (default: 2)
+                         For label_propagation_supra: maps to max_iter (default: 100)
+                         For label_propagation_consensus: maps to max_iter (default: 25)
             random_state: Random seed for reproducibility. If None, uses 0. (default: None)
             partition_name: Name to assign to this partition (default: "default")
-            **kwargs: Additional algorithm-specific parameters
+            **kwargs: Additional algorithm-specific parameters:
+                     - projection: "none" or "majority" (label_propagation_supra only)
+                     - inner_max_iter: int (label_propagation_consensus only, default: 50)
+                     - max_iter: int (override default iterations for label propagation)
             
         Returns:
             Self for chaining
@@ -904,6 +914,22 @@ class QueryBuilder:
             >>> result = (
             ...     Q.nodes()
             ...      .community(method="leiden", gamma=1.2, random_state=42)
+            ...      .execute(network)
+            ... )
+            >>>
+            >>> # Supra-graph label propagation with layer coupling
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community(method="label_propagation_supra", omega=0.7, 
+            ...                projection="none", random_state=42)
+            ...      .execute(network)
+            ... )
+            >>>
+            >>> # Consensus label propagation (node-level)
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community(method="label_propagation_consensus", 
+            ...                max_iter=25, inner_max_iter=50, random_state=42)
             ...      .execute(network)
             ... )
             >>>
@@ -930,6 +956,7 @@ class QueryBuilder:
             - Combining with .uq() enables probabilistic community detection
             - Default random_state=None becomes 0 for determinism
             - For large networks, consider tuning omega and gamma for performance
+            - Label propagation algorithms use hard labels with random tie-breaking
         """
         # Store community detection config in select statement
         if not hasattr(self._select, 'community_config'):
