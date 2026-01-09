@@ -3,7 +3,7 @@
 import hashlib
 import logging
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from .result import ContestantResult
 from .community_registry import CandidateSpec
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def evaluate_contestant(
     network: Any,
     candidate: CandidateSpec,
-    metrics: list[MetricSpec],
+    metrics: List[MetricSpec],
     master_seed: int = 0,
     uq: bool = False,
     uq_config: Optional[Dict[str, Any]] = None,
@@ -199,7 +199,7 @@ def _run_algorithm_with_uq(
 def _compute_metrics(
     partition: Dict[Any, int],
     network: Any,
-    metrics: list[MetricSpec],
+    metrics: List[MetricSpec],
     runtime_ms: float,
     uq_result: Optional[Any] = None,
 ) -> Dict[str, Any]:
