@@ -4353,6 +4353,8 @@ def _execute_nodes_with_community(
         gamma=config.get("gamma", 1.0),
         omega=config.get("omega", 1.0),
         n_iterations=config.get("n_iterations", 2),
+        k=config.get("k"),  # Pass k for spectral clustering
+        **{k: v for k, v in config.items() if k not in ['method', 'partition_name', 'random_state', 'gamma', 'omega', 'n_iterations', 'k']}
     )
     
     # Attach partition to network

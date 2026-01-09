@@ -40,6 +40,10 @@ from .label_propagation import (
     multilayer_label_propagation_supra,
     multiplex_label_propagation_consensus,
 )
+from .spectral_multilayer import (
+    spectral_multilayer_supra,
+    spectral_multilayer_multiplex,
+)
 
 
 def multilayer_louvain(
@@ -138,4 +142,6 @@ __all__ = [
     "CommunityStats",
     "multilayer_label_propagation_supra",
     "multiplex_label_propagation_consensus",
+    "spectral_multilayer_supra",
+    "spectral_multilayer_multiplex",
 ]

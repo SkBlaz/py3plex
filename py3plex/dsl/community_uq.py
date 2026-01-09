@@ -351,15 +351,88 @@ def _get_community_function(method: str):
         
         return lp_consensus_wrapper
     
+    elif method == "spectral_multilayer_supra":
+        from py3plex.algorithms.community_detection.spectral_multilayer import (
+            spectral_multilayer_supra
+        )
+        
+        def spectral_supra_wrapper(network, seed=None, omega=1.0, k=None, **kwargs):
+            """Wrapper for spectral_multilayer_supra."""
+            if k is None:
+                raise AlgorithmError(
+                    "k parameter required for spectral clustering",
+                    suggestions=["Provide k (number of communities)"]
+                )
+            
+            result = spectral_multilayer_supra(
+                network,
+                k=k,
+                omega=omega,
+                random_state=seed,
+                **kwargs
+            )
+            
+            # Convert node-level partition to (node, layer) format
+            partition_node_layer = {}
+            layer_data = network.get_layers()
+            all_layers = layer_data[0] if isinstance(layer_data, tuple) else layer_data
+            for node in result["partition_nodes"]:
+                comm_id = result["partition_nodes"][node]
+                for layer in all_layers:
+                    partition_node_layer[(node, layer)] = comm_id
+            
+            return partition_node_layer
+        
+        return spectral_supra_wrapper
+    
+    elif method == "spectral_multilayer_multiplex":
+        from py3plex.algorithms.community_detection.spectral_multilayer import (
+            spectral_multilayer_multiplex
+        )
+        
+        def spectral_multiplex_wrapper(network, seed=None, k=None, **kwargs):
+            """Wrapper for spectral_multilayer_multiplex."""
+            if k is None:
+                raise AlgorithmError(
+                    "k parameter required for spectral clustering",
+                    suggestions=["Provide k (number of communities)"]
+                )
+            
+            result = spectral_multilayer_multiplex(
+                network,
+                k=k,
+                random_state=seed,
+                **kwargs
+            )
+            
+            # Convert node-level partition to (node, layer) format
+            partition_node_layer = {}
+            layer_data = network.get_layers()
+            all_layers = layer_data[0] if isinstance(layer_data, tuple) else layer_data
+            for node in result["partition_nodes"]:
+                comm_id = result["partition_nodes"][node]
+                for layer in all_layers:
+                    partition_node_layer[(node, layer)] = comm_id
+            
+            return partition_node_layer
+        
+        return spectral_multiplex_wrapper
+    
     else:
         raise AlgorithmError(
             f"Unsupported community detection method for UQ: {method}",
             algorithm_name=method,
-            valid_algorithms=["leiden", "louvain", "label_propagation_supra", "label_propagation_consensus"],
+            valid_algorithms=[
+                "leiden", "louvain", 
+                "label_propagation_supra", "label_propagation_consensus",
+                "spectral_multilayer_supra", "spectral_multilayer_multiplex"
+            ],
             suggestions=[
                 "Use 'leiden' for production-ready UQ",
                 "Use 'louvain' for faster approximation",
                 "Use 'label_propagation_supra' for hard-label supra-graph LPA",
-                "Use 'label_propagation_consensus' for consensus LPA"
+                "Use 'label_propagation_consensus' for consensus LPA",
+                "Use 'spectral_multilayer_supra' for supra-Laplacian spectral clustering",
+                "Use 'spectral_multilayer_multiplex' for aggregated Laplacian spectral clustering"
             ]
         )
