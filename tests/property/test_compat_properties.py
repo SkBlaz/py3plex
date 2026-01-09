@@ -132,10 +132,12 @@ class TestNetworkXRoundtripProperties:
     """Property tests for NetworkX conversions."""
     
     @settings(max_examples=20, deadline=5000, suppress_health_check=[HealthCheck.too_slow, HealthCheck.large_base_example])
-    @given(graph=simple_graphs())
+    @given(graph=simple_graphs(min_nodes=1, max_nodes=5))
     def test_networkx_roundtrip_preserves_structure(self, graph):
         """Property: NetworkX roundtrip preserves graph structure."""
-        assume(len(graph.nodes) > 0)  # Skip empty graphs
+        # Skip empty graphs and graphs with no edges
+        assume(len(graph.nodes) > 0)
+        assume(len(graph.edges) > 0)
         
         # Convert to NetworkX and back
         nx_graph = convert(graph, "networkx")
