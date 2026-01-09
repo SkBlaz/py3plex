@@ -113,3 +113,5 @@ network.txt
 book/_build/
 *.csv
 results/
+/tmp/
+tmp/
