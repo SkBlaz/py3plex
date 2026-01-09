@@ -42,6 +42,25 @@ def _print_header(title: str) -> None:
     print("=" * 70)
 
 
+def _handle_uq_error(e: RuntimeError) -> bool:
+    """Handle UQ-specific runtime errors.
+    
+    Returns:
+        True if error was handled (should skip example), False if error should be re-raised
+    """
+    if "All contestants failed" in str(e):
+        print("\n✗ UQ mode requires specific algorithms that support uncertainty quantification.")
+        print("  The default 'fast' mode algorithms don't all support UQ.")
+        print("\n  Supported algorithms for UQ:")
+        print("    - leiden (single-layer)")
+        print("    - louvain (single-layer)")
+        print("    - label_propagation_supra")
+        print("    - label_propagation_consensus")
+        print("\n  Skipping this example. See example_uq_custom() for working UQ examples.")
+        return True
+    return False
+
+
 def example_uq_basic() -> None:
     """Example 1: Basic UQ with seed-based variation."""
     _print_header("Example 1: Auto-select with UQ (seed-based)")
@@ -94,15 +113,7 @@ def example_uq_basic() -> None:
         # Show results
         print("\n" + result.explain())
     except RuntimeError as e:
-        if "All contestants failed" in str(e):
-            print("\n✗ UQ mode requires specific algorithms that support uncertainty quantification.")
-            print("  The default 'fast' mode algorithms don't all support UQ.")
-            print("\n  Supported algorithms for UQ:")
-            print("    - leiden (single-layer)")
-            print("    - louvain (single-layer)")
-            print("    - label_propagation_supra")
-            print("    - label_propagation_consensus")
-            print("\n  Skipping this example. See example_uq_custom() for working UQ examples.")
+        if _handle_uq_error(e):
             return
         raise
     
@@ -149,10 +160,7 @@ def example_uq_comparison() -> None:
         # Show results
         print("\n" + result.explain())
     except RuntimeError as e:
-        if "All contestants failed" in str(e):
-            print("\n✗ UQ mode requires specific algorithms that support uncertainty quantification.")
-            print("  The default 'fast' mode algorithms don't all support UQ.")
-            print("\n  Skipping this example. See example_uq_custom() for working UQ examples.")
+        if _handle_uq_error(e):
             return
         raise
     
@@ -230,10 +238,7 @@ def example_uq_parameter_robustness() -> None:
         # Show results
         print("\n" + result.explain())
     except RuntimeError as e:
-        if "All contestants failed" in str(e):
-            print("\n✗ UQ mode requires specific algorithms that support uncertainty quantification.")
-            print("  The default 'fast' mode algorithms don't all support UQ.")
-            print("\n  Skipping this example. See example_uq_custom() for working UQ examples.")
+        if _handle_uq_error(e):
             return
         raise
     

@@ -149,7 +149,7 @@ def visualize_partition(
 ) -> None:
     """Render a headless community plot if matplotlib is available."""
     if skip_visualization:
-        print(f"Visualization skipped (--skip_visualization flag set).")
+        print("Visualization skipped (--skip_visualization flag set).")
         return
     if plot_path.lower() == "none":
         print("Visualization disabled (plot_path set to 'none').")
