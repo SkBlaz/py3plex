@@ -78,7 +78,7 @@ def example_simple_network() -> None:
     network.add_edges(edges_c1 + edges_c2 + bridge)
     
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
-          f"{network.number_of_edges()} edges")
+          f"{network.edge_count} edges")
     
     # Run auto-select in fast mode
     print("\nRunning auto-select (fast mode)...")
@@ -171,7 +171,7 @@ def example_random_network() -> None:
     )
     
     print(f"Network: {len(list(network.get_nodes()))} node-layer pairs, "
-          f"{network.number_of_edges()} edges")
+          f"{network.edge_count} edges")
     
     # Run auto-select with more candidates
     print("\nRunning auto-select with max_candidates=5...")

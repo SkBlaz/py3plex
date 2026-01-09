@@ -182,7 +182,7 @@ def main() -> int:
     print("LABEL PROPAGATION FOR NODE CLASSIFICATION")
     print("=" * 70)
 
-    normalization_schemes = ["freq", "basic", "freq_amplify", "exp"]
+    normalization_schemes = ["freq", "basic", "freqAmplify", "exp"]
     results = run_label_propagation(normalization_schemes)
     if results.empty:
         return 1
