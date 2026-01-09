@@ -45,6 +45,9 @@ def _print_header(title: str) -> None:
 def _handle_uq_error(e: RuntimeError) -> bool:
     """Handle UQ-specific runtime errors.
     
+    Args:
+        e: RuntimeError exception to handle
+    
     Returns:
         True if error was handled (should skip example), False if error should be re-raised
     """

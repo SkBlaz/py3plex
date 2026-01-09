@@ -722,8 +722,9 @@ def hairball_plot(
         draw: If True, draw the network. If False, only compute layout and return data.
         label_font_size: Font size for node labels
         ax: Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
-        skip_layout: If True, skip layout computation and return early. This is useful
-            for examples that only need to test the API without actually rendering.
+        skip_layout: If True, skip all layout computation and visualization, returning immediately.
+            This is useful for examples that only need to test the API without actually rendering
+            or when you want to avoid expensive force-directed layout calculations. 
             When True, returns None immediately. Default is False.
 
     Returns:
