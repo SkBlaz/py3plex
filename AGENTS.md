@@ -3602,5 +3602,5 @@ ParameterMissingError  # Param binding failed
 
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-01-07 (for py3plex v1.1.0)
+**Last Updated**: 2026-01-09 (for py3plex v1.1.0)
 
