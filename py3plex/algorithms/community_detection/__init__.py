@@ -36,6 +36,10 @@ from .distributional import (
 )
 from .auto_select import auto_select_community
 from .autocommunity import AutoCommunity, AutoCommunityResult, CommunityStats
+from .spectral_multilayer import (
+    spectral_multilayer_supra,
+    spectral_multilayer_multiplex,
+)
 
 
 def multilayer_louvain(
@@ -132,4 +136,6 @@ __all__ = [
     "AutoCommunity",
     "AutoCommunityResult",
     "CommunityStats",
+    "spectral_multilayer_supra",
+    "spectral_multilayer_multiplex",
 ]

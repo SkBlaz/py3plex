@@ -306,13 +306,67 @@ def _get_community_function(method: str):
         
         return louvain_wrapper
     
+    elif method == "spectral_multilayer_supra":
+        from py3plex.algorithms.community_detection.spectral_multilayer import (
+            spectral_multilayer_supra
+        )
+        
+        def spectral_supra_wrapper(network, seed=None, gamma=1.0, omega=1.0, **kwargs):
+            """Wrapper for spectral_multilayer_supra."""
+            # Extract k from kwargs (required parameter)
+            k = kwargs.pop('k', None)
+            if k is None:
+                raise AlgorithmError(
+                    "spectral_multilayer_supra requires 'k' parameter",
+                    suggestions=["Provide k=<number_of_communities>"]
+                )
+            
+            partition, metadata = spectral_multilayer_supra(
+                network,
+                k=k,
+                omega=omega,
+                random_state=seed,
+                **kwargs
+            )
+            return partition
+        
+        return spectral_supra_wrapper
+    
+    elif method == "spectral_multilayer_multiplex":
+        from py3plex.algorithms.community_detection.spectral_multilayer import (
+            spectral_multilayer_multiplex
+        )
+        
+        def spectral_multiplex_wrapper(network, seed=None, gamma=1.0, omega=1.0, **kwargs):
+            """Wrapper for spectral_multilayer_multiplex."""
+            # Extract k from kwargs (required parameter)
+            k = kwargs.pop('k', None)
+            if k is None:
+                raise AlgorithmError(
+                    "spectral_multilayer_multiplex requires 'k' parameter",
+                    suggestions=["Provide k=<number_of_communities>"]
+                )
+            
+            # Multiplex variant doesn't use omega or gamma
+            partition, metadata = spectral_multilayer_multiplex(
+                network,
+                k=k,
+                random_state=seed,
+                **kwargs
+            )
+            return partition
+        
+        return spectral_multiplex_wrapper
+    
     else:
         raise AlgorithmError(
             f"Unsupported community detection method for UQ: {method}",
             algorithm_name=method,
-            valid_algorithms=["leiden", "louvain"],
+            valid_algorithms=["leiden", "louvain", "spectral_multilayer_supra", "spectral_multilayer_multiplex"],
             suggestions=[
                 "Use 'leiden' for production-ready UQ",
-                "Use 'louvain' for faster approximation"
+                "Use 'louvain' for faster approximation",
+                "Use 'spectral_multilayer_supra' for supra-Laplacian spectral clustering",
+                "Use 'spectral_multilayer_multiplex' for multiplex spectral clustering"
             ]
         )

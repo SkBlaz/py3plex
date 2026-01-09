@@ -881,6 +881,8 @@ class QueryBuilder:
         Supported algorithms:
             - "leiden": Multilayer Leiden algorithm (production-ready with UQ)
             - "louvain": Multilayer Louvain algorithm
+            - "spectral_multilayer_supra": Supra-Laplacian spectral clustering
+            - "spectral_multilayer_multiplex": Multiplex spectral clustering
             - "infomap": Infomap (if available)
             - "label_propagation": Label propagation
             
@@ -895,6 +897,7 @@ class QueryBuilder:
             random_state: Random seed for reproducibility. If None, uses 0. (default: None)
             partition_name: Name to assign to this partition (default: "default")
             **kwargs: Additional algorithm-specific parameters
+                For spectral methods, include k=<number_of_communities>
             
         Returns:
             Self for chaining
@@ -904,6 +907,20 @@ class QueryBuilder:
             >>> result = (
             ...     Q.nodes()
             ...      .community(method="leiden", gamma=1.2, random_state=42)
+            ...      .execute(network)
+            ... )
+            >>>
+            >>> # Supra-Laplacian spectral clustering
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community(method="spectral_multilayer_supra", k=3, omega=0.8, random_state=42)
+            ...      .execute(network)
+            ... )
+            >>>
+            >>> # Multiplex spectral clustering
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community(method="spectral_multilayer_multiplex", k=3, random_state=42)
             ...      .execute(network)
             ... )
             >>>
@@ -930,6 +947,7 @@ class QueryBuilder:
             - Combining with .uq() enables probabilistic community detection
             - Default random_state=None becomes 0 for determinism
             - For large networks, consider tuning omega and gamma for performance
+            - Spectral methods require k parameter specifying number of communities
         """
         # Store community detection config in select statement
         if not hasattr(self._select, 'community_config'):
