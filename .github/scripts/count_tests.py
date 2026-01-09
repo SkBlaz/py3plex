@@ -18,7 +18,7 @@ def count_tests_in_file(filepath):
     test_count = 0
     
     try:
-        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
             content = f.read()
             tree = ast.parse(content)
             

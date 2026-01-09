@@ -58,7 +58,8 @@ jobs:
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
       run: |
         # Update the test count badge in README.md
-        sed -i "s/tests-[0-9.]*K-blue/tests-$FORMATTED_TESTS-blue/" README.md
+        # Pattern matches plain numbers or numbers with K/M suffix (e.g., 999, 6.1K, 1.2M)
+        sed -i "s/tests-[0-9.]*[KM]\?-blue/tests-$FORMATTED_TESTS-blue/" README.md
         
         # Check if README was actually changed
         if git diff --quiet README.md; then
