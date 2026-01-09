@@ -2761,6 +2761,104 @@ class CommunityQueryBuilder(QueryBuilder):
             edge_builder._select._community_edge_type = "boundary"
 
         return edge_builder
+    
+    def auto_select(
+        self,
+        fast: bool = True,
+        max_candidates: int = 10,
+        seed: int = 0,
+    ) -> "CommunityQueryBuilder":
+        """Automatically select best community detection algorithm.
+        
+        Runs multiple community detection algorithms with parameter grids,
+        evaluates them on multiple quality metrics (bucketed), and selects
+        the winner using a "most wins" decision engine.
+        
+        Args:
+            fast: Use fast mode with smaller parameter grids (default: True)
+            max_candidates: Maximum number of algorithm candidates (default: 10)
+            seed: Master random seed for reproducibility (default: 0)
+        
+        Returns:
+            Self for chaining (execute() will run auto-selection)
+        
+        Examples:
+            >>> # Basic auto-selection
+            >>> result = Q.community().auto_select().execute(network)
+            >>> print(result.explain())
+            >>> network.assign_partition(result.partition)
+            >>> 
+            >>> # With UQ for stability
+            >>> result = (
+            ...     Q.community()
+            ...      .auto_select(fast=True, seed=42)
+            ...      .uq(method="seed", n_samples=50, seed=42)
+            ...      .execute(network)
+            ... )
+            >>> print(result.explain())
+            >>> print(result.leaderboard)
+        
+        Notes:
+            - Combine with .uq() to enable uncertainty quantification
+            - Returns AutoCommunityResult instead of regular QueryResult
+            - The winning partition is automatically assigned to the network
+        """
+        # Mark that auto-selection is requested
+        if not hasattr(self._select, "auto_select_config"):
+            self._select.auto_select_config = {}
+        
+        self._select.auto_select_config = {
+            "enabled": True,
+            "fast": fast,
+            "max_candidates": max_candidates,
+            "seed": seed,
+        }
+        
+        return self
+    
+    def execute(self, network: Any, progress: bool = True, **params):
+        """Execute community query or auto-selection.
+        
+        Args:
+            network: Multilayer network object
+            progress: If True, log progress messages (default: True)
+            **params: Parameter bindings
+        
+        Returns:
+            AutoCommunityResult if auto_select was called, else QueryResult
+        """
+        # Check if auto-selection is requested
+        auto_config = getattr(self._select, "auto_select_config", None)
+        
+        if auto_config and auto_config.get("enabled", False):
+            # Run auto-selection
+            from py3plex.algorithms.community_detection import auto_select_community
+            
+            # Check if UQ is enabled
+            uq_config = getattr(self._select, "uq_config", None)
+            uq_enabled = uq_config is not None
+            
+            if uq_enabled:
+                uq_method = uq_config.uq_method or "seed"
+                uq_n_samples = uq_config.n_samples or 10
+            else:
+                uq_method = "seed"
+                uq_n_samples = 10
+            
+            result = auto_select_community(
+                network=network,
+                fast=auto_config.get("fast", True),
+                max_candidates=auto_config.get("max_candidates", 10),
+                uq=uq_enabled,
+                uq_n_samples=uq_n_samples,
+                uq_method=uq_method,
+                seed=auto_config.get("seed", 0),
+            )
+            
+            return result
+        else:
+            # Normal community query execution
+            return super().execute(network, progress=progress, **params)
 
 
 class Q:
