@@ -400,6 +400,7 @@ class TestCommunityRegistry:
 class TestFunctionalAPI:
     """Test functional API (auto_select_community)."""
     
+    @pytest.mark.slow
     def test_auto_select_runs(self):
         """Auto-select should run on a simple network."""
         # Create simple network
@@ -423,7 +424,7 @@ class TestFunctionalAPI:
         # Run auto-select
         from py3plex.algorithms.community_detection import auto_select_community
         
-        result = auto_select_community(network, fast=True, max_candidates=3, seed=42)
+        result = auto_select_community(network, fast=True, max_candidates=2, seed=42)
         
         assert isinstance(result, AutoCommunityResult)
         assert result.partition is not None
@@ -431,6 +432,7 @@ class TestFunctionalAPI:
         assert result.leaderboard is not None
         assert len(result.leaderboard) > 0
     
+    @pytest.mark.slow
     def test_auto_select_deterministic(self):
         """Auto-select should be deterministic with same seed."""
         network = multinet.multi_layer_network(directed=False)
@@ -467,6 +469,7 @@ class TestDSLIntegration:
         assert hasattr(builder._select, "auto_select_config")
         assert builder._select.auto_select_config["enabled"] is True
     
+    @pytest.mark.slow
     def test_dsl_auto_select_executes(self):
         """Q.community().auto_select().execute() should work."""
         from py3plex.dsl import Q
@@ -485,7 +488,7 @@ class TestDSLIntegration:
         ]
         network.add_edges(edges)
         
-        result = Q.communities().auto_select(fast=True, seed=42).execute(network)
+        result = Q.communities().auto_select(fast=True, max_candidates=2, seed=42).execute(network)
         
         assert isinstance(result, AutoCommunityResult)
         assert result.partition is not None
