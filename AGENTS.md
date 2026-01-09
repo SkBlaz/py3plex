@@ -8,7 +8,7 @@
 - A set of known-good pipeline blueprints ("Golden Paths")
 - A reproducibility + performance policy manual
 
-**Version**: py3plex 1.1.0 | DSL v2.1 | Python 3.8+
+**Version**: py3plex 1.1.1 | DSL v2.1 | Python 3.8+
 
 ---
 
@@ -3193,7 +3193,7 @@ prov = result.meta['provenance']
 
 # Key provenance fields
 print(prov['engine'])             # "dsl_v2_executor"
-print(prov['py3plex_version'])    # "1.1.0"
+print(prov['py3plex_version'])    # "1.1.1"
 print(prov['timestamp_utc'])      # ISO8601 timestamp
 print(prov['network_fingerprint']) # Node/edge counts, layers
 print(prov['query']['ast_hash'])  # Stable hash of query AST
@@ -3503,11 +3503,12 @@ raise Py3plexException("Invalid configuration")
 ```python
 import py3plex
 
-print(py3plex.__version__)  # "1.1.0"
+print(py3plex.__version__)  # "1.1.1"
 ```
 
 **Version History**:
-- **1.1.0** (Current): DSL v2, Dynamics, UQ, Temporal, Null models, Counterexamples, Claim learning
+- **1.1.1** (Current): Documentation updates and AutoCommunity examples
+- **1.1.0**: DSL v2, Dynamics, UQ, Temporal, Null models, Counterexamples, Claim learning
 - **1.0.0**: Initial stable release
 - **0.96**: Pre-release
 
@@ -3602,5 +3603,5 @@ ParameterMissingError  # Param binding failed
 
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-01-09 (for py3plex v1.1.0)
+**Last Updated**: 2026-01-09 (for py3plex v1.1.1)
 
