@@ -306,13 +306,58 @@ def _get_community_function(method: str):
         
         return louvain_wrapper
     
+    elif method == "label_propagation_supra":
+        from py3plex.algorithms.community_detection.label_propagation import (
+            multilayer_label_propagation_supra
+        )
+        
+        def lp_supra_wrapper(network, seed=None, omega=1.0, **kwargs):
+            """Wrapper for multilayer_label_propagation_supra."""
+            # Extract relevant parameters
+            max_iter = kwargs.get('max_iter', 100)
+            projection = kwargs.get('projection', 'none')
+            
+            result = multilayer_label_propagation_supra(
+                network,
+                omega=omega,
+                max_iter=max_iter,
+                random_state=seed,
+                projection=projection,
+            )
+            return result.get("partition_supra", {})
+        
+        return lp_supra_wrapper
+    
+    elif method == "label_propagation_consensus":
+        from py3plex.algorithms.community_detection.label_propagation import (
+            multiplex_label_propagation_consensus
+        )
+        
+        def lp_consensus_wrapper(network, seed=None, **kwargs):
+            """Wrapper for multiplex_label_propagation_consensus."""
+            max_iter = kwargs.get('max_iter', 25)
+            inner_max_iter = kwargs.get('inner_max_iter', 50)
+            
+            result = multiplex_label_propagation_consensus(
+                network,
+                max_iter=max_iter,
+                inner_max_iter=inner_max_iter,
+                random_state=seed,
+            )
+            # Return node-level partition for consensus method
+            return result.get("partition_nodes", {})
+        
+        return lp_consensus_wrapper
+    
     else:
         raise AlgorithmError(
             f"Unsupported community detection method for UQ: {method}",
             algorithm_name=method,
-            valid_algorithms=["leiden", "louvain"],
+            valid_algorithms=["leiden", "louvain", "label_propagation_supra", "label_propagation_consensus"],
             suggestions=[
                 "Use 'leiden' for production-ready UQ",
-                "Use 'louvain' for faster approximation"
+                "Use 'louvain' for faster approximation",
+                "Use 'label_propagation_supra' for hard-label supra-graph LPA",
+                "Use 'label_propagation_consensus' for consensus LPA"
             ]
         )

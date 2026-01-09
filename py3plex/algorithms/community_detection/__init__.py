@@ -36,6 +36,10 @@ from .distributional import (
 )
 from .auto_select import auto_select_community
 from .autocommunity import AutoCommunity, AutoCommunityResult, CommunityStats
+from .label_propagation import (
+    multilayer_label_propagation_supra,
+    multiplex_label_propagation_consensus,
+)
 
 
 def multilayer_louvain(
@@ -132,4 +136,6 @@ __all__ = [
     "AutoCommunity",
     "AutoCommunityResult",
     "CommunityStats",
+    "multilayer_label_propagation_supra",
+    "multiplex_label_propagation_consensus",
 ]
