@@ -90,6 +90,7 @@ timeout-*
 slow-unit-*
 doc-coverage.json
 loc-stats.json
+test-stats.json
 coverage.json
 LLM_ORIGINAL_BACKUP.md
 mutants/
