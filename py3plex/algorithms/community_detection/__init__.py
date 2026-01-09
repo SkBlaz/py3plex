@@ -34,6 +34,7 @@ from .distributional import (
     multilayer_louvain_distribution,
     multilayer_leiden_distribution,
 )
+from .auto_select import auto_select_community
 
 
 def multilayer_louvain(
@@ -126,4 +127,5 @@ __all__ = [
     "generate_sbm_multilayer",
     "multilayer_louvain_distribution",
     "multilayer_leiden_distribution",
+    "auto_select_community",
 ]
