@@ -106,6 +106,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Serialize the network to edgelist format after detection",
     )
+    parser.add_argument(
+        "--skip_visualization",
+        action="store_true",
+        help="Skip visualization (layout computation) to speed up execution",
+    )
     return parser.parse_args()
 
 
@@ -140,8 +145,12 @@ def visualize_partition(
     iterations: int,
     plot_path: str,
     title: str,
+    skip_visualization: bool = False,
 ) -> None:
     """Render a headless community plot if matplotlib is available."""
+    if skip_visualization:
+        print(f"Visualization skipped (--skip_visualization flag set).")
+        return
     if plot_path.lower() == "none":
         print("Visualization disabled (plot_path set to 'none').")
         return
@@ -197,6 +206,7 @@ def try_infomap(
     iterations: int,
     seed: int,
     plot_path: str,
+    skip_visualization: bool = False,
 ) -> None:
     """Attempt Infomap community detection with graceful fallbacks."""
     print("\n" + "=" * 70)
@@ -231,6 +241,7 @@ Options:
             iterations=iterations,
             plot_path=plot_path,
             title="Infomap communities",
+            skip_visualization=skip_visualization,
         )
     except FileNotFoundError as exc:
         print(f"[X] Infomap binary not found: {exc}")
@@ -283,6 +294,7 @@ def main() -> int:
         iterations=args.iterations,
         plot_path=args.plot_path,
         title="Louvain communities",
+        skip_visualization=args.skip_visualization,
     )
 
     if not args.skip_infomap:
@@ -292,6 +304,7 @@ def main() -> int:
             iterations=args.iterations,
             seed=args.seed,
             plot_path=args.infomap_plot_path,
+            skip_visualization=args.skip_visualization,
         )
     else:
         print("Infomap step skipped by user request.")

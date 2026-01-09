@@ -74,7 +74,7 @@ def example_uq_basic() -> None:
     network.add_edges(bridge_edges)
     
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
-          f"{network.number_of_edges()} edges")
+          f"{network.edge_count} edges")
     
     # Run auto-select with UQ
     print("\nRunning auto-select with UQ (10 samples)...")
