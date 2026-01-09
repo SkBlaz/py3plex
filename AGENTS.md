@@ -2811,6 +2811,155 @@ print(f"Consensus partition: {result.meta['consensus_partition']}")
 print(f"Score CI: {result.meta['score_ci']}")
 ```
 
+
+### Multilayer Spectral Clustering
+
+**Purpose**: Spectral clustering for multilayer networks using linear algebraic formulations. Provides deterministic, mathematically rigorous community detection without relying on modularity optimization.
+
+**Two Variants**:
+
+1. **Supra-Laplacian Spectral Clustering** (`spectral_multilayer_supra`):
+   - Constructs full supra-adjacency matrix with interlayer coupling ω
+   - Performs spectral embedding on node-layer replicas
+   - Averages embeddings across layers for node-level communities
+   - Memory complexity: O((nL)²)
+   - Explicit control over layer synchronization via omega parameter
+
+2. **Multiplex (Aggregated) Laplacian Spectral Clustering** (`spectral_multilayer_multiplex`):
+   - Aggregates normalized Laplacians across layers with uniform weights
+   - Performs spectral embedding directly on nodes (no supra-graph)
+   - Memory complexity: O(n²)
+   - Implicit aggregation without explicit interlayer coupling
+
+**DSL API**:
+
+```python
+from py3plex.dsl import Q, L
+
+# Supra-Laplacian variant with interlayer coupling
+result = (
+    Q.nodes()
+     .from_layers(L["social"] + L["work"])
+     .community(
+         method="spectral_multilayer_supra",
+         k=3,                    # Number of communities (mandatory)
+         omega=0.8,              # Interlayer coupling strength
+         random_state=42,        # For reproducibility
+     )
+     .execute(network)
+)
+
+# Multiplex variant (aggregated Laplacian)
+result = (
+    Q.nodes()
+     .from_layers(L["social"] + L["work"])
+     .community(
+         method="spectral_multilayer_multiplex",
+         k=3,                    # Number of communities (mandatory)
+         random_state=42,        # For reproducibility
+     )
+     .execute(network)
+)
+
+# Access results
+partition = network.get_partition_by_name("default")
+n_communities = len(set(partition.values()))
+```
+
+**Functional API**:
+
+```python
+from py3plex.algorithms.community_detection import (
+    spectral_multilayer_supra,
+    spectral_multilayer_multiplex,
+)
+
+# Supra-Laplacian variant
+partition, metadata = spectral_multilayer_supra(
+    network,
+    k=3,
+    omega=0.8,
+    random_state=42,
+)
+# Access node-level embeddings
+embedding_nodes = metadata["embedding_nodes"]  # Shape: (n, k)
+embedding_supra = metadata["embedding_supra"]  # Shape: (nL, k)
+
+# Multiplex variant
+partition, metadata = spectral_multilayer_multiplex(
+    network,
+    k=3,
+    random_state=42,
+)
+embedding_nodes = metadata["embedding_nodes"]  # Shape: (n, k)
+```
+
+**Key Parameters**:
+
+- `k` (int, **mandatory**): Number of communities to detect. py3plex does not infer k automatically.
+- `omega` (float, supra variant only): Interlayer coupling strength (default: 1.0)
+  - `omega=0`: Independent layers (embeddings averaged)
+  - `omega=large`: Strong synchronization across layers
+- `random_state` (int, optional): Random seed for k-means reproducibility
+- `laplacian` (str): Laplacian type, only "normalized" supported (default)
+- `eigen_solver` (str, optional): "dense", "lobpcg", or None (auto-select)
+
+**Complexity Guarantees**:
+
+| Variant | Memory | Time | Use Case |
+|---------|--------|------|----------|
+| Supra | O((nL)²) | O((nL)³) | Explicit layer coupling control |
+| Multiplex | O(n²) | O(n³) | Memory-efficient aggregation |
+
+**Mathematical Formulation**:
+
+*Supra-Laplacian*:
+1. Build supra-adjacency A^{supra} (nL × nL) with diagonal blocks A^[α] and off-diagonal ωI
+2. Compute normalized supra-Laplacian: L^{supra}_norm = I - D^{-1/2} A^{supra} D^{-1/2}
+3. Get k smallest eigenvectors → X ∈ R^{(nL) × k}
+4. Average replicas: X̄_i = (1/L) Σ_{α} X_{(i,α)}
+5. Run k-means on X̄
+
+*Multiplex*:
+1. Compute layer Laplacians L^[α]_norm
+2. Aggregate: L^{multi} = (1/L) Σ_{α} L^[α]_norm
+3. Get k smallest eigenvectors of L^{multi} → X ∈ R^{n × k}
+4. Run k-means on X
+
+**When to Use**:
+
+- **Spectral methods**: When you want deterministic, reproducible clustering based on graph structure
+- **Supra variant**: When you want explicit control over interlayer coupling (omega parameter)
+- **Multiplex variant**: When memory is a constraint or layers have consistent community structure
+- **Modularity methods (Leiden/Louvain)**: When you want resolution control (gamma) and faster performance
+
+**Key Properties**:
+
+- ✓ Deterministic with fixed random_state
+- ✓ L=1 reduction: Both variants reduce to standard spectral clustering for single-layer networks
+- ✓ Node-level output: All replicas of a node belong to the same community
+- ✓ Only normalized Laplacian supported (more stable than unnormalized)
+- ✗ No automatic k selection (k must be provided)
+- ✗ No overlapping or soft clustering
+
+**Comparison Table**:
+
+| Aspect | Supra-Laplacian | Multiplex | Leiden/Louvain |
+|--------|-----------------|-----------|----------------|
+| Coupling | Explicit (omega) | Implicit (aggregation) | Explicit (omega) |
+| Memory | O((nL)²) | O(n²) | O(nL) |
+| Deterministic | Yes (with seed) | Yes (with seed) | No (heuristic) |
+| k parameter | Mandatory | Mandatory | Auto-detected |
+| Resolution | Via k | Via k | Via gamma |
+| Best for | Coupling control | Memory efficiency | Speed, scalability |
+
+**Examples**: See `examples/communities/example_spectral_supra.py` and `example_spectral_multiplex.py` for detailed usage patterns.
+
+**References**:
+- Kivelä, M., et al. (2014). Multilayer networks. Journal of Complex Networks.
+- Ng, A. Y., Jordan, M. I., & Weiss, Y. (2002). On spectral clustering. NIPS.
+
+
 ### AutoCommunity: Automatic Algorithm Selection
 
 **Purpose**: Automatically select the best community detection algorithm based on multi-metric evaluation and a "most wins" decision engine.
