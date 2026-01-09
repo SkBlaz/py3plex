@@ -382,7 +382,6 @@ def spectral_multilayer_supra(
 
     # Extract unique nodes and layers
     unique_nodes = sorted({node for node, layer in nodes_list})
-    sorted({layer for node, layer in nodes_list})
     n = len(unique_nodes)
 
     if k > n:
@@ -599,8 +598,9 @@ def spectral_multilayer_multiplex(
         L_multi = L_multi + L_full.tocsr()
 
     # Average by number of layers
-    if L > 0:
-        L_multi = L_multi / L
+    n_layers = len(unique_layers)
+    if n_layers > 0:
+        L_multi = L_multi / n_layers
 
     # Spectral embedding
     embedding_nodes = _spectral_embedding(
