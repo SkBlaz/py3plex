@@ -290,9 +290,9 @@ def example_mixed_metrics() -> None:
                 print(f"  - {metric_name}")
 
 
-def example_custom_candidates() -> None:
-    """Example 3: Specifying custom algorithm candidates."""
-    _print_header("Example 3: Custom algorithm candidates")
+def example_candidate_inspection() -> None:
+    """Example 3: Inspecting automatically built candidates."""
+    _print_header("Example 3: Understanding candidate building")
     
     # Create simple network
     network = multinet.multi_layer_network(directed=False)
@@ -309,15 +309,12 @@ def example_custom_candidates() -> None:
     
     print(f"Network: {len(list(network.get_nodes()))} nodes (ring structure)")
     
-    # Define custom candidates with specific parameters
-    # Note: This requires knowledge of available algorithms
-    print("\nNote: Custom candidates require algorithm-specific knowledge")
-    print("This example shows the structure, but may need adjustment")
-    print("based on available algorithms in your installation.")
+    # Inspect how candidates are automatically built
+    print("\nAuto-select automatically detects and builds candidates")
+    print("from available algorithms. You can inspect what was found:")
     
-    # For demonstration, we'll use the default auto-select
-    # which automatically builds candidates
-    print("\nRunning auto-select with default candidate building...")
+    # Run auto-select with default candidate building
+    print("\nRunning auto-select...")
     result = auto_select_community(
         network,
         fast=True,
@@ -329,9 +326,15 @@ def example_custom_candidates() -> None:
     
     print("\n--- Candidate Information ---")
     print(f"Algorithms detected: {len(result.provenance['algorithms_detected'])}")
-    print("Detected algorithms:")
+    print("\nDetected algorithms:")
     for algo in result.provenance['algorithms_detected'][:5]:
         print(f"  - {algo}")
+    
+    print("\n--- Note on Custom Candidates ---")
+    print("To specify custom candidates, use the custom_candidates parameter")
+    print("with a list of CandidateSpec objects. This requires knowledge of")
+    print("available algorithms and their parameters. See the auto_select.py")
+    print("source code for CandidateSpec structure.")
 
 
 def main() -> int:
@@ -350,7 +353,7 @@ def main() -> int:
     try:
         example_custom_metrics()
         example_mixed_metrics()
-        example_custom_candidates()
+        example_candidate_inspection()
         
         print("\n" + "=" * 70)
         print("✓ All custom metric examples completed!")
