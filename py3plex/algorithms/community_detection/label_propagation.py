@@ -482,16 +482,16 @@ def multiplex_label_propagation_consensus(
             new_consensus[node] != node_consensus[node] for node in nodes
         )
         
-        if not consensus_changed:
-            converged = True
-            break
-        
         # Step 3: Synchronization - assign consensus label to all replicas
         node_consensus = new_consensus
         for node in nodes:
             consensus_label = node_consensus[node]
             for idx in node_to_replicas[node]:
                 labels[idx] = consensus_label
+        
+        if not consensus_changed:
+            converged = True
+            break
     
     # Build output partitions
     partition_nodes = {node: int(node_consensus[node]) for node in nodes}
