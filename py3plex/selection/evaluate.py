@@ -3,7 +3,7 @@
 import hashlib
 import logging
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from .result import ContestantResult
 from .community_registry import CandidateSpec
@@ -160,7 +160,7 @@ def _run_algorithm_with_uq(
     candidate: CandidateSpec,
     algo_params: Dict[str, Any],
     uq_config: Dict[str, Any],
-) -> tuple[Dict[Any, int], Any]:
+) -> Tuple[Dict[Any, int], Any]:
     """Run algorithm with UQ.
     
     Args:
