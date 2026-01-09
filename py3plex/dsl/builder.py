@@ -973,6 +973,79 @@ class QueryBuilder:
         }
         
         return self
+    
+    def community_auto(
+        self,
+        fast: bool = True,
+        max_candidates: int = 10,
+        seed: int = 0,
+        join: str = "max_confidence",
+        partition_name: str = "auto",
+    ) -> "QueryBuilder":
+        """Automatically select best community detection and join to nodes.
+        
+        This method runs AutoCommunity selection and then joins the resulting
+        partition to nodes, adding community_id and confidence columns to the
+        node query results.
+        
+        Args:
+            fast: Use fast mode with smaller parameter grids (default: True)
+            max_candidates: Maximum number of algorithm candidates (default: 10)
+            seed: Master random seed for reproducibility (default: 0)
+            join: Join policy for assigning nodes to communities (default: "max_confidence")
+                 Options: "max_confidence", "consensus", "deterministic"
+            partition_name: Name to assign to this partition (default: "auto")
+        
+        Returns:
+            Self for chaining
+        
+        Examples:
+            >>> # Basic usage
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community_auto(seed=42, fast=True)
+            ...      .execute(network)
+            ... )
+            >>> 
+            >>> # With explanation
+            >>> exp = (
+            ...     Q.nodes()
+            ...      .community_auto(seed=42, fast=True, join="max_confidence")
+            ...      .explain()
+            ...      .execute(network)
+            ... )
+            >>> print(exp.payload['selected']['join_policy'])
+            >>> 
+            >>> # With filtering
+            >>> result = (
+            ...     Q.nodes()
+            ...      .community_auto(seed=42)
+            ...      .where(community_id__ne=-1)  # Exclude unassigned nodes
+            ...      .compute("degree")
+            ...      .execute(network)
+            ... )
+        
+        Notes:
+            - Runs AutoCommunity once and caches result
+            - Joins partition to nodes based on join policy
+            - Combine with .explain() to get structured audit trail
+            - Results include community_id and optionally confidence columns
+        """
+        # Store auto community config
+        if not hasattr(self._select, 'community_auto_config'):
+            self._select.community_auto_config = {}
+        
+        self._select.community_auto_config = {
+            'enabled': True,
+            'fast': fast,
+            'max_candidates': max_candidates,
+            'seed': seed,
+            'join': join,
+            'partition_name': partition_name,
+            'explain_requested': False,  # Will be set by .explain()
+        }
+        
+        return self
 
     def sensitivity(
         self,
@@ -1217,6 +1290,19 @@ class QueryBuilder:
             >>> #                      community_id, community_size, top_neighbors,
             >>> #                      layers_present, n_layers_present
         """
+        # Check for community_auto explain mode first (special case)
+        if hasattr(self._select, 'community_auto_config') and self._select.community_auto_config.get('enabled', False):
+            has_any_arg = any([
+                neighbors_top is not None, include is not None, exclude is not None,
+                neighbors is not None, community is not None, layer_footprint is not None,
+                not cache, not as_columns, prefix != ""
+            ])
+            
+            if not has_any_arg:
+                # Mark that explanation is requested for community_auto
+                self._select.community_auto_config['explain_requested'] = True
+                return self
+        
         # Check if this is execution plan mode (no arguments provided)
         has_any_arg = any(
             [
@@ -2789,7 +2875,7 @@ class CommunityQueryBuilder(QueryBuilder):
 
         return edge_builder
     
-    def auto_select(
+    def auto(
         self,
         fast: bool = True,
         max_candidates: int = 10,
@@ -2811,14 +2897,18 @@ class CommunityQueryBuilder(QueryBuilder):
         
         Examples:
             >>> # Basic auto-selection
-            >>> result = Q.community().auto_select().execute(network)
+            >>> result = Q.communities().auto().execute(network)
             >>> print(result.explain())
             >>> network.assign_partition(result.partition)
             >>> 
+            >>> # With explanation
+            >>> exp = Q.communities().auto(seed=42, fast=True).explain().execute(network)
+            >>> print(exp.payload)
+            >>> 
             >>> # With UQ for stability
             >>> result = (
-            ...     Q.community()
-            ...      .auto_select(fast=True, seed=42)
+            ...     Q.communities()
+            ...      .auto(fast=True, seed=42)
             ...      .uq(method="seed", n_samples=50, seed=42)
             ...      .execute(network)
             ... )
@@ -2827,6 +2917,7 @@ class CommunityQueryBuilder(QueryBuilder):
         
         Notes:
             - Combine with .uq() to enable uncertainty quantification
+            - Combine with .explain() to get structured audit trail
             - Returns AutoCommunityResult instead of regular QueryResult
             - The winning partition is automatically assigned to the network
         """
@@ -2839,7 +2930,51 @@ class CommunityQueryBuilder(QueryBuilder):
             "fast": fast,
             "max_candidates": max_candidates,
             "seed": seed,
+            "explain_requested": False,  # Will be set by .explain()
         }
+        
+        return self
+    
+    def auto_select(
+        self,
+        fast: bool = True,
+        max_candidates: int = 10,
+        seed: int = 0,
+    ) -> "CommunityQueryBuilder":
+        """Alias for auto() - kept for backward compatibility.
+        
+        See auto() for documentation.
+        """
+        return self.auto(fast=fast, max_candidates=max_candidates, seed=seed)
+    
+    def explain(self) -> "CommunityQueryBuilder":
+        """Request structured explanation of AutoCommunity decision process.
+        
+        When combined with .auto(), this returns a QueryResult containing
+        structured explanation data instead of running the full auto-selection.
+        The explanation includes: selected algorithm, candidate metrics table,
+        UQ/null-model summaries, runtime, and provenance.
+        
+        Returns:
+            Self for chaining
+        
+        Examples:
+            >>> # Get explanation of auto-selection
+            >>> exp = Q.communities().auto(seed=42, fast=True).explain().execute(network)
+            >>> print(exp.payload['selected'])
+            >>> print(exp.tables['candidates'])
+        
+        Notes:
+            - Must be used after .auto() or .auto_select()
+            - Returns QueryResult with explanation payload
+            - Does NOT re-run AutoCommunity (reuses cached result)
+            - Explanation is deterministic given the same seed
+        """
+        # Mark that explanation is requested
+        if hasattr(self._select, "auto_select_config"):
+            self._select.auto_select_config["explain_requested"] = True
+        else:
+            raise ValueError(".explain() must be called after .auto() or .auto_select()")
         
         return self
     
@@ -2882,10 +3017,139 @@ class CommunityQueryBuilder(QueryBuilder):
                 seed=auto_config.get("seed", 0),
             )
             
+            # Check if explanation was requested
+            if auto_config.get("explain_requested", False):
+                # Convert AutoCommunityResult to QueryResult with explanation
+                return self._build_explanation_result(result, auto_config, uq_config)
+            
             return result
         else:
             # Normal community query execution
             return super().execute(network, progress=progress, **params)
+    
+    def _build_explanation_result(
+        self,
+        auto_result: Any,
+        auto_config: Dict[str, Any],
+        uq_config: Optional[Any],
+    ) -> QueryResult:
+        """Build QueryResult with structured explanation from AutoCommunityResult.
+        
+        Args:
+            auto_result: AutoCommunityResult from auto_select_community
+            auto_config: Configuration dict for auto-selection
+            uq_config: UQ configuration if enabled
+        
+        Returns:
+            QueryResult with explanation payload and tables
+        """
+        import pandas as pd
+        from .result import QueryResult
+        
+        # Build explanation payload
+        payload = {}
+        
+        # 1. Selected algorithm info
+        algo_info = auto_result.algorithm
+        payload["selected"] = {
+            "algorithm": algo_info.get("name", "unknown"),
+            "contestant_id": algo_info.get("contestant_id", "unknown"),
+            "params": algo_info.get("params", {}),
+            "selection_strategy": "most_wins",  # Always most_wins for now
+            "seed": auto_config.get("seed", 0),
+            "join_policy": None,  # Only for community_auto
+        }
+        
+        # 2. Top candidates table (from leaderboard)
+        candidates_df = auto_result.leaderboard.copy() if hasattr(auto_result, 'leaderboard') else pd.DataFrame()
+        
+        # 3. Stability/UQ summary
+        provenance = auto_result.provenance if hasattr(auto_result, 'provenance') else {}
+        uq_summary = {
+            "stability_score": None,
+            "node_confidence_mean": None,
+            "node_confidence_median": None,
+            "node_confidence_min": None,
+            "node_confidence_max": None,
+            "fallback_uq_used": False,
+        }
+        
+        # Extract UQ metrics if available
+        if 'uq_metrics' in provenance:
+            uq_metrics = provenance['uq_metrics']
+            uq_summary["stability_score"] = uq_metrics.get("stability_score")
+            
+            if 'node_confidence_stats' in uq_metrics:
+                conf_stats = uq_metrics['node_confidence_stats']
+                uq_summary["node_confidence_mean"] = conf_stats.get("mean")
+                uq_summary["node_confidence_median"] = conf_stats.get("median")
+                uq_summary["node_confidence_min"] = conf_stats.get("min")
+                uq_summary["node_confidence_max"] = conf_stats.get("max")
+            
+            uq_summary["fallback_uq_used"] = uq_metrics.get("fallback_used", False)
+        
+        payload["uq"] = uq_summary
+        
+        # 4. Null model summary
+        null_model_summary = {
+            "null_model_used": False,
+            "z_scores": {},
+            "sampling_params": {},
+        }
+        
+        if 'null_model' in provenance and provenance['null_model']:
+            null_model_summary["null_model_used"] = True
+            null_model_summary["z_scores"] = provenance['null_model'].get("z_scores", {})
+            null_model_summary["sampling_params"] = provenance['null_model'].get("params", {})
+        
+        payload["null_model"] = null_model_summary
+        
+        # 5. Runtime & provenance
+        payload["runtime"] = {
+            "total_ms": provenance.get("runtime_ms"),
+            "cache_key": f"auto_{auto_config.get('seed', 0)}_{auto_config.get('fast', True)}",
+        }
+        
+        payload["provenance"] = {
+            "dsl_version": "2.1",
+            "library_version": None,  # TODO: Extract from py3plex.__version__
+            "wins_by_bucket": provenance.get("wins_by_bucket", {}),
+        }
+        
+        # 6. Multilayer info
+        payload["multilayer"] = {
+            "handling": "joint",  # or "per_layer" - extract from provenance if available
+            "aggregation": "consensus",  # or layer-specific
+        }
+        
+        # Build tables dict
+        tables = {
+            "candidates": candidates_df,
+        }
+        
+        # Optionally add metrics summary table
+        if 'report' in auto_result.__dict__:
+            report = auto_result.report
+            if 'metrics_by_contestant' in report:
+                metrics_df = pd.DataFrame(report['metrics_by_contestant']).T
+                tables["metrics_summary"] = metrics_df
+        
+        # Create QueryResult with explanation
+        result = QueryResult(
+            rows=[],  # Empty rows for explanation-only result
+            columns=[],
+            meta={
+                "query_type": "autocommunity_explain",
+                "autocommunity_explanation": True,
+            },
+            grouping=None,
+        )
+        
+        # Attach payload and tables
+        result.payload = payload
+        result.tables = tables
+        
+        return result
 
 
 class Q:
