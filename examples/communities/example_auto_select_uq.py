@@ -120,7 +120,7 @@ def example_uq_comparison() -> None:
     
     # Run with UQ to assess stability
     print("\nRunning auto-select with UQ to compare stability...")
-    print("Using bootstrap method for robustness testing...")
+    print("Using seed-based method for robustness testing...")
     
     result = auto_select_community(
         network,

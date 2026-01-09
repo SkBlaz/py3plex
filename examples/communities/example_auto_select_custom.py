@@ -22,7 +22,7 @@ from typing import Any, Dict, Optional
 try:
     from py3plex.algorithms.community_detection import auto_select_community
     from py3plex.core import multinet, random_generators
-    from py3plex.selection.metric_registry import MetricSpec
+    from py3plex.selection.metric_registry import MetricSpec, get_metric_registry
     from py3plex.selection.community_registry import CandidateSpec
     import numpy as np
     import networkx as nx
@@ -32,6 +32,7 @@ except ImportError as exc:  # pragma: no cover - surfaced to user
     random_generators = None
     MetricSpec = None
     CandidateSpec = None
+    get_metric_registry = None
     np = None
     nx = None
     IMPORT_ERROR = exc
@@ -250,8 +251,6 @@ def example_mixed_metrics() -> None:
     print(f"Network: {len(list(network.get_nodes()))} node-layer pairs")
     
     # Get default metrics and add custom ones
-    from py3plex.selection.metric_registry import get_metric_registry
-    
     registry = get_metric_registry()
     default_metrics = registry.get_default_metrics(uq_enabled=False)
     
