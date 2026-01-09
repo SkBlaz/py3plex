@@ -233,11 +233,22 @@ def _compute_graph_regime(network: Any) -> Dict[str, float]:
         total_edges = 0
         
         for edge in network.core_network.edges(data=True):
-            source_layer = edge[0][1] if isinstance(edge[0], tuple) else None
-            target_layer = edge[1][1] if isinstance(edge[1], tuple) else None
+            source = edge[0]
+            target = edge[1]
+            
+            # Handle both tuple (node, layer) and regular node formats
+            if isinstance(source, tuple) and len(source) >= 2:
+                source_layer = source[1]
+            else:
+                source_layer = None
+            
+            if isinstance(target, tuple) and len(target) >= 2:
+                target_layer = target[1]
+            else:
+                target_layer = None
             
             total_edges += 1
-            if source_layer != target_layer:
+            if source_layer and target_layer and source_layer != target_layer:
                 inter_layer_edges += 1
         
         if total_edges > 0:
@@ -321,7 +332,7 @@ def _run_candidate_algorithms(
                         network,
                         seed=seed,
                     )
-                    partition_dict = leiden_result.partition
+                    partition_dict = leiden_result.communities  # Use 'communities', not 'partition'
                     uq_data = None
             
             else:

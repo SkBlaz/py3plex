@@ -83,7 +83,7 @@ def example_basic_usage() -> None:
     }])
     
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
-          f"{network.number_of_edges()} edges")
+          f"{network.edge_count} edges")
     
     # Run AutoCommunity with minimal config
     print("\nRunning AutoCommunity (basic configuration)...")
@@ -126,7 +126,7 @@ def example_with_uncertainty() -> None:
     )
     
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
-          f"{network.number_of_edges()} edges")
+          f"{network.edge_count} edges")
     
     # Run with UQ
     print("\nRunning AutoCommunity with uncertainty quantification...")
@@ -206,7 +206,7 @@ def example_with_null_models() -> None:
                 }])
     
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
-          f"{network.number_of_edges()} edges")
+          f"{network.edge_count} edges")
     
     # Run with null models
     print("\nRunning AutoCommunity with null-model calibration...")
@@ -260,7 +260,7 @@ def example_full_pipeline() -> None:
     
     print(f"Network: {len(network.get_layers())} layers, "
           f"{len(list(network.get_nodes()))} nodes, "
-          f"{network.number_of_edges()} edges")
+          f"{network.edge_count} edges")
     
     # Run full pipeline
     print("\nRunning full AutoCommunity pipeline...")
@@ -360,7 +360,7 @@ def example_consensus() -> None:
         }])
     
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
-          f"{network.number_of_edges()} edges")
+          f"{network.edge_count} edges")
     
     # Run with multiple algorithms
     print("\nRunning AutoCommunity to potentially trigger consensus...")
