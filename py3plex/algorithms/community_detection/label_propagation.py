@@ -220,6 +220,7 @@ def multilayer_label_propagation_supra(
                 if labels[idx] != new_label:
                     labels[idx] = new_label
                     changed = True
+            # If no neighbors and omega=0, node keeps its label (isolated node)
         
         # Check convergence
         if not changed:
@@ -453,6 +454,7 @@ def multiplex_label_propagation_consensus(
                         if labels[idx] != new_label:
                             labels[idx] = new_label
                             changed = True
+                    # If no neighbors, node keeps its label (isolated node)
                 
                 # Early stopping if layer converged
                 if not changed:
