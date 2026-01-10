@@ -30,14 +30,20 @@ jobs:
         python-version: ${{ matrix.python-version }}
       timeout-minutes: 3
     
-    - name: Cache pip dependencies
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+    
+    - name: Cache uv dependencies
       uses: actions/cache@v3
       with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-property-${{ hashFiles('pyproject.toml') }}
+        path: |
+          ~/.cache/uv
+          .venv
+        key: ${{ runner.os }}-uv-property-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-pip-property-
-          ${{ runner.os }}-pip-
+          ${{ runner.os }}-uv-property-${{ matrix.python-version }}-
+          ${{ runner.os }}-uv-
       timeout-minutes: 2
     
     - name: Install system dependencies
@@ -48,15 +54,17 @@ jobs:
     
     - name: Install test dependencies
       run: |
-        python -m pip install --upgrade --timeout 120 --retries 5 pip setuptools wheel
-        pip install --timeout 120 --retries 5 -e .[tests]
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install -e .[tests]
         # Install optional deps for comprehensive tests
-        pip install --timeout 120 --retries 5 python-louvain || echo "⚠️ python-louvain not available"
+        uv pip install python-louvain || echo "⚠️ python-louvain not available"
       timeout-minutes: 10
     
     - name: Run property tests (excluding slow)
       run: |
-        pytest tests/property/ -v -m "property and not slow" --tb=short
+        source .venv/bin/activate
+        uv run pytest tests/property/ -v -m "property and not slow" --tb=short
       timeout-minutes: 12
     
     - name: Upload test results
@@ -86,13 +94,19 @@ jobs:
         python-version: "3.10"
       timeout-minutes: 3
     
-    - name: Cache pip dependencies
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+    
+    - name: Cache uv dependencies
       uses: actions/cache@v3
       with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-property-slow-${{ hashFiles('pyproject.toml') }}
+        path: |
+          ~/.cache/uv
+          .venv
+        key: ${{ runner.os }}-uv-property-slow-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-pip-property-
+          ${{ runner.os }}-uv-property-
       timeout-minutes: 2
     
     - name: Install system dependencies
@@ -103,14 +117,16 @@ jobs:
     
     - name: Install test dependencies
       run: |
-        python -m pip install --upgrade --timeout 120 --retries 5 pip setuptools wheel
-        pip install --timeout 120 --retries 5 -e .[tests]
-        pip install --timeout 120 --retries 5 python-louvain || echo "⚠️ python-louvain not available"
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install -e .[tests]
+        uv pip install python-louvain || echo "⚠️ python-louvain not available"
       timeout-minutes: 10
     
     - name: Run all property tests (including slow)
       run: |
-        pytest tests/property/ -v -m property --tb=short
+        source .venv/bin/activate
+        uv run pytest tests/property/ -v -m property --tb=short
       timeout-minutes: 25
     
     - name: Upload test results
@@ -139,14 +155,20 @@ jobs:
         python-version: "3.9"
       timeout-minutes: 3
     
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+    
     - name: Install minimal dependencies
       run: |
-        python -m pip install --upgrade --timeout 120 --retries 5 pip
-        pip install --timeout 120 --retries 5 pytest hypothesis networkx numpy scipy
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install pytest hypothesis networkx numpy scipy
         # Skip hypothesis-networkx, python-louvain
       timeout-minutes: 8
     
     - name: Run property tests (minimal, skip tests with missing deps)
       run: |
-        pytest tests/property/ -v -m "property and not slow" --tb=short || echo "⚠️ Some tests skipped due to missing deps"
+        source .venv/bin/activate
+        uv run pytest tests/property/ -v -m "property and not slow" --tb=short || echo "⚠️ Some tests skipped due to missing deps"
       timeout-minutes: 10

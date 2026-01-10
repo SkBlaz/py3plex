@@ -4,18 +4,29 @@ Thank you for your interest in contributing to py3plex! This guide covers both h
 
 ## Quick Start
 
+We use [uv](https://docs.astral.sh/uv/) for fast, reliable Python environment management:
+
 ```bash
-# Clone and install
+# Clone repository
 git clone https://github.com/SkBlaz/py3plex.git
 cd py3plex
-pip install -e ".[dev]"
+
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create virtual environment
+uv venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install with development dependencies
+uv pip install -e ".[dev]"
 
 # Run tests
-python -m pytest tests/
+uv run pytest tests/
 
 # Lint code
-black py3plex/
-ruff check py3plex/
+uv run black py3plex/
+uv run ruff check py3plex/
 ```
 
 ## Development Setup
@@ -24,18 +35,30 @@ ruff check py3plex/
 
 - Python 3.8 or higher
 - Git
+- [uv](https://docs.astral.sh/uv/) (recommended package manager)
 
 ### Installation
 
 ```bash
-# Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create virtual environment
+uv venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install with development dependencies
-pip install -e ".[dev,tests]"
+uv pip install -e ".[dev,tests]"
 
 # Install pre-commit hooks
+uv run pre-commit install
+```
+
+**Alternative (traditional pip):**
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -e ".[dev,tests]"
 pre-commit install
 ```
 
@@ -83,19 +106,24 @@ def compute_centrality(
 
 ```bash
 # All tests
-python -m pytest tests/
+uv run pytest tests/
 
 # Specific test file
-python -m pytest tests/test_dsl.py
+uv run pytest tests/test_dsl.py
 
 # With coverage
-python -m pytest tests/ --cov=py3plex --cov-report=html
+uv run pytest tests/ --cov=py3plex --cov-report=html
 
 # Verbose output
-python -m pytest tests/ -v
+uv run pytest tests/ -v
 
 # Run only fast tests
-python -m pytest tests/ -m "not slow"
+uv run pytest tests/ -m "not slow"
+```
+
+**Alternative (if activated in venv):**
+```bash
+python -m pytest tests/
 ```
 
 ### Writing Tests
@@ -129,8 +157,8 @@ class TestMyFeature:
 ### Before Submitting
 
 1. **Update tests**: Add or update tests for your changes
-2. **Run the test suite**: `python -m pytest tests/`
-3. **Lint your code**: `black py3plex/ && ruff check py3plex/`
+2. **Run the test suite**: `uv run pytest tests/`
+3. **Lint your code**: `uv run black py3plex/ && uv run ruff check py3plex/`
 4. **Update documentation**: If changing public API
 
 ### PR Guidelines

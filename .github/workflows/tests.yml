@@ -41,16 +41,20 @@ jobs:
         python-version: ${{ matrix.python-version }}
       timeout-minutes: 3
 
-    - name: Cache pip dependencies
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+
+    - name: Cache uv dependencies
       uses: actions/cache@v3
       with:
         path: |
-          ~/.cache/pip
-          ~/Library/Caches/pip
-          ~\AppData\Local\pip\Cache
-        key: ${{ runner.os }}-pip-v1
+          ~/.cache/uv
+          .venv
+        key: ${{ runner.os }}-uv-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-pip-
+          ${{ runner.os }}-uv-${{ matrix.python-version }}-
+          ${{ runner.os }}-uv-
       timeout-minutes: 2
 
     - name: Install system dependencies (Linux)
@@ -74,66 +78,27 @@ jobs:
         echo "Using Visual Studio build tools"
       timeout-minutes: 1
 
-    - name: Setup development environment via Makefile
-      if: runner.os != 'Windows'
+    - name: Setup development environment
       run: |
-        echo "🔧 Setting up development environment..."
-        make setup
+        echo "🔧 Setting up development environment with uv..."
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install -e .
       timeout-minutes: 15
-      shell: bash  # Use bash on all platforms
-    
-    - name: Setup development environment (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        echo "🔧 Setting up development environment (Windows)..."
-        python -m venv .venv
-        .venv\Scripts\python.exe -m pip install --upgrade --timeout 120 --retries 5 pip setuptools wheel
-        if (Test-Path pyproject.toml) {
-          .venv\Scripts\pip.exe install --timeout 120 --retries 5 -e .
-        } elseif (Test-Path requirements.txt) {
-          .venv\Scripts\pip.exe install --timeout 120 --retries 5 -r requirements.txt
-        }
-      timeout-minutes: 15
-      shell: pwsh
-
-    - name: Install package
-      run: |
-        # Activate virtual environment (cross-platform)
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          source .venv/Scripts/activate
-        else
-          source .venv/bin/activate
-        fi
-        # Install from requirements.txt if it exists, otherwise skip
-        if [ -f requirements.txt ]; then
-          pip install --timeout 120 --retries 5 -r requirements.txt
-        else
-          echo "requirements.txt not found, skipping"
-        fi
-        # Add py3plex to PYTHONPATH for testing without full install
-        echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
-      timeout-minutes: 5
       shell: bash
 
-    - name: Run tests via Makefile
+    - name: Run tests via uv
       env:
         MPLBACKEND: Agg  # Avoid GUI issues in matplotlib
         HYPOTHESIS_PROFILE: ci  # Use CI profile for Hypothesis
       run: |
-        echo "🧪 Running tests via Makefile..."
-        # Activate virtual environment (cross-platform)
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          source .venv/Scripts/activate
-        else
-          source .venv/bin/activate
-        fi
-        # Install pytest and hypothesis if not already installed
-        pip install pytest hypothesis || echo "pytest already installed"
-        # Run tests
+        echo "🧪 Running tests..."
+        source .venv/bin/activate
+        uv pip install pytest hypothesis
         if [ -f "run_tests.py" ]; then
-          timeout 600 python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
+          timeout 600 uv run python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
         else
-          pytest tests/ || echo "⚠️ Tests failed"
+          uv run pytest tests/ || echo "⚠️ Tests failed"
         fi
       timeout-minutes: 30
       shell: bash
@@ -144,15 +109,8 @@ jobs:
         HYPOTHESIS_PROFILE: ci
       run: |
         echo "🔬 Running metamorphic tests..."
-        # Activate virtual environment (cross-platform)
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          source .venv/Scripts/activate
-        else
-          source .venv/bin/activate
-        fi
-        # Run only metamorphic tests
-        pip install hypothesis || echo "hypothesis already installed"
-        pytest -q -k metamorphic tests/ || echo "⚠️ Metamorphic tests failed"
+        source .venv/bin/activate
+        uv run pytest -q -k metamorphic tests/ || echo "⚠️ Metamorphic tests failed"
       timeout-minutes: 5
       shell: bash
 
@@ -179,29 +137,29 @@ jobs:
         python-version: "3.8"
       timeout-minutes: 3
 
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+
     - name: Install minimal dependencies
       run: |
-        python -m pip install --upgrade pip --timeout 120
-        pip install --timeout 120 --retries 3 setuptools wheel
-        # Only install absolutely required dependencies with timeout protection
-        pip install --timeout 120 --retries 3 numpy scipy tqdm bitarray rdflib
-        # Try to install networkx with version flexibility and timeout
-        pip install --timeout 120 --retries 2 "networkx>=2.5" || pip install --timeout 120 networkx
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install setuptools wheel
+        # Only install absolutely required dependencies
+        uv pip install numpy scipy tqdm bitarray rdflib
+        # Try to install networkx with version flexibility
+        uv pip install "networkx>=2.5" || uv pip install networkx
       timeout-minutes: 10
-
-    - name: Install package (minimal)
-      run: |
-        # Add py3plex to PYTHONPATH for testing without full install
-        echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
-      timeout-minutes: 2
 
     - name: Run tests (minimal)
       run: |
         echo "🐍 Python version: $(python --version)"
         echo "📦 Installed packages:"
-        pip list | head -20
+        source .venv/bin/activate
+        uv pip list | head -20
         echo "🧪 Running tests with minimal dependencies..."
-        timeout 400 python run_tests.py || echo "⚠️ Minimal tests timed out after 6.7 minutes"
+        timeout 400 uv run python run_tests.py || echo "⚠️ Minimal tests timed out after 6.7 minutes"
         echo "✅ Minimal dependency tests completed"
         echo "Note: Some tests may be skipped due to missing optional dependencies"
       timeout-minutes: 8
@@ -225,10 +183,15 @@ jobs:
         python-version: "3.10"
       timeout-minutes: 3
 
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade --timeout 120 --retries 5 pip setuptools wheel
-        pip install --timeout 120 --retries 5 -e .[tests]
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install -e .[tests]
       timeout-minutes: 10
 
     - name: Run extended metamorphic tests
@@ -241,5 +204,6 @@ jobs:
         echo "Configuration:"
         echo "  - HYPOTHESIS_PROFILE: nightly"
         echo "  - HYPOTHESIS_MAX_EXAMPLES: 600"
-        pytest -v -k metamorphic tests/test_metamorphic.py --tb=short
+        source .venv/bin/activate
+        uv run pytest -v -k metamorphic tests/test_metamorphic.py --tb=short
       timeout-minutes: 50

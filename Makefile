@@ -14,6 +14,10 @@ PACKAGE := py3plex
 VENV_BIN := $(VENV)/bin
 VENV_PYTHON := $(VENV_BIN)/python
 VENV_PIP := $(VENV_BIN)/pip
+UV := uv
+
+# Detect if uv is available, otherwise fall back to traditional pip
+UV_AVAILABLE := $(shell command -v uv 2> /dev/null)
 
 # Detect if we're in CI or if tools are available globally
 # Use venv tools if available, otherwise fall back to global tools
@@ -65,20 +69,34 @@ setup: ## Create virtual environment and install dependencies
 		printf "$(COLOR_YELLOW)⚠ Virtual environment already exists at $(VENV)$(COLOR_RESET)\n"; \
 	else \
 		printf "$(COLOR_GREEN)✓ Creating virtual environment...$(COLOR_RESET)\n"; \
-		$(PYTHON) -m venv $(VENV); \
+		if [ -n "$(UV_AVAILABLE)" ]; then \
+			$(UV) venv $(VENV); \
+		else \
+			printf "$(COLOR_YELLOW)⚠ uv not found, using python -m venv$(COLOR_RESET)\n"; \
+			$(PYTHON) -m venv $(VENV); \
+		fi \
 	fi
-	@printf "$(COLOR_GREEN)✓ Upgrading pip...$(COLOR_RESET)\n"
-	@$(VENV_PIP) install --upgrade --timeout 120 --retries 5 pip setuptools wheel || \
-		(printf "$(COLOR_YELLOW)⚠ Warning: Failed to upgrade pip/setuptools/wheel (transient network error)$(COLOR_RESET)\n" && true)
 	@printf "$(COLOR_GREEN)✓ Installing dependencies...$(COLOR_RESET)\n"
 	@if [ -f "pyproject.toml" ]; then \
-		$(VENV_PIP) install --timeout 120 --retries 5 -e . || \
-			(printf "$(COLOR_RED)✗ Failed to install dependencies after retries$(COLOR_RESET)\n" && exit 1); \
+		if [ -n "$(UV_AVAILABLE)" ]; then \
+			$(UV) pip install -e . || \
+				(printf "$(COLOR_RED)✗ Failed to install dependencies$(COLOR_RESET)\n" && exit 1); \
+		else \
+			$(VENV_PIP) install --upgrade --timeout 120 --retries 5 pip setuptools wheel || true; \
+			$(VENV_PIP) install --timeout 120 --retries 5 -e . || \
+				(printf "$(COLOR_RED)✗ Failed to install dependencies after retries$(COLOR_RESET)\n" && exit 1); \
+		fi \
 	else \
 		printf "$(COLOR_RED)✗ No pyproject.toml found!$(COLOR_RESET)\n"; \
 		exit 1; \
 	fi
-	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Setup complete! Activate with: source $(VENV)/bin/activate$(COLOR_RESET)\n"
+	@if [ -n "$(UV_AVAILABLE)" ]; then \
+		printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Setup complete! Activate with: source $(VENV)/bin/activate$(COLOR_RESET)\n"; \
+		printf "$(COLOR_BOLD)$(COLOR_GREEN)  Or run commands directly with: uv run <command>$(COLOR_RESET)\n"; \
+	else \
+		printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Setup complete! Activate with: source $(VENV)/bin/activate$(COLOR_RESET)\n"; \
+		printf "$(COLOR_YELLOW)  Tip: Install uv for faster installs: curl -LsSf https://astral.sh/uv/install.sh | sh$(COLOR_RESET)\n"; \
+	fi
 
 dev-install: ## Install package in editable mode with dev dependencies
 	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Installing package in development mode...$(COLOR_RESET)\n"
@@ -87,7 +105,11 @@ dev-install: ## Install package in editable mode with dev dependencies
 		exit 1; \
 	fi
 	@printf "$(COLOR_GREEN)✓ Installing package with dev dependencies...$(COLOR_RESET)\n"
-	@$(VENV_PIP) install --timeout 120 --retries 5 -e ".[dev]"
+	@if [ -n "$(UV_AVAILABLE)" ]; then \
+		$(UV) pip install -e ".[dev]"; \
+	else \
+		$(VENV_PIP) install --timeout 120 --retries 5 -e ".[dev]"; \
+	fi
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Development installation complete!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -241,7 +263,11 @@ build: ## Build source and wheel distributions
 		exit 1; \
 	fi
 	@printf "$(COLOR_GREEN)✓ Installing build tools...$(COLOR_RESET)\n"
-	@$(VENV_PIP) install --timeout 120 --retries 5 --upgrade build twine
+	@if [ -n "$(UV_AVAILABLE)" ]; then \
+		$(UV) pip install --upgrade build twine; \
+	else \
+		$(VENV_PIP) install --timeout 120 --retries 5 --upgrade build twine; \
+	fi
 	@printf "$(COLOR_GREEN)✓ Building package...$(COLOR_RESET)\n"
 	@$(VENV_PYTHON) -m build
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Build complete! Distributions saved to dist/$(COLOR_RESET)\n"
