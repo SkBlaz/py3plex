@@ -10,6 +10,7 @@ import pytest
 
 from py3plex.algorithms import attribute_correlation as ac
 from py3plex.core import multinet
+from py3plex.exceptions import AlgorithmError
 
 
 class _DummyNetwork:
@@ -96,7 +97,7 @@ def test_correlate_attributes_with_centrality_rejects_unknown_method():
     for node, degree in dict(G.degree()).items():
         G.nodes[node]["deg_attr"] = degree
 
-    with pytest.raises(ValueError, match="Unknown correlation method"):
+    with pytest.raises(AlgorithmError, match="Correlation method 'made_up' is not recognized"):
         ac.correlate_attributes_with_centrality(
             dummy,
             "deg_attr",
