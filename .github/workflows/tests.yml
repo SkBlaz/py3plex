@@ -82,7 +82,11 @@ jobs:
       run: |
         echo "🔧 Setting up development environment with uv..."
         uv venv .venv
-        source .venv/bin/activate
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          source .venv/Scripts/activate
+        else
+          source .venv/bin/activate
+        fi
         uv pip install -e .
       timeout-minutes: 15
       shell: bash
@@ -93,7 +97,11 @@ jobs:
         HYPOTHESIS_PROFILE: ci  # Use CI profile for Hypothesis
       run: |
         echo "🧪 Running tests..."
-        source .venv/bin/activate
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          source .venv/Scripts/activate
+        else
+          source .venv/bin/activate
+        fi
         uv pip install pytest hypothesis
         if [ -f "run_tests.py" ]; then
           timeout 600 uv run python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
@@ -109,7 +117,11 @@ jobs:
         HYPOTHESIS_PROFILE: ci
       run: |
         echo "🔬 Running metamorphic tests..."
-        source .venv/bin/activate
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          source .venv/Scripts/activate
+        else
+          source .venv/bin/activate
+        fi
         uv run pytest -q -k metamorphic tests/ || echo "⚠️ Metamorphic tests failed"
       timeout-minutes: 5
       shell: bash
