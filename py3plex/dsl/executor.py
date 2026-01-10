@@ -1835,6 +1835,7 @@ def _execute_auto_community(
             "algorithm": result.algorithm,
             "provenance": result.provenance,
             "leaderboard": result.leaderboard,
+            "autocommunity_result": result,  # Store full result for explain
         }
         
         # Cache the result
@@ -1842,6 +1843,18 @@ def _execute_auto_community(
         
         if progress:
             logger.info(f"AutoCommunity: Detected {len(community_sizes)} communities")
+    
+    # Check if explanation is requested
+    if config.explain_requested:
+        if progress:
+            logger.info("AutoCommunity: Building explanation")
+        return _build_autocommunity_explanation(
+            assignments_df=assignments_df,
+            meta=meta,
+            config=config,
+            uq_config=getattr(select, "uq_config", None),
+            progress=progress,
+        )
     
     # Now handle based on query kind
     if config.kind == "communities":
@@ -4233,6 +4246,146 @@ def _apply_rename(
         # Use new name if found, otherwise keep original
         result[new_name if new_name else col] = vals
 
+    return result
+
+
+def _build_autocommunity_explanation(
+    assignments_df: pd.DataFrame,
+    meta: Dict[str, Any],
+    config: Any,
+    uq_config: Optional[Any] = None,
+    progress: bool = True,
+) -> "QueryResult":
+    """Build structured explanation from AutoCommunity result.
+    
+    Args:
+        assignments_df: Assignment DataFrame from auto_community
+        meta: Metadata dict with algorithm, provenance, leaderboard
+        config: AutoCommunityConfig with seed, fast, etc.
+        uq_config: UQ configuration if enabled
+        progress: If True, log progress messages
+    
+    Returns:
+        QueryResult with explanation payload and tables
+    """
+    import pandas as pd
+    from .result import QueryResult
+    
+    # Extract auto result if available
+    auto_result = meta.get("autocommunity_result")
+    algorithm_info = meta.get("algorithm", {})
+    provenance = meta.get("provenance", {})
+    leaderboard = meta.get("leaderboard", pd.DataFrame())
+    
+    # Build explanation payload
+    payload = {}
+    
+    # 1. Selected algorithm info
+    payload["selected"] = {
+        "algorithm": algorithm_info.get("name", "unknown"),
+        "contestant_id": algorithm_info.get("contestant_id", "unknown"),
+        "params": algorithm_info.get("params", {}),
+        "selection_strategy": provenance.get("selection_strategy", "most_wins"),
+        "seed": config.seed if config.seed is not None else 0,
+        "join_policy": None if config.kind == "communities" else config.params.get("join", "max_confidence"),
+    }
+    
+    # 2. Top candidates table (from leaderboard)
+    candidates_df = leaderboard.copy() if isinstance(leaderboard, pd.DataFrame) and not leaderboard.empty else pd.DataFrame()
+    
+    # 3. Stability/UQ summary
+    uq_summary = {
+        "stability_score": None,
+        "node_confidence_mean": None,
+        "node_confidence_median": None,
+        "node_confidence_min": None,
+        "node_confidence_max": None,
+        "fallback_uq_used": False,
+    }
+    
+    # Extract UQ metrics if available
+    if auto_result and hasattr(auto_result, 'community_stats'):
+        stats = auto_result.community_stats
+        if hasattr(stats, 'confidence'):
+            conf_vals = [v for v in stats.confidence.values() if v is not None]
+            if conf_vals:
+                uq_summary["node_confidence_mean"] = float(pd.Series(conf_vals).mean())
+                uq_summary["node_confidence_median"] = float(pd.Series(conf_vals).median())
+                uq_summary["node_confidence_min"] = float(pd.Series(conf_vals).min())
+                uq_summary["node_confidence_max"] = float(pd.Series(conf_vals).max())
+    
+    # Check if UQ was enabled
+    if uq_config is not None:
+        uq_summary["fallback_uq_used"] = False
+    else:
+        # If UQ not enabled but we still have confidence, it's deterministic fallback
+        if assignments_df is not None and "confidence" in assignments_df.columns:
+            uq_summary["fallback_uq_used"] = True
+    
+    payload["uq"] = uq_summary
+    
+    # 4. Null model summary
+    null_model_summary = {
+        "null_model_used": False,
+        "z_scores": {},
+        "sampling_params": {},
+    }
+    
+    if auto_result and hasattr(auto_result, 'null_model_results') and auto_result.null_model_results:
+        null_model_summary["null_model_used"] = True
+        null_model_summary["z_scores"] = auto_result.null_model_results.get("z_scores", {})
+        null_model_summary["sampling_params"] = auto_result.null_model_results.get("params", {})
+    
+    payload["null_model"] = null_model_summary
+    
+    # 5. Runtime & provenance
+    payload["runtime"] = {
+        "total_ms": provenance.get("runtime_ms"),
+        "cache_key": f"auto_{config.seed}_{config.fast}",
+    }
+    
+    try:
+        import py3plex
+        lib_version = py3plex.__version__
+    except:
+        lib_version = None
+    
+    payload["provenance"] = {
+        "dsl_version": "2.1",
+        "library_version": lib_version,
+        "wins_by_bucket": provenance.get("wins_by_bucket", {}),
+        "algorithms_tested": auto_result.algorithms_tested if auto_result else [],
+        "pareto_front": auto_result.pareto_front if auto_result else [],
+    }
+    
+    # 6. Multilayer info
+    is_multilayer = assignments_df is not None and "layer" in assignments_df.columns and assignments_df["layer"].notna().any()
+    payload["multilayer"] = {
+        "is_multilayer": is_multilayer,
+        "handling": "joint" if is_multilayer else "single_layer",
+        "aggregation": "consensus",
+    }
+    
+    # Build tables dict
+    tables = {
+        "candidates": candidates_df,
+    }
+    
+    # Create QueryResult with explanation
+    result = QueryResult(
+        target="autocommunity_explain",
+        items=[],  # Empty items for explanation-only result
+        attributes={},
+        meta={
+            "query_type": "autocommunity_explain",
+            "explanation": True,
+        },
+    )
+    
+    # Attach payload and tables as custom attributes
+    result.payload = payload
+    result.tables = tables
+    
     return result
 
 

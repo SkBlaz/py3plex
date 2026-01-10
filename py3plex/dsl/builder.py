@@ -1356,7 +1356,7 @@ class QueryBuilder:
             >>> #                      layers_present, n_layers_present
         """
         # Check for community_auto explain mode first (special case)
-        if hasattr(self._select, 'community_auto_config') and self._select.community_auto_config.get('enabled', False):
+        if hasattr(self._select, 'community_auto_config') and self._select.community_auto_config and self._select.community_auto_config.enabled:
             has_any_arg = any([
                 neighbors_top is not None, include is not None, exclude is not None,
                 neighbors is not None, community is not None, layer_footprint is not None,
@@ -1365,7 +1365,7 @@ class QueryBuilder:
             
             if not has_any_arg:
                 # Mark that explanation is requested for community_auto
-                self._select.community_auto_config['explain_requested'] = True
+                self._select.community_auto_config.explain_requested = True
                 return self
         
         # Check if this is execution plan mode (no arguments provided)
@@ -3131,7 +3131,40 @@ class CommunityQueryBuilder(QueryBuilder):
         )
         
         self._select.auto_community_config = config
->>>>>>> master
+        
+        return self
+    
+    def explain(self) -> "CommunityQueryBuilder":
+        """Request structured explanation of AutoCommunity selection process.
+        
+        Must be called after .auto(). Returns a QueryResult with structured explanation
+        instead of running the full query. The explanation includes:
+        - Selected algorithm, params, selection strategy, seed
+        - Top candidates table with key metrics
+        - UQ/stability summary (node confidence stats)
+        - Null-model summary (Z-scores if available)
+        - Runtime & provenance metadata
+        
+        Returns:
+            Self for chaining
+        
+        Examples:
+            >>> # Get explanation of auto-selection
+            >>> exp = Q.communities().auto(seed=42, fast=True).explain().execute(network)
+            >>> print(exp.payload['selected'])
+            >>> print(exp.tables['candidates'])
+        
+        Notes:
+            - Must be used after .auto()
+            - Returns QueryResult with explanation payload
+            - Does NOT re-run AutoCommunity (reuses cached result)
+            - Explanation is deterministic given the same seed
+        """
+        # Mark that explanation is requested
+        if hasattr(self._select, "auto_community_config") and self._select.auto_community_config:
+            self._select.auto_community_config.explain_requested = True
+        else:
+            raise ValueError(".explain() must be called after .auto()")
         
         return self
     

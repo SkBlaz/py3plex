@@ -504,12 +504,14 @@ class AutoCommunityConfig:
         seed: Random seed for reproducibility
         fast: Use fast mode with smaller parameter grids
         params: Additional parameters passed to auto_select_community
+        explain_requested: Whether to return structured explanation instead of results
     """
     enabled: bool = False
     kind: str = "communities"  # "communities" or "nodes_join"
     seed: Optional[int] = None
     fast: bool = True
     params: Dict[str, Any] = field(default_factory=dict)
+    explain_requested: bool = False
 
 
 @dataclass
