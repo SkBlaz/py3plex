@@ -52,13 +52,13 @@ nodes = [
     {'source': 'Alice', 'type': 'social'},
     {'source': 'Bob', 'type': 'social'},
     {'source': 'Charlie', 'type': 'social'},
-    
+
     # Community 2: Social group B (David, Eve, Frank, Grace)
     {'source': 'David', 'type': 'social'},
     {'source': 'Eve', 'type': 'social'},
     {'source': 'Frank', 'type': 'social'},
     {'source': 'Grace', 'type': 'social'},
-    
+
     # Community 3: Social group C (Henry, Ivy)
     {'source': 'Henry', 'type': 'social'},
     {'source': 'Ivy', 'type': 'social'},
@@ -72,7 +72,7 @@ edges = [
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
-    
+
     # Community 2: David, Eve, Frank, Grace (densely connected)
     {'source': 'David', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'David', 'target': 'Frank', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
@@ -80,10 +80,10 @@ edges = [
     {'source': 'Eve', 'target': 'Frank', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Eve', 'target': 'Grace', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Frank', 'target': 'Grace', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
-    
+
     # Community 3: Henry, Ivy
     {'source': 'Henry', 'target': 'Ivy', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
-    
+
     # Bridge connections between communities (weak ties)
     {'source': 'Charlie', 'target': 'David', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Grace', 'target': 'Henry', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
@@ -224,23 +224,23 @@ print("\n" + "=" * 80)
 print("DSL COMMUNITY DETECTION EXAMPLES COMPLETE")
 print("=" * 80)
 print("\nSupported DSL syntax for community detection:")
-print("  SELECT nodes COMPUTE communities")
-print("  SELECT nodes COMPUTE community")  # alias
-print("  SELECT nodes WHERE layer=\"name\" COMPUTE communities")
+print(" SELECT nodes COMPUTE communities")
+print(" SELECT nodes COMPUTE community") # alias
+print(" SELECT nodes WHERE layer=\"name\" COMPUTE communities")
 print()
 print("Convenience functions:")
-print("  detect_communities(network) - Full analysis with all statistics")
-print("  get_community_partition(network) - Node to community mapping")
-print("  get_biggest_community(network) - Returns (id, size, nodes)")
-print("  get_smallest_community(network) - Returns (id, size, nodes)")
-print("  get_num_communities(network) - Number of communities")
-print("  get_community_sizes(network) - Dict of community sizes")
-print("  get_community_size_distribution(network) - Sorted size list")
+print(" detect_communities(network) - Full analysis with all statistics")
+print(" get_community_partition(network) - Node to community mapping")
+print(" get_biggest_community(network) - Returns (id, size, nodes)")
+print(" get_smallest_community(network) - Returns (id, size, nodes)")
+print(" get_num_communities(network) - Number of communities")
+print(" get_community_sizes(network) - Dict of community sizes")
+print(" get_community_size_distribution(network) - Sorted size list")
 print()
 print("Use cases covered:")
-print("  ✓ Biggest community")
-print("  ✓ Smallest community")
-print("  ✓ Number of communities")
-print("  ✓ Distribution of community sizes")
+print(" Biggest community")
+print(" Smallest community")
+print(" Number of communities")
+print(" Distribution of community sizes")
 print()
 print("For more information, see: py3plex.dsl module documentation")

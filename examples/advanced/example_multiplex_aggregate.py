@@ -40,9 +40,9 @@ print("\nRunning pipeline...")
 result = pipe.run()
 
 print("\nPipeline results:")
-print(f"  Nodes: {result['nodes']}")
-print(f"  Edges: {result['edges']}")
-print(f"  Density: {result['density']:.4f}")
+print(f" Nodes: {result['nodes']}")
+print(f" Edges: {result['edges']}")
+print(f" Density: {result['density']:.4f}")
 
 # ============================================================================
 # Approach 2: Interoperability - Generate with Pipeline, Analyze with DSL
@@ -72,7 +72,7 @@ print("Approach 3: Direct Method Calls (Advanced)")
 print("=" * 70)
 
 print("\nGenerating random multiplex network...")
-print("  Nodes: 500, Layers: 8, Edge probability: 0.0005")
+print(" Nodes: 500, Layers: 8, Edge probability: 0.0005")
 
 ER_multilayer = random_generators.random_multiplex_ER(
     500, 8, 0.0005, directed=False
@@ -112,12 +112,12 @@ print("SUMMARY: Object Interoperability")
 print("=" * 70)
 
 print("\nAll approaches work with the same multi_layer_network object:")
-print("  ✓ Pipeline generates/transforms multi_layer_network")
-print("  ✓ DSL queries work on multi_layer_network")
-print("  ✓ Direct methods work on multi_layer_network")
-print("  ✓ Objects can be passed between Pipeline, DSL, and direct calls")
+print(" Pipeline generates/transforms multi_layer_network")
+print(" DSL queries work on multi_layer_network")
+print(" Direct methods work on multi_layer_network")
+print(" Objects can be passed between Pipeline, DSL, and direct calls")
 
 print("\nChoose based on your needs:")
-print("  - Pipeline: Best for reproducible, chainable workflows")
-print("  - DSL: Best for declarative, SQL-like analysis")
-print("  - Direct: Best for full control and customization")
+print(" - Pipeline: Best for reproducible, chainable workflows")
+print(" - DSL: Best for declarative, SQL-like analysis")
+print(" - Direct: Best for full control and customization")

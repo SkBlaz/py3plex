@@ -39,13 +39,13 @@ nodes = [
     {'source': 'Bob', 'type': 'social'},
     {'source': 'Charlie', 'type': 'social'},
     {'source': 'Diana', 'type': 'social'},
-    
+
     # Community 2: Dense cluster (4 nodes)
     {'source': 'Eve', 'type': 'social'},
     {'source': 'Frank', 'type': 'social'},
     {'source': 'Grace', 'type': 'social'},
     {'source': 'Henry', 'type': 'social'},
-    
+
     # Community 3: Small tight group (3 nodes)
     {'source': 'Ivy', 'type': 'social'},
     {'source': 'Jack', 'type': 'social'},
@@ -59,7 +59,7 @@ edges = [
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Alice', 'target': 'Diana', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
-    
+
     # Community 2: Dense structure (complete subgraph)
     {'source': 'Eve', 'target': 'Frank', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Eve', 'target': 'Grace', 'source_type': 'social', 'target_type': 'social'},
@@ -67,12 +67,12 @@ edges = [
     {'source': 'Frank', 'target': 'Grace', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Frank', 'target': 'Henry', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Grace', 'target': 'Henry', 'source_type': 'social', 'target_type': 'social'},
-    
+
     # Community 3: Triangle (complete graph)
     {'source': 'Ivy', 'target': 'Jack', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Ivy', 'target': 'Kate', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Jack', 'target': 'Kate', 'source_type': 'social', 'target_type': 'social'},
-    
+
     # Bridges between communities (weak ties)
     {'source': 'Diana', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Henry', 'target': 'Ivy', 'source_type': 'social', 'target_type': 'social'},
@@ -106,7 +106,7 @@ print("-" * 70)
 for node, comm_id in communities.items():
     network.core_network.nodes[node]['community'] = comm_id
 
-print("✓ Community IDs stored successfully")
+print(" Community IDs stored successfully")
 
 # ============================================================================
 # Step 3: Use DSL to filter by community and find hubs
@@ -169,7 +169,7 @@ print(df.to_string(index=False))
 # Export to CSV
 output_file = "community_hubs.csv"
 df.to_csv(output_file, index=False)
-print(f"\n✓ Results exported to {output_file}")
+print(f"\n Results exported to {output_file}")
 
 # ============================================================================
 # Step 5: Compare statistics across communities
@@ -185,9 +185,9 @@ for comm_id in sorted(set(communities.values())):
          .compute("degree", "betweenness_centrality")
          .execute(network)
     )
-    
+
     df_comm = result.to_pandas()
-    
+
     print(f"Community {comm_id}:")
     print(f"  Size: {result.count} nodes")
     print(f"  Avg degree: {df_comm['degree'].mean():.2f}")
@@ -202,9 +202,9 @@ print("\n" + "=" * 70)
 print("EXAMPLE COMPLETE")
 print("=" * 70)
 print("\nKey takeaways:")
-print("  1. Use Louvain (or any algorithm) to detect communities")
-print("  2. Store community IDs as node attributes in core_network")
-print("  3. Use DSL .where(community=X) to filter by community")
-print("  4. Chain with .compute(), .order_by(), .limit() for analysis")
-print("  5. Export with .to_pandas() and save to CSV for further work")
+print(" 1. Use Louvain (or any algorithm) to detect communities")
+print(" 2. Store community IDs as node attributes in core_network")
+print(" 3. Use DSL .where(community=X) to filter by community")
+print(" 4. Chain with .compute(), .order_by(), .limit() for analysis")
+print(" 5. Export with .to_pandas() and save to CSV for further work")
 print("\nThis pattern enables powerful community-specific analyses!")

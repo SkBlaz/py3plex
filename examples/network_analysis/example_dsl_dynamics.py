@@ -80,7 +80,7 @@ for i in range(19):
 # Add some random connections for hubs
 import random
 random.seed(42)
-for i in [5, 10, 15]:  # Create hubs
+for i in [5, 10, 15]: # Create hubs
     for _ in range(3):
         j = random.randint(0, 19)
         if i != j:
@@ -107,22 +107,22 @@ sim = (
 )
 
 print("\nSimulation configuration:")
-print(f"  Process: SIS")
-print(f"  Parameters: β=0.3, μ=0.1")
-print(f"  Initial infected: 5%")
-print(f"  Time steps: 100")
-print(f"  Replicates: 10")
+print(f" Process: SIS")
+print(f" Parameters: β=0.3, μ=0.1")
+print(f" Initial infected: 5%")
+print(f" Time steps: 100")
+print(f" Replicates: 10")
 
 # Run simulation
 result = sim.run(network)
 
 print(f"\nSimulation complete!")
-print(f"  Result shape: {result.data['prevalence'].shape}")  # (replicates, steps)
-print(f"  Mean final prevalence: {result.data['prevalence'][:, -1].mean():.3f}")
-print(f"  Std final prevalence: {result.data['prevalence'][:, -1].std():.3f}")
+print(f" Result shape: {result.data['prevalence'].shape}") # (replicates, steps)
+print(f" Mean final prevalence: {result.data['prevalence'][:, -1].mean():.3f}")
+print(f" Std final prevalence: {result.data['prevalence'][:, -1].std():.3f}")
 
 # Convert to pandas for analysis
-df_dict = result.to_pandas()  # Returns dict of DataFrames
+df_dict = result.to_pandas() # Returns dict of DataFrames
 print(f"\nResult DataFrames available: {list(df_dict.keys())}")
 print(f"\nPrevalence DataFrame (first 10 rows):")
 print(df_dict['prevalence'].head(10))
@@ -146,19 +146,19 @@ sim_sir = (
 )
 
 print("\nSIR Simulation configuration:")
-print(f"  Process: SIR")
-print(f"  Parameters: β=0.4, γ=0.15")
-print(f"  Initial infected: 10%")
-print(f"  Time steps: 150")
-print(f"  Replicates: 20")
+print(f" Process: SIR")
+print(f" Parameters: β=0.4, γ=0.15")
+print(f" Initial infected: 10%")
+print(f" Time steps: 150")
+print(f" Replicates: 20")
 
 result_sir = sim_sir.run(network)
 
 # Analyze final outbreak size (final recovered)
 # state_counts returns counts for each state (S=0, I=1, R=2)
 print(f"\nSIR Results:")
-print(f"  Mean peak prevalence: {result_sir.data['prevalence'].max(axis=1).mean():.3f}")
-print(f"  Attack rate (final R/N): Variable per replicate")
+print(f" Mean peak prevalence: {result_sir.data['prevalence'].max(axis=1).mean():.3f}")
+print(f" Attack rate (final R/N): Variable per replicate")
 
 
 # =============================================================================
@@ -206,8 +206,8 @@ for _ in range(25):
 multilayer.add_edges(offline_edges + online_edges)
 
 print(f"\nMultilayer network created:")
-print(f"  Offline layer: {len(offline_edges)} edges")
-print(f"  Online layer: {len(online_edges)} edges")
+print(f" Offline layer: {len(offline_edges)} edges")
+print(f" Online layer: {len(online_edges)} edges")
 
 # Run SIS on BOTH layers (node states shared across layers)
 sim_multi = (
@@ -222,15 +222,15 @@ sim_multi = (
 )
 
 print("\nMultilayer SIS configuration:")
-print(f"  Layers: offline + online")
-print(f"  Coupling: strong (shared node states)")
-print(f"  Parameters: β=0.25, μ=0.08")
+print(f" Layers: offline + online")
+print(f" Coupling: strong (shared node states)")
+print(f" Parameters: β=0.25, μ=0.08")
 
 result_multi = sim_multi.run(multilayer)
 
 print(f"\nMultilayer SIS complete!")
-print(f"  Overall prevalence tracked")
-print(f"  Per-layer prevalence available in result")
+print(f" Overall prevalence tracked")
+print(f" Per-layer prevalence available in result")
 
 
 # =============================================================================
@@ -273,14 +273,14 @@ sim_walk = (
 )
 
 print("\nRandom Walk configuration:")
-print(f"  Start node: Node0")
-print(f"  Steps: 50")
-print(f"  Replicates: 100")
+print(f" Start node: Node0")
+print(f" Steps: 50")
+print(f" Replicates: 100")
 
 result_walk = sim_walk.run(walk_net)
 
 print(f"\nRandom Walk complete!")
-print(f"  Visit frequency statistics collected across replicates")
+print(f" Visit frequency statistics collected across replicates")
 
 
 # =============================================================================
@@ -328,7 +328,7 @@ for i in range(29):
 hetero_net.add_edges(hetero_edges)
 
 print("\nNetwork with hubs created")
-print(f"  Hub nodes: {hubs}")
+print(f" Hub nodes: {hubs}")
 
 # Use query DSL to select high-degree nodes as initial infected
 # This demonstrates integration between query DSL and dynamics DSL
@@ -345,13 +345,13 @@ sim_targeted = (
 )
 
 print("\nTargeted initial infection configuration:")
-print(f"  Initial infected: Nodes with degree >= 5 (hubs)")
-print(f"  This uses query DSL (Q.nodes()) within dynamics DSL")
+print(f" Initial infected: Nodes with degree >= 5 (hubs)")
+print(f" This uses query DSL (Q.nodes()) within dynamics DSL")
 
 result_targeted = sim_targeted.run(hetero_net)
 
 print(f"\nTargeted SIS complete!")
-print(f"  Mean final prevalence: {result_targeted.data['prevalence'][:, -1].mean():.3f}")
+print(f" Mean final prevalence: {result_targeted.data['prevalence'][:, -1].mean():.3f}")
 
 
 # =============================================================================
@@ -387,12 +387,12 @@ print("\n" + "=" * 80)
 print("SUMMARY: DSL Dynamics Features Demonstrated")
 print("=" * 80)
 print("""
-1. ✓ Basic SIS epidemic with prevalence tracking
-2. ✓ SIR model with compartment tracking
-3. ✓ Multilayer dynamics with layer coupling
-4. ✓ Random walk dynamics
-5. ✓ Integration with query DSL for initial conditions
-6. ✓ Parameter comparison across simulations
+1. Basic SIS epidemic with prevalence tracking
+2. SIR model with compartment tracking
+3. Multilayer dynamics with layer coupling
+4. Random walk dynamics
+5. Integration with query DSL for initial conditions
+6. Parameter comparison across simulations
 
 Key DSL Capabilities:
   • Declarative simulation specification
@@ -407,6 +407,6 @@ following the same design philosophy as the query DSL.
 """)
 
 print("\nFor more details on dynamics models, see:")
-print("  - examples/advanced/example_dynamics_core.py")
-print("  - docfiles/sir_epidemic_simulator.rst")
-print("  - py3plex.dynamics module documentation")
+print(" - examples/advanced/example_dynamics_core.py")
+print(" - docfiles/sir_epidemic_simulator.rst")
+print(" - py3plex.dynamics module documentation")

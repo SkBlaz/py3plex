@@ -30,9 +30,9 @@ print("=" * 70)
 # Check if plotly is available
 try:
     import plotly.graph_objects as go
-    print("✓ Plotly is available")
+    print(" Plotly is available")
 except ImportError:
-    print("✗ Plotly not found. Install with: pip install plotly")
+    print(" Plotly not found. Install with: pip install plotly")
     exit(1)
 
 # Create a multilayer network
@@ -47,7 +47,7 @@ nodes_per_layer = {
     'family': ['Alice', 'Charlie', 'David', 'Ivan', 'Jane']
 }
 
-print(f"  Layers: {layers}")
+print(f" Layers: {layers}")
 
 for layer in layers:
     for node in nodes_per_layer[layer]:
@@ -55,20 +55,20 @@ for layer in layers:
 
 # Add edges within layers
 edges_by_layer = {
-    'social': [('Alice', 'Bob'), ('Bob', 'Charlie'), ('Charlie', 'David'), 
+    'social': [('Alice', 'Bob'), ('Bob', 'Charlie'), ('Charlie', 'David'),
                ('David', 'Eve'), ('Eve', 'Alice')],
-    'professional': [('Alice', 'Bob'), ('Bob', 'Frank'), ('Frank', 'Grace'), 
+    'professional': [('Alice', 'Bob'), ('Bob', 'Frank'), ('Frank', 'Grace'),
                      ('Grace', 'Henry'), ('Henry', 'Alice')],
-    'family': [('Alice', 'Charlie'), ('Charlie', 'David'), ('David', 'Ivan'), 
+    'family': [('Alice', 'Charlie'), ('Charlie', 'David'), ('David', 'Ivan'),
                ('Ivan', 'Jane'), ('Jane', 'Alice')]
 }
 
 for layer in layers:
     for src, tgt in edges_by_layer[layer]:
         network.add_edges([{
-            'source': src, 
-            'target': tgt, 
-            'source_type': layer, 
+            'source': src,
+            'target': tgt,
+            'source_type': layer,
             'target_type': layer
         }])
 
@@ -90,7 +90,7 @@ for src, tgt, layer1, layer2 in inter_layer_edges:
         'target_type': layer2
     }])
 
-print("✓ Network created")
+print(" Network created")
 network.basic_stats()
 
 # Convert to aggregate NetworkX graph for visualization
@@ -115,7 +115,7 @@ for layer in layers:
         else:
             G.add_edge(src, tgt, weight=1)
 
-print(f"  Aggregate graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
+print(f" Aggregate graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
 
 # Compute layout
 print("\nStep 4: Computing 3D spring layout...")
@@ -181,27 +181,27 @@ if fig:
         hovermode='closest',
         plot_bgcolor='rgba(240, 240, 240, 0.9)'
     )
-    
-    print("✓ Interactive visualization created!")
+
+    print(" Interactive visualization created!")
     print("\nFeatures:")
     print("  • Node size = degree centrality")
     print("  • Node color = primary layer membership")
     print("  • Hover for node details")
     print("  • Click and drag to explore")
     print("  • Zoom with mouse wheel")
-    
+
     # Save to HTML
     output_dir = "output"
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, "interactive_multilayer.html")
-    
+
     try:
         fig.write_html(output_file)
-        print(f"\n✓ Saved to: {output_file}")
+        print(f"\n Saved to: {output_file}")
         print("  Open in your browser to explore!")
     except Exception as e:
         print(f"\nNote: Could not save file: {e}")
-    
+
     print("\n" + "=" * 70)
     print("Layer Legend:")
     print("  • Social layer: Dark blue nodes")
@@ -210,4 +210,4 @@ if fig:
     print("  • Cross-layer nodes: Mixed colors")
     print("=" * 70)
 else:
-    print("✗ Failed to create visualization")
+    print(" Failed to create visualization")

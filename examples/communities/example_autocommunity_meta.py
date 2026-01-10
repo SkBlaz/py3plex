@@ -53,14 +53,14 @@ def _print_header(title: str) -> None:
 def example_basic_usage() -> None:
     """Example 1: Basic usage with minimal configuration."""
     _print_header("Example 1: Basic AutoCommunity Usage")
-    
+
     # Create a simple multilayer network with clear structure
     network = multinet.multi_layer_network(directed=False)
-    
+
     # Add nodes and edges to create two communities
     nodes_layer1 = [{"source": f"N{i}", "type": "social"} for i in range(10)]
     network.add_nodes(nodes_layer1)
-    
+
     # Dense connections within communities
     for i in range(5):
         for j in range(i+1, 5):
@@ -68,23 +68,23 @@ def example_basic_usage() -> None:
                 "source": f"N{i}", "target": f"N{j}",
                 "source_type": "social", "target_type": "social"
             }])
-    
+
     for i in range(5, 10):
         for j in range(i+1, 10):
             network.add_edges([{
                 "source": f"N{i}", "target": f"N{j}",
                 "source_type": "social", "target_type": "social"
             }])
-    
+
     # Sparse bridge
     network.add_edges([{
         "source": "N4", "target": "N5",
         "source_type": "social", "target_type": "social"
     }])
-    
+
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
           f"{network.edge_count} edges")
-    
+
     # Run AutoCommunity with minimal config
     print("\nRunning AutoCommunity (basic configuration)...")
     result = (
@@ -94,19 +94,19 @@ def example_basic_usage() -> None:
           .seed(DEFAULT_SEED)
           .execute(network)
     )
-    
+
     # Display results
     print("\n" + result.explain())
-    
+
     print("\n--- Community Statistics ---")
     print(f"Number of communities: {result.community_stats.n_communities}")
     print(f"Community sizes: {result.community_stats.community_sizes}")
     print(f"Coverage: {result.community_stats.coverage:.3f}")
-    
+
     print("\n--- Algorithms Tested ---")
     for algo in result.algorithms_tested:
         print(f"  - {algo}")
-    
+
     print("\n--- Pareto Front ---")
     for algo in result.pareto_front:
         print(f"  - {algo}")
@@ -115,7 +115,7 @@ def example_basic_usage() -> None:
 def example_with_uncertainty() -> None:
     """Example 2: With uncertainty quantification."""
     _print_header("Example 2: AutoCommunity with Uncertainty Quantification")
-    
+
     # Create a random multilayer network
     np.random.seed(DEFAULT_SEED)
     network = random_generators.random_multilayer_ER(
@@ -124,10 +124,10 @@ def example_with_uncertainty() -> None:
         p=0.3,
         directed=False,
     )
-    
+
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
           f"{network.edge_count} edges")
-    
+
     # Run with UQ
     print("\nRunning AutoCommunity with uncertainty quantification...")
     result = (
@@ -138,15 +138,15 @@ def example_with_uncertainty() -> None:
           .seed(DEFAULT_SEED)
           .execute(network)
     )
-    
+
     # Display results
     print("\n" + result.explain())
-    
+
     print("\n--- Community Statistics with Uncertainty ---")
     print(f"Number of communities: {result.community_stats.n_communities}")
     print(f"Stability score: {result.community_stats.stability_score:.3f}")
     print(f"Coverage: {result.community_stats.coverage:.3f}")
-    
+
     # Show node-level confidence
     if result.community_stats.node_confidence:
         print("\n--- Node Confidence (Top 5) ---")
@@ -155,10 +155,10 @@ def example_with_uncertainty() -> None:
             key=lambda x: x[1],
             reverse=True
         )[:5]
-        
+
         for node, conf in conf_items:
             print(f"  {node}: {conf:.3f}")
-    
+
     # Show evaluation matrix
     print("\n--- Evaluation Matrix ---")
     print(result.evaluation_matrix.to_string(index=False))
@@ -167,17 +167,17 @@ def example_with_uncertainty() -> None:
 def example_with_null_models() -> None:
     """Example 3: With null-model calibration."""
     _print_header("Example 3: AutoCommunity with Null-Model Calibration")
-    
+
     # Create a network with moderate structure
     network = multinet.multi_layer_network(directed=False)
-    
+
     # Add 15 nodes in one layer
     nodes = [{"source": f"N{i}", "type": "layer1"} for i in range(15)]
     network.add_nodes(nodes)
-    
+
     # Create three communities with some noise
     np.random.seed(DEFAULT_SEED)
-    
+
     # Community 1: nodes 0-4
     for i in range(5):
         for j in range(i+1, 5):
@@ -186,7 +186,7 @@ def example_with_null_models() -> None:
                     "source": f"N{i}", "target": f"N{j}",
                     "source_type": "layer1", "target_type": "layer1"
                 }])
-    
+
     # Community 2: nodes 5-9
     for i in range(5, 10):
         for j in range(i+1, 10):
@@ -195,7 +195,7 @@ def example_with_null_models() -> None:
                     "source": f"N{i}", "target": f"N{j}",
                     "source_type": "layer1", "target_type": "layer1"
                 }])
-    
+
     # Community 3: nodes 10-14
     for i in range(10, 15):
         for j in range(i+1, 15):
@@ -204,14 +204,14 @@ def example_with_null_models() -> None:
                     "source": f"N{i}", "target": f"N{j}",
                     "source_type": "layer1", "target_type": "layer1"
                 }])
-    
+
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
           f"{network.edge_count} edges")
-    
+
     # Run with null models
     print("\nRunning AutoCommunity with null-model calibration...")
     print("(This compares community structure to randomized null models)")
-    
+
     result = (
         AutoCommunity()
           .candidates("louvain", "leiden")
@@ -220,10 +220,10 @@ def example_with_null_models() -> None:
           .seed(DEFAULT_SEED)
           .execute(network)
     )
-    
+
     # Display results
     print("\n" + result.explain())
-    
+
     print("\n--- Null Model Results ---")
     if result.null_model_results:
         z_scores = result.null_model_results.get('z_scores', {})
@@ -239,7 +239,7 @@ def example_with_null_models() -> None:
                     print("    -> Weak signal")
     else:
         print("(Null model results not available)")
-    
+
     print("\n--- Community Statistics ---")
     print(f"Number of communities: {result.community_stats.n_communities}")
     print(f"Coverage: {result.community_stats.coverage:.3f}")
@@ -248,7 +248,7 @@ def example_with_null_models() -> None:
 def example_full_pipeline() -> None:
     """Example 4: Full pipeline with all features."""
     _print_header("Example 4: Full AutoCommunity Pipeline")
-    
+
     # Create a more complex multilayer network
     np.random.seed(DEFAULT_SEED)
     network = random_generators.random_multilayer_ER(
@@ -257,15 +257,15 @@ def example_full_pipeline() -> None:
         p=0.25,
         directed=False,
     )
-    
+
     print(f"Network: {len(network.get_layers())} layers, "
           f"{len(list(network.get_nodes()))} nodes, "
           f"{network.edge_count} edges")
-    
+
     # Run full pipeline
     print("\nRunning full AutoCommunity pipeline...")
     print("(Multi-objective + UQ + Null models + Pareto selection)")
-    
+
     result = (
         AutoCommunity()
           .candidates("louvain", "leiden")
@@ -276,23 +276,23 @@ def example_full_pipeline() -> None:
           .seed(DEFAULT_SEED)
           .execute(network)
     )
-    
+
     # Comprehensive results display
     print("\n" + result.explain(n=10))
-    
+
     print("\n--- Graph Regime Diagnostics ---")
     if result.graph_regime:
         for feature, value in result.graph_regime.items():
             print(f"  {feature}: {value:.3f}")
-    
+
     print("\n--- Pareto Front ---")
     print(f"Non-dominated algorithms: {len(result.pareto_front)}")
     for algo in result.pareto_front:
         print(f"  - {algo}")
-    
+
     print("\n--- Evaluation Matrix ---")
     print(result.evaluation_matrix.to_string(index=False))
-    
+
     print("\n--- Community Statistics ---")
     stats = result.community_stats
     print(f"Number of communities: {stats.n_communities}")
@@ -301,14 +301,14 @@ def example_full_pipeline() -> None:
         print(f"Stability score: {stats.stability_score:.3f}")
     print(f"Coverage: {stats.coverage:.3f}")
     print(f"Number of orphan nodes: {len(stats.orphan_nodes) if stats.orphan_nodes else 0}")
-    
+
     # Export to DataFrame
     print("\n--- Exporting to DataFrame ---")
     df = result.to_pandas()
     print(f"DataFrame shape: {df.shape}")
     print("\nFirst 10 rows:")
     print(df.head(10).to_string(index=False))
-    
+
     # Export to dict for JSON
     print("\n--- Provenance Information ---")
     prov = result.provenance
@@ -323,16 +323,16 @@ def example_full_pipeline() -> None:
 def example_consensus() -> None:
     """Example 5: Consensus communities from Pareto front."""
     _print_header("Example 5: Consensus Communities (Multiple Non-Dominated)")
-    
+
     # Create a network where multiple algorithms might be non-dominated
     network = multinet.multi_layer_network(directed=False)
-    
+
     # Build a network with hierarchical structure
     nodes = [{"source": f"N{i}", "type": "layer1"} for i in range(20)]
     network.add_nodes(nodes)
-    
+
     np.random.seed(DEFAULT_SEED)
-    
+
     # Create overlapping communities
     for i in range(10):
         for j in range(i+1, 10):
@@ -341,7 +341,7 @@ def example_consensus() -> None:
                     "source": f"N{i}", "target": f"N{j}",
                     "source_type": "layer1", "target_type": "layer1"
                 }])
-    
+
     for i in range(10, 20):
         for j in range(i+1, 20):
             if np.random.rand() > 0.4:
@@ -349,7 +349,7 @@ def example_consensus() -> None:
                     "source": f"N{i}", "target": f"N{j}",
                     "source_type": "layer1", "target_type": "layer1"
                 }])
-    
+
     # Add cross-community links
     for _ in range(5):
         i = np.random.randint(0, 10)
@@ -358,13 +358,13 @@ def example_consensus() -> None:
             "source": f"N{i}", "target": f"N{j}",
             "source_type": "layer1", "target_type": "layer1"
         }])
-    
+
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
           f"{network.edge_count} edges")
-    
+
     # Run with multiple algorithms
     print("\nRunning AutoCommunity to potentially trigger consensus...")
-    
+
     result = (
         AutoCommunity()
           .candidates("louvain", "leiden")
@@ -374,25 +374,25 @@ def example_consensus() -> None:
           .seed(DEFAULT_SEED)
           .execute(network)
     )
-    
+
     # Check if consensus was computed
     print("\n" + result.explain())
-    
+
     if result.selected == "consensus":
-        print("\n✓ Consensus partition was computed!")
+        print("\n Consensus partition was computed!")
         print("  (Multiple algorithms were non-dominated on Pareto front)")
-        
+
         print("\n--- Consensus Statistics ---")
         print(f"Number of non-dominated algorithms: {len(result.pareto_front)}")
         print(f"Algorithms in consensus: {result.pareto_front}")
-        
+
         if result.community_stats.node_confidence:
             print("\n--- Node Confidence Distribution ---")
             confidences = list(result.community_stats.node_confidence.values())
             print(f"Mean confidence: {np.mean(confidences):.3f}")
             print(f"Min confidence: {np.min(confidences):.3f}")
             print(f"Max confidence: {np.max(confidences):.3f}")
-            
+
             # Identify core vs. peripheral nodes
             core_threshold = 0.8
             core_nodes = [
@@ -412,22 +412,22 @@ def main() -> int:
         print(f"Import error: {IMPORT_ERROR}", file=sys.stderr)
         print("Please ensure py3plex is properly installed.", file=sys.stderr)
         return 1
-    
+
     print("=" * 80)
     print("AutoCommunity Meta-Algorithm Examples")
     print("=" * 80)
     print("\nDemonstrating multi-objective, uncertainty-aware community detection")
     print("with null-model calibration and Pareto selection.")
-    
+
     try:
         example_basic_usage()
         example_with_uncertainty()
         example_with_null_models()
         example_full_pipeline()
         example_consensus()
-        
+
         print("\n" + "=" * 80)
-        print("✓ All examples completed successfully!")
+        print(" All examples completed successfully!")
         print("=" * 80)
         print("\nKey takeaways:")
         print("1. AutoCommunity uses multi-objective evaluation (no single metric)")
@@ -436,13 +436,13 @@ def main() -> int:
         print("4. Null-model calibration ensures statistical significance")
         print("5. Consensus communities aggregate multiple good solutions")
         print("6. All decisions are inspectable via provenance")
-        
+
     except Exception as e:
-        print(f"\n✗ Error: {e}", file=sys.stderr)
+        print(f"\n Error: {e}", file=sys.stderr)
         import traceback
         traceback.print_exc()
         return 1
-    
+
     return 0
 
 

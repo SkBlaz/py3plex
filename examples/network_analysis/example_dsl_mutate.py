@@ -45,7 +45,7 @@ edges = [
     {'source': 'Bob', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Charlie', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'David', 'target': 'Frank', 'source_type': 'social', 'target_type': 'social'},
-    
+
     # Work network (moderately connected)
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
@@ -63,10 +63,10 @@ print("\n" + "=" * 80)
 print("[2] Example 1: Simple Column Transformations")
 print("-" * 80)
 print("Code:")
-print("  Q.nodes().compute('degree').mutate(")
-print("      doubled_degree=lambda row: row.get('degree', 0) * 2,")
-print("      degree_plus_ten=lambda row: row.get('degree', 0) + 10")
-print("  ).execute(network)")
+print(" Q.nodes().compute('degree').mutate(")
+print(" doubled_degree=lambda row: row.get('degree', 0) * 2,")
+print(" degree_plus_ten=lambda row: row.get('degree', 0) + 10")
+print(" ).execute(network)")
 print()
 
 result = Q.nodes().compute("degree").mutate(
@@ -83,11 +83,11 @@ print("\n" + "=" * 80)
 print("[3] Example 2: Computing Derived Metrics")
 print("-" * 80)
 print("Code:")
-print("  Q.nodes().compute('degree', 'clustering').mutate(")
-print("      hub_score=lambda row: row.get('degree', 0) * row.get('clustering', 0),")
-print("      is_hub=lambda row: row.get('degree', 0) > 2,")
-print("      normalized_degree=lambda row: row.get('degree', 0) / 5.0")
-print("  ).execute(network)")
+print(" Q.nodes().compute('degree', 'clustering').mutate(")
+print(" hub_score=lambda row: row.get('degree', 0) * row.get('clustering', 0),")
+print(" is_hub=lambda row: row.get('degree', 0) > 2,")
+print(" normalized_degree=lambda row: row.get('degree', 0) / 5.0")
+print(" ).execute(network)")
 print()
 
 result = Q.nodes().compute("degree", "clustering").mutate(
@@ -105,10 +105,10 @@ print("\n" + "=" * 80)
 print("[4] Example 3: Mutate + Filter Pipeline")
 print("-" * 80)
 print("Code:")
-print("  Q.nodes().compute('degree').mutate(")
-print("      score=lambda row: row.get('degree', 0) * 2")
-print("  ).execute(network)")
-print("  # Then filter the DataFrame")
+print(" Q.nodes().compute('degree').mutate(")
+print(" score=lambda row: row.get('degree', 0) * 2")
+print(" ).execute(network)")
+print(" # Then filter the DataFrame")
 print()
 
 result = Q.nodes().compute("degree").mutate(
@@ -125,9 +125,9 @@ print("\n" + "=" * 80)
 print("[5] Example 4: Per-Layer Analysis with Mutate")
 print("-" * 80)
 print("Code:")
-print("  Q.nodes().where(layer='social').compute('degree').mutate(")
-print("      category=lambda row: 'hub' if row.get('degree', 0) > 2 else 'peripheral'")
-print("  ).execute(network)")
+print(" Q.nodes().where(layer='social').compute('degree').mutate(")
+print(" category=lambda row: 'hub' if row.get('degree', 0) > 2 else 'peripheral'")
+print(" ).execute(network)")
 print()
 
 result = Q.nodes().where(layer="social").compute("degree").mutate(
@@ -143,20 +143,20 @@ print("\n" + "=" * 80)
 print("[6] Example 5: Complex Multi-Column Transformations")
 print("-" * 80)
 print("Code:")
-print("  Q.nodes().compute('degree', 'betweenness_centrality', 'clustering').mutate(")
-print("      influence=lambda row: (")
-print("          row.get('degree', 0) * 0.4 + ")
-print("          row.get('betweenness_centrality', 0) * 0.4 + ")
-print("          row.get('clustering', 0) * 0.2")
-print("      ),")
-print("      rank=lambda row: 'high' if row.get('degree', 0) > 3 else 'medium' if row.get('degree', 0) > 1 else 'low'")
-print("  ).execute(network)")
+print(" Q.nodes().compute('degree', 'betweenness_centrality', 'clustering').mutate(")
+print(" influence=lambda row: (")
+print(" row.get('degree', 0) * 0.4 + ")
+print(" row.get('betweenness_centrality', 0) * 0.4 + ")
+print(" row.get('clustering', 0) * 0.2")
+print(" ),")
+print(" rank=lambda row: 'high' if row.get('degree', 0) > 3 else 'medium' if row.get('degree', 0) > 1 else 'low'")
+print(" ).execute(network)")
 print()
 
 result = Q.nodes().compute("degree", "betweenness_centrality", "clustering").mutate(
     influence=lambda row: (
-        row.get("degree", 0) * 0.4 + 
-        row.get("betweenness_centrality", 0) * 0.4 + 
+        row.get("degree", 0) * 0.4 +
+        row.get("betweenness_centrality", 0) * 0.4 +
         row.get("clustering", 0) * 0.2
     ),
     rank=lambda row: "high" if row.get("degree", 0) > 3 else "medium" if row.get("degree", 0) > 1 else "low"
@@ -171,19 +171,19 @@ print("\n" + "=" * 80)
 print("SUMMARY: MUTATE OPERATIONS")
 print("=" * 80)
 print("\nKey Capabilities Demonstrated:")
-print("  ✓ Simple arithmetic transformations")
-print("  ✓ Multi-attribute calculations")
-print("  ✓ Conditional expressions")
-print("  ✓ Boolean flags")
-print("  ✓ Normalization and scaling")
-print("  ✓ Complex scoring functions")
+print(" Simple arithmetic transformations")
+print(" Multi-attribute calculations")
+print(" Conditional expressions")
+print(" Boolean flags")
+print(" Normalization and scaling")
+print(" Complex scoring functions")
 print("\nBest Practices:")
-print("  • Use mutate() for row-by-row transformations")
-print("  • Use summarize()/aggregate() for group-level aggregations")
-print("  • Chain mutate() with other DSL operations (where, compute, etc.)")
-print("  • Export to pandas for advanced filtering on mutated columns")
+print(" • Use mutate() for row-by-row transformations")
+print(" • Use summarize()/aggregate() for group-level aggregations")
+print(" • Chain mutate() with other DSL operations (where, compute, etc.)")
+print(" • Export to pandas for advanced filtering on mutated columns")
 print("\nFor more information:")
-print("  • Documentation: docfiles/user_guide/dsl.rst")
-print("  • Builder API examples: example_dsl_builder_api.py")
-print("  • dplyr-style operations: example_dsl_dplyr_operations.py")
+print(" • Documentation: docfiles/user_guide/dsl.rst")
+print(" • Builder API examples: example_dsl_builder_api.py")
+print(" • dplyr-style operations: example_dsl_dplyr_operations.py")
 print("=" * 80)

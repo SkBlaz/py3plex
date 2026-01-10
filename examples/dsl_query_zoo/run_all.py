@@ -27,7 +27,7 @@ try:
     matplotlib.use("Agg")  # Use non-interactive backend
     import matplotlib.pyplot as plt
     import seaborn as sns
-except ImportError as exc:  # pragma: no cover - surfaced to user
+except ImportError as exc: # pragma: no cover - surfaced to user
     IMPORT_ERROR = exc
 else:
     IMPORT_ERROR = None
@@ -73,28 +73,28 @@ def save_dataframe(df: pd.DataFrame, filename: str, output_dir: Path) -> Path:
 def plot_layer_stats(df: pd.DataFrame, output_dir: Path) -> Path:
     """Create a bar plot of layer statistics."""
     fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-    
+
     # Plot 1: Number of nodes per layer
     axes[0].bar(df['layer'], df['n_nodes'], color='skyblue')
     axes[0].set_title('Nodes per Layer')
     axes[0].set_xlabel('Layer')
     axes[0].set_ylabel('Number of Nodes')
     axes[0].tick_params(axis='x', rotation=45)
-    
+
     # Plot 2: Number of edges per layer
     axes[1].bar(df['layer'], df['n_edges'], color='lightcoral')
     axes[1].set_title('Edges per Layer')
     axes[1].set_xlabel('Layer')
     axes[1].set_ylabel('Number of Edges')
     axes[1].tick_params(axis='x', rotation=45)
-    
+
     # Plot 3: Average degree per layer
     axes[2].bar(df['layer'], df['avg_degree'], color='lightgreen')
     axes[2].set_title('Average Degree per Layer')
     axes[2].set_xlabel('Layer')
     axes[2].set_ylabel('Average Degree')
     axes[2].tick_params(axis='x', rotation=45)
-    
+
     plt.tight_layout()
     filepath = output_dir / 'basic_exploration_plot.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
@@ -109,7 +109,7 @@ def plot_layer_similarity(df: pd.DataFrame, output_dir: Path) -> Path:
     sns.heatmap(df, annot=True, fmt='.2f', cmap='coolwarm', center=0,
                 square=True, ax=ax, cbar_kws={'label': 'Correlation'})
     ax.set_title('Layer Similarity (Degree Distribution Correlation)')
-    
+
     plt.tight_layout()
     filepath = output_dir / 'layer_similarity_heatmap.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
@@ -121,19 +121,19 @@ def plot_layer_similarity(df: pd.DataFrame, output_dir: Path) -> Path:
 def plot_robustness(df: pd.DataFrame, output_dir: Path) -> Path:
     """Create a plot showing connectivity loss when layers are removed."""
     fig, ax = plt.subplots(figsize=(10, 6))
-    
+
     scenarios = df['scenario'].tolist()
     connectivity_loss = df['connectivity_loss'].tolist()
-    
-    colors = ['green' if loss == 0 else 'orange' if loss < 50 else 'red' 
+
+    colors = ['green' if loss == 0 else 'orange' if loss < 50 else 'red'
               for loss in connectivity_loss]
-    
+
     ax.barh(scenarios, connectivity_loss, color=colors, alpha=0.7)
     ax.set_xlabel('Connectivity Loss (%)')
     ax.set_title('Network Robustness: Impact of Layer Removal')
     ax.axvline(x=0, color='black', linewidth=0.5)
     ax.grid(axis='x', alpha=0.3)
-    
+
     plt.tight_layout()
     filepath = output_dir / 'robustness_analysis_plot.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
@@ -145,26 +145,26 @@ def plot_robustness(df: pd.DataFrame, output_dir: Path) -> Path:
 def plot_null_model_comparison(df: pd.DataFrame, output_dir: Path) -> Path:
     """Create a scatter plot comparing observed vs expected values."""
     fig, ax = plt.subplots(figsize=(10, 8))
-    
+
     # Scatter plot colored by significance
     significant = df[df['is_significant'] == True]
     not_significant = df[df['is_significant'] == False]
-    
+
     ax.scatter(not_significant['expected_degree'], not_significant['degree'],
               alpha=0.6, s=50, c='gray', label='Not significant')
     ax.scatter(significant['expected_degree'], significant['degree'],
               alpha=0.8, s=80, c='red', label='Significant (|z| > 2)')
-    
+
     # Add diagonal line (observed = expected)
     max_val = max(df['degree'].max(), df['expected_degree'].max())
     ax.plot([0, max_val], [0, max_val], 'k--', alpha=0.3, label='Expected')
-    
+
     ax.set_xlabel('Expected Degree (Null Model)')
     ax.set_ylabel('Observed Degree')
     ax.set_title('Null Model Comparison: Observed vs Expected Degree')
     ax.legend()
     ax.grid(alpha=0.3)
-    
+
     plt.tight_layout()
     filepath = output_dir / 'null_model_comparison_plot.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
@@ -176,26 +176,26 @@ def plot_null_model_comparison(df: pd.DataFrame, output_dir: Path) -> Path:
 def plot_bootstrap_confidence(df: pd.DataFrame, output_dir: Path) -> Path:
     """Create a plot showing cross-layer variability in centrality."""
     fig, ax = plt.subplots(figsize=(10, 8))
-    
+
     # Plot top 10 nodes by mean
     df_top = df.head(10).copy()
     df_top = df_top.iloc[::-1]  # Reverse for better visualization
-    
+
     y_pos = range(len(df_top))
     means = df_top['mean'].values
-    
+
     # Color by relative variability
     colors = plt.cm.RdYlGn_r(df_top['relative_variability'].values / df_top['relative_variability'].max())
-    
+
     ax.barh(y_pos, means, color=colors, alpha=0.7)
-    
+
     ax.set_yticks(y_pos)
     ax.set_yticklabels([str(node_id) for node_id in df_top['id']])
     ax.set_xlabel('Mean Centrality Across Layers')
     ax.set_ylabel('Node')
     ax.set_title('Top 10 Nodes: Cross-Layer Centrality Variability\n(Red = High Variability, Green = Low Variability)')
     ax.grid(axis='x', alpha=0.3)
-    
+
     plt.tight_layout()
     filepath = output_dir / 'bootstrap_confidence_plot.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
@@ -253,7 +253,7 @@ def _load_datasets(seed: int):
     social_work_net = get_dataset("social_work", seed=seed)
     communication_net = get_dataset("communication", seed=seed)
     transport_net = get_dataset("transport", seed=seed)
-    print("  ✓ Datasets loaded\n")
+    print("   Datasets loaded\n")
     return social_work_net, communication_net, transport_net
 
 

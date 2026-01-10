@@ -72,8 +72,8 @@ net.add_edges([
 ], input_type="list")
 
 print(f"\nNetwork created: {net}")
-print(f"  - Nodes: {net.core_network.number_of_nodes()}")
-print(f"  - Edges: {net.core_network.number_of_edges()}")
+print(f" - Nodes: {net.core_network.number_of_nodes()}")
+print(f" - Edges: {net.core_network.number_of_edges()}")
 
 # ============================================================================
 # Example 1: Compute Ollivier-Ricci Curvature on Core Network
@@ -92,39 +92,39 @@ try:
         alpha=0.5,          # Standard Ollivier-Ricci parameter
         inplace=False,      # Don't modify the original network
     )
-    
+
     G_core = result_core["core"]
-    print(f"\n✓ Curvature computed on {G_core.number_of_edges()} edges")
-    
+    print(f"\n Curvature computed on {G_core.number_of_edges()} edges")
+
     # Display edge curvatures
     print("\nEdge Curvatures (sorted by curvature):")
     print("-" * 70)
     print(f"{'Edge':<30} {'Curvature':>10}")
     print("-" * 70)
-    
+
     edge_curvatures = []
     for u, v, data in G_core.edges(data=True):
         if "ricciCurvature" in data:
             curvature = data["ricciCurvature"]
             edge_curvatures.append((u, v, curvature))
-    
+
     # Sort by curvature (ascending - negative curvatures first)
     edge_curvatures.sort(key=lambda x: x[2])
-    
+
     for u, v, curvature in edge_curvatures[:10]:  # Show first 10
         edge_str = f"{u} -- {v}"
         print(f"{edge_str:<30} {curvature:>10.4f}")
-    
+
     # Identify bottleneck edges (negative curvature)
     bottlenecks = [(u, v, c) for u, v, c in edge_curvatures if c < 0]
     if bottlenecks:
-        print(f"\n⚠ Identified {len(bottlenecks)} bottleneck edge(s) with negative curvature:")
+        print(f"\n Identified {len(bottlenecks)} bottleneck edge(s) with negative curvature:")
         for u, v, curvature in bottlenecks:
             print(f"  {u} -- {v}: {curvature:.4f}")
         print("  (These edges likely connect different communities)")
-    
+
 except Exception as e:
-    print(f"\n✗ Error computing curvature: {e}")
+    print(f"\n Error computing curvature: {e}")
     import traceback
     traceback.print_exc()
 
@@ -145,13 +145,13 @@ try:
         alpha=0.5,
         inplace=False,
     )
-    
-    print(f"\n✓ Computed curvature on {len(result_layers)} layer(s)")
-    
+
+    print(f"\n Computed curvature on {len(result_layers)} layer(s)")
+
     for layer_id, G_layer in result_layers.items():
         print(f"\n  Layer: {layer_id}")
         print(f"    Edges: {G_layer.number_of_edges()}")
-        
+
         # Calculate average curvature for this layer
         curvatures = [
             data.get("ricciCurvature", 0)
@@ -160,15 +160,15 @@ try:
         if curvatures:
             avg_curvature = sum(curvatures) / len(curvatures)
             print(f"    Average curvature: {avg_curvature:.4f}")
-        
+
         # Show a few edge curvatures
         print(f"    Sample edges:")
         for i, (u, v, data) in enumerate(list(G_layer.edges(data=True))[:3]):
             curvature = data.get("ricciCurvature", 0)
             print(f"      {u} -- {v}: {curvature:.4f}")
-            
+
 except Exception as e:
-    print(f"\n✗ Error computing per-layer curvature: {e}")
+    print(f"\n Error computing per-layer curvature: {e}")
 
 # ============================================================================
 # Example 3: Compute Curvature on Supra-Graph
@@ -188,16 +188,16 @@ try:
         interlayer_weight=1.0,  # Weight for coupling edges between layers
         inplace=False,
     )
-    
+
     G_supra = result_supra["supra"]
-    print(f"\n✓ Supra-graph curvature computed")
+    print(f"\n Supra-graph curvature computed")
     print(f"  Total nodes: {G_supra.number_of_nodes()}")
     print(f"  Total edges: {G_supra.number_of_edges()}")
-    
+
     # Count and analyze inter-layer edges
     inter_layer_edges = []
     intra_layer_edges = []
-    
+
     for u, v, data in G_supra.edges(data=True):
         if isinstance(u, tuple) and isinstance(v, tuple):
             curvature = data.get("ricciCurvature", 0)
@@ -205,17 +205,17 @@ try:
                 inter_layer_edges.append((u, v, curvature))
             elif u[1] == v[1]:  # Same layer
                 intra_layer_edges.append((u, v, curvature))
-    
+
     print(f"\n  Intra-layer edges: {len(intra_layer_edges)}")
     print(f"  Inter-layer edges: {len(inter_layer_edges)}")
-    
+
     if inter_layer_edges:
         print(f"\n  Inter-layer coupling curvatures:")
         for u, v, curvature in inter_layer_edges[:5]:  # Show first 5
             print(f"    {u} -- {v}: {curvature:.4f}")
-            
+
 except Exception as e:
-    print(f"\n✗ Error computing supra-graph curvature: {e}")
+    print(f"\n Error computing supra-graph curvature: {e}")
 
 # ============================================================================
 # Example 4: Apply Ricci Flow
@@ -227,8 +227,8 @@ print("=" * 70)
 
 print("\nApplying Ricci flow to the core network...")
 print("(Ricci flow adjusts edge weights based on curvature)")
-print("  - Edges with negative curvature (bottlenecks) → reduced weight")
-print("  - Edges with positive curvature (communities) → increased weight")
+print(" - Edges with negative curvature (bottlenecks) → reduced weight")
+print(" - Edges with positive curvature (communities) → increased weight")
 
 try:
     result_flow = net.compute_ollivier_ricci_flow(
@@ -238,16 +238,16 @@ try:
         method="OTD",   # Optimal Transport Distance (recommended)
         inplace=False,
     )
-    
+
     G_flow = result_flow["core"]
-    print(f"\n✓ Ricci flow applied ({10} iterations)")
-    
+    print(f"\n Ricci flow applied ({10} iterations)")
+
     # Compare edge weights before and after flow
     print("\nEdge weight changes after Ricci flow:")
     print("-" * 70)
     print(f"{'Edge':<30} {'Original':>10} {'After Flow':>12} {'Change':>10}")
     print("-" * 70)
-    
+
     weight_changes = []
     for u, v, data in G_flow.edges(data=True):
         flow_weight = data.get("weight", 1.0)
@@ -255,21 +255,21 @@ try:
         change = flow_weight - original_weight
         curvature = data.get("ricciCurvature", 0)
         weight_changes.append((u, v, original_weight, flow_weight, change, curvature))
-    
+
     # Sort by magnitude of change
     weight_changes.sort(key=lambda x: abs(x[4]), reverse=True)
-    
+
     for u, v, orig, flow_w, change, curv in weight_changes[:10]:
         edge_str = f"{u} -- {v}"
         print(f"{edge_str:<30} {orig:>10.4f} {flow_w:>12.4f} {change:>10.4f}")
-    
+
     print("\nInterpretation:")
     print("  • Edges with increased weights are likely within communities")
     print("  • Edges with decreased weights are likely community boundaries")
     print("  • This makes community detection more effective!")
-    
+
 except Exception as e:
-    print(f"\n✗ Error applying Ricci flow: {e}")
+    print(f"\n Error applying Ricci flow: {e}")
 
 # ============================================================================
 # Example 5: Using Ricci Flow for Community Detection
@@ -280,9 +280,9 @@ print("EXAMPLE 5: Enhanced Community Detection with Ricci Flow")
 print("=" * 70)
 
 print("\nRicci flow can improve community detection by:")
-print("  1. Reducing weights on community boundary edges")
-print("  2. Increasing weights within communities")
-print("  3. Making communities more separable")
+print(" 1. Reducing weights on community boundary edges")
+print(" 2. Increasing weights within communities")
+print(" 3. Making communities more separable")
 
 try:
     # Apply flow
@@ -291,32 +291,32 @@ try:
         iterations=20,  # More iterations for stronger effect
         inplace=False,
     )
-    
+
     G_flow = flow_result["core"]
-    
+
     # Try community detection (if available)
     try:
         from py3plex.algorithms.community_detection import community_wrapper
-        
+
         print("\nRunning community detection on flow-enhanced network...")
         communities = community_wrapper.best_partition(G_flow)
-        
+
         # Count communities
         from collections import defaultdict
         comm_sizes = defaultdict(int)
         for node, comm_id in communities.items():
             comm_sizes[comm_id] += 1
-        
-        print(f"\n✓ Detected {len(comm_sizes)} communities:")
+
+        print(f"\n Detected {len(comm_sizes)} communities:")
         for comm_id, size in sorted(comm_sizes.items()):
             print(f"  Community {comm_id}: {size} nodes")
-            
+
     except ImportError:
         print("\n(Community detection library not available)")
         print("Install with: pip install python-louvain")
-        
+
 except Exception as e:
-    print(f"\n✗ Error in community detection example: {e}")
+    print(f"\n Error in community detection example: {e}")
 
 # ============================================================================
 # Summary and Best Practices

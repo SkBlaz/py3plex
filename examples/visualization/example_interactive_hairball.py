@@ -31,7 +31,7 @@ def ensure_plotly_available() -> bool:
     try:
         import plotly  # noqa: F401
     except ImportError:
-        print("✗ Plotly not found. Install with: pip install plotly")
+        print(" Plotly not found. Install with: pip install plotly")
         print("  Or install py3plex with visualization extras: pip install py3plex[viz]")
         return False
     return True
@@ -100,17 +100,17 @@ def main() -> int:
     )
 
     if fig is None:
-        print("✗ Failed to create visualization. Check that plotly is installed.")
+        print(" Failed to create visualization. Check that plotly is installed.")
         return 1
 
-    print("✓ Interactive visualization created successfully!")
+    print(" Interactive visualization created successfully!")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     try:
         fig.write_html(OUTPUT_FILE)
     except Exception as exc:  # pragma: no cover - logging only
         print(f"\nNote: Could not save HTML file: {exc}")
     else:
-        print(f"\n✓ Visualization saved to: {OUTPUT_FILE}")
+        print(f"\n Visualization saved to: {OUTPUT_FILE}")
         print("  Open this file in your web browser to explore the network.")
 
     print("\n" + "=" * 60)

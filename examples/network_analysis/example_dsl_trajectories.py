@@ -141,7 +141,7 @@ traj_measures = (
 )
 
 print("Trajectory measures computed:")
-print(f"  Number of items: {len(traj_measures.items)}")
+print(f" Number of items: {len(traj_measures.items)}")
 print()
 
 # Display measures for each replicate (check first occurrence per replicate)
@@ -288,14 +288,14 @@ print("=" * 80)
 print("SUMMARY: Q.trajectories() Features Demonstrated")
 print("=" * 80)
 print("""
-1. ✓ Query all trajectory points from simulation results
-2. ✓ Temporal filtering: .at(t) for specific time
-3. ✓ Temporal range: .during(t0, t1) for time windows
-4. ✓ WHERE conditions: filter by replicate, time, or values
-5. ✓ Computed measures: peak_time, final_state, peak_value, mean_value
-6. ✓ Ordering and limiting results
-7. ✓ Combining multiple filters
-8. ✓ Pandas export for analysis
+1. Query all trajectory points from simulation results
+2. Temporal filtering: .at(t) for specific time
+3. Temporal range: .during(t0, t1) for time windows
+4. WHERE conditions: filter by replicate, time, or values
+5. Computed measures: peak_time, final_state, peak_value, mean_value
+6. Ordering and limiting results
+7. Combining multiple filters
+8. Pandas export for analysis
 
 Key Capabilities:
 • Full query execution (not placeholder)
@@ -310,6 +310,6 @@ results, making it easy to extract insights from dynamics simulations.
 """)
 
 print("For more examples, see:")
-print("  - examples/network_analysis/example_dsl_dynamics_declarative.py")
-print("  - tests/test_dsl_dynamics_integration.py")
-print("  - docfiles/how-to/simulate_dynamics.rst")
+print(" - examples/network_analysis/example_dsl_dynamics_declarative.py")
+print(" - tests/test_dsl_dynamics_integration.py")
+print(" - docfiles/how-to/simulate_dynamics.rst")

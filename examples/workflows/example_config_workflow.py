@@ -15,14 +15,14 @@ from py3plex.workflows import WorkflowConfig, WorkflowRunner
 def load_config(config_path: Path) -> Optional[WorkflowConfig]:
     """Load a workflow config from disk with a helpful message on failure."""
     if not config_path.exists():
-        print(f"✗ Missing config file: {config_path}")
+        print(f" Missing config file: {config_path}")
         return None
 
     try:
         config = WorkflowConfig.from_file(config_path)
         return rebase_paths(config_path, config)
     except Exception as exc:  # pragma: no cover - defensive logging
-        print(f"✗ Could not read {config_path.name}: {exc}")
+        print(f" Could not read {config_path.name}: {exc}")
     return None
 
 

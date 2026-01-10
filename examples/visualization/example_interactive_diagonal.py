@@ -27,7 +27,7 @@ def ensure_plotly_available() -> bool:
     try:
         import plotly.graph_objects as go  # noqa: F401
     except ImportError:
-        print("✗ Plotly not found. Install with: pip install plotly")
+        print(" Plotly not found. Install with: pip install plotly")
         return False
     else:
         return True
@@ -328,7 +328,7 @@ def main() -> int:
     )
 
     if fig is None:
-        print("\n✗ Failed to create visualization (unexpected None figure)")
+        print("\n Failed to create visualization (unexpected None figure)")
         return 1
 
     fig.update_layout(
@@ -342,7 +342,7 @@ def main() -> int:
         plot_bgcolor="rgba(240, 240, 240, 0.9)",
     )
 
-    print("✓ Interactive visualization created")
+    print(" Interactive visualization created")
     print("  • Layers arranged diagonally in 3D space")
     print("  • Node size represents degree centrality")
     print("  • Inter-layer edges shown as dashed lines")
@@ -353,7 +353,7 @@ def main() -> int:
     except Exception as exc:  # pragma: no cover - logging only
         print(f"\nNote: Could not save file: {exc}")
     else:
-        print(f"\n✓ Saved to: {OUTPUT_FILE}")
+        print(f"\n Saved to: {OUTPUT_FILE}")
         print("  Open in your browser to explore interactively.")
 
     print("\n" + "=" * 70)

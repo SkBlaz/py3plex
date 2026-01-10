@@ -112,9 +112,9 @@ print("Adding inter-layer coupling edges...")
 # so we'll demonstrate using the dict format instead in Example 2
 
 print(f"\nNetwork created with {len(nodes)} nodes per layer and 3 layers")
-print(f"  Social layer: {len(social_edges)} edges")
-print(f"  Work layer: {len(work_edges)} edges")
-print(f"  Gaming layer: {len(gaming_edges)} edges")
+print(f" Social layer: {len(social_edges)} edges")
+print(f" Work layer: {len(work_edges)} edges")
+print(f" Gaming layer: {len(gaming_edges)} edges")
 
 # Draw pymnet style visualization
 print("\nGenerating pymnet style visualization...")
@@ -145,9 +145,9 @@ svg_path = os.path.join(output_dir, "pymnet_example1.svg")
 fig.savefig(png_path, dpi=150, bbox_inches='tight')
 fig.savefig(svg_path, bbox_inches='tight')
 
-print(f"\n✓ Visualization saved:")
-print(f"  PNG: {png_path}")
-print(f"  SVG: {svg_path}")
+print(f"\n Visualization saved:")
+print(f" PNG: {png_path}")
+print(f" SVG: {svg_path}")
 
 plt.close(fig)
 
@@ -182,9 +182,9 @@ layers_dict = {
 }
 
 print(f"\nCreated 3 layers:")
-print(f"  Social: {layer_social.number_of_nodes()} nodes, {layer_social.number_of_edges()} edges")
-print(f"  Work: {layer_work.number_of_nodes()} nodes, {layer_work.number_of_edges()} edges")
-print(f"  Family: {layer_family.number_of_nodes()} nodes, {layer_family.number_of_edges()} edges")
+print(f" Social: {layer_social.number_of_nodes()} nodes, {layer_social.number_of_edges()} edges")
+print(f" Work: {layer_work.number_of_nodes()} nodes, {layer_work.number_of_edges()} edges")
+print(f" Family: {layer_family.number_of_nodes()} nodes, {layer_family.number_of_edges()} edges")
 
 # Draw with different styling
 print("\nGenerating pymnet style visualization with degree-based coloring...")
@@ -206,9 +206,9 @@ svg_path = os.path.join(output_dir, "pymnet_example2_degree.svg")
 fig.savefig(png_path, dpi=150, bbox_inches='tight')
 fig.savefig(svg_path, bbox_inches='tight')
 
-print(f"\n✓ Visualization saved:")
-print(f"  PNG: {png_path}")
-print(f"  SVG: {svg_path}")
+print(f"\n Visualization saved:")
+print(f" PNG: {png_path}")
+print(f" SVG: {svg_path}")
 
 plt.close(fig)
 
@@ -243,8 +243,8 @@ edge_list = [
 print(f"\nCreated edge list with {len(edge_list)} edges")
 intra_count = sum(1 for u, lu, v, lv in edge_list if lu == lv)
 inter_count = sum(1 for u, lu, v, lv in edge_list if lu != lv)
-print(f"  Intra-layer edges: {intra_count}")
-print(f"  Inter-layer edges: {inter_count}")
+print(f" Intra-layer edges: {intra_count}")
+print(f" Inter-layer edges: {inter_count}")
 
 # Draw with circular layout
 print("\nGenerating pymnet style visualization with circular layout...")
@@ -267,9 +267,9 @@ svg_path = os.path.join(output_dir, "pymnet_example3_edgelist.svg")
 fig.savefig(png_path, dpi=150, bbox_inches='tight')
 fig.savefig(svg_path, bbox_inches='tight')
 
-print(f"\n✓ Visualization saved:")
-print(f"  PNG: {png_path}")
-print(f"  SVG: {svg_path}")
+print(f"\n Visualization saved:")
+print(f" PNG: {png_path}")
+print(f" SVG: {svg_path}")
 
 plt.close(fig)
 
@@ -289,9 +289,9 @@ layers = {
 }
 
 print(f"\nCreated 3 layers with different structures:")
-print(f"  Layer A: Path graph (5 nodes)")
-print(f"  Layer B: Cycle graph (5 nodes)")
-print(f"  Layer C: Star graph (5 nodes)")
+print(f" Layer A: Path graph (5 nodes)")
+print(f" Layer B: Cycle graph (5 nodes)")
+print(f" Layer C: Star graph (5 nodes)")
 
 # Custom coloring function
 def custom_color_function(node, layer):
@@ -322,9 +322,9 @@ svg_path = os.path.join(output_dir, "pymnet_example4_custom.svg")
 fig.savefig(png_path, dpi=150, bbox_inches='tight')
 fig.savefig(svg_path, bbox_inches='tight')
 
-print(f"\n✓ Visualization saved:")
-print(f"  PNG: {png_path}")
-print(f"  SVG: {svg_path}")
+print(f"\n Visualization saved:")
+print(f" PNG: {png_path}")
+print(f" SVG: {svg_path}")
 
 plt.close(fig)
 

@@ -47,10 +47,10 @@ def main() -> int:
     print("Network is now immutable - modifications create new copies\n")
 
     nodes = list(immutable.get_nodes())
-    print(f"✓ Can read nodes: {len(nodes)} nodes")
+    print(f" Can read nodes: {len(nodes)} nodes")
 
     edges = immutable.number_of_edges()
-    print(f"✓ Can read edges: {edges} edges")
+    print(f" Can read edges: {edges} edges")
 
     print("\nBenefits:")
     print("  - Prevents accidental mutations during analysis")

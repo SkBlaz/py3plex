@@ -55,7 +55,7 @@ result = (
 )
 
 # Display results
-print("\n📊 Top-5 Nodes (with uncertainty):")
+print("\n Top-5 Nodes (with uncertainty):")
 print("-" * 60)
 
 df = result.to_pandas()
@@ -71,11 +71,11 @@ for _, row in df_sorted.iterrows():
     present_prob = row.get("present_prob", 0)
     rank_mean = row.get("rank_mean", float('inf'))
     p_in_topk = row.get("p_in_topk", 0)
-    
+
     print(f"{node_id:<8} {degree:<8.0f} {present_prob:<12.3f} {rank_mean:<12.1f} {p_in_topk:<10.3f}")
 
 # Display UQ metadata
-print("\n📈 Uncertainty Statistics:")
+print("\n Uncertainty Statistics:")
 print("-" * 60)
 
 uq_meta = result.meta["uq"]
@@ -83,22 +83,22 @@ print(f"Number of samples: {uq_meta['n_samples']}")
 print(f"UQ method: {uq_meta['method']}")
 print(f"Noise model: {uq_meta['noise_model']}")
 
-print(f"\n🎯 Selection Set Size:")
+print(f"\n Selection Set Size:")
 size_stats = uq_meta["set_size"]
-print(f"  Mean: {size_stats['mean']:.2f}")
-print(f"  Std:  {size_stats['std']:.2f}")
+print(f" Mean: {size_stats['mean']:.2f}")
+print(f" Std: {size_stats['std']:.2f}")
 
-print(f"\n🔄 Stability (Jaccard similarity):")
+print(f"\n Stability (Jaccard similarity):")
 stability = uq_meta["stability"]
-print(f"  Mean: {stability['jaccard_mean']:.3f}")
-print(f"  Std:  {stability['jaccard_std']:.3f}")
+print(f" Mean: {stability['jaccard_mean']:.3f}")
+print(f" Std: {stability['jaccard_std']:.3f}")
 
-print(f"\n✅ Consensus Selection (P ≥ 0.5):")
+print(f"\n Consensus Selection (P ≥ 0.5):")
 consensus = uq_meta["consensus"]
-print(f"  Size: {consensus['size']}")
-print(f"  Items: {', '.join(str(x) for x in consensus['items_preview'][:10])}")
+print(f" Size: {consensus['size']}")
+print(f" Items: {', '.join(str(x) for x in consensus['items_preview'][:10])}")
 
-print(f"\n⚠️  Borderline Items (uncertain inclusion):")
+print(f"\n️ Borderline Items (uncertain inclusion):")
 borderline = uq_meta["borderline_items"]
 if borderline:
     print(f"  {', '.join(str(x) for x in borderline[:5])}")
@@ -106,7 +106,7 @@ else:
     print("  (none)")
 
 if uq_meta.get("topk"):
-    print(f"\n🔝 Top-5 Overlap Statistics:")
+    print(f"\n Top-5 Overlap Statistics:")
     topk_stats = uq_meta["topk"]["overlap"]
     print(f"  Mean overlap: {topk_stats.get('overlap_mean', 'N/A'):.2f}")
     print(f"  Std overlap:  {topk_stats.get('overlap_std', 'N/A'):.2f}")
@@ -122,5 +122,5 @@ print("• Consensus items: Nodes that appear in ≥50% of samples")
 print("• Borderline items: Nodes with ~50% inclusion probability")
 print("=" * 60)
 
-print("\n✨ SelectionUQ provides probabilistic top-k rankings!")
-print("   This helps identify which rankings are stable vs. uncertain.")
+print("\n SelectionUQ provides probabilistic top-k rankings!")
+print(" This helps identify which rankings are stable vs. uncertain.")

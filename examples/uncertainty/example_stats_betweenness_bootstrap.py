@@ -191,7 +191,7 @@ def demonstrate_reproducibility(network: multinet.multi_layer_network) -> None:
         print(f"   Run 2: {float(stat_a2):.6f} (std: {stat_a2.std():.6f})")
 
         if abs(float(stat_a1) - float(stat_a2)) < 1e-10:
-            print(f"   ✓ Results are identical (reproducible)")
+            print(f"    Results are identical (reproducible)")
     print()
 
 

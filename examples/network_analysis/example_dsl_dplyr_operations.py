@@ -27,13 +27,13 @@ edges = [
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Alice', 'target': 'Diana', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Bob', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social'},
-    
+
     # Work layer: Alice is the hub
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'Alice', 'target': 'Diana', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'Alice', 'target': 'Eve', 'source_type': 'work', 'target_type': 'work'},
-    
+
     # Hobby layer: More distributed
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'hobby', 'target_type': 'hobby'},
     {'source': 'Charlie', 'target': 'Diana', 'source_type': 'hobby', 'target_type': 'hobby'},
@@ -222,21 +222,21 @@ print("\nFirst node (highest degree in hobby):")
 print(first_node.to_pandas()[['id', 'layer', 'degree']])
 
 print("\n" + "="*70)
-print("✓ All examples completed successfully!")
+print(" All examples completed successfully!")
 print("="*70)
 print("\nKey Takeaways:")
-print("  • summarize() enables group-wise aggregations (mean, max, min, etc.)")
-print("  • centrality() is a convenient shorthand for common metrics")
-print("  • rank_by() and zscore() add statistical context to your analysis")
-print("  • coverage(mode='fraction', p=...) finds cross-layer patterns")
-print("  • select(), drop(), rename() clean and shape your results")
-print("  • arrange() and distinct() provide familiar data manipulation")
+print(" • summarize() enables group-wise aggregations (mean, max, min, etc.)")
+print(" • centrality() is a convenient shorthand for common metrics")
+print(" • rank_by() and zscore() add statistical context to your analysis")
+print(" • coverage(mode='fraction', p=...) finds cross-layer patterns")
+print(" • select(), drop(), rename() clean and shape your results")
+print(" • arrange() and distinct() provide familiar data manipulation")
 print("\nNEW in v1.1.0:")
-print("  • filter() - traditional dplyr naming (alias for where())")
-print("  • filter_expr() - string-based filtering with expressions")
-print("  • head(n), tail(n) - keep first/last n results")
-print("  • sample(n, seed) - random sampling with reproducibility")
-print("  • slice(start, end) - array-style slicing")
-print("  • first(), last() - get first/last result")
-print("  • take(n), pluck(field), collect() - additional convenience methods")
-print("\nThe DSL now feels like dplyr but is multilayer-aware! 🎉")
+print(" • filter() - traditional dplyr naming (alias for where())")
+print(" • filter_expr() - string-based filtering with expressions")
+print(" • head(n), tail(n) - keep first/last n results")
+print(" • sample(n, seed) - random sampling with reproducibility")
+print(" • slice(start, end) - array-style slicing")
+print(" • first(), last() - get first/last result")
+print(" • take(n), pluck(field), collect() - additional convenience methods")
+print("\nThe DSL now feels like dplyr but is multilayer-aware! ")

@@ -148,9 +148,9 @@ claims = (
 for claim in claims[:5]:
     cex = claim.counterexample(net, seed=42)
     if cex:
-        print(f"✗ {claim.claim_string}: counterexample found")
+        print(f" {claim.claim_string}: counterexample found")
     else:
-        print(f"✓ {claim.claim_string}: no counterexample (support={claim.support:.3f})")
+        print(f" {claim.claim_string}: no counterexample (support={claim.support:.3f})")
 ```
 
 ---
@@ -456,7 +456,7 @@ Compute metrics per item (node/edge).
 Q.nodes().compute("degree")
 Q.nodes().compute("degree", "betweenness_centrality", "pagerank")
 Q.nodes().compute("degree", alias="node_degree")
-Q.nodes().compute("betweenness_centrality", "pagerank", 
+Q.nodes().compute("betweenness_centrality", "pagerank",
                   aliases={"betweenness_centrality": "bc", "pagerank": "pr"})
 
 # With uncertainty
@@ -1528,40 +1528,40 @@ df = result.to_pandas(expand_uncertainty=True)
 ## Decision Guide: Which API When?
 
 ### Use DSL v2 (Q builder) when:
-- ✓ You need type-safe, IDE-autocomplete experience
-- ✓ Complex queries with grouping, aggregation, coverage
-- ✓ Uncertainty quantification required
-- ✓ Temporal network queries
-- ✓ Integration with other DSL features (dynamics, counterexamples)
-- ✓ Building reusable, parameterized queries
-- ✓ You're new to py3plex (most ergonomic API)
+-  You need type-safe, IDE-autocomplete experience
+-  Complex queries with grouping, aggregation, coverage
+-  Uncertainty quantification required
+-  Temporal network queries
+-  Integration with other DSL features (dynamics, counterexamples)
+-  Building reusable, parameterized queries
+-  You're new to py3plex (most ergonomic API)
 
 ### Use Legacy DSL (string-based) when:
-- ✓ Quick one-off queries in notebooks
-- ✓ You prefer SQL-like syntax
-- ✓ Simple filtering and centrality computation
-- ✓ Backward compatibility with old scripts
-- ✓ Teaching/documentation (familiar SQL syntax)
+-  Quick one-off queries in notebooks
+-  You prefer SQL-like syntax
+-  Simple filtering and centrality computation
+-  Backward compatibility with old scripts
+-  Teaching/documentation (familiar SQL syntax)
 
 ### Use Dplyr-Style API when:
-- ✓ You're familiar with R's dplyr or pandas
-- ✓ Interactive data exploration in notebooks
-- ✓ Simple transformations (filter, mutate, arrange, select)
-- ✓ Converting results to DataFrames for analysis
-- ✗ NOT for complex multilayer-specific operations (use Q builder instead)
+-  You're familiar with R's dplyr or pandas
+-  Interactive data exploration in notebooks
+-  Simple transformations (filter, mutate, arrange, select)
+-  Converting results to DataFrames for analysis
+-  NOT for complex multilayer-specific operations (use Q builder instead)
 
 ### Use Pipeline API when:
-- ✓ Sklearn-style workflow orchestration
-- ✓ Reproducible multi-step analysis pipelines
-- ✓ Caching intermediate results
-- ✓ Config-driven workflows from YAML/JSON
-- ✓ Research workflows requiring provenance
+-  Sklearn-style workflow orchestration
+-  Reproducible multi-step analysis pipelines
+-  Caching intermediate results
+-  Config-driven workflows from YAML/JSON
+-  Research workflows requiring provenance
 
 ### Use CLI when:
-- ✓ Shell scripts and automation
-- ✓ Quick network statistics without Python
-- ✓ File format conversion
-- ✓ CI/CD integration
+-  Shell scripts and automation
+-  Quick network statistics without Python
+-  File format conversion
+-  CI/CD integration
 
 ### Decision Tree: Computing Centrality
 
@@ -1681,11 +1681,11 @@ centrality = compute_centrality_for_layer(net, 'transport', 'degree_centrality')
 
 ### Limitations
 
-- ✗ No grouping or aggregation
-- ✗ No uncertainty quantification
-- ✗ No temporal queries
-- ✗ Limited edge queries
-- ✗ No layer algebra
+-  No grouping or aggregation
+-  No uncertainty quantification
+-  No temporal queries
+-  Limited edge queries
+-  No layer algebra
 - → **Use DSL v2 for these features**
 
 ---
@@ -1823,7 +1823,7 @@ from py3plex.pipeline import BaseStep
 class CustomStep(BaseStep):
     def __init__(self, param=1.0):
         self.param = param
-    
+
     def fit(self, network, context=None):
         # Your logic here
         return result
@@ -1837,15 +1837,15 @@ pipeline:
   - step: load
     path: network.csv
     input_type: edgelist
-  
+
   - step: compute_stats
     measures:
       - degree
       - betweenness_centrality
-  
+
   - step: filter
     condition: "degree > 5"
-  
+
   - step: export
     path: output.csv
     format: csv
@@ -2072,13 +2072,13 @@ for rep in range(sim.n_replicates):
 ```python
 def custom_process(node, state, neighbors, params):
     """Custom dynamics process.
-    
+
     Args:
         node: Current node (tuple: (id, layer))
         state: Current state dict
         neighbors: List of neighbor nodes
         params: Process parameters
-    
+
     Returns:
         new_state: Updated state for node
     """
@@ -2225,8 +2225,8 @@ print(result.meta["uq"]["stability"])  # VI, NMI, etc.
 
 #### UQ Methods
 
-**Seed** (fastest): `.uq(method="seed", n_samples=50, seed=42)` - Algorithm stochasticity  
-**Perturbation** (most informative): `.uq(method="perturbation", noise_model=EdgeDrop(p=0.1), n_samples=100)` - Network robustness  
+**Seed** (fastest): `.uq(method="seed", n_samples=50, seed=42)` - Algorithm stochasticity
+**Perturbation** (most informative): `.uq(method="perturbation", noise_model=EdgeDrop(p=0.1), n_samples=100)` - Network robustness
 **Noise Models**: `EdgeDrop(p)`, `WeightNoise(dist, sigma)`, `LayerDrop(p)`
 
 #### Storage Modes
@@ -2237,8 +2237,8 @@ print(result.meta["uq"]["stability"])  # VI, NMI, etc.
 
 #### Output
 
-**Attributes per node**: `community_id`, `community_entropy`, `community_confidence`  
-**Metadata**: `result.meta["uq"]["stability"]` (VI, NMI, mean_entropy, boundary_nodes)  
+**Attributes per node**: `community_id`, `community_entropy`, `community_confidence`
+**Metadata**: `result.meta["uq"]["stability"]` (VI, NMI, mean_entropy, boundary_nodes)
 **PartitionUQ object**: `result.meta["partition_uq"]` (consensus, co-assignment, node summaries)
 
 #### Interpreting Results
@@ -2247,7 +2247,7 @@ print(result.meta["uq"]["stability"])  # VI, NMI, etc.
 - **Moderate**: VI < 0.5, NMI > 0.8, mean_confidence > 0.7
 - **Unstable**: VI > 0.5 or NMI < 0.7 → Tune γ or refine data
 
-**Node Entropy**: Low (<0.5) = consistent, High (>1.0) = ambiguous  
+**Node Entropy**: Low (<0.5) = consistent, High (>1.0) = ambiguous
 **Confidence**: High (>0.8) = clear, Low (<0.6) = boundary node
 
 
@@ -2605,9 +2605,9 @@ claims = Q.learn_claims().from_metrics(["degree", "pagerank"]).min_support(0.8).
 for claim in claims:
     cex = claim.counterexample(net, seed=42)
     if cex:
-        print(f"✗ {claim.claim_string}: falsified")
+        print(f" {claim.claim_string}: falsified")
     else:
-        print(f"✓ {claim.claim_string}: holds (support={claim.support:.3f})")
+        print(f" {claim.claim_string}: holds (support={claim.support:.3f})")
 ```
 
 ### Interpretation Warning
@@ -2836,9 +2836,9 @@ net.assign_partition(result.partition)
 
 # With UQ for stability-aware selection
 result = auto_select_community(
-    network, 
-    uq=True, 
-    uq_n_samples=50, 
+    network,
+    uq=True,
+    uq_n_samples=50,
     uq_method="seed",
     seed=42
 )
@@ -2991,12 +2991,12 @@ result = (
 if result.selected == "consensus":
     print("Multiple algorithms were non-dominated!")
     print(f"Algorithms in consensus: {result.pareto_front}")
-    
+
     # Identify core vs. peripheral nodes
     confidence = result.community_stats.node_confidence
     core_nodes = {node for node, conf in confidence.items() if conf > 0.8}
     print(f"Core nodes (high confidence): {len(core_nodes)}")
-    
+
     # Check node-level entropy
     entropy = result.community_stats.node_entropy
     uncertain_nodes = {node for node, ent in entropy.items() if ent > 1.0}
@@ -3089,11 +3089,11 @@ result = (
 ```
 
 **Anti-Patterns to Avoid**:
-- ❌ Using single metric (e.g., only modularity) → Use multi-objective
-- ❌ Ignoring uncertainty → Always use `.uq()` for stability
-- ❌ No null calibration → Use `.null_model()` for significance
-- ❌ Treating all nodes equally → Check `node_confidence` for reliability
-- ❌ Ignoring orphan nodes → Examine `community_stats.orphan_nodes`
+-  Using single metric (e.g., only modularity) → Use multi-objective
+-  Ignoring uncertainty → Always use `.uq()` for stability
+-  No null calibration → Use `.null_model()` for significance
+-  Treating all nodes equally → Check `node_confidence` for reliability
+-  Ignoring orphan nodes → Examine `community_stats.orphan_nodes`
 
 **When to Use AutoCommunity Meta-Algorithm**:
 - Need principled selection across competing quality objectives
@@ -3277,12 +3277,12 @@ def my_custom_metric(context: DSLExecutionContext, alpha: float = 0.5):
     """Compute custom metric with parameter alpha."""
     graph = context.graph
     layers = context.current_layers
-    
+
     # Your computation here
     result = {}
     for node in graph.nodes():
         result[node] = compute_value(node, alpha)
-    
+
     return result
 
 # Use in DSL
@@ -3372,8 +3372,8 @@ except Py3plexIOError as e:
 ```
 
 **Don't use generic exceptions for domain errors**:
-- ✗ `FileNotFoundError` → ✓ `Py3plexIOError`
-- ✗ `ValueError` → ✓ `NetworkConstructionError`
+-  `FileNotFoundError` →  `Py3plexIOError`
+-  `ValueError` →  `NetworkConstructionError`
 
 ---
 

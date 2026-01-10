@@ -13,7 +13,7 @@ from py3plex.dsl import Q, L
 def create_example_network():
     """Create a simple multilayer network for demonstration."""
     net = multinet.multi_layer_network(directed=False)
-    
+
     # Add edges in social layer
     net.add_edges([
         {"source": "A", "target": "B", "source_type": "social", "target_type": "social"},
@@ -21,7 +21,7 @@ def create_example_network():
         {"source": "C", "target": "D", "source_type": "social", "target_type": "social"},
         {"source": "D", "target": "A", "source_type": "social", "target_type": "social"},
     ])
-    
+
     # Add edges in work layer
     net.add_edges([
         {"source": "A", "target": "B", "source_type": "work", "target_type": "work"},
@@ -29,7 +29,7 @@ def create_example_network():
         {"source": "C", "target": "D", "source_type": "work", "target_type": "work"},
         {"source": "D", "target": "E", "source_type": "work", "target_type": "work"},
     ])
-    
+
     return net
 
 
@@ -38,9 +38,9 @@ def example_a_supra_lpa():
     print("\n" + "="*70)
     print("Example A: Supra-Graph Label Propagation")
     print("="*70)
-    
+
     net = create_example_network()
-    
+
     # Community detection (supra-LPA)
     res = (
         Q.nodes()
@@ -55,13 +55,13 @@ def example_a_supra_lpa():
          .compute("community")  # Add community attribute to output
          .execute(net)
     )
-    
+
     df = res.to_pandas()
     # id column is the node, layer is the layer
     df = df.rename(columns={"id": "node"})
     print(f"\nDetected communities (replica-level):")
     print(df[["node", "layer", "community"]].to_string(index=False))
-    
+
     # Show statistics
     n_communities = df["community"].nunique()
     print(f"\nTotal communities: {n_communities}")
@@ -73,9 +73,9 @@ def example_b_supra_with_projection():
     print("\n" + "="*70)
     print("Example B: Supra-Graph LPA with Majority Projection")
     print("="*70)
-    
+
     net = create_example_network()
-    
+
     res = (
         Q.nodes()
          .from_layers(L["social"] + L["work"])
@@ -89,12 +89,12 @@ def example_b_supra_with_projection():
          .compute("community")  # Add community attribute to output
          .execute(net)
     )
-    
+
     df = res.to_pandas()
     df = df.rename(columns={"id": "node"})
     print(f"\nDetected communities (with node-level projection):")
     print(df[["node", "layer", "community"]].to_string(index=False))
-    
+
     # Show statistics
     print(f"\nCommunity statistics:")
     print(f"  Total communities: {df['community'].nunique()}")
@@ -106,10 +106,10 @@ def example_c_consensus_lpa():
     print("\n" + "="*70)
     print("Example C: Multiplex Consensus Label Propagation")
     print("="*70)
-    
+
     # Create fresh network to avoid partition conflicts
     net = create_example_network()
-    
+
     res = (
         Q.nodes()
          .from_layers(L["social"] + L["work"])
@@ -123,18 +123,18 @@ def example_c_consensus_lpa():
          .compute("community")  # Add community attribute to output
          .execute(net)
     )
-    
+
     df = res.to_pandas()
     df = df.rename(columns={"id": "node"})
     print(f"\nDetected communities (node-level consensus):")
     print(df[["node", "layer", "community"]].to_string(index=False))
-    
+
     # Verify synchronization
     print(f"\nVerifying consensus synchronization:")
     for node in df["node"].unique():
         node_df = df[df["node"] == node]
         communities = node_df["community"].unique()
-        status = "✓ synchronized" if len(communities) == 1 else "✗ not synchronized"
+        status = " synchronized" if len(communities) == 1 else " not synchronized"
         print(f"  Node {node}: {status} (communities: {communities})")
 
 
@@ -143,10 +143,10 @@ def example_d_post_query_hubs():
     print("\n" + "="*70)
     print("Example D: Find Top Hubs per Community")
     print("="*70)
-    
+
     # Create fresh network
     net = create_example_network()
-    
+
     # Run consensus LPA and compute degree
     res = (
         Q.nodes()
@@ -161,12 +161,12 @@ def example_d_post_query_hubs():
          .compute("community", "degree")
          .execute(net)
     )
-    
+
     df = res.to_pandas()
     df = df.rename(columns={"id": "node"})
     print(f"\nNodes with degree and community:")
     print(df[["node", "layer", "community", "degree"]].to_string(index=False))
-    
+
     # Find top hubs per community
     print(f"\nTop hub per community:")
     top_hubs = df.loc[df.groupby("community")["degree"].idxmax()]
@@ -178,9 +178,9 @@ def compare_algorithms():
     print("\n" + "="*70)
     print("Comparison: Supra vs Consensus LPA")
     print("="*70)
-    
+
     net = create_example_network()
-    
+
     # Run both algorithms
     res_supra = (
         Q.nodes()
@@ -195,7 +195,7 @@ def compare_algorithms():
          .compute("community")
          .execute(net)
     )
-    
+
     res_consensus = (
         Q.nodes()
          .from_layers(L["social"] + L["work"])
@@ -208,20 +208,20 @@ def compare_algorithms():
          .compute("community")
          .execute(net)
     )
-    
+
     df_supra = res_supra.to_pandas()
     df_consensus = res_consensus.to_pandas()
     df_supra = df_supra.rename(columns={"id": "node"})
     df_consensus = df_consensus.rename(columns={"id": "node"})
-    
+
     print(f"\nSupra-graph LPA:")
     print(f"  Communities: {df_supra['community'].nunique()}")
     print(f"  Replica assignments: {len(df_supra)}")
-    
+
     print(f"\nConsensus LPA:")
     print(f"  Communities: {df_consensus['community'].nunique()}")
     print(f"  Replica assignments: {len(df_consensus)}")
-    
+
     # Check synchronization in consensus
     consensus_synced = all(
         df_consensus[df_consensus["node"] == node]["community"].nunique() == 1
@@ -235,13 +235,13 @@ def main():
     print("\n" + "="*70)
     print("Label Propagation Community Detection Examples (DSL v2)")
     print("="*70)
-    
+
     example_a_supra_lpa()
     example_b_supra_with_projection()
     example_c_consensus_lpa()
     example_d_post_query_hubs()
     compare_algorithms()
-    
+
     print("\n" + "="*70)
     print("All examples completed successfully!")
     print("="*70)
