@@ -22,12 +22,18 @@ from py3plex.core import multinet
 # store communities
 from collections import defaultdict
 from py3plex.utils import get_dataset_path
+from py3plex.exceptions import Py3plexIOError
 
-# load the network
-network = multinet.multi_layer_network().load_network(
-    input_file=get_dataset_path("epigenetics.gpickle"),
-    directed=False,
-    input_type="gpickle_biomine")
+# Check if dataset exists and load the network
+try:
+    dataset_path = get_dataset_path("epigenetics.gpickle")
+    network = multinet.multi_layer_network().load_network(
+        input_file=dataset_path,
+        directed=False,
+        input_type="gpickle_biomine")
+except Py3plexIOError:
+    print("Required dataset not found. Skipping example.")
+    exit(0)
 
 # identify partitions
 partition = cw.louvain_communities(network.core_network)
