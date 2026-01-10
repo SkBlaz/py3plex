@@ -3,8 +3,9 @@ name: Benchmarks
 on:
   push:
     branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master, develop ]
+  # Don't run on PRs - benchmarks are time-consuming
+  # pull_request:
+  #   branches: [ main, master, develop ]
   workflow_dispatch:  # Allow manual triggering
 
 jobs:

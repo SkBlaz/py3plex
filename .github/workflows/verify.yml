@@ -3,8 +3,13 @@ name: Formal Verification
 on:
   push:
     branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master, develop ]
+  # Don't run on PRs - formal verification is expensive
+  # pull_request:
+  #   branches: [ main, master, develop ]
+  schedule:
+    # Run weekly on Tuesdays at 3 AM UTC
+    - cron: '0 3 * * 2'
+  workflow_dispatch:  # Allow manual triggering
 
 permissions:
   contents: read

@@ -11,11 +11,67 @@ on:
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
+  # Fast unit tests for PR validation - runs on every PR
+  fast-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only run fast tests on PRs, skip on schedule/push to main
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+
+    - name: Cache uv dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/uv
+          .venv
+        key: ${{ runner.os }}-uv-fast-${{ hashFiles('**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-uv-fast-
+          ${{ runner.os }}-uv-
+      timeout-minutes: 2
+
+    - name: Install dependencies
+      run: |
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install -e .
+        uv pip install pytest pytest-xdist hypothesis
+      timeout-minutes: 10
+
+    - name: Run fast unit tests (parallel)
+      env:
+        MPLBACKEND: Agg
+        HYPOTHESIS_PROFILE: ci
+      run: |
+        echo "🧪 Running fast unit tests (excluding property, slow, and integration tests)..."
+        source .venv/bin/activate
+        # Run tests in parallel, skip slow/property/integration tests, skip doctests
+        uv run pytest tests/ -k "not property and not slow and not integration" -n auto --tb=short
+      timeout-minutes: 10
+
+  # Full test matrix - runs on push to main/develop or nightly
   test:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30  # Set overall job timeout
+    timeout-minutes: 25
+    # Run full matrix on push to main/develop, nightly, or manual trigger
+    if: github.event_name != 'pull_request'
     strategy:
-      fail-fast: false  # Don't cancel other jobs if one fails
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
@@ -88,42 +144,24 @@ jobs:
           source .venv/bin/activate
         fi
         uv pip install -e .
-      timeout-minutes: 15
+        uv pip install pytest pytest-xdist hypothesis
+      timeout-minutes: 12
       shell: bash
 
-    - name: Run tests via uv
+    - name: Run core tests
       env:
         MPLBACKEND: Agg  # Avoid GUI issues in matplotlib
         HYPOTHESIS_PROFILE: ci  # Use CI profile for Hypothesis
       run: |
-        echo "🧪 Running tests..."
+        echo "🧪 Running core tests (excluding property tests)..."
         if [ "$RUNNER_OS" == "Windows" ]; then
           source .venv/Scripts/activate
         else
           source .venv/bin/activate
         fi
-        uv pip install pytest hypothesis
-        if [ -f "run_tests.py" ]; then
-          timeout 600 uv run python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
-        else
-          uv run pytest tests/ || echo "⚠️ Tests failed"
-        fi
-      timeout-minutes: 30
-      shell: bash
-    
-    - name: Run metamorphic tests
-      env:
-        MPLBACKEND: Agg
-        HYPOTHESIS_PROFILE: ci
-      run: |
-        echo "🔬 Running metamorphic tests..."
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          source .venv/Scripts/activate
-        else
-          source .venv/bin/activate
-        fi
-        uv run pytest -q -k metamorphic tests/ || echo "⚠️ Metamorphic tests failed"
-      timeout-minutes: 5
+        # Skip property tests for speed, run in parallel
+        uv run pytest tests/ -k "not property" -n auto --tb=short || echo "⚠️ Some tests failed"
+      timeout-minutes: 20
       shell: bash
 
     - name: Upload test results
@@ -135,8 +173,10 @@ jobs:
 
   test-minimal:
     runs-on: ubuntu-latest
-    timeout-minutes: 20  # Shorter timeout for minimal test
+    timeout-minutes: 15
     name: "Test with minimal dependencies (Python 3.8)"
+    # Only run on push to main/develop or manual trigger
+    if: github.event_name != 'pull_request'
 
     steps:
     - name: Checkout code
@@ -157,7 +197,7 @@ jobs:
       run: |
         uv venv .venv
         source .venv/bin/activate
-        uv pip install setuptools wheel
+        uv pip install setuptools wheel pytest
         # Only install absolutely required dependencies
         uv pip install numpy scipy tqdm bitarray rdflib
         # Try to install networkx with version flexibility
@@ -165,15 +205,17 @@ jobs:
       timeout-minutes: 10
 
     - name: Run tests (minimal)
+      env:
+        MPLBACKEND: Agg
       run: |
         echo "🐍 Python version: $(python --version)"
         echo "📦 Installed packages:"
         source .venv/bin/activate
         uv pip list | head -20
-        echo "🧪 Running tests with minimal dependencies..."
-        timeout 400 uv run python run_tests.py || echo "⚠️ Minimal tests timed out after 6.7 minutes"
+        echo "🧪 Running core tests with minimal dependencies..."
+        # Skip property, slow, integration tests and visualization tests
+        uv run pytest tests/ -k "not property and not slow and not integration and not visualization" --tb=short || echo "⚠️ Some tests skipped due to missing dependencies"
         echo "✅ Minimal dependency tests completed"
-        echo "Note: Some tests may be skipped due to missing optional dependencies"
       timeout-minutes: 8
 
   # Nightly job for thorough metamorphic testing

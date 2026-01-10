@@ -3,8 +3,9 @@ name: Examples CI
 on:
   push:
     branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master, develop ]
+  # Don't run on PRs to save CI time
+  # pull_request:
+  #   branches: [ main, master, develop ]
   # Allow manual trigger
   workflow_dispatch:
 

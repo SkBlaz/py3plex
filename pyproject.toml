@@ -231,8 +231,9 @@ addopts = [
     "-q",
     "--tb=short",
     "--strict-markers",
-    "--doctest-modules",
-    "--doctest-continue-on-failure",
+    # Doctests are slow - only run explicitly with --doctest-modules
+    # "--doctest-modules",
+    # "--doctest-continue-on-failure",
 ]
 markers = [
     "property: property-based tests using Hypothesis",

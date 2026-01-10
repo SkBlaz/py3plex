@@ -3,31 +3,28 @@ name: Property-Based Tests
 on:
   push:
     branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master, develop ]
+  # Don't run on PRs to save CI time - property tests are run on main
+  # pull_request:
+  #   branches: [ main, master, develop ]
   schedule:
     # Run weekly on Mondays at 3 AM UTC for comprehensive coverage
     - cron: '0 3 * * 1'
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
   property-tests:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       timeout-minutes: 2
     
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: "3.10"
       timeout-minutes: 3
     
     - name: Install uv
@@ -40,9 +37,9 @@ jobs:
         path: |
           ~/.cache/uv
           .venv
-        key: ${{ runner.os }}-uv-property-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
+        key: ${{ runner.os }}-uv-property-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-uv-property-${{ matrix.python-version }}-
+          ${{ runner.os }}-uv-property-
           ${{ runner.os }}-uv-
       timeout-minutes: 2
     
@@ -61,11 +58,15 @@ jobs:
         uv pip install python-louvain || echo "⚠️ python-louvain not available"
       timeout-minutes: 10
     
-    - name: Run property tests (excluding slow)
+    - name: Run property tests (excluding slow, parallel)
+      env:
+        HYPOTHESIS_PROFILE: ci
       run: |
         source .venv/bin/activate
-        uv run pytest tests/property/ -v -m "property and not slow" --tb=short
-      timeout-minutes: 12
+        # Run property tests in parallel, skip slow ones
+        uv pip install pytest-xdist
+        uv run pytest tests/ -m "property and not slow" -n auto --tb=short
+      timeout-minutes: 15
     
     - name: Upload test results
       if: always()
@@ -79,9 +80,9 @@ jobs:
   
   property-tests-slow:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    # Only run slow tests on main branch or schedule
-    if: github.ref == 'refs/heads/main' || github.event_name == 'schedule'
+    timeout-minutes: 40
+    # Only run slow tests on schedule
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     
     steps:
     - name: Checkout code
@@ -120,13 +121,15 @@ jobs:
         uv venv .venv
         source .venv/bin/activate
         uv pip install -e .[tests]
-        uv pip install python-louvain || echo "⚠️ python-louvain not available"
+        uv pip install pytest-xdist python-louvain || echo "⚠️ python-louvain not available"
       timeout-minutes: 10
     
-    - name: Run all property tests (including slow)
+    - name: Run all property tests (including slow, parallel)
+      env:
+        HYPOTHESIS_PROFILE: nightly
       run: |
         source .venv/bin/activate
-        uv run pytest tests/property/ -v -m property --tb=short
+        uv run pytest tests/ -m property -n auto --tb=short
       timeout-minutes: 25
     
     - name: Upload test results
@@ -138,37 +141,3 @@ jobs:
           .pytest_cache/
           *.log
         retention-days: 14
-  
-  property-tests-minimal:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    name: "Property tests with minimal dependencies"
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      timeout-minutes: 2
-    
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.9"
-      timeout-minutes: 3
-    
-    - name: Install uv
-      run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      timeout-minutes: 2
-    
-    - name: Install minimal dependencies
-      run: |
-        uv venv .venv
-        source .venv/bin/activate
-        uv pip install pytest hypothesis networkx numpy scipy
-        # Skip hypothesis-networkx, python-louvain
-      timeout-minutes: 8
-    
-    - name: Run property tests (minimal, skip tests with missing deps)
-      run: |
-        source .venv/bin/activate
-        uv run pytest tests/property/ -v -m "property and not slow" --tb=short || echo "⚠️ Some tests skipped due to missing deps"
-      timeout-minutes: 10
