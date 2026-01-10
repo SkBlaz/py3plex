@@ -120,6 +120,10 @@ def label_propagation(
     steps = 0
     current_labels = class_matrix
 
+    # Ensure normalization is a list
+    if isinstance(normalization, str):
+        normalization = [normalization]
+
     for candidate in normalization:
         normalization_func = funHash[candidate]
         current_labels = normalization_func(current_labels)

@@ -691,6 +691,7 @@ def hairball_plot(
     draw: bool = True,
     label_font_size: int = 2,
     ax: Optional[Any] = None,
+    skip_layout: bool = False,
 ) -> Optional[Any]:
     """Draw a force-directed "hairball" visualization of a network.
 
@@ -721,6 +722,10 @@ def hairball_plot(
         draw: If True, draw the network. If False, only compute layout and return data.
         label_font_size: Font size for node labels
         ax: Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
+        skip_layout: If True, skip all layout computation and visualization, returning immediately.
+            This is useful for examples that only need to test the API without actually rendering
+            or when you want to avoid expensive force-directed layout calculations. 
+            When True, returns None immediately. Default is False.
 
     Returns:
         - If draw=True: Matplotlib Axes object containing the visualization
@@ -733,6 +738,10 @@ def hairball_plot(
         >>> ax = hairball_plot(network.core_network, ax=ax, legend=True)
         >>> plt.savefig("hairball.png")
     """
+
+    # Skip layout computation if requested (for fast example execution)
+    if skip_layout:
+        return None
 
     logger.info("Beginning parsing..")
     nodes = g.nodes(data=True)
