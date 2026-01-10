@@ -52,6 +52,7 @@ jobs:
     
     - name: Build Sphinx documentation
       run: |
+        source .venv/bin/activate
         cd docfiles
         echo "📚 Building Sphinx documentation..."
         # Build without treating warnings as errors to avoid breaking on autodoc issues
@@ -60,6 +61,7 @@ jobs:
     
     - name: Build PDF documentation
       run: |
+        source .venv/bin/activate
         cd docfiles
         echo "📄 Building PDF documentation..."
         # Build PDF using latexpdf builder
@@ -80,6 +82,7 @@ jobs:
     
     - name: Build Book PDF
       run: |
+        source .venv/bin/activate
         cd book
         echo "📖 Building Book PDF..."
         # Build LaTeX source files
