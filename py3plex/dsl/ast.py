@@ -492,6 +492,27 @@ class ContractSpec:
 
 
 @dataclass
+class AutoCommunityConfig:
+    """Configuration for automatic community detection.
+    
+    Used by Q.communities().auto() and Q.nodes().community_auto() to specify
+    parameters for automatic community detection algorithm selection.
+    
+    Attributes:
+        enabled: Whether auto community detection is enabled
+        kind: Type of query - "communities" (assignment table) or "nodes_join" (annotate nodes)
+        seed: Random seed for reproducibility
+        fast: Use fast mode with smaller parameter grids
+        params: Additional parameters passed to auto_select_community
+    """
+    enabled: bool = False
+    kind: str = "communities"  # "communities" or "nodes_join"
+    seed: Optional[int] = None
+    fast: bool = True
+    params: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
 class SelectStmt:
     """A SELECT statement.
 
@@ -562,6 +583,7 @@ class SelectStmt:
     counterfactual_spec: Optional["CounterfactualSpec"] = None
     sensitivity_spec: Optional["SensitivitySpec"] = None
     contract_spec: Optional["ContractSpec"] = None
+    auto_community_config: Optional["AutoCommunityConfig"] = None
 
 
 @dataclass
