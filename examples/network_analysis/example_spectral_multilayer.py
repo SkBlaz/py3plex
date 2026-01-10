@@ -140,7 +140,7 @@ print()
 
 df_multiplex = result_multiplex.to_pandas()
 print("Node assignments (Multiplex):")
-print(df_multiplex[["node", "layer"]].head(10))
+print(df_multiplex.head(10))
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Example C: Direct API Usage (without DSL)
