@@ -1918,10 +1918,10 @@ def _execute_auto_community(
         )
         
         # Execute base query
+        # Get nodes directly
+        items = list(network.get_nodes())
         base_result = _execute_select_with_items(
-            network, base_select, params, progress=False,
-            provenance_builder=provenance_builder,
-            provenance_record=provenance_record,
+            network, base_select, items, params=params, progress=False
         )
         
         # Join community annotations

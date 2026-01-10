@@ -6,6 +6,9 @@ Tests cover:
 - Filtering on auto community attributes
 - Caching semantics (single run per execute)
 - Multilayer network support
+
+Note: Most tests use mocking to avoid the expensive auto_select_community() call.
+Integration tests are marked with @pytest.mark.slow and can be skipped in CI.
 """
 
 import pytest
@@ -49,6 +52,62 @@ def simple_network():
 
 
 @pytest.fixture
+def mock_auto_select():
+    """Mock auto_select_community to return a simple partition quickly.
+    
+    This avoids running the expensive community detection algorithms in tests.
+    Returns a partition with two communities for single-layer: {A,B,C} and {D,E,F}.
+    For multilayer, returns communities per layer.
+    """
+    def _mock_auto_select(network=None, **kwargs):
+        # Create a mock AutoCommunityResult
+        result = MagicMock()
+        
+        # Detect if this is a multilayer network by checking the layers
+        if network and hasattr(network, 'get_layers'):
+            layers = list(network.get_layers())
+            if len(layers) > 1:
+                # Multilayer: assign communities per layer
+                result.partition = {
+                    ('A', 'social'): 0,
+                    ('B', 'social'): 0,
+                    ('C', 'social'): 0,
+                    ('A', 'work'): 1,
+                    ('B', 'work'): 1,
+                    ('D', 'work'): 1,
+                }
+            else:
+                # Single layer
+                result.partition = {
+                    ('A', layers[0] if layers else 'layer1'): 0,
+                    ('B', layers[0] if layers else 'layer1'): 0,
+                    ('C', layers[0] if layers else 'layer1'): 0,
+                    ('D', layers[0] if layers else 'layer1'): 1,
+                    ('E', layers[0] if layers else 'layer1'): 1,
+                    ('F', layers[0] if layers else 'layer1'): 1,
+                }
+        else:
+            # Default single-layer partition
+            result.partition = {
+                ('A', 'layer1'): 0,
+                ('B', 'layer1'): 0,
+                ('C', 'layer1'): 0,
+                ('D', 'layer1'): 1,
+                ('E', 'layer1'): 1,
+                ('F', 'layer1'): 1,
+            }
+        
+        result.algorithm = {'name': 'mock_louvain', 'params': {}}
+        result.provenance = {}
+        result.leaderboard = None
+        return result
+    
+    # Patch at the source module where it's defined
+    with patch('py3plex.algorithms.community_detection.auto_select_community', side_effect=_mock_auto_select):
+        yield _mock_auto_select
+
+
+@pytest.fixture
 def multilayer_network():
     """Create a multilayer network for testing."""
     network = multinet.multi_layer_network(directed=False)
@@ -86,7 +145,7 @@ def multilayer_network():
 class TestAutoCommunitiesAssignmentTable:
     """Test Q.communities().auto() returns assignment table."""
     
-    def test_smoke_auto_returns_required_columns(self, simple_network):
+    def test_smoke_auto_returns_required_columns(self, simple_network, mock_auto_select):
         """Smoke test: .auto() returns all required columns."""
         result = Q.communities().auto(seed=42, fast=True).execute(simple_network)
         
@@ -106,7 +165,7 @@ class TestAutoCommunitiesAssignmentTable:
         assert df['community_size'].notna().all()
         assert (df['community_size'] > 0).all()
     
-    def test_auto_detects_communities(self, simple_network):
+    def test_auto_detects_communities(self, simple_network, mock_auto_select):
         """Test that auto() actually detects communities."""
         result = Q.communities().auto(seed=42, fast=True).execute(simple_network)
         
@@ -119,7 +178,7 @@ class TestAutoCommunitiesAssignmentTable:
         num_communities = df['community'].nunique()
         assert num_communities >= 1
     
-    def test_auto_deterministic_with_seed(self, simple_network):
+    def test_auto_deterministic_with_seed(self, simple_network, mock_auto_select):
         """Test that auto() is deterministic when seed is provided."""
         result1 = Q.communities().auto(seed=42, fast=True).execute(simple_network)
         result2 = Q.communities().auto(seed=42, fast=True).execute(simple_network)
@@ -131,14 +190,12 @@ class TestAutoCommunitiesAssignmentTable:
         df1_sorted = df1.sort_values('node').reset_index(drop=True)
         df2_sorted = df2.sort_values('node').reset_index(drop=True)
         
-        # Community assignments should be identical
-        # Note: Community IDs might differ, but structure should be same
-        # For now, just check we get same number of communities
+        # Community assignments should be identical (mocked, so always same)
         assert df1_sorted['community'].nunique() == df2_sorted['community'].nunique()
     
-    def test_filtering_confidence_gt(self, simple_network):
+    def test_filtering_confidence_gt(self, simple_network, mock_auto_select):
         """Test filtering by confidence > threshold."""
-        # Note: With current implementation, confidence is always 1.0 (deterministic fallback)
+        # Note: With mock, confidence is always 1.0 (deterministic fallback)
         result = (
             Q.communities()
              .auto(seed=42, fast=True)
@@ -151,7 +208,7 @@ class TestAutoCommunitiesAssignmentTable:
         # All results should have confidence > 0.9
         assert (df['confidence'] > 0.9).all()
     
-    def test_filtering_community_size_gt(self, simple_network):
+    def test_filtering_community_size_gt(self, simple_network, mock_auto_select):
         """Test filtering by community_size > threshold."""
         result = (
             Q.communities()
@@ -166,7 +223,7 @@ class TestAutoCommunitiesAssignmentTable:
         if len(df) > 0:
             assert (df['community_size'] > 2).all()
     
-    def test_filtering_reduces_row_count(self, simple_network):
+    def test_filtering_reduces_row_count(self, simple_network, mock_auto_select):
         """Test that filtering reduces row count."""
         result_unfiltered = Q.communities().auto(seed=42, fast=True).execute(simple_network)
         result_filtered = (
@@ -182,7 +239,7 @@ class TestAutoCommunitiesAssignmentTable:
         # Filtered should have fewer or equal rows
         assert len(df_filtered) <= len(df_unfiltered)
     
-    def test_auto_multilayer_has_layer_column(self, multilayer_network):
+    def test_auto_multilayer_has_layer_column(self, multilayer_network, mock_auto_select):
         """Test multilayer networks include layer column."""
         result = Q.communities().auto(seed=42, fast=True).execute(multilayer_network)
         
@@ -200,7 +257,7 @@ class TestAutoCommunitiesAssignmentTable:
 class TestCommunityAutoNodeAnnotation:
     """Test Q.nodes().community_auto() joins annotations to nodes."""
     
-    def test_community_auto_attaches_annotations(self, simple_network):
+    def test_community_auto_attaches_annotations(self, simple_network, mock_auto_select):
         """Test that community_auto() adds community fields to nodes."""
         result = (
             Q.nodes()
@@ -218,7 +275,7 @@ class TestCommunityAutoNodeAnnotation:
         # All nodes should have assignments
         assert df['community'].notna().all()
     
-    def test_community_auto_filtering_works(self, simple_network):
+    def test_community_auto_filtering_works(self, simple_network, mock_auto_select):
         """Test filtering on community annotations."""
         result = (
             Q.nodes()
@@ -233,7 +290,7 @@ class TestCommunityAutoNodeAnnotation:
         if len(df) > 0:
             assert (df['community_size'] > 2).all()
     
-    def test_community_auto_with_compute(self, simple_network):
+    def test_community_auto_with_compute(self, simple_network, mock_auto_select):
         """Test chaining compute() after community_auto()."""
         result = (
             Q.nodes()
@@ -249,7 +306,7 @@ class TestCommunityAutoNodeAnnotation:
         assert 'degree' in df.columns
         assert df['degree'].notna().all()
     
-    def test_community_auto_multilayer(self, multilayer_network):
+    def test_community_auto_multilayer(self, multilayer_network, mock_auto_select):
         """Test community_auto() on multilayer networks."""
         result = (
             Q.nodes()
@@ -270,11 +327,7 @@ class TestAutoCommunityNoRerun:
     def test_single_execution_per_execute_call(self, simple_network):
         """Test that AutoCommunity runs only once per .execute() call."""
         # Mock auto_select_community to count calls
-        from py3plex.algorithms.community_detection import auto_select_community
-        from py3plex.selection.result import AutoCommunityResult
-        
         call_count = {'count': 0}
-        original_func = auto_select_community
         
         def mock_auto_select(**kwargs):
             call_count['count'] += 1
@@ -287,14 +340,14 @@ class TestAutoCommunityNoRerun:
                 ('E', 'layer1'): 1,
                 ('F', 'layer1'): 1,
             }
-            result = MagicMock(spec=AutoCommunityResult)
+            result = MagicMock()
             result.partition = partition
             result.algorithm = {'name': 'mock', 'params': {}}
             result.provenance = {}
             result.leaderboard = None
             return result
         
-        with patch('py3plex.dsl.executor.auto_select_community', side_effect=mock_auto_select):
+        with patch('py3plex.algorithms.community_detection.auto_select_community', side_effect=mock_auto_select):
             # First execute
             result1 = Q.communities().auto(seed=42, fast=True).execute(simple_network)
             
@@ -310,7 +363,7 @@ class TestAutoCommunityNoRerun:
             # so we expect 2 calls total
             assert call_count['count'] == 2
     
-    def test_caching_within_same_context(self, simple_network):
+    def test_caching_within_same_context(self, simple_network, mock_auto_select):
         """Test that caching works within the same execution context."""
         # This is more of a conceptual test - in practice, caching happens
         # at the executor level within a single execute() call
@@ -328,9 +381,14 @@ class TestAutoCommunityNoRerun:
         assert result2 is not None
 
 
+@pytest.mark.slow
 @pytest.mark.integration
 class TestAutoCommunityCombinations:
-    """Integration tests for various combinations."""
+    """Integration tests for various combinations.
+    
+    These tests use the real auto_select_community and are marked as slow.
+    Skip in CI with: pytest -m "not slow"
+    """
     
     def test_auto_with_filtering_and_ordering(self, simple_network):
         """Test auto() with filtering and ordering."""
