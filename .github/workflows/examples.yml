@@ -73,7 +73,7 @@ jobs:
       run: |
         echo "🧪 Running fast examples (< 30 seconds each)..."
         source .venv/bin/activate
-        uv run python .github/scripts/run_examples.py --fast-only --timeout 30
+        python .github/scripts/run_examples.py --fast-only --timeout 30
         echo "✅ Fast examples completed successfully"
       timeout-minutes: 25
       env:
