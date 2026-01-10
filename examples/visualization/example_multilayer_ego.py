@@ -8,6 +8,7 @@ across multiple layers. Saves static images using a non-interactive backend.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from typing import Iterable
 
 import matplotlib
@@ -16,6 +17,7 @@ matplotlib.use('Agg') # Use non-interactive backend for saving
 import numpy as np
 from py3plex.core import multinet
 from py3plex.utils import get_example_image_path
+from py3plex.exceptions import Py3plexIOError
 from py3plex.visualization.multilayer import visualize_multilayer_network
 
 
@@ -62,7 +64,13 @@ def create_sample_multilayer_network() -> multinet.multi_layer_network:
 
 def save_figure(fig, filename: str) -> str:
     """Save a matplotlib figure to the example images directory."""
-    output_path = get_example_image_path(filename)
+    try:
+        output_path = get_example_image_path(filename)
+    except Py3plexIOError:
+        # If get_example_image_path fails (file doesn't exist yet for saving),
+        # construct path manually relative to current directory
+        output_path = os.path.join("example_images", filename)
+    
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     fig.savefig(output_path, dpi=150, bbox_inches='tight')
     return output_path

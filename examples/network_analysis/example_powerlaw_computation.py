@@ -15,6 +15,7 @@ except ImportError:
 from py3plex.algorithms.statistics.topology import plot_power_law
 from py3plex.core import multinet
 from py3plex.utils import get_dataset_path
+from py3plex.exceptions import Py3plexIOError
 
 # examples use the node degrees, note that any node property applies.
 
@@ -24,10 +25,15 @@ val_vect = sorted(dict(nx.degree(G)).values(), reverse=True)
 plot_power_law(val_vect, "", "Node degree", "individual node")
 
 # on py3plex objects -- consider all edges and nodes
-multilayer_network = multinet.multi_layer_network().load_network(
-    get_dataset_path("epigenetics.gpickle"),
-    directed=False,
-    input_type="gpickle_biomine")
+try:
+    dataset_path = get_dataset_path("epigenetics.gpickle")
+    multilayer_network = multinet.multi_layer_network().load_network(
+        dataset_path,
+        directed=False,
+        input_type="gpickle_biomine")
+except Py3plexIOError:
+    print("Required dataset not found. Skipping example.")
+    exit(0)
 val_vect = sorted(dict(nx.degree(multilayer_network.core_network)).values(),
                   reverse=True)
 plot_power_law(val_vect, "", "Node degree", "individual node")
