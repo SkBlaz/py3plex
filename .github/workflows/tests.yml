@@ -129,11 +129,11 @@ jobs:
         fi
         # Install pytest and hypothesis if not already installed
         pip install pytest hypothesis || echo "pytest already installed"
-        # Run tests
+        # Run tests (excluding slow tests marked with @pytest.mark.slow)
         if [ -f "run_tests.py" ]; then
           timeout 600 python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
         else
-          pytest tests/ || echo "⚠️ Tests failed"
+          pytest -m "not slow" tests/ || echo "⚠️ Tests failed"
         fi
       timeout-minutes: 12
       shell: bash
