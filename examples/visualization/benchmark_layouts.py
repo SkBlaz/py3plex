@@ -65,7 +65,7 @@ network = random_generators.random_multilayer_ER(1000, 5, 0.01, directed=False)
 
 # Benchmark 1: Force-directed layout
 start = time.time()
-hairball_plot(network.core_network, layout_algorithm="force", 
+hairball_plot(network.core_network, layout_algorithm="force",
               layout_parameters={"iterations": 100}, show=False)
 force_time = time.time() - start
 print(f"Force-directed: {force_time:.2f}s")

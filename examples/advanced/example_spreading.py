@@ -56,66 +56,66 @@ num_simulations = 5
 
 for simulation_id in range(num_simulations):
     print(f"\nSimulation {simulation_id + 1}/{num_simulations}:")
-    
+
     # Select a random seed node to start the spread
     random_init = np.random.randint(len(all_nodes))
     random_node = all_nodes[random_init]
-    
+
     print(f"  Seed node: {random_node}")
-    
+
     # Track which nodes have been visited (infected/informed)
     # 0 = not visited, 1 = visited
     spread_vector = np.zeros(len(ER_multilayer.core_network))
-    
+
     # Use a queue for breadth-first spreading
     Q = queue.Queue(maxsize=300000)
     Q.put(random_node)
-    
+
     # Track the sequence of layer visits
     layer_visit_sequence = []
     node_visit_sequence = []
     iterations = 0
-    
+
     # Spreading process: BFS traversal
     while True:
         if not Q.empty():
             # Get next node to process
             candidate = Q.get()
             iterations += 1
-            
+
             # Progress indicator for long-running simulations
             if iterations % 100 == 0:
                 print(f"    Iterations: {iterations}")
-            
+
             # Spread to all neighbors of current node
             for neighbor in ER_multilayer.get_neighbors(
                     candidate[0],  # Node ID
                     candidate[1]   # Layer ID
             ):
                 idx = all_nodes_indexed[neighbor]
-                
+
                 # If neighbor hasn't been visited yet
                 if spread_vector[idx] != 1:
                     # Record the layer where spread occurred
                     layer_visit_sequence.append(candidate[1])
-                    
+
                     # Record the node and when it was reached
                     node_visit_sequence.append((neighbor, iterations))
-                    
+
                     # Add neighbor to queue for further spreading
                     Q.put(neighbor)
-                    
+
                     # Mark as visited
                     spread_vector[idx] = 1
         else:
             # Queue is empty, spreading complete
             break
-    
+
     print(f"  Spreading complete!")
     print(f"  Total iterations: {iterations}")
     print(f"  Nodes reached: {int(np.sum(spread_vector))}/{len(spread_vector)}")
     print(f"  Coverage: {100 * np.sum(spread_vector) / len(spread_vector):.1f}%")
-    
+
     # Visualize layer visit distribution
     if layer_visit_sequence:
         sns.distplot(

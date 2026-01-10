@@ -50,9 +50,9 @@ def create_sample_network():
 def example_basic_csv_export():
     """Example 1: Basic CSV export."""
     print("\n=== Example 1: Basic CSV Export ===")
-    
+
     network = create_sample_network()
-    
+
     # Query with CSV export
     result = (
         Q.nodes()
@@ -61,7 +61,7 @@ def example_basic_csv_export():
         .export_csv("results/social_degree.csv")
         .execute(network)
     )
-    
+
     print(f"Exported {len(result.items)} nodes to results/social_degree.csv")
     print(f"Result still available in Python: {result}")
 
@@ -69,9 +69,9 @@ def example_basic_csv_export():
 def example_json_export_with_columns():
     """Example 2: JSON export with column selection."""
     print("\n=== Example 2: JSON Export with Column Selection ===")
-    
+
     network = create_sample_network()
-    
+
     # Export specific columns in specific order
     result = (
         Q.nodes()
@@ -86,7 +86,7 @@ def example_json_export_with_columns():
         )
         .execute(network)
     )
-    
+
     print(f"Exported top 5 nodes to results/top_nodes.json")
     print(f"Top node: {result.items[0]} with degree {result.attributes['degree'][result.items[0]]}")
 
@@ -94,9 +94,9 @@ def example_json_export_with_columns():
 def example_multiple_exports():
     """Example 3: Running multiple queries with different exports."""
     print("\n=== Example 3: Multiple Exports ===")
-    
+
     network = create_sample_network()
-    
+
     # Export social layer analysis
     (
         Q.nodes()
@@ -106,7 +106,7 @@ def example_multiple_exports():
         .execute(network)
     )
     print("Exported social layer analysis")
-    
+
     # Export work layer analysis
     (
         Q.nodes()
@@ -116,7 +116,7 @@ def example_multiple_exports():
         .execute(network)
     )
     print("Exported work layer analysis")
-    
+
     # Export combined analysis with custom delimiter
     (
         Q.nodes()
@@ -131,9 +131,9 @@ def example_multiple_exports():
 def example_export_with_filtering():
     """Example 4: Export with filtering and ordering."""
     print("\n=== Example 4: Export with Filtering ===")
-    
+
     network = create_sample_network()
-    
+
     # Export only high-degree nodes
     result = (
         Q.nodes()
@@ -146,23 +146,23 @@ def example_export_with_filtering():
         )
         .execute(network)
     )
-    
+
     print(f"Exported {len(result.items)} nodes with degree information")
 
 
 def example_export_formats():
     """Example 5: Different export formats."""
     print("\n=== Example 5: Different Export Formats ===")
-    
+
     network = create_sample_network()
-    
+
     # Build base query
     query_base = Q.nodes().from_layers(L["social"]).compute("degree")
-    
+
     # Export as CSV
     query_base.export_csv("results/format_demo.csv").execute(network)
     print("Exported as CSV")
-    
+
     # Export as JSON (need to rebuild query)
     (
         Q.nodes()
@@ -172,7 +172,7 @@ def example_export_formats():
         .execute(network)
     )
     print("Exported as JSON")
-    
+
     # Export as TSV using generic export method
     (
         Q.nodes()
@@ -187,9 +187,9 @@ def example_export_formats():
 def example_export_with_custom_options():
     """Example 6: Export with custom format options."""
     print("\n=== Example 6: Custom Export Options ===")
-    
+
     network = create_sample_network()
-    
+
     # CSV with semicolon delimiter
     (
         Q.nodes()
@@ -199,7 +199,7 @@ def example_export_with_custom_options():
         .execute(network)
     )
     print("Exported CSV with semicolon delimiter")
-    
+
     # JSON with custom indent
     (
         Q.nodes()
@@ -209,7 +209,7 @@ def example_export_with_custom_options():
         .execute(network)
     )
     print("Exported JSON with 4-space indent")
-    
+
     # JSON with different orientations
     for orient in ["records", "columns", "split"]:
         (
@@ -226,7 +226,7 @@ def example_export_with_custom_options():
 def example_inspect_dsl_string():
     """Example 7: Inspect generated DSL string with export."""
     print("\n=== Example 7: DSL String with Export ===")
-    
+
     # Build a query with export
     query = (
         Q.nodes()
@@ -236,7 +236,7 @@ def example_inspect_dsl_string():
         .limit(10)
         .export_csv("results/output.csv", columns=["id", "deg"])
     )
-    
+
     # Get DSL string representation
     dsl_string = query.to_dsl()
     print("Generated DSL string:")
@@ -248,7 +248,7 @@ if __name__ == "__main__":
     print("=" * 70)
     print("py3plex DSL Export Functionality Examples")
     print("=" * 70)
-    
+
     # Run examples
     example_basic_csv_export()
     example_json_export_with_columns()
@@ -257,7 +257,7 @@ if __name__ == "__main__":
     example_export_formats()
     example_export_with_custom_options()
     example_inspect_dsl_string()
-    
+
     print("\n" + "=" * 70)
     print("All examples completed!")
     print("Check the 'results/' directory for exported files.")

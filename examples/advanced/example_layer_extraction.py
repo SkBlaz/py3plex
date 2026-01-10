@@ -53,15 +53,15 @@ print("=" * 70)
 for name, network, multiedgelist in zip(names, networks, multiedges):
     print(f"\nLayer: {name}")
     print("-" * 70)
-    
+
     # Calculate core network statistics
     # This includes metrics like number of nodes, edges, density, etc.
     stats = core_network_statistics(network)
-    
+
     # Display the statistics
     for key, value in stats.items():
         print(f"  {key}: {value}")
-    
+
     print(f"  Number of multiedges: {len(multiedgelist)}")
 
 print("\n" + "=" * 70)

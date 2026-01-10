@@ -17,7 +17,7 @@ import sys
 
 import matplotlib
 
-matplotlib.use("Agg")  # Use non-interactive backend
+matplotlib.use("Agg") # Use non-interactive backend
 import matplotlib.pyplot as plt
 
 from py3plex.core import multinet
@@ -86,9 +86,9 @@ net.add_edges(
 )
 
 print(f"\nNetwork created: {net}")
-print(f"  - Nodes: {net.core_network.number_of_nodes()}")
-print(f"  - Edges: {net.core_network.number_of_edges()}")
-print(f"  - Layers: {len(net.layer_names)}")
+print(f" - Nodes: {net.core_network.number_of_nodes()}")
+print(f" - Edges: {net.core_network.number_of_edges()}")
+print(f" - Layers: {len(net.layer_names)}")
 
 # ============================================================================
 # Example 1: Core (Aggregated) Visualization
@@ -112,7 +112,7 @@ try:
         figsize=(10, 8),
     )
 
-    print(f"\n✓ Core visualization created")
+    print(f"\n Core visualization created")
     print(f"  - {len(positions1)} node positions computed")
     print(f"  - Layout type: MDS (geodesic distances)")
     print(f"  - Red edges = negative curvature (bottlenecks)")
@@ -124,7 +124,7 @@ try:
     plt.close(fig1)
 
 except Exception as e:
-    print(f"\n✗ Error in core visualization: {e}")
+    print(f"\n Error in core visualization: {e}")
     import traceback
 
     traceback.print_exc()
@@ -151,7 +151,7 @@ try:
         figsize=(14, 6),
     )
 
-    print(f"\n✓ Per-layer visualization created")
+    print(f"\n Per-layer visualization created")
     print(f"  - {len(layer_positions)} layers visualized")
     for layer_id, positions in layer_positions.items():
         print(f"  - Layer '{layer_id}': {len(positions)} nodes")
@@ -162,7 +162,7 @@ try:
     plt.close(fig2)
 
 except Exception as e:
-    print(f"\n✗ Error in per-layer visualization: {e}")
+    print(f"\n Error in per-layer visualization: {e}")
     import traceback
 
     traceback.print_exc()
@@ -190,7 +190,7 @@ try:
         figsize=(12, 10),
     )
 
-    print(f"\n✓ Supra-graph visualization created")
+    print(f"\n Supra-graph visualization created")
     print(f"  - {len(positions3)} node-layer pairs positioned")
     print(f"  - Solid edges = intra-layer connections")
     print(f"  - Dashed edges = inter-layer connections")
@@ -201,7 +201,7 @@ try:
     plt.close(fig3)
 
 except Exception as e:
-    print(f"\n✗ Error in supra-graph visualization: {e}")
+    print(f"\n Error in supra-graph visualization: {e}")
     import traceback
 
     traceback.print_exc()
@@ -227,7 +227,7 @@ try:
         figsize=(12, 10),
     )
 
-    print(f"\n✓ 3D supra-graph visualization created")
+    print(f"\n 3D supra-graph visualization created")
     print(f"  - {len(positions4)} node positions in 3D space")
     print(f"  - Layers separated along z-axis")
 
@@ -237,7 +237,7 @@ try:
     plt.close(fig4)
 
 except Exception as e:
-    print(f"\n✗ Error in 3D supra-graph visualization: {e}")
+    print(f"\n Error in 3D supra-graph visualization: {e}")
     import traceback
 
     traceback.print_exc()
@@ -289,7 +289,7 @@ print("=" * 70)
 print("Example completed successfully!")
 print("=" * 70)
 print("\nGenerated visualizations:")
-print("  - /tmp/ricci_core_visualization.png")
-print("  - /tmp/ricci_layers_visualization.png")
-print("  - /tmp/ricci_supra_visualization.png")
-print("  - /tmp/ricci_supra_3d_visualization.png")
+print(" - /tmp/ricci_core_visualization.png")
+print(" - /tmp/ricci_layers_visualization.png")
+print(" - /tmp/ricci_supra_visualization.png")
+print(" - /tmp/ricci_supra_3d_visualization.png")

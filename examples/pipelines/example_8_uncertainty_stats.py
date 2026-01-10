@@ -34,23 +34,23 @@ DEFAULT_SEED = 42
 class ComputeUncertaintyStats(PipelineStep):
     """
     Pipeline step that computes network statistics with uncertainty.
-    
+
     This step demonstrates how to compute statistics as StatValue objects
     instead of plain floats, making uncertainty first-class in the pipeline.
-    
+
     Parameters:
         metrics: List of metric names to compute ('degree', 'clustering')
         use_bootstrap: If True, estimate uncertainty via bootstrap
         n_boot: Number of bootstrap samples (if use_bootstrap=True)
         seed: Random seed for reproducibility
     """
-    
+
     def __init__(self, metrics=None, use_bootstrap=False, n_boot=20, seed=42):
         self.metrics = metrics or ['degree', 'clustering']
         self.use_bootstrap = use_bootstrap
         self.n_boot = n_boot
         self.seed = seed
-    
+
     def transform(self, network: multinet.multi_layer_network) -> Dict[str, Any]:
         """Compute statistics with uncertainty."""
         results = {
@@ -58,10 +58,10 @@ class ComputeUncertaintyStats(PipelineStep):
             'stats': {},
             'uncertainty_method': 'bootstrap' if self.use_bootstrap else 'delta'
         }
-        
+
         G = network.core_network
         nodes = list(G.nodes())
-        
+
         for metric in self.metrics:
             if metric == 'degree':
                 results['stats']['degree'] = self._compute_degree_with_uncertainty(
@@ -71,13 +71,13 @@ class ComputeUncertaintyStats(PipelineStep):
                 results['stats']['clustering'] = self._compute_clustering_with_uncertainty(
                     network, nodes
                 )
-        
+
         return results
-    
+
     def _compute_degree_with_uncertainty(self, network, nodes):
         """Compute degree with uncertainty (deterministic or bootstrap)."""
         G = network.core_network
-        
+
         if not self.use_bootstrap:
             # Deterministic: degree has no uncertainty
             degree_stats = {}
@@ -92,30 +92,30 @@ class ComputeUncertaintyStats(PipelineStep):
         else:
             # Bootstrap: resample edges to estimate uncertainty
             return self._bootstrap_degree(network, nodes)
-    
+
     def _bootstrap_degree(self, network, nodes):
         """Bootstrap degree by resampling edges."""
         G = network.core_network
         edges = list(G.edges(data=True))
         n_edges = len(edges)
-        
+
         if n_edges == 0:
-            return {node: StatValue(0, Delta(0.0), Provenance("degree", "delta", {})) 
+            return {node: StatValue(0, Delta(0.0), Provenance("degree", "delta", {}))
                     for node in nodes}
-        
+
         rng = np.random.default_rng(self.seed)
-        
+
         # Original degrees
         original_degrees = {node: G.degree(node) for node in nodes}
-        
+
         # Bootstrap samples
         degree_samples = {node: [] for node in nodes}
-        
+
         for i in range(self.n_boot):
             # Resample edges
             indices = rng.choice(n_edges, size=n_edges, replace=True)
             resampled_edges = [edges[idx] for idx in indices]
-            
+
             # Create bootstrap graph
             G_boot = type(G)()
             for u, v, data in resampled_edges:
@@ -125,13 +125,13 @@ class ComputeUncertaintyStats(PipelineStep):
                     G_boot.add_edge(u, v, weight=existing_weight + weight)
                 else:
                     G_boot.add_edge(u, v, weight=weight)
-            
+
             # Compute degrees on bootstrap sample
             for node in nodes:
                 boot_degree = G_boot.degree(node) if node in G_boot else 0
                 # Store difference from original
                 degree_samples[node].append(boot_degree - original_degrees[node])
-        
+
         # Create StatValue objects with Bootstrap uncertainty
         degree_stats = {}
         for node in nodes:
@@ -146,22 +146,22 @@ class ComputeUncertaintyStats(PipelineStep):
                     seed=self.seed
                 )
             )
-        
+
         return degree_stats
-    
+
     def _compute_clustering_with_uncertainty(self, network, nodes):
         """Compute clustering coefficient (deterministic for simplicity)."""
         G = network.core_network
-        
+
         # Convert to simple graph if needed (clustering doesn't support MultiGraph)
         if isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
             simple_G = nx.Graph()
             for u, v in G.edges():
                 simple_G.add_edge(u, v)
             G = simple_G
-        
+
         clustering_stats = {}
-        
+
         try:
             clustering = nx.clustering(G)
             for node in nodes:
@@ -173,7 +173,7 @@ class ComputeUncertaintyStats(PipelineStep):
                     degree = G.degree(node) if node in G else 0
                     # Higher degree → more stable clustering
                     std_estimate = 0.1 / (1 + degree) if degree > 0 else 0.1
-                    
+
                     clustering_stats[node] = StatValue(
                         value=value,
                         uncertainty=Gaussian(0.0, std_estimate),
@@ -193,42 +193,42 @@ class ComputeUncertaintyStats(PipelineStep):
                     Delta(0.0),
                     Provenance("clustering", "delta", {})
                 )
-        
+
         return clustering_stats
 
 
 class AnalyzeRobustness(PipelineStep):
     """
     Pipeline step that analyzes robustness of computed statistics.
-    
+
     Filters nodes based on uncertainty metrics like robustness score,
     standard deviation, or CI width.
-    
+
     Parameters:
         metric: Which statistic to analyze ('degree', 'clustering')
         min_robustness: Minimum robustness threshold (0-1)
         max_std: Maximum standard deviation allowed
     """
-    
+
     def __init__(self, metric='degree', min_robustness=0.5, max_std=None):
         self.metric = metric
         self.min_robustness = min_robustness
         self.max_std = max_std
-    
+
     def transform(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Filter nodes by uncertainty criteria."""
         stats = data['stats'][self.metric]
-        
+
         robust_nodes = []
         uncertain_nodes = []
-        
+
         for node, stat_value in stats.items():
             robustness = stat_value.robustness()
             std = stat_value.std()
-            
+
             passes_robustness = robustness >= self.min_robustness
             passes_std = (self.max_std is None) or (std <= self.max_std)
-            
+
             if passes_robustness and passes_std:
                 robust_nodes.append({
                     'node': node,
@@ -244,10 +244,10 @@ class AnalyzeRobustness(PipelineStep):
                     'std': std,
                     'robustness': robustness
                 })
-        
+
         data['robust_nodes'] = robust_nodes
         data['uncertain_nodes'] = uncertain_nodes
-        
+
         return data
 
 

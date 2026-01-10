@@ -74,7 +74,7 @@ Examples are organized into intuitive categories based on what you want to accom
 - Batch processing
 - **2 examples + notebooks** - Production-ready workflows
 
-## 📖 Running Examples
+##  Running Examples
 
 Run any example directly with Python:
 

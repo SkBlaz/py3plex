@@ -40,7 +40,7 @@ network.add_edges(edges)
 @dsl_operator("weighted_degree", category="centrality")
 def weighted_degree_op(context: DSLExecutionContext, weight_factor: float = 1.0):
     """Compute weighted degree with configurable weight factor.
-    
+
     Args:
         context: Execution context with network state
         weight_factor: Multiplier for degree values
@@ -59,17 +59,17 @@ def weighted_degree_op(context: DSLExecutionContext, weight_factor: float = 1.0)
 @dsl_operator("layer_centralization", category="multilayer")
 def layer_centralization_op(context: DSLExecutionContext, normalize: bool = True):
     """Compute centralization score for nodes in selected layers.
-    
+
     Args:
         context: Execution context
         normalize: Whether to normalize by number of layers
     """
     if not context.current_layers:
         return {node: 0.0 for node in context.current_nodes or []}
-    
+
     G = context.graph.core_network
     result = {}
-    
+
     for node in context.current_nodes or []:
         if node in G and isinstance(node, tuple) and len(node) >= 2:
             node_id, layer = node[0], node[1]
@@ -78,16 +78,16 @@ def layer_centralization_op(context: DSLExecutionContext, normalize: bool = True
                 degrees = [G.degree(n) for n in G.nodes() if isinstance(n, tuple) and n[1] == layer and n in G]
                 max_degree = max(degrees) if degrees else 1
                 centralization = G.degree(node) / max_degree if max_degree > 0 else 0
-                
+
                 if normalize:
                     centralization /= len(context.current_layers)
-                
+
                 result[node] = centralization
             else:
                 result[node] = 0.0
         else:
             result[node] = 0.0
-    
+
     return result
 
 

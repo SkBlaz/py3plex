@@ -732,7 +732,7 @@ class GraphFileLinter:
         infos = sum(1 for issue in self.issues if issue.severity == LintIssue.SEVERITY_INFO)
 
         if not self.issues:
-            logger.info(f"✓ No issues found in {self.file_path}")
+            logger.info(f"[OK] No issues found in {self.file_path}")
         else:
             logger.info(f"\nLinting results for {self.file_path}:")
             logger.info(f"  Errors: {errors}")

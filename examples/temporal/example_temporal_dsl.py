@@ -66,17 +66,17 @@ def demonstrate_temporal_filters(tnet: TemporalMultiLayerNetwork) -> None:
     q1 = Q.edges().where(t__between=(100.0, 200.0))
     print(f"  Query: {q1}")
     print(f"  Has temporal filter: {q1._select.where is not None}")
-    
+
     # Query 2: Edges after a specific time
     print("\nQuery 2: Edges after t=200")
     q2 = Q.edges().where(t__gte=200.0)
     print(f"  Query: {q2}")
-    
+
     # Query 3: Edges before a specific time
     print("\nQuery 3: Edges before t=150")
     q3 = Q.edges().where(t__lte=150.0)
     print(f"  Query: {q3}")
-    
+
     # Query 4: Combining temporal and layer filters
     print("\nQuery 4: Social layer edges between t=100 and t=250")
     q4 = (
@@ -104,7 +104,7 @@ def demonstrate_window_queries(tnet: TemporalMultiLayerNetwork) -> None:
     print(f"  Query: {q1}")
     print(f"  Window size: {q1._select.window_spec.window_size}")
     print(f"  Step: {q1._select.window_spec.step}")
-    
+
     # Query 2: Overlapping windows
     print("\nQuery 2: Overlapping windows with step")
     q2 = (
@@ -115,7 +115,7 @@ def demonstrate_window_queries(tnet: TemporalMultiLayerNetwork) -> None:
     print(f"  Query: {q2}")
     print(f"  Window size: {q2._select.window_spec.window_size}")
     print(f"  Step: {q2._select.window_spec.step}")
-    
+
     # Query 3: Duration strings (for datetime timestamps)
     print("\nQuery 3: Window with duration strings")
     q3 = Q.nodes().window("7d", step="1d")
@@ -147,7 +147,7 @@ def demonstrate_complex_queries(tnet: TemporalMultiLayerNetwork) -> None:
     print(f"    - Window: {q1._select.window_spec is not None}")
     print(f"    - Ordering: {len(q1._select.order_by)}")
     print(f"    - Limit: {q1._select.limit}")
-    
+
     # Query 2: Per-layer temporal evolution
     print("\nQuery 2: Per-layer degree evolution over windows")
     q2 = (
@@ -159,7 +159,7 @@ def demonstrate_complex_queries(tnet: TemporalMultiLayerNetwork) -> None:
     print(f"  Query components:")
     print(f"    - Window: {q2._select.window_spec is not None}")
     print(f"    - Grouping: {q2._select.group_by}")
-    
+
     # Query 3: Using existing temporal methods (at, during)
     print("\nQuery 3: Snapshot query with at()")
     q3 = (

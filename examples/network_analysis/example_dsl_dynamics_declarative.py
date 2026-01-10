@@ -73,7 +73,7 @@ result = (
 
 print(f"Network: {len(list(network.get_nodes()))} nodes, {len(list(network.get_edges()))} edges")
 print(f"Process: SIS (β=0.3, μ=0.1)")
-print(f"Result shape: {result.data['prevalence'].shape}")  # (replicates, steps)
+print(f"Result shape: {result.data['prevalence'].shape}") # (replicates, steps)
 print(f"Mean final prevalence: {result.data['prevalence'][:, -1].mean():.3f}")
 print(f"Std final prevalence: {result.data['prevalence'][:, -1].std():.3f}")
 print()
@@ -135,10 +135,10 @@ result_multilayer = (
 )
 
 print(f"Multilayer network:")
-print(f"  Offline layer: {len(offline_edges)} edges")
-print(f"  Online layer: {len(online_edges)} edges")
+print(f" Offline layer: {len(offline_edges)} edges")
+print(f" Online layer: {len(online_edges)} edges")
 print(f"Process: SIR with layer-specific transmission")
-print(f"  Offline β=0.3, Online β=0.1")
+print(f" Offline β=0.3, Online β=0.1")
 print(f"Mean peak prevalence: {result_multilayer.data['prevalence'].max(axis=1).mean():.3f}")
 print()
 
@@ -202,9 +202,9 @@ result_targeted = (
 )
 
 print("Comparing seeding strategies:")
-print(f"  Random seeding:   final prevalence = {result_random.data['prevalence'][:, -1].mean():.3f}")
-print(f"  Targeted (hubs):  final prevalence = {result_targeted.data['prevalence'][:, -1].mean():.3f}")
-print(f"  Difference: {abs(result_targeted.data['prevalence'][:, -1].mean() - result_random.data['prevalence'][:, -1].mean()):.3f}")
+print(f" Random seeding: final prevalence = {result_random.data['prevalence'][:, -1].mean():.3f}")
+print(f" Targeted (hubs): final prevalence = {result_targeted.data['prevalence'][:, -1].mean():.3f}")
+print(f" Difference: {abs(result_targeted.data['prevalence'][:, -1].mean() - result_random.data['prevalence'][:, -1].mean()):.3f}")
 print()
 
 # =============================================================================
@@ -245,13 +245,13 @@ print("=" * 80)
 print("SUMMARY: Q.dynamics() Features Demonstrated")
 print("=" * 80)
 print("""
-1. ✓ Declarative syntax: Q.dynamics("SIS", beta=0.3, mu=0.1)
-2. ✓ Layer selection: .on_layers(L["offline"] + L["online"])
-3. ✓ Query-based seeding: .seed(Q.nodes().where(degree__gte=5))
-4. ✓ Per-layer parameters: .parameters_per_layer(...)
-5. ✓ Multiple measures: track=["prevalence", "incidence", "state_counts"]
-6. ✓ Reproducibility: .random_seed(42)
-7. ✓ Integration with structural DSL
+1. Declarative syntax: Q.dynamics("SIS", beta=0.3, mu=0.1)
+2. Layer selection: .on_layers(L["offline"] + L["online"])
+3. Query-based seeding: .seed(Q.nodes().where(degree__gte=5))
+4. Per-layer parameters: .parameters_per_layer(...)
+5. Multiple measures: track=["prevalence", "incidence", "state_counts"]
+6. Reproducibility: .random_seed(42)
+7. Integration with structural DSL
 
 Key Advantages:
 • First-class DSL feature (not just imperative code)
@@ -265,6 +265,6 @@ and declarative, following the same design philosophy as the query DSL.
 """)
 
 print("For more examples, see:")
-print("  - examples/network_analysis/example_dsl_dynamics.py")
-print("  - tests/test_dsl_dynamics_integration.py")
-print("  - docfiles/how-to/simulate_dynamics.rst")
+print(" - examples/network_analysis/example_dsl_dynamics.py")
+print(" - tests/test_dsl_dynamics_integration.py")
+print(" - docfiles/how-to/simulate_dynamics.rst")

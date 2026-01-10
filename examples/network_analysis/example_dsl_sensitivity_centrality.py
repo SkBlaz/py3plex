@@ -80,7 +80,7 @@ def main():
 
     # Check if sensitivity was computed
     if result.has_sensitivity:
-        print("\n✓ Sensitivity analysis completed")
+        print("\n Sensitivity analysis completed")
 
         # Show stability curves
         print("\nStability Curves:")
@@ -94,9 +94,9 @@ def main():
             # Check for collapse point
             collapse = curve.collapse_point
             if collapse is not None:
-                print(f"  ⚠ Collapse point: p={collapse:.2f} (stability < 0.5)")
+                print(f"   Collapse point: p={collapse:.2f} (stability < 0.5)")
             else:
-                print(f"  ✓ No collapse detected (stability remains >= 0.5)")
+                print(f"   No collapse detected (stability remains >= 0.5)")
 
         # Export to pandas
         print("\n" + "-" * 70)
@@ -106,7 +106,7 @@ def main():
         df = result.sensitivity_result.to_pandas(expand_sensitivity=False)
         print(df.to_string(index=False))
     else:
-        print("\n✗ Sensitivity analysis not performed")
+        print("\n Sensitivity analysis not performed")
 
     # Example 2: Compare with UQ (to show the difference)
     print("\n" + "=" * 70)

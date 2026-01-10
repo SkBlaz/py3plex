@@ -44,11 +44,11 @@ def main() -> int:
     try:
         is_valid = schema.validate_network(net)
         if is_valid:
-            print("✓ Network validation passed!")
+            print(" Network validation passed!")
         else:
-            print("⚠ Network has validation warnings (see above)")
+            print(" Network has validation warnings (see above)")
     except ValidationError as e:
-        print(f"✗ Validation error: {e}")
+        print(f" Validation error: {e}")
 
     print("\nNote: Schema validation helps ensure data quality and")
     print("prevents errors in downstream analysis pipelines.\n")

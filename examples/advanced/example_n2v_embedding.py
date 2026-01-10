@@ -24,7 +24,7 @@ multilayer_network.save_network(edgelist_path)
 try:
     # Define embedding output path
     embedding_path = os.path.join(datasets_dir, "test_embedding.emb")
-    
+
     # call a specific embedding binary --- this is not limited to n2v
     train_node2vec_embedding.call_node2vec_binary(edgelist_path,
                                                   embedding_path,

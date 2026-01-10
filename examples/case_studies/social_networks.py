@@ -36,19 +36,19 @@ DEFAULT_SEED = 42
 def create_social_network():
     """
     Create a synthetic social multiplex network.
-    
+
     Layers:
     - facebook: Friend connections
     - twitter: Follower network
     - linkedin: Professional connections
-    
+
     Returns:
         multi_layer_network: The constructed network
     """
     _print_header("STEP 1: DATA IMPORT - Building Social Multiplex Network")
-    
+
     network = multinet.multi_layer_network(directed=False)
-    
+
     # Facebook layer - Dense friend network
     facebook_edges = [
         ['Alice', 'facebook', 'Bob', 'facebook', 1],
@@ -60,7 +60,7 @@ def create_social_network():
         ['Eve', 'facebook', 'Frank', 'facebook', 1],
         ['Frank', 'facebook', 'Grace', 'facebook', 1],
     ]
-    
+
     # Twitter layer - More sparse, asymmetric patterns
     twitter_edges = [
         ['Alice', 'twitter', 'Bob', 'twitter', 1],
@@ -73,7 +73,7 @@ def create_social_network():
         ['Grace', 'twitter', 'Bob', 'twitter', 1],
         ['Grace', 'twitter', 'Charlie', 'twitter', 1],
     ]
-    
+
     # LinkedIn layer - Professional connections (moderately dense)
     linkedin_edges = [
         ['Alice', 'linkedin', 'Bob', 'linkedin', 1],
@@ -82,31 +82,31 @@ def create_social_network():
         ['Charlie', 'linkedin', 'Eve', 'linkedin', 1],
         ['David', 'linkedin', 'Frank', 'linkedin', 1],
     ]
-    
+
     # Add all edges
     network.add_edges(facebook_edges + twitter_edges + linkedin_edges, input_type="list")
-    
+
     print(f"\nNetwork constructed:")
     print(f"  Facebook: {len(facebook_edges)} friendships")
     print(f"  Twitter: {len(twitter_edges)} follows")
     print(f"  LinkedIn: {len(linkedin_edges)} professional connections")
     print(f"  Total edges: {len(facebook_edges) + len(twitter_edges) + len(linkedin_edges)}")
-    
+
     return network
 
 
 def compute_basic_stats(network):
     """Compute cross-platform statistics with detailed layer-level analysis."""
     _print_header("STEP 2: BASIC NETWORK STATS - Cross-Platform Analysis")
-    
+
     network.basic_stats()
-    
+
     # Comprehensive platform-specific statistics
     print("\nPlatform-specific metrics:")
     print("\n{:<12} {:<10} {:<12} {:<12} {:<12} {:<12} {:<12}".format(
         "Platform", "Users", "Edges", "Avg Degree", "Min Degree", "Max Degree", "Density"))
     print("-" * 85)
-    
+
     stats = []
     for platform in ['facebook', 'twitter', 'linkedin']:
         # Node stats
@@ -118,16 +118,16 @@ def compute_basic_stats(network):
         )
         node_df = node_result.to_pandas()
         node_df['degree'] = node_df['degree'].apply(_as_scalar)
-        
+
         # Edge stats
         edge_result = Q.edges().from_layers(L[platform]).execute(network)
         num_edges = len(edge_result)
-        
+
         # Compute density
         num_nodes = len(node_df)
         max_edges = num_nodes * (num_nodes - 1) / 2
         density = num_edges / max_edges if max_edges > 0 else 0
-        
+
         print("{:<12} {:<10} {:<12} {:<12.2f} {:<12} {:<12} {:<12.4f}".format(
             platform.capitalize(),
             num_nodes,
@@ -137,14 +137,14 @@ def compute_basic_stats(network):
             int(node_df['degree'].max()),
             density
         ))
-        
+
         stats.append({
             'Platform': platform.capitalize(),
             'Users': num_nodes,
             'Edges': num_edges,
             'Density': density
         })
-    
+
     # Multi-platform users
     print("\nCross-platform presence:")
     all_nodes = set()
@@ -152,7 +152,7 @@ def compute_basic_stats(network):
         result = Q.nodes().from_layers(L[platform]).execute(network)
         platform_users = {node[0] for node in result.items}
         all_nodes.update(platform_users)
-    
+
     unique_users = len(all_nodes)
     total_accounts = sum([s['Users'] for s in stats])
     print(f"  Unique users: {unique_users}")
@@ -210,7 +210,7 @@ def identify_influencers(network):
             user = row['id'][0] if isinstance(row['id'], tuple) else row['id']
             bc = row['betweenness_centrality']
             print(f"    {user}: degree={row['degree']}, betweenness={bc:.4f}")
-    
+
     return df
 
 
@@ -220,11 +220,11 @@ def detect_communities(network):
     """
     print("\n[3.3] Detecting communities...")
     partition_dict = louvain_multilayer(network, random_state=42)
-    
+
     num_communities = len(set(partition_dict.values()))
     print(f"\nCommunity detection results:")
     print(f"  Communities: {num_communities}")
-    
+
     # Analyze cross-platform communities
     print("\nCross-platform community composition:")
     communities = {}
@@ -236,13 +236,13 @@ def detect_communities(network):
         if user not in communities[comm_id]:
             communities[comm_id][user] = []
         communities[comm_id][user].append(platform)
-    
+
     for comm_id, members in sorted(communities.items()):
         print(f"\n  Community {comm_id}: {len(members)} users")
         # Show first few members
         for user, platforms in list(members.items())[:3]:
             print(f"    {user}: {', '.join(platforms)}")
-    
+
     return partition_dict
 
 
@@ -257,18 +257,18 @@ def visualize_and_interpret(network, influence_df, partition_dict):
         return
 
     np.random.seed(DEFAULT_SEED)
-    
+
     network.assign_partition(partition_dict)
-    
+
     print("\n[4.1] Creating visualizations...")
-    
+
     fig, axes = plt.subplots(2, 2, figsize=(14, 12))
-    
+
     # Plot 1: Network structure
     plt.sca(axes[0, 0])
     network.visualize_network(show=False, axis=axes[0, 0])
     axes[0, 0].set_title("Social Multiplex Network")
-    
+
     # Plot 2: Degree distribution by platform
     plt.sca(axes[0, 1])
     for platform in ['facebook', 'twitter', 'linkedin']:
@@ -286,7 +286,7 @@ def visualize_and_interpret(network, influence_df, partition_dict):
     axes[0, 1].set_title('Connection Distribution by Platform')
     axes[0, 1].legend()
     axes[0, 1].grid(True, alpha=0.3)
-    
+
     # Plot 3: Platform sizes
     plt.sca(axes[1, 0])
     platform_sizes = []
@@ -297,7 +297,7 @@ def visualize_and_interpret(network, influence_df, partition_dict):
     axes[1, 0].set_ylabel('Number of Users')
     axes[1, 0].set_title('Platform Size Comparison')
     axes[1, 0].grid(True, alpha=0.3, axis='y')
-    
+
     # Plot 4: Influence distribution
     plt.sca(axes[1, 1])
     axes[1, 1].scatter(influence_df['degree'], influence_df['betweenness_centrality'], alpha=0.6)
@@ -305,31 +305,31 @@ def visualize_and_interpret(network, influence_df, partition_dict):
     axes[1, 1].set_ylabel('Betweenness Centrality')
     axes[1, 1].set_title('Influence Metrics (Degree vs Betweenness)')
     axes[1, 1].grid(True, alpha=0.3)
-    
+
     plt.tight_layout()
     plt.savefig('/tmp/social_network_analysis.png', dpi=150)
     print("Visualization saved to /tmp/social_network_analysis.png")
-    
+
     # Interpretation
     print("\n[4.2] Interpretation:")
     print("""
     Key Findings:
-    
+
     1. PLATFORM CHARACTERISTICS:
        - Facebook: Densest network (strong reciprocal friendships)
        - Twitter: More asymmetric (follower model allows broadcast)
        - LinkedIn: Moderate density (professional network effect)
-    
+
     2. INFLUENCER PATTERNS:
        - Cross-platform influencers have high PageRank across all layers
        - Platform-specific influencers emerge due to different usage patterns
        - Grace shows high influence on Twitter (many followers)
-    
+
     3. COMMUNITIES:
        - Communities align with friend groups that span platforms
        - Some users are "platform-specific" (only active on one layer)
        - Cross-platform communities suggest real-world social groups
-    
+
     4. SOCIAL INSIGHTS:
        - Multi-platform users have higher overall influence
        - Different platforms serve different social functions
@@ -344,20 +344,20 @@ def main():
     print("\nAnalyzing user behavior across Facebook, Twitter, and LinkedIn.")
 
     np.random.seed(DEFAULT_SEED)
-    
+
     # Step 1: Create network
     network = create_social_network()
-    
+
     # Step 2: Basic statistics
     compute_basic_stats(network)
-    
+
     # Step 3: Analysis pipeline
     influence_df = identify_influencers(network)
     partition_dict = detect_communities(network)
-    
+
     # Step 4: Visualization and interpretation
     visualize_and_interpret(network, influence_df, partition_dict)
-    
+
     print("\n" + "="*70)
     print("CASE STUDY COMPLETE")
     print("="*70)

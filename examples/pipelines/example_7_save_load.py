@@ -80,9 +80,9 @@ def main() -> int:
 
         print("\n### Verification ###")
         if result1["nodes"] == result2["nodes"] and result1["edges"] == result2["edges"]:
-            print("✓ Network successfully saved and loaded!")
+            print(" Network successfully saved and loaded!")
         else:
-            print("✗ Mismatch in saved/loaded network")
+            print(" Mismatch in saved/loaded network")
 
     print("\n" + "=" * 70)
     print("Example completed!")

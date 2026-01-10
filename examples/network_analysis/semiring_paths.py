@@ -16,10 +16,10 @@ def main():
     print("=" * 60)
     print("Semiring Shortest Paths (min_plus)")
     print("=" * 60)
-    
+
     # Create a simple multilayer network
     network = multinet.multi_layer_network(directed=False)
-    
+
     # Add nodes
     nodes = [
         {'source': 'A', 'type': 'transport'},
@@ -28,7 +28,7 @@ def main():
         {'source': 'D', 'type': 'transport'},
     ]
     network.add_nodes(nodes)
-    
+
     # Add edges with weights
     edges = [
         {'source': 'A', 'target': 'B', 'source_type': 'transport', 'target_type': 'transport', 'weight': 1.0},
@@ -37,14 +37,14 @@ def main():
         {'source': 'D', 'target': 'C', 'source_type': 'transport', 'target_type': 'transport', 'weight': 1.0},
     ]
     network.add_edges(edges)
-    
+
     print("\nNetwork structure:")
     print(f"  Nodes: {[n['source'] for n in nodes]}")
     print(f"  Edges: A-B (1.0), B-C (2.0), A-D (5.0), D-C (1.0)")
-    
+
     # Compute shortest paths from A using semiring algebra
     print("\nComputing shortest paths from A using min_plus semiring...")
-    
+
     result = (
         S.paths()
          .from_node('A')
@@ -54,31 +54,31 @@ def main():
          .witness(True)  # Request path witnesses
          .execute(network)
     )
-    
+
     # Display results
     print("\nShortest distances from A:")
     print("-" * 40)
-    
+
     for item in result.items:
         node = item['node']
         distance = item['value']
         path = item.get('path', None)
-        
+
         if distance == float('inf'):
             print(f"  {node}: unreachable")
         else:
             path_str = " -> ".join(str(n) for n in path) if path else "N/A"
             print(f"  {node}: distance={distance:.1f}, path={path_str}")
-    
+
     # Check provenance
     print("\nProvenance:")
     prov = result.meta.get('provenance', {})
     if 'algebra' in prov:
         print(f"  Semiring: {prov['algebra'].get('semiring', {}).get('name', 'unknown')}")
         print(f"  Algorithm: {prov.get('algorithm', 'unknown')}")
-    
+
     print("\n" + "=" * 60)
-    print("✓ Example completed successfully")
+    print(" Example completed successfully")
     print("=" * 60)
 
 

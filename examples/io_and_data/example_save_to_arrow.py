@@ -262,7 +262,7 @@ def example_format_comparison() -> None:
         # Verify all formats produce same result
         assert len(arrow_graph.nodes) == len(json_graph.nodes)
         assert len(arrow_graph.edges) == len(json_graph.edges)
-        print("\n✓ All formats produce identical results")
+        print("\n All formats produce identical results")
 
 
 def example_large_graph_performance() -> None:

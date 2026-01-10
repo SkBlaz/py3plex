@@ -2,9 +2,9 @@
 
 This example demonstrates both variants of spectral clustering for multilayer networks:
 
-1. **Supra-Laplacian Spectral Clustering**: Constructs a supra-graph with 
+1. **Supra-Laplacian Spectral Clustering**: Constructs a supra-graph with
    identity-weighted interlayer coupling
-2. **Multiplex (Aggregated) Laplacian Spectral Clustering**: Aggregates 
+2. **Multiplex (Aggregated) Laplacian Spectral Clustering**: Aggregates
    normalized Laplacians across layers
 
 Both variants use the DSL v2 API for seamless integration.
@@ -46,12 +46,12 @@ social_edges = [
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Charlie', 'target': 'Alice', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
-    
+
     # Community 2
     {'source': 'David', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Eve', 'target': 'Frank', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Frank', 'target': 'David', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
-    
+
     # Weak bridge
     {'source': 'Charlie', 'target': 'David', 'source_type': 'social', 'target_type': 'social', 'weight': 0.2},
 ]
@@ -72,9 +72,9 @@ work_edges = [
 network.add_edges(work_edges)
 
 print(f"Network created:")
-print(f"  Nodes: {len(list(network.get_nodes()))}")
-print(f"  Edges: {len(list(network.get_edges()))}")
-print(f"  Layers: {list(network.get_layers())}")
+print(f" Nodes: {len(list(network.get_nodes()))}")
+print(f" Edges: {len(list(network.get_edges()))}")
+print(f" Layers: {list(network.get_layers())}")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Example A: Supra-Laplacian Spectral Clustering via DSL
@@ -99,9 +99,9 @@ result_supra = (
 )
 
 print("Results:")
-print(f"  Method: {result_supra.meta['community_detection']['method']}")
-print(f"  Communities detected: {result_supra.meta['community_detection']['n_communities']}")
-print(f"  Parameters: k=3, omega=0.8")
+print(f" Method: {result_supra.meta['community_detection']['method']}")
+print(f" Communities detected: {result_supra.meta['community_detection']['n_communities']}")
+print(f" Parameters: k=3, omega=0.8")
 print()
 
 df_supra = result_supra.to_pandas()
@@ -133,9 +133,9 @@ result_multiplex = (
 )
 
 print("Results:")
-print(f"  Method: {result_multiplex.meta['community_detection']['method']}")
-print(f"  Communities detected: {result_multiplex.meta['community_detection']['n_communities']}")
-print(f"  Parameters: k=3")
+print(f" Method: {result_multiplex.meta['community_detection']['method']}")
+print(f" Communities detected: {result_multiplex.meta['community_detection']['n_communities']}")
+print(f" Parameters: k=3")
 print()
 
 df_multiplex = result_multiplex.to_pandas()
@@ -161,9 +161,9 @@ result_supra_direct = spectral_multilayer_supra(
 )
 
 print("Supra-Laplacian (direct):")
-print(f"  Partition size: {len(result_supra_direct['partition_nodes'])}")
-print(f"  Embedding shape: {result_supra_direct['embedding_nodes'].shape}")
-print(f"  Eigenvalues: {result_supra_direct['eigenvalues']}")
+print(f" Partition size: {len(result_supra_direct['partition_nodes'])}")
+print(f" Embedding shape: {result_supra_direct['embedding_nodes'].shape}")
+print(f" Eigenvalues: {result_supra_direct['eigenvalues']}")
 print()
 
 # Multiplex variant
@@ -174,9 +174,9 @@ result_multiplex_direct = spectral_multilayer_multiplex(
 )
 
 print("Multiplex (direct):")
-print(f"  Partition size: {len(result_multiplex_direct['partition_nodes'])}")
-print(f"  Embedding shape: {result_multiplex_direct['embedding_nodes'].shape}")
-print(f"  Eigenvalues: {result_multiplex_direct['eigenvalues']}")
+print(f" Partition size: {len(result_multiplex_direct['partition_nodes'])}")
+print(f" Embedding shape: {result_multiplex_direct['embedding_nodes'].shape}")
+print(f" Eigenvalues: {result_multiplex_direct['eigenvalues']}")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Example D: Accessing Spectral Embeddings
@@ -223,10 +223,10 @@ for omega in omega_values:
         omega=omega,
         random_state=42
     )
-    
+
     partition = result["partition_nodes"]
     n_communities = len(set(partition.values()))
-    
+
     print(f"  omega={omega:.1f}: {n_communities} communities")
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -239,25 +239,25 @@ print("-" * 80)
 
 print("\nKey Differences:")
 print("+--------------------+---------------------------+---------------------------+")
-print("| Property           | Supra-Laplacian           | Multiplex (Aggregated)    |")
+print("| Property | Supra-Laplacian | Multiplex (Aggregated) |")
 print("+====================+===========================+===========================+")
-print("| Coupling           | Identity links (omega)    | Implicit via aggregation  |")
-print("| Memory             | O((nL)^2)                 | O(n^2)                    |")
-print("| Embedding dim      | nL, then averaged to n    | n                         |")
-print("| Layer distinction  | Explicit via supra-graph  | Averaged out              |")
-print("| Omega parameter    | Required                  | Not applicable            |")
+print("| Coupling | Identity links (omega) | Implicit via aggregation |")
+print("| Memory | O((nL)^2) | O(n^2) |")
+print("| Embedding dim | nL, then averaged to n | n |")
+print("| Layer distinction | Explicit via supra-graph | Averaged out |")
+print("| Omega parameter | Required | Not applicable |")
 print("+--------------------+---------------------------+---------------------------+")
 
 print("\nWhen to use each variant:")
-print("  Supra-Laplacian:")
-print("    - When layer-specific coupling is important")
-print("    - When you need explicit interlayer link control (omega)")
-print("    - For smaller networks where memory is not a constraint")
+print(" Supra-Laplacian:")
+print(" - When layer-specific coupling is important")
+print(" - When you need explicit interlayer link control (omega)")
+print(" - For smaller networks where memory is not a constraint")
 print()
-print("  Multiplex (Aggregated):")
-print("    - For larger networks (better scalability)")
-print("    - When layer coupling is implicit through aggregation")
-print("    - When you want simpler parameter tuning (no omega)")
+print(" Multiplex (Aggregated):")
+print(" - For larger networks (better scalability)")
+print(" - When layer coupling is implicit through aggregation")
+print(" - When you want simpler parameter tuning (no omega)")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Example G: Determinism Check
@@ -289,28 +289,28 @@ print("MULTILAYER SPECTRAL CLUSTERING - SUMMARY")
 print("=" * 80)
 
 print("\nImplemented Variants:")
-print("  1. Supra-Laplacian Spectral Clustering")
-print("     - Method: 'spectral_multilayer_supra'")
-print("     - Parameters: k (required), omega (required), random_state (optional)")
+print(" 1. Supra-Laplacian Spectral Clustering")
+print(" - Method: 'spectral_multilayer_supra'")
+print(" - Parameters: k (required), omega (required), random_state (optional)")
 print()
-print("  2. Multiplex (Aggregated) Laplacian Spectral Clustering")
-print("     - Method: 'spectral_multilayer_multiplex'")
-print("     - Parameters: k (required), random_state (optional)")
+print(" 2. Multiplex (Aggregated) Laplacian Spectral Clustering")
+print(" - Method: 'spectral_multilayer_multiplex'")
+print(" - Parameters: k (required), random_state (optional)")
 
 print("\nDSL v2 Integration:")
-print("  Q.nodes()")
-print("   .from_layers(L[\"layer1\"] + L[\"layer2\"])")
-print("   .community(method=\"spectral_multilayer_*\", k=3, ...)")
-print("   .execute(network)")
+print(" Q.nodes()")
+print(" .from_layers(L[\"layer1\"] + L[\"layer2\"])")
+print(" .community(method=\"spectral_multilayer_*\", k=3, ...)")
+print(" .execute(network)")
 
 print("\nKey Points:")
-print("  ✓ Deterministic with fixed random_state")
-print("  ✓ Node-level community assignments")
-print("  ✓ Access to spectral embeddings via result metadata")
-print("  ✓ Both variants reduce to standard spectral clustering for L=1")
-print("  ✓ k must be provided (no automatic selection)")
+print(" Deterministic with fixed random_state")
+print(" Node-level community assignments")
+print(" Access to spectral embeddings via result metadata")
+print(" Both variants reduce to standard spectral clustering for L=1")
+print(" k must be provided (no automatic selection)")
 
 print("\nFor more information:")
-print("  - Module: py3plex.algorithms.community_detection.spectral_multilayer")
-print("  - Tests: tests/test_spectral_multilayer.py")
-print("  - Documentation: See module docstrings")
+print(" - Module: py3plex.algorithms.community_detection.spectral_multilayer")
+print(" - Tests: tests/test_spectral_multilayer.py")
+print(" - Documentation: See module docstrings")

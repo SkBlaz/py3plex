@@ -93,7 +93,7 @@ def main():
     )
 
     if result.has_sensitivity:
-        print("\n✓ Multilayer sensitivity analysis completed")
+        print("\n Multilayer sensitivity analysis completed")
 
         # Show how top nodes change
         print("\nTop 5 nodes (baseline):")
@@ -139,9 +139,9 @@ def main():
             print(f"Stability at 40% edge drop: {curve.values[2]:.4f}")
 
             if curve.collapse_point:
-                print(f"⚠ Collapses at: {curve.collapse_point*100:.0f}% edge drop")
+                print(f" Collapses at: {curve.collapse_point*100:.0f}% edge drop")
             else:
-                print("✓ Stable across all perturbations")
+                print(" Stable across all perturbations")
 
     # Example 3: Degree-preserving rewiring (topology change)
     print("\n" + "=" * 70)
@@ -173,11 +173,11 @@ def main():
         # Interpretation
         print("\nInterpretation:")
         if curve.values[-1] > 0.7:
-            print("✓ Ranking is robust to topology changes")
+            print(" Ranking is robust to topology changes")
         elif curve.values[-1] > 0.4:
-            print("⚠ Ranking is moderately sensitive")
+            print(" Ranking is moderately sensitive")
         else:
-            print("✗ Ranking is highly sensitive to topology")
+            print(" Ranking is highly sensitive to topology")
 
     # Example 4: Export and visualization
     print("\n" + "=" * 70)

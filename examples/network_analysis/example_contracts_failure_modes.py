@@ -12,7 +12,7 @@ from py3plex.contracts import Robustness, FailureMode
 def make_network(size="small"):
     """Create test networks of different sizes."""
     net = multinet.multi_layer_network(directed=False)
-    
+
     if size == "tiny":
         # Very small network - will trigger special handling
         nodes = [{'source': f'N{i}', 'type': 'L0'} for i in range(3)]
@@ -60,7 +60,7 @@ def make_network(size="small"):
                     'source_type': 'L0',
                     'target_type': 'L0'
                 })
-    
+
     net.add_nodes(nodes)
     net.add_edges(edges)
     return net
@@ -72,10 +72,10 @@ def example_insufficient_baseline():
     print("Example 1: INSUFFICIENT_BASELINE")
     print("="*70)
     print("Requesting top-20 from a network with only 10 nodes...")
-    
+
     net = make_network("small")
     print(f"Network: {len(list(net.get_nodes()))} nodes")
-    
+
     # This will fail: asking for top-20 but network only has 10 nodes
     result = (Q.nodes()
               .compute("degree")
@@ -83,12 +83,12 @@ def example_insufficient_baseline():
               .limit(20)
               .contract(Robustness())
               .execute(net))
-    
+
     print(f"\nContract OK: {result.contract_ok}")
     print(f"Failure mode: {result.failure_mode.value}")
     print(f"Message: {result.message}")
     print(f"Details: {result.details}")
-    
+
     print("\nTroubleshooting:")
     print("- Reduce top_k to match available nodes")
     print("- Or expand query to include more nodes")
@@ -101,17 +101,17 @@ def example_nondeterminism_leak():
     print("Example 2: NONDETERMINISM_LEAK")
     print("="*70)
     print("Attempting to use seed=None without explicit permission...")
-    
+
     try:
         # This will fail at contract construction
         contract = Robustness(seed=None, allow_nondeterminism=False)
     except ValueError as e:
-        print(f"\n✗ ValueError: {e}")
+        print(f"\n ValueError: {e}")
         print("\nTroubleshooting:")
         print("- Set seed=0 (or any integer) for deterministic evaluation")
         print("- Or set allow_nondeterminism=True if you don't need reproducibility")
-    
-    print("\n✓ Fixed version:")
+
+    print("\n Fixed version:")
     contract = Robustness(seed=0)
     print(f"  seed={contract.seed}, allow_nondeterminism={contract.allow_nondeterminism}")
     print()
@@ -122,10 +122,10 @@ def example_contract_violation_with_repair():
     print("="*70)
     print("Example 3: CONTRACT_VIOLATION with Repair")
     print("="*70)
-    
+
     net = make_network("small")
     print(f"Network: {len(list(net.get_nodes()))} nodes, {len(list(net.get_edges()))} edges")
-    
+
     # Query that may violate contract but can be repaired
     print("\nQuerying top-7 by degree with small perturbations...")
     result = (Q.nodes()
@@ -134,19 +134,19 @@ def example_contract_violation_with_repair():
               .limit(7)
               .contract(Robustness(n_samples=5, grid=[0.0, 0.05, 0.10]))
               .execute(net))
-    
+
     print(f"\nContract OK: {result.contract_ok}")
-    
+
     if not result.contract_ok:
         print(f"Failure mode: {result.failure_mode.value}")
         print(f"Message: {result.message}")
-        
+
         # Check repair
         if result.repair.repaired_ok and result.repair.stable_core:
-            print(f"\n✓ Repair successful!")
+            print(f"\n Repair successful!")
             print(f"  Stable core: {len(result.repair.stable_core)} out of {7} nodes")
             print(f"  Stable nodes: {result.repair.stable_core}")
-            
+
             # Get DataFrame with repair columns
             df = result.to_pandas(expand_contract=True)
             if df is not None and len(df) > 0:
@@ -161,10 +161,10 @@ def example_contract_violation_with_repair():
             else:
                 print("  (DataFrame is empty)")
         else:
-            print(f"\n✗ Repair failed: {result.repair.metadata.get('reason')}")
+            print(f"\n Repair failed: {result.repair.metadata.get('reason')}")
     else:
         print("All nodes in top-7 are stable!")
-    
+
     print()
 
 
@@ -173,12 +173,12 @@ def example_tiny_graph_adaptation():
     print("="*70)
     print("Example 4: Tiny Graph Adaptation")
     print("="*70)
-    
+
     net = make_network("tiny")
     n_nodes = len(list(net.get_nodes()))
     n_edges = len(list(net.get_edges()))
     print(f"Network: {n_nodes} nodes, {n_edges} edges (tiny graph: E < 20)")
-    
+
     # Contract will automatically adapt parameters
     result = (Q.nodes()
               .compute("degree")
@@ -186,7 +186,7 @@ def example_tiny_graph_adaptation():
               .limit(2)
               .contract(Robustness())
               .execute(net))
-    
+
     # Check provenance to see adapted parameters
     prov = result.provenance
     if "contract" in prov:
@@ -195,7 +195,7 @@ def example_tiny_graph_adaptation():
         print(f"  p_max: {contract_spec.get('p_max')} (capped at 0.05 for tiny graphs)")
         print(f"  grid: {contract_spec.get('grid')} (reduced to avoid degeneracy)")
         print(f"  n_samples: {contract_spec.get('n_samples')} (bumped for small graph)")
-    
+
     print(f"\nContract OK: {result.contract_ok}")
     print()
 
@@ -205,9 +205,9 @@ def example_provenance_and_replay():
     print("="*70)
     print("Example 5: Provenance and Deterministic Replay")
     print("="*70)
-    
+
     net = make_network("small")
-    
+
     print("Running contract with seed=0 (default)...")
     result1 = (Q.nodes()
                .compute("degree")
@@ -215,9 +215,9 @@ def example_provenance_and_replay():
                .limit(5)
                .contract(Robustness(n_samples=3))
                .execute(net))
-    
+
     print(f"First run - Contract OK: {result1.contract_ok}")
-    
+
     # Run again with same seed
     print("\nRe-running with same seed (deterministic replay)...")
     result2 = (Q.nodes()
@@ -226,22 +226,22 @@ def example_provenance_and_replay():
                .limit(5)
                .contract(Robustness(n_samples=3))
                .execute(net))
-    
+
     print(f"Second run - Contract OK: {result2.contract_ok}")
-    
+
     # Check determinism
     if result1.contract_ok == result2.contract_ok:
-        print("\n✓ Results are deterministic (both runs match)")
+        print("\n Results are deterministic (both runs match)")
     else:
-        print("\n✗ Results differ (unexpected!)")
-    
+        print("\n Results differ (unexpected!)")
+
     # Show provenance
     print("\nProvenance (full contract spec recorded):")
     if "contract" in result1.provenance:
         contract_spec = result1.provenance["contract"]
         for key in ["perturb", "grid", "n_samples", "seed"]:
             print(f"  {key}: {contract_spec.get(key)}")
-    
+
     print()
 
 
@@ -250,13 +250,13 @@ def main():
     print("\nROBUSTNESS CONTRACTS: FAILURE MODES AND TROUBLESHOOTING")
     print("="*70)
     print()
-    
+
     example_insufficient_baseline()
     example_nondeterminism_leak()
     example_contract_violation_with_repair()
     example_tiny_graph_adaptation()
     example_provenance_and_replay()
-    
+
     print("="*70)
     print("For more information:")
     print("  - See AGENTS.md section 'Robustness Contracts'")
