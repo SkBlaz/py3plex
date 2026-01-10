@@ -44,12 +44,12 @@ def directed_multigraph():
     graph.add_node(Node(id=1, attributes={"name": "one"}))
     graph.add_node(Node(id=2, attributes={"name": "two"}))
     
-    # Add multiple edges between same nodes
-    graph.add_edge(Edge(src=0, dst=1, src_layer="L1", dst_layer="L1",
+    # Add multiple edges between same nodes (multigraph with different keys)
+    graph.add_edge(Edge(src=0, dst=1, src_layer="L1", dst_layer="L1", key=0,
                        attributes={"weight": 1.0, "type": "A"}))
-    graph.add_edge(Edge(src=0, dst=1, src_layer="L1", dst_layer="L1",
+    graph.add_edge(Edge(src=0, dst=1, src_layer="L1", dst_layer="L1", key=1,
                        attributes={"weight": 2.0, "type": "B"}))
-    graph.add_edge(Edge(src=1, dst=2, src_layer="L1", dst_layer="L1",
+    graph.add_edge(Edge(src=1, dst=2, src_layer="L1", dst_layer="L1", key=0,
                        attributes={"weight": 0.5, "type": "C"}))
     
     return graph
@@ -97,7 +97,7 @@ class TestNetworkXRoundtrip:
         result_graph = convert(nx_graph, "multilayer_graph")
         
         # Check node attributes
-        node_a = next(n for n in result_graph.nodes if n.id == "A")
+        node_a = next(n for n in result_graph.nodes.values() if n.id == "A")
         assert node_a.attributes.get("type") == "hub"
         assert node_a.attributes.get("value") == 1.0
         
