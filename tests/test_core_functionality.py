@@ -149,7 +149,8 @@ def test_basic_visualizatio3():
         pass
 
 
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="Visualization dependencies not available")
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+@pytest.mark.slow  # This test loads large dataset and takes ~16 seconds
 def test_basic_visualizati4():
     # multilayer -----------------------------------
     logging.info("Import viz test 4")
@@ -251,6 +252,7 @@ def test_basic_visualizati4():
 
 
 @pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="Visualization dependencies not available")
+@pytest.mark.slow  # This test loads large dataset and takes time
 def test_basic_visualizatio5():
     try:
         logging.info("Import viz test 6")
