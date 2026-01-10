@@ -41,6 +41,7 @@ jobs:
     
     - name: Check type coverage
       run: |
+        source .venv/bin/activate
         cd docfiles
         python3 check_type_coverage.py --json ../type-coverage.json --verbose
       timeout-minutes: 5
