@@ -42,7 +42,7 @@ Extended Syntax Examples:
     # Community detection
     SELECT nodes COMPUTE communities;
 
-See examples/network_analysis/example_dsl_queries.py for more examples.
+See examples/02_basic_queries/01_legacy_string_dsl.py for usage (legacy - use DSL v2 for new code).
 """
 
 import re
