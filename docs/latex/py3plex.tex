@@ -45012,7 +45012,11 @@ resulting partition so it can be queried or used in subsequent operations.
 
 \item {} 
 \sphinxAtStartPar
-“label\_propagation”: Label propagation
+“label\_propagation\_supra”: Supra\sphinxhyphen{}graph label propagation (hard labels)
+
+\item {} 
+\sphinxAtStartPar
+“label\_propagation\_consensus”: Multiplex consensus label propagation (hard labels)
 
 \end{itemize}
 
@@ -45020,7 +45024,8 @@ resulting partition so it can be queried or used in subsequent operations.
 
 \sphinxAtStartPar
 For Leiden specifically, use in combination with .uq() for uncertainty
-quantification:
+quantification. Label propagation algorithms support deterministic execution
+with random\_state for reproducibility.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
@@ -45030,14 +45035,19 @@ quantification:
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{gamma}} \textendash{} Resolution parameter(s). Higher \sphinxhyphen{}\textgreater{} more communities. (default: 1.0)
+Not used for label\_propagation algorithms.
 
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{omega}} \textendash{} Interlayer coupling strength. Higher \sphinxhyphen{}\textgreater{} stronger coupling. (default: 1.0)
+For label\_propagation\_supra: weight of identity links between layers.
+Not used for label\_propagation\_consensus.
 
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{n\_iterations}} \textendash{} Number of iterations for iterative methods (default: 2)
+For label\_propagation\_supra: maps to max\_iter (default: 100)
+For label\_propagation\_consensus: maps to max\_iter (default: 25)
 
 \item {} 
 \sphinxAtStartPar
@@ -45049,7 +45059,10 @@ quantification:
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{**kwargs}} \textendash{} Additional algorithm\sphinxhyphen{}specific parameters
+\sphinxstyleliteralstrong{\sphinxupquote{**kwargs}} \textendash{} Additional algorithm\sphinxhyphen{}specific parameters:
+\sphinxhyphen{} projection: “none” or “majority” (label\_propagation\_supra only)
+\sphinxhyphen{} inner\_max\_iter: int (label\_propagation\_consensus only, default: 50)
+\sphinxhyphen{} max\_iter: int (override default iterations for label propagation)
 
 \end{itemize}
 
@@ -45065,6 +45078,22 @@ Self for chaining
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
 \PYG{g+gp}{... }    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
 \PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{community}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{leiden}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{g+gp}{... }\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Supra\PYGZhy{}graph label propagation with layer coupling}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+\PYG{g+gp}{... }    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{community}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{label\PYGZus{}propagation\PYGZus{}supra}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{omega}\PYG{o}{=}\PYG{l+m+mf}{0.7}\PYG{p}{,}
+\PYG{g+gp}{... }               \PYG{n}{projection}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{none}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{g+gp}{... }\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Consensus label propagation (node\PYGZhy{}level)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+\PYG{g+gp}{... }    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{community}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{label\PYGZus{}propagation\PYGZus{}consensus}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+\PYG{g+gp}{... }               \PYG{n}{max\PYGZus{}iter}\PYG{o}{=}\PYG{l+m+mi}{25}\PYG{p}{,} \PYG{n}{inner\PYGZus{}max\PYGZus{}iter}\PYG{o}{=}\PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
 \PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
 \PYG{g+gp}{... }\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
@@ -45103,6 +45132,10 @@ Default random\_state=None becomes 0 for determinism
 \item {} 
 \sphinxAtStartPar
 For large networks, consider tuning omega and gamma for performance
+
+\item {} 
+\sphinxAtStartPar
+Label propagation algorithms use hard labels with random tie\sphinxhyphen{}breaking
 
 \end{itemize}
 
@@ -71971,7 +72004,7 @@ List of NetworkX graphs with random layouts
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.visualization.multilayer.}}\sphinxbfcode{\sphinxupquote{hairball\_plot}}}
-{\sphinxparam{\DUrole{n}{g}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Graph\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{color\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }List\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{text\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}black\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_parameters}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{dict\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{legend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{scale\_by\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_algorithm}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}force\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{edge\_width}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.01}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alpha\_channel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{draw}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{label\_font\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ax}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{g}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Graph\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{color\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }List\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{text\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}black\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_parameters}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{dict\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{legend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{scale\_by\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_algorithm}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}force\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{edge\_width}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.01}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alpha\_channel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{draw}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{label\_font\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ax}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{skip\_layout}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
 {{ $\rightarrow$ Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -72052,6 +72085,13 @@ to let the caller control rendering.
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{ax}} \textendash{} Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{skip\_layout}} \textendash{} If True, skip all layout computation and visualization, returning immediately.
+This is useful for examples that only need to test the API without actually rendering
+or when you want to avoid expensive force\sphinxhyphen{}directed layout calculations.
+When True, returns None immediately. Default is False.
 
 \end{itemize}
 

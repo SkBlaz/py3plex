@@ -1269,6 +1269,14 @@ def _execute_select(
 
     G = network.core_network
 
+    # Handle auto community detection for both COMMUNITIES and NODES targets
+    if hasattr(select, "auto_community_config") and select.auto_community_config and select.auto_community_config.enabled:
+        return _execute_auto_community(
+            network, select, params, progress=progress,
+            provenance_builder=provenance_builder,
+            provenance_record=provenance_record
+        )
+
     # Handle community queries specially
     if select.target == Target.COMMUNITIES:
         return _execute_community_select(network, select, params, progress=progress)
@@ -1684,6 +1692,357 @@ def _execute_select(
         logger.info("Query execution completed")
 
     return result
+
+
+def _execute_auto_community(
+    network: Any,
+    select: SelectStmt,
+    params: Optional[Dict[str, Any]] = None,
+    progress: bool = True,
+    provenance_builder: Optional[ProvenanceBuilder] = None,
+    provenance_record: Optional[Any] = None,
+) -> QueryResult:
+    """Execute auto community detection and return assignment table or annotated nodes.
+    
+    Implements single-run + caching semantics as specified in the issue requirements.
+    
+    Args:
+        network: Multilayer network
+        select: SELECT statement with auto_community_config
+        params: Parameter bindings
+        progress: If True, log progress messages
+        provenance_builder: Optional provenance builder
+        provenance_record: Optional provenance record
+    
+    Returns:
+        QueryResult with assignment table (COMMUNITIES) or annotated nodes (NODES)
+    """
+    import hashlib
+    import pandas as pd
+    from py3plex.algorithms.community_detection import auto_select_community
+    
+    logger = logging.getLogger(__name__)
+    params = params or {}
+    
+    # Get auto community config
+    config = select.auto_community_config
+    
+    # Create execution context with caching
+    ctx = DSLExecutionContext(
+        graph=network,
+        current_layers=None,
+        current_nodes=None,
+        params=params,
+    )
+    
+    # Generate cache key based on network id + params
+    network_id = id(network)  # Use object identity
+    config_dict = {
+        "seed": config.seed,
+        "fast": config.fast,
+        **config.params,
+    }
+    config_str = str(sorted(config_dict.items()))
+    cache_key = hashlib.md5(f"{network_id}_{config_str}".encode()).hexdigest()
+    
+    if progress:
+        logger.info(f"AutoCommunity: cache key = {cache_key}")
+    
+    # Check cache
+    if cache_key in ctx.cache["autocommunity"]:
+        if progress:
+            logger.info("AutoCommunity: Using cached result")
+        assignments_df, meta = ctx.cache["autocommunity"][cache_key]
+    else:
+        if progress:
+            logger.info("AutoCommunity: Running auto_select_community")
+        
+        # Increment debug counter for testing
+        if "autocommunity_runs" not in ctx.debug_counters:
+            ctx.debug_counters["autocommunity_runs"] = 0
+        ctx.debug_counters["autocommunity_runs"] += 1
+        
+        # Check if UQ is enabled
+        uq_config = getattr(select, "uq_config", None)
+        uq_enabled = uq_config is not None
+        
+        if uq_enabled:
+            uq_method = uq_config.uq_method or "seed"
+            uq_n_samples = uq_config.n_samples or 10
+        else:
+            uq_method = "seed"
+            uq_n_samples = 10
+        
+        # Run auto_select_community
+        try:
+            result = auto_select_community(
+                network=network,
+                fast=config.fast,
+                uq=uq_enabled,
+                uq_n_samples=uq_n_samples,
+                uq_method=uq_method,
+                seed=config.seed or 0,
+                **config.params,
+            )
+        except Exception as e:
+            logger.error(f"AutoCommunity failed: {e}")
+            raise
+        
+        # Build assignment table from result
+        partition = result.partition
+        
+        # Determine if multilayer
+        is_multilayer = False
+        sample_keys = list(partition.keys())[:5]
+        for key in sample_keys:
+            if isinstance(key, tuple) and len(key) == 2:
+                is_multilayer = True
+                break
+        
+        # Build assignment records
+        records = []
+        for node_layer, community_id in partition.items():
+            if is_multilayer and isinstance(node_layer, tuple):
+                node, layer = node_layer
+            else:
+                node = node_layer
+                layer = None
+            
+            # For now, use deterministic fallback for UQ metrics if not available
+            # TODO: Extract from result if UQ was enabled
+            confidence = 1.0
+            entropy = 0.0
+            margin = 1.0
+            
+            records.append({
+                "node": node,
+                "layer": layer,
+                "community": community_id,
+                "confidence": confidence,
+                "entropy": entropy,
+                "margin": margin,
+            })
+        
+        # Convert to DataFrame for easy manipulation
+        assignments_df = pd.DataFrame(records)
+        
+        # Compute community sizes
+        community_sizes = assignments_df.groupby("community").size().to_dict()
+        assignments_df["community_size"] = assignments_df["community"].map(community_sizes)
+        
+        # Build metadata
+        meta = {
+            "algorithm": result.algorithm,
+            "provenance": result.provenance,
+            "leaderboard": result.leaderboard,
+        }
+        
+        # Cache the result
+        ctx.cache["autocommunity"][cache_key] = (assignments_df, meta)
+        
+        if progress:
+            logger.info(f"AutoCommunity: Detected {len(community_sizes)} communities")
+    
+    # Now handle based on query kind
+    if config.kind == "communities":
+        # Return assignment table as QueryResult
+        if progress:
+            logger.info("AutoCommunity: Returning assignment table")
+        
+        # Apply WHERE filters if present
+        if select.where:
+            filtered_df = assignments_df.copy()
+            filters = {}
+            _extract_auto_community_filters(select.where, filters)
+            
+            for filter_key, filter_value in filters.items():
+                if "__" in filter_key:
+                    attr, op = filter_key.rsplit("__", 1)
+                else:
+                    attr = filter_key
+                    op = "eq"
+                
+                if op == "gt":
+                    filtered_df = filtered_df[filtered_df[attr] > filter_value]
+                elif op == "gte":
+                    filtered_df = filtered_df[filtered_df[attr] >= filter_value]
+                elif op == "lt":
+                    filtered_df = filtered_df[filtered_df[attr] < filter_value]
+                elif op == "lte":
+                    filtered_df = filtered_df[filtered_df[attr] <= filter_value]
+                elif op == "eq":
+                    filtered_df = filtered_df[filtered_df[attr] == filter_value]
+                elif op == "ne":
+                    filtered_df = filtered_df[filtered_df[attr] != filter_value]
+            
+            assignments_df = filtered_df
+        
+        # Convert to QueryResult format
+        items = list(range(len(assignments_df)))
+        attributes = {
+            col: {i: val for i, val in enumerate(assignments_df[col].values)}
+            for col in assignments_df.columns
+        }
+        
+        result_meta = {
+            "dsl_version": "2.1",
+            "kind": "auto_community_assignments",
+            "num_assignments": len(items),
+            **meta,
+        }
+        
+        return QueryResult(
+            target="communities",
+            items=items,
+            attributes=attributes,
+            meta=result_meta,
+        )
+    
+    elif config.kind == "nodes_join":
+        # Join annotations to nodes view
+        if progress:
+            logger.info("AutoCommunity: Joining annotations to nodes")
+        
+        # First, execute the base nodes query
+        # Create a modified select without auto_community_config
+        base_select = SelectStmt(
+            target=select.target,
+            layer_expr=select.layer_expr,
+            layer_set=select.layer_set,
+            where=None,  # Apply WHERE after join
+            compute=select.compute,
+            order_by=select.order_by,
+            limit=select.limit,
+            autocompute=select.autocompute,
+            uq_config=select.uq_config,
+        )
+        
+        # Execute base query
+        # Get nodes directly
+        items = list(network.get_nodes())
+        base_result = _execute_select_with_items(
+            network, base_select, items, params=params, progress=False
+        )
+        
+        # Join community annotations
+        for i, item in enumerate(base_result.items):
+            node = item
+            layer = base_result.attributes.get("layer", {}).get(i)
+            
+            # Find matching assignment
+            if is_multilayer and layer is not None:
+                mask = (assignments_df["node"] == node) & (assignments_df["layer"] == layer)
+            else:
+                mask = assignments_df["node"] == node
+            
+            matching = assignments_df[mask]
+            if len(matching) > 0:
+                row = matching.iloc[0]
+                # Add community attributes
+                for col in ["community", "confidence", "entropy", "margin", "community_size"]:
+                    if col not in base_result.attributes:
+                        base_result.attributes[col] = {}
+                    base_result.attributes[col][i] = row[col]
+        
+        # Now apply WHERE filters (including community filters)
+        if select.where:
+            filtered_items = []
+            for i in base_result.items:
+                if _check_where_condition(base_result, i, select.where, params):
+                    filtered_items.append(i)
+            
+            base_result.items = filtered_items
+        
+        # Update metadata
+        base_result.meta["auto_community"] = meta
+        
+        return base_result
+    
+    else:
+        raise ValueError(f"Unknown auto_community kind: {config.kind}")
+
+
+def _extract_auto_community_filters(where: ConditionExpr, filters: Dict[str, Any]) -> None:
+    """Extract filters from WHERE conditions for auto community fields.
+    
+    Args:
+        where: ConditionExpr AST node
+        filters: Dict to populate with filters
+    """
+    for atom in where.atoms:
+        if atom.comparison:
+            comp = atom.comparison
+            attr = comp.left
+            op = comp.op
+            value = comp.right
+            
+            # Map operator to filter suffix
+            op_map = {
+                ">": "gt",
+                ">=": "gte",
+                "<": "lt",
+                "<=": "lte",
+                "=": "eq",
+                "!=": "ne",
+            }
+            
+            suffix = op_map.get(op, "eq")
+            filter_key = f"{attr}__{suffix}" if suffix != "eq" else attr
+            filters[filter_key] = value
+
+
+def _check_where_condition(
+    result: QueryResult,
+    item_idx: int,
+    where: ConditionExpr,
+    params: Dict[str, Any]
+) -> bool:
+    """Check if an item satisfies WHERE conditions.
+    
+    Args:
+        result: QueryResult with attributes
+        item_idx: Index of item to check
+        where: WHERE condition expression
+        params: Parameter bindings
+    
+    Returns:
+        True if item satisfies conditions, False otherwise
+    """
+    for atom in where.atoms:
+        if atom.comparison:
+            comp = atom.comparison
+            attr = comp.left
+            op = comp.op
+            value = comp.right
+            
+            # Get actual value
+            if attr in result.attributes:
+                actual = result.attributes[attr].get(item_idx)
+            else:
+                # Attribute not present, skip this condition
+                continue
+            
+            # Check condition
+            if op == ">":
+                if not (actual > value):
+                    return False
+            elif op == ">=":
+                if not (actual >= value):
+                    return False
+            elif op == "<":
+                if not (actual < value):
+                    return False
+            elif op == "<=":
+                if not (actual <= value):
+                    return False
+            elif op == "=":
+                if not (actual == value):
+                    return False
+            elif op == "!=":
+                if not (actual != value):
+                    return False
+    
+    return True
 
 
 def _execute_community_select(

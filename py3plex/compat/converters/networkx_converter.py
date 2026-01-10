@@ -109,22 +109,26 @@ def to_networkx_from_ir(
         attrs["_py3plex_key"] = original_key
         
         if ir.meta.multi:
-            # For multigraphs, ensure unique NetworkX keys even if original keys collide
-            # Track how many edges we've seen for each (src, dst, original_key) combination
+            # For multigraphs, use the original key directly
             # For undirected graphs, normalize edge pair to avoid (u,v) and (v,u) collisions
             if not ir.meta.directed:
                 # Normalize: always use (min, max) order for undirected edges
-                edge_pair = (min(src, dst), max(src, dst), original_key)
+                edge_pair = (min(src, dst), max(src, dst))
             else:
-                edge_pair = (src, dst, original_key)
+                edge_pair = (src, dst)
             
+            # Track the maximum key we've assigned for each edge pair
             if edge_pair not in edge_key_counter:
-                edge_key_counter[edge_pair] = 0
+                edge_key_counter[edge_pair] = -1
+            
+            # Use the original key if provided, otherwise auto-increment
+            if original_key is not None:
+                nx_key = original_key
+                edge_key_counter[edge_pair] = max(edge_key_counter[edge_pair], original_key)
             else:
                 edge_key_counter[edge_pair] += 1
+                nx_key = edge_key_counter[edge_pair]
             
-            # Use counter to create unique NetworkX key
-            nx_key = edge_key_counter[edge_pair]
             G.add_edge(src, dst, key=nx_key, **attrs)
         else:
             G.add_edge(src, dst, **attrs)

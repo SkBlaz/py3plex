@@ -292,15 +292,14 @@ class TestAggregateLayersEdgeCases:
         assert mat[1, 2] == 0.0
     
     def test_negative_weights(self):
-        """Test that negative weights are handled correctly."""
+        """Test that negative weights are rejected."""
         edges = np.array([
             [0, 0, 1, 2.0],
             [1, 0, 1, -1.0],
         ])
         
-        mat = aggregate_layers(edges, reducer="sum", to_sparse=False)
-        
-        assert mat[0, 1] == pytest.approx(1.0, abs=1e-6)
+        with pytest.raises(ValueError, match="edge weights must be non-negative"):
+            aggregate_layers(edges, reducer="sum", to_sparse=False)
     
     def test_very_large_weights(self):
         """Test handling of large weight values."""

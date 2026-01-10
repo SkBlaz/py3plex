@@ -11,6 +11,7 @@ from py3plex.temporal_utils import (
     _parse_time,
     extract_edge_time,
 )
+from py3plex.exceptions import ParsingError
 
 
 class TestEdgeTimeInterval:
@@ -91,8 +92,8 @@ class TestParseTime:
         assert _parse_time(dt) == dt.timestamp()
 
     def test_parse_invalid_string_raises_error(self):
-        """Test that invalid string raises ValueError."""
-        with pytest.raises(ValueError):
+        """Test that invalid string raises ParsingError."""
+        with pytest.raises(ParsingError):
             _parse_time("not a valid timestamp")
 
 

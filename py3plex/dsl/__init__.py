@@ -85,6 +85,7 @@ from .ast import (
     TemporalContext,
     UQConfig,
     ExplainSpec,
+    AutoCommunityConfig,
     # Execution plan
     PlanStep,
     ExecutionPlan,
@@ -267,6 +268,7 @@ __all__ = [
     "TemporalContext",
     "UQConfig",
     "ExplainSpec",
+    "AutoCommunityConfig",
     "PlanStep",
     "ExecutionPlan",
     # DSL Extensions AST

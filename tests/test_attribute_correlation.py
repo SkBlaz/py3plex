@@ -10,6 +10,7 @@ from py3plex.core import multinet
 from py3plex.algorithms.attribute_correlation import (
     correlate_attributes_with_centrality,
 )
+from py3plex.exceptions import NetworkConstructionError, AlgorithmError
 
 
 class TestAttributeCorrelation:
@@ -75,7 +76,7 @@ class TestAttributeCorrelation:
         # Create a network without initializing core_network
         net.core_network = None
         
-        with pytest.raises(ValueError, match="Network has no core_network"):
+        with pytest.raises(NetworkConstructionError, match="Network object has no core_network attribute"):
             correlate_attributes_with_centrality(net, 'weight')
 
     def test_correlate_unknown_centrality(self):
@@ -83,7 +84,7 @@ class TestAttributeCorrelation:
         net = multinet.multi_layer_network(directed=False)
         net.add_nodes([{'source': 'A', 'type': 'layer1'}])
         
-        with pytest.raises(ValueError, match="Unknown centrality type"):
+        with pytest.raises(AlgorithmError, match="Centrality type 'unknown_centrality' is not recognized"):
             correlate_attributes_with_centrality(
                 net, 
                 'weight',

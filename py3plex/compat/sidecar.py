@@ -99,6 +99,11 @@ def import_sidecar(path: str) -> GraphIR:
     if not bundle_path.is_dir():
         raise ValueError(f"Sidecar bundle must be a directory: {path}")
     
+    # Check for metadata first (most critical file)
+    meta_path = bundle_path / "meta.json"
+    if not meta_path.exists():
+        raise FileNotFoundError(f"Missing meta.json in sidecar bundle: {path}")
+    
     # Read format
     format_path = bundle_path / "format.txt"
     if format_path.exists():
@@ -114,10 +119,6 @@ def import_sidecar(path: str) -> GraphIR:
             raise FileNotFoundError("Cannot determine table format in sidecar bundle")
     
     # Read metadata
-    meta_path = bundle_path / "meta.json"
-    if not meta_path.exists():
-        raise FileNotFoundError(f"Missing meta.json in sidecar bundle: {path}")
-    
     with open(meta_path, "r") as f:
         meta_dict = json.load(f)
     meta = GraphMeta.from_dict(meta_dict)
@@ -209,7 +210,13 @@ def _dataframe_to_dict(df: pd.DataFrame) -> Dict[str, Any]:
         for col in attrs_cols:
             attr_name = col.replace("attrs_", "", 1)
             attrs_data[attr_name] = df[col].tolist()
-        result["attrs"] = attrs_data
+        # Convert dict to list of dicts (records format) for NodeTable.from_dict
+        num_rows = len(df)
+        attrs_records = []
+        for i in range(num_rows):
+            record = {k: v[i] for k, v in attrs_data.items()}
+            attrs_records.append(record)
+        result["attrs"] = attrs_records
     
     return result
 

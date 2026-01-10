@@ -113,13 +113,15 @@ class MultiplexMachine(RuleBasedStateMachine):
         """
         get_neighbors(name, layer) must match adjacency derived from get_edges().
         Note: In directed graphs, neighbors() returns successors only.
+        In multiplex mode, neighbors include coupling edges.
         """
         name, layer = node
         sut_neighbors = set(self.net.get_neighbors(name, layer))
         
         # In directed graphs, neighbors are successors (outgoing edges)
+        # Use _all_edges_including_coupling() because get_neighbors() includes coupling edges
         adj = set()
-        for e in self._edges():
+        for e in self._all_edges_including_coupling():
             # Edges are (u, v, key) tuples
             u, v = e[0], e[1]
             if u == node:
