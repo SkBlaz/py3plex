@@ -25,59 +25,67 @@ jobs:
           python-version: "3.11"
         timeout-minutes: 3
       
-      - name: Cache pip dependencies
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        timeout-minutes: 2
+      
+      - name: Cache uv dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-verify-${{ hashFiles('**/pyproject.toml') }}
+          path: |
+            ~/.cache/uv
+            .venv
+          key: ${{ runner.os }}-uv-verify-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
-            ${{ runner.os }}-pip-verify-
-            ${{ runner.os }}-pip-
+            ${{ runner.os }}-uv-verify-
+            ${{ runner.os }}-uv-
         timeout-minutes: 2
       
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade --timeout 120 --retries 5 pip
-          pip install --timeout 120 --retries 5 crosshair-tool icontract z3-solver
+          uv venv .venv
+          source .venv/bin/activate
+          uv pip install crosshair-tool icontract z3-solver
           # Install minimal required dependencies for py3plex
-          pip install --timeout 120 --retries 5 numpy scipy networkx
+          uv pip install numpy scipy networkx
         timeout-minutes: 10
       
       - name: Run CrossHair verification
         run: |
           echo "🔍 Running CrossHair formal verification..."
+          source .venv/bin/activate
           # Run CrossHair with per-path timeout of 20 seconds
           # Focus on modules with contracts
           echo "Verifying aggregation.py..."
-          crosshair check py3plex/multinet/aggregation.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/multinet/aggregation.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying multinet.py..."
-          crosshair check py3plex/core/multinet.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/core/multinet.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying multilayer_statistics.py..."
-          crosshair check py3plex/algorithms/statistics/multilayer_statistics.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/algorithms/statistics/multilayer_statistics.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying converters.py..."
-          crosshair check py3plex/core/converters.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/core/converters.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying basic_statistics.py..."
-          crosshair check py3plex/algorithms/statistics/basic_statistics.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/algorithms/statistics/basic_statistics.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying random_generators.py..."
-          crosshair check py3plex/core/random_generators.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/core/random_generators.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying utils.py..."
-          crosshair check py3plex/utils.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/utils.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying supporting.py..."
-          crosshair check py3plex/core/supporting.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/core/supporting.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying parsers.py..."
-          crosshair check py3plex/core/parsers.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/core/parsers.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying io/api.py..."
-          crosshair check py3plex/io/api.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/io/api.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying visualization/layout_algorithms.py..."
-          crosshair check py3plex/visualization/layout_algorithms.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/visualization/layout_algorithms.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying validation.py..."
-          crosshair check py3plex/validation.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/validation.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying core/nx_compat.py..."
-          crosshair check py3plex/core/nx_compat.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/core/nx_compat.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying io/converters.py..."
-          crosshair check py3plex/io/converters.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/io/converters.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying algorithms/multicentrality.py..."
-          crosshair check py3plex/algorithms/multicentrality.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          uv run crosshair check py3plex/algorithms/multicentrality.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "✅ Formal verification completed"
         timeout-minutes: 15
       

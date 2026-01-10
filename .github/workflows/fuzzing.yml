@@ -24,17 +24,23 @@ jobs:
           python-version: '3.11'
         timeout-minutes: 3
       
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        timeout-minutes: 2
+      
       - name: Install dependencies
         run: |
-          pip install --upgrade --timeout 120 --retries 5 pip
-          pip install --timeout 120 --retries 5 pytest hypothesis
-          pip install --timeout 120 --retries 5 networkx numpy scipy tqdm || true
-          pip install --timeout 120 --retries 5 -e . || true
+          uv venv .venv
+          source .venv/bin/activate
+          uv pip install pytest hypothesis
+          uv pip install networkx numpy scipy tqdm || true
+          uv pip install -e . || true
         timeout-minutes: 8
       
       - name: Run property-based fuzzing tests
         run: |
-          pytest tests/test_fuzzing_properties.py -v --tb=short
+          source .venv/bin/activate
+          uv run pytest tests/test_fuzzing_properties.py -v --tb=short
         continue-on-error: false
         timeout-minutes: 5
       

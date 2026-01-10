@@ -82,6 +82,32 @@ Found 287 communities, modularity = 0.649
 
 ## Getting Started
 
+### Installation
+
+We recommend using [uv](https://docs.astral.sh/uv/) for fast, reliable Python environment management:
+
+```bash
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create and activate virtual environment
+uv venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install py3plex
+uv pip install py3plex
+
+# Or install from source with development dependencies
+uv pip install -e ".[dev]"
+```
+
+Alternatively, use pip:
+```bash
+pip install py3plex
+```
+
+### Resources
+
 * **Documentation:** [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 * **Technical Book (PDF):** [Practical Multilayer Network Analysis with Py3plex](docs/py3plex_book.pdf) - Complete handbook (106 pages)
 * **Examples:** [examples/](examples/) - 50+ example scripts demonstrating usage

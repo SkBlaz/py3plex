@@ -51,7 +51,7 @@ dev = [
     "pytest>=7.0",
     "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
-    "pytest-benchmark>=5.0",
+    "pytest-benchmark>=4.0,<5.0",  # 5.0+ requires Python >=3.9, but we support 3.8
     "black>=23.0",
     "ruff>=0.1.0",
     "mypy>=1.0",

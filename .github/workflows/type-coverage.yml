@@ -26,16 +26,22 @@ jobs:
         python-version: "3.10"
       timeout-minutes: 3
     
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+    
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade --timeout 120 --retries 5 pip
-        pip install --timeout 120 --retries 5 mypy lxml types-six
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install mypy lxml types-six
         # Install minimal dependencies for type checking
-        pip install --timeout 120 --retries 5 numpy scipy networkx matplotlib rdflib tqdm bitarray pandas
+        uv pip install numpy scipy networkx matplotlib rdflib tqdm bitarray pandas
       timeout-minutes: 8
     
     - name: Check type coverage
       run: |
+        source .venv/bin/activate
         cd docfiles
         python3 check_type_coverage.py --json ../type-coverage.json --verbose
       timeout-minutes: 5
