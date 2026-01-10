@@ -13,10 +13,10 @@ from py3plex.dsl import Q, L
 # 1. Load network
 network = load_aarhus_cs()
 
-# 2. Query nodes from multiple layers using union
+# 2. Query nodes from multiple layers (union)
 result = (
     Q.nodes()
-    .from_layers(L["lunch"] | L["facebook"])
+    .from_layers(L["lunch", "facebook"])  # Union of layers
     .where(degree__gt=3)
     .execute(network)
 )

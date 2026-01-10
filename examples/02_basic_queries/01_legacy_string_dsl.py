@@ -18,5 +18,5 @@ network = load_aarhus_cs()
 result = execute_query(network, 'SELECT nodes WHERE layer="lunch"')
 
 # 3. Print result
-print(f"Found {len(result)} nodes in lunch layer")
-print(f"Sample: {list(result)[:5]}")
+print(f"Found {result['count']} nodes in lunch layer")
+print(f"Sample nodes: {result['nodes'][:5]}")
