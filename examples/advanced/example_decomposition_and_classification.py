@@ -109,70 +109,70 @@ for decomposition in multilayer_network.get_decomposition(
     cycle=triplet_set
 ):
     current += 1
-    
+
     # Unpack decomposition results
     decomposed_network = decomposition[0]  # Decomposed network
     labels = decomposition[1][:, 1]         # Node labels for classification
     heuristic = decomposition[2]            # Current heuristic name
-    
+
     print(f"\n  [{current}/{total_combinations}] Processing heuristic: {heuristic}")
-    
+
     # Construct Personalized PageRank (PPR) matrix
     # PPR provides node representations based on random walk probabilities
     print(f"    - Constructing PPR feature matrix...")
     vectors = PPR.construct_PPR_matrix(decomposed_network)
-    
+
     print(f"    - Feature matrix shape: {vectors.shape}")
     print(f"    - Number of labeled nodes: {len(labels)}")
-    
+
     # Storage for this heuristic's results
     micros = []
     macros = []
     times = []
-    
+
     # Evaluate across different train/test splits
     print(f"    - Evaluating across multiple train/test splits...")
-    
+
     for test_size in np.arange(0.1, 1, 0.1):
         train_size = 1 - test_size
-        
+
         # Stratified split ensures balanced class distribution
         rs = StratifiedShuffleSplit(
             n_splits=10,
             test_size=test_size,
             random_state=612312
         )
-        
+
         # Run multiple splits for robust evaluation
         for train_idx, test_idx in rs.split(vectors, labels):
             start = time.time()
-            
+
             # Split data
             train_x = vectors[train_idx]
             test_x = vectors[test_idx]
             train_labels = labels[train_idx]
             test_labels = labels[test_idx]
-            
+
             # Train SVM classifier
             clf = SVC()
             clf.fit(train_x, train_labels)
-            
+
             # Predict on test set
             preds = clf.predict(test_x)
-            
+
             # Calculate F1 scores
             # Micro-F1: global average (good for imbalanced classes)
             # Macro-F1: average per class (all classes weighted equally)
             mi = f1_score(test_labels, preds, average='micro')
             ma = f1_score(test_labels, preds, average='macro')
-            
+
             end = time.time()
             elapsed = end - start
-            
+
             micros.append(mi)
             macros.append(ma)
             times.append(elapsed)
-        
+
         # Store averaged results for this train/test ratio
         outarray = {
             "percent_train": np.round(train_size, 1),

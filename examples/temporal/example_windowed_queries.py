@@ -139,7 +139,7 @@ def demonstrate_complex_windowed_queries(tnet: TemporalMultiLayerNetwork) -> Non
         .order_by("degree", desc=True)
         .limit(3)
     )
-    
+
     result = q.execute(tnet)
 
     if isinstance(result.items, list):

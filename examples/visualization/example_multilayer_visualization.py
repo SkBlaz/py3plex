@@ -66,16 +66,16 @@ print("=" * 70)
 dataset1 = get_dataset_path("multinet_k100.txt")
 if os.path.exists(dataset1):
     print(f"\nLoading: {dataset1}")
-    
+
     multilayer_network = multinet.multi_layer_network().load_network(
         dataset1,
         directed=False,
         input_type="multiedgelist"
     )
-    
+
     print("Network statistics:")
     multilayer_network.basic_stats()
-    
+
     print("\nGenerating visualization (default style)...")
     print("(Close window to continue)")
     multilayer_network.visualize_network()
@@ -95,16 +95,16 @@ print("=" * 70)
 dataset2 = get_dataset_path("edgeList.txt")
 if os.path.exists(dataset2):
     print(f"\nLoading: {dataset2}")
-    
+
     multilayer_network = multinet.multi_layer_network().load_network(
         dataset2,
         directed=False,
         input_type="multiedgelist"
     )
-    
+
     print("Network statistics:")
     multilayer_network.basic_stats()
-    
+
     print("\nGenerating visualization...")
     print("(Close window to continue)")
     multilayer_network.visualize_network()
@@ -124,23 +124,23 @@ print("=" * 70)
 dataset3 = get_dataset_path("imdb.gpickle")
 if os.path.exists(dataset3):
     print(f"\nLoading: {dataset3}")
-    
+
     # Load heterogeneous information network
     multilayer_network = multinet.multi_layer_network().load_network(
         input_file=dataset3,
         directed=True,
         input_type=dataset3.split(".")[-1]
     )
-    
+
     print("Network statistics:")
     multilayer_network.basic_stats()
-    
+
     print("\n3a. Diagonal multilayer layout (100 iterations)...")
     print("    This shows layers as parallel planes")
     print("    (Close window to continue)")
     multilayer_network.visualize_network(style="diagonal")
     plt.show()
-    
+
     print("\n3b. Hairball plot (5 iterations)...")
     print("    This projects all layers into a single view")
     print("    (Close window to continue)")
@@ -167,16 +167,16 @@ print("=" * 70)
 dataset4 = get_dataset_path("goslim_mirna.gpickle")
 if os.path.exists(dataset4):
     print(f"\nLoading: {dataset4}")
-    
+
     multilayer_network = multinet.multi_layer_network().load_network(
         dataset4,
         directed=False,
         input_type="gpickle_biomine"
     )
-    
+
     print("Network statistics:")
     multilayer_network.basic_stats()
-    
+
     print("\nGenerating hairball visualization...")
     print("(Close window to continue)")
     multilayer_network.visualize_network(style="hairball")
@@ -196,16 +196,16 @@ print("=" * 70)
 dataset5 = get_dataset_path("multiL.txt")
 if os.path.exists(dataset5):
     print(f"\nLoading: {dataset5}")
-    
+
     multilayer_network = multinet.multi_layer_network().load_network(
         dataset5,
         directed=True,
         input_type="multiedgelist"
     )
-    
+
     print("Network statistics:")
     multilayer_network.basic_stats()
-    
+
     print("\nGenerating diagonal layout...")
     print("(Close window to continue)")
     multilayer_network.visualize_network(style="diagonal")
@@ -225,22 +225,22 @@ print("=" * 70)
 dataset6 = get_dataset_path("epigenetics.gpickle")
 if os.path.exists(dataset6):
     print(f"\nLoading: {dataset6}")
-    
+
     multilayer_network = multinet.multi_layer_network().load_network(
         dataset6,
         directed=True,
         input_type="gpickle_biomine"
     )
-    
+
     print("Network statistics:")
     multilayer_network.basic_stats()
-    
+
     print("\nCreating custom visualization with styled multi-edges...")
     print("This demonstrates fine-grained control over edge appearance")
-    
+
     # Get layers for custom visualization
     network_labels, graphs, multilinks = multilayer_network.get_layers()
-    
+
     # Draw base multilayer network
     draw_multilayer_default(
         graphs,
@@ -248,16 +248,16 @@ if os.path.exists(dataset6):
         background_shape="circle",
         labels=network_labels
     )
-    
+
     # Style different edge types with different visual properties
     color_mappings = dict(enumerate(colors_default))
-    
+
     print(f"\nFound {len(multilinks)} edge types:")
     for edge_type in multilinks.keys():
         print(f"  - {edge_type}")
-    
+
     print("\nApplying custom styling to each edge type...")
-    
+
     for edge_type, edges in multilinks.items():
         # Customize appearance based on edge type
         if edge_type == "refers_to":
@@ -272,7 +272,7 @@ if os.path.exists(dataset6):
                 linewidth=0.4
             )
             print(f"  [OK] Styled '{edge_type}' edges (lightblue, dashed)")
-            
+
         elif edge_type == "belongs_to":
             draw_multiedges(
                 graphs,
@@ -285,7 +285,7 @@ if os.path.exists(dataset6):
                 linewidth=0.4
             )
             print(f"  [OK] Styled '{edge_type}' edges (red, dotted)")
-            
+
         elif edge_type == "codes_for":
             draw_multiedges(
                 graphs,
@@ -298,7 +298,7 @@ if os.path.exists(dataset6):
                 linewidth=0.4
             )
             print(f"  [OK] Styled '{edge_type}' edges (orange, dotted)")
-            
+
         else:
             # Default style for other edge types
             draw_multiedges(
@@ -312,11 +312,11 @@ if os.path.exists(dataset6):
                 linewidth=0.4
             )
             print(f"  [OK] Styled '{edge_type}' edges (default: black, dash-dot)")
-    
+
     print("\n(Close window to exit)")
     plt.show()
     plt.clf()
-    
+
 else:
     print(f"\n[X] Dataset not found: {dataset6}")
     print("  Skipping Example 6")
@@ -331,22 +331,22 @@ Visualization Summary:
 1. Simple Visualization:
    - network.visualize_network()
    - Quick, automatic layout selection
-   
+
 2. Hairball Plots:
    - hairball_plot()
    - Good for dense networks
    - Shows overall structure
-   
+
 3. Diagonal Layout:
    - style="diagonal"
    - Best for multilayer visualization
    - Shows inter-layer connections
-   
+
 4. Custom Styling:
    - draw_multilayer_default() + draw_multiedges()
    - Full control over appearance
    - Good for publication-quality figures
-   
+
 Tips:
 - Start with simple visualizations for exploration
 - Use hairball for overview of large networks

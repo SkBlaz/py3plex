@@ -103,16 +103,16 @@ try:
     # - walk-length: length of random walks (default: 80)
     # - num-walks: number of walks per node (default: 10)
     # - p, q: return and in-out parameters (default: 1, 1)
-    
+
     train_node2vec_embedding.call_node2vec_binary(
         edgelist_file,
         embedding_file,
         binary="./node2vec",  # Assumes node2vec is in PATH or current dir
         weighted=False
     )
-    
+
     print("  [OK] Node2Vec embeddings generated successfully!")
-    
+
 except FileNotFoundError as e:
     print(f"  [X] Node2Vec binary not found: {e}")
     print("\n  Please install Node2Vec to continue:")
@@ -153,10 +153,10 @@ try:
     # This creates a 2D scatter plot of nodes based on their embeddings
     # Nodes that are structurally similar will be close together
     embedding_visualization.visualize_embedding(multilayer_network)
-    
+
     print("  [OK] Visualization complete!")
     print("  (Close the window to continue)")
-    
+
 except Exception as e:
     print(f"  [X] Visualization error: {e}")
     print("  Continuing with coordinate export...")

@@ -235,18 +235,18 @@ print("-" * 80)
 
 try:
     from py3plex.dsl import Q
-    
+
     # Basic community detection via DSL
     result = (
         Q.nodes()
          .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
          .execute(network)
     )
-    
+
     print("DSL query executed successfully!")
     print(f"Query result type: {type(result)}")
     print("Note: Community metadata is attached to network and result")
-    
+
 except ImportError:
     print("DSL not available in this environment")
 

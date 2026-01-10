@@ -36,19 +36,19 @@ DEFAULT_SEED = 42
 def create_transport_network():
     """
     Create a synthetic multi-modal transportation network.
-    
+
     Layers:
     - bus: Bus route connections
     - metro: Metro/subway lines
     - bike: Bike-sharing stations
-    
+
     Returns:
         multi_layer_network: The constructed network
     """
     _print_header("STEP 1: DATA IMPORT - Building Multi-Modal Transport Network")
-    
+
     network = multinet.multi_layer_network(directed=False)
-    
+
     # Bus network - Dense coverage, many stops
     bus_edges = [
         ['CityHall', 'bus', 'Library', 'bus', 1],
@@ -61,7 +61,7 @@ def create_transport_network():
         ['Park', 'bus', 'Zoo', 'bus', 1],
         ['Mall', 'bus', 'Stadium', 'bus', 1],
     ]
-    
+
     # Metro network - Fast backbone, fewer stops
     metro_edges = [
         ['CityHall', 'metro', 'Train_Station', 'metro', 1],
@@ -70,7 +70,7 @@ def create_transport_network():
         ['CityHall', 'metro', 'Mall', 'metro', 1],
         ['Mall', 'metro', 'Stadium', 'metro', 1],
     ]
-    
+
     # Bike-share network - Short distances, recreational
     bike_edges = [
         ['CityHall', 'bike', 'Library', 'bike', 1],
@@ -80,31 +80,31 @@ def create_transport_network():
         ['Museum', 'bike', 'Park', 'bike', 1],
         ['Mall', 'bike', 'Stadium', 'bike', 1],
     ]
-    
+
     # Add all edges
     network.add_edges(bus_edges + metro_edges + bike_edges, input_type="list")
-    
+
     print(f"\nNetwork constructed:")
     print(f"  Bus routes: {len(bus_edges)} connections")
     print(f"  Metro lines: {len(metro_edges)} connections")
     print(f"  Bike stations: {len(bike_edges)} connections")
     print(f"  Total connections: {len(bus_edges) + len(metro_edges) + len(bike_edges)}")
-    
+
     return network
 
 
 def compute_basic_stats(network):
     """Compute multi-modal transport statistics with detailed layer-level analysis."""
     _print_header("STEP 2: BASIC NETWORK STATS - Modal Analysis")
-    
+
     network.basic_stats()
-    
+
     # Comprehensive mode-specific statistics
     print("\nTransport mode metrics:")
     print("\n{:<10} {:<10} {:<12} {:<15} {:<15} {:<15} {:<12}".format(
         "Mode", "Stations", "Connections", "Avg Degree", "Min Degree", "Max Degree", "Density"))
     print("-" * 95)
-    
+
     stats = []
     for mode in ['bus', 'metro', 'bike']:
         # Node stats
@@ -116,16 +116,16 @@ def compute_basic_stats(network):
         )
         node_df = node_result.to_pandas()
         node_df['degree'] = node_df['degree'].apply(_as_scalar)
-        
+
         # Edge stats
         edge_result = Q.edges().from_layers(L[mode]).execute(network)
         num_edges = len(edge_result)
-        
+
         # Compute density
         num_nodes = len(node_df)
         max_edges = num_nodes * (num_nodes - 1) / 2
         density = num_edges / max_edges if max_edges > 0 else 0
-        
+
         print("{:<10} {:<10} {:<12} {:<15.2f} {:<15} {:<15} {:<12.4f}".format(
             mode.capitalize(),
             num_nodes,
@@ -135,19 +135,19 @@ def compute_basic_stats(network):
             int(node_df['degree'].max()),
             density
         ))
-        
+
         stats.append({
             'Mode': mode.capitalize(),
             'Stations': num_nodes,
             'Connections': num_edges,
             'Density': density
         })
-    
+
     # Identify transfer hubs (locations served by multiple modes)
     print("\nTransfer hub analysis:")
     all_locations = set()
     location_modes = {}
-    
+
     for mode in ['bus', 'metro', 'bike']:
         result = Q.nodes().from_layers(L[mode]).execute(network)
         mode_locations = {node[0] for node in result.items}
@@ -156,7 +156,7 @@ def compute_basic_stats(network):
             if loc not in location_modes:
                 location_modes[loc] = []
             location_modes[loc].append(mode)
-    
+
     # Find transfer hubs (2+ modes)
     transfer_hubs = {loc: modes for loc, modes in location_modes.items() if len(modes) >= 2}
     print(f"  Total locations: {len(all_locations)}")
@@ -214,7 +214,7 @@ def analyze_accessibility(network):
             location = row['id'][0] if isinstance(row['id'], tuple) else row['id']
             bc = row['betweenness_centrality']
             print(f"    {location}: betweenness={bc:.4f}")
-    
+
     return df
 
 
@@ -224,11 +224,11 @@ def detect_service_zones(network):
     """
     print("\n[3.3] Detecting service zones...")
     partition_dict = louvain_multilayer(network, random_state=42)
-    
+
     num_zones = len(set(partition_dict.values()))
     print(f"\nService zone detection:")
     print(f"  Zones identified: {num_zones}")
-    
+
     # Analyze zone composition
     zones = {}
     for node, zone_id in partition_dict.items():
@@ -239,13 +239,13 @@ def detect_service_zones(network):
         if location not in zones[zone_id]:
             zones[zone_id][location] = []
         zones[zone_id][location].append(mode)
-    
+
     print("\nService zone composition:")
     for zone_id, locations in sorted(zones.items()):
         print(f"\n  Zone {zone_id}: {len(locations)} locations")
         for loc, modes in list(locations.items())[:4]:
             print(f"    {loc}: {', '.join(modes)}")
-    
+
     return partition_dict
 
 
@@ -260,18 +260,18 @@ def visualize_and_interpret(network, accessibility_df, partition_dict):
         return
 
     np.random.seed(DEFAULT_SEED)
-    
+
     network.assign_partition(partition_dict)
-    
+
     print("\n[4.1] Creating visualizations...")
-    
+
     fig, axes = plt.subplots(2, 2, figsize=(14, 12))
-    
+
     # Plot 1: Network structure
     plt.sca(axes[0, 0])
     network.visualize_network(show=False, axis=axes[0, 0])
     axes[0, 0].set_title("Multi-Modal Transport Network")
-    
+
     # Plot 2: Connectivity by mode
     plt.sca(axes[0, 1])
     for mode in ['bus', 'metro', 'bike']:
@@ -289,7 +289,7 @@ def visualize_and_interpret(network, accessibility_df, partition_dict):
     axes[0, 1].set_title('Connectivity Distribution by Mode')
     axes[0, 1].legend()
     axes[0, 1].grid(True, alpha=0.3)
-    
+
     # Plot 3: Mode coverage
     plt.sca(axes[1, 0])
     mode_coverage = []
@@ -300,11 +300,11 @@ def visualize_and_interpret(network, accessibility_df, partition_dict):
     axes[1, 0].set_ylabel('Number of Stations')
     axes[1, 0].set_title('Network Coverage by Mode')
     axes[1, 0].grid(True, alpha=0.3, axis='y')
-    
+
     # Plot 4: Accessibility metrics
     plt.sca(axes[1, 1])
-    axes[1, 1].scatter(accessibility_df['degree'], 
-                      accessibility_df['betweenness_centrality'], 
+    axes[1, 1].scatter(accessibility_df['degree'],
+                      accessibility_df['betweenness_centrality'],
                       c=accessibility_df['closeness_centrality'],
                       cmap='viridis', alpha=0.6, s=100)
     axes[1, 1].set_xlabel('Degree (Direct Connections)')
@@ -313,38 +313,38 @@ def visualize_and_interpret(network, accessibility_df, partition_dict):
     cbar = plt.colorbar(axes[1, 1].collections[0], ax=axes[1, 1])
     cbar.set_label('Closeness Centrality')
     axes[1, 1].grid(True, alpha=0.3)
-    
+
     plt.tight_layout()
     plt.savefig('/tmp/transport_network_analysis.png', dpi=150)
     print("Visualization saved to /tmp/transport_network_analysis.png")
-    
+
     # Interpretation
     print("\n[4.2] Interpretation:")
     print("""
     Key Findings:
-    
+
     1. MODAL CHARACTERISTICS:
        - Bus: High coverage, dense network (last-mile connectivity)
        - Metro: Sparse but fast backbone (long-distance travel)
        - Bike: Recreational/short trips (complements public transit)
-    
+
     2. TRANSFER HUBS:
        - CityHall, Mall, Train_Station serve as major transfer points
        - High betweenness centrality indicates critical role in network
        - These locations enable seamless multi-modal journeys
-    
+
     3. SERVICE ZONES:
        - Communities align with geographic neighborhoods
        - Each zone is well-served by complementary modes
        - Zone structure suggests natural service boundaries
-    
+
     4. TRANSPORT INSIGHTS:
        - Multi-modal integration is key to network efficiency
        - Critical nodes (transfer hubs) require extra capacity
        - Bus network provides essential coverage gaps
        - Metro serves as high-capacity backbone
        - Bike-share complements fixed-route transit
-    
+
     5. PLANNING IMPLICATIONS:
        - Invest in transfer hub infrastructure
        - Ensure multi-modal integration at key points
@@ -359,20 +359,20 @@ def main():
     print("\nAnalyzing multi-modal urban transportation network.")
 
     np.random.seed(DEFAULT_SEED)
-    
+
     # Step 1: Create network
     network = create_transport_network()
-    
+
     # Step 2: Basic statistics
     compute_basic_stats(network)
-    
+
     # Step 3: Analysis pipeline
     accessibility_df = analyze_accessibility(network)
     partition_dict = detect_service_zones(network)
-    
+
     # Step 4: Visualization and interpretation
     visualize_and_interpret(network, accessibility_df, partition_dict)
-    
+
     print("\n" + "="*70)
     print("CASE STUDY COMPLETE")
     print("="*70)

@@ -14,11 +14,11 @@ from py3plex.algorithms.statistics.stats_comparison import compare_multilayer_ne
 
 def main():
     """Main demonstration function."""
-    
+
     print("=" * 70)
     print("Statistical Comparison of Multilayer Networks - Example")
     print("=" * 70)
-    
+
     # Create Network 1: Dense social network
     print("\n1. Creating first network (dense)...")
     net1 = multinet.multi_layer_network(directed=False)
@@ -35,9 +35,9 @@ def main():
         ['Alice', 'facebook', 'Alice', 'twitter', 1],
         ['Bob', 'facebook', 'Bob', 'twitter', 1],
     ], input_type='list')
-    
+
     print(f"   Network 1: {len(list(net1.get_nodes()))} nodes, {len(list(net1.get_edges()))} edges")
-    
+
     # Create Network 2: Sparse social network
     print("\n2. Creating second network (sparse)...")
     net2 = multinet.multi_layer_network(directed=False)
@@ -50,9 +50,9 @@ def main():
         # Inter-layer connections
         ['Alice', 'facebook', 'Alice', 'twitter', 1],
     ], input_type='list')
-    
+
     print(f"   Network 2: {len(list(net2.get_nodes()))} nodes, {len(list(net2.get_edges()))} edges")
-    
+
     # Perform statistical comparison
     print("\n3. Comparing networks using permutation test...")
     results = compare_multilayer_networks(
@@ -63,11 +63,11 @@ def main():
         correction='fdr_bh',
         alpha=0.05
     )
-    
+
     print("\n4. Results:")
     print("-" * 70)
     print(results.to_string(index=False))
-    
+
     # Show significant differences
     print("\n5. Statistically Significant Differences (α = 0.05):")
     print("-" * 70)
@@ -84,10 +84,10 @@ def main():
             print()
     else:
         print("   No statistically significant differences found.")
-    
+
     # Example with multiple networks
     print("\n6. Comparing three networks using Kruskal-Wallis test...")
-    
+
     # Create third network
     net3 = multinet.multi_layer_network(directed=False)
     net3.add_edges([
@@ -97,7 +97,7 @@ def main():
         ['Alice', 'facebook', 'Alice', 'twitter', 1],
         ['Bob', 'facebook', 'Bob', 'twitter', 1],
     ], input_type='list')
-    
+
     results_multi = compare_multilayer_networks(
         [net1, net2, net3],
         metrics=['density'],
@@ -105,11 +105,11 @@ def main():
         correction='bonferroni',
         alpha=0.05
     )
-    
+
     print("\n   Multi-network comparison results:")
     print("-" * 70)
     print(results_multi[['metric', 'layer', 'p_value', 'adjusted_p_value', 'significant']].to_string(index=False))
-    
+
     print("\n" + "=" * 70)
     print("Example completed successfully!")
     print("=" * 70)

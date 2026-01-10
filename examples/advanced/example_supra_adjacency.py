@@ -78,7 +78,7 @@ if not os.path.exists(edgelist_path):
     print("  Skipping multiplex example...")
 else:
     print("  Loading multiplex network...")
-    
+
     # Create a multiplex network
     # Multiplex: same nodes across layers, only intra-layer edges
     comNet = multinet.multi_layer_network(
@@ -89,13 +89,13 @@ else:
         directed=False,
         input_type='multiplex_edges'
     )
-    
+
     print("  [OK] Network loaded")
-    
+
     # Display basic statistics
     print("\n  Network statistics:")
     comNet.basic_stats()
-    
+
     # Load layer name mapping if available
     if os.path.exists(layer_names_path):
         print(f"\n  Loading layer names from: {layer_names_path}")
@@ -103,15 +103,15 @@ else:
         print("  [OK] Layer names loaded")
     else:
         print(f"\n  [X] Layer names file not found: {layer_names_path}")
-    
+
     # Compute supra-adjacency matrix
     print("\n  Computing supra-adjacency matrix...")
     mat = comNet.get_supra_adjacency_matrix()
-    
+
     print(f"  [OK] Matrix computed")
     print(f"  Matrix shape: {mat.shape}")
     print(f"  Rows/Cols per layer: {mat.shape[0] // comNet.layer_count}")
-    
+
     # Visualize the matrix structure
     print("\n  Visualizing matrix structure...")
     try:
@@ -120,11 +120,11 @@ else:
         print("  [OK] Visualization complete (close window to continue)")
     except Exception as e:
         print(f"  [X] Visualization error: {e}")
-    
+
     # Show node ordering in matrix
     print("\n  Node ordering in matrix:")
     print("  " + "-" * 66)
-    
+
     # Display sample edges to show structure
     print("\n  Sample edges (showing internal representation):")
     edge_count = 0
@@ -134,9 +134,9 @@ else:
             edge_count += 1
         else:
             break
-    
+
     print(f"\n  ... ({len(list(comNet.get_edges()))} total edges)")
-    
+
     # Show node order in matrix
     print("\n  Node order used in matrix construction:")
     if hasattr(comNet, 'node_order_in_matrix'):

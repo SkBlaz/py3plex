@@ -56,11 +56,11 @@ edges = [
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Bob', 'target': 'David', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
-    
+
     # Work layer
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work', 'weight': 1.0},
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work', 'weight': 1.0},
-    
+
     # Transport layer
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'transport', 'target_type': 'transport', 'weight': 1.0},
 ]
@@ -80,16 +80,16 @@ print("-" * 80)
 @dsl_operator("layer_activity", description="Count edges in current layers", category="analytics")
 def layer_activity_op(context: DSLExecutionContext):
     """Compute activity score based on number of edges in selected layers.
-    
+
     Returns a dict mapping each node to the number of edges it has
     in the currently selected layers.
     """
     if not context.current_layers:
         return {}
-    
+
     # Get the core network
     G = context.graph.core_network
-    
+
     # Count edges for each node in selected layers
     activity = {}
     for node in context.current_nodes or []:
@@ -102,18 +102,18 @@ def layer_activity_op(context: DSLExecutionContext):
                 activity[node] = 0
         else:
             activity[node] = 0
-    
+
     return activity
 
 
 @dsl_operator("layer_diversity", description="Measure presence across layers", category="analytics")
 def layer_diversity_op(context: DSLExecutionContext):
     """Compute diversity score = number of layers a node appears in.
-    
+
     Returns a dict mapping each node to its layer diversity score.
     """
     diversity = {}
-    
+
     # Count layers for each unique node ID
     node_layers = {}
     for node in context.current_nodes or []:
@@ -122,20 +122,20 @@ def layer_diversity_op(context: DSLExecutionContext):
             if node_id not in node_layers:
                 node_layers[node_id] = set()
             node_layers[node_id].add(layer)
-    
+
     # Assign diversity scores
     for node in context.current_nodes or []:
         if isinstance(node, tuple) and len(node) >= 2:
             node_id = node[0]
             diversity[node] = len(node_layers.get(node_id, set()))
-    
+
     return diversity
 
 
 @dsl_operator("constant_score", description="Return constant value for testing", category="test")
 def constant_score_op(context: DSLExecutionContext):
     """Return a constant score for all nodes.
-    
+
     This is a simple example showing scalar return values.
     """
     return 42.0

@@ -205,15 +205,15 @@ def example_5_comparison() -> None:
         resampling=ResamplingStrategy.PERTURBATION,
         random_seed=DEFAULT_SEED,
     )
-    
+
     print("\nComparison (first 3 nodes):")
     print(f"{'Node':<15} {'Deterministic':<15} {'Mean±Std':<20}")
     print("-" * 50)
-    
+
     for i in range(min(3, len(result_det))):
         node = result_det.index[i]
         det_val = result_det.mean[i]
-        
+
         # Find corresponding node in uncertain result
         if node in result_unc.index:
             unc_idx = result_unc.index.index(node)

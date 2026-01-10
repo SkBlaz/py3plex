@@ -52,13 +52,13 @@ edges = [
     {'source': 'Alice', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Eve', 'target': 'Grace', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Frank', 'target': 'Henry', 'source_type': 'social', 'target_type': 'social'},
-    
+
     # Work connections
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'David', 'target': 'Eve', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'Eve', 'target': 'Frank', 'source_type': 'work', 'target_type': 'work'},
-    
+
     # Hobby connections
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'hobby', 'target_type': 'hobby'},
     {'source': 'Eve', 'target': 'Frank', 'source_type': 'hobby', 'target_type': 'hobby'},
