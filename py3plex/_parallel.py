@@ -246,7 +246,7 @@ def _test_parallel_determinism():
     for i, (r_s, r_p) in enumerate(zip(results_serial, results_parallel)):
         assert abs(r_s - r_p) < 1e-10, f"Mismatch at index {i}: {r_s} != {r_p}"
     
-    print("✓ Determinism test passed: serial and parallel results are identical")
+    print("[OK] Determinism test passed: serial and parallel results are identical")
     
     # Test 2: Different base seeds should produce different results
     seeds_different = spawn_seeds(123, n_tasks)
@@ -254,13 +254,13 @@ def _test_parallel_determinism():
     
     # At least one result should be different
     assert any(abs(r1 - r2) > 1e-6 for r1, r2 in zip(results_serial, results_different))
-    print("✓ Independence test passed: different base seeds produce different results")
+    print("[OK] Independence test passed: different base seeds produce different results")
     
     # Test 3: None seed should work
     seeds_none = spawn_seeds(None, n_tasks)
     results_none = parallel_map(_compute_random_value, seeds_none, n_jobs=1)
     assert len(results_none) == n_tasks
-    print("✓ None seed test passed")
+    print("[OK] None seed test passed")
     
     return True
 

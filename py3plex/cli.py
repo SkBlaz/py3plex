@@ -1768,7 +1768,7 @@ def cmd_dsl_lint(args: argparse.Namespace) -> int:
                         if d.suggested_fix:
                             print(f"    → Suggestion: {d.suggested_fix.replacement}")
                 else:
-                    print("\n✓ No issues found")
+                    print("\n[OK] No issues found")
         else:
             # Just run linting
             diagnostics = lint(query_ast, graph=network)
@@ -1796,7 +1796,7 @@ def cmd_dsl_lint(args: argparse.Namespace) -> int:
                             print(f"  → Suggestion: {d.suggested_fix.replacement}")
                         print()
                 else:
-                    print("✓ No issues found")
+                    print("[OK] No issues found")
         
         # Determine exit code
         has_errors = any(d.severity == "error" for d in (result.diagnostics if args.explain else diagnostics))
@@ -2985,7 +2985,7 @@ def cmd_check(args: argparse.Namespace) -> int:
         issues = linter.lint()
 
         if not issues:
-            logger.info("✓ No issues found!")
+            logger.info("[OK] No issues found!")
             return 0
 
         # Print all issues
@@ -2999,13 +2999,13 @@ def cmd_check(args: argparse.Namespace) -> int:
 
         # Determine exit code
         if linter.has_errors():
-            logger.error("\n✗ Validation failed with errors")
+            logger.error("\n[FAIL] Validation failed with errors")
             return 1
         elif linter.has_warnings() and args.strict:
-            logger.error("\n✗ Validation failed (strict mode: warnings treated as errors)")
+            logger.error("\n[FAIL] Validation failed (strict mode: warnings treated as errors)")
             return 1
         else:
-            logger.info("\n✓ Validation passed (with warnings)")
+            logger.info("\n[OK] Validation passed (with warnings)")
             return 0
 
     except Exception as e:
