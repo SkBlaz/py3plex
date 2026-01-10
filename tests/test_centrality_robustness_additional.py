@@ -12,6 +12,7 @@ from py3plex.centrality.robustness import (
     _remove_node,
 )
 from py3plex.core import multinet
+from py3plex.exceptions import Py3plexException
 
 
 def _chain_network() -> multinet.multi_layer_network:
@@ -92,11 +93,11 @@ def test_avg_shortest_path_large_component_skips_with_warning():
 
 
 def test_compute_metric_invalid_choice_raises():
-    """_compute_metric should raise ValueError on unsupported metrics."""
+    """_compute_metric should raise Py3plexException on unsupported metrics."""
     net = _chain_network()
     rng = np.random.default_rng(0)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(Py3plexException, match="Unimplemented metric"):
         _compute_metric(net, "not_a_metric", {}, rng)
 
 

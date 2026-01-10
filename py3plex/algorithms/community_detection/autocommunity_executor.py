@@ -202,7 +202,8 @@ def _compute_graph_regime(network: Any) -> Dict[str, float]:
             features['max_degree'] = float(np.max(degrees))
         
         # Layer density variance
-        layers = network.get_layers()
+        # Extract layer names directly from nodes without computing layout
+        layers = list({node[1] for node in network.get_nodes()})
         if len(layers) > 1:
             densities = []
             for layer in layers:

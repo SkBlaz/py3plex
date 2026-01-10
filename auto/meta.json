@@ -1,6 +1,6 @@
 {
   "directed": false,
-  "multi": true,
+  "multi": false,
   "name": null,
   "created_by": "py3plex",
   "py3plex_version": null,
