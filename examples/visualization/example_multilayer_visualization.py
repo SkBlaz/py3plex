@@ -22,6 +22,7 @@ from simple one-liners to complex custom multi-edge styling.
 
 import os
 import random
+import argparse
 import numpy as np
 from collections import Counter
 
@@ -36,6 +37,8 @@ from py3plex.visualization.colors import colors_default
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.utils import get_dataset_path
 from py3plex.exceptions import Py3plexIOError
+from py3plex.wrappers import train_node2vec_embedding
+from py3plex.visualization.embedding_visualization import embedding_tools
 
 # Set random seeds for reproducible visualizations
 random.seed(42)
