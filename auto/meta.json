@@ -7,6 +7,6 @@
   "schema_version": "1.0",
   "global_attrs": {},
   "layers": [
-    "L1"
+    "layer1"
   ]
 }
