@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from py3plex.workflows import WorkflowConfig, WorkflowRunner
+from py3plex.exceptions import Py3plexFormatError, Py3plexIOError
 
 
 def test_workflow_config_from_json():
@@ -277,7 +278,7 @@ def test_workflow_unsupported_format():
         config_path = f.name
 
     try:
-        with pytest.raises(ValueError, match="Unsupported config format"):
+        with pytest.raises(Py3plexFormatError, match="Unsupported configuration file format"):
             WorkflowConfig.from_file(config_path)
     finally:
         Path(config_path).unlink()
@@ -285,5 +286,5 @@ def test_workflow_unsupported_format():
 
 def test_workflow_file_not_found():
     """Test error handling for missing config file."""
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(Py3plexIOError, match="Configuration file not found"):
         WorkflowConfig.from_file("nonexistent_config.yaml")

@@ -417,10 +417,25 @@ def _multilayer_graph_to_ir(graph) -> GraphIR:
     # Extract layers - graph.layers is Dict[LayerID, Layer], iterate over .values()
     layers = [layer.id for layer in graph.layers.values()] if graph.layers else None
     
+    # Check if graph has parallel edges (multiple edges between same node pair)
+    edge_pairs = set()
+    has_parallel_edges = False
+    for edge in graph.edges:
+        if graph.directed:
+            pair = (edge.src, edge.dst, edge.src_layer, edge.dst_layer)
+        else:
+            # Normalize undirected edge pairs
+            pair = tuple(sorted([(edge.src, edge.src_layer), (edge.dst, edge.dst_layer)]))
+        
+        if pair in edge_pairs:
+            has_parallel_edges = True
+            break
+        edge_pairs.add(pair)
+    
     # Build metadata
     meta = GraphMeta(
         directed=graph.directed,
-        multi=True,  # MultiLayerGraph supports multi-edges
+        multi=has_parallel_edges,  # Only set multi=True if there are actually parallel edges
         name=None,
         global_attrs=graph.attributes.copy() if graph.attributes else {},
         layers=layers,
@@ -561,6 +576,23 @@ def _ir_to_multilayer_graph(ir: GraphIR):
     if ir.meta.layers:
         for layer_id in ir.meta.layers:
             graph.add_layer(Layer(id=layer_id))
+    
+    # Collect all layer IDs referenced in edges
+    edge_layers = set()
+    for idx in range(len(ir.edges.edge_id)):
+        if ir.edges.src_layer and ir.edges.src_layer[idx] is not None:
+            edge_layers.add(ir.edges.src_layer[idx])
+        if ir.edges.dst_layer and ir.edges.dst_layer[idx] is not None:
+            edge_layers.add(ir.edges.dst_layer[idx])
+    
+    # Add default layer if edges reference it (e.g., from NetworkX conversion)
+    if edge_layers:
+        for layer_id in edge_layers:
+            if layer_id not in graph.layers:
+                graph.add_layer(Layer(id=layer_id))
+    elif len(ir.edges.edge_id) > 0:
+        # If there are edges but no layers specified, add a default layer
+        graph.add_layer(Layer(id="default"))
     
     # Add nodes
     for idx in range(len(ir.nodes.node_id)):
