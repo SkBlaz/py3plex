@@ -4706,15 +4706,23 @@ def _execute_nodes_with_community(
     
     # Run once deterministically
     random_state = config.get("random_state", 0)
-    partition_dict = community_func(
-        network,
-        seed=random_state,
-        gamma=config.get("gamma", 1.0),
-        omega=config.get("omega", 1.0),
-        n_iterations=config.get("n_iterations", 2),
-        k=config.get("k"),  # Pass k for spectral clustering
-        **{k: v for k, v in config.items() if k not in ['method', 'partition_name', 'random_state', 'gamma', 'omega', 'n_iterations', 'k']}
-    )
+    
+    # Build kwargs for community function
+    func_kwargs = {
+        'seed': random_state,
+        'gamma': config.get("gamma", 1.0),
+        'omega': config.get("omega", 1.0),
+        'n_iterations': config.get("n_iterations", 2),
+    }
+    
+    # Only pass k if it's provided (for spectral clustering methods)
+    if config.get("k") is not None:
+        func_kwargs['k'] = config.get("k")
+    
+    # Add any other config items not already handled
+    func_kwargs.update({k: v for k, v in config.items() if k not in ['method', 'partition_name', 'random_state', 'gamma', 'omega', 'n_iterations', 'k']})
+    
+    partition_dict = community_func(network, **func_kwargs)
     
     # Attach partition to network
     network.assign_partition(partition_dict, name=partition_name)
