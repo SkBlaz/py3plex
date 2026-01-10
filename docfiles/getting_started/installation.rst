@@ -46,7 +46,21 @@ Basic Installation
 Install from PyPI (Recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The latest stable release is available on PyPI:
+We recommend using `uv <https://docs.astral.sh/uv/>`_ for fast, reliable Python environment management:
+
+.. code-block:: bash
+
+    # Install uv (if not already installed)
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    # Create and activate virtual environment
+    uv venv .venv
+    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+    # Install py3plex
+    uv pip install py3plex
+
+**Alternative (traditional pip):**
 
 .. code-block:: bash
 
@@ -59,6 +73,18 @@ Install from Source
 ~~~~~~~~~~~~~~~~~~~
 
 For development or to access the latest features:
+
+**Using uv (recommended):**
+
+.. code-block:: bash
+
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    uv venv .venv
+    source .venv/bin/activate
+    uv pip install -e .
+
+**Using pip:**
 
 .. code-block:: bash
 
@@ -169,16 +195,29 @@ Development Installation
 
 For contributors, install with development tools (testing, linting):
 
-**Recommended (Makefile-based):**
+**Recommended (using uv):**
 
 .. code-block:: bash
 
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
-    make setup        # Create virtual environment
+    # Install uv if not already installed
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Create environment and install
+    uv venv .venv
+    source .venv/bin/activate
+    uv pip install -e ".[dev]"
+
+**Using Makefile:**
+
+.. code-block:: bash
+
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    make setup        # Create virtual environment (uses uv if available)
     make dev-install  # Install with dev dependencies
 
-**Alternative (manual):**
+**Alternative (traditional pip):**
 
 .. code-block:: bash
 
@@ -187,7 +226,7 @@ For contributors, install with development tools (testing, linting):
     python -m pip install --upgrade pip
     python -m pip install -e ".[dev]"
 
-Both methods install:
+All methods install:
 
 * pytest and coverage tools
 * black, ruff, isort for code formatting
@@ -292,6 +331,28 @@ Virtual Environment Setup
 --------------------------
 
 We strongly recommend using a virtual environment to prevent dependency conflicts:
+
+Using uv (Recommended)
+~~~~~~~~~~~~~~~~~~~~~~
+
+`uv <https://docs.astral.sh/uv/>`_ is a fast Python package installer and resolver:
+
+.. code-block:: bash
+
+    # Install uv
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    
+    # Create virtual environment
+    uv venv .venv
+    
+    # Activate (Linux/macOS)
+    source .venv/bin/activate
+    
+    # Activate (Windows)
+    .venv\Scripts\activate
+    
+    # Install py3plex inside the environment
+    uv pip install py3plex
 
 Using venv
 ~~~~~~~~~~
