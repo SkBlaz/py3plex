@@ -149,11 +149,27 @@
 <p>This guide covers <strong>development workflows</strong>, <strong>Makefile commands</strong>, <strong>testing</strong>, and <strong>contributing</strong> to py3plex. Keep it handy as your single reference while coding, testing, and writing docs.</p>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<p>Clone the repository and install in development mode. Requirements: Python 3.8+ and <code class="docutils literal notranslate"><span class="pre">pip</span></code>; <code class="docutils literal notranslate"><span class="pre">make</span></code> is recommended for the shortcuts below. Keep your virtual environment active so the same interpreter is used for every command.</p>
+<p>Clone the repository and install in development mode. Requirements: Python 3.8+, <code class="docutils literal notranslate"><span class="pre">pip</span></code> or <code class="docutils literal notranslate"><span class="pre">uv</span></code>; <code class="docutils literal notranslate"><span class="pre">make</span></code> is recommended for the shortcuts below. Keep your virtual environment active so the same interpreter is used for every command.</p>
+<p><strong>Using uv (recommended):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 
-<span class="c1"># Setup development environment (creates .venv)</span>
+<span class="c1"># Install uv if not already installed</span>
+curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+
+<span class="c1"># Create virtual environment</span>
+uv<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+
+<span class="c1"># Install package in editable mode with dev dependencies</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+<p><strong>Using Makefile (auto-detects uv):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+
+<span class="c1"># Setup development environment (creates .venv, uses uv if available)</span>
 make<span class="w"> </span>setup
 
 <span class="c1"># Install package in editable mode with dev dependencies</span>
@@ -195,6 +211,7 @@ make<span class="w"> </span>ci<span class="w">             </span><span class="c
 <p>Makefile highlights:</p>
 <ul class="simple">
 <li><p>Uses <code class="docutils literal notranslate"><span class="pre">.venv/bin/</span></code> tools when available, otherwise falls back to global tools</p></li>
+<li><p>Automatically uses <code class="docutils literal notranslate"><span class="pre">uv</span></code> if available for faster installs, otherwise falls back to <code class="docutils literal notranslate"><span class="pre">pip</span></code></p></li>
 <li><p>Colorized output with clear <strong>success/warning/error</strong> messages</p></li>
 <li><p>Works on <strong>Linux</strong> and <strong>macOS</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ci</span></code> is the superset; use it before pushing. Use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">format</span></code> / <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> / <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> for quicker local loops during development.</p></li>

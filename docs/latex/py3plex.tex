@@ -1694,7 +1694,26 @@ Contributing code, running tests, building docs
 \paragraph{Install from PyPI (Recommended)}
 \label{\detokenize{getting_started/installation:install-from-pypi-recommended}}
 \sphinxAtStartPar
-The latest stable release is available on PyPI:
+We recommend using \sphinxhref{https://docs.astral.sh/uv/}{uv}%
+\begin{footnote}[4]\sphinxAtStartFootnote
+\sphinxnolinkurl{https://docs.astral.sh/uv/}
+%
+\end{footnote} for fast, reliable Python environment management:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Install uv (if not already installed)}
+curl\PYG{+w}{ }\PYGZhy{}LsSf\PYG{+w}{ }https://astral.sh/uv/install.sh\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }sh
+
+\PYG{c+c1}{\PYGZsh{} Create and activate virtual environment}
+uv\PYG{+w}{ }venv\PYG{+w}{ }.venv
+\PYG{n+nb}{source}\PYG{+w}{ }.venv/bin/activate\PYG{+w}{  }\PYG{c+c1}{\PYGZsh{} On Windows: .venv\PYGZbs{}Scripts\PYGZbs{}activate}
+
+\PYG{c+c1}{\PYGZsh{} Install py3plex}
+uv\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Alternative (traditional pip):}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 python\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}\PYGZhy{}upgrade\PYG{+w}{ }pip
@@ -1709,6 +1728,20 @@ This installs the core py3plex library with all required dependencies.
 \label{\detokenize{getting_started/installation:install-from-source}}
 \sphinxAtStartPar
 For development or to access the latest features:
+
+\sphinxAtStartPar
+\sphinxstylestrong{Using uv (recommended):}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
+uv\PYG{+w}{ }venv\PYG{+w}{ }.venv
+\PYG{n+nb}{source}\PYG{+w}{ }.venv/bin/activate
+uv\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }.
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Using pip:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
@@ -1862,17 +1895,31 @@ python\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }\PYG{l+s+s
 For contributors, install with development tools (testing, linting):
 
 \sphinxAtStartPar
-\sphinxstylestrong{Recommended (Makefile\sphinxhyphen{}based):}
+\sphinxstylestrong{Recommended (using uv):}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
 \PYG{n+nb}{cd}\PYG{+w}{ }py3plex
-make\PYG{+w}{ }setup\PYG{+w}{        }\PYG{c+c1}{\PYGZsh{} Create virtual environment}
+\PYG{c+c1}{\PYGZsh{} Install uv if not already installed}
+curl\PYG{+w}{ }\PYGZhy{}LsSf\PYG{+w}{ }https://astral.sh/uv/install.sh\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }sh
+\PYG{c+c1}{\PYGZsh{} Create environment and install}
+uv\PYG{+w}{ }venv\PYG{+w}{ }.venv
+\PYG{n+nb}{source}\PYG{+w}{ }.venv/bin/activate
+uv\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}.[dev]\PYGZdq{}}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Using Makefile:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
+make\PYG{+w}{ }setup\PYG{+w}{        }\PYG{c+c1}{\PYGZsh{} Create virtual environment (uses uv if available)}
 make\PYG{+w}{ }dev\PYGZhy{}install\PYG{+w}{  }\PYG{c+c1}{\PYGZsh{} Install with dev dependencies}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Alternative (manual):}
+\sphinxstylestrong{Alternative (traditional pip):}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
@@ -1882,7 +1929,7 @@ python\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}e
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-Both methods install:
+All methods install:
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
@@ -2082,6 +2129,33 @@ python\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }node2vec
 \label{\detokenize{getting_started/installation:virtual-environment-setup}}
 \sphinxAtStartPar
 We strongly recommend using a virtual environment to prevent dependency conflicts:
+
+
+\paragraph{Using uv (Recommended)}
+\label{\detokenize{getting_started/installation:using-uv-recommended}}
+\sphinxAtStartPar
+\sphinxhref{https://docs.astral.sh/uv/}{uv}%
+\begin{footnote}[5]\sphinxAtStartFootnote
+\sphinxnolinkurl{https://docs.astral.sh/uv/}
+%
+\end{footnote} is a fast Python package installer and resolver:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Install uv}
+curl\PYG{+w}{ }\PYGZhy{}LsSf\PYG{+w}{ }https://astral.sh/uv/install.sh\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }sh
+
+\PYG{c+c1}{\PYGZsh{} Create virtual environment}
+uv\PYG{+w}{ }venv\PYG{+w}{ }.venv
+
+\PYG{c+c1}{\PYGZsh{} Activate (Linux/macOS)}
+\PYG{n+nb}{source}\PYG{+w}{ }.venv/bin/activate
+
+\PYG{c+c1}{\PYGZsh{} Activate (Windows)}
+.venv\PYG{l+s+se}{\PYGZbs{}S}cripts\PYG{l+s+se}{\PYGZbs{}a}ctivate
+
+\PYG{c+c1}{\PYGZsh{} Install py3plex inside the environment}
+uv\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
 
 
 \paragraph{Using venv}
@@ -2375,7 +2449,7 @@ If you encounter installation issues:
 \item {} 
 \sphinxAtStartPar
 Check \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[4]\sphinxAtStartFootnote
+\begin{footnote}[6]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}
@@ -2426,7 +2500,7 @@ You can run this tutorial in your browser without any local setup:
 
 \sphinxhref{https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/tutorial\_10min.ipynb}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e79852128a5f83c92496b9d734ca52d01e009a39/colab-badge}.svg}}
 %
-\begin{footnote}[5]\sphinxAtStartFootnote
+\begin{footnote}[7]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/tutorial\_10min.ipynb}
 %
 \end{footnote}
@@ -7051,7 +7125,7 @@ You can run this tutorial in your browser without any local installation:
 
 \sphinxhref{https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/community\_detection.ipynb}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e79852128a5f83c92496b9d734ca52d01e009a39/colab-badge}.svg}}
 %
-\begin{footnote}[6]\sphinxAtStartFootnote
+\begin{footnote}[8]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/community\_detection.ipynb}
 %
 \end{footnote}
@@ -10234,7 +10308,7 @@ You can run this tutorial in your browser without any local installation:
 
 \sphinxhref{https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/simulate\_dynamics.ipynb}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e79852128a5f83c92496b9d734ca52d01e009a39/colab-badge}.svg}}
 %
-\begin{footnote}[7]\sphinxAtStartFootnote
+\begin{footnote}[9]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/simulate\_dynamics.ipynb}
 %
 \end{footnote}
@@ -14011,7 +14085,7 @@ You can run this tutorial in your browser without any local installation:
 
 \sphinxhref{https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/query\_with\_dsl.ipynb}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e79852128a5f83c92496b9d734ca52d01e009a39/colab-badge}.svg}}
 %
-\begin{footnote}[8]\sphinxAtStartFootnote
+\begin{footnote}[10]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/query\_with\_dsl.ipynb}
 %
 \end{footnote}
@@ -81738,7 +81812,7 @@ Complete working examples and analysis recipes.
 \label{\detokenize{examples/index:examples-recipes}}\label{\detokenize{examples/index::doc}}
 \sphinxAtStartPar
 Browse runnable scripts grouped by topic. Every entry below corresponds to a file in the \sphinxcode{\sphinxupquote{examples/}} directory (\sphinxhref{https://github.com/SkBlaz/py3plex/tree/master/examples}{GitHub listing}%
-\begin{footnote}[9]\sphinxAtStartFootnote
+\begin{footnote}[11]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
 %
 \end{footnote}), so you can copy, run, and adapt it directly. Run commands from the repository root with your virtual environment activated, and treat all paths as relative to \sphinxcode{\sphinxupquote{examples/}}.
@@ -82336,7 +82410,7 @@ Complete domain\sphinxhyphen{}specific analysis pipelines with interpretation. E
 
 \sphinxAtStartPar
 All case studies are in the \sphinxcode{\sphinxupquote{examples/case\_studies/}} directory. See the \sphinxhref{https://github.com/SkBlaz/py3plex/tree/master/examples/case\_studies/README.md}{Case Studies README}%
-\begin{footnote}[10]\sphinxAtStartFootnote
+\begin{footnote}[12]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/tree/master/examples/case\_studies/README.md}
 %
 \end{footnote} for complete documentation.
@@ -85934,7 +86008,7 @@ See {\hyperref[\detokenize{project/citing::doc}]{\sphinxcrossref{\DUrole{doc}{Ci
 \label{\detokenize{project/changelog:changelog}}\label{\detokenize{project/changelog::doc}}
 \sphinxAtStartPar
 This page summarizes the release history of py3plex. For granular, date\sphinxhyphen{}stamped entries, see \sphinxhref{https://github.com/SkBlaz/py3plex/releases}{GitHub Releases}%
-\begin{footnote}[11]\sphinxAtStartFootnote
+\begin{footnote}[13]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/releases}
 %
 \end{footnote} or the root \sphinxcode{\sphinxupquote{CHANGELOG.md}}.
@@ -86558,11 +86632,11 @@ See {\hyperref[\detokenize{project/contributing::doc}]{\sphinxcrossref{\DUrole{d
 \label{\detokenize{project/roadmap:roadmap-vision}}\label{\detokenize{project/roadmap::doc}}
 \sphinxAtStartPar
 This page outlines the vision and planned development for py3plex. Roadmaps are snapshots and may shift with user feedback. For the latest updates, see \sphinxhref{https://github.com/SkBlaz/py3plex/releases}{GitHub Releases}%
-\begin{footnote}[12]\sphinxAtStartFootnote
+\begin{footnote}[14]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/releases}
 %
 \end{footnote} and \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[13]\sphinxAtStartFootnote
+\begin{footnote}[15]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -86755,7 +86829,7 @@ Additional domain\sphinxhyphen{}specific toolkits (bioinformatics, social, trans
 
 \sphinxAtStartPar
 \sphinxstylestrong{Note:} Feature priorities may shift based on community feedback and research developments. Track specific feature requests and vote on priorities through \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[14]\sphinxAtStartFootnote
+\begin{footnote}[16]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -86820,7 +86894,7 @@ Citing your research in the codebase
 \label{\detokenize{project/roadmap:community-requests}}
 \sphinxAtStartPar
 The following features have been requested by the community. For the full list and to vote on priorities, see \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[15]\sphinxAtStartFootnote
+\begin{footnote}[17]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -87842,7 +87916,7 @@ See \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{architecture}}} for system archi
 \item {} 
 \sphinxAtStartPar
 Browse \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{existing issues}%
-\begin{footnote}[16]\sphinxAtStartFootnote
+\begin{footnote}[18]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}
@@ -87850,7 +87924,7 @@ Browse \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{existing issues}%
 \item {} 
 \sphinxAtStartPar
 Check \sphinxhref{https://github.com/SkBlaz/py3plex/issues?q=is\%3Aissue+is\%3Aopen+label\%3A\%22good+first+issue\%22}{good first issues}%
-\begin{footnote}[17]\sphinxAtStartFootnote
+\begin{footnote}[19]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues?q=is\%3Aissue+is\%3Aopen+label\%3A\%22good+first+issue\%22}
 %
 \end{footnote}
@@ -89274,7 +89348,7 @@ We maintain a list of publications using py3plex to showcase applications and bu
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex GitHub}%
-\begin{footnote}[18]\sphinxAtStartFootnote
+\begin{footnote}[20]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} \sphinxhyphen{} Source code and issues
@@ -89282,7 +89356,7 @@ We maintain a list of publications using py3plex to showcase applications and bu
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://doi.org/10.1007/s41109-019-0203-7}{Applied Network Science paper}%
-\begin{footnote}[19]\sphinxAtStartFootnote
+\begin{footnote}[21]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://doi.org/10.1007/s41109-019-0203-7}
 %
 \end{footnote} \sphinxhyphen{} Primary publication
@@ -90491,7 +90565,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://skblaz.github.io/py3plex/}{Py3plex Documentation}%
-\begin{footnote}[20]\sphinxAtStartFootnote
+\begin{footnote}[22]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://skblaz.github.io/py3plex/}
 %
 \end{footnote}
@@ -90503,7 +90577,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.docker.com/}{Docker Documentation}%
-\begin{footnote}[21]\sphinxAtStartFootnote
+\begin{footnote}[23]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.docker.com/}
 %
 \end{footnote}
@@ -90511,7 +90585,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.docker.com/compose/}{Docker Compose Documentation}%
-\begin{footnote}[22]\sphinxAtStartFootnote
+\begin{footnote}[24]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.docker.com/compose/}
 %
 \end{footnote}
@@ -90519,7 +90593,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md}{DOCKER.md}%
-\begin{footnote}[23]\sphinxAtStartFootnote
+\begin{footnote}[25]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md}
 %
 \end{footnote} \sphinxhyphen{} Main Docker guide in the repository
@@ -91688,7 +91762,7 @@ For networks \textgreater{}100k nodes, consider exporting to a faster backend fo
 
 \sphinxAtStartPar
 For performance issues, open an issue on \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[24]\sphinxAtStartFootnote
+\begin{footnote}[26]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -92527,7 +92601,7 @@ GUI tests run automatically on GitHub Actions for any changes to the \sphinxcode
 
 \sphinxhref{https://github.com/SkBlaz/py3plex/actions/workflows/gui-tests.yml}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e88da8a94cd277889f5a6d7d93e54df14ae68fa5/badge}.svg}}
 %
-\begin{footnote}[25]\sphinxAtStartFootnote
+\begin{footnote}[27]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/actions/workflows/gui-tests.yml}
 %
 \end{footnote}
@@ -92800,7 +92874,7 @@ curl\PYG{+w}{ }http://localhost:8080/api/graphs/\PYG{n+nv}{\PYGZdl{}GRAPH\PYGZus
 \label{\detokenize{gui/gui_user_guide:contributing}}
 \sphinxAtStartPar
 This GUI is part of the \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex}%
-\begin{footnote}[26]\sphinxAtStartFootnote
+\begin{footnote}[28]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} project.
@@ -92855,7 +92929,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex}%
-\begin{footnote}[27]\sphinxAtStartFootnote
+\begin{footnote}[29]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} \sphinxhyphen{} Multilayer network analysis
@@ -92863,7 +92937,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://fastapi.tiangolo.com/}{FastAPI}%
-\begin{footnote}[28]\sphinxAtStartFootnote
+\begin{footnote}[30]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://fastapi.tiangolo.com/}
 %
 \end{footnote} \sphinxhyphen{} Modern Python web framework
@@ -92871,7 +92945,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.celeryproject.org/}{Celery}%
-\begin{footnote}[29]\sphinxAtStartFootnote
+\begin{footnote}[31]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.celeryproject.org/}
 %
 \end{footnote} \sphinxhyphen{} Distributed task queue
@@ -92879,7 +92953,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://react.dev/}{React}%
-\begin{footnote}[30]\sphinxAtStartFootnote
+\begin{footnote}[32]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://react.dev/}
 %
 \end{footnote} \sphinxhyphen{} UI library
@@ -92887,7 +92961,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://vitejs.dev/}{Vite}%
-\begin{footnote}[31]\sphinxAtStartFootnote
+\begin{footnote}[33]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://vitejs.dev/}
 %
 \end{footnote} \sphinxhyphen{} Frontend build tool
@@ -92895,7 +92969,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://tailwindcss.com/}{Tailwind CSS}%
-\begin{footnote}[32]\sphinxAtStartFootnote
+\begin{footnote}[34]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://tailwindcss.com/}
 %
 \end{footnote} \sphinxhyphen{} Utility\sphinxhyphen{}first CSS
@@ -92916,7 +92990,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxstylestrong{py3plex Paper}: \sphinxhref{https://doi.org/10.1007/s41109-019-0203-7}{Applied Network Science 2019}%
-\begin{footnote}[33]\sphinxAtStartFootnote
+\begin{footnote}[35]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://doi.org/10.1007/s41109-019-0203-7}
 %
 \end{footnote}

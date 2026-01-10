@@ -6,14 +6,33 @@ This guide covers **development workflows**, **Makefile commands**, **testing**,
 Getting Started
 ---------------
 
-Clone the repository and install in development mode. Requirements: Python 3.8+ and ``pip``; ``make`` is recommended for the shortcuts below. Keep your virtual environment active so the same interpreter is used for every command.
+Clone the repository and install in development mode. Requirements: Python 3.8+, ``pip`` or ``uv``; ``make`` is recommended for the shortcuts below. Keep your virtual environment active so the same interpreter is used for every command.
+
+**Using uv (recommended):**
 
 .. code-block:: bash
 
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
     
-    # Setup development environment (creates .venv)
+    # Install uv if not already installed
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    
+    # Create virtual environment
+    uv venv .venv
+    source .venv/bin/activate
+    
+    # Install package in editable mode with dev dependencies
+    uv pip install -e ".[dev]"
+
+**Using Makefile (auto-detects uv):**
+
+.. code-block:: bash
+
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    
+    # Setup development environment (creates .venv, uses uv if available)
     make setup
     
     # Install package in editable mode with dev dependencies
@@ -57,6 +76,7 @@ The Makefile provides a streamlined development workflow. Run targets from the r
 Makefile highlights:
 
 - Uses ``.venv/bin/`` tools when available, otherwise falls back to global tools
+- Automatically uses ``uv`` if available for faster installs, otherwise falls back to ``pip``
 - Colorized output with clear **success/warning/error** messages
 - Works on **Linux** and **macOS**
 - ``make ci`` is the superset; use it before pushing. Use ``make format`` / ``make lint`` / ``make test`` for quicker local loops during development.

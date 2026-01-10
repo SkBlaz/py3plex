@@ -85,6 +85,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#virtual-environment-setup">Virtual Environment Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-uv-recommended">Using uv (Recommended)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-venv">Using venv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-conda">Using conda</a></li>
 </ul>
@@ -248,7 +249,19 @@
 <h2>Basic Installation<a class="headerlink" href="#basic-installation" title="Link to this heading"></a></h2>
 <section id="install-from-pypi-recommended">
 <h3>Install from PyPI (Recommended)<a class="headerlink" href="#install-from-pypi-recommended" title="Link to this heading"></a></h3>
-<p>The latest stable release is available on PyPI:</p>
+<p>We recommend using <a class="reference external" href="https://docs.astral.sh/uv/">uv</a> for fast, reliable Python environment management:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install uv (if not already installed)</span>
+curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+
+<span class="c1"># Create and activate virtual environment</span>
+uv<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: .venv\Scripts\activate</span>
+
+<span class="c1"># Install py3plex</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
+</pre></div>
+</div>
+<p><strong>Alternative (traditional pip):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
 python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
@@ -258,6 +271,15 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <section id="install-from-source">
 <h3>Install from Source<a class="headerlink" href="#install-from-source" title="Link to this heading"></a></h3>
 <p>For development or to access the latest features:</p>
+<p><strong>Using uv (recommended):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+uv<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<p><strong>Using pip:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
@@ -348,21 +370,32 @@ See <a class="reference internal" href="../user_guide/io_and_formats.html"><span
 <section id="development-installation">
 <h3>Development Installation<a class="headerlink" href="#development-installation" title="Link to this heading"></a></h3>
 <p>For contributors, install with development tools (testing, linting):</p>
-<p><strong>Recommended (Makefile-based):</strong></p>
+<p><strong>Recommended (using uv):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
-make<span class="w"> </span>setup<span class="w">        </span><span class="c1"># Create virtual environment</span>
+<span class="c1"># Install uv if not already installed</span>
+curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+<span class="c1"># Create environment and install</span>
+uv<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+<p><strong>Using Makefile:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+make<span class="w"> </span>setup<span class="w">        </span><span class="c1"># Create virtual environment (uses uv if available)</span>
 make<span class="w"> </span>dev-install<span class="w">  </span><span class="c1"># Install with dev dependencies</span>
 </pre></div>
 </div>
-<p><strong>Alternative (manual):</strong></p>
+<p><strong>Alternative (traditional pip):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
 python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
 </pre></div>
 </div>
-<p>Both methods install:</p>
+<p>All methods install:</p>
 <ul class="simple">
 <li><p>pytest and coverage tools</p></li>
 <li><p>black, ruff, isort for code formatting</p></li>
@@ -454,6 +487,26 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <section id="virtual-environment-setup">
 <h2>Virtual Environment Setup<a class="headerlink" href="#virtual-environment-setup" title="Link to this heading"></a></h2>
 <p>We strongly recommend using a virtual environment to prevent dependency conflicts:</p>
+<section id="using-uv-recommended">
+<h3>Using uv (Recommended)<a class="headerlink" href="#using-uv-recommended" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://docs.astral.sh/uv/">uv</a> is a fast Python package installer and resolver:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install uv</span>
+curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+
+<span class="c1"># Create virtual environment</span>
+uv<span class="w"> </span>venv<span class="w"> </span>.venv
+
+<span class="c1"># Activate (Linux/macOS)</span>
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+
+<span class="c1"># Activate (Windows)</span>
+.venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+
+<span class="c1"># Install py3plex inside the environment</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
+</pre></div>
+</div>
+</section>
 <section id="using-venv">
 <h3>Using venv<a class="headerlink" href="#using-venv" title="Link to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create virtual environment</span>
