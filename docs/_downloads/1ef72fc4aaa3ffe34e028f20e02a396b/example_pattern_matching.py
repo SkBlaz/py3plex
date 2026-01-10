@@ -16,7 +16,7 @@ from py3plex.dsl import Q
 def create_sample_network():
     """Create a sample multilayer network for demonstration."""
     network = multinet.multi_layer_network(directed=False)
-    
+
     # Add nodes across social and work layers
     nodes = [
         {'source': 'Alice', 'type': 'social'},
@@ -28,7 +28,7 @@ def create_sample_network():
         {'source': 'David', 'type': 'work'},
     ]
     network.add_nodes(nodes)
-    
+
     # Add edges
     edges = [
         # Social layer - triangle Alice-Bob-Charlie + David-Bob
@@ -41,7 +41,7 @@ def create_sample_network():
         {'source': 'Bob', 'target': 'David', 'source_type': 'work', 'target_type': 'work', 'weight': 1.2},
     ]
     network.add_edges(edges)
-    
+
     return network
 
 
@@ -50,9 +50,9 @@ def example_basic_edge_pattern():
     print("\n" + "=" * 60)
     print("Example 1: Basic Edge Pattern")
     print("=" * 60)
-    
+
     network = create_sample_network()
-    
+
     # Define a simple edge pattern: two nodes connected by an edge
     pattern = (
         Q.pattern()
@@ -61,7 +61,7 @@ def example_basic_edge_pattern():
          .edge("a", "b", directed=False)
          .limit(5)  # Limit results for display
     )
-    
+
     result = pattern.execute(network)
     print(f"\nFound {result.count} edges (showing first 5)")
     print(result.to_pandas())
@@ -72,9 +72,9 @@ def example_layer_constrained_pattern():
     print("\n" + "=" * 60)
     print("Example 2: Layer-Constrained Pattern")
     print("=" * 60)
-    
+
     network = create_sample_network()
-    
+
     # Find edges only within the social layer
     pattern = (
         Q.pattern()
@@ -82,7 +82,7 @@ def example_layer_constrained_pattern():
          .node("b").where(layer="social")
          .edge("a", "b", directed=False)
     )
-    
+
     result = pattern.execute(network)
     print(f"\nFound {result.count} edges in social layer")
     print(result.to_pandas())
@@ -93,9 +93,9 @@ def example_weighted_edges():
     print("\n" + "=" * 60)
     print("Example 3: Weighted Edge Pattern")
     print("=" * 60)
-    
+
     network = create_sample_network()
-    
+
     # Find edges with weight > 1.0
     pattern = (
         Q.pattern()
@@ -104,7 +104,7 @@ def example_weighted_edges():
          .edge("a", "b", directed=False)
          .where(weight__gt=1.0)
     )
-    
+
     result = pattern.execute(network)
     print(f"\nFound {result.count} edges with weight > 1.0")
     print(result.to_pandas())
@@ -115,16 +115,16 @@ def example_triangle_motif():
     print("\n" + "=" * 60)
     print("Example 4: Triangle Motif")
     print("=" * 60)
-    
+
     network = create_sample_network()
-    
+
     # Find triangles
     pattern = Q.pattern().triangle("a", "b", "c").limit(1)
-    
+
     result = pattern.execute(network)
     print(f"\nFound {result.count} triangle(s)")
     print(result.to_pandas())
-    
+
     # Get unique nodes in the triangle
     nodes = result.to_nodes(unique=True)
     print(f"\nNodes in triangle: {[node[0] for node in nodes]}")
@@ -135,9 +135,9 @@ def example_path_pattern():
     print("\n" + "=" * 60)
     print("Example 5: 2-Hop Path Pattern")
     print("=" * 60)
-    
+
     network = create_sample_network()
-    
+
     # Find 2-hop paths
     pattern = (
         Q.pattern()
@@ -147,7 +147,7 @@ def example_path_pattern():
          .node("c").where(layer="social")
          .limit(3)
     )
-    
+
     result = pattern.execute(network)
     print(f"\nFound {result.count} 2-hop paths (showing 3)")
     print(result.to_pandas())
@@ -158,9 +158,9 @@ def example_high_degree_nodes():
     print("\n" + "=" * 60)
     print("Example 6: High-Degree Node Connections")
     print("=" * 60)
-    
+
     network = create_sample_network()
-    
+
     # Find pairs of high-degree nodes connected by edges
     pattern = (
         Q.pattern()
@@ -170,7 +170,7 @@ def example_high_degree_nodes():
          .constraint("a != b")  # Ensure different nodes
          .returning("a", "b")
     )
-    
+
     result = pattern.execute(network)
     print(f"\nFound {result.count} high-degree pairs")
     print(result.to_pandas())
@@ -181,7 +181,7 @@ def example_execution_plan():
     print("\n" + "=" * 60)
     print("Example 7: Query Execution Plan")
     print("=" * 60)
-    
+
     # Create a pattern with selective predicates
     pattern = (
         Q.pattern()
@@ -189,13 +189,13 @@ def example_execution_plan():
          .node("b")
          .edge("a", "b")
     )
-    
+
     plan = pattern.explain()
     print("\nExecution Plan:")
     print(f"  Root variable: {plan['root_var']}")
     print(f"  Join order: {[step['var'] for step in plan['join_order']]}")
     print(f"  Estimated complexity: {plan['estimated_complexity']}")
-    
+
     print("\nVariable Plans:")
     for var, var_plan in plan['variable_plans'].items():
         print(f"  {var}: {var_plan['num_predicates']} predicates, "
@@ -207,9 +207,9 @@ def example_result_projections():
     print("\n" + "=" * 60)
     print("Example 8: Result Projections")
     print("=" * 60)
-    
+
     network = create_sample_network()
-    
+
     pattern = (
         Q.pattern()
          .node("a").where(layer="social")
@@ -217,24 +217,24 @@ def example_result_projections():
          .edge("a", "b", directed=False)
          .limit(3)
     )
-    
+
     result = pattern.execute(network)
-    
+
     # Projection 1: Pandas DataFrame
     print("\n1. As Pandas DataFrame:")
     print(result.to_pandas())
-    
+
     # Projection 2: Unique nodes
     print("\n2. Unique nodes:")
     nodes = result.to_nodes(unique=True)
     print(f"   {[node[0] for node in nodes]}")
-    
+
     # Projection 3: Edge tuples
     print("\n3. Edge tuples:")
     edges = result.to_edges()
     for src, dst in edges[:3]:
         print(f"   {src[0]} -> {dst[0]}")
-    
+
     # Projection 4: Induced subgraph
     print("\n4. Induced subgraph:")
     subgraph = result.to_subgraph(network)
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("Pattern Matching API Examples")
     print("=" * 60)
-    
+
     # Run all examples
     example_basic_edge_pattern()
     example_layer_constrained_pattern()
@@ -256,7 +256,7 @@ if __name__ == "__main__":
     example_high_degree_nodes()
     example_execution_plan()
     example_result_projections()
-    
+
     print("\n" + "=" * 60)
     print("All Examples Completed!")
     print("=" * 60)

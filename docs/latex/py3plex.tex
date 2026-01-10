@@ -4553,28 +4553,28 @@ Test the queries with:
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}basic\PYGZus{}exploration}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Summarize layers: node counts, edge counts, and average degree per layer.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Refactored: single DSL query over all layers + pandas groupby, no explicit}
 \PYG{l+s+sd}{    for\PYGZhy{}loop over layers.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    This query demonstrates basic multilayer exploration by computing}
 \PYG{l+s+sd}{    fundamental statistics for each layer independently. This is typically}
 \PYG{l+s+sd}{    the first step in multilayer analysis to understand the structure}
 \PYG{l+s+sd}{    and identify layers with different connectivity patterns.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
 \PYG{l+s+sd}{    \PYGZhy{} Reveals which layers are denser or sparser}
 \PYG{l+s+sd}{    \PYGZhy{} Identifies layers that might be hubs of activity}
 \PYG{l+s+sd}{    \PYGZhy{} Shows structural diversity across the multilayer network}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    DSL concepts demonstrated:}
 \PYG{l+s+sd}{    \PYGZhy{} SELECT nodes from all layers in one shot}
 \PYG{l+s+sd}{    \PYGZhy{} Computing degree per layer}
 \PYG{l+s+sd}{    \PYGZhy{} Vectorized aggregation by layer}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Args:}
 \PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
-\PYG{l+s+sd}{        }
+
 \PYG{l+s+sd}{    Returns:}
 \PYG{l+s+sd}{        pd.DataFrame with columns: layer, n\PYGZus{}nodes, n\PYGZus{}edges, avg\PYGZus{}degree}
 \PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
@@ -4739,29 +4739,29 @@ family
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}cross\PYGZus{}layer\PYGZus{}hubs}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{,} \PYG{n}{k}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{=} \PYG{l+m+mi}{5}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Find nodes that are consistently central across multiple layers.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Refactored: one DSL query across all layers + pandas grouping, no explicit}
 \PYG{l+s+sd}{    per\PYGZhy{}layer for loop.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    This query identifies \PYGZdq{}super hubs\PYGZdq{} \PYGZhy{} nodes that maintain high centrality}
 \PYG{l+s+sd}{    across different layers. These nodes are particularly important because}
 \PYG{l+s+sd}{    they serve as connectors across different contexts or domains.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
 \PYG{l+s+sd}{    \PYGZhy{} Reveals nodes with consistent importance across contexts}
 \PYG{l+s+sd}{    \PYGZhy{} Useful for identifying key actors in multiplex social networks}
 \PYG{l+s+sd}{    \PYGZhy{} Helps understand cross\PYGZhy{}layer influence and information flow}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    DSL concepts demonstrated:}
 \PYG{l+s+sd}{    \PYGZhy{} Single query across all layers}
 \PYG{l+s+sd}{    \PYGZhy{} Computing betweenness centrality}
 \PYG{l+s+sd}{    \PYGZhy{} Vectorized top\PYGZhy{}k selection per layer using groupby}
 \PYG{l+s+sd}{    \PYGZhy{} Coverage analysis (nodes appearing in multiple layers)}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Args:}
 \PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
 \PYG{l+s+sd}{        k: Number of top nodes to select per layer}
-\PYG{l+s+sd}{        }
+
 \PYG{l+s+sd}{    Returns:}
 \PYG{l+s+sd}{        pd.DataFrame with nodes and their centrality scores per layer}
 \PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
@@ -4974,26 +4974,26 @@ Per\sphinxhyphen{}layer iteration and aggregation across layers
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}layer\PYGZus{}similarity}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Compute structural similarity between layers based on degree distributions.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Refactored: single DSL query + pivot, no explicit loops over layers/nodes.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    This query measures how similar different layers are in terms of their}
 \PYG{l+s+sd}{    connectivity patterns. Layers with similar degree distributions likely}
 \PYG{l+s+sd}{    serve similar structural roles in the multilayer network.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
 \PYG{l+s+sd}{    \PYGZhy{} Identifies redundant or complementary layers}
 \PYG{l+s+sd}{    \PYGZhy{} Helps understand layer specialization}
 \PYG{l+s+sd}{    \PYGZhy{} Can inform layer aggregation or simplification decisions}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    DSL concepts demonstrated:}
 \PYG{l+s+sd}{    \PYGZhy{} Single query across all layers}
 \PYG{l+s+sd}{    \PYGZhy{} Pivot table to create node × layer matrix}
 \PYG{l+s+sd}{    \PYGZhy{} Correlation between layers via .corr()}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Args:}
 \PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
-\PYG{l+s+sd}{        }
+
 \PYG{l+s+sd}{    Returns:}
 \PYG{l+s+sd}{        pd.DataFrame: Pairwise correlation matrix of layer degree distributions}
 \PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
@@ -5153,24 +5153,24 @@ Using computed attributes for layer\sphinxhyphen{}level comparisons
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}community\PYGZus{}structure}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Detect communities and analyze their distribution across layers.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    This query finds communities in the multilayer network and examines}
 \PYG{l+s+sd}{    how they manifest across different layers. Some communities might be}
 \PYG{l+s+sd}{    tightly connected in one layer but dispersed in others.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
 \PYG{l+s+sd}{    \PYGZhy{} Reveals mesoscale structure in multilayer networks}
 \PYG{l+s+sd}{    \PYGZhy{} Shows how communities span or specialize across layers}
 \PYG{l+s+sd}{    \PYGZhy{} Useful for understanding multi\PYGZhy{}context group formation}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    DSL concepts demonstrated:}
 \PYG{l+s+sd}{    \PYGZhy{} Community detection via DSL}
 \PYG{l+s+sd}{    \PYGZhy{} Grouping by community and layer}
 \PYG{l+s+sd}{    \PYGZhy{} Aggregation and counting}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Args:}
 \PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
-\PYG{l+s+sd}{        }
+
 \PYG{l+s+sd}{    Returns:}
 \PYG{l+s+sd}{        pd.DataFrame with community info: community\PYGZus{}id, layer, size, dominant\PYGZus{}layer}
 \PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
@@ -5181,34 +5181,34 @@ Using computed attributes for layer\sphinxhyphen{}level comparisons
          \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{communities}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
          \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
     \PYG{p}{)}
-    
+
     \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{:}
         \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}
-    
+
     \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Rename \PYGZsq{}id\PYGZsq{} column to \PYGZsq{}node\PYGZsq{} for clarity}
     \PYG{n}{df} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{rename}\PYG{p}{(}\PYG{n}{columns}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Analyze community distribution across layers}
     \PYG{n}{community\PYGZus{}stats} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{groupby}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{communities}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{)}\PYG{o}{.}\PYG{n}{agg}\PYG{p}{(}\PYG{p}{\PYGZob{}}
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{mean}\PYG{l+s+s1}{\PYGZsq{}}
     \PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{reset\PYGZus{}index}\PYG{p}{(}\PYG{p}{)}
-    
+
     \PYG{n}{community\PYGZus{}stats}\PYG{o}{.}\PYG{n}{columns} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{size}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
-    
+
     \PYG{c+c1}{\PYGZsh{} Find dominant layer for each community (layer with most nodes)}
     \PYG{n}{dominant} \PYG{o}{=} \PYG{n}{community\PYGZus{}stats}\PYG{o}{.}\PYG{n}{loc}\PYG{p}{[}
         \PYG{n}{community\PYGZus{}stats}\PYG{o}{.}\PYG{n}{groupby}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{size}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{idxmax}\PYG{p}{(}\PYG{p}{)}
     \PYG{p}{]}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{]}\PYG{o}{.}\PYG{n}{rename}\PYG{p}{(}\PYG{n}{columns}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dominant\PYGZus{}layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Merge dominant layer info}
     \PYG{n}{result\PYGZus{}df} \PYG{o}{=} \PYG{n}{community\PYGZus{}stats}\PYG{o}{.}\PYG{n}{merge}\PYG{p}{(}\PYG{n}{dominant}\PYG{p}{,} \PYG{n}{on}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Sort by community size}
     \PYG{n}{result\PYGZus{}df} \PYG{o}{=} \PYG{n}{result\PYGZus{}df}\PYG{o}{.}\PYG{n}{sort\PYGZus{}values}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{size}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{ascending}\PYG{o}{=}\PYG{p}{[}\PYG{k+kc}{True}\PYG{p}{,} \PYG{k+kc}{False}\PYG{p}{]}\PYG{p}{)}
-    
+
     \PYG{k}{return} \PYG{n}{result\PYGZus{}df}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{size}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dominant\PYGZus{}layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{]}
 \end{sphinxVerbatim}
 
@@ -5370,29 +5370,29 @@ Identifying dominant layers via aggregation
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}multiplex\PYGZus{}pagerank}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Approximate multiplex PageRank by aggregating layer\PYGZhy{}specific scores.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    NOTE: This is still a *simplified* multiplex PageRank approximation}
 \PYG{l+s+sd}{    (average of layer\PYGZhy{}specific PageRank). For true Multiplex PageRank, wrap}
 \PYG{l+s+sd}{    the dedicated algorithm from the algorithms module (see query\PYGZus{}true\PYGZus{}multiplex\PYGZus{}pagerank).}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Refactored: single DSL query over all layers + vectorized pandas aggregation,}
 \PYG{l+s+sd}{    no explicit for\PYGZhy{}loop over layers.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
 \PYG{l+s+sd}{    \PYGZhy{} Approximates node importance across the entire multiplex}
 \PYG{l+s+sd}{    \PYGZhy{} More informative than single\PYGZhy{}layer centralities}
 \PYG{l+s+sd}{    \PYGZhy{} Efficient computation via aggregation}
 \PYG{l+s+sd}{    \PYGZhy{} Good starting point before using full multiplex algorithms}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    DSL concepts demonstrated:}
 \PYG{l+s+sd}{    \PYGZhy{} Single query across all layers}
 \PYG{l+s+sd}{    \PYGZhy{} Computing PageRank}
 \PYG{l+s+sd}{    \PYGZhy{} Vectorized aggregation and pivot tables}
 \PYG{l+s+sd}{    \PYGZhy{} Ranking nodes by multilayer importance}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Args:}
 \PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
-\PYG{l+s+sd}{        }
+
 \PYG{l+s+sd}{    Returns:}
 \PYG{l+s+sd}{        pd.DataFrame with nodes ranked by multiplex PageRank scores}
 \PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
@@ -5613,37 +5613,37 @@ Combining degree and PageRank for richer analysis
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}robustness\PYGZus{}analysis}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Evaluate network robustness by removing each layer and recomputing stats.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    This query demonstrates robustness analysis by simulating layer failure.}
 \PYG{l+s+sd}{    For each layer, we measure how connectivity changes if that layer is removed.}
 \PYG{l+s+sd}{    This reveals which layers are critical for network cohesion.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Note: The loop over layers is semantically part of the experiment design}
 \PYG{l+s+sd}{    (each iteration is a different scenario), which is an acceptable use of loops.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
 \PYG{l+s+sd}{    \PYGZhy{} Identifies critical infrastructure layers}
 \PYG{l+s+sd}{    \PYGZhy{} Measures redundancy in multilayer systems}
 \PYG{l+s+sd}{    \PYGZhy{} Informs resilience strategies and backup planning}
 \PYG{l+s+sd}{    \PYGZhy{} Essential for analyzing cascading failures}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    DSL concepts demonstrated:}
 \PYG{l+s+sd}{    \PYGZhy{} Layer selection and filtering}
 \PYG{l+s+sd}{    \PYGZhy{} Computing connectivity metrics}
 \PYG{l+s+sd}{    \PYGZhy{} Comparing network states (with/without layers)}
 \PYG{l+s+sd}{    \PYGZhy{} Using functools.reduce for cleaner layer expressions}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Args:}
 \PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
-\PYG{l+s+sd}{        }
+
 \PYG{l+s+sd}{    Returns:}
 \PYG{l+s+sd}{        pd.DataFrame comparing connectivity with each layer removed}
 \PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
     \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{functools}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{reduce}
     \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{operator}
-    
+
     \PYG{n}{layers} \PYG{o}{=} \PYG{n}{\PYGZus{}get\PYGZus{}layer\PYGZus{}names}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Baseline: connectivity with all layers}
     \PYG{n}{baseline\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
         \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
@@ -5651,12 +5651,12 @@ Combining degree and PageRank for richer analysis
          \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
          \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
     \PYG{p}{)}
-    
+
     \PYG{n}{baseline\PYGZus{}df} \PYG{o}{=} \PYG{n}{baseline\PYGZus{}result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
     \PYG{n}{baseline\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{baseline\PYGZus{}df}\PYG{p}{)}
     \PYG{n}{baseline\PYGZus{}avg\PYGZus{}degree} \PYG{o}{=} \PYG{n}{baseline\PYGZus{}df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
     \PYG{n}{baseline\PYGZus{}total\PYGZus{}degree} \PYG{o}{=} \PYG{n}{baseline\PYGZus{}df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
-    
+
     \PYG{n}{results} \PYG{o}{=} \PYG{p}{[}\PYG{p}{\PYGZob{}}
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{scenario}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{baseline (all layers)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{n\PYGZus{}nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{baseline\PYGZus{}nodes}\PYG{p}{,}
@@ -5664,18 +5664,18 @@ Combining degree and PageRank for richer analysis
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{total\PYGZus{}edges}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{baseline\PYGZus{}total\PYGZus{}degree} \PYG{o}{/}\PYG{o}{/} \PYG{l+m+mi}{2}\PYG{p}{,}
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{connectivity\PYGZus{}loss}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.0}
     \PYG{p}{\PYGZcb{}}\PYG{p}{]}
-    
+
     \PYG{c+c1}{\PYGZsh{} Test removing each layer (scenario loop \PYGZhy{} part of experiment design)}
     \PYG{k}{for} \PYG{n}{layer\PYGZus{}to\PYGZus{}remove} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
         \PYG{c+c1}{\PYGZsh{} Build a layer expression that includes all layers except layer\PYGZus{}to\PYGZus{}remove}
         \PYG{n}{remaining\PYGZus{}exprs} \PYG{o}{=} \PYG{p}{[}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer}\PYG{p}{]} \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{layers} \PYG{k}{if} \PYG{n}{layer} \PYG{o}{!=} \PYG{n}{layer\PYGZus{}to\PYGZus{}remove}\PYG{p}{]}
-        
+
         \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{remaining\PYGZus{}exprs}\PYG{p}{:}
             \PYG{k}{continue}
-        
+
         \PYG{c+c1}{\PYGZsh{} Combine remaining layers using reduce}
         \PYG{n}{remaining\PYGZus{}expr} \PYG{o}{=} \PYG{n}{reduce}\PYG{p}{(}\PYG{n}{operator}\PYG{o}{.}\PYG{n}{add}\PYG{p}{,} \PYG{n}{remaining\PYGZus{}exprs}\PYG{p}{)}
-        
+
         \PYG{c+c1}{\PYGZsh{} Query with reduced layer set}
         \PYG{n}{reduced\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
             \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
@@ -5683,16 +5683,16 @@ Combining degree and PageRank for richer analysis
              \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
              \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
         \PYG{p}{)}
-        
+
         \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{reduced\PYGZus{}result}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
             \PYG{n}{reduced\PYGZus{}df} \PYG{o}{=} \PYG{n}{reduced\PYGZus{}result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
             \PYG{n}{n\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{reduced\PYGZus{}df}\PYG{p}{)}
             \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{n}{reduced\PYGZus{}df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
             \PYG{n}{total\PYGZus{}degree} \PYG{o}{=} \PYG{n}{reduced\PYGZus{}df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
-            
+
             \PYG{c+c1}{\PYGZsh{} Calculate connectivity loss}
             \PYG{n}{connectivity\PYGZus{}loss} \PYG{o}{=} \PYG{p}{(}\PYG{n}{baseline\PYGZus{}total\PYGZus{}degree} \PYG{o}{\PYGZhy{}} \PYG{n}{total\PYGZus{}degree}\PYG{p}{)} \PYG{o}{/} \PYG{n}{baseline\PYGZus{}total\PYGZus{}degree} \PYG{o}{*} \PYG{l+m+mi}{100}
-            
+
             \PYG{n}{results}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{\PYGZob{}}
                 \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{scenario}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{without }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}to\PYGZus{}remove}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
                 \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{n\PYGZus{}nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{n\PYGZus{}nodes}\PYG{p}{,}
@@ -5708,7 +5708,7 @@ Combining degree and PageRank for richer analysis
                 \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{total\PYGZus{}edges}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
                 \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{connectivity\PYGZus{}loss}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{100.0}
             \PYG{p}{\PYGZcb{}}\PYG{p}{)}
-    
+
     \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{results}\PYG{p}{)}
 \end{sphinxVerbatim}
 
@@ -5873,28 +5873,28 @@ Measuring connectivity metrics before/after perturbations
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}advanced\PYGZus{}centrality\PYGZus{}comparison}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Compare multiple centrality measures on the aggregated multilayer network.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Refactored: multilayer\PYGZhy{}aware with L[\PYGZdq{}*\PYGZdq{}], no loops.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    This query computes several centrality measures (degree, betweenness, closeness,}
 \PYG{l+s+sd}{    PageRank) and identifies nodes that rank high in multiple measures (\PYGZdq{}versatile hubs\PYGZdq{})}
 \PYG{l+s+sd}{    versus those that excel in only one measure (\PYGZdq{}specialized hubs\PYGZdq{}).}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
 \PYG{l+s+sd}{    \PYGZhy{} Different centralities capture different notions of importance}
 \PYG{l+s+sd}{    \PYGZhy{} Versatile hubs are robust across different centrality definitions}
 \PYG{l+s+sd}{    \PYGZhy{} Specialized hubs reveal specific structural roles}
 \PYG{l+s+sd}{    \PYGZhy{} Essential for comprehensive node importance analysis}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    DSL concepts demonstrated:}
 \PYG{l+s+sd}{    \PYGZhy{} Computing multiple centrality measures in one query}
 \PYG{l+s+sd}{    \PYGZhy{} Aggregating across all layers}
 \PYG{l+s+sd}{    \PYGZhy{} Ranking and comparing across metrics}
 \PYG{l+s+sd}{    \PYGZhy{} Using computed attributes for classification}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Args:}
 \PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
-\PYG{l+s+sd}{        }
+
 \PYG{l+s+sd}{    Returns:}
 \PYG{l+s+sd}{        pd.DataFrame with nodes and their centrality scores, plus a \PYGZdq{}versatility\PYGZdq{} metric}
 \PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
@@ -5905,12 +5905,12 @@ Measuring connectivity metrics before/after perturbations
                   \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{closeness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
          \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
     \PYG{p}{)}
-    
+
     \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{:}
         \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}
-    
+
     \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{rename}\PYG{p}{(}\PYG{n}{columns}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Normalize each centrality to [0, 1] for comparison}
     \PYG{k}{for} \PYG{n}{col} \PYG{o+ow}{in} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{closeness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{pagerank}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{:}
         \PYG{k}{if} \PYG{n}{col} \PYG{o+ow}{in} \PYG{n}{df}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{:}
@@ -5919,19 +5919,19 @@ Measuring connectivity metrics before/after perturbations
                 \PYG{n}{df}\PYG{p}{[}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{col}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZus{}norm}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{n}{col}\PYG{p}{]} \PYG{o}{/} \PYG{n}{max\PYGZus{}val}
             \PYG{k}{else}\PYG{p}{:}
                 \PYG{n}{df}\PYG{p}{[}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{col}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZus{}norm}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}
-    
+
     \PYG{c+c1}{\PYGZsh{} Compute \PYGZdq{}versatility\PYGZdq{} \PYGZhy{} how many centralities place node in top 30\PYGZpc{}}
     \PYG{n}{norm\PYGZus{}cols} \PYG{o}{=} \PYG{p}{[}\PYG{n}{c} \PYG{k}{for} \PYG{n}{c} \PYG{o+ow}{in} \PYG{n}{df}\PYG{o}{.}\PYG{n}{columns} \PYG{k}{if} \PYG{n}{c}\PYG{o}{.}\PYG{n}{endswith}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{\PYGZus{}norm}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{]}
-    
+
     \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{count\PYGZus{}top\PYGZus{}ranks}\PYG{p}{(}\PYG{n}{row}\PYG{p}{)}\PYG{p}{:}
         \PYG{n}{count} \PYG{o}{=} \PYG{l+m+mi}{0}
         \PYG{k}{for} \PYG{n}{col} \PYG{o+ow}{in} \PYG{n}{norm\PYGZus{}cols}\PYG{p}{:}
             \PYG{k}{if} \PYG{n}{row}\PYG{p}{[}\PYG{n}{col}\PYG{p}{]} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mf}{0.7}\PYG{p}{:}  \PYG{c+c1}{\PYGZsh{} Top 30\PYGZpc{} threshold}
                 \PYG{n}{count} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
         \PYG{k}{return} \PYG{n}{count}
-    
+
     \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{apply}\PYG{p}{(}\PYG{n}{count\PYGZus{}top\PYGZus{}ranks}\PYG{p}{,} \PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Classify nodes}
     \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{classify\PYGZus{}hub}\PYG{p}{(}\PYG{n}{row}\PYG{p}{)}\PYG{p}{:}
         \PYG{k}{if} \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mi}{3}\PYG{p}{:}
@@ -5940,17 +5940,17 @@ Measuring connectivity metrics before/after perturbations
             \PYG{k}{return} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{specialized\PYGZus{}hub}\PYG{l+s+s1}{\PYGZsq{}}
         \PYG{k}{else}\PYG{p}{:}
             \PYG{k}{return} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{peripheral}\PYG{l+s+s1}{\PYGZsq{}}
-    
+
     \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{hub\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{apply}\PYG{p}{(}\PYG{n}{classify\PYGZus{}hub}\PYG{p}{,} \PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Sort by versatility and then by average normalized centrality}
     \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{n}{norm\PYGZus{}cols}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
     \PYG{n}{df} \PYG{o}{=} \PYG{n}{df}\PYG{o}{.}\PYG{n}{sort\PYGZus{}values}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{ascending}\PYG{o}{=}\PYG{p}{[}\PYG{k+kc}{False}\PYG{p}{,} \PYG{k+kc}{False}\PYG{p}{]}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Select columns for output}
-    \PYG{n}{output\PYGZus{}cols} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{closeness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} 
+    \PYG{n}{output\PYGZus{}cols} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{closeness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
                    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{pagerank}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{versatility}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{hub\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
-    
+
     \PYG{k}{return} \PYG{n}{df}\PYG{p}{[}\PYG{n}{output\PYGZus{}cols}\PYG{p}{]}\PYG{o}{.}\PYG{n}{round}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{)}
 \end{sphinxVerbatim}
 
@@ -6120,27 +6120,27 @@ Classification based on computed attributes
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}edge\PYGZus{}grouping\PYGZus{}and\PYGZus{}coverage}\PYG{p}{(}\PYG{n}{network}\PYG{p}{:} \PYG{n}{Network}\PYG{p}{,} \PYG{n}{k}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{=} \PYG{l+m+mi}{3}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{Dict}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{]}\PYG{p}{:}
 \PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Analyze edges across layer pairs with grouping and coverage.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    This query demonstrates the powerful new edge grouping capabilities}
 \PYG{l+s+sd}{    introduced in DSL v2. It groups edges by (src\PYGZus{}layer, dst\PYGZus{}layer) pairs}
 \PYG{l+s+sd}{    and analyzes edge distribution across layer pairs.}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Why it\PYGZsq{}s interesting:}
 \PYG{l+s+sd}{    \PYGZhy{} Reveals how connections are distributed within and between layers}
 \PYG{l+s+sd}{    \PYGZhy{} Shows which layer pairs have more connectivity}
 \PYG{l+s+sd}{    \PYGZhy{} Identifies edges that appear across multiple layer contexts}
 \PYG{l+s+sd}{    \PYGZhy{} Essential for understanding cross\PYGZhy{}layer edge patterns}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    DSL concepts demonstrated:}
 \PYG{l+s+sd}{    \PYGZhy{} .per\PYGZus{}layer\PYGZus{}pair() for edge grouping}
 \PYG{l+s+sd}{    \PYGZhy{} .coverage() for cross\PYGZhy{}group filtering}
 \PYG{l+s+sd}{    \PYGZhy{} Edge\PYGZhy{}specific grouping metadata}
 \PYG{l+s+sd}{    \PYGZhy{} .group\PYGZus{}summary() for aggregate statistics}
-\PYG{l+s+sd}{    }
+
 \PYG{l+s+sd}{    Args:}
 \PYG{l+s+sd}{        network: A multi\PYGZus{}layer\PYGZus{}network instance}
 \PYG{l+s+sd}{        k: Number of edges to limit per layer pair (default: 3)}
-\PYG{l+s+sd}{        }
+
 \PYG{l+s+sd}{    Returns:}
 \PYG{l+s+sd}{        Dictionary with:}
 \PYG{l+s+sd}{        \PYGZhy{} \PYGZsq{}edges\PYGZus{}by\PYGZus{}pair\PYGZsq{}: DataFrame with edges grouped by layer pair}
@@ -6155,19 +6155,19 @@ Classification based on computed attributes
          \PYG{o}{.}\PYG{n}{end\PYGZus{}grouping}\PYG{p}{(}\PYG{p}{)}
          \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
     \PYG{p}{)}
-    
+
     \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{result}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{:}
         \PYG{k}{return} \PYG{p}{\PYGZob{}}
             \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{edges\PYGZus{}by\PYGZus{}pair}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
             \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{summary}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{p}{)}
         \PYG{p}{\PYGZcb{}}
-    
+
     \PYG{c+c1}{\PYGZsh{} Get edges DataFrame}
     \PYG{n}{df\PYGZus{}edges} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
-    
+
     \PYG{c+c1}{\PYGZsh{} Get group summary}
     \PYG{n}{summary} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{group\PYGZus{}summary}\PYG{p}{(}\PYG{p}{)}
-    
+
     \PYG{k}{return} \PYG{p}{\PYGZob{}}
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{edges\PYGZus{}by\PYGZus{}pair}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{df\PYGZus{}edges}\PYG{p}{,}
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{summary}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{summary}

@@ -56,12 +56,12 @@ edges = [
     {'source': 'Charlie', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'David', 'target': 'Frank', 'source_type': 'social', 'target_type': 'social'},
     {'source': 'Alice', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
-    
+
     # Work connections (moderately connected)
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
     {'source': 'David', 'target': 'Eve', 'source_type': 'work', 'target_type': 'work'},
-    
+
     # Hobby connections (sparse)
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'hobby', 'target_type': 'hobby'},
     {'source': 'Eve', 'target': 'Frank', 'source_type': 'hobby', 'target_type': 'hobby'},
@@ -205,7 +205,7 @@ print("\n" + "=" * 80)
 print("[13] Example 12: Parameterized Queries")
 print("-" * 80)
 print('Code: q = Q.nodes().where(layer="social", degree__gt=Param.int("min_degree"))')
-print('      q.execute(network, min_degree=1)')
+print(' q.execute(network, min_degree=1)')
 print()
 
 # Create a reusable query template
@@ -213,18 +213,18 @@ q = Q.nodes().where(layer="social", degree__gt=Param.int("min_degree"))
 
 print("Execute with min_degree=1:")
 result = q.execute(network, min_degree=1)
-print(f"  Found {result.count} nodes")
+print(f" Found {result.count} nodes")
 
 print("\nExecute with min_degree=2:")
 result = q.execute(network, min_degree=2)
-print(f"  Found {result.count} nodes")
+print(f" Found {result.count} nodes")
 
 # Example 13: Export to pandas DataFrame
 print("\n" + "=" * 80)
 print("[14] Example 13: Export to Pandas DataFrame")
 print("-" * 80)
 print('Code: result = Q.nodes().compute("degree", "clustering").execute(network)')
-print('      df = result.to_pandas()')
+print(' df = result.to_pandas()')
 print()
 
 result = Q.nodes().where(layer="social").compute("degree", "clustering").execute(network)
@@ -251,7 +251,7 @@ print("\n" + "=" * 80)
 print("[16] Example 15: Convert Builder to DSL String")
 print("-" * 80)
 print('Code: q = Q.nodes().where(layer="social", degree__gt=2).compute("degree")')
-print('      dsl_string = q.to_dsl()')
+print(' dsl_string = q.to_dsl()')
 print()
 
 q = Q.nodes().where(layer="social", degree__gt=2).compute("degree").limit(10)
@@ -275,19 +275,19 @@ for step in plan.steps:
 if plan.warnings:
     print("\nWarnings:")
     for warning in plan.warnings:
-        print(f"  ⚠ {warning}")
+        print(f"   {warning}")
 
 # Example 17: Complex query combining multiple features
 print("\n" + "=" * 80)
 print("[18] Example 17: Complex Query - Putting It All Together")
 print("-" * 80)
 print('Code: (Q.nodes()')
-print('        .from_layers(L["social"] + L["work"])')
-print('        .where(degree__gt=1)')
-print('        .compute("betweenness_centrality", alias="bc")')
-print('        .order_by("-bc")')
-print('        .limit(5)')
-print('        .execute(network))')
+print(' .from_layers(L["social"] + L["work"])')
+print(' .where(degree__gt=1)')
+print(' .compute("betweenness_centrality", alias="bc")')
+print(' .order_by("-bc")')
+print(' .limit(5)')
+print(' .execute(network))')
 print()
 
 result = (
@@ -309,7 +309,7 @@ for node in result.items:
 print("\n" + "=" * 80)
 print("[19] Example 18: Error Handling with Suggestions")
 print("-" * 80)
-print('Code: Q.nodes().compute("betweenes").execute(network)  # Typo!')
+print('Code: Q.nodes().compute("betweenes").execute(network) # Typo!')
 print()
 
 try:
@@ -330,31 +330,31 @@ print(f"Available measures ({len(measures)}):")
 for measure in sorted(measures)[:10]:
     desc = measure_registry.get_description(measure)
     print(f"  • {measure}: {desc}")
-print(f"  ... and {len(measures) - 10} more")
+print(f" ... and {len(measures) - 10} more")
 
 # Summary
 print("\n" + "=" * 80)
 print("DSL V2 BUILDER API EXAMPLES COMPLETE")
 print("=" * 80)
 print("\nKey Features Demonstrated:")
-print("  ✓ Q.nodes() and query builder pattern")
-print("  ✓ Layer algebra with L[] (union, difference, intersection)")
-print("  ✓ Django-style WHERE conditions (degree__gt, layer__ne, etc.)")
-print("  ✓ COMPUTE with aliases")
-print("  ✓ ORDER BY and LIMIT")
-print("  ✓ Parameterized queries with Param")
-print("  ✓ QueryResult exports (to_pandas, to_dict)")
-print("  ✓ Query to DSL string conversion (to_dsl())")
-print("  ✓ EXPLAIN mode for query planning")
-print("  ✓ Error handling with suggestions")
-print("  ✓ Complex multi-feature queries")
+print(" Q.nodes() and query builder pattern")
+print(" Layer algebra with L[] (union, difference, intersection)")
+print(" Django-style WHERE conditions (degree__gt, layer__ne, etc.)")
+print(" COMPUTE with aliases")
+print(" ORDER BY and LIMIT")
+print(" Parameterized queries with Param")
+print(" QueryResult exports (to_pandas, to_dict)")
+print(" Query to DSL string conversion (to_dsl())")
+print(" EXPLAIN mode for query planning")
+print(" Error handling with suggestions")
+print(" Complex multi-feature queries")
 print("\nAdvantages of Builder API:")
-print("  • Type hints and IDE autocomplete")
-print("  • No string parsing errors")
-print("  • Composable and reusable queries")
-print("  • Better error messages")
-print("  • Chainable, fluent interface")
+print(" • Type hints and IDE autocomplete")
+print(" • No string parsing errors")
+print(" • Composable and reusable queries")
+print(" • Better error messages")
+print(" • Chainable, fluent interface")
 print("\nFor more information:")
-print("  • Documentation: docfiles/user_guide/dsl.rst")
-print("  • String DSL examples: example_dsl_queries.py")
-print("  • Advanced queries: example_dsl_advanced.py")
+print(" • Documentation: docfiles/user_guide/dsl.rst")
+print(" • String DSL examples: example_dsl_queries.py")
+print(" • Advanced queries: example_dsl_advanced.py")
