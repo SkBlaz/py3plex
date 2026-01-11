@@ -19,8 +19,8 @@ try:
     # 2. Auto-select best algorithm
     result = auto_select_community(
         network,
-        fast_mode=True,
-        random_state=42
+        fast=True,
+        seed=42
     )
     
     # 3. Print results
