@@ -16,7 +16,7 @@ network = load_aarhus_cs()
 
 # 2. Network info
 node_ids = list(network.get_nodes())
-layers = network.get_layers()[0]
+layers = network.layers
 
 # 3. Print network structure
 print(f"Multilayer network loaded:")

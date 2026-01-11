@@ -25,4 +25,4 @@ network.add_edges(edges)
 
 # 4. Print result
 print(f"Network: {len(list(network.get_nodes()))} nodes, {len(list(network.get_edges()))} edges")
-print(f"Layers: {network.get_layers()[0]}")
+print(f"Layers: {network.layers}")

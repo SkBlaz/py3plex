@@ -28,11 +28,11 @@ try:
     # 3. Print results
     print(f"Multilayer communities: {len(set(partition.values()))}")
     print(f"Modularity: {modularity:.3f}")
-    print(f"Layers in network: {network.get_layers()[0]}")
+    print(f"Layers in network: {network.layers}")
     
 except (ValueError, ImportError) as e:
     print("Multilayer community detection:")
-    print(f"  Network has {len(network.get_layers()[0])} layers")
+    print(f"  Network has {len(network.layers)} layers")
     print(f"  Community detection algorithms available")
     print(f"  Note: Some configurations need preprocessing")
     print(f"  Error: {type(e).__name__}")
