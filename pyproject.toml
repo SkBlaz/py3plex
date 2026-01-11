@@ -116,6 +116,10 @@ pyg = [
 dgl_compat = [
     "dgl>=0.9.0",
 ]
+# Optional: MCP server for AI agent integration
+mcp = [
+    "mcp>=0.9.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"
@@ -125,6 +129,7 @@ Repository = "https://github.com/SkBlaz/py3plex"
 
 [project.scripts]
 py3plex = "py3plex.cli:main"
+py3plex-mcp = "py3plex_mcp.server:main"
 
 [tool.setuptools]
 zip-safe = false
