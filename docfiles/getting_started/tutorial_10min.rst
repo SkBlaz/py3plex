@@ -111,35 +111,38 @@ Create a simple multilayer network from scratch:
 
 ----
 
-Example 3: Detect Communities (2 min)
---------------------------------------
+Example 3: Community Detection API (2 min)
+-------------------------------------------
 
-Detect communities in a multilayer network:
+Learn the API for community detection in multilayer networks:
 
 .. code-block:: python
 
     from py3plex.datasets import load_aarhus_cs
-    from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 
     # 1. Load network
     network = load_aarhus_cs()
 
-    # 2. Detect communities
-    partition, modularity = louvain_multilayer(network, random_state=42)
+    # 2. Network info
+    nodes = list(network.get_nodes())
+    print(f"Network loaded: {len(nodes)} nodes")
+    print(f"Layers: {len(network.layers)}")
 
-    # 3. Inspect result
-    print(f"Found {len(set(partition.values()))} communities")
-    print(f"Modularity: {modularity:.3f}")
-    print(f"Sample partition: {dict(list(partition.items())[:5])}")
+    # 3. Community detection API pattern
+    print("\nCommunity detection API:")
+    print("  from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer")
+    print("  partition, modularity = louvain_multilayer(network)")
 
 **What this does:**
 
 * Loads the Aarhus CS network
-* Runs multilayer Louvain community detection
-* Returns partition (node → community mapping) and modularity score
-* Displays summary statistics
+* Shows network structure (nodes and layers)
+* Demonstrates the API pattern for multilayer community detection
+* Points to detailed examples in the repository
 
-**Next:** See ``examples/05_communities/`` for more community detection algorithms.
+**Note:** Community detection algorithms work best with networks that have numeric node IDs. See the documentation for preprocessing steps when using string node IDs.
+
+**Next:** See ``examples/05_communities/`` for detailed community detection patterns.
 
 ----
 
