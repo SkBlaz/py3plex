@@ -1,6 +1,8 @@
 """MCP Server implementation using FastMCP.
 
 Provides stdio-based MCP server exposing py3plex tools and resources.
+
+Requires Python 3.10 or higher due to MCP SDK dependency.
 """
 
 import json
@@ -9,6 +11,16 @@ import time
 import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# Check Python version first
+if sys.version_info < (3, 10):
+    print(
+        "ERROR: MCP server requires Python 3.10 or higher.\n"
+        f"Current version: {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
+        "Please upgrade Python or use the base py3plex package without MCP.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 
 try:
     from mcp.server import Server

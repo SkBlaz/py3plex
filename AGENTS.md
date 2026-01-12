@@ -3850,10 +3850,14 @@ ParameterMissingError  # Param binding failed
 
 py3plex provides a production-ready MCP server that exposes py3plex functionality as tools and resources for AI coding assistants like Claude, Gemini, and Codex.
 
+**Requirements**: Python 3.10 or higher (due to MCP SDK dependency)
+
+**Note**: The base py3plex package supports Python 3.8+. Only the optional MCP feature requires Python 3.10+.
+
 ### Installation
 
 ```bash
-# Install with MCP support
+# Install with MCP support (requires Python 3.10+)
 pip install py3plex[mcp]
 
 # Or using uv
@@ -4160,6 +4164,11 @@ py3plex-mcp --help
 ```
 
 ### Troubleshooting
+
+**"Python 3.10 or higher required"**:
+The MCP SDK requires Python 3.10+. Either:
+- Upgrade to Python 3.10 or higher, OR
+- Use the base py3plex package without MCP (supports Python 3.8+)
 
 **"MCP SDK not installed"**:
 ```bash

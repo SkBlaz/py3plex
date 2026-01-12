@@ -116,9 +116,9 @@ pyg = [
 dgl_compat = [
     "dgl>=0.9.0",
 ]
-# Optional: MCP server for AI agent integration
+# Optional: MCP server for AI agent integration (requires Python >=3.10)
 mcp = [
-    "mcp>=0.9.0",
+    "mcp>=0.9.0; python_version>='3.10'",
 ]
 
 [project.urls]

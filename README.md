@@ -111,7 +111,7 @@ pip install py3plex
 Install additional features as needed:
 
 ```bash
-# MCP server for AI agent integration (Claude, Gemini, Codex)
+# MCP server for AI agent integration (requires Python 3.10+)
 pip install py3plex[mcp]
 
 # Community detection algorithms
@@ -128,8 +128,10 @@ pip install py3plex[mcp,algos,viz]
 
 py3plex provides a Model Context Protocol (MCP) server for integration with AI coding assistants:
 
+**Requirements**: Python 3.10 or higher (due to MCP SDK dependency)
+
 ```bash
-# Install with MCP support
+# Install with MCP support (Python 3.10+ required)
 pip install py3plex[mcp]
 
 # Start MCP server
