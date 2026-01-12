@@ -16,10 +16,12 @@ try:
     # 1. Load network
     network = load_aarhus_cs()
     
-    # 2. Auto-select best algorithm
+    # 2. Auto-select best algorithm (with time limit for CI)
     result = auto_select_community(
         network,
         fast=True,
+        max_candidates=3,
+        time_budget_s=2.0,
         seed=42
     )
     
