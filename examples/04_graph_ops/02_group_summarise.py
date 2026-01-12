@@ -18,9 +18,9 @@ df = (
     nodes(network)
     .group_by("layer")
     .summarise(
-        count=lambda g: len(g),
-        avg_degree=lambda g: sum(n["degree"] for n in g) / len(g),
-        max_degree=lambda g: max(n["degree"] for n in g)
+        count=("id", len),
+        avg_degree=("degree", lambda degrees: sum(degrees) / len(degrees)),
+        max_degree=("degree", max)
     )
     .to_pandas()
 )

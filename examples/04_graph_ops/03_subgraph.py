@@ -14,13 +14,12 @@ from py3plex.graph_ops import nodes
 network = load_aarhus_cs()
 
 # 2. Extract high-degree subgraph
-high_degree_nodes = (
+subgraph = (
     nodes(network)
     .filter(lambda n: n["degree"] > 8)
-    .select("id")
-    .to_list()
+    .to_subgraph()
 )
 
 # 3. Print subgraph info
-print(f"Extracted subgraph with {len(high_degree_nodes)} nodes")
-print(f"Node IDs: {high_degree_nodes[:10]}")
+print(f"Created subgraph with {len(list(subgraph.get_nodes()))} nodes")
+print(f"Original network: {len(list(network.get_nodes()))} nodes")
