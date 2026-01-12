@@ -26,12 +26,10 @@ try:
     )
     
     # 3. Print results
-    print(f"Best algorithm: {result['best_algorithm']}")
-    print(f"Communities: {len(set(result['partition'].values()))}")
-    print(f"Score: {result['best_score']:.3f}")
-    print("\nLeaderboard:")
-    for algo, score in result['leaderboard'][:3]:
-        print(f"  {algo}: {score:.3f}")
+    print(f"Best algorithm: {result.algorithm['name']}")
+    print(f"Communities: {len(set(result.partition.values()))}")
+    print(f"\nTop 3 from leaderboard:")
+    print(result.leaderboard.head(3))
         
 except ImportError:
     print("AutoCommunity requires optional dependencies.")
