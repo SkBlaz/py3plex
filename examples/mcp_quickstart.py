@@ -5,6 +5,8 @@ This file demonstrates how to use py3plex via the MCP server.
 NOTE: These are conceptual examples showing the JSON payloads.
 To actually run these, you need an MCP client (Claude Desktop, Gemini, etc.)
 with the py3plex-mcp server configured.
+
+SKIP_CI: true - This is a documentation file showing JSON examples, not executable code
 """
 
 # ==============================================================================
