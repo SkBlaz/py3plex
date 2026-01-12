@@ -1,439 +1,253 @@
 Examples & Recipes
 ==================
 
-Browse runnable scripts grouped by topic. Every entry below corresponds to a file in the ``examples/`` directory (`GitHub listing <https://github.com/SkBlaz/py3plex/tree/master/examples>`_), so you can copy, run, and adapt it directly. Run commands from the repository root with your virtual environment activated, and treat all paths as relative to ``examples/``.
+Browse **26 minimal, focused examples** grouped by learning progression. Every entry below corresponds to a file in the ``examples/`` directory (`GitHub listing <https://github.com/SkBlaz/py3plex/tree/master/examples>`_). Each example demonstrates exactly one concept in 20-40 lines of code and runs in under 2 seconds.
+
+**Philosophy:** *Examples are onboarding instruments, not encyclopedias.*
 
 **What's here:**
 
-* **Runnable Examples** — Copy-paste code for common tasks
+* **Runnable Examples** — 26 atomic scripts teaching core concepts
 * **Analysis Recipes** — Reusable patterns (:doc:`../user_guide/recipes_and_workflows`)
-* **Case Studies** — In-depth applications (:doc:`../user_guide/case_studies`)
+* **Case Studies** — Extended tutorials in the book (PDF)
 
-**Quick start picks (paths relative to ``examples/``):**
+**Learning Path (30 minutes total):**
 
-* **DSL examples:** ``network_analysis/example_dsl_builder_api.py`` — Best starting point
-* **Visualization:** ``visualization/example_multilayer_visualization.py``
-* **Community detection:** ``communities/example_community_detection.py``
-* **10-minute tutorial:** ``getting_started/tutorial_10min.py``
+1. **Start here:** ``00_quickstart/`` (5 minutes)
+2. **Build networks:** ``01_network_construction/`` (3 examples)
+3. **Query data:** ``02_basic_queries/`` + ``03_dsl_v2/`` (8 examples)
+4. **Analyze:** ``04_graph_ops/`` through ``07_uncertainty/`` (12 examples)
 
 To run any example:
 
 .. code-block:: bash
 
-    python examples/<category>/<filename>.py
+    python examples/<folder>/<filename>.py
 
-.. admonition:: Featured: DSL Examples
+Example Structure
+-----------------
+
+The examples are organized into 8 progressive folders:
+
+.. code-block:: text
+
+    examples/
+    ├── 00_quickstart/          (3 files) - First 5 minutes
+    ├── 01_network_construction/ (3 files) - How to build networks
+    ├── 02_basic_queries/       (4 files) - Basic querying
+    ├── 03_dsl_v2/             (4 files) - Modern DSL (recommended)
+    ├── 04_graph_ops/          (3 files) - dplyr-style operations
+    ├── 05_communities/        (3 files) - Community detection
+    ├── 06_dynamics/           (3 files) - Dynamical processes
+    ├── 07_uncertainty/        (3 files) - Uncertainty quantification
+    └── README.md              - Navigation guide
+
+00_quickstart/
+--------------
+
+**Goal:** Get started with py3plex in 5 minutes.
+
+* ``01_load_and_query.py`` - Load a dataset and run a simple query
+* ``02_create_and_visualize.py`` - Create a network from scratch
+* ``03_communities.py`` - Detect communities
+
+**Run all three:**
+
+.. code-block:: bash
+
+    python examples/00_quickstart/01_load_and_query.py
+    python examples/00_quickstart/02_create_and_visualize.py
+    python examples/00_quickstart/03_communities.py
+
+01_network_construction/
+------------------------
+
+**Goal:** Learn how to build multilayer networks.
+
+* ``01_from_edges.py`` - Build from edge list
+* ``02_fluent_building.py`` - Method chaining
+* ``03_from_networkx.py`` - Convert from NetworkX
+
+**No analytics. No DSL.** Just network construction patterns.
+
+02_basic_queries/
+-----------------
+
+**Goal:** Understand the mental model of querying.
+
+* ``01_legacy_string_dsl.py`` - Legacy string DSL (backward compatibility only)
+* ``02_select_by_layer.py`` - Layer filtering
+* ``03_filter_by_degree.py`` - Degree filtering
+* ``04_compute_centrality.py`` - Single metric computation
+
+**Note:** Use DSL v2 (next section) for new code.
+
+03_dsl_v2/
+----------
+
+**Goal:** Master the modern Python DSL (recommended).
+
+* ``01_builder_basic.py`` - Q.nodes() builder pattern
+* ``02_layer_algebra.py`` - Layer unions/intersections
+* ``03_grouping_aggregation.py`` - Per-layer grouping
+* ``04_explain.py`` - Query explanation
+
+.. admonition:: Featured: DSL v2 Builder API
    :class: dsl-example
 
-   The DSL examples showcase py3plex's SQL-like query language:
+   The DSL provides a SQL-like query language with Python builder syntax:
 
    .. code-block:: python
 
        from py3plex.dsl import Q, L
 
-       # From example_dsl_builder_api.py - Comprehensive DSL v2
+       # From 01_builder_basic.py
        result = (
            Q.nodes()
-            .from_layers(L["social"] + L["work"])
-            .where(degree__gt=5)
-            .compute("betweenness_centrality", "pagerank")
-            .order_by("-betweenness_centrality")
-            .limit(20)
-            .export_csv("top_influencers.csv")
+            .where(degree__gte=5)
+            .compute("degree_centrality")
+            .sort(by="degree_centrality", descending=True)
+            .limit(15)
             .execute(network)
        )
 
-   **Recommended starting points:**
+   **Key features:**
 
-   * ``example_dsl_builder_api.py`` — Complete DSL v2 tutorial
-   * ``example_dsl_queries.py`` — String DSL syntax
-   * ``example_dsl_advanced.py`` — Advanced patterns
+   * SQL-like syntax for network queries
+   * Python builder API with type hints
+   * Layer algebra: ``L["layer1", "layer2"]`` for union
+   * Django-style WHERE: ``degree__gt=5``, ``layer__ne="coupling"``
+   * COMPUTE measures with automatic calculation
+   * Sort, limit, explain, export to pandas/NetworkX/Arrow
 
-   See :doc:`../user_guide/dsl` for full DSL documentation!
+   See :doc:`../user_guide/dsl` for full documentation.
 
-Getting Started Examples
-------------------------
+04_graph_ops/
+-------------
 
-Create small networks, load existing ones, and get oriented with the library.
+**Goal:** Use dplyr-style operations on network data.
 
-**Basic Network Creation**
+* ``01_filter_mutate.py`` - Filter + add columns
+* ``02_group_summarise.py`` - Group by + aggregation
+* ``03_subgraph.py`` - Subgraph extraction
 
-* ``example_load_network.py`` - Loading networks from files
-* ``example_create_network.py`` - Creating networks from scratch
-* ``example_basic_stats.py`` - Computing basic statistics
+**No DSL here.** Pure dplyr-inspired data manipulation.
 
-**Quick Tutorials**
+05_communities/
+---------------
 
-* ``tutorial_10min.py`` - Executable version of the 10-minute tutorial
-* ``example_quick_start.py`` - Quick start examples
+**Goal:** Community detection, nothing else.
 
-Visualization Examples
-----------------------
+* ``01_louvain_single.py`` - Single-layer Louvain
+* ``02_multilayer_detection.py`` - Multilayer communities
+* ``03_auto_community.py`` - AutoCommunity (flagship feature)
 
-Plot multilayer networks, from simple layouts to interactive views.
+**No visualization. No benchmarking.** Just community detection algorithms.
 
-**Basic Visualization**
-
-* ``example_multilayer_visualization.py`` - Basic multilayer plots
-* ``example_simple_viz.py`` - Simple visualization examples
-* ``example_hairball.py`` - Hairball plots
-
-**Advanced Visualization**
-
-* ``example_custom_layouts.py`` - Custom layout algorithms
-* ``example_diagonal_plot.py`` - Diagonal projection for multilayer networks
-* ``example_interactive_plots.py`` - Interactive visualizations with Plotly
-* ``example_layer_visualization.py`` - Layer-by-layer visualization
-
-**Community Visualization**
-
-* ``example_community_viz.py`` - Visualizing detected communities
-* ``example_colored_networks.py`` - Custom node/edge coloring
-
-Community Detection Examples
------------------------------
-
-Detect communities in single-layer and multilayer settings.
-
-**Single-Layer Community Detection**
-
-* ``example_community_detection.py`` - Louvain and Infomap
-* ``example_louvain.py`` - Louvain algorithm examples
-* ``example_label_propagation.py`` - Semi-supervised community detection
-
-**Multilayer Community Detection**
-
-* ``example_multilayer_communities.py`` - Multilayer Louvain
-* ``example_modularity.py`` - Modularity optimization
-* ``example_overlapping_communities.py`` - Overlapping community detection
-
-DSL and Query Examples
-----------------------
-
-Use the DSL for expressive queries via strings or the builder API.
-
-**DSL v2 (recommended)**
-
-* ``example_dsl_builder_api.py`` - Comprehensive Python builder API examples (Q, L, Param)
-* ``example_dsl_queries.py`` - String DSL syntax examples
-* ``example_dsl_advanced.py`` - Advanced queries and transportation network analysis
-* ``example_dsl_community_detection.py`` - Community detection with DSL
-
-**Highlights:**
-- SQL-like syntax for network queries
-- Python builder API with type hints (``Q.nodes()``, ``L["layer"]``, ``Param``)
-- Layer algebra (union, difference, intersection)
-- Django-style WHERE conditions (``degree__gt=5``)
-- COMPUTE measures with aliases
-- ORDER BY, LIMIT, EXPLAIN mode
-- Export to pandas, NetworkX, Arrow
-
-Network Statistics Examples
-----------------------------
-
-Compute and compare network-level and node-level statistics.
-
-**Basic Statistics**
-
-* ``example_multilayer_statistics.py`` - Multilayer-specific statistics
-* ``example_layer_comparison.py`` - Comparing layers
-* ``example_node_metrics.py`` - Node-level metrics
-
-**Centrality Measures**
-
-* ``example_centrality.py`` - Degree, betweenness, PageRank
-* ``example_multilayer_centrality.py`` - Multilayer centrality measures
-* ``example_versatility.py`` - Versatility centrality
-
-**Network Comparison**
-
-* ``example_network_comparison.py`` - Comparing multiple networks
-* ``example_statistical_tests.py`` - Statistical comparison
-
-I/O and Data Format Examples
------------------------------
-
-Load, validate, and convert networks across common formats.
-
-**Loading Networks**
-
-* ``example_IO.py`` - Various input formats
-* ``example_edgelist_loading.py`` - Edge list formats
-* ``example_graphml.py`` - GraphML format
-* ``example_csv_loading.py`` - CSV with sidecars
-
-**Modern I/O (Arrow/Parquet)**
-
-* ``example_arrow_io.py`` - Apache Arrow format
-* ``example_parquet.py`` - Parquet format
-* ``example_schema_graph.py`` - Schema-based I/O
-
-**Format Conversion**
-
-* ``example_format_conversion.py`` - Converting between formats
-* ``example_export.py`` - Exporting networks
-
-Random Walks and Embeddings
-----------------------------
-
-Generate walks and derive embeddings for downstream tasks.
-
-**Random Walks**
-
-* ``example_random_walks.py`` - Basic and Node2Vec walks
-* ``example_walkers.py`` - Different walk strategies
-* ``example_metapath_walks.py`` - Meta-path based walks
-
-**Node Embeddings**
-
-* ``example_n2v_embedding.py`` - Node2Vec embeddings
-* ``example_deepwalk.py`` - DeepWalk embeddings
-* ``example_embeddings.py`` - Various embedding methods
-
-**Embedding Applications**
-
-* ``example_link_prediction.py`` - Link prediction with embeddings
-* ``example_node_classification.py`` - Node classification
-* ``example_clustering_embeddings.py`` - Clustering with embeddings
-
-Network Decomposition
-----------------------
-
-Extract features and tensors from multilayer networks.
-
-* ``example_network_decomposition.py`` - Meta-path feature extraction
-* ``example_feature_extraction.py`` - Network feature engineering
-* ``example_tensor_decomposition.py`` - Tensor decomposition methods
-
-Network Manipulation
---------------------
-
-Modify, subset, and aggregate networks.
-
-* ``example_manipulation.py`` - Network operations (add, remove, filter)
-* ``example_subnetworks.py`` - Extracting subnetworks
-* ``example_layer_operations.py`` - Layer-specific operations
-* ``example_aggregation.py`` - Aggregating layers
-
-Algorithms and Analysis
------------------------
-
-Explore dynamics, motifs, and ML pipelines on networks.
-
-**Network Dynamics**
-
-* ``example_spreading.py`` - Network traversal and spreading processes
-* ``example_sir_epidemic.py`` - SIR epidemic simulation
-* ``example_diffusion.py`` - Diffusion processes
-
-**Specialized Algorithms**
-
-* ``example_ricci_curvature.py`` - Ricci curvature computation
-* ``example_motifs.py`` - Network motif discovery
-* ``example_path_analysis.py`` - Path-based analysis
-
-**Machine Learning**
-
-* ``example_ml_features.py`` - Feature extraction for ML
-* ``example_graph_kernels.py`` - Graph kernel methods
-* ``example_supervised_learning.py`` - Supervised learning on networks
-
-NetworkX Integration
---------------------
-
-Bridge py3plex and NetworkX for interoperability.
-
-* ``example_networkx_wrapper.py`` - Using NetworkX functions
-* ``example_networkx_interop.py`` - NetworkX interoperability
-* ``example_convert_networkx.py`` - Converting to/from NetworkX
-
-Benchmarking
+06_dynamics/
 ------------
 
-Measure performance and resource usage on representative workloads.
+**Goal:** Simulate dynamical processes on networks.
 
-* ``example_benchmarking.py`` - Performance benchmarking
-* ``example_scalability.py`` - Scalability testing
-* ``example_memory_profiling.py`` - Memory usage analysis
+* ``01_sis_epidemic.py`` - SIS epidemic model
+* ``02_multilayer_epidemic.py`` - Multilayer spreading
+* ``03_custom_model.py`` - Custom dynamics
 
-GUI and API
------------
+**No queries. No DSL.** Focus on dynamics concepts.
 
-Drive py3plex via the REST API, GUI, or batch commands.
+07_uncertainty/
+---------------
 
-* ``example_api_usage.py`` - Using the REST API
-* ``example_gui_integration.py`` - GUI integration examples
-* ``example_batch_processing.py`` - Batch processing with CLI
+**Goal:** Uncertainty quantification as a first-class feature.
 
-Case Studies: End-to-End Workflows
------------------------------------
-
-Complete domain-specific analysis pipelines with interpretation. Each case study follows a standard workflow: Data Import → Stats → Analysis → Visualization → Interpretation.
-
-All case studies are in the ``examples/case_studies/`` directory. See the `Case Studies README <https://github.com/SkBlaz/py3plex/tree/master/examples/case_studies/README.md>`_ for complete documentation.
-
-**Biological Networks** — Intermediate
-
-* ``biological_networks.py`` - Protein-gene-disease multilayer network
-
-  * Explores how protein interactions, gene regulation, and diseases interconnect
-  * Shows how to surface hub proteins (e.g., TP53) as potential drug targets
-  * Demonstrates detecting functional biological modules through community detection
-  * **Layers:** protein (PPI), gene (regulation), disease (associations)
-  * **Key techniques:** Multilayer centrality, cross-layer communities
-
-**Social Networks** — Beginner
-
-* ``social_networks.py`` - Multi-platform social media analysis
-
-  * Shows how to identify cross-platform influencers
-  * Compares behavior across Facebook, Twitter, LinkedIn
-  * Demonstrates detecting social communities spanning multiple platforms
-  * **Layers:** facebook (friends), twitter (followers), linkedin (professional)
-  * **Key techniques:** Influence metrics, platform comparison
-
-**Transportation Networks** — Intermediate
-
-* ``transportation_networks.py`` - Multi-modal urban transport
-
-  * Highlights critical transfer hubs
-  * Computes accessibility metrics for urban planning
-  * Highlights service zones and coverage gaps
-  * **Layers:** bus (coverage), metro (backbone), bike (short trips)
-  * **Key techniques:** Accessibility analysis, hub identification
-
-**Using Case Studies:**
-
-Each case study is:
-
-* **Self-contained** — Generates synthetic data, no external files needed
-* **Structured** — Follows 4-step pipeline (Import → Stats → Pipeline → Viz)
-* **Interpretable** — Extensive domain-specific commentary on results
-* **Adaptable** — Designed as templates for your own data
-
-Run a case study:
-
-.. code-block:: bash
-
-    python examples/case_studies/biological_networks.py
-    python examples/case_studies/social_networks.py
-    python examples/case_studies/transportation_networks.py
-
-See also:
-
-* **Book chapters 12-14 (where available)** — Extended case studies with theoretical background
-* **Notebooks** — Interactive versions (coming soon)
-
-Real-World Datasets
--------------------
-
-**Biological Networks**
-
-* ``example_protein_interaction.py`` - Protein-protein interaction networks
-* ``example_gene_regulation.py`` - Gene regulatory networks
-* ``example_metabolic_networks.py`` - Metabolic pathways
-
-**Social Networks**
-
-* ``example_social_multiplex.py`` - Multiplex social networks
-* ``example_citation_network.py`` - Citation networks
-* ``example_collaboration.py`` - Collaboration networks
-
-**Transportation**
-
-* ``example_multimodal_transport.py`` - Multi-modal transportation
-* ``example_flight_network.py`` - Airline networks
+* ``01_uq_centrality.py`` - UQ-enabled centrality
+* ``02_bootstrap.py`` - Bootstrap/perturbation
+* ``03_comparison.py`` - UQ vs deterministic
 
 Running Examples
 ----------------
 
-All examples can be run directly with Python from the repository root (paths below are relative to that root and assume an active virtual environment):
+All examples run with base dependencies only (no optional packages required except ``05_communities/03_auto_community.py``).
 
 .. code-block:: bash
 
-    # Run DSL builder API examples (recommended starting point)
-    python examples/network_analysis/example_dsl_builder_api.py
+    # Quick validation - run all quickstart examples
+    python examples/00_quickstart/01_load_and_query.py
+    python examples/00_quickstart/02_create_and_visualize.py
+    python examples/00_quickstart/03_communities.py
     
-    # Run string DSL examples
-    python examples/network_analysis/example_dsl_queries.py
+    # Recommended DSL v2 starting point
+    python examples/03_dsl_v2/01_builder_basic.py
     
-    # Run advanced DSL examples
-    python examples/network_analysis/example_dsl_advanced.py
-    
-    # Run a visualization example
-    python examples/visualization/example_multilayer_visualization.py
-    
-    # Run a community detection example
-    python examples/communities/example_community_detection.py
-    
-    # Run a getting started example
-    python examples/getting_started/tutorial_10min.py
+    # Community detection
+    python examples/05_communities/01_louvain_single.py
 
-Many examples accept command-line arguments:
+Performance
+-----------
 
-.. code-block:: bash
+All examples are designed for CI and development:
 
-    python examples/communities/example_community_detection.py --algorithm louvain
+* **Fast execution:** Each example runs in ~2 seconds
+* **No SKIP_CI markers:** All examples tested in CI
+* **Small datasets:** Use ``load_aarhus_cs()`` or tiny synthetic networks
+* **Minimal code:** 20-40 lines per example
+* **One concept:** Each example teaches exactly one thing
 
 Example Template
 ----------------
 
-Use this template when creating new example scripts. The pattern includes
-a docstring, a ``main()`` function, and an ``if __name__ == "__main__":`` guard:
+When creating new examples, follow this pattern:
 
 .. code-block:: python
 
     """
-    Example: Your Feature
-    =====================
+    Example title: One concept per example.
     
-    Description of what this example demonstrates.
-    
-    Usage:
-        python examples/<category>/example_your_feature.py
+    Demonstrates:
+    - Primary concept
+    - Optional secondary concept
     """
     
-    from py3plex.core import multinet
-    from py3plex.visualization.multilayer import draw_multilayer_default
+    from py3plex.datasets import load_aarhus_cs
+    from py3plex.dsl import Q
     
-    def main():
-        # Load or create network
-        network = multinet.multi_layer_network()
-        network.add_edges([
-            ['A', 'layer1', 'B', 'layer1', 1]
-        ], input_type="list")
-        
-        # Your analysis
-        network.basic_stats()
-        
-        # Visualization
-        draw_multilayer_default([network], display=True)
+    # 1. Load network
+    network = load_aarhus_cs()
     
-    if __name__ == "__main__":
-        main()
+    # 2. Run operation
+    result = Q.nodes().compute("degree_centrality").execute(network)
+    
+    # 3. Inspect result
+    print(result.to_pandas().head())
 
-Contributing Examples
----------------------
+Guidelines:
 
-To contribute an example:
+* **Atomic:** One concept maximum (two if unavoidable)
+* **Minimal:** 20-40 lines total
+* **Fast:** Runs in < 2 seconds
+* **Clear:** Section comments (# 1. Load network)
+* **Numbered:** Use ``01_``, ``02_`` prefixes
 
-1. Create a well-documented script in the appropriate ``examples/<category>/`` directory.
-2. Use the template above with docstring + ``main()`` + ``if __name__ == "__main__":``.
-3. Follow the naming convention: ``example_<feature>.py``.
-4. Test that it runs without errors from the repository root.
-5. Add it to this index with a brief description under the correct topic.
-6. Submit a pull request.
-
-See :doc:`../dev/contributing` for detailed guidelines.
+See ``examples/README.md`` for complete guidelines.
 
 Related Documentation
 ---------------------
 
-* :doc:`../getting_started/tutorial_10min` - 10-minute tutorial
+* :doc:`../getting_started/quickstart` - Quick start guide
 * :doc:`../user_guide/networks` - Working with networks
+* :doc:`../user_guide/dsl` - DSL reference
 * :doc:`../user_guide/visualization` - Visualization guide
+* :doc:`../user_guide/recipes_and_workflows` - Analysis recipes
+
+**Advanced topics** (see book PDF):
+
+* Case studies with domain interpretation
+* Research pipelines
+* Performance benchmarks
+* Custom plugin development
 
 **Repository:**
 
 * Examples directory: https://github.com/SkBlaz/py3plex/tree/master/examples
+* Examples README: https://github.com/SkBlaz/py3plex/tree/master/examples/README.md
 * Submit examples: https://github.com/SkBlaz/py3plex/pulls

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10-Minute Tutorial &mdash; py3plex 1.1.0 documentation</title>
+  <title>Quick Start Tutorial &mdash; py3plex 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
@@ -55,19 +55,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="part_intro.html">Getting Started (Tutorials)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">10-Minute Tutorial</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#part-1-your-first-network-2-min">Part 1: Your First Network (2 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#part-2-basic-analysis-2-min">Part 2: Basic Analysis (2 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#part-3-advanced-metrics-2-min">Part 3: Advanced Metrics (2 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#part-4-community-detection-2-min">Part 4: Community Detection (2 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#part-5-random-walks-1-min">Part 5: Random Walks (1 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#part-6-visualization-1-min">Part 6: Visualization (1 min)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#key-concepts">Key Concepts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#complete-example">Complete Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dsl-query-networks-like-sql">DSL: Query Networks Like SQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-1-load-and-query-1-min">Example 1: Load and Query (1 min)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-2-create-network-2-min">Example 2: Create Network (2 min)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-3-community-detection-api-2-min">Example 3: Community Detection API (2 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-documentation">Related Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="common_issues.html">Common Issues and Troubleshooting</a></li>
@@ -150,7 +144,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">10-Minute Tutorial</li>
+      <li class="breadcrumb-item active">Quick Start Tutorial</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/getting_started/tutorial_10min.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -160,25 +154,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="minute-tutorial">
-<h1>10-Minute Tutorial<a class="headerlink" href="#minute-tutorial" title="Link to this heading"></a></h1>
-<p>Create a multilayer network, compute statistics, detect communities, and visualize—all in 10 minutes. This tutorial takes you from a blank environment to advanced multilayer analysis as a single runnable flow.</p>
+  <section id="quick-start-tutorial">
+<h1>Quick Start Tutorial<a class="headerlink" href="#quick-start-tutorial" title="Link to this heading"></a></h1>
+<p>Get started with py3plex in just a few minutes. This tutorial shows you the essential concepts through three focused examples.</p>
 <div class="tip admonition">
-<p class="admonition-title">📓 Run this tutorial online</p>
-<p>You can run this tutorial in your browser without any local setup:</p>
-<a class="reference external image-reference" href="https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/tutorial_10min.ipynb"><img alt="Open in Google Colab" src="https://colab.research.google.com/assets/colab-badge.svg" />
-</a>
-<p>Or download the full executable script: <a class="reference download internal" download="" href="../_downloads/896b3638d484addf6b5766d377915175/tutorial_10min.py"><code class="xref download docutils literal notranslate"><span class="pre">tutorial_10min.py</span></code></a></p>
+<p class="admonition-title">📓 Executable Examples</p>
+<p>All examples are in the <code class="docutils literal notranslate"><span class="pre">examples/00_quickstart/</span></code> directory and can be run directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/00_quickstart/01_load_and_query.py
+python<span class="w"> </span>examples/00_quickstart/02_create_and_visualize.py
+python<span class="w"> </span>examples/00_quickstart/03_communities.py
+</pre></div>
+</div>
 </div>
 <p><strong>You will learn:</strong></p>
 <ul class="simple">
-<li><p>Create multilayer networks from scratch and load from files</p></li>
-<li><p>Display network statistics and understand the multilayer model</p></li>
-<li><p>Compute layer-specific and multilayer metrics</p></li>
-<li><p>Query networks with the SQL-like DSL</p></li>
+<li><p>Load and query multilayer networks</p></li>
+<li><p>Create networks from scratch</p></li>
 <li><p>Detect communities across layers</p></li>
-<li><p>Generate random walks for embeddings</p></li>
-<li><p>Create publication-ready visualizations</p></li>
 </ul>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
@@ -189,365 +181,143 @@
 Run inside a virtual environment to keep dependencies isolated.</p>
 </section>
 <hr class="docutils" />
-<section id="part-1-your-first-network-2-min">
-<h2>Part 1: Your First Network (2 min)<a class="headerlink" href="#part-1-your-first-network-2-min" title="Link to this heading"></a></h2>
-<p>Create a simple multilayer network and explore its basic properties.</p>
-<p>Create from scratch:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Example 1: Creating Your First Multilayer Network&quot;&quot;&quot;</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Example 1: Creating a Multilayer Network&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
+<section id="example-1-load-and-query-1-min">
+<h2>Example 1: Load and Query (1 min)<a class="headerlink" href="#example-1-load-and-query-1-min" title="Link to this heading"></a></h2>
+<p>Load a built-in dataset and run a simple query:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
-<span class="c1"># Create a new multilayer network</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># 1. Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>
 
-<span class="c1"># Add edges within layers (this automatically creates nodes)</span>
-<span class="c1"># Format: [source_node, source_layer, target_node, target_layer, weight]</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
-
-<span class="c1"># Display basic statistics</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Basic Statistics:&quot;</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
-
-</pre></div>
-</div>
-<p>The complete executable version is available at <code class="docutils literal notranslate"><span class="pre">examples/getting_started/tutorial_10min.py</span></code> and produces the outputs shown below.</p>
-<p><strong>Output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 8
-Number of edges: 4
-Number of unique node IDs (across all layers): 4
-Nodes per layer:
-  Layer &#39;layer1&#39;: 3 nodes
-  Layer &#39;layer2&#39;: 3 nodes
-</pre></div>
-</div>
-<p><strong>Key concept:</strong> The network has node-layer pairs representing the same node in different layers. For example, node ‘A’ appears as <code class="docutils literal notranslate"><span class="pre">('A',</span> <span class="pre">'layer1')</span></code> and <code class="docutils literal notranslate"><span class="pre">('A',</span> <span class="pre">'layer2')</span></code>.</p>
-<p>Visualize your network:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
-
-<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Nodes are colored by layer. Edges connect nodes within and across layers.
-Set <code class="docutils literal notranslate"><span class="pre">display=False</span></code> in headless environments and call <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> or <code class="docutils literal notranslate"><span class="pre">plt.savefig(...)</span></code> manually.</p>
-<p>Load from file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For larger networks, load from files</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;datasets/multiedgelist.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>  <span class="c1"># Format: source target layer</span>
-    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># Set to True for directed networks</span>
-<span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
-</pre></div>
-</div>
-<p><strong>Supported formats:</strong> <code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> (source, target, layer), <code class="docutils literal notranslate"><span class="pre">edgelist</span></code> (source, target), <code class="docutils literal notranslate"><span class="pre">gpickle</span></code>, <code class="docutils literal notranslate"><span class="pre">gml</span></code>, <code class="docutils literal notranslate"><span class="pre">graphml</span></code>. File paths in this tutorial are relative to the repository root.</p>
-</section>
-<hr class="docutils" />
-<section id="part-2-basic-analysis-2-min">
-<h2>Part 2: Basic Analysis (2 min)<a class="headerlink" href="#part-2-basic-analysis-2-min" title="Link to this heading"></a></h2>
-<p>Compute layer-specific metrics:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-
-<span class="c1"># Layer density: how connected is each layer?</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Friends density: </span><span class="si">{</span><span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;friends&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Colleagues density: </span><span class="si">{</span><span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;colleagues&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Node activity: what fraction of layers does Bob appear in?</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bob&#39;s activity: </span><span class="si">{</span><span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Bob&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Friends density: 0.667
-Colleagues density: 0.667
-Bob&#39;s activity: 1.000
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>Density 0.667</strong> — with 3 nodes in an undirected layer there are 3 possible edges; 2 exist here</p></li>
-<li><p><strong>Activity 1.0</strong> — Bob appears in every available layer in this example</p></li>
-</ul>
-<p>Query with the DSL:</p>
-<p>Py3plex includes a SQL-like DSL for querying networks without manual iteration.</p>
-<div class="dsl-example admonition">
-<p class="admonition-title">DSL Example: Network Queries</p>
-<p>Use SQL-like queries for network exploration:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-
-<span class="c1"># String DSL syntax</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE degree &gt; 1&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> high-degree nodes&quot;</span><span class="p">)</span>
-
-<span class="c1"># Builder API (recommended for production)</span>
+<span class="c1"># 2. Run query - find nodes with degree &gt; 5</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">Q</span></code> builds queries and <code class="docutils literal notranslate"><span class="pre">L</span></code> selects layers. Both forms return a result object with counts, selected nodes, and any computed measures.</p>
-</div>
-<p>See <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for complete DSL documentation.</p>
-<p>Explore network structure:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Iterate through nodes and edges</span>
-<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>  <span class="c1"># ((&#39;Alice&#39;, &#39;friends&#39;), {&#39;type&#39;: &#39;friends&#39;})</span>
-
-<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>  <span class="c1"># Edge with attributes</span>
-
-<span class="c1"># Get neighbors of a node in a specific layer</span>
-<span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s2">&quot;friends&quot;</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Extract subnetworks:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single layer</span>
-<span class="n">friends_layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
-
-<span class="c1"># Specific nodes across all layers</span>
-<span class="n">subset</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_names&quot;</span><span class="p">)</span>
-
-<span class="c1"># Specific node-layer pairs</span>
-<span class="n">pairs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)],</span>
-                           <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Use <code class="docutils literal notranslate"><span class="pre">subset_by</span></code> to control whether you filter by layers, node names, or explicit node-layer tuples.</p>
-</section>
-<hr class="docutils" />
-<section id="part-3-advanced-metrics-2-min">
-<h2>Part 3: Advanced Metrics (2 min)<a class="headerlink" href="#part-3-advanced-metrics-2-min" title="Link to this heading"></a></h2>
-<p>Layer-specific centrality (using NetworkX wrappers):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">friends_layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
-<span class="n">degree_cent</span> <span class="o">=</span> <span class="n">friends_layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
-<span class="n">betweenness</span> <span class="o">=</span> <span class="n">friends_layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Multilayer centrality:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultilayerCentrality</span>
-
-<span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="n">ml_degree</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">overlapping_degree_centrality</span><span class="p">(</span><span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">ml_betweenness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_betweenness_centrality</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Multilayer statistics:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-
-<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)</span>  <span class="c1"># Edge density within a layer</span>
-<span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s1">&#39;Alice&#39;</span><span class="p">)</span>  <span class="c1"># Fraction of layers node appears in</span>
-<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>  <span class="c1"># Shared edges between layers</span>
-<span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Available statistics:</strong> <code class="docutils literal notranslate"><span class="pre">layer_density</span></code>, <code class="docutils literal notranslate"><span class="pre">entropy_of_multiplexity</span></code>, <code class="docutils literal notranslate"><span class="pre">node_activity</span></code>, <code class="docutils literal notranslate"><span class="pre">edge_overlap</span></code>, <code class="docutils literal notranslate"><span class="pre">layer_similarity</span></code>, <code class="docutils literal notranslate"><span class="pre">algebraic_connectivity</span></code>, <code class="docutils literal notranslate"><span class="pre">multilayer_clustering_coefficient</span></code>, and more.
-<code class="docutils literal notranslate"><span class="pre">layer_density</span></code> compares existing edges to the maximum possible within a layer; <code class="docutils literal notranslate"><span class="pre">node_activity</span></code> is the fraction of layers a node appears in; <code class="docutils literal notranslate"><span class="pre">edge_overlap</span></code> and <code class="docutils literal notranslate"><span class="pre">layer_similarity</span></code> compare relationships across layers.</p>
-</section>
-<hr class="docutils" />
-<section id="part-4-community-detection-2-min">
-<h2>Part 4: Community Detection (2 min)<a class="headerlink" href="#part-4-community-detection-2-min" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
-
-<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Resolution (higher = more communities)</span>
-    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Inter-layer coupling strength</span>
-    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
-<span class="n">sizes</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sizes: </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">partition</span></code> maps each node-layer pair to a community label. Tune <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (resolution) and <code class="docutils literal notranslate"><span class="pre">omega</span></code> (inter-layer coupling) to control granularity; fix <code class="docutils literal notranslate"><span class="pre">random_state</span></code> for reproducible runs.</p>
-</section>
-<hr class="docutils" />
-<section id="part-5-random-walks-1-min">
-<h2>Part 5: Random Walks (1 min)<a class="headerlink" href="#part-5-random-walks-1-min" title="Link to this heading"></a></h2>
-<p>Basic walk:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">basic_random_walk</span><span class="p">,</span> <span class="n">node2vec_walk</span><span class="p">,</span> <span class="n">generate_walks</span>
-
-<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
-<span class="n">start</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="n">walk</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">start_node</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Node2Vec biased walks:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># BFS-like (local): higher q biases walks to stay close</span>
-<span class="n">walk_bfs</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-
-<span class="c1"># DFS-like (explore): lower q encourages exploration</span>
-<span class="n">walk_dfs</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">p</span></code> controls the likelihood of returning to the previous node, while <code class="docutils literal notranslate"><span class="pre">q</span></code> biases walks toward breadth-first (higher) or depth-first (lower) exploration; keep <code class="docutils literal notranslate"><span class="pre">seed</span></code> fixed to reproduce results.</p>
-<p>Generate walks for embeddings:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-<span class="c1"># Use with Word2Vec: model = Word2Vec([[str(n) for n in w] for w in walks])</span>
-<span class="c1"># Set seeds for reproducibility; tune p and q to balance local/global exploration.</span>
-</pre></div>
-</div>
-</section>
-<hr class="docutils" />
-<section id="part-6-visualization-1-min">
-<h2>Part 6: Visualization (1 min)<a class="headerlink" href="#part-6-visualization-1-min" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="n">network_colors</span><span class="p">,</span> <span class="n">graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;hairball&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">hairball_plot</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">network_colors</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>With community colors:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors_default</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
-
-<span class="n">top_communities</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
-<span class="n">color_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">top_communities</span><span class="p">,</span> <span class="n">colors_default</span><span class="p">[:</span><span class="mi">5</span><span class="p">]))</span>
-<span class="n">node_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="s2">&quot;gray&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()]</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">hairball_plot</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">node_colors</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;communities.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">get_layers(style=&quot;hairball&quot;)</span></code> returns a NetworkX graph and color mapping ready for <code class="docutils literal notranslate"><span class="pre">hairball_plot</span></code>; saving figures makes headless runs reproducible.</p>
-</section>
-<hr class="docutils" />
-<section id="key-concepts">
-<h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
-<p>Understand these concepts to navigate py3plex effectively:</p>
-<ol class="arabic simple">
-<li><p><strong>Node-layer pairs:</strong> Nodes are <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> tuples. Alice in friends is distinct from Alice in colleagues, so each context keeps its own edges.</p></li>
-<li><p><strong>Layer boundaries:</strong> Every layer represents a relationship type (friends, colleagues, transit, etc.). Metrics respect layer boundaries, surfacing patterns that disappear in single-layer projections.</p></li>
-<li><p><strong>NetworkX compatibility:</strong> py3plex wraps NetworkX internally; use <code class="docutils literal notranslate"><span class="pre">network.core_network</span></code> directly with NetworkX algorithms when needed.</p></li>
-<li><p><strong>Cross-layer measures:</strong> Node activity and edge overlap quantify how entities and links span layers; use them to compare behaviors across contexts.</p></li>
-</ol>
-</section>
-<hr class="docutils" />
-<section id="complete-example">
-<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors_default</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="c1"># Load</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;datasets/multiedgelist2.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
-    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
-
-<span class="c1"># Analyze</span>
-<span class="n">friends_layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
-<span class="n">degree_cent</span> <span class="o">=</span> <span class="n">friends_layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 5 by degree:&quot;</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">degree_cent</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">])</span>
-
-<span class="c1"># Detect communities</span>
-<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Visualize</span>
-<span class="n">network_colors</span><span class="p">,</span> <span class="n">graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;hairball&quot;</span><span class="p">)</span>
-<span class="n">top_communities</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
-<span class="n">color_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">top_communities</span><span class="p">,</span> <span class="n">colors_default</span><span class="p">[:</span><span class="mi">3</span><span class="p">]))</span>
-<span class="n">node_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="s2">&quot;lightgray&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()]</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
-<span class="n">hairball_plot</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">node_colors</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;analysis.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-<hr class="docutils" />
-<section id="dsl-query-networks-like-sql">
-<h2>DSL: Query Networks Like SQL<a class="headerlink" href="#dsl-query-networks-like-sql" title="Link to this heading"></a></h2>
-<p>The SQL-like DSL makes many analysis tasks simpler and more intuitive:</p>
-<div class="dsl-example admonition">
-<p class="admonition-title">DSL Example: Advanced Analysis</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-
-<span class="c1"># Find top influential nodes</span>
-<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="c1"># Display as DataFrame</span>
+<span class="c1"># 3. Inspect result</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> high-degree nodes&quot;</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-
-<span class="c1"># Compare layers</span>
-<span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">]:</span>
-    <span class="n">layer_result</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_id</span><span class="p">])</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">layer_result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for comprehensive DSL documentation!</p>
-</div>
+<p><strong>What this does:</strong></p>
+<ul class="simple">
+<li><p>Loads the Aarhus CS multilayer social network (61 nodes, 5 layers)</p></li>
+<li><p>Filters nodes with more than 5 connections</p></li>
+<li><p>Computes degree centrality</p></li>
+<li><p>Displays results as a pandas DataFrame</p></li>
+</ul>
+<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/03_dsl_v2/</span></code> for advanced DSL queries.</p>
 </section>
 <hr class="docutils" />
-<section id="common-issues">
-<h2>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h2>
-<p><strong>File Not Found:</strong> Use absolute paths or run from repository root.</p>
-<p><strong>Visualization not showing:</strong> In Jupyter, add <code class="docutils literal notranslate"><span class="pre">%matplotlib</span> <span class="pre">inline</span></code>. In scripts, use <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> or save to file.</p>
-<p><strong>Missing dependencies:</strong> Install extras with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;py3plex[viz,algos]&quot;</span></code></p>
+<section id="example-2-create-network-2-min">
+<h2>Example 2: Create Network (2 min)<a class="headerlink" href="#example-2-create-network-2-min" title="Link to this heading"></a></h2>
+<p>Create a simple multilayer network from scratch:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core.multinet</span><span class="w"> </span><span class="kn">import</span> <span class="n">multi_layer_network</span>
+
+<span class="c1"># 1. Create network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># 2. Add edges (nodes created automatically)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># 3. Print statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>What this does:</strong></p>
+<ul class="simple">
+<li><p>Creates an undirected multilayer network</p></li>
+<li><p>Adds edges in two layers: ‘social’ and ‘work’</p></li>
+<li><p>Nodes are created automatically from edge definitions</p></li>
+<li><p>Displays basic network statistics</p></li>
+</ul>
+<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/01_network_construction/</span></code> for more construction patterns.</p>
+</section>
+<hr class="docutils" />
+<section id="example-3-community-detection-api-2-min">
+<h2>Example 3: Community Detection API (2 min)<a class="headerlink" href="#example-3-community-detection-api-2-min" title="Link to this heading"></a></h2>
+<p>Learn the API for community detection in multilayer networks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+
+<span class="c1"># 1. Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>
+
+<span class="c1"># 2. Network info</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network loaded: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 3. Community detection API pattern</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Community detection API:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  partition, modularity = louvain_multilayer(network)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>What this does:</strong></p>
+<ul class="simple">
+<li><p>Loads the Aarhus CS network</p></li>
+<li><p>Shows network structure (nodes and layers)</p></li>
+<li><p>Demonstrates the API pattern for multilayer community detection</p></li>
+<li><p>Points to detailed examples in the repository</p></li>
+</ul>
+<p><strong>Note:</strong> Community detection algorithms work best with networks that have numeric node IDs. See the documentation for preprocessing steps when using string node IDs.</p>
+<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/05_communities/</span></code> for detailed community detection patterns.</p>
 </section>
 <hr class="docutils" />
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
-<p><strong>Continue Learning:</strong></p>
+<p><strong>Continue learning:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>More Examples:</strong> Explore <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory (26 focused examples)</p></li>
+<li><p><strong>DSL Guide:</strong> <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> - SQL-like queries</p></li>
+<li><p><strong>Visualization:</strong> <a class="reference internal" href="../user_guide/visualization.html"><span class="doc">Visualization</span></a> - Create plots</p></li>
+<li><p><strong>Advanced Topics:</strong> See the book (PDF) for case studies</p></li>
+</ol>
+<p><strong>Example categories:</strong></p>
 <ul class="simple">
-<li><p><a class="reference internal" href="installation.html"><span class="doc">Installation and Setup</span></a> — Optional dependencies and setup options</p></li>
-<li><p><a class="reference internal" href="common_issues.html"><span class="doc">Common Issues and Troubleshooting</span></a> — Solutions to common problems</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">00_quickstart/</span></code> - Start here (3 examples)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">01_network_construction/</span></code> - Build networks (3 examples)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_basic_queries/</span></code> - Basic queries (4 examples)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_dsl_v2/</span></code> - Modern DSL (4 examples, <strong>recommended</strong>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">04_graph_ops/</span></code> - dplyr-style ops (3 examples)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">05_communities/</span></code> - Community detection (3 examples)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">06_dynamics/</span></code> - Network dynamics (3 examples)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">07_uncertainty/</span></code> - Uncertainty quantification (3 examples)</p></li>
 </ul>
-<p><strong>Advanced Topics:</strong></p>
+<p>See <a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a> for the complete examples catalog.</p>
+<p><strong>Getting help:</strong></p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../user_guide/recipes_and_workflows.html"><span class="doc">Analysis Recipes &amp; Workflows</span></a> — Ready-to-use analysis workflows and patterns</p></li>
-<li><p><a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> — SQL-like DSL for querying multilayer networks</p></li>
-<li><p><a class="reference internal" href="../user_guide/graph_ops.html"><span class="doc">Dplyr-style Chainable Graph Operations</span></a> — Dplyr-style chainable graph operations</p></li>
+<li><p><a class="reference internal" href="common_issues.html"><span class="doc">Common Issues and Troubleshooting</span></a> - Troubleshooting guide</p></li>
+<li><p><a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">GitHub Issues</a> - Report bugs</p></li>
+<li><p><a class="reference external" href="https://github.com/SkBlaz/py3plex/discussions">GitHub Discussions</a> - Ask questions</p></li>
 </ul>
-<p><strong>Deep Dive:</strong></p>
+</section>
+<hr class="docutils" />
+<section id="related-documentation">
+<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> — Theory and concepts</p></li>
-<li><p><a class="reference internal" href="../user_guide/statistics.html"><span class="doc">Network Statistics</span></a> — All available statistics</p></li>
-<li><p><a class="reference internal" href="../user_guide/community_detection.html"><span class="doc">Community Detection</span></a> — Parameter tuning</p></li>
-<li><p><a class="reference internal" href="../user_guide/visualization.html"><span class="doc">Visualization</span></a> — Advanced visualization</p></li>
-</ul>
-<p><strong>Examples:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory — 50+ working examples</p></li>
-<li><p><a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a> — Annotated example gallery</p></li>
+<li><p><a class="reference internal" href="installation.html"><span class="doc">Installation and Setup</span></a> - Setup guide</p></li>
+<li><p><a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a> - All examples</p></li>
+<li><p><a class="reference internal" href="../user_guide/networks.html"><span class="doc">Working with Networks</span></a> - Network concepts</p></li>
+<li><p><a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> - Query language reference</p></li>
 </ul>
 </section>
 </section>

@@ -55,7 +55,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">Quick Start Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
@@ -95,24 +95,18 @@
 <p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples &amp; Recipes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#getting-started-examples">Getting Started Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#visualization-examples">Visualization Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#community-detection-examples">Community Detection Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dsl-and-query-examples">DSL and Query Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#network-statistics-examples">Network Statistics Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#i-o-and-data-format-examples">I/O and Data Format Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#random-walks-and-embeddings">Random Walks and Embeddings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#network-decomposition">Network Decomposition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#network-manipulation">Network Manipulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#algorithms-and-analysis">Algorithms and Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#networkx-integration">NetworkX Integration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#benchmarking">Benchmarking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#gui-and-api">GUI and API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#case-studies-end-to-end-workflows">Case Studies: End-to-End Workflows</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#real-world-datasets">Real-World Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-structure">Example Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart">00_quickstart/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#network-construction">01_network_construction/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-queries">02_basic_queries/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dsl-v2">03_dsl_v2/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graph-ops">04_graph_ops/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#communities">05_communities/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamics">06_dynamics/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#uncertainty">07_uncertainty/</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#performance">Performance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#example-template">Example Template</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#contributing-examples">Contributing Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#related-documentation">Related Documentation</a></li>
 </ul>
 </li>
@@ -169,420 +163,234 @@
              
   <section id="examples-recipes">
 <h1>Examples &amp; Recipes<a class="headerlink" href="#examples-recipes" title="Link to this heading"></a></h1>
-<p>Browse runnable scripts grouped by topic. Every entry below corresponds to a file in the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory (<a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">GitHub listing</a>), so you can copy, run, and adapt it directly. Run commands from the repository root with your virtual environment activated, and treat all paths as relative to <code class="docutils literal notranslate"><span class="pre">examples/</span></code>.</p>
+<p>Browse <strong>26 minimal, focused examples</strong> grouped by learning progression. Every entry below corresponds to a file in the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory (<a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">GitHub listing</a>). Each example demonstrates exactly one concept in 20-40 lines of code and runs in under 2 seconds.</p>
+<p><strong>Philosophy:</strong> <em>Examples are onboarding instruments, not encyclopedias.</em></p>
 <p><strong>What’s here:</strong></p>
 <ul class="simple">
-<li><p><strong>Runnable Examples</strong> — Copy-paste code for common tasks</p></li>
+<li><p><strong>Runnable Examples</strong> — 26 atomic scripts teaching core concepts</p></li>
 <li><p><strong>Analysis Recipes</strong> — Reusable patterns (<a class="reference internal" href="../user_guide/recipes_and_workflows.html"><span class="doc">Analysis Recipes &amp; Workflows</span></a>)</p></li>
-<li><p><strong>Case Studies</strong> — In-depth applications (<a class="reference internal" href="../user_guide/case_studies.html"><span class="doc">Use Cases &amp; Case Studies</span></a>)</p></li>
+<li><p><strong>Case Studies</strong> — Extended tutorials in the book (PDF)</p></li>
 </ul>
-<p><strong>Quick start picks (paths relative to ``examples/``):</strong></p>
-<ul class="simple">
-<li><p><strong>DSL examples:</strong> <code class="docutils literal notranslate"><span class="pre">network_analysis/example_dsl_builder_api.py</span></code> — Best starting point</p></li>
-<li><p><strong>Visualization:</strong> <code class="docutils literal notranslate"><span class="pre">visualization/example_multilayer_visualization.py</span></code></p></li>
-<li><p><strong>Community detection:</strong> <code class="docutils literal notranslate"><span class="pre">communities/example_community_detection.py</span></code></p></li>
-<li><p><strong>10-minute tutorial:</strong> <code class="docutils literal notranslate"><span class="pre">getting_started/tutorial_10min.py</span></code></p></li>
-</ul>
+<p><strong>Learning Path (30 minutes total):</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Start here:</strong> <code class="docutils literal notranslate"><span class="pre">00_quickstart/</span></code> (5 minutes)</p></li>
+<li><p><strong>Build networks:</strong> <code class="docutils literal notranslate"><span class="pre">01_network_construction/</span></code> (3 examples)</p></li>
+<li><p><strong>Query data:</strong> <code class="docutils literal notranslate"><span class="pre">02_basic_queries/</span></code> + <code class="docutils literal notranslate"><span class="pre">03_dsl_v2/</span></code> (8 examples)</p></li>
+<li><p><strong>Analyze:</strong> <code class="docutils literal notranslate"><span class="pre">04_graph_ops/</span></code> through <code class="docutils literal notranslate"><span class="pre">07_uncertainty/</span></code> (12 examples)</p></li>
+</ol>
 <p>To run any example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/&lt;category&gt;/&lt;filename&gt;.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/&lt;folder&gt;/&lt;filename&gt;.py
 </pre></div>
 </div>
+<section id="example-structure">
+<h2>Example Structure<a class="headerlink" href="#example-structure" title="Link to this heading"></a></h2>
+<p>The examples are organized into 8 progressive folders:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>examples/
+├── 00_quickstart/          (3 files) - First 5 minutes
+├── 01_network_construction/ (3 files) - How to build networks
+├── 02_basic_queries/       (4 files) - Basic querying
+├── 03_dsl_v2/             (4 files) - Modern DSL (recommended)
+├── 04_graph_ops/          (3 files) - dplyr-style operations
+├── 05_communities/        (3 files) - Community detection
+├── 06_dynamics/           (3 files) - Dynamical processes
+├── 07_uncertainty/        (3 files) - Uncertainty quantification
+└── README.md              - Navigation guide
+</pre></div>
+</div>
+</section>
+<section id="quickstart">
+<h2>00_quickstart/<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Get started with py3plex in 5 minutes.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">01_load_and_query.py</span></code> - Load a dataset and run a simple query</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_create_and_visualize.py</span></code> - Create a network from scratch</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_communities.py</span></code> - Detect communities</p></li>
+</ul>
+<p><strong>Run all three:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/00_quickstart/01_load_and_query.py
+python<span class="w"> </span>examples/00_quickstart/02_create_and_visualize.py
+python<span class="w"> </span>examples/00_quickstart/03_communities.py
+</pre></div>
+</div>
+</section>
+<section id="network-construction">
+<h2>01_network_construction/<a class="headerlink" href="#network-construction" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Learn how to build multilayer networks.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">01_from_edges.py</span></code> - Build from edge list</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_fluent_building.py</span></code> - Method chaining</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_from_networkx.py</span></code> - Convert from NetworkX</p></li>
+</ul>
+<p><strong>No analytics. No DSL.</strong> Just network construction patterns.</p>
+</section>
+<section id="basic-queries">
+<h2>02_basic_queries/<a class="headerlink" href="#basic-queries" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Understand the mental model of querying.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">01_legacy_string_dsl.py</span></code> - Legacy string DSL (backward compatibility only)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_select_by_layer.py</span></code> - Layer filtering</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_filter_by_degree.py</span></code> - Degree filtering</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">04_compute_centrality.py</span></code> - Single metric computation</p></li>
+</ul>
+<p><strong>Note:</strong> Use DSL v2 (next section) for new code.</p>
+</section>
+<section id="dsl-v2">
+<h2>03_dsl_v2/<a class="headerlink" href="#dsl-v2" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Master the modern Python DSL (recommended).</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">01_builder_basic.py</span></code> - Q.nodes() builder pattern</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_layer_algebra.py</span></code> - Layer unions/intersections</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_grouping_aggregation.py</span></code> - Per-layer grouping</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">04_explain.py</span></code> - Query explanation</p></li>
+</ul>
 <div class="dsl-example admonition">
-<p class="admonition-title">Featured: DSL Examples</p>
-<p>The DSL examples showcase py3plex’s SQL-like query language:</p>
+<p class="admonition-title">Featured: DSL v2 Builder API</p>
+<p>The DSL provides a SQL-like query language with Python builder syntax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
-<span class="c1"># From example_dsl_builder_api.py - Comprehensive DSL v2</span>
+<span class="c1"># From 01_builder_basic.py</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;top_influencers.csv&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gte</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Recommended starting points:</strong></p>
+<p><strong>Key features:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_builder_api.py</span></code> — Complete DSL v2 tutorial</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_queries.py</span></code> — String DSL syntax</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_advanced.py</span></code> — Advanced patterns</p></li>
+<li><p>SQL-like syntax for network queries</p></li>
+<li><p>Python builder API with type hints</p></li>
+<li><p>Layer algebra: <code class="docutils literal notranslate"><span class="pre">L[&quot;layer1&quot;,</span> <span class="pre">&quot;layer2&quot;]</span></code> for union</p></li>
+<li><p>Django-style WHERE: <code class="docutils literal notranslate"><span class="pre">degree__gt=5</span></code>, <code class="docutils literal notranslate"><span class="pre">layer__ne=&quot;coupling&quot;</span></code></p></li>
+<li><p>COMPUTE measures with automatic calculation</p></li>
+<li><p>Sort, limit, explain, export to pandas/NetworkX/Arrow</p></li>
 </ul>
-<p>See <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for full DSL documentation!</p>
+<p>See <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for full documentation.</p>
 </div>
-<section id="getting-started-examples">
-<h2>Getting Started Examples<a class="headerlink" href="#getting-started-examples" title="Link to this heading"></a></h2>
-<p>Create small networks, load existing ones, and get oriented with the library.</p>
-<p><strong>Basic Network Creation</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_load_network.py</span></code> - Loading networks from files</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_create_network.py</span></code> - Creating networks from scratch</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_basic_stats.py</span></code> - Computing basic statistics</p></li>
-</ul>
-<p><strong>Quick Tutorials</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">tutorial_10min.py</span></code> - Executable version of the 10-minute tutorial</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_quick_start.py</span></code> - Quick start examples</p></li>
-</ul>
 </section>
-<section id="visualization-examples">
-<h2>Visualization Examples<a class="headerlink" href="#visualization-examples" title="Link to this heading"></a></h2>
-<p>Plot multilayer networks, from simple layouts to interactive views.</p>
-<p><strong>Basic Visualization</strong></p>
+<section id="graph-ops">
+<h2>04_graph_ops/<a class="headerlink" href="#graph-ops" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Use dplyr-style operations on network data.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_visualization.py</span></code> - Basic multilayer plots</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_simple_viz.py</span></code> - Simple visualization examples</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_hairball.py</span></code> - Hairball plots</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">01_filter_mutate.py</span></code> - Filter + add columns</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_group_summarise.py</span></code> - Group by + aggregation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_subgraph.py</span></code> - Subgraph extraction</p></li>
 </ul>
-<p><strong>Advanced Visualization</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_custom_layouts.py</span></code> - Custom layout algorithms</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_diagonal_plot.py</span></code> - Diagonal projection for multilayer networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_interactive_plots.py</span></code> - Interactive visualizations with Plotly</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_layer_visualization.py</span></code> - Layer-by-layer visualization</p></li>
-</ul>
-<p><strong>Community Visualization</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_community_viz.py</span></code> - Visualizing detected communities</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_colored_networks.py</span></code> - Custom node/edge coloring</p></li>
-</ul>
+<p><strong>No DSL here.</strong> Pure dplyr-inspired data manipulation.</p>
 </section>
-<section id="community-detection-examples">
-<h2>Community Detection Examples<a class="headerlink" href="#community-detection-examples" title="Link to this heading"></a></h2>
-<p>Detect communities in single-layer and multilayer settings.</p>
-<p><strong>Single-Layer Community Detection</strong></p>
+<section id="communities">
+<h2>05_communities/<a class="headerlink" href="#communities" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Community detection, nothing else.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_community_detection.py</span></code> - Louvain and Infomap</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_louvain.py</span></code> - Louvain algorithm examples</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_label_propagation.py</span></code> - Semi-supervised community detection</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">01_louvain_single.py</span></code> - Single-layer Louvain</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_multilayer_detection.py</span></code> - Multilayer communities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_auto_community.py</span></code> - AutoCommunity (flagship feature)</p></li>
 </ul>
-<p><strong>Multilayer Community Detection</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_communities.py</span></code> - Multilayer Louvain</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_modularity.py</span></code> - Modularity optimization</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_overlapping_communities.py</span></code> - Overlapping community detection</p></li>
-</ul>
+<p><strong>No visualization. No benchmarking.</strong> Just community detection algorithms.</p>
 </section>
-<section id="dsl-and-query-examples">
-<h2>DSL and Query Examples<a class="headerlink" href="#dsl-and-query-examples" title="Link to this heading"></a></h2>
-<p>Use the DSL for expressive queries via strings or the builder API.</p>
-<p><strong>DSL v2 (recommended)</strong></p>
+<section id="dynamics">
+<h2>06_dynamics/<a class="headerlink" href="#dynamics" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Simulate dynamical processes on networks.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_builder_api.py</span></code> - Comprehensive Python builder API examples (Q, L, Param)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_queries.py</span></code> - String DSL syntax examples</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_advanced.py</span></code> - Advanced queries and transportation network analysis</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_community_detection.py</span></code> - Community detection with DSL</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">01_sis_epidemic.py</span></code> - SIS epidemic model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_multilayer_epidemic.py</span></code> - Multilayer spreading</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_custom_model.py</span></code> - Custom dynamics</p></li>
 </ul>
-<p><strong>Highlights:</strong>
-- SQL-like syntax for network queries
-- Python builder API with type hints (<code class="docutils literal notranslate"><span class="pre">Q.nodes()</span></code>, <code class="docutils literal notranslate"><span class="pre">L[&quot;layer&quot;]</span></code>, <code class="docutils literal notranslate"><span class="pre">Param</span></code>)
-- Layer algebra (union, difference, intersection)
-- Django-style WHERE conditions (<code class="docutils literal notranslate"><span class="pre">degree__gt=5</span></code>)
-- COMPUTE measures with aliases
-- ORDER BY, LIMIT, EXPLAIN mode
-- Export to pandas, NetworkX, Arrow</p>
+<p><strong>No queries. No DSL.</strong> Focus on dynamics concepts.</p>
 </section>
-<section id="network-statistics-examples">
-<h2>Network Statistics Examples<a class="headerlink" href="#network-statistics-examples" title="Link to this heading"></a></h2>
-<p>Compute and compare network-level and node-level statistics.</p>
-<p><strong>Basic Statistics</strong></p>
+<section id="uncertainty">
+<h2>07_uncertainty/<a class="headerlink" href="#uncertainty" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Uncertainty quantification as a first-class feature.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_statistics.py</span></code> - Multilayer-specific statistics</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_layer_comparison.py</span></code> - Comparing layers</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_node_metrics.py</span></code> - Node-level metrics</p></li>
-</ul>
-<p><strong>Centrality Measures</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_centrality.py</span></code> - Degree, betweenness, PageRank</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_centrality.py</span></code> - Multilayer centrality measures</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_versatility.py</span></code> - Versatility centrality</p></li>
-</ul>
-<p><strong>Network Comparison</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_network_comparison.py</span></code> - Comparing multiple networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_statistical_tests.py</span></code> - Statistical comparison</p></li>
-</ul>
-</section>
-<section id="i-o-and-data-format-examples">
-<h2>I/O and Data Format Examples<a class="headerlink" href="#i-o-and-data-format-examples" title="Link to this heading"></a></h2>
-<p>Load, validate, and convert networks across common formats.</p>
-<p><strong>Loading Networks</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_IO.py</span></code> - Various input formats</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_edgelist_loading.py</span></code> - Edge list formats</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_graphml.py</span></code> - GraphML format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_csv_loading.py</span></code> - CSV with sidecars</p></li>
-</ul>
-<p><strong>Modern I/O (Arrow/Parquet)</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_arrow_io.py</span></code> - Apache Arrow format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_parquet.py</span></code> - Parquet format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_schema_graph.py</span></code> - Schema-based I/O</p></li>
-</ul>
-<p><strong>Format Conversion</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_format_conversion.py</span></code> - Converting between formats</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_export.py</span></code> - Exporting networks</p></li>
-</ul>
-</section>
-<section id="random-walks-and-embeddings">
-<h2>Random Walks and Embeddings<a class="headerlink" href="#random-walks-and-embeddings" title="Link to this heading"></a></h2>
-<p>Generate walks and derive embeddings for downstream tasks.</p>
-<p><strong>Random Walks</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_random_walks.py</span></code> - Basic and Node2Vec walks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_walkers.py</span></code> - Different walk strategies</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_metapath_walks.py</span></code> - Meta-path based walks</p></li>
-</ul>
-<p><strong>Node Embeddings</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_n2v_embedding.py</span></code> - Node2Vec embeddings</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_deepwalk.py</span></code> - DeepWalk embeddings</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_embeddings.py</span></code> - Various embedding methods</p></li>
-</ul>
-<p><strong>Embedding Applications</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_link_prediction.py</span></code> - Link prediction with embeddings</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_node_classification.py</span></code> - Node classification</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_clustering_embeddings.py</span></code> - Clustering with embeddings</p></li>
-</ul>
-</section>
-<section id="network-decomposition">
-<h2>Network Decomposition<a class="headerlink" href="#network-decomposition" title="Link to this heading"></a></h2>
-<p>Extract features and tensors from multilayer networks.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_network_decomposition.py</span></code> - Meta-path feature extraction</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_feature_extraction.py</span></code> - Network feature engineering</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_tensor_decomposition.py</span></code> - Tensor decomposition methods</p></li>
-</ul>
-</section>
-<section id="network-manipulation">
-<h2>Network Manipulation<a class="headerlink" href="#network-manipulation" title="Link to this heading"></a></h2>
-<p>Modify, subset, and aggregate networks.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_manipulation.py</span></code> - Network operations (add, remove, filter)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_subnetworks.py</span></code> - Extracting subnetworks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_layer_operations.py</span></code> - Layer-specific operations</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_aggregation.py</span></code> - Aggregating layers</p></li>
-</ul>
-</section>
-<section id="algorithms-and-analysis">
-<h2>Algorithms and Analysis<a class="headerlink" href="#algorithms-and-analysis" title="Link to this heading"></a></h2>
-<p>Explore dynamics, motifs, and ML pipelines on networks.</p>
-<p><strong>Network Dynamics</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_spreading.py</span></code> - Network traversal and spreading processes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_sir_epidemic.py</span></code> - SIR epidemic simulation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_diffusion.py</span></code> - Diffusion processes</p></li>
-</ul>
-<p><strong>Specialized Algorithms</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_ricci_curvature.py</span></code> - Ricci curvature computation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_motifs.py</span></code> - Network motif discovery</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_path_analysis.py</span></code> - Path-based analysis</p></li>
-</ul>
-<p><strong>Machine Learning</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_ml_features.py</span></code> - Feature extraction for ML</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_graph_kernels.py</span></code> - Graph kernel methods</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_supervised_learning.py</span></code> - Supervised learning on networks</p></li>
-</ul>
-</section>
-<section id="networkx-integration">
-<h2>NetworkX Integration<a class="headerlink" href="#networkx-integration" title="Link to this heading"></a></h2>
-<p>Bridge py3plex and NetworkX for interoperability.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_networkx_wrapper.py</span></code> - Using NetworkX functions</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_networkx_interop.py</span></code> - NetworkX interoperability</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_convert_networkx.py</span></code> - Converting to/from NetworkX</p></li>
-</ul>
-</section>
-<section id="benchmarking">
-<h2>Benchmarking<a class="headerlink" href="#benchmarking" title="Link to this heading"></a></h2>
-<p>Measure performance and resource usage on representative workloads.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_benchmarking.py</span></code> - Performance benchmarking</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_scalability.py</span></code> - Scalability testing</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_memory_profiling.py</span></code> - Memory usage analysis</p></li>
-</ul>
-</section>
-<section id="gui-and-api">
-<h2>GUI and API<a class="headerlink" href="#gui-and-api" title="Link to this heading"></a></h2>
-<p>Drive py3plex via the REST API, GUI, or batch commands.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_api_usage.py</span></code> - Using the REST API</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_gui_integration.py</span></code> - GUI integration examples</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_batch_processing.py</span></code> - Batch processing with CLI</p></li>
-</ul>
-</section>
-<section id="case-studies-end-to-end-workflows">
-<h2>Case Studies: End-to-End Workflows<a class="headerlink" href="#case-studies-end-to-end-workflows" title="Link to this heading"></a></h2>
-<p>Complete domain-specific analysis pipelines with interpretation. Each case study follows a standard workflow: Data Import → Stats → Analysis → Visualization → Interpretation.</p>
-<p>All case studies are in the <code class="docutils literal notranslate"><span class="pre">examples/case_studies/</span></code> directory. See the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples/case_studies/README.md">Case Studies README</a> for complete documentation.</p>
-<p><strong>Biological Networks</strong> — Intermediate</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">biological_networks.py</span></code> - Protein-gene-disease multilayer network</p>
-<ul>
-<li><p>Explores how protein interactions, gene regulation, and diseases interconnect</p></li>
-<li><p>Shows how to surface hub proteins (e.g., TP53) as potential drug targets</p></li>
-<li><p>Demonstrates detecting functional biological modules through community detection</p></li>
-<li><p><strong>Layers:</strong> protein (PPI), gene (regulation), disease (associations)</p></li>
-<li><p><strong>Key techniques:</strong> Multilayer centrality, cross-layer communities</p></li>
-</ul>
-</li>
-</ul>
-<p><strong>Social Networks</strong> — Beginner</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">social_networks.py</span></code> - Multi-platform social media analysis</p>
-<ul>
-<li><p>Shows how to identify cross-platform influencers</p></li>
-<li><p>Compares behavior across Facebook, Twitter, LinkedIn</p></li>
-<li><p>Demonstrates detecting social communities spanning multiple platforms</p></li>
-<li><p><strong>Layers:</strong> facebook (friends), twitter (followers), linkedin (professional)</p></li>
-<li><p><strong>Key techniques:</strong> Influence metrics, platform comparison</p></li>
-</ul>
-</li>
-</ul>
-<p><strong>Transportation Networks</strong> — Intermediate</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">transportation_networks.py</span></code> - Multi-modal urban transport</p>
-<ul>
-<li><p>Highlights critical transfer hubs</p></li>
-<li><p>Computes accessibility metrics for urban planning</p></li>
-<li><p>Highlights service zones and coverage gaps</p></li>
-<li><p><strong>Layers:</strong> bus (coverage), metro (backbone), bike (short trips)</p></li>
-<li><p><strong>Key techniques:</strong> Accessibility analysis, hub identification</p></li>
-</ul>
-</li>
-</ul>
-<p><strong>Using Case Studies:</strong></p>
-<p>Each case study is:</p>
-<ul class="simple">
-<li><p><strong>Self-contained</strong> — Generates synthetic data, no external files needed</p></li>
-<li><p><strong>Structured</strong> — Follows 4-step pipeline (Import → Stats → Pipeline → Viz)</p></li>
-<li><p><strong>Interpretable</strong> — Extensive domain-specific commentary on results</p></li>
-<li><p><strong>Adaptable</strong> — Designed as templates for your own data</p></li>
-</ul>
-<p>Run a case study:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/case_studies/biological_networks.py
-python<span class="w"> </span>examples/case_studies/social_networks.py
-python<span class="w"> </span>examples/case_studies/transportation_networks.py
-</pre></div>
-</div>
-<p>See also:</p>
-<ul class="simple">
-<li><p><strong>Book chapters 12-14 (where available)</strong> — Extended case studies with theoretical background</p></li>
-<li><p><strong>Notebooks</strong> — Interactive versions (coming soon)</p></li>
-</ul>
-</section>
-<section id="real-world-datasets">
-<h2>Real-World Datasets<a class="headerlink" href="#real-world-datasets" title="Link to this heading"></a></h2>
-<p><strong>Biological Networks</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_protein_interaction.py</span></code> - Protein-protein interaction networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_gene_regulation.py</span></code> - Gene regulatory networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_metabolic_networks.py</span></code> - Metabolic pathways</p></li>
-</ul>
-<p><strong>Social Networks</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_social_multiplex.py</span></code> - Multiplex social networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_citation_network.py</span></code> - Citation networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_collaboration.py</span></code> - Collaboration networks</p></li>
-</ul>
-<p><strong>Transportation</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multimodal_transport.py</span></code> - Multi-modal transportation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_flight_network.py</span></code> - Airline networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">01_uq_centrality.py</span></code> - UQ-enabled centrality</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">02_bootstrap.py</span></code> - Bootstrap/perturbation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">03_comparison.py</span></code> - UQ vs deterministic</p></li>
 </ul>
 </section>
 <section id="running-examples">
 <h2>Running Examples<a class="headerlink" href="#running-examples" title="Link to this heading"></a></h2>
-<p>All examples can be run directly with Python from the repository root (paths below are relative to that root and assume an active virtual environment):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run DSL builder API examples (recommended starting point)</span>
-python<span class="w"> </span>examples/network_analysis/example_dsl_builder_api.py
+<p>All examples run with base dependencies only (no optional packages required except <code class="docutils literal notranslate"><span class="pre">05_communities/03_auto_community.py</span></code>).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Quick validation - run all quickstart examples</span>
+python<span class="w"> </span>examples/00_quickstart/01_load_and_query.py
+python<span class="w"> </span>examples/00_quickstart/02_create_and_visualize.py
+python<span class="w"> </span>examples/00_quickstart/03_communities.py
 
-<span class="c1"># Run string DSL examples</span>
-python<span class="w"> </span>examples/network_analysis/example_dsl_queries.py
+<span class="c1"># Recommended DSL v2 starting point</span>
+python<span class="w"> </span>examples/03_dsl_v2/01_builder_basic.py
 
-<span class="c1"># Run advanced DSL examples</span>
-python<span class="w"> </span>examples/network_analysis/example_dsl_advanced.py
-
-<span class="c1"># Run a visualization example</span>
-python<span class="w"> </span>examples/visualization/example_multilayer_visualization.py
-
-<span class="c1"># Run a community detection example</span>
-python<span class="w"> </span>examples/communities/example_community_detection.py
-
-<span class="c1"># Run a getting started example</span>
-python<span class="w"> </span>examples/getting_started/tutorial_10min.py
+<span class="c1"># Community detection</span>
+python<span class="w"> </span>examples/05_communities/01_louvain_single.py
 </pre></div>
 </div>
-<p>Many examples accept command-line arguments:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/communities/example_community_detection.py<span class="w"> </span>--algorithm<span class="w"> </span>louvain
-</pre></div>
-</div>
+</section>
+<section id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h2>
+<p>All examples are designed for CI and development:</p>
+<ul class="simple">
+<li><p><strong>Fast execution:</strong> Each example runs in ~2 seconds</p></li>
+<li><p><strong>No SKIP_CI markers:</strong> All examples tested in CI</p></li>
+<li><p><strong>Small datasets:</strong> Use <code class="docutils literal notranslate"><span class="pre">load_aarhus_cs()</span></code> or tiny synthetic networks</p></li>
+<li><p><strong>Minimal code:</strong> 20-40 lines per example</p></li>
+<li><p><strong>One concept:</strong> Each example teaches exactly one thing</p></li>
+</ul>
 </section>
 <section id="example-template">
 <h2>Example Template<a class="headerlink" href="#example-template" title="Link to this heading"></a></h2>
-<p>Use this template when creating new example scripts. The pattern includes
-a docstring, a <code class="docutils literal notranslate"><span class="pre">main()</span></code> function, and an <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">&quot;__main__&quot;:</span></code> guard:</p>
+<p>When creating new examples, follow this pattern:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Example: Your Feature</span>
-<span class="sd">=====================</span>
+<span class="sd">Example title: One concept per example.</span>
 
-<span class="sd">Description of what this example demonstrates.</span>
-
-<span class="sd">Usage:</span>
-<span class="sd">    python examples/&lt;category&gt;/example_your_feature.py</span>
+<span class="sd">Demonstrates:</span>
+<span class="sd">- Primary concept</span>
+<span class="sd">- Optional secondary concept</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-    <span class="c1"># Load or create network</span>
-    <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+<span class="c1"># 1. Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>
 
-    <span class="c1"># Your analysis</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+<span class="c1"># 2. Run operation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
-    <span class="c1"># Visualization</span>
-    <span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
+<span class="c1"># 3. Inspect result</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
-</section>
-<section id="contributing-examples">
-<h2>Contributing Examples<a class="headerlink" href="#contributing-examples" title="Link to this heading"></a></h2>
-<p>To contribute an example:</p>
-<ol class="arabic simple">
-<li><p>Create a well-documented script in the appropriate <code class="docutils literal notranslate"><span class="pre">examples/&lt;category&gt;/</span></code> directory.</p></li>
-<li><p>Use the template above with docstring + <code class="docutils literal notranslate"><span class="pre">main()</span></code> + <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">&quot;__main__&quot;:</span></code>.</p></li>
-<li><p>Follow the naming convention: <code class="docutils literal notranslate"><span class="pre">example_&lt;feature&gt;.py</span></code>.</p></li>
-<li><p>Test that it runs without errors from the repository root.</p></li>
-<li><p>Add it to this index with a brief description under the correct topic.</p></li>
-<li><p>Submit a pull request.</p></li>
-</ol>
-<p>See <a class="reference internal" href="../dev/contributing.html"><span class="doc">Contributing to py3plex</span></a> for detailed guidelines.</p>
+<p>Guidelines:</p>
+<ul class="simple">
+<li><p><strong>Atomic:</strong> One concept maximum (two if unavoidable)</p></li>
+<li><p><strong>Minimal:</strong> 20-40 lines total</p></li>
+<li><p><strong>Fast:</strong> Runs in &lt; 2 seconds</p></li>
+<li><p><strong>Clear:</strong> Section comments (# 1. Load network)</p></li>
+<li><p><strong>Numbered:</strong> Use <code class="docutils literal notranslate"><span class="pre">01_</span></code>, <code class="docutils literal notranslate"><span class="pre">02_</span></code> prefixes</p></li>
+</ul>
+<p>See <code class="docutils literal notranslate"><span class="pre">examples/README.md</span></code> for complete guidelines.</p>
 </section>
 <section id="related-documentation">
 <h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="../getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial</span></a> - 10-minute tutorial</p></li>
+<li><p><span class="xref std std-doc">../getting_started/quickstart</span> - Quick start guide</p></li>
 <li><p><a class="reference internal" href="../user_guide/networks.html"><span class="doc">Working with Networks</span></a> - Working with networks</p></li>
+<li><p><a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> - DSL reference</p></li>
 <li><p><a class="reference internal" href="../user_guide/visualization.html"><span class="doc">Visualization</span></a> - Visualization guide</p></li>
+<li><p><a class="reference internal" href="../user_guide/recipes_and_workflows.html"><span class="doc">Analysis Recipes &amp; Workflows</span></a> - Analysis recipes</p></li>
+</ul>
+<p><strong>Advanced topics</strong> (see book PDF):</p>
+<ul class="simple">
+<li><p>Case studies with domain interpretation</p></li>
+<li><p>Research pipelines</p></li>
+<li><p>Performance benchmarks</p></li>
+<li><p>Custom plugin development</p></li>
 </ul>
 <p><strong>Repository:</strong></p>
 <ul class="simple">
 <li><p>Examples directory: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">https://github.com/SkBlaz/py3plex/tree/master/examples</a></p></li>
+<li><p>Examples README: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples/README.md">https://github.com/SkBlaz/py3plex/tree/master/examples/README.md</a></p></li>
 <li><p>Submit examples: <a class="reference external" href="https://github.com/SkBlaz/py3plex/pulls">https://github.com/SkBlaz/py3plex/pulls</a></p></li>
 </ul>
 </section>
