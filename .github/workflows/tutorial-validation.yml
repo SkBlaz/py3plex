@@ -1,4 +1,4 @@
-name: Tutorial Validation
+name: Quickstart Examples Validation
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  validate-tutorial:
+  validate-quickstart:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
@@ -39,9 +39,9 @@ jobs:
         path: |
           ~/.cache/uv
           .venv
-        key: ${{ runner.os }}-uv-tutorial-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
+        key: ${{ runner.os }}-uv-quickstart-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-uv-tutorial-${{ matrix.python-version }}-
+          ${{ runner.os }}-uv-quickstart-${{ matrix.python-version }}-
           ${{ runner.os }}-uv-
       timeout-minutes: 2
 
@@ -64,38 +64,42 @@ jobs:
         python -c "import networkx; print(f'networkx {networkx.__version__}')"
       timeout-minutes: 15
 
-    - name: Validate tutorial executable
+    - name: Validate quickstart examples
       run: |
-        echo "🧪 Running 10-minute tutorial examples..."
+        echo "🧪 Running quickstart examples..."
         source .venv/bin/activate
         # Verify imports work before running
         python -c "from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer; print('✓ Import successful')"
         cd examples
-        uv run python getting_started/tutorial_10min.py
-        echo "✅ Tutorial validation completed successfully"
+        # Run all quickstart examples to validate basic functionality
+        echo "Running quickstart examples..."
+        python 00_quickstart/01_load_and_query.py
+        python 00_quickstart/02_create_and_visualize.py
+        python 00_quickstart/03_communities.py
+        echo "✅ Quickstart validation completed successfully"
       timeout-minutes: 10
       env:
         # Use non-interactive backend for matplotlib
         MPLBACKEND: Agg
 
-    - name: Check tutorial outputs
+    - name: Check example outputs
       run: |
         echo "📊 Checking generated outputs..."
         if [ -d "example_images" ]; then
           echo "Found example_images directory"
           ls -lh example_images/*.png 2>/dev/null || echo "No PNG files generated"
         else
-          echo "No example_images directory created"
+          echo "No example_images directory created (expected for quickstart examples)"
         fi
         echo "✓ Output check complete"
       timeout-minutes: 1
 
-    - name: Upload tutorial artifacts
+    - name: Upload example artifacts
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: tutorial-outputs-py${{ matrix.python-version }}
+        name: quickstart-outputs-py${{ matrix.python-version }}
         path: example_images/*.png
-        if-no-files-found: warn
+        if-no-files-found: ignore
         retention-days: 7
       timeout-minutes: 2
