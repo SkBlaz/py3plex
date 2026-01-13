@@ -193,15 +193,40 @@ def _auto_select_pareto(
         
         # Select top algorithms based on capabilities
         candidate_algorithms = []
-        for algo_name in ["leiden", "louvain", "label_propagation"]:
-            if algo_name in capabilities.algorithms_found:
-                candidate_algorithms.append(algo_name)
+        
+        # Map detected names to executor names
+        algorithm_mapping = {
+            'multilayer_leiden': 'leiden',
+            'leiden_multilayer': 'leiden',
+            'multilayer_louvain': 'louvain',
+            'louvain_multilayer': 'louvain',
+            'label_propagation': 'label_propagation',
+        }
+        
+        # Try preferred algorithms first
+        for detected_name in ['multilayer_leiden', 'multilayer_louvain', 'label_propagation']:
+            if detected_name in capabilities.algorithms_found:
+                mapped_name = algorithm_mapping.get(detected_name, detected_name)
+                if mapped_name not in candidate_algorithms:
+                    candidate_algorithms.append(mapped_name)
             if len(candidate_algorithms) >= max_candidates:
                 break
         
+        # Fallback to any available multilayer algorithm
         if not candidate_algorithms:
-            # Fallback to any available
-            candidate_algorithms = list(capabilities.algorithms_found.keys())[:max_candidates]
+            for detected_name, algo_info in capabilities.algorithms_found.items():
+                if algo_info.supports_multilayer:
+                    mapped_name = algorithm_mapping.get(detected_name, detected_name)
+                    if mapped_name not in candidate_algorithms:
+                        candidate_algorithms.append(mapped_name)
+                    if len(candidate_algorithms) >= max_candidates:
+                        break
+        
+        if not candidate_algorithms:
+            raise RuntimeError(
+                "No suitable multilayer algorithms found. "
+                "Please ensure py3plex.algorithms.community_detection is properly installed."
+            )
     
     logger.info(f"Selected {len(candidate_algorithms)} candidate algorithms: {candidate_algorithms}")
     

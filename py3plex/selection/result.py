@@ -171,53 +171,62 @@ class AutoCommunityResult:
             sections.append("✓ Consensus partition computed from co-assignment matrix")
         
         # Top metrics
-        if hasattr(self, 'evaluation_matrix'):
+        if hasattr(self, 'evaluation_matrix') and not self.evaluation_matrix.empty:
             eval_matrix = self.evaluation_matrix
-            if not eval_matrix.empty:
-                winner_row = eval_matrix[eval_matrix['algorithm_id'] == self.algorithm['contestant_id']]
-                if not winner_row.empty:
-                    winner_row = winner_row.iloc[0]
-                    
-                    # Show top 3 metrics
-                    metric_cols = [c for c in eval_matrix.columns if c != 'algorithm_id']
-                    shown = 0
-                    for metric in metric_cols[:3]:
-                        if metric in winner_row:
-                            value = winner_row[metric]
-                            if not pd.isna(value):
-                                sections.append(f"  • {metric}: {value:.3f}")
-                                shown += 1
-                    
-                    if shown == 0:
-                        sections.append("  (Metrics not available)")
+            # Find winner's row (use iloc for positional indexing)
+            winner_id = self.algorithm['contestant_id']
+            winner_rows = eval_matrix[eval_matrix['algorithm_id'] == winner_id]
+            
+            if not winner_rows.empty:
+                winner_row = winner_rows.iloc[0]
+                
+                # Show top 3 metrics
+                metric_cols = [c for c in eval_matrix.columns if c != 'algorithm_id']
+                shown = 0
+                for metric in metric_cols[:3]:
+                    if metric in winner_row.index:
+                        value = winner_row[metric]
+                        if not pd.isna(value):
+                            sections.append(f"  • {metric}: {value:.3f}")
+                            shown += 1
+                
+                if shown == 0:
+                    sections.append("  (Metrics not available)")
+            else:
+                sections.append("  (Winner metrics not found in evaluation matrix)")
+        else:
+            sections.append("  (Evaluation matrix not available)")
         
         # Section 3: Trade-offs
         sections.append("\n--- Trade-offs ---")
         
         if hasattr(self, 'evaluation_matrix') and not self.evaluation_matrix.empty:
+            eval_matrix = self.evaluation_matrix
             # Compare to other algorithms
-            other_algos = self.evaluation_matrix[
-                self.evaluation_matrix['algorithm_id'] != self.algorithm['contestant_id']
-            ]
+            winner_id = self.algorithm['contestant_id']
+            other_algos = eval_matrix[eval_matrix['algorithm_id'] != winner_id]
             
             if not other_algos.empty:
                 sections.append("  Compared to other candidates:")
                 # Find metrics where others were better
-                winner_row = self.evaluation_matrix[
-                    self.evaluation_matrix['algorithm_id'] == self.algorithm['contestant_id']
-                ].iloc[0]
+                winner_rows = eval_matrix[eval_matrix['algorithm_id'] == winner_id]
                 
-                tradeoffs_found = False
-                for metric in ['modularity', 'coverage', 'stability'][:2]:
-                    if metric in winner_row and metric in other_algos.columns:
-                        winner_val = winner_row[metric]
-                        max_other = other_algos[metric].max()
-                        if not pd.isna(max_other) and not pd.isna(winner_val) and max_other > winner_val:
-                            sections.append(f"  • {metric}: {winner_val:.3f} (best: {max_other:.3f})")
-                            tradeoffs_found = True
-                
-                if not tradeoffs_found:
-                    sections.append("  • Winner is best or tied on all key metrics")
+                if not winner_rows.empty:
+                    winner_row = winner_rows.iloc[0]
+                    
+                    tradeoffs_found = False
+                    for metric in ['modularity', 'coverage', 'stability'][:2]:
+                        if metric in winner_row.index and metric in other_algos.columns:
+                            winner_val = winner_row[metric]
+                            max_other = other_algos[metric].max()
+                            if not pd.isna(max_other) and not pd.isna(winner_val) and max_other > winner_val:
+                                sections.append(f"  • {metric}: {winner_val:.3f} (best: {max_other:.3f})")
+                                tradeoffs_found = True
+                    
+                    if not tradeoffs_found:
+                        sections.append("  • Winner is best or tied on all key metrics")
+                else:
+                    sections.append("  (Winner data not found)")
             else:
                 sections.append("  (No other algorithms to compare)")
         else:
