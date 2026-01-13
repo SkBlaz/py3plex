@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
-Example: Automatic community detection algorithm selection.
+Example: Automatic community detection algorithm selection with mode comparison.
 
 Teaches:
-- How to use auto_select_community for automatic algorithm selection
-- Understanding the multi-metric evaluation and "most wins" decision engine
+- How to use auto_select_community with different modes (Pareto vs wins)
+- Understanding Pareto-optimal multi-objective selection
+- Understanding legacy "most wins" pairwise comparison
+- Comparing results between the two modes
 - Accessing results: partition, leaderboard, and explanations
 - Using fast mode for quick exploration
 
@@ -42,9 +44,9 @@ def _print_header(title: str) -> None:
     print("=" * 70)
 
 
-def example_simple_network() -> None:
-    """Example 1: Auto-select on a simple karate-club-like network."""
-    _print_header("Example 1: Simple network with clear community structure")
+def example_mode_comparison() -> None:
+    """Example 1: Compare Pareto vs wins mode on the same network."""
+    _print_header("Example 1: Pareto mode vs Wins mode comparison")
 
     # Create a simple network with two clear communities
     network = multinet.multi_layer_network(directed=False)
@@ -80,16 +82,47 @@ def example_simple_network() -> None:
     print(f"Network: {len(list(network.get_nodes()))} nodes, "
           f"{network.edge_count} edges")
 
-    # Run auto-select in fast mode
-    print("\nRunning auto-select (fast mode)...")
-    result = auto_select_community(network, fast=True, max_candidates=3, seed=DEFAULT_SEED)
+    # Run with Pareto mode (default, multi-objective)
+    print("\n--- Pareto Mode (Multi-Objective) ---")
+    print("Using Pareto dominance for selection...")
+    result_pareto = auto_select_community(
+        network, mode="pareto", fast=True, seed=DEFAULT_SEED
+    )
+    
+    print("\n" + result_pareto.explain())
+    
+    if hasattr(result_pareto, 'pareto_front'):
+        print(f"\nPareto front size: {len(result_pareto.pareto_front)}")
+        print(f"Algorithms: {result_pareto.pareto_front}")
 
-    # Show explanation
-    print("\n" + result.explain())
+    # Run with wins mode (legacy, backward compatible)
+    print("\n\n--- Wins Mode (Legacy, Backward Compatible) ---")
+    print("Using pairwise wins for selection...")
+    result_wins = auto_select_community(
+        network, mode="wins", fast=True, seed=DEFAULT_SEED
+    )
+    
+    print("\n" + result_wins.explain())
+    
+    if hasattr(result_wins, 'leaderboard'):
+        print("\n--- Leaderboard (Top 3) ---")
+        print(result_wins.leaderboard.head(3).to_string(index=False))
 
-    # Show leaderboard
-    print("\n--- Leaderboard (Top 3) ---")
-    print(result.leaderboard.head(3).to_string(index=False))
+    # Compare results
+    print("\n\n--- Comparison ---")
+    print(f"Pareto winner: {result_pareto.algorithm['name']}")
+    print(f"Wins winner: {result_wins.algorithm['name']}")
+    
+    pareto_comms = len(set(result_pareto.partition.values()))
+    wins_comms = len(set(result_wins.partition.values()))
+    
+    print(f"Pareto communities: {pareto_comms}")
+    print(f"Wins communities: {wins_comms}")
+
+
+def example_simple_network() -> None:
+    """Example 2: Simple network with Pareto mode (recommended)."""
+    _print_header("Example 2: Simple network with Pareto mode")
 
     # Show partition summary
     print("\n--- Partition Summary ---")
@@ -207,10 +240,11 @@ def main() -> int:
     print("=" * 70)
     print("Auto-Select Community Detection Examples")
     print("=" * 70)
-    print("\nThis demonstrates automatic selection of the best community")
-    print("detection algorithm using multi-metric evaluation.")
+    print("\nThis demonstrates automatic selection with Pareto-optimal")
+    print("multi-objective evaluation (default) vs legacy wins mode.")
 
     try:
+        example_mode_comparison()
         example_simple_network()
         example_multilayer_network()
         example_random_network()
@@ -218,6 +252,11 @@ def main() -> int:
         print("\n" + "=" * 70)
         print(" All examples completed successfully!")
         print("=" * 70)
+        print("\nKey takeaways:")
+        print("1. Pareto mode (default) uses multi-objective selection")
+        print("2. Wins mode (legacy) uses pairwise comparison")
+        print("3. Pareto mode may produce consensus from multiple algorithms")
+        print("4. Both modes are deterministic with the same seed")
 
     except Exception as e:
         print(f"\n Error: {e}", file=sys.stderr)

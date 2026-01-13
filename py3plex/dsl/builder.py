@@ -2987,6 +2987,11 @@ class CommunityQueryBuilder(QueryBuilder):
         """
         from .ast import AutoCommunityConfig
         
+        # Apply deferred mode if set via select() before auto()
+        if hasattr(self, '_deferred_mode'):
+            kwargs['mode'] = self._deferred_mode
+            delattr(self, '_deferred_mode')
+        
         # Create auto community config
         config = AutoCommunityConfig(
             enabled=True,
