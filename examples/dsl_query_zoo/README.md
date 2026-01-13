@@ -5,7 +5,7 @@ A curated gallery of multilayer network analysis queries using the py3plex DSL.
 ## Overview
 
 The Query Zoo demonstrates the expressiveness and power of the py3plex DSL through
-10 comprehensive examples covering common multilayer analysis tasks:
+13 comprehensive examples covering common multilayer analysis tasks:
 
 1. **Basic Multilayer Exploration** — Layer statistics and structure
 2. **Cross-Layer Hubs** — Nodes important across multiple layers
@@ -14,9 +14,12 @@ The Query Zoo demonstrates the expressiveness and power of the py3plex DSL throu
 5. **Multiplex PageRank** — Multilayer-aware centrality computation
 6. **Robustness Analysis** — Network resilience to layer failures
 7. **Advanced Centrality Comparison** — Versatile vs specialized hubs
-8. **Null Model Comparison** — Statistical significance testing (NEW)
-9. **Bootstrap Confidence Intervals** — Cross-layer variability analysis (NEW)
-10. **Uncertainty-Aware Ranking** — Variability-aware node ranking (NEW)
+8. **Edge Grouping and Coverage** — Analyze edges across layer pairs
+9. **Layer Algebra Filtering** — Use layer set algebra for flexible layer selection
+10. **Cross-Layer Paths with Algebra** — Find paths while excluding certain layers
+11. **Null Model Comparison** — Statistical significance testing
+12. **Bootstrap Confidence Intervals** — Cross-layer variability analysis
+13. **Uncertainty-Aware Ranking** — Variability-aware node ranking
 
 Each query:
 - Solves a real multilayer analysis problem
@@ -133,11 +136,50 @@ The Query Zoo follows these principles:
 - **Realism**: Examples solve actual multilayer analysis problems
 - **Testability**: Every query has comprehensive tests
 
-## New: Uncertainty Quantification (v1.1+)
+## New Features (v1.1+)
 
-Recent additions include three queries demonstrating uncertainty quantification in multilayer network analysis:
+Recent additions include five queries demonstrating advanced DSL capabilities:
 
-### 8. Null Model Comparison
+### 8. Edge Grouping and Coverage
+
+Analyze edges across layer pairs with grouping and top-k selection:
+
+```python
+from examples.dsl_query_zoo.queries import query_edge_grouping_and_coverage
+
+result = query_edge_grouping_and_coverage(network, k=3)
+# Returns: edges grouped by (src_layer, dst_layer) pairs with summary
+```
+
+Demonstrates the new `.per_layer_pair()` edge grouping capabilities.
+
+### 9. Layer Algebra Filtering
+
+Use layer set algebra for flexible layer selection:
+
+```python
+from examples.dsl_query_zoo.queries import query_layer_algebra_filtering
+
+result = query_layer_algebra_filtering(network)
+# Returns: multiple DataFrames showing different layer selection strategies
+```
+
+Demonstrates union, intersection, difference, and complement operations on layer sets.
+
+### 10. Cross-Layer Paths with Algebra
+
+Find paths while excluding certain layers using layer algebra:
+
+```python
+from examples.dsl_query_zoo.queries import query_cross_layer_paths_with_algebra
+
+result = query_cross_layer_paths_with_algebra(network, source_node='A', target_node='B')
+# Returns: path exploration with and without layer filtering
+```
+
+Shows how to avoid artificial shortcuts through coupling layers.
+
+### 11. Null Model Comparison
 
 Compare observed network properties against null model baselines to identify statistically significant patterns:
 
@@ -150,7 +192,7 @@ result = query_null_model_comparison(network)
 
 Uses configuration model to test if observed hub structure is statistically significant or random.
 
-### 9. Bootstrap Confidence Intervals
+### 12. Bootstrap Confidence Intervals
 
 Estimate uncertainty in centrality measures using cross-layer variability:
 
@@ -163,7 +205,7 @@ result = query_bootstrap_confidence_intervals(network, metric="degree")
 
 Identifies which nodes have stable vs variable importance across different layers.
 
-### 10. Uncertainty-Aware Ranking
+### 13. Uncertainty-Aware Ranking
 
 Rank nodes considering measurement uncertainty rather than just point estimates:
 
@@ -176,16 +218,18 @@ result = query_uncertainty_aware_ranking(network)
 
 Shows how uncertainty changes node rankings and decision-making.
 
-### Why Uncertainty Matters
+### Why These Features Matter
 
-Traditional network analysis produces point estimates without confidence intervals. The new uncertainty queries demonstrate:
+The new additions demonstrate:
 
+- **Edge-centric analysis**: Layer pair grouping complements node-centric queries
+- **Layer set algebra**: Expressive layer filtering with set operations
 - **Statistical rigor**: Establish baselines with null models
 - **Robustness**: Identify which findings are stable vs fragile
 - **Decision quality**: Make informed choices under uncertainty
 - **Multilayer insights**: Quantify variability across layers
 
-All uncertainty queries run in <3 seconds and are suitable for CI/CD pipelines.
+All queries run in <3 seconds and are suitable for CI/CD pipelines.
 
 ## License
 
