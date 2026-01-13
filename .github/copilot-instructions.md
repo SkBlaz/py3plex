@@ -32,7 +32,7 @@ py3plex/
 │   ├── temporal_utils.py  # Temporal network utilities
 │   └── workflows.py       # Config-driven workflows
 ├── tests/                  # Test suite
-├── examples/               # Example scripts (50+)
+├── examples/               # Example scripts (170+)
 ├── docfiles/               # Documentation source
 ├── gui/                    # Web GUI (FastAPI + SvelteKit)
 └── benchmarks/             # Performance benchmarks

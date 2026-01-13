@@ -3686,7 +3686,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `AGENTS.md` - AI agent documentation (this file)
 - `README.md` - Quick start
 - `docfiles/` - Documentation source
-- `examples/` - 50+ example scripts
+- `examples/` - 170+ example scripts
 
 ### Tests
 
@@ -3764,7 +3764,7 @@ print(py3plex.__version__)  # "1.1.1"
 - **README.md**: Quick start and flagship example
 - **AGENTS.md**: Comprehensive AI agent documentation (this file)
 - **docfiles/**: Detailed documentation
-- **examples/**: 50+ working examples
+- **examples/**: 170+ working examples
 - **pyproject.toml**: Dependencies and build config
 - **Technical Book**: `docs/py3plex_book.pdf` (106 pages)
 

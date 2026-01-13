@@ -1,22 +1,21 @@
 Examples & Recipes
 ==================
 
-Browse **26 minimal, focused examples** grouped by learning progression. Every entry below corresponds to a file in the ``examples/`` directory (`GitHub listing <https://github.com/SkBlaz/py3plex/tree/master/examples>`_). Each example demonstrates exactly one concept in 20-40 lines of code and runs in under 2 seconds.
-
-**Philosophy:** *Examples are onboarding instruments, not encyclopedias.*
+Browse **170+ comprehensive examples** grouped by topic and learning progression. Every entry below corresponds to a file in the ``examples/`` directory (`GitHub listing <https://github.com/SkBlaz/py3plex/tree/master/examples>`_). Examples range from quick introductions to advanced techniques.
 
 **What's here:**
 
-* **Runnable Examples** — 26 atomic scripts teaching core concepts
+* **Runnable Examples** — 170+ scripts covering all py3plex features
 * **Analysis Recipes** — Reusable patterns (:doc:`../user_guide/recipes_and_workflows`)
-* **Case Studies** — Extended tutorials in the book (PDF)
+* **Case Studies** — Real-world applications from biology, social networks, and more
 
-**Learning Path (30 minutes total):**
+**Learning Path:**
 
-1. **Start here:** ``00_quickstart/`` (5 minutes)
-2. **Build networks:** ``01_network_construction/`` (3 examples)
-3. **Query data:** ``02_basic_queries/`` + ``03_dsl_v2/`` (8 examples)
-4. **Analyze:** ``04_graph_ops/`` through ``07_uncertainty/`` (12 examples)
+1. **Start here:** ``getting_started/`` - Basics and 10-minute tutorial
+2. **Load data:** ``io_and_data/`` - I/O and data handling
+3. **Analyze:** ``network_analysis/`` - Statistics and metrics
+4. **Query:** ``dsl_query_zoo/`` - DSL examples collection
+5. **Advanced:** ``advanced/``, ``communities/``, ``dynamics/``, ``temporal/``, etc.
 
 To run any example:
 
@@ -27,77 +26,43 @@ To run any example:
 Example Structure
 -----------------
 
-The examples are organized into 8 progressive folders:
+The examples are organized into comprehensive topic-based folders:
 
 .. code-block:: text
 
     examples/
-    ├── 00_quickstart/          (3 files) - First 5 minutes
-    ├── 01_network_construction/ (3 files) - How to build networks
-    ├── 02_basic_queries/       (4 files) - Basic querying
-    ├── 03_dsl_v2/             (4 files) - Modern DSL (recommended)
-    ├── 04_graph_ops/          (3 files) - dplyr-style operations
-    ├── 05_communities/        (3 files) - Community detection
-    ├── 06_dynamics/           (3 files) - Dynamical processes
-    ├── 07_uncertainty/        (3 files) - Uncertainty quantification
+    ├── getting_started/        (7 files) - Basics and 10-min tutorial
+    ├── io_and_data/           (10 files) - I/O and data handling
+    ├── network_analysis/      (16 files) - Statistics and metrics
+    ├── communities/           (14 files) - Community detection
+    ├── visualization/         (17 files) - Network visualizations
+    ├── advanced/              (29 files) - Advanced techniques
+    ├── dynamics/              (3 files) - Dynamical processes
+    ├── temporal/              (7 files) - Temporal networks
+    ├── uncertainty/           (6 files) - Uncertainty quantification
+    ├── dsl_query_zoo/         - DSL query examples collection
+    ├── workflows/             (2 files) - Config-driven workflows
+    ├── pipelines/             (7 files) - Analysis pipelines
+    ├── case_studies/          (4 files) - Real-world applications
+    ├── cli/                   (3 files) - CLI examples
     └── README.md              - Navigation guide
 
-00_quickstart/
---------------
+getting_started/
+----------------
 
-**Goal:** Get started with py3plex in 5 minutes.
+**Goal:** Get started with py3plex quickly.
 
-* ``01_load_and_query.py`` - Load a dataset and run a simple query
-* ``02_create_and_visualize.py`` - Create a network from scratch
-* ``03_communities.py`` - Detect communities
+* ``tutorial_10min.py`` - 10-minute comprehensive tutorial
+* ``example_datasets.py`` - Load built-in datasets
+* ``example_multilayer_functionality.py`` - Core multilayer features
+* ``example_random_generator.py`` - Generate random networks
+* And more...
 
-**Run all three:**
+**Run the tutorial:**
 
 .. code-block:: bash
 
-    python examples/00_quickstart/01_load_and_query.py
-    python examples/00_quickstart/02_create_and_visualize.py
-    python examples/00_quickstart/03_communities.py
-
-01_network_construction/
-------------------------
-
-**Goal:** Learn how to build multilayer networks.
-
-* ``01_from_edges.py`` - Build from edge list
-* ``02_fluent_building.py`` - Method chaining
-* ``03_from_networkx.py`` - Convert from NetworkX
-
-**No analytics. No DSL.** Just network construction patterns.
-
-02_basic_queries/
------------------
-
-**Goal:** Understand the mental model of querying.
-
-* ``01_legacy_string_dsl.py`` - Legacy string DSL (backward compatibility only)
-* ``02_select_by_layer.py`` - Layer filtering
-* ``03_filter_by_degree.py`` - Degree filtering
-* ``04_compute_centrality.py`` - Single metric computation
-
-**Note:** Use DSL v2 (next section) for new code.
-
-03_dsl_v2/
-----------
-
-**Goal:** Master the modern Python DSL (recommended).
-
-* ``01_builder_basic.py`` - Q.nodes() builder pattern
-* ``02_layer_algebra.py`` - Layer unions/intersections
-* ``03_grouping_aggregation.py`` - Per-layer grouping
-* ``04_explain.py`` - Query explanation
-
-.. admonition:: Featured: DSL v2 Builder API
-   :class: dsl-example
-
-   The DSL provides a SQL-like query language with Python builder syntax:
-
-   .. code-block:: python
+    python examples/getting_started/tutorial_10min.py
 
        from py3plex.dsl import Q, L
 
@@ -133,79 +98,86 @@ The examples are organized into 8 progressive folders:
 
 **No DSL here.** Pure dplyr-inspired data manipulation.
 
-05_communities/
----------------
-
-**Goal:** Community detection, nothing else.
-
-* ``01_louvain_single.py`` - Single-layer Louvain
-* ``02_multilayer_detection.py`` - Multilayer communities
-* ``03_auto_community.py`` - AutoCommunity (flagship feature)
-
-**No visualization. No benchmarking.** Just community detection algorithms.
-
-06_dynamics/
+communities/
 ------------
+
+**Goal:** Comprehensive community detection methods.
+
+* ``example_community_detection.py`` - Basic community detection
+* ``example_leiden_multilayer.py`` - Leiden algorithm for multilayer networks
+* ``example_auto_select_basic.py`` - AutoCommunity meta-algorithm
+* ``example_label_propagation.py`` - Label propagation
+* And more advanced examples...
+
+See the ``communities/`` directory for all 14 community detection examples.
+
+dynamics/
+---------
 
 **Goal:** Simulate dynamical processes on networks.
 
-* ``01_sis_epidemic.py`` - SIS epidemic model
-* ``02_multilayer_epidemic.py`` - Multilayer spreading
-* ``03_custom_model.py`` - Custom dynamics
+* ``sir_epidemic.py`` - SIR epidemic model
+* ``sis_dynamics.py`` - SIS epidemic model
+* ``random_walk.py`` - Random walks
 
-**No queries. No DSL.** Focus on dynamics concepts.
+See also the ``advanced/`` directory for more dynamics examples.
 
-07_uncertainty/
----------------
+uncertainty/
+------------
 
-**Goal:** Uncertainty quantification as a first-class feature.
+**Goal:** Uncertainty quantification in network analysis.
 
-* ``01_uq_centrality.py`` - UQ-enabled centrality
-* ``02_bootstrap.py`` - Bootstrap/perturbation
-* ``03_comparison.py`` - UQ vs deterministic
+* Bootstrap and perturbation methods
+* Null model comparisons
+* Confidence intervals for centrality measures
+
+See the ``uncertainty/`` directory for all 6 UQ examples.
 
 Running Examples
 ----------------
 
-All examples run with base dependencies only (no optional packages required except ``05_communities/03_auto_community.py``).
+Examples are designed for various use cases from quick learning to production workflows.
 
 .. code-block:: bash
 
-    # Quick validation - run all quickstart examples
-    python examples/00_quickstart/01_load_and_query.py
-    python examples/00_quickstart/02_create_and_visualize.py
-    python examples/00_quickstart/03_communities.py
+    # Quick start - run the tutorial
+    python examples/getting_started/tutorial_10min.py
     
-    # Recommended DSL v2 starting point
-    python examples/03_dsl_v2/01_builder_basic.py
+    # Load and analyze a dataset
+    python examples/getting_started/example_datasets.py
     
     # Community detection
-    python examples/05_communities/01_louvain_single.py
+    python examples/communities/example_community_detection.py
+    
+    # Run all fast examples (CI validation)
+    python .github/scripts/run_examples.py --fast-only --timeout 30
 
 Performance
 -----------
 
-All examples are designed for CI and development:
+Examples range from quick demonstrations to comprehensive analyses:
 
-* **Fast execution:** Each example runs in ~2 seconds
-* **No SKIP_CI markers:** All examples tested in CI
-* **Small datasets:** Use ``load_aarhus_cs()`` or tiny synthetic networks
-* **Minimal code:** 20-40 lines per example
-* **One concept:** Each example teaches exactly one thing
+* **Fast examples:** Marked with ``Runtime: FAST`` - run in < 5 seconds
+* **CI-tested:** Fast examples run in CI for validation
+* **Slow examples:** Marked with ``SKIP_CI: slow`` - comprehensive analyses
+* **Interactive:** Marked with ``SKIP_CI: interactive`` - require display/interaction
+* **External deps:** Marked with ``SKIP_CI: external_deps`` - need external datasets
 
-Example Template
-----------------
+Example Guidelines
+------------------
 
-When creating new examples, follow this pattern:
+When creating new examples:
 
 .. code-block:: python
 
     """
-    Example title: One concept per example.
+    Example title: Describe what this example demonstrates.
+    
+    Runtime: FAST (< 5 seconds) or SKIP_CI: slow/interactive/external_deps
     
     Demonstrates:
-    - Primary concept
-    - Optional secondary concept
+    - Primary feature or technique
+    - Key API patterns
     """
     
     from py3plex.datasets import load_aarhus_cs
@@ -222,11 +194,10 @@ When creating new examples, follow this pattern:
 
 Guidelines:
 
-* **Atomic:** One concept maximum (two if unavoidable)
-* **Minimal:** 20-40 lines total
-* **Fast:** Runs in < 2 seconds
-* **Clear:** Section comments (# 1. Load network)
-* **Numbered:** Use ``01_``, ``02_`` prefixes
+* **Descriptive:** Clear docstring explaining what is demonstrated
+* **Runtime markers:** Add ``Runtime: FAST`` or appropriate ``SKIP_CI`` marker
+* **Comments:** Use section comments for clarity
+* **Self-contained:** Include all necessary imports and setup
 
 See ``examples/README.md`` for complete guidelines.
 

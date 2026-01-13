@@ -160,7 +160,7 @@ See [AGENTS.md](AGENTS.md#mcp-integration-model-context-protocol) for complete M
 
 * **Documentation:** [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 * **Technical Book (PDF):** [Practical Multilayer Network Analysis with Py3plex](docs/py3plex_book.pdf) - Complete handbook (106 pages)
-* **Examples:** [examples/](examples/) - 50+ example scripts demonstrating usage
+* **Examples:** [examples/](examples/) - 170+ example scripts demonstrating usage
 
 ## License
 
