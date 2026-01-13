@@ -61,8 +61,11 @@ Running Containers
     # Run command
     docker run --rm py3plex:latest --version
     
-    # Run analysis script
-    docker run --rm py3plex:latest python examples/getting_started/quickstart.py
+    # Run analysis script with uv
+    docker run --rm py3plex:latest uv run examples/00_quickstart/01_load_and_query.py
+    
+    # Or using python directly
+    docker run --rm py3plex:latest python examples/00_quickstart/01_load_and_query.py
     
     # Mount data directory
     docker run --rm -v $(pwd)/data:/data py3plex:latest python analysis.py

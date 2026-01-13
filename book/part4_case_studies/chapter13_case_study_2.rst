@@ -238,6 +238,7 @@ This case study template demonstrates:
 
 **Relevant examples:**
 
-* ``examples/dynamics/example_sir_model.py`` — SIR dynamics
-* ``examples/network_analysis/example_multilayer_centrality.py`` — Centrality analysis
+* ``examples/06_dynamics/01_sis_epidemic.py`` — SIS dynamics
+* ``examples/06_dynamics/02_multilayer_epidemic.py`` — Multilayer epidemic
+* ``examples/02_basic_queries/04_compute_centrality.py`` — Centrality analysis
 * ``docfiles/sir_epidemic_simulator.rst`` — SIR documentation

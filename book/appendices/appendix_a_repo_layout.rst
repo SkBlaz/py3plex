@@ -79,44 +79,69 @@ The ``examples/`` directory contains 50+ working scripts organized by topic:
     ├── workflows/            # Complete workflows
     └── advanced/             # Advanced topics
 
+Examples Directory Structure
+-----------------------------
+
+The ``examples/`` directory contains 26 focused examples across 8 categories:
+
+.. code-block:: text
+
+    examples/
+    ├── 00_quickstart/              # First 5 minutes (3 files)
+    ├── 01_network_construction/    # Building networks (3 files)
+    ├── 02_basic_queries/           # Basic DSL (4 files)
+    ├── 03_dsl_v2/                  # Advanced DSL (4 files)
+    ├── 04_graph_ops/               # Data manipulation (3 files)
+    ├── 05_communities/             # Community detection (3 files)
+    ├── 06_dynamics/                # Network dynamics (3 files)
+    └── 07_uncertainty/             # UQ analysis (3 files)
+
+Each example is standalone, minimal (25-40 lines), and demonstrates exactly 1-2 concepts. See ``examples/README.md`` for details.
+
 Mapping Book Chapters to Examples
 ----------------------------------
 
 :ref:`installation-chapter` (Installation and Getting Started)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ``examples/getting_started/quickstart.py``
-* ``examples/getting_started/first_network.py``
+* ``examples/00_quickstart/01_load_and_query.py`` — Load dataset and run DSL query
+* ``examples/00_quickstart/02_create_and_visualize.py`` — Create network from scratch
+* ``examples/00_quickstart/03_communities.py`` — Simple community detection
 
 :ref:`data-loading-chapter` (Data Loading)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ``examples/io_and_data/load_edgelist.py``
-* ``examples/io_and_data/arrow_parquet_io.py``
-* ``examples/io_and_data/csv_loading.py``
-
-:ref:`visualization-chapter` (Visualization)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-* ``examples/visualization/basic_plot.py``
-* ``examples/visualization/hairball_plot.py``
-* ``examples/visualization/matrix_visualization.py``
+* ``examples/01_network_construction/01_from_edges.py`` — Build from edge list
+* ``examples/01_network_construction/02_fluent_building.py`` — Method chaining
+* ``examples/01_network_construction/03_from_networkx.py`` — Convert from NetworkX
 
 :ref:`algorithms-chapter` (Core Algorithms)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ``examples/network_analysis/example_community_detection.py``
-* ``examples/network_analysis/example_centrality.py``
-* ``examples/network_analysis/example_explainable_centrality.py``
-* ``examples/dynamics/sir_epidemic.py``
+* ``examples/05_communities/01_louvain_single.py`` — Single-layer Louvain
+* ``examples/05_communities/02_multilayer_detection.py`` — Multilayer communities
+* ``examples/05_communities/03_auto_community.py`` — AutoCommunity detection
+* ``examples/06_dynamics/01_sis_epidemic.py`` — SIS epidemic model
+* ``examples/06_dynamics/02_multilayer_epidemic.py`` — Multilayer spreading
+* ``examples/06_dynamics/03_custom_model.py`` — Custom dynamics
+* ``examples/07_uncertainty/01_uq_centrality.py`` — UQ-enabled centrality
+* ``examples/07_uncertainty/02_bootstrap.py`` — Bootstrap sampling
+* ``examples/07_uncertainty/03_comparison.py`` — UQ vs deterministic
 
 :ref:`dsl-chapter` and :ref:`advanced-dsl-chapter` (DSL)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ``examples/network_analysis/example_dsl_builder_api.py`` — **Primary reference**
-* ``examples/network_analysis/example_dsl_queries.py``
-* ``examples/network_analysis/example_dsl_advanced.py``
-* ``examples/network_analysis/example_dsl_community_detection.py``
+* ``examples/02_basic_queries/01_legacy_string_dsl.py`` — Legacy string syntax
+* ``examples/02_basic_queries/02_select_by_layer.py`` — Layer filtering
+* ``examples/02_basic_queries/03_filter_by_degree.py`` — Degree filtering
+* ``examples/02_basic_queries/04_compute_centrality.py`` — Single metric computation
+* ``examples/03_dsl_v2/01_builder_basic.py`` — Q.nodes() builder pattern (Primary)
+* ``examples/03_dsl_v2/02_layer_algebra.py`` — Layer unions/intersections
+* ``examples/03_dsl_v2/03_grouping_aggregation.py`` — Per-layer grouping
+* ``examples/03_dsl_v2/04_explain.py`` — Query explanation
+* ``examples/04_graph_ops/01_filter_mutate.py`` — Filter + add columns (dplyr-style)
+* ``examples/04_graph_ops/02_group_summarise.py`` — Group by + aggregation
+* ``examples/04_graph_ops/03_subgraph.py`` — Subgraph extraction
 
 :ref:`gui-chapter` (GUI)
 ~~~~~~~~~~~~~~~~~~~~~~~~

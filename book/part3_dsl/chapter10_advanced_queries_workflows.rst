@@ -785,8 +785,9 @@ This chapter covered:
 Further Reading
 ---------------
 
-* Introduction to the Py3plex DSL
-* The Builder API and Explain Plans
-* ``examples/network_analysis/example_dsl_dynamics.py`` — Complete examples
-* ``examples/advanced/example_dynamics_core.py`` — Core dynamics classes
+* Introduction to the Py3plex DSL (Chapter 8)
+* The Builder API and Explain Plans (Chapter 9)
+* ``examples/03_dsl_v2/`` — Advanced DSL examples
+* ``examples/04_graph_ops/`` — Data manipulation examples
+* ``examples/06_dynamics/`` — Dynamics simulation examples
 * ``docfiles/sir_epidemic_simulator.rst`` — SIR multiplex simulator documentation
