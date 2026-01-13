@@ -96,7 +96,45 @@ Where:
 Algorithms Available
 ~~~~~~~~~~~~~~~~~~~~
 
-py3plex supports several community detection algorithms:
+py3plex supports several community detection algorithms. See ``examples/05_communities/`` for complete examples:
+
+**Example 1: Single-Layer Louvain**
+
+See ``examples/05_communities/01_louvain_single.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/05_communities/01_louvain_single.py
+    
+    # Or using python
+    python examples/05_communities/01_louvain_single.py
+
+**Example 2: Multilayer Detection**
+
+See ``examples/05_communities/02_multilayer_detection.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/05_communities/02_multilayer_detection.py
+    
+    # Or using python
+    python examples/05_communities/02_multilayer_detection.py
+
+**Example 3: AutoCommunity Detection**
+
+See ``examples/05_communities/03_auto_community.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/05_communities/03_auto_community.py
+    
+    # Or using python
+    python examples/05_communities/03_auto_community.py
+
+**Available algorithms:**
 
 - **Louvain** — Fast modularity optimization, O(n log n). Best for most use cases (100-100K nodes).
 - **Infomap** — Flow-based detection using random walk dynamics. Optional dependency (see below).
@@ -386,6 +424,49 @@ This chapter introduced three core algorithm families for multilayer network ana
 3. **Dynamics and processes** simulate epidemic spread, diffusion, and random walks on multilayer networks, capturing how layer structure affects spreading patterns.
 
 All algorithms integrate with the py3plex DSL for concise, expressive workflows. The next chapter introduces the DSL and shows how to chain queries for complex analyses.
+
+Uncertainty Quantification
+--------------------------
+
+Py3plex provides tools for quantifying uncertainty in network analysis through bootstrap sampling and null model comparisons. See ``examples/07_uncertainty/`` for complete examples.
+
+**Example 1: UQ-Enabled Centrality**
+
+See ``examples/07_uncertainty/01_uq_centrality.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/07_uncertainty/01_uq_centrality.py
+    
+    # Or using python
+    python examples/07_uncertainty/01_uq_centrality.py
+
+**Example 2: Bootstrap Sampling**
+
+See ``examples/07_uncertainty/02_bootstrap.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/07_uncertainty/02_bootstrap.py
+    
+    # Or using python
+    python examples/07_uncertainty/02_bootstrap.py
+
+**Example 3: UQ vs Deterministic Comparison**
+
+See ``examples/07_uncertainty/03_comparison.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/07_uncertainty/03_comparison.py
+    
+    # Or using python
+    python examples/07_uncertainty/03_comparison.py
+
+These tools help assess the robustness of network metrics and determine whether observed patterns are statistically significant.
 
 .. seealso::
 

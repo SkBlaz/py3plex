@@ -44,6 +44,18 @@ For most users, installation is straightforward:
 
 This installs py3plex with core dependencies (NetworkX, NumPy, SciPy, pandas, matplotlib).
 
+**Using uv (recommended for development):**
+
+`uv <https://github.com/astral-sh/uv>`_ is a fast Python package installer and resolver. To use uv:
+
+.. code-block:: bash
+
+    # Install uv
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    
+    # Install py3plex with uv
+    uv pip install py3plex
+
 **Verify installation:**
 
 .. code-block:: python
@@ -70,25 +82,21 @@ System Requirements
 Hello Multilayer Network
 -------------------------
 
-Create and analyze a multilayer network in 30 seconds:
+Create and analyze a multilayer network in 30 seconds. See the complete example in ``examples/00_quickstart/02_create_and_visualize.py``:
 
-.. code-block:: python
+.. literalinclude:: ../../examples/00_quickstart/02_create_and_visualize.py
+   :language: python
+   :lines: 1-25
 
-    from py3plex.core import multinet
+**Run this example:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/00_quickstart/02_create_and_visualize.py
     
-    # Create network
-    network = multinet.multi_layer_network()
-    
-    # Add edges: [source, source_layer, target, target_layer, weight]
-    network.add_edges([
-        ['Alice', 'friends', 'Bob', 'friends', 1],
-        ['Bob', 'friends', 'Carol', 'friends', 1],
-        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
-        ['Bob', 'colleagues', 'Dave', 'colleagues', 1],
-    ], input_type="list")
-    
-    # Display statistics
-    network.basic_stats()
+    # Or using python
+    python examples/00_quickstart/02_create_and_visualize.py
 
 **Output:**
 
@@ -134,18 +142,21 @@ Basic Analysis
 Query with DSL
 ~~~~~~~~~~~~~~
 
-Use SQL-like queries to explore the network:
+Use SQL-like queries to explore the network. See the complete example in ``examples/00_quickstart/01_load_and_query.py``:
 
-.. code-block:: python
+.. literalinclude:: ../../examples/00_quickstart/01_load_and_query.py
+   :language: python
+   :lines: 1-27
 
-    from py3plex.dsl import execute_query
+**Run this example:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/00_quickstart/01_load_and_query.py
     
-    # Find high-degree nodes
-    result = execute_query(network, 'SELECT nodes WHERE degree > 1')
-    print(f"Found {result['count']} nodes with degree > 1")
-    
-    # Get all nodes in a specific layer
-    result = execute_query(network, 'SELECT nodes WHERE layer="friends"')
+    # Or using python
+    python examples/00_quickstart/01_load_and_query.py
 
 The DSL (covered in Part III) provides a powerful way to filter, compute, and analyze multilayer networks without writing explicit loops.
 
@@ -420,7 +431,26 @@ Now that you have py3plex installed and understand the basics:
 
 **For immediate exploration:**
 
-Browse the ``examples/`` directory in the repository for 50+ working examples covering various use cases.
+Browse the ``examples/`` directory in the repository for working examples covering various use cases:
+
+* ``examples/00_quickstart/`` — Getting started (3 examples)
+* ``examples/01_network_construction/`` — Building networks (3 examples)
+* ``examples/02_basic_queries/`` — Basic DSL queries (4 examples)
+* ``examples/03_dsl_v2/`` — Advanced DSL (4 examples)
+* ``examples/04_graph_ops/`` — Data manipulation (3 examples)
+* ``examples/05_communities/`` — Community detection (3 examples)
+* ``examples/06_dynamics/`` — Network dynamics (3 examples)
+* ``examples/07_uncertainty/`` — Uncertainty quantification (3 examples)
+
+**Run any example:**
+
+.. code-block:: bash
+
+    # Using uv (recommended)
+    uv run examples/00_quickstart/01_load_and_query.py
+    
+    # Or using python
+    python examples/00_quickstart/01_load_and_query.py
 
 Summary
 -------

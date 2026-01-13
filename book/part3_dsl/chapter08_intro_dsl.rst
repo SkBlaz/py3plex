@@ -125,75 +125,54 @@ Example:
 Your First Query
 ----------------
 
-Let's build a simple query step-by-step.
+Let's build a simple query step-by-step. See the complete examples in ``examples/02_basic_queries/`` and ``examples/03_dsl_v2/``.
 
-**Setup:**
+**Example 1: Filter by layer**
 
-.. code-block:: python
+See ``examples/02_basic_queries/02_select_by_layer.py``:
 
-    from py3plex.core import multinet
-    from py3plex.dsl import Q, L
+.. literalinclude:: ../../examples/02_basic_queries/02_select_by_layer.py
+   :language: python
+   :lines: 9-25
+
+**Run this example:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/02_basic_queries/02_select_by_layer.py
     
-    # Create network
-    network = multinet.multi_layer_network()
-    network.add_edges([
-        ['Alice', 'friends', 'Bob', 'friends', 1],
-        ['Bob', 'friends', 'Carol', 'friends', 1],
-        ['Carol', 'friends', 'Dave', 'friends', 1],
-        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
-        ['Bob', 'colleagues', 'Eve', 'colleagues', 1],
-    ], input_type="list")
+    # Or using python
+    python examples/02_basic_queries/02_select_by_layer.py
 
-**Query 1: Select all nodes**
+**Example 2: Filter by degree**
 
-.. code-block:: python
+See ``examples/02_basic_queries/03_filter_by_degree.py``:
 
-    result = Q.nodes().execute(network)
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/02_basic_queries/03_filter_by_degree.py
     
-    print(f"Count: {result.count}")
-    # Output: Count: 7
+    # Or using python
+    python examples/02_basic_queries/03_filter_by_degree.py
+
+**Example 3: Compute centrality**
+
+See ``examples/02_basic_queries/04_compute_centrality.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/02_basic_queries/04_compute_centrality.py
     
-    for node in result:
-        print(node)
-    # Output: ('Alice', 'friends'), ('Bob', 'friends'), ...
-
-**Query 2: Filter by layer**
-
-.. code-block:: python
-
-    result = Q.nodes().from_layers(L["friends"]).execute(network)
-    
-    print(f"Nodes in friends layer: {result.count}")
-    # Output: Nodes in friends layer: 4
-
-**Query 3: Filter by degree**
-
-.. code-block:: python
-
-    result = Q.nodes().where(degree__gt=1).execute(network)
-    
-    print(f"High-degree nodes: {result.count}")
-    # Output: High-degree nodes: 2 (Bob in both layers)
-
-**Query 4: Compute centrality**
-
-.. code-block:: python
-
-    result = (
-        Q.nodes()
-         .from_layers(L["friends"])
-         .compute("betweenness_centrality")
-         .execute(network)
-    )
-    
-    for node, centrality in result.measures['betweenness_centrality'].items():
-        print(f"{node}: {centrality:.3f}")
-    # Output: ('Bob', 'friends'): 1.000, others: 0.000
+    # Or using python
+    python examples/02_basic_queries/04_compute_centrality.py
 
 Layer Filtering
 ---------------
 
-The DSL provides powerful layer algebra operations.
+The DSL provides powerful layer algebra operations. See ``examples/03_dsl_v2/02_layer_algebra.py`` for complete examples.
 
 .. admonition:: DSL Layer Algebra
    :class: dsl-info
@@ -217,6 +196,16 @@ The DSL provides powerful layer algebra operations.
        Q.nodes().from_layers(L["social"] + L["work"] - L["bots"])
 
    This makes multilayer queries intuitive and expressive!
+
+**Run layer algebra examples:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/03_dsl_v2/02_layer_algebra.py
+    
+    # Or using python
+    python examples/03_dsl_v2/02_layer_algebra.py
 
 Simple Layer Selection
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -444,7 +433,7 @@ To Pandas
 String DSL Syntax (Reference)
 ------------------------------
 
-For completeness, here's the string DSL syntax:
+For completeness, here's the string DSL syntax. See ``examples/02_basic_queries/01_legacy_string_dsl.py`` for a complete example.
 
 **Basic queries:**
 
@@ -464,6 +453,16 @@ For completeness, here's the string DSL syntax:
     
     # Compute measures
     execute_query(network, 'SELECT nodes COMPUTE betweenness_centrality')
+
+**Run legacy DSL examples:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/02_basic_queries/01_legacy_string_dsl.py
+    
+    # Or using python
+    python examples/02_basic_queries/01_legacy_string_dsl.py
 
 **Operators:**
 
