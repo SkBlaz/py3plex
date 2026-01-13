@@ -233,13 +233,12 @@ def _auto_select_pareto(
     # Build metric names list
     if custom_metrics:
         metric_names = [m.name for m in custom_metrics]
-        custom_metric_funcs = [m.callable for m in custom_metrics]
     else:
         # Default metrics for Pareto mode
         metric_names = ["modularity", "coverage"]
         if uq:
             metric_names.append("stability")
-        custom_metric_funcs = []
+        custom_metrics = []  # Use empty list instead of custom_metric_funcs
     
     logger.info(f"Using {len(metric_names)} metrics: {metric_names}")
     
@@ -273,24 +272,43 @@ def _auto_select_pareto(
         null_config=null_config,
         use_pareto=True,
         seed=seed,
-        custom_metrics=custom_metric_funcs,
+        custom_metrics=[],  # Pass custom_metrics directly
         custom_candidates=[],
     )
     
     # Convert ParetoResult to unified AutoCommunityResult format
-    # The Pareto result already has the right structure, but we need to ensure
-    # compatibility with the wins-mode result format
+    # Note: The Pareto result structure is already close to what we need
     
     # Build a ContestantResult for the winner (for API compatibility)
+    # Extract actual metrics and runtime from pareto_result if available
     from py3plex.selection.result import ContestantResult
+    
+    winner_metrics = {}
+    winner_runtime = 0.0
+    
+    # Try to extract metrics from evaluation_matrix
+    if not pareto_result.evaluation_matrix.empty:
+        winner_rows = pareto_result.evaluation_matrix[
+            pareto_result.evaluation_matrix['algorithm_id'] == pareto_result.selected
+        ]
+        if not winner_rows.empty:
+            winner_row = winner_rows.iloc[0]
+            # Extract all metric columns
+            for col in pareto_result.evaluation_matrix.columns:
+                if col != 'algorithm_id':
+                    winner_metrics[col] = winner_row[col]
+    
+    # Try to extract runtime from diagnostics
+    if pareto_result.selected in pareto_result.diagnostics:
+        winner_runtime = pareto_result.diagnostics[pareto_result.selected].get('runtime_ms', 0.0)
     
     winner_contestant = ContestantResult(
         contestant_id=pareto_result.selected,
         algo_name=pareto_result.selected.split(':')[0] if ':' in pareto_result.selected else pareto_result.selected,
-        params={},
+        params={},  # Parameters not tracked in detail for consensus
         partition=pareto_result.consensus_partition,
-        metrics={},  # Metrics are in evaluation_matrix
-        runtime_ms=0.0,  # Not tracked in detail
+        metrics=winner_metrics,  # Actual metrics from evaluation
+        runtime_ms=winner_runtime,  # Actual runtime from diagnostics
         seed_used=seed,
     )
     

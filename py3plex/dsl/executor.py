@@ -1775,10 +1775,16 @@ def _execute_auto_community(
         
         # Run auto_select_community with new mode parameter
         try:
-            # Detect mode from config
+            # Detect mode from config and other custom params
             mode = config.params.get('mode', 'pareto')  # Default to Pareto mode
             null_model = config.params.get('null_model', False)
             null_samples = config.params.get('null_samples', 10)
+            
+            # Extract any other custom parameters (for extensibility)
+            other_params = {
+                k: v for k, v in config.params.items()
+                if k not in ('mode', 'null_model', 'null_samples')
+            }
             
             result = auto_select_community(
                 network=network,
@@ -1790,6 +1796,7 @@ def _execute_auto_community(
                 seed=config.seed or 0,
                 null_model=null_model,  # New: null model calibration
                 null_samples=null_samples,  # New: null samples count
+                **other_params,  # Pass through any other custom parameters
             )
         except Exception as e:
             logger.error(f"AutoCommunity failed: {e}")

@@ -309,39 +309,6 @@ class AutoCommunityResult:
         sections.append("\n" + "=" * 70)
         
         return "\n".join(sections)
-        
-        # Low singleton fraction
-        if "singleton_fraction" in chosen_metrics:
-            sf = chosen_metrics["singleton_fraction"]
-            if isinstance(sf, dict) and "mean" in sf:
-                sf = sf["mean"]
-            if sf < 0.1:
-                reasons.append(f"Low singleton fraction ({sf:.3f})")
-        
-        # Stability (if UQ enabled)
-        if "mean_node_entropy" in chosen_metrics:
-            ent = chosen_metrics["mean_node_entropy"]
-            if isinstance(ent, dict) and "mean" in ent:
-                ent = ent["mean"]
-            if ent < 0.5:
-                reasons.append(f"High stability (entropy={ent:.3f})")
-        
-        # UQ gating info
-        if self.provenance.get("uq_enabled", False):
-            reasons.append("Wins were significance-gated under perturbation")
-        
-        # Limit to n reasons
-        reasons = reasons[:n]
-        
-        # Build explanation
-        explanation = f"Algorithm '{self.algorithm['name']}' was selected because:\n"
-        for i, reason in enumerate(reasons, 1):
-            explanation += f"  {i}. {reason}\n"
-        
-        if not reasons:
-            explanation += "  (No specific reasons available - default winner)\n"
-        
-        return explanation.strip()
     
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary for saving.
