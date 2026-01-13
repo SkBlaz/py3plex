@@ -13,6 +13,8 @@ Note: The multilayer Louvain algorithm can be slow for large networks.
 For production use, consider using faster implementations like leiden_multilayer.
 """
 
+import networkx as nx
+
 from py3plex.datasets import load_aarhus_cs
 from py3plex.algorithms.community_detection.multilayer_modularity import (
     multilayer_modularity,
@@ -37,8 +39,6 @@ print(f"  Layer names: {layers}")
 print(f"\nRunning layer-wise community detection...")
 
 # Get communities for each layer using standard Louvain
-import networkx as nx
-
 layer_communities = {}
 for layer in layers:
     # Extract layer
@@ -62,10 +62,13 @@ for layer in layers:
         print(f"  Layer {layer}: {layer_graph.number_of_nodes()} nodes, {num_comms} communities")
 
 # 5. Convert to multilayer partition format: {(node, layer): community_id}
+# best_partition returns a dict with node IDs (which are already (node, layer) tuples) as keys
 multilayer_partition = {}
 for layer, partition in layer_communities.items():
     for node_tuple, comm_id in partition.items():
-        # node_tuple is already (node, layer) format
+        # Verify node_tuple is in expected (node, layer) format
+        assert len(node_tuple) == 2, f"Expected (node, layer) tuple, got {node_tuple}"
+        assert node_tuple[1] == layer, f"Node tuple layer {node_tuple[1]} doesn't match expected {layer}"
         multilayer_partition[node_tuple] = comm_id
 
 # 6. Evaluate with multilayer modularity

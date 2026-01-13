@@ -11,6 +11,7 @@ module which works with NetworkX graphs.
 """
 
 import networkx as nx
+
 from py3plex.datasets import load_aarhus_cs
 from py3plex.algorithms.community_detection.community_louvain import best_partition
 
@@ -23,9 +24,17 @@ print(f"Layers: {network.layers}")
 
 # 3. Extract a single layer for community detection
 # Louvain algorithm works on standard NetworkX graphs
-layer_name = 'facebook'  # Choose one layer
+# Select the layer with most edges for better community structure
+layer_name = None
+max_edges = 0
+for layer in network.layers:
+    layer_nodes = [n for n in network.core_network.nodes() if n[1] == layer]
+    layer_subgraph = network.core_network.subgraph(layer_nodes)
+    if layer_subgraph.number_of_edges() > max_edges:
+        max_edges = layer_subgraph.number_of_edges()
+        layer_name = layer
 
-# Get nodes from this layer
+# Get nodes from selected layer
 layer_nodes = [n for n in network.core_network.nodes() if n[1] == layer_name]
 layer_subgraph = network.core_network.subgraph(layer_nodes)
 
@@ -38,7 +47,7 @@ for u, v, data in layer_subgraph.edges(data=True):
         weight = 1.0
     layer_graph.add_edge(u, v, weight=weight)
 
-print(f"\nRunning Louvain on layer '{layer_name}'")
+print(f"\nRunning Louvain on layer '{layer_name}' (largest layer)")
 print(f"  Layer nodes: {layer_graph.number_of_nodes()}")
 print(f"  Layer edges: {layer_graph.number_of_edges()}")
 
