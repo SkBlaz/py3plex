@@ -44,7 +44,7 @@
 
 \usepackage[Bjarne]{fncychap}
 \usepackage{sphinx}
-\sphinxsetup{verbatimhintsturnover=false}
+\sphinxsetup{verbatimhintsturnover=false,verbatimwrapslines=false,verbatimvisiblespace=false}
 \fvset{fontsize=auto}
 \usepackage{geometry}
 
@@ -69,10 +69,15 @@
 \setlength{\parskip}{0.5em}
 \setlength{\parindent}{0pt}
 
+% Disable hyphenation in verbatim/code blocks to prevent soft-hyphen artifacts
+\usepackage{fancyvrb}
+% Ensure proper UTF-8 handling to prevent ￾ artifacts
+\DeclareUnicodeCharacter{FFFE}{}
+
 
 \title{Py3plex: Multilayer Network Analysis in Python}
 \date{Jan 13, 2026}
-\release{1.1.0}
+\release{1.1.1}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
 \renewcommand{\releasename}{Release}
