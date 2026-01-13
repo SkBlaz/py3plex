@@ -45,6 +45,61 @@
 
 ## Quick Start: Golden Paths
 
+### Path 0: Flagship Example - Master Regulator Discovery
+
+Find robust master regulator candidates in a multilayer biological network with uncertainty quantification:
+
+```python
+from py3plex.core import datasets
+from py3plex.dsl import Q, UQ
+from py3plex.algorithms.community_detection import multilayer_louvain
+
+# 1. Load a built-in multilayer biological network (~500 nodes, 4 layers)
+network = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
+
+# 2. Run multilayer community detection
+partition_vector, Q_modularity = multilayer_louvain(network, gamma=1.2, random_state=42)
+network.assign_partition(partition_vector)
+
+# 3. Find master regulator candidates with uncertainty quantification
+master_regulators = (
+    Q.nodes()
+     .node_type("gene")                        # Filter by node type
+     .where(degree__gt=3)                      # Remove peripheral genes
+     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)  # Quantify confidence
+     .per_layer()                              # Group by layer
+        .compute("degree_centrality", "betweenness_centrality")
+        .top_k(20, "betweenness_centrality__mean")  # Top 20 per layer by mean
+     .end_grouping()
+     .coverage(mode="at_least", k=2)           # Keep genes that are hubs in ≥2 layers
+     .mutate(                                  # Create derived influence score
+         influence_score=lambda row: (
+             row.get("degree_centrality__mean", 0) * 0.4 +
+             row.get("betweenness_centrality__mean", 0) * 0.6
+         )
+     )
+     .sort(by="influence_score", descending=True)
+     .limit(20)                                # Final top 20 candidates
+     .explain(neighbors_top=5)                 # Enrich: community ID, top 5 neighbors, layer presence
+     .execute(network)
+)
+
+df = master_regulators.to_pandas(expand_uncertainty=True, expand_explanations=True)
+print(df[["id", "layer", "betweenness_centrality", "betweenness_centrality_std", 
+          "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high",
+          "influence_score", "community_id", "top_neighbors"]].head(10))
+```
+
+**Key Features Demonstrated**:
+- `.node_type()` - Filter by node type in heterogeneous networks
+- `.uq()` - Uncertainty quantification with bootstrap/perturbation
+- `.per_layer()` + `.top_k()` + `.coverage()` - Cross-layer robust discovery
+- `.mutate()` - Derived metrics from computed values
+- `.sort()` - Intuitive sorting API
+- `.explain()` - Enrich results with community and neighborhood context
+
+---
+
 ### Path 1: Network Analysis from CSV
 
 ```python
@@ -956,6 +1011,51 @@ Q.nodes().compute("degree").rename(degree="node_degree", layer="layer_name")
 Alias for `.order_by()` (dplyr-style).
 
 **See**: `.order_by()` documentation
+
+---
+
+#### .sort(by, descending=False) → QueryBuilder
+
+Sort results by a column (convenience alias for `.order_by()`).
+
+**Args**:
+- `by` (str): Column name to sort by
+- `descending` (bool, default=False): If True, sort in descending order
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().compute("degree").sort(by="degree", descending=True)
+Q.nodes().compute("pagerank").sort(by="pagerank", descending=True)
+```
+
+**Semantics**:
+- More intuitive API matching pandas DataFrame.sort_values()
+- Equivalent to `.order_by("-column")` when `descending=True`
+- Equivalent to `.order_by("column")` when `descending=False`
+
+---
+
+#### .node_type(node_type) → QueryBuilder
+
+Filter nodes by node_type attribute (convenience method).
+
+**Args**:
+- `node_type` (str): Node type to filter by (e.g., "gene", "protein", "drug")
+
+**Returns**: QueryBuilder (self)
+
+**Example**:
+```python
+Q.nodes().node_type("gene").compute("degree").execute(network)
+Q.nodes().node_type("protein").where(degree__gt=10).execute(network)
+```
+
+**Semantics**:
+- Convenience method equivalent to `.where(node_type=node_type)`
+- Useful for heterogeneous networks with typed nodes
+- Commonly used in biological and knowledge graph networks
 
 ---
 
