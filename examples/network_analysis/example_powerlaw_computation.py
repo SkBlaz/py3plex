@@ -86,5 +86,5 @@ print("\nKey takeaways:")
 print("  [OK] Power-law distributions are common in many real-world networks")
 print("  [OK] The fitting process considers multiple alternative distributions")
 print("  [OK] Scale-free properties can be statistically validated")
-print("  [OK] This analysis works on any node property (not just degree)")
+print("  [OK] This analysis can be adapted for other node properties (e.g., clustering coefficient)")
 

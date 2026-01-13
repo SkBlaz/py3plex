@@ -193,6 +193,6 @@ print("\nKey takeaways:")
 print("  [OK] Dictionary and list formats both supported for nodes/edges")
 print("  [OK] Multiplex networks enforce shared node sets across layers")
 print("  [OK] Subnetworks can be extracted by layers, nodes, or tuples")
-print("  [OK] Coupled edges automatically connect nodes across layers")
+print("  [OK] Coupled edges automatically created between same nodes across layers")
 print("  [OK] Random network generators available for testing")
 
