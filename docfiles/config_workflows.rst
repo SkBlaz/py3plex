@@ -352,7 +352,7 @@ Results are kept in memory during the run and optionally written to disk based o
 Examples
 --------
 
-See the ``examples/config_driven/`` directory for complete examples:
+See the ``examples/workflows/`` directory for complete examples:
 
 * ``example_config.yaml`` - Basic workflow with generated network
 * ``comparison_config.json`` - Multi-dataset comparison
@@ -362,7 +362,7 @@ To run the examples:
 
 .. code-block:: bash
 
-   cd examples/config_driven
+   cd examples/workflows
    python example_config_workflow.py
 
    # Or using CLI
