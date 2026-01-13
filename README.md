@@ -106,6 +106,56 @@ Alternatively, use pip:
 pip install py3plex
 ```
 
+### Optional Features
+
+Install additional features as needed:
+
+```bash
+# MCP server for AI agent integration (requires Python 3.10+)
+pip install py3plex[mcp]
+
+# Community detection algorithms
+pip install py3plex[algos]
+
+# Advanced visualization
+pip install py3plex[viz]
+
+# All optional features
+pip install py3plex[mcp,algos,viz]
+```
+
+### MCP Integration (AI Agents)
+
+py3plex provides a Model Context Protocol (MCP) server for integration with AI coding assistants:
+
+**Requirements**: Python 3.10 or higher (due to MCP SDK dependency)
+
+```bash
+# Install with MCP support (Python 3.10+ required)
+pip install py3plex[mcp]
+
+# Start MCP server
+py3plex-mcp
+```
+
+**Configure Claude Desktop** (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "py3plex": {
+      "command": "py3plex-mcp"
+    }
+  }
+}
+```
+
+The MCP server exposes:
+- **7 tools**: Load networks, run queries, detect communities, export results, and more
+- **3 resources**: Complete documentation, DSL reference, and tool schemas
+- **Security-first**: Safe file access, automatic output directory, structured errors
+
+See [AGENTS.md](AGENTS.md#mcp-integration-model-context-protocol) for complete MCP documentation.
+
 ### Resources
 
 * **Documentation:** [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)

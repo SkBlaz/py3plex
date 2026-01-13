@@ -3631,6 +3631,15 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `py3plex/graph_ops.py` - Dplyr-style chainable API
 - `py3plex/pipeline.py` - Sklearn-style pipeline
 - `py3plex/workflows.py` - Config-driven workflows
+- `py3plex_mcp/` - MCP server for AI agent integration
+
+### MCP Server
+
+- `py3plex_mcp/server.py` - FastMCP server implementation
+- `py3plex_mcp/registry.py` - In-memory network handle storage
+- `py3plex_mcp/schemas.py` - Response schema utilities
+- `py3plex_mcp/errors.py` - Typed error handling
+- `py3plex_mcp/safe_paths.py` - Path validation and safety
 
 ### DSL v2 Internals
 
@@ -3837,7 +3846,347 @@ ParameterMissingError  # Param binding failed
 
 ---
 
+## MCP Integration (Model Context Protocol)
+
+py3plex provides a production-ready MCP server that exposes py3plex functionality as tools and resources for AI coding assistants like Claude, Gemini, and Codex.
+
+**Requirements**: Python 3.10 or higher (due to MCP SDK dependency)
+
+**Note**: The base py3plex package supports Python 3.8+. Only the optional MCP feature requires Python 3.10+.
+
+### Installation
+
+```bash
+# Install with MCP support (requires Python 3.10+)
+pip install py3plex[mcp]
+
+# Or using uv
+uv pip install py3plex[mcp]
+```
+
+### Starting the Server
+
+```bash
+# Start MCP server (stdio transport)
+py3plex-mcp
+```
+
+The server runs in stdio mode, communicating via standard input/output following the MCP protocol.
+
+### Available Tools
+
+The MCP server exposes 7 tools:
+
+#### 1. py3plex.load_network
+
+Load a network from file and store in registry.
+
+**Parameters**:
+- `path` (str, required): File or directory path
+- `input_type` (str, default: "multiedgelist"): Input format
+- `directed` (bool, default: False): Whether network is directed
+- `layer_separator` (str, optional): Layer separator character
+
+**Returns**:
+- `net_id`: Network handle (8-character UUID)
+- `source`: Source path
+- `stats`: Node count, edge count, layer count, layers preview
+
+**Example**:
+```json
+{
+  "path": "/data/network.csv",
+  "input_type": "multiedgelist",
+  "directed": false
+}
+```
+
+#### 2. py3plex.stats
+
+Get network statistics.
+
+**Parameters**:
+- `net_id` (str, required): Network handle
+
+**Returns**:
+- Network statistics (nodes, edges, layers)
+
+#### 3. py3plex.run_query
+
+Execute DSL query on network.
+
+**Parameters**:
+- `net_id` (str, required): Network handle
+- `query` (str, required): Legacy DSL query string
+- `limit` (int, default: 200): Maximum items to return
+
+**Returns**:
+- Query results with truncation info
+
+**Example**:
+```json
+{
+  "net_id": "abc12345",
+  "query": "SELECT nodes WHERE degree > 5 COMPUTE pagerank",
+  "limit": 200
+}
+```
+
+#### 4. py3plex.community_detect
+
+Detect communities in network.
+
+**Parameters**:
+- `net_id` (str, required): Network handle
+- `algorithm` (str, default: "louvain"): Algorithm (louvain, leiden, label_propagation)
+- `layer_mode` (str, default: "aggregate"): Layer handling mode
+- `params` (dict, optional): Algorithm parameters (e.g., `{"seed": 42}`)
+
+**Returns**:
+- Community assignments and quality metrics
+
+#### 5. py3plex.export
+
+Export data to file.
+
+**Parameters**:
+- `data` (dict, required): Data to export
+- `out_dir` (str, optional): Output directory (default: `~/.py3plex_mcp/out`)
+- `format` (str, default: "json"): Output format (json or csv)
+- `filename` (str, optional): Filename (auto-generated if not provided)
+
+**Returns**:
+- Written file paths
+
+#### 6. py3plex.close
+
+Close network handle and free memory.
+
+**Parameters**:
+- `net_id` (str, required): Network handle
+
+#### 7. py3plex.list_handles
+
+List all network handles.
+
+**Returns**:
+- List of network handles with metadata
+
+### Available Resources
+
+The MCP server exposes 3 resources:
+
+#### py3plex://agents
+
+Returns the complete AGENTS.md documentation.
+
+#### py3plex://help/dsl
+
+Returns DSL reference guide with syntax and examples.
+
+#### py3plex://help/tools
+
+Returns tool list with schemas and usage examples.
+
+### Client Configuration
+
+#### Claude Desktop
+
+Add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "py3plex": {
+      "command": "py3plex-mcp"
+    }
+  }
+}
+```
+
+**Location**:
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Linux: `~/.config/Claude/claude_desktop_config.json`
+
+#### Gemini CLI
+
+```bash
+# Using stdio transport
+gemini --mcp py3plex-mcp
+```
+
+#### Codex CLI
+
+```bash
+# Configure MCP server
+codex config add-server py3plex py3plex-mcp
+```
+
+### Security Model
+
+The MCP server implements security-first defaults:
+
+**File Access**:
+- **Read**: Only explicitly provided paths allowed
+- **No globbing**: Patterns like `*.csv` are rejected
+- **Forbidden paths**: System locations (`/etc`, `/sys`, `/proc`, etc.) are blocked
+- **Write**: Only to safe output directory (default: `~/.py3plex_mcp/out`)
+
+**Output Directory**:
+- Default: `~/.py3plex_mcp/out`
+- Created automatically if it doesn't exist
+- Files are never overwritten (auto-suffix added)
+
+**Network Registry**:
+- In-memory only (no persistent state)
+- Networks are isolated by unique handles
+- Memory is freed on close or server shutdown
+
+### Example Workflows
+
+#### Load → Analyze → Export
+
+```python
+# 1. Load network
+response = py3plex.load_network(
+    path="/data/social_network.csv",
+    input_type="multiedgelist"
+)
+net_id = response["net_id"]
+
+# 2. Get statistics
+stats = py3plex.stats(net_id=net_id)
+
+# 3. Run query
+result = py3plex.run_query(
+    net_id=net_id,
+    query="SELECT nodes WHERE degree > 10 COMPUTE pagerank",
+    limit=100
+)
+
+# 4. Export results
+py3plex.export(
+    data=result,
+    format="csv",
+    filename="high_degree_nodes.csv"
+)
+
+# 5. Clean up
+py3plex.close(net_id=net_id)
+```
+
+#### Community Detection
+
+```python
+# 1. Load network
+response = py3plex.load_network(path="/data/network.csv")
+net_id = response["net_id"]
+
+# 2. Detect communities
+communities = py3plex.community_detect(
+    net_id=net_id,
+    algorithm="louvain",
+    params={"seed": 42}
+)
+
+# 3. Export communities
+py3plex.export(
+    data=communities,
+    format="json",
+    filename="communities.json"
+)
+```
+
+### Error Handling
+
+All tools return structured error responses:
+
+```json
+{
+  "ok": false,
+  "error": {
+    "type": "NetworkNotFoundError",
+    "message": "Network 'xyz' not found",
+    "hint": "Use py3plex.list_handles to see available networks"
+  },
+  "meta": {
+    "tool": "py3plex.stats",
+    "timestamp": 1673456789.123
+  }
+}
+```
+
+**Common Error Types**:
+- `NetworkNotFoundError`: Network handle not found
+- `UnsupportedFormatError`: Unknown input format
+- `QueryParseError`: DSL query parsing failed
+- `UnsupportedAlgorithmError`: Unknown algorithm
+- `PathAccessError`: Path access denied
+
+### Response Format
+
+All successful tool responses include:
+
+```json
+{
+  "meta": {
+    "ok": true,
+    "tool": "tool_name",
+    "version": {
+      "py3plex": "1.1.1",
+      "mcp_server": "1.0.0"
+    },
+    "timestamp": 1673456789.123,
+    "truncated": false
+  },
+  // ... tool-specific data
+}
+```
+
+### Truncation
+
+Query results are automatically truncated to prevent overwhelming responses:
+
+- Default limit: 200 items
+- Configurable via `limit` parameter
+- Metadata includes `truncated`, `total_count`, and `limit` when applicable
+
+### Testing
+
+```bash
+# Run MCP server tests
+pytest tests/test_mcp_server.py -v
+
+# Test installation
+pip install -e ".[mcp]"
+py3plex-mcp --help
+```
+
+### Troubleshooting
+
+**"Python 3.10 or higher required"**:
+The MCP SDK requires Python 3.10+. Either:
+- Upgrade to Python 3.10 or higher, OR
+- Use the base py3plex package without MCP (supports Python 3.8+)
+
+**"MCP SDK not installed"**:
+```bash
+pip install py3plex[mcp]
+```
+
+**"Network not found"**:
+Use `py3plex.list_handles` to see active networks.
+
+**"Path access denied"**:
+Ensure the path exists and is not in a forbidden system location.
+
+**Server not responding**:
+Check that the server is running and stdio transport is properly configured.
+
+---
+
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-01-09 (for py3plex v1.1.1)
+**Last Updated**: 2026-01-11 (for py3plex v1.1.1 + MCP v1.0.0)
 

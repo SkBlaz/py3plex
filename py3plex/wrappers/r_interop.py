@@ -483,7 +483,11 @@ def export_graph_data(network: Union[multi_layer_network, Any]) -> Dict[str, Any
 
     # Handle new I/O system
     if NEW_IO_AVAILABLE and hasattr(network, "layers"):
-        result["layers"] = list(network.layers.keys())
+        # Handle both dict and list types for layers
+        if isinstance(network.layers, dict):
+            result["layers"] = list(network.layers.keys())
+        else:
+            result["layers"] = list(network.layers)
         result["directed"] = network.directed
         if hasattr(network, "attributes"):
             result["attributes"] = network.attributes
