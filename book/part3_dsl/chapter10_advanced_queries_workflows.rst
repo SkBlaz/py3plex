@@ -68,43 +68,31 @@ Random walk dynamics model diffusion processes:
 Basic Dynamics DSL Usage
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The dynamics DSL uses a builder API similar to the query DSL. See ``examples/06_dynamics/`` for complete examples.
+The dynamics DSL uses a builder API similar to the query DSL. See ``examples/dynamics/`` for complete examples.
 
 **Example 1: SIS Epidemic Model**
 
-See ``examples/06_dynamics/01_sis_epidemic.py``:
+See ``examples/dynamics/sis_dynamics.py``:
 
 .. code-block:: bash
 
-    # Using uv
-    uv run examples/06_dynamics/01_sis_epidemic.py
-    
-    # Or using python
-    python examples/06_dynamics/01_sis_epidemic.py
+    python examples/dynamics/sis_dynamics.py
 
-**Example 2: Multilayer Epidemic**
+**Example 2: SIR Epidemic Model**
 
-See ``examples/06_dynamics/02_multilayer_epidemic.py``:
+See ``examples/dynamics/sir_epidemic.py``:
 
 .. code-block:: bash
 
-    # Using uv
-    uv run examples/06_dynamics/02_multilayer_epidemic.py
-    
-    # Or using python
-    python examples/06_dynamics/02_multilayer_epidemic.py
+    python examples/dynamics/sir_epidemic.py
 
-**Example 3: Custom Dynamics Model**
+**Example 3: Random Walk Dynamics**
 
-See ``examples/06_dynamics/03_custom_model.py``:
+See ``examples/dynamics/random_walk.py``:
 
 .. code-block:: bash
 
-    # Using uv
-    uv run examples/06_dynamics/03_custom_model.py
-    
-    # Or using python
-    python examples/06_dynamics/03_custom_model.py
+    python examples/dynamics/random_walk.py
     print(f"Mean final prevalence: {result.data['prevalence'][:, -1].mean():.3f}")
 
     # Convert to pandas for analysis
@@ -401,21 +389,29 @@ Combine layers using set operations:
 Aggregations by Node Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Group and aggregate by node properties. See ``examples/03_dsl_v2/03_grouping_aggregation.py`` for a complete example:
+Group and aggregate by node properties:
 
-.. literalinclude:: ../../examples/03_dsl_v2/03_grouping_aggregation.py
-   :language: python
-   :lines: 9-29
+.. code-block:: python
 
-**Run this example:**
-
-.. code-block:: bash
-
-    # Using uv
-    uv run examples/03_dsl_v2/03_grouping_aggregation.py
+    from py3plex.dsl import Q, L
     
-    # Or using python
-    python examples/03_dsl_v2/03_grouping_aggregation.py
+    # Group nodes by layer and compute statistics
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+    )
+    
+    # Convert to pandas and group
+    df = result.to_pandas()
+    layer_stats = df.groupby('layer').agg({
+        'degree': ['mean', 'std', 'max'],
+        'betweenness_centrality': ['mean', 'max']
+    })
+    print(layer_stats)
+
+**See also:** ``examples/network_analysis/example_dsl_advanced.py`` for complete grouping examples.
 
 **Additional grouping patterns:**
 
@@ -518,45 +514,58 @@ Direct export without intermediate DataFrame:
 Dplyr-Style Data Manipulation
 ------------------------------
 
-The ``graph_ops`` module provides dplyr-style operations for manipulating network data. See ``examples/04_graph_ops/`` for complete examples.
+The ``graph_ops`` module provides dplyr-style operations for manipulating network data.
 
 **Example 1: Filter and Mutate**
 
-See ``examples/04_graph_ops/01_filter_mutate.py``:
+.. code-block:: python
 
-.. literalinclude:: ../../examples/04_graph_ops/01_filter_mutate.py
-   :language: python
-   :lines: 9-30
-
-**Run this example:**
-
-.. code-block:: bash
-
-    # Using uv
-    uv run examples/04_graph_ops/01_filter_mutate.py
+    from py3plex.graph_ops import nodes
     
-    # Or using python
-    python examples/04_graph_ops/01_filter_mutate.py
+    # Filter and mutate node data
+    df = (
+        nodes(network)
+        .filter(lambda n: n["degree"] > 2)
+        .mutate(score=lambda n: n["degree"] * 2)
+        .arrange("degree", reverse=True)
+        .to_pandas()
+    )
+    print(df)
 
 **Example 2: Group and Summarise**
 
-See ``examples/04_graph_ops/02_group_summarise.py``:
+.. code-block:: python
 
-.. code-block:: bash
-
-    # Using uv
-    uv run examples/04_graph_ops/02_group_summarise.py
+    from py3plex.graph_ops import nodes
     
-    # Or using python
-    python examples/04_graph_ops/02_group_summarise.py
+    # Group by layer and summarise
+    df = (
+        nodes(network)
+        .group_by("layer")
+        .summarise(
+            mean_degree=("degree", "mean"),
+            max_degree=("degree", "max"),
+            count=("id", "count")
+        )
+        .to_pandas()
+    )
+    print(df)
+
+**See also:** ``examples/network_analysis/example_dsl_dplyr_operations.py`` for complete dplyr-style examples.
 
 **Example 3: Subgraph Extraction**
 
-See ``examples/04_graph_ops/03_subgraph.py``:
+.. code-block:: python
 
-.. code-block:: bash
-
-    # Using uv
+    from py3plex.dsl import Q, L
+    
+    # Extract subgraph for high-degree nodes
+    subgraph = (
+        Q.nodes()
+         .where(degree__gt=5)
+         .to_networkx()
+         .execute(network)
+    )
     uv run examples/04_graph_ops/03_subgraph.py
     
     # Or using python

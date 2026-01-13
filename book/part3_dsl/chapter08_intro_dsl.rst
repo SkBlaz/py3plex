@@ -125,37 +125,63 @@ Example:
 Your First Query
 ----------------
 
-Let's build a simple query step-by-step. See the complete examples in ``examples/02_basic_queries/`` and ``examples/03_dsl_v2/``.
+Let's build a simple query step-by-step. See the complete examples in ``examples/network_analysis/`` and ``examples/dsl_query_zoo/``.
 
 **Example 1: Filter by layer**
 
-See ``examples/02_basic_queries/02_select_by_layer.py``:
+.. code-block:: python
 
-.. literalinclude:: ../../examples/02_basic_queries/02_select_by_layer.py
-   :language: python
-   :lines: 9-25
+    from py3plex.dsl import Q, L
+    from py3plex.core import multinet
+    
+    # Create a simple multilayer network
+    net = multinet.multi_layer_network()
+    net.add_nodes([
+        {'source': 'Alice', 'type': 'social'},
+        {'source': 'Bob', 'type': 'social'},
+        {'source': 'Charlie', 'type': 'work'},
+    ])
+    net.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 
+         'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Charlie', 'target': 'Alice', 
+         'source_type': 'work', 'target_type': 'work'},
+    ])
+    
+    # Select nodes from the social layer
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .execute(net)
+    )
+    
+    print(result.to_pandas())
 
-**Run this example:**
+**Run complete DSL examples:**
 
 .. code-block:: bash
 
-    # Using uv
-    uv run examples/02_basic_queries/02_select_by_layer.py
+    # Basic DSL builder API
+    python examples/network_analysis/example_dsl_builder_api.py
     
-    # Or using python
-    python examples/02_basic_queries/02_select_by_layer.py
+    # Advanced DSL features
+    python examples/network_analysis/example_dsl_advanced.py
+    
+    # Query Zoo examples
+    python examples/dsl_query_zoo/run_all.py
 
 **Example 2: Filter by degree**
 
-See ``examples/02_basic_queries/03_filter_by_degree.py``:
+.. code-block:: python
 
-.. code-block:: bash
-
-    # Using uv
-    uv run examples/02_basic_queries/03_filter_by_degree.py
-    
-    # Or using python
-    python examples/02_basic_queries/03_filter_by_degree.py
+    # Find high-degree nodes
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])  # All layers
+         .compute("degree")
+         .where(degree__gt=3)
+         .execute(net)
+    )
 
 **Example 3: Compute centrality**
 

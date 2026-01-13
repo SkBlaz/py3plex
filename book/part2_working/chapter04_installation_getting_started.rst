@@ -82,21 +82,33 @@ System Requirements
 Hello Multilayer Network
 -------------------------
 
-Create and analyze a multilayer network in 30 seconds. See the complete example in ``examples/00_quickstart/02_create_and_visualize.py``:
+Create and analyze a multilayer network in 30 seconds:
 
-.. literalinclude:: ../../examples/00_quickstart/02_create_and_visualize.py
-   :language: python
-   :lines: 1-25
+.. code-block:: python
 
-**Run this example:**
-
-.. code-block:: bash
-
-    # Using uv
-    uv run examples/00_quickstart/02_create_and_visualize.py
+    from py3plex.core import multinet
     
-    # Or using python
-    python examples/00_quickstart/02_create_and_visualize.py
+    # Create a multilayer network
+    net = multinet.multi_layer_network()
+    
+    # Add nodes and edges
+    net.add_nodes([
+        {'source': 'Alice', 'type': 'friends'},
+        {'source': 'Bob', 'type': 'friends'},
+        {'source': 'Alice', 'type': 'work'},
+    ])
+    
+    net.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 
+         'source_type': 'friends', 'target_type': 'friends'},
+        {'source': 'Alice', 'target': 'Charlie', 
+         'source_type': 'work', 'target_type': 'work'},
+    ])
+    
+    # Display statistics
+    net.basic_stats()
+
+**See also:** ``examples/getting_started/tutorial_10min.py`` for a complete tutorial.
 
 **Output:**
 
@@ -142,21 +154,31 @@ Basic Analysis
 Query with DSL
 ~~~~~~~~~~~~~~
 
-Use SQL-like queries to explore the network. See the complete example in ``examples/00_quickstart/01_load_and_query.py``:
+Use SQL-like queries to explore the network:
 
-.. literalinclude:: ../../examples/00_quickstart/01_load_and_query.py
-   :language: python
-   :lines: 1-27
+.. code-block:: python
 
-**Run this example:**
-
-.. code-block:: bash
-
-    # Using uv
-    uv run examples/00_quickstart/01_load_and_query.py
+    from py3plex.dsl import Q, L
+    from py3plex.core import multinet
     
-    # Or using python
-    python examples/00_quickstart/01_load_and_query.py
+    # Create a network
+    net = multinet.multi_layer_network()
+    # ... add nodes and edges ...
+    
+    # Query: Find nodes with degree > 3 in the social layer
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree")
+         .where(degree__gt=3)
+         .execute(net)
+    )
+    
+    # Convert to pandas DataFrame
+    df = result.to_pandas()
+    print(df)
+
+**See also:** ``examples/network_analysis/example_dsl_builder_api.py`` for complete DSL examples.
 
 The DSL (covered in Part III) provides a powerful way to filter, compute, and analyze multilayer networks without writing explicit loops.
 

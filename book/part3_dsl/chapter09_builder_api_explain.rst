@@ -8,21 +8,37 @@ Builder Pattern and Fluent API
 
 The builder API uses method chaining to construct queries incrementally. Each method returns the query object, allowing you to chain operations naturally.
 
-See ``examples/03_dsl_v2/01_builder_basic.py`` for a complete example:
+See ``examples/network_analysis/example_dsl_builder_api.py`` for a complete example:
 
-.. literalinclude:: ../../examples/03_dsl_v2/01_builder_basic.py
-   :language: python
-   :lines: 9-29
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    from py3plex.core import multinet
+    
+    # Create network
+    net = multinet.multi_layer_network()
+    # ... add nodes and edges ...
+    
+    # Build query with method chaining
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .where(degree__gt=3)
+         .compute("betweenness_centrality")
+         .order_by("-betweenness_centrality")
+         .limit(10)
+         .execute(net)
+    )
 
 **Run this example:**
 
 .. code-block:: bash
 
-    # Using uv
-    uv run examples/03_dsl_v2/01_builder_basic.py
+    # Basic builder API examples
+    python examples/network_analysis/example_dsl_builder_api.py
     
-    # Or using python
-    python examples/03_dsl_v2/01_builder_basic.py
+    # Advanced DSL features
+    python examples/network_analysis/example_dsl_advanced.py
 
 **Advantages over string DSL:**
 

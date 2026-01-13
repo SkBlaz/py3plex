@@ -39,6 +39,11 @@ The Query Zoo is organized around common multilayer analysis tasks:
 6. **Robustness Analysis** — Assess network resilience to layer failures
 7. **Advanced Centrality Comparison** — Identify versatile vs specialized hubs
 8. **Edge Grouping and Coverage** — Analyze edges across layer pairs with top-k and coverage
+9. **Layer Algebra Filtering** — Use layer set algebra for flexible layer selection
+10. **Cross-Layer Paths with Algebra** — Find paths while excluding certain layers
+11. **Null Model Comparison** — Statistical significance testing against null models
+12. **Bootstrap Confidence Intervals** — Estimate uncertainty in centrality measures
+13. **Uncertainty-Aware Ranking** — Rank nodes considering variability across layers
 
 All examples use small, reproducible multilayer networks from the ``examples/dsl_query_zoo/datasets.py`` module with fixed seeds so you can match the outputs shown here.
 
@@ -471,6 +476,271 @@ DSL Concepts Demonstrated
    Edge grouping and coverage are new features that parallel the existing node 
    grouping capabilities. Use ``.per_layer_pair()`` for edges and ``.per_layer()`` 
    for nodes. Both support the same coverage modes and grouping operations.
+
+----
+
+9. Layer Algebra Filtering
+---------------------------
+
+**Problem:** You want to query specific subsets of layers using set operations. For instance, you might want to analyze "all layers except coupling layers" or "the union of biological layers."
+
+**Solution:** Use the LayerSet algebra with set operations (union, intersection, difference, complement) for expressive layer filtering.
+
+Query Code
+~~~~~~~~~~
+
+.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+   :pyobject: query_layer_algebra_filtering
+   :language: python
+
+Why It's Interesting
+~~~~~~~~~~~~~~~~~~~~
+
+* **Expressive layer selection** — Combine layers using set operations rather than listing them individually
+* **Reusable layer groups** — Define named layer groups for consistent reuse across queries
+* **Exclude infrastructure layers** — Easily filter out meta-layers like coupling layers
+* **Complex filter expressions** — Build sophisticated layer filters with union, intersection, difference
+
+Example Output
+~~~~~~~~~~~~~~
+
+The query returns a dictionary with multiple DataFrames showing different layer selection strategies:
+
+**No Coupling Layers:** All layers except the coupling layer (useful for excluding meta-layers)
+
+**Bio Layers:** Named group containing biological layers (ppi | gene | disease)
+
+**Intersection:** Nodes appearing in both social AND work layers
+
+**Complement:** Complement of coupling layer (equivalent to * - coupling)
+
+DSL Concepts Demonstrated
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``L["* - coupling"]`` — Layer difference: all layers except coupling
+* ``L["social & work"]`` — Layer intersection: nodes in both layers
+* ``L["ppi | gene | disease"]`` — Layer union: combine multiple layers
+* ``~LayerSet("coupling")`` — Layer complement
+* ``L.define("bio", LayerSet(...))`` — Named layer groups for reuse
+* String expression parsing for complex layer filters
+
+----
+
+10. Cross-Layer Paths with Algebra
+-----------------------------------
+
+**Problem:** When computing paths in multilayer networks, you may want to exclude certain layers (like coupling layers) that create artificial shortcuts, revealing more semantically meaningful paths.
+
+**Solution:** Use layer algebra in path queries to control which layers participate in path computation.
+
+Query Code
+~~~~~~~~~~
+
+.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+   :pyobject: query_cross_layer_paths_with_algebra
+   :language: python
+
+Why It's Interesting
+~~~~~~~~~~~~~~~~~~~~
+
+* **Avoid artificial shortcuts** — Coupling layers often create paths that aren't semantically meaningful
+* **Compare path strategies** — See how layer filtering affects connectivity
+* **Layer-aware path finding** — Control which layers participate in path computation
+* **Semantic path discovery** — Find paths that make sense in your domain
+
+Example Output
+~~~~~~~~~~~~~~
+
+The query returns a dictionary comparing path exploration with and without filtering:
+
+**All Layers:** Node count and layer distribution when all layers are included
+
+**Filtered Layers:** Node count and layer distribution excluding coupling layers
+
+**Interpretation:** Excluding coupling layers often reveals more semantically meaningful paths by avoiding artificial shortcuts created by infrastructure layers.
+
+DSL Concepts Demonstrated
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Layer algebra in path queries
+* Comparing results with different layer subsets
+* Layer distribution analysis
+* Semantic path filtering
+
+----
+
+11. Null Model Comparison
+--------------------------
+
+**Problem:** How do you know if observed network patterns are statistically significant or just random? You need to compare actual network statistics against null model baselines.
+
+**Solution:** Generate null models (e.g., configuration model) that preserve certain properties while randomizing connections, then compute z-scores to identify significant patterns.
+
+Query Code
+~~~~~~~~~~
+
+.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+   :pyobject: query_null_model_comparison
+   :language: python
+
+Why It's Interesting
+~~~~~~~~~~~~~~~~~~~~
+
+* **Statistical rigor** — Establish baselines for significance testing
+* **Identify exceptional patterns** — Find nodes/structures that exceed random expectations
+* **Configuration model** — Preserves degree sequence but randomizes connections
+* **Z-score analysis** — Quantify how many standard deviations from expected
+* **Essential for scientific conclusions** — Avoid claiming significance for random patterns
+
+Example Output
+~~~~~~~~~~~~~~
+
+Running on a multilayer network returns a DataFrame with columns:
+
+.. csv-table::
+   :header: "Node ID", "Layer", "Observed Degree", "Expected Degree", "Z-Score", "Is Significant"
+   :widths: 20, 20, 20, 20, 15, 15
+
+   "Alice", "social", 5, 3.2, 2.8, True
+   "Bob", "social", 4, 3.5, 0.7, False
+   "Charlie", "work", 6, 2.8, 3.5, True
+
+**Interpretation:** Nodes with |z-score| > 2.0 are statistically significant (p < 0.05). Alice and Charlie have significantly higher degree than expected by chance, while Bob's degree is within random variation.
+
+DSL Concepts Demonstrated
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Integration of null models with DSL queries
+* Statistical hypothesis testing
+* Computing z-scores and significance flags
+* Configuration model preserves degree distribution
+* Bootstrap resampling for confidence intervals
+
+.. note::
+   **Performance Note**
+   
+   This example uses 50 null model samples for CI speed. Production analyses 
+   typically use 100-1000 samples for more robust statistics.
+
+----
+
+12. Bootstrap Confidence Intervals
+-----------------------------------
+
+**Problem:** When analyzing centrality in multilayer networks, how stable are the measurements? Do nodes maintain consistent importance across layers, or is their centrality highly variable?
+
+**Solution:** Analyze cross-layer variability to estimate uncertainty in centrality measures, identifying nodes with stable vs fragile importance.
+
+Query Code
+~~~~~~~~~~
+
+.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+   :pyobject: query_bootstrap_confidence_intervals
+   :language: python
+
+Why It's Interesting
+~~~~~~~~~~~~~~~~~~~~
+
+* **Quantify uncertainty** — Know how reliable your centrality measurements are
+* **Cross-layer variability** — See which nodes maintain importance across contexts
+* **Avoid over-interpretation** — Don't claim significant differences for small variations
+* **Robust vs fragile patterns** — Identify nodes with consistent vs inconsistent centrality
+* **No distributional assumptions** — Works when analytical standard errors unavailable
+
+Example Output
+~~~~~~~~~~~~~~
+
+Running on a multilayer network returns:
+
+.. csv-table::
+   :header: "Node ID", "Layer", "Degree", "Mean Across Layers", "Std Dev", "Relative Variability", "Layer Coverage"
+   :widths: 15, 15, 12, 20, 12, 20, 15
+
+   "Alice", "social", 5, 4.3, 1.2, 0.28, 3
+   "Bob", "work", 3, 2.8, 0.5, 0.18, 3
+   "Charlie", "family", 2, 3.1, 1.8, 0.58, 2
+
+**Interpretation:**
+
+* **Low relative variability** (Bob: 0.18) — Consistent importance across layers
+* **High relative variability** (Charlie: 0.58) — Importance varies dramatically by context
+* **Layer coverage** — Number of layers where the node appears
+
+DSL Concepts Demonstrated
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Cross-layer metric aggregation
+* Coefficient of variation for relative variability
+* Statistical comparison across layers
+* Uncertainty quantification in multilayer networks
+
+----
+
+13. Uncertainty-Aware Ranking
+------------------------------
+
+**Problem:** Traditional rankings order nodes by a single metric (e.g., max centrality). But what if a node has high centrality in one layer but low in others? How do you account for consistency vs peak performance?
+
+**Solution:** Compare multiple ranking strategies—by maximum value, by mean across layers, and by consistency (low variability)—to make uncertainty-aware decisions.
+
+Query Code
+~~~~~~~~~~
+
+.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+   :pyobject: query_uncertainty_aware_ranking
+   :language: python
+
+Why It's Interesting
+~~~~~~~~~~~~~~~~~~~~
+
+* **Beyond single-layer analysis** — Consider multilayer context in rankings
+* **Consistent vs peak performers** — Identify nodes with stable vs specialized importance
+* **Decision-making under uncertainty** — Choose ranking strategy based on use case
+* **Reveals ranking sensitivity** — See how rankings change with different strategies
+* **Practical implications** — Different strategies matter for different applications
+
+Example Output
+~~~~~~~~~~~~~~
+
+Running on a multilayer network returns:
+
+.. csv-table::
+   :header: "Node ID", "Layer", "Betweenness", "Mean", "Rel. Variability", "Rank by Max", "Rank by Mean", "Rank by Consistency", "Rank Change"
+   :widths: 12, 12, 12, 10, 15, 12, 12, 15, 12
+
+   "Alice", "work", 0.45, 0.38, 0.25, 1, 1, 1, 0
+   "Charlie", "social", 0.42, 0.28, 0.52, 2, 3, 5, 3
+   "Bob", "family", 0.38, 0.35, 0.18, 3, 2, 2, 1
+
+**Interpretation:**
+
+* **Alice** — Top-ranked by all strategies (consistent high performer)
+* **Charlie** — Ranks highly by max (rank 2) but poorly by consistency (rank 5) due to high variability
+* **Bob** — More consistent than peak performer (rank 3 by max, rank 2 by consistency)
+* **Rank change** — Large values indicate sensitivity to ranking strategy
+
+**Use Cases:**
+
+* **Rank by max:** When you need top performers in any context
+* **Rank by mean:** When you want overall consistent importance
+* **Rank by consistency:** When you need reliable performance across all contexts
+
+DSL Concepts Demonstrated
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Cross-layer variability analysis
+* Multiple ranking strategies
+* Consistency scoring
+* Sensitivity analysis for rankings
+* Practical decision-making with uncertainty
+
+.. admonition:: Choosing a Ranking Strategy
+   :class: tip
+   
+   * **High-stakes decisions:** Use consistency ranking to avoid nodes with variable performance
+   * **Exploratory analysis:** Use max ranking to find peak performers
+   * **General purpose:** Use mean ranking for balanced assessment
+   * **Large rank changes:** Investigate why nodes rank differently across strategies
 
 ----
 

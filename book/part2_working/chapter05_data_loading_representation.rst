@@ -45,21 +45,26 @@ Py3plex supports several ways to create multilayer networks:
 
 **1. Direct edge addition** (for programmatic construction):
 
-See the complete example in ``examples/01_network_construction/01_from_edges.py``:
+.. code-block:: python
 
-.. literalinclude:: ../../examples/01_network_construction/01_from_edges.py
-   :language: python
-   :lines: 10-28
-
-**Run this example:**
-
-.. code-block:: bash
-
-    # Using uv
-    uv run examples/01_network_construction/01_from_edges.py
+    from py3plex.core import multinet
     
-    # Or using python
-    python examples/01_network_construction/01_from_edges.py
+    # Create network
+    network = multinet.multi_layer_network()
+    
+    # Add edges directly
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 
+         'source_type': 'layer1', 'target_type': 'layer1'},
+        {'source': 'Bob', 'target': 'Charlie', 
+         'source_type': 'layer1', 'target_type': 'layer1'},
+        {'source': 'Alice', 'target': 'Charlie', 
+         'source_type': 'layer2', 'target_type': 'layer2'},
+    ])
+    
+    network.basic_stats()
+
+**See also:** ``examples/getting_started/tutorial_10min.py`` for complete examples.
 
 **2. File loading** (for external data):
 
@@ -71,21 +76,21 @@ See the complete example in ``examples/01_network_construction/01_from_edges.py`
 
 **3. From NetworkX** (for integration):
 
-See the complete example in ``examples/01_network_construction/03_from_networkx.py``:
+.. code-block:: python
 
-.. literalinclude:: ../../examples/01_network_construction/03_from_networkx.py
-   :language: python
-   :lines: 9-22
-
-**Run this example:**
-
-.. code-block:: bash
-
-    # Using uv
-    uv run examples/01_network_construction/03_from_networkx.py
+    import networkx as nx
+    from py3plex.core import multinet
     
-    # Or using python
-    python examples/01_network_construction/03_from_networkx.py
+    # Create NetworkX graphs
+    G1 = nx.karate_club_graph()
+    G2 = nx.erdos_renyi_graph(20, 0.1)
+    
+    # Convert to multilayer network
+    network = multinet.multi_layer_network()
+    network.add_layer_from_nx(G1, layer_name="social")
+    network.add_layer_from_nx(G2, layer_name="work")
+
+**See also:** ``examples/getting_started/example_networkx_wrapper.py`` for NetworkX integration examples.
 
 Edgelist Format
 ---------------
