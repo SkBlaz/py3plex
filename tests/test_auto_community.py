@@ -500,7 +500,7 @@ class TestAutoResult:
     def test_explain_method(self):
         """Test explain() method."""
         contestant = ContestantResult(
-            contestant_id="test",
+            contestant_id="leiden:default",  # Use algorithm name in ID
             algo_name="leiden",
             params={"gamma": 1.0},
             partition={},
