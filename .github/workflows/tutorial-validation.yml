@@ -71,11 +71,11 @@ jobs:
         # Verify imports work before running
         python -c "from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer; print('✓ Import successful')"
         cd examples
-        # Run all quickstart examples to validate basic functionality
-        echo "Running quickstart examples..."
-        python 00_quickstart/01_load_and_query.py
-        python 00_quickstart/02_create_and_visualize.py
-        python 00_quickstart/03_communities.py
+        # Run getting_started examples to validate basic functionality
+        echo "Running getting_started examples..."
+        python getting_started/example_datasets.py
+        python getting_started/example_multilayer_functionality.py
+        python getting_started/example_random_generator.py
         echo "✅ Quickstart validation completed successfully"
       timeout-minutes: 10
       env:

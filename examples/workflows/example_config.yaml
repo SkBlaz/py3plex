@@ -1,0 +1,47 @@
+# Example workflow configuration for py3plex
+# This demonstrates a simple network analysis pipeline
+
+name: "Basic Network Analysis Workflow"
+description: "Generate a random network and compute basic statistics"
+
+# Define datasets to work with
+datasets:
+  - name: "example_network"
+    type: "generate"
+    generator: "random"
+    parameters:
+      nodes: 50
+      layers: 2
+      probability: 0.15
+      seed: 42
+
+# Define operations to perform
+operations:
+  # Compute statistics
+  - type: "stats"
+    dataset: "example_network"
+    parameters: {}
+
+  # Detect communities
+  - type: "community"
+    dataset: "example_network"
+    parameters:
+      algorithm: "louvain"
+
+  # Compute centrality
+  - type: "centrality"
+    dataset: "example_network"
+    parameters:
+      measure: "degree"
+
+  # Visualize network
+  - type: "visualize"
+    dataset: "example_network"
+    parameters:
+      output: "example_network.png"
+      layout: "spring"
+
+# Output configuration
+output:
+  directory: "workflow_results"
+  summary: "summary.json"
