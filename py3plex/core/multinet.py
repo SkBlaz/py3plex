@@ -355,7 +355,7 @@ def _encode_multilayer_network(core_network, directed):
 
         simple_graph.add_edge(nmap[node_first], nmap[node_second], weight=weight)
 
-    vectors = nx_to_scipy_sparse_matrix(simple_graph)
+    vectors = nx_to_scipy_sparse_matrix(simple_graph, dtype=float)
     return vectors, simple_graph.nodes()
 
 
@@ -393,7 +393,8 @@ def _encode_multiplex_network(core_network):
         H = core_network.subgraph(layer_nodes)
 
         # Use nx_to_scipy_sparse_matrix for direct sparse conversion
-        adj_sparse = nx_to_scipy_sparse_matrix(H)
+        # Explicitly specify dtype=float to avoid string dtype issues with tuple nodes
+        adj_sparse = nx_to_scipy_sparse_matrix(H, dtype=float)
 
         all_nodes += list(H.nodes())
         individual_adj_sparse.append(adj_sparse)
