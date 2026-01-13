@@ -122,6 +122,41 @@
 <li class="toctree-l3"><a class="reference internal" href="#id28">DSL Concepts Demonstrated</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#layer-algebra-filtering">9. Layer Algebra Filtering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id29">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cross-layer-paths-with-algebra">10. Cross-Layer Paths with Algebra</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id33">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id34">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#null-model-comparison">11. Null Model Comparison</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id37">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id38">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id40">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#bootstrap-confidence-intervals">12. Bootstrap Confidence Intervals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id41">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id42">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#uncertainty-aware-ranking">13. Uncertainty-Aware Ranking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id45">Query Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id46">Why It’s Interesting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id47">Example Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id48">DSL Concepts Demonstrated</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#using-the-query-zoo">Using the Query Zoo</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting Started</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adapting-queries-to-your-data">Adapting Queries to Your Data</a></li>
@@ -233,83 +268,123 @@ for your own analyses.</p>
 </div>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#overview" id="id29">Overview</a></p></li>
-<li><p><a class="reference internal" href="#basic-multilayer-exploration" id="id30">1. Basic Multilayer Exploration</a></p>
+<li><p><a class="reference internal" href="#overview" id="id51">Overview</a></p></li>
+<li><p><a class="reference internal" href="#basic-multilayer-exploration" id="id52">1. Basic Multilayer Exploration</a></p>
 <ul>
-<li><p><a class="reference internal" href="#query-code" id="id31">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#why-it-s-interesting" id="id32">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#example-output" id="id33">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#dsl-concepts-demonstrated" id="id34">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#query-code" id="id53">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#why-it-s-interesting" id="id54">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#example-output" id="id55">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#dsl-concepts-demonstrated" id="id56">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#cross-layer-hubs" id="id35">2. Cross-Layer Hubs</a></p>
+<li><p><a class="reference internal" href="#cross-layer-hubs" id="id57">2. Cross-Layer Hubs</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id1" id="id36">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id2" id="id37">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id3" id="id38">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id4" id="id39">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id58">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id59">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id60">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id61">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#layer-similarity" id="id40">3. Layer Similarity</a></p>
+<li><p><a class="reference internal" href="#layer-similarity" id="id62">3. Layer Similarity</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id5" id="id41">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id6" id="id42">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id7" id="id43">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id8" id="id44">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id5" id="id63">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id6" id="id64">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id7" id="id65">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id8" id="id66">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#community-structure" id="id45">4. Community Structure</a></p>
+<li><p><a class="reference internal" href="#community-structure" id="id67">4. Community Structure</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id9" id="id46">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id10" id="id47">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id11" id="id48">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id12" id="id49">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id9" id="id68">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id10" id="id69">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id11" id="id70">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id12" id="id71">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#multiplex-pagerank" id="id50">5. Multiplex PageRank</a></p>
+<li><p><a class="reference internal" href="#multiplex-pagerank" id="id72">5. Multiplex PageRank</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id13" id="id51">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id14" id="id52">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id15" id="id53">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id16" id="id54">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id13" id="id73">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id14" id="id74">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id15" id="id75">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id16" id="id76">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#robustness-analysis" id="id55">6. Robustness Analysis</a></p>
+<li><p><a class="reference internal" href="#robustness-analysis" id="id77">6. Robustness Analysis</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id17" id="id56">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id18" id="id57">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id19" id="id58">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id20" id="id59">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id17" id="id78">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id18" id="id79">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id19" id="id80">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id20" id="id81">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#advanced-centrality-comparison" id="id60">7. Advanced Centrality Comparison</a></p>
+<li><p><a class="reference internal" href="#advanced-centrality-comparison" id="id82">7. Advanced Centrality Comparison</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id21" id="id61">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id22" id="id62">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id23" id="id63">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id24" id="id64">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id21" id="id83">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id22" id="id84">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id23" id="id85">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id24" id="id86">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#edge-grouping-and-coverage" id="id65">8. Edge Grouping and Coverage</a></p>
+<li><p><a class="reference internal" href="#edge-grouping-and-coverage" id="id87">8. Edge Grouping and Coverage</a></p>
 <ul>
-<li><p><a class="reference internal" href="#id25" id="id66">Query Code</a></p></li>
-<li><p><a class="reference internal" href="#id26" id="id67">Why It’s Interesting</a></p></li>
-<li><p><a class="reference internal" href="#id27" id="id68">Example Output</a></p></li>
-<li><p><a class="reference internal" href="#id28" id="id69">DSL Concepts Demonstrated</a></p></li>
+<li><p><a class="reference internal" href="#id25" id="id88">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id26" id="id89">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id27" id="id90">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id28" id="id91">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#using-the-query-zoo" id="id70">Using the Query Zoo</a></p>
+<li><p><a class="reference internal" href="#layer-algebra-filtering" id="id92">9. Layer Algebra Filtering</a></p>
 <ul>
-<li><p><a class="reference internal" href="#getting-started" id="id71">Getting Started</a></p></li>
-<li><p><a class="reference internal" href="#adapting-queries-to-your-data" id="id72">Adapting Queries to Your Data</a></p></li>
-<li><p><a class="reference internal" href="#datasets" id="id73">Datasets</a></p></li>
+<li><p><a class="reference internal" href="#id29" id="id93">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id30" id="id94">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id31" id="id95">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id32" id="id96">DSL Concepts Demonstrated</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#further-reading" id="id74">Further Reading</a></p></li>
+<li><p><a class="reference internal" href="#cross-layer-paths-with-algebra" id="id97">10. Cross-Layer Paths with Algebra</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id33" id="id98">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id34" id="id99">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id35" id="id100">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id36" id="id101">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#null-model-comparison" id="id102">11. Null Model Comparison</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id37" id="id103">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id38" id="id104">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id39" id="id105">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id40" id="id106">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#bootstrap-confidence-intervals" id="id107">12. Bootstrap Confidence Intervals</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id41" id="id108">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id42" id="id109">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id43" id="id110">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id44" id="id111">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#uncertainty-aware-ranking" id="id112">13. Uncertainty-Aware Ranking</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id45" id="id113">Query Code</a></p></li>
+<li><p><a class="reference internal" href="#id46" id="id114">Why It’s Interesting</a></p></li>
+<li><p><a class="reference internal" href="#id47" id="id115">Example Output</a></p></li>
+<li><p><a class="reference internal" href="#id48" id="id116">DSL Concepts Demonstrated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-the-query-zoo" id="id117">Using the Query Zoo</a></p>
+<ul>
+<li><p><a class="reference internal" href="#getting-started" id="id118">Getting Started</a></p></li>
+<li><p><a class="reference internal" href="#adapting-queries-to-your-data" id="id119">Adapting Queries to Your Data</a></p></li>
+<li><p><a class="reference internal" href="#datasets" id="id120">Datasets</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#further-reading" id="id121">Further Reading</a></p></li>
 </ul>
 </nav>
 <section id="overview">
-<h2><a class="toc-backref" href="#id29" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id51" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>The Query Zoo is organized around common multilayer analysis tasks:</p>
 <ol class="arabic simple">
 <li><p><strong>Basic Multilayer Exploration</strong> — Understand layer statistics and structure</p></li>
@@ -320,6 +395,11 @@ for your own analyses.</p>
 <li><p><strong>Robustness Analysis</strong> — Assess network resilience to layer failures</p></li>
 <li><p><strong>Advanced Centrality Comparison</strong> — Identify versatile vs specialized hubs</p></li>
 <li><p><strong>Edge Grouping and Coverage</strong> — Analyze edges across layer pairs with top-k and coverage</p></li>
+<li><p><strong>Layer Algebra Filtering</strong> — Use layer set algebra for flexible layer selection</p></li>
+<li><p><strong>Cross-Layer Paths with Algebra</strong> — Find paths while excluding certain layers</p></li>
+<li><p><strong>Null Model Comparison</strong> — Statistical significance testing against null models</p></li>
+<li><p><strong>Bootstrap Confidence Intervals</strong> — Estimate uncertainty in centrality measures</p></li>
+<li><p><strong>Uncertainty-Aware Ranking</strong> — Rank nodes considering variability across layers</p></li>
 </ol>
 <p>All examples use small, reproducible multilayer networks from the <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/datasets.py</span></code> module with fixed seeds so you can match the outputs shown here.</p>
 <div class="admonition tip">
@@ -338,11 +418,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="basic-multilayer-exploration">
-<h2><a class="toc-backref" href="#id30" role="doc-backlink">1. Basic Multilayer Exploration</a><a class="headerlink" href="#basic-multilayer-exploration" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id52" role="doc-backlink">1. Basic Multilayer Exploration</a><a class="headerlink" href="#basic-multilayer-exploration" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> You’ve loaded a multilayer network and want to quickly understand its structure. Which layers are densest? How many nodes and edges does each layer have?</p>
 <p><strong>Solution:</strong> Compute basic statistics per layer using the DSL.</p>
 <section id="query-code">
-<h3><a class="toc-backref" href="#id31" role="doc-backlink">Query Code</a><a class="headerlink" href="#query-code" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id53" role="doc-backlink">Query Code</a><a class="headerlink" href="#query-code" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Summarize layers: node counts, edge counts, and average degree per layer.</span>
 
@@ -401,7 +481,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="why-it-s-interesting">
-<h3><a class="toc-backref" href="#id32" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#why-it-s-interesting" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id54" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#why-it-s-interesting" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>First step in any analysis</strong> — Before diving into complex queries, understand your data</p></li>
 <li><p><strong>Reveals layer diversity</strong> — Different layers often have vastly different structures</p></li>
@@ -409,7 +489,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="example-output">
-<h3><a class="toc-backref" href="#id33" role="doc-backlink">Example Output</a><a class="headerlink" href="#example-output" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id55" role="doc-backlink">Example Output</a><a class="headerlink" href="#example-output" title="Link to this heading"></a></h3>
 <p>Running on the <code class="docutils literal notranslate"><span class="pre">social_work_network</span></code> (12 people across social/work/family layers):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -448,7 +528,7 @@ To run all queries and generate outputs:</p>
 <p><strong>Interpretation:</strong> The social layer is densest (highest average degree), while family is sparsest. All layers have similar numbers of nodes, indicating good cross-layer coverage.</p>
 </section>
 <section id="dsl-concepts-demonstrated">
-<h3><a class="toc-backref" href="#id34" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#dsl-concepts-demonstrated" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id56" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#dsl-concepts-demonstrated" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(L[name])</span></code> — Select nodes from a specific layer</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;degree&quot;)</span></code> — Add computed attributes to results</p></li>
@@ -459,11 +539,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="cross-layer-hubs">
-<h2><a class="toc-backref" href="#id35" role="doc-backlink">2. Cross-Layer Hubs</a><a class="headerlink" href="#cross-layer-hubs" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id57" role="doc-backlink">2. Cross-Layer Hubs</a><a class="headerlink" href="#cross-layer-hubs" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> Which nodes are consistently important across <em>multiple</em> layers? These “super hubs” are critical because they bridge different contexts.</p>
 <p><strong>Solution:</strong> Find top-k central nodes per layer, then identify which nodes appear in multiple layers’ top lists.</p>
 <section id="id1">
-<h3><a class="toc-backref" href="#id36" role="doc-backlink">Query Code</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id58" role="doc-backlink">Query Code</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find nodes that are consistently central across multiple layers.</span>
 
@@ -528,7 +608,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="id2">
-<h3><a class="toc-backref" href="#id37" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id59" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Reveals cross-context influence</strong> — Nodes central in one layer might be peripheral in another</p></li>
 <li><p><strong>Identifies key connectors</strong> — Nodes that appear in multiple layers’ top-k are especially important</p></li>
@@ -536,7 +616,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="id3">
-<h3><a class="toc-backref" href="#id38" role="doc-backlink">Example Output</a><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id60" role="doc-backlink">Example Output</a><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <p>Top cross-layer hubs (k=5):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -591,7 +671,7 @@ To run all queries and generate outputs:</p>
 <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> is the number of distinct layers in which a node enters the per-layer top-k list.</p>
 </section>
 <section id="id4">
-<h3><a class="toc-backref" href="#id39" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id61" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;betweenness_centrality&quot;,</span> <span class="pre">&quot;degree&quot;)</span></code> — Compute multiple metrics at once</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.order_by(&quot;-betweenness_centrality&quot;)</span></code> — Sort descending (<code class="docutils literal notranslate"><span class="pre">-</span></code> prefix)</p></li>
@@ -602,11 +682,11 @@ To run all queries and generate outputs:</p>
 </section>
 <hr class="docutils" />
 <section id="layer-similarity">
-<h2><a class="toc-backref" href="#id40" role="doc-backlink">3. Layer Similarity</a><a class="headerlink" href="#layer-similarity" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id62" role="doc-backlink">3. Layer Similarity</a><a class="headerlink" href="#layer-similarity" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> How similar are different layers structurally? Do they serve redundant or complementary roles?</p>
 <p><strong>Solution:</strong> Compute degree distributions per layer and measure pairwise correlations.</p>
 <section id="id5">
-<h3><a class="toc-backref" href="#id41" role="doc-backlink">Query Code</a><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id63" role="doc-backlink">Query Code</a><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute structural similarity between layers based on degree distributions.</span>
 
@@ -664,7 +744,7 @@ To run all queries and generate outputs:</p>
 </div>
 </section>
 <section id="id6">
-<h3><a class="toc-backref" href="#id42" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id64" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Detects redundancy</strong> — High correlation suggests layers capture similar structure</p></li>
 <li><p><strong>Guides simplification</strong> — Nearly identical layers might be merged</p></li>
@@ -672,7 +752,7 @@ To run all queries and generate outputs:</p>
 </ul>
 </section>
 <section id="id7">
-<h3><a class="toc-backref" href="#id43" role="doc-backlink">Example Output</a><a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id65" role="doc-backlink">Example Output</a><a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <p>Correlation matrix for <code class="docutils literal notranslate"><span class="pre">social_work_network</span></code>:</p>
 <a class="reference internal image-reference" href="../_images/layer_similarity_heatmap.png"><img alt="Layer Similarity Heatmap" class="align-center" src="../_images/layer_similarity_heatmap.png" style="width: 80%;" />
 </a>
@@ -712,7 +792,7 @@ To run all queries and generate outputs:</p>
 Nodes missing from a layer contribute a degree of 0 in that matrix so every layer uses the same node ordering.</p>
 </section>
 <section id="id8">
-<h3><a class="toc-backref" href="#id44" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id66" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Layer-by-layer degree computation</p></li>
 <li><p>Aggregating results across layers for meta-analysis</p></li>
@@ -722,11 +802,11 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </section>
 <hr class="docutils" />
 <section id="community-structure">
-<h2><a class="toc-backref" href="#id45" role="doc-backlink">4. Community Structure</a><a class="headerlink" href="#community-structure" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id67" role="doc-backlink">4. Community Structure</a><a class="headerlink" href="#community-structure" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> What communities exist in the multilayer network? How do they manifest across layers?</p>
 <p><strong>Solution:</strong> Detect communities using multilayer community detection, then analyze their distribution across layers.</p>
 <section id="id9">
-<h3><a class="toc-backref" href="#id46" role="doc-backlink">Query Code</a><a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id68" role="doc-backlink">Query Code</a><a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_community_structure</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect communities and analyze their distribution across layers.</span>
 
@@ -790,7 +870,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </div>
 </section>
 <section id="id10">
-<h3><a class="toc-backref" href="#id47" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id69" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Mesoscale structure</strong> — Communities reveal organizational patterns</p></li>
 <li><p><strong>Cross-layer community tracking</strong> — See if communities are layer-specific or global</p></li>
@@ -798,7 +878,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </ul>
 </section>
 <section id="id11">
-<h3><a class="toc-backref" href="#id48" role="doc-backlink">Example Output</a><a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id70" role="doc-backlink">Example Output</a><a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
 <p>Running on <code class="docutils literal notranslate"><span class="pre">communication_network</span></code> (email/chat/phone layers):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -846,7 +926,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 <p><strong>Interpretation:</strong> Community 0 is email-dominated (10 nodes), while communities 1 and 2 are chat-specific. Community 3 appears primarily in phone communication.</p>
 </section>
 <section id="id12">
-<h3><a class="toc-backref" href="#id49" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id71" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(L[&quot;*&quot;])</span></code> — Select from all layers</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;communities&quot;)</span></code> — Built-in community detection</p></li>
@@ -857,11 +937,11 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </section>
 <hr class="docutils" />
 <section id="multiplex-pagerank">
-<h2><a class="toc-backref" href="#id50" role="doc-backlink">5. Multiplex PageRank</a><a class="headerlink" href="#multiplex-pagerank" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id72" role="doc-backlink">5. Multiplex PageRank</a><a class="headerlink" href="#multiplex-pagerank" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> Standard PageRank treats each layer independently. How do we compute importance considering the full multiplex structure?</p>
 <p><strong>Solution:</strong> Compute PageRank per layer, then take the average across layers as a simplified multiplex score. (True multiplex PageRank uses supra-adjacency matrices.)</p>
 <section id="id13">
-<h3><a class="toc-backref" href="#id51" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id73" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Approximate multiplex PageRank by aggregating layer-specific scores.</span>
 
@@ -936,7 +1016,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </div>
 </section>
 <section id="id14">
-<h3><a class="toc-backref" href="#id52" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id74" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Multilayer-aware centrality</strong> — Accounts for importance across all layers</p></li>
 <li><p><strong>More robust than single-layer</strong> — Averages out layer-specific biases</p></li>
@@ -944,7 +1024,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </ul>
 </section>
 <section id="id15">
-<h3><a class="toc-backref" href="#id53" role="doc-backlink">Example Output</a><a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id75" role="doc-backlink">Example Output</a><a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
 <p>Top nodes by multiplex PageRank in <code class="docutils literal notranslate"><span class="pre">transport_network</span></code>:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -998,7 +1078,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 <p><strong>Interpretation:</strong> ShoppingMall has highest multiplex PageRank (0.1811) because it’s central across all three transport modes. Park has high walking PageRank but zero metro, reflecting its limited accessibility. Scores are the mean of per-layer PageRank values.</p>
 </section>
 <section id="id16">
-<h3><a class="toc-backref" href="#id54" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id76" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;pagerank&quot;)</span></code> — Built-in PageRank computation</p></li>
 <li><p>Per-layer iteration with result aggregation</p></li>
@@ -1009,11 +1089,11 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </section>
 <hr class="docutils" />
 <section id="robustness-analysis">
-<h2><a class="toc-backref" href="#id55" role="doc-backlink">6. Robustness Analysis</a><a class="headerlink" href="#robustness-analysis" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id77" role="doc-backlink">6. Robustness Analysis</a><a class="headerlink" href="#robustness-analysis" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> How robust is the network to layer failures? What happens if one layer goes offline?</p>
 <p><strong>Solution:</strong> Simulate removing each layer and measure connectivity loss.</p>
 <section id="id17">
-<h3><a class="toc-backref" href="#id56" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id78" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate network robustness by removing each layer and recomputing stats.</span>
 
@@ -1117,7 +1197,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </div>
 </section>
 <section id="id18">
-<h3><a class="toc-backref" href="#id57" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id79" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Critical infrastructure identification</strong> — Reveals which layers are essential</p></li>
 <li><p><strong>Redundancy assessment</strong> — High robustness indicates good backup coverage</p></li>
@@ -1125,7 +1205,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 </ul>
 </section>
 <section id="id19">
-<h3><a class="toc-backref" href="#id58" role="doc-backlink">Example Output</a><a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id80" role="doc-backlink">Example Output</a><a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
 <p>Robustness of <code class="docutils literal notranslate"><span class="pre">transport_network</span></code>:</p>
 <a class="reference internal image-reference" href="../_images/robustness_analysis_plot.png"><img alt="Robustness Analysis" class="align-center" src="../_images/robustness_analysis_plot.png" style="width: 90%;" />
 </a>
@@ -1176,7 +1256,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 The reported loss compares baseline total degree to the degree after removing a layer; for undirected networks total degree is twice the number of edges.</p>
 </section>
 <section id="id20">
-<h3><a class="toc-backref" href="#id59" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id81" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Layer algebra: <code class="docutils literal notranslate"><span class="pre">L[&quot;layer1&quot;]</span> <span class="pre">+</span> <span class="pre">L[&quot;layer2&quot;]</span></code> — Combine layers</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().from_layers(layer_expr)</span></code> — Query with dynamic layer selections</p></li>
@@ -1187,11 +1267,11 @@ The reported loss compares baseline total degree to the degree after removing a 
 </section>
 <hr class="docutils" />
 <section id="advanced-centrality-comparison">
-<h2><a class="toc-backref" href="#id60" role="doc-backlink">7. Advanced Centrality Comparison</a><a class="headerlink" href="#advanced-centrality-comparison" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id82" role="doc-backlink">7. Advanced Centrality Comparison</a><a class="headerlink" href="#advanced-centrality-comparison" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> Different centralities capture different notions of importance. Which nodes are “versatile hubs” (high in many centralities relative to the best scorer) vs “specialized hubs” (high in only one)?</p>
 <p><strong>Solution:</strong> Compute multiple centralities, normalize them, and classify nodes by how many centralities place them in the top tier.</p>
 <section id="id21">
-<h3><a class="toc-backref" href="#id61" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id83" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare multiple centrality measures on the aggregated multilayer network.</span>
 
@@ -1277,7 +1357,7 @@ The reported loss compares baseline total degree to the degree after removing a 
 </div>
 </section>
 <section id="id22">
-<h3><a class="toc-backref" href="#id62" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id84" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Centrality is multifaceted</strong> — Degree ≠ betweenness ≠ closeness ≠ PageRank</p></li>
 <li><p><strong>Versatile hubs are robust</strong> — High across many metrics means genuine importance</p></li>
@@ -1285,7 +1365,7 @@ The reported loss compares baseline total degree to the degree after removing a 
 </ul>
 </section>
 <section id="id23">
-<h3><a class="toc-backref" href="#id63" role="doc-backlink">Example Output</a><a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id85" role="doc-backlink">Example Output</a><a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
 <p>Running on <code class="docutils literal notranslate"><span class="pre">communication_network</span></code> (email layer):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1337,7 +1417,7 @@ The reported loss compares baseline total degree to the degree after removing a 
 <p><strong>Interpretation:</strong> Manager is a <strong>versatile hub</strong> (it reaches at least 70% of the best score in all four centralities). All other nodes are peripheral in this star-topology email network.</p>
 </section>
 <section id="id24">
-<h3><a class="toc-backref" href="#id64" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id86" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.compute(&quot;degree&quot;,</span> <span class="pre">&quot;betweenness_centrality&quot;,</span> <span class="pre">&quot;closeness_centrality&quot;,</span> <span class="pre">&quot;pagerank&quot;)</span></code> — Compute multiple centralities</p></li>
 <li><p>Normalizing centralities for comparison</p></li>
@@ -1348,11 +1428,11 @@ The reported loss compares baseline total degree to the degree after removing a 
 </section>
 <hr class="docutils" />
 <section id="edge-grouping-and-coverage">
-<h2><a class="toc-backref" href="#id65" role="doc-backlink">8. Edge Grouping and Coverage</a><a class="headerlink" href="#edge-grouping-and-coverage" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id87" role="doc-backlink">8. Edge Grouping and Coverage</a><a class="headerlink" href="#edge-grouping-and-coverage" title="Link to this heading"></a></h2>
 <p><strong>Problem:</strong> You want to analyze which edges (connections) are important within and between layers. Which edges consistently appear in the top-k across different layer-pair contexts?</p>
 <p><strong>Solution:</strong> Use the new <code class="docutils literal notranslate"><span class="pre">.per_layer_pair()</span></code> method to group edges by (src_layer, dst_layer) pairs, then keep the top-k edges per pair. (Add <code class="docutils literal notranslate"><span class="pre">.coverage(...)</span></code> if you later need to filter across groups.)</p>
 <section id="id25">
-<h3><a class="toc-backref" href="#id66" role="doc-backlink">Query Code</a><a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id88" role="doc-backlink">Query Code</a><a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_edge_grouping_and_coverage</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze edges across layer pairs with grouping and coverage.</span>
 
@@ -1411,7 +1491,7 @@ The reported loss compares baseline total degree to the degree after removing a 
 </div>
 </section>
 <section id="id26">
-<h3><a class="toc-backref" href="#id67" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id89" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Layer-pair-aware analysis</strong> — Different layer pairs may have very different edge patterns</p></li>
 <li><p><strong>Universal edges</strong> — Edges important across multiple contexts are more robust</p></li>
@@ -1420,7 +1500,7 @@ The reported loss compares baseline total degree to the degree after removing a 
 </ul>
 </section>
 <section id="id27">
-<h3><a class="toc-backref" href="#id68" role="doc-backlink">Example Output</a><a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id90" role="doc-backlink">Example Output</a><a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
 <p>Running on <code class="docutils literal notranslate"><span class="pre">social_work_network</span></code> with k=3 (insertion order per layer determines which edges are kept):</p>
 <p><strong>Edges Grouped by Layer Pair (top 3 per pair):</strong></p>
 <table class="docutils align-default">
@@ -1517,7 +1597,7 @@ The reported loss compares baseline total degree to the degree after removing a 
 When no sort key is provided, <code class="docutils literal notranslate"><span class="pre">top_k</span></code> keeps edges by their existing order; specify a weight to make the selection explicitly score-based.</p>
 </section>
 <section id="id28">
-<h3><a class="toc-backref" href="#id69" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id28" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id91" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id28" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.per_layer_pair()</span></code> — Group edges by (src_layer, dst_layer) pairs</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.top_k(k,</span> <span class="pre">&quot;weight&quot;)</span></code> — Select top-k items per group</p></li>
@@ -1535,10 +1615,720 @@ for nodes. Both support the same coverage modes and grouping operations.</p>
 </section>
 </section>
 <hr class="docutils" />
+<section id="layer-algebra-filtering">
+<h2><a class="toc-backref" href="#id92" role="doc-backlink">9. Layer Algebra Filtering</a><a class="headerlink" href="#layer-algebra-filtering" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> You want to query specific subsets of layers using set operations. For instance, you might want to analyze “all layers except coupling layers” or “the union of biological layers.”</p>
+<p><strong>Solution:</strong> Use the LayerSet algebra with set operations (union, intersection, difference, complement) for expressive layer filtering.</p>
+<section id="id29">
+<h3><a class="toc-backref" href="#id93" role="doc-backlink">Query Code</a><a class="headerlink" href="#id29" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_algebra_filtering</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Demonstrate layer set algebra for flexible layer selection.</span>
+
+<span class="sd">    This query showcases the new LayerSet algebra feature that allows</span>
+<span class="sd">    expressive, composable layer filtering using set operations.</span>
+
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Shows how to exclude specific layers (e.g., coupling layers)</span>
+<span class="sd">    - Demonstrates union, intersection, and difference operations</span>
+<span class="sd">    - Enables reusable layer group definitions</span>
+
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Layer set algebra with |, &amp;, - operators</span>
+<span class="sd">    - String expression parsing: L[&quot;* - coupling&quot;]</span>
+<span class="sd">    - Named layer groups via L.define()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict with multiple DataFrames showing different layer selections</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayerSet</span>
+
+    <span class="c1"># Example 1: All layers except coupling</span>
+    <span class="c1"># This is useful when you want to exclude infrastructure/meta layers</span>
+    <span class="n">result_no_coupling</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+    <span class="c1"># Example 2: Union of biological layers</span>
+    <span class="c1"># Define a named group for reuse</span>
+    <span class="n">L</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">,</span> <span class="n">LayerSet</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;ppi | gene | disease&quot;</span><span class="p">))</span>
+
+    <span class="n">result_bio</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">))</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+    <span class="c1"># Example 3: Complex expression - intersection of sets</span>
+    <span class="c1"># Find nodes in both social and work layers (for networks with these layers)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result_intersection</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social &amp; work&quot;</span><span class="p">])</span>
+             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="c1"># If network doesn&#39;t have these layers, use a generic example</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">result_no_coupling</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">expr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> &amp; </span><span class="si">{</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">result_intersection</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+                 <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">expr</span><span class="p">])</span>
+                 <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result_intersection</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="c1"># Example 4: Complement - everything except specific layers</span>
+    <span class="n">result_complement</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="o">~</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;coupling&quot;</span><span class="p">))</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;no_coupling&quot;</span><span class="p">:</span> <span class="n">result_no_coupling</span><span class="p">,</span>
+        <span class="s2">&quot;bio_layers&quot;</span><span class="p">:</span> <span class="n">result_bio</span><span class="p">,</span>
+        <span class="s2">&quot;intersection&quot;</span><span class="p">:</span> <span class="n">result_intersection</span><span class="p">,</span>
+        <span class="s2">&quot;complement&quot;</span><span class="p">:</span> <span class="n">result_complement</span><span class="p">,</span>
+        <span class="s2">&quot;explanation&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;no_coupling&quot;</span><span class="p">:</span> <span class="s2">&quot;All layers except coupling - useful for excluding meta layers&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bio_layers&quot;</span><span class="p">:</span> <span class="s2">&quot;Named group &#39;bio&#39; containing biological layers&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;intersection&quot;</span><span class="p">:</span> <span class="s2">&quot;Nodes appearing in multiple specific layers&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;complement&quot;</span><span class="p">:</span> <span class="s2">&quot;Complement of coupling layer (same as * - coupling)&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id30">
+<h3><a class="toc-backref" href="#id94" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id30" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Expressive layer selection</strong> — Combine layers using set operations rather than listing them individually</p></li>
+<li><p><strong>Reusable layer groups</strong> — Define named layer groups for consistent reuse across queries</p></li>
+<li><p><strong>Exclude infrastructure layers</strong> — Easily filter out meta-layers like coupling layers</p></li>
+<li><p><strong>Complex filter expressions</strong> — Build sophisticated layer filters with union, intersection, difference</p></li>
+</ul>
+</section>
+<section id="id31">
+<h3><a class="toc-backref" href="#id95" role="doc-backlink">Example Output</a><a class="headerlink" href="#id31" title="Link to this heading"></a></h3>
+<p>The query returns a dictionary with multiple DataFrames showing different layer selection strategies:</p>
+<p><strong>No Coupling Layers:</strong> All layers except the coupling layer (useful for excluding meta-layers)</p>
+<p><strong>Bio Layers:</strong> Named group containing biological layers (ppi | gene | disease)</p>
+<p><strong>Intersection:</strong> Nodes appearing in both social AND work layers</p>
+<p><strong>Complement:</strong> Complement of coupling layer (equivalent to * - coupling)</p>
+</section>
+<section id="id32">
+<h3><a class="toc-backref" href="#id96" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id32" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;*</span> <span class="pre">-</span> <span class="pre">coupling&quot;]</span></code> — Layer difference: all layers except coupling</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;social</span> <span class="pre">&amp;</span> <span class="pre">work&quot;]</span></code> — Layer intersection: nodes in both layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L[&quot;ppi</span> <span class="pre">|</span> <span class="pre">gene</span> <span class="pre">|</span> <span class="pre">disease&quot;]</span></code> — Layer union: combine multiple layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">~LayerSet(&quot;coupling&quot;)</span></code> — Layer complement</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L.define(&quot;bio&quot;,</span> <span class="pre">LayerSet(...))</span></code> — Named layer groups for reuse</p></li>
+<li><p>String expression parsing for complex layer filters</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="cross-layer-paths-with-algebra">
+<h2><a class="toc-backref" href="#id97" role="doc-backlink">10. Cross-Layer Paths with Algebra</a><a class="headerlink" href="#cross-layer-paths-with-algebra" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> When computing paths in multilayer networks, you may want to exclude certain layers (like coupling layers) that create artificial shortcuts, revealing more semantically meaningful paths.</p>
+<p><strong>Solution:</strong> Use layer algebra in path queries to control which layers participate in path computation.</p>
+<section id="id33">
+<h3><a class="toc-backref" href="#id98" role="doc-backlink">Query Code</a><a class="headerlink" href="#id33" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_paths_with_algebra</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">source_node</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">target_node</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find shortest paths while excluding certain layers using layer algebra.</span>
+
+<span class="sd">    This demonstrates using LayerSet algebra to control which layers</span>
+<span class="sd">    are considered when computing cross-layer paths.</span>
+
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Shows practical use of layer filtering in path queries</span>
+<span class="sd">    - Demonstrates how to avoid &quot;shortcuts&quot; through coupling layers</span>
+<span class="sd">    - Illustrates the difference between path computation on different layer subsets</span>
+
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Layer set algebra in path queries</span>
+<span class="sd">    - Comparing results with/without layer filtering</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        source_node: Source node ID</span>
+<span class="sd">        target_node: Target node ID</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict with path lengths and layer usage statistics</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Path using all layers</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result_all</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+             <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">source_node</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+        <span class="c1"># Path excluding coupling layers (more &quot;natural&quot; paths)</span>
+        <span class="n">result_no_coupling</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">])</span>
+             <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">source_node</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+        <span class="c1"># Get layer distribution</span>
+        <span class="n">layer_dist_all</span> <span class="o">=</span> <span class="n">result_all</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">layer_dist_filtered</span> <span class="o">=</span> <span class="n">result_no_coupling</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;all_layers&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;node_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_all</span><span class="p">),</span>
+                <span class="s2">&quot;layer_distribution&quot;</span><span class="p">:</span> <span class="n">layer_dist_all</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;filtered_layers&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;node_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_no_coupling</span><span class="p">),</span>
+                <span class="s2">&quot;layer_distribution&quot;</span><span class="p">:</span> <span class="n">layer_dist_filtered</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;explanation&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Excluding coupling layers often reveals more semantically &quot;</span>
+                <span class="s2">&quot;meaningful paths by avoiding artificial shortcuts&quot;</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+            <span class="s2">&quot;explanation&quot;</span><span class="p">:</span> <span class="s2">&quot;Path query requires nodes to exist in specified layers&quot;</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id34">
+<h3><a class="toc-backref" href="#id99" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id34" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Avoid artificial shortcuts</strong> — Coupling layers often create paths that aren’t semantically meaningful</p></li>
+<li><p><strong>Compare path strategies</strong> — See how layer filtering affects connectivity</p></li>
+<li><p><strong>Layer-aware path finding</strong> — Control which layers participate in path computation</p></li>
+<li><p><strong>Semantic path discovery</strong> — Find paths that make sense in your domain</p></li>
+</ul>
+</section>
+<section id="id35">
+<h3><a class="toc-backref" href="#id100" role="doc-backlink">Example Output</a><a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
+<p>The query returns a dictionary comparing path exploration with and without filtering:</p>
+<p><strong>All Layers:</strong> Node count and layer distribution when all layers are included</p>
+<p><strong>Filtered Layers:</strong> Node count and layer distribution excluding coupling layers</p>
+<p><strong>Interpretation:</strong> Excluding coupling layers often reveals more semantically meaningful paths by avoiding artificial shortcuts created by infrastructure layers.</p>
+</section>
+<section id="id36">
+<h3><a class="toc-backref" href="#id101" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id36" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Layer algebra in path queries</p></li>
+<li><p>Comparing results with different layer subsets</p></li>
+<li><p>Layer distribution analysis</p></li>
+<li><p>Semantic path filtering</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="null-model-comparison">
+<h2><a class="toc-backref" href="#id102" role="doc-backlink">11. Null Model Comparison</a><a class="headerlink" href="#null-model-comparison" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> How do you know if observed network patterns are statistically significant or just random? You need to compare actual network statistics against null model baselines.</p>
+<p><strong>Solution:</strong> Generate null models (e.g., configuration model) that preserve certain properties while randomizing connections, then compute z-scores to identify significant patterns.</p>
+<section id="id37">
+<h3><a class="toc-backref" href="#id103" role="doc-backlink">Query Code</a><a class="headerlink" href="#id37" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_null_model_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare actual network statistics against null model distributions.</span>
+
+<span class="sd">    This demonstrates using null models for statistical hypothesis testing</span>
+<span class="sd">    by comparing observed centrality values against what we would expect</span>
+<span class="sd">    from random networks with similar properties.</span>
+
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Null models establish baselines for statistical significance</span>
+<span class="sd">    - Helps identify nodes/patterns that are exceptional beyond chance</span>
+<span class="sd">    - Configuration model preserves degree sequence but randomizes connections</span>
+<span class="sd">    - Essential for rigorous network science conclusions</span>
+
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Integration of null models with DSL queries</span>
+<span class="sd">    - Statistical comparison of observed vs expected values</span>
+<span class="sd">    - Computing z-scores to identify significant patterns</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame with columns: node, observed_degree, expected_degree, z_score</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Uses configuration model with 50 samples for reasonable speed in CI.</span>
+<span class="sd">        Production analyses typically use 100-1000 samples.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+    <span class="c1"># Get observed degree centrality</span>
+    <span class="n">observed</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+    <span class="c1"># Generate null model samples (configuration model preserves degree distribution)</span>
+    <span class="n">null_result</span> <span class="o">=</span> <span class="n">generate_null_model</span><span class="p">(</span>
+        <span class="n">network</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;configuration&quot;</span><span class="p">,</span>
+        <span class="n">samples</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>  <span class="c1"># Use 50 for CI speed; production: 100-1000</span>
+        <span class="n">preserve_layers</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Compute degree centrality for each null sample</span>
+    <span class="n">null_degrees</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">null_network</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">null_result</span><span class="o">.</span><span class="n">samples</span><span class="p">):</span>
+        <span class="n">null_df</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+             <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+             <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">null_network</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+        <span class="c1"># Store as dict: node_id -&gt; degree for this sample</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">null_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">node_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">node_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">null_degrees</span><span class="p">:</span>
+                <span class="n">null_degrees</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">null_degrees</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Calculate expected (mean) and standard deviation from null models</span>
+    <span class="n">observed_with_stats</span> <span class="o">=</span> <span class="n">observed</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;expected_degree&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">node_id</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">null_degrees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="p">)</span>
+    <span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;null_std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">node_id</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">null_degrees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Compute z-score: how many standard deviations from expected?</span>
+    <span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;z_score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;expected_degree&#39;</span><span class="p">])</span> <span class="o">/</span>
+        <span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;null_std&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Flag statistically significant deviations (|z| &gt; 2 ≈ p &lt; 0.05)</span>
+    <span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;is_significant&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">observed_with_stats</span><span class="p">[</span><span class="s1">&#39;z_score&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">2.0</span>
+
+    <span class="k">return</span> <span class="n">observed_with_stats</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;z_score&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span>
+        <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;expected_degree&#39;</span><span class="p">,</span> <span class="s1">&#39;z_score&#39;</span><span class="p">,</span> <span class="s1">&#39;is_significant&#39;</span><span class="p">]</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="id38">
+<h3><a class="toc-backref" href="#id104" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id38" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Statistical rigor</strong> — Establish baselines for significance testing</p></li>
+<li><p><strong>Identify exceptional patterns</strong> — Find nodes/structures that exceed random expectations</p></li>
+<li><p><strong>Configuration model</strong> — Preserves degree sequence but randomizes connections</p></li>
+<li><p><strong>Z-score analysis</strong> — Quantify how many standard deviations from expected</p></li>
+<li><p><strong>Essential for scientific conclusions</strong> — Avoid claiming significance for random patterns</p></li>
+</ul>
+</section>
+<section id="id39">
+<h3><a class="toc-backref" href="#id105" role="doc-backlink">Example Output</a><a class="headerlink" href="#id39" title="Link to this heading"></a></h3>
+<p>Running on a multilayer network returns a DataFrame with columns:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.2%" />
+<col style="width: 18.2%" />
+<col style="width: 18.2%" />
+<col style="width: 18.2%" />
+<col style="width: 13.6%" />
+<col style="width: 13.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Node ID</p></th>
+<th class="head"><p>Layer</p></th>
+<th class="head"><p>Observed Degree</p></th>
+<th class="head"><p>Expected Degree</p></th>
+<th class="head"><p>Z-Score</p></th>
+<th class="head"><p>Is Significant</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Alice</p></td>
+<td><p>social</p></td>
+<td><p>5</p></td>
+<td><p>3.2</p></td>
+<td><p>2.8</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bob</p></td>
+<td><p>social</p></td>
+<td><p>4</p></td>
+<td><p>3.5</p></td>
+<td><p>0.7</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p>Charlie</p></td>
+<td><p>work</p></td>
+<td><p>6</p></td>
+<td><p>2.8</p></td>
+<td><p>3.5</p></td>
+<td><p>True</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> Nodes with <a href="#id49"><span class="problematic" id="id50">|z-score|</span></a> &gt; 2.0 are statistically significant (p &lt; 0.05). Alice and Charlie have significantly higher degree than expected by chance, while Bob’s degree is within random variation.</p>
+</section>
+<section id="id40">
+<h3><a class="toc-backref" href="#id106" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id40" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Integration of null models with DSL queries</p></li>
+<li><p>Statistical hypothesis testing</p></li>
+<li><p>Computing z-scores and significance flags</p></li>
+<li><p>Configuration model preserves degree distribution</p></li>
+<li><p>Bootstrap resampling for confidence intervals</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Performance Note</strong></p>
+<p>This example uses 50 null model samples for CI speed. Production analyses
+typically use 100-1000 samples for more robust statistics.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="bootstrap-confidence-intervals">
+<h2><a class="toc-backref" href="#id107" role="doc-backlink">12. Bootstrap Confidence Intervals</a><a class="headerlink" href="#bootstrap-confidence-intervals" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> When analyzing centrality in multilayer networks, how stable are the measurements? Do nodes maintain consistent importance across layers, or is their centrality highly variable?</p>
+<p><strong>Solution:</strong> Analyze cross-layer variability to estimate uncertainty in centrality measures, identifying nodes with stable vs fragile importance.</p>
+<section id="id41">
+<h3><a class="toc-backref" href="#id108" role="doc-backlink">Query Code</a><a class="headerlink" href="#id41" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_bootstrap_confidence_intervals</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate uncertainty in centrality measures using bootstrap resampling.</span>
+
+<span class="sd">    Bootstrap resampling provides confidence intervals for network metrics</span>
+<span class="sd">    without assuming a particular statistical distribution. This is crucial</span>
+<span class="sd">    when making claims about &quot;which nodes are most central&quot; - we need to</span>
+<span class="sd">    know if differences are statistically meaningful.</span>
+
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Quantifies uncertainty in centrality rankings</span>
+<span class="sd">    - Helps avoid over-interpreting small differences</span>
+<span class="sd">    - Works when analytical standard errors are unavailable</span>
+<span class="sd">    - Identifies robust vs. fragile centrality patterns</span>
+
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Integration with uncertainty quantification</span>
+<span class="sd">    - Statistical comparison of node importance</span>
+<span class="sd">    - Variability analysis in network metrics</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+<span class="sd">        metric: Centrality metric to compute (degree, betweenness, etc.)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame with columns: node, layer, mean, relative_variability</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This is a simplified version demonstrating the concept. For production</span>
+<span class="sd">        use, consider the py3plex.uncertainty.bootstrap_metric function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+    <span class="c1"># Get base centrality values from multiple layers</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+    <span class="c1"># Group by node across layers to compute variability</span>
+    <span class="n">node_stats</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span>
+    <span class="n">node_stats</span> <span class="o">=</span> <span class="n">node_stats</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+    <span class="c1"># Compute relative variability (coefficient of variation)</span>
+    <span class="c1"># This shows which nodes have stable vs variable centrality across layers</span>
+    <span class="n">node_stats</span><span class="p">[</span><span class="s1">&#39;relative_variability&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">node_stats</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">node_stats</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">)</span>
+
+    <span class="c1"># Identify nodes present in multiple layers</span>
+    <span class="n">node_stats</span><span class="p">[</span><span class="s1">&#39;layer_coverage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">node_stats</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span>
+
+    <span class="c1"># For display, join back with layer info for top nodes</span>
+    <span class="n">result_with_stats</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">node_stats</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;relative_variability&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_coverage&#39;</span><span class="p">]],</span>
+        <span class="n">on</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span>
+        <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;_across_layers&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Sort by mean centrality across layers</span>
+    <span class="n">result_with_stats</span> <span class="o">=</span> <span class="n">result_with_stats</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_with_stats</span><span class="p">[</span>
+        <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;relative_variability&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_coverage&#39;</span><span class="p">]</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id42">
+<h3><a class="toc-backref" href="#id109" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id42" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Quantify uncertainty</strong> — Know how reliable your centrality measurements are</p></li>
+<li><p><strong>Cross-layer variability</strong> — See which nodes maintain importance across contexts</p></li>
+<li><p><strong>Avoid over-interpretation</strong> — Don’t claim significant differences for small variations</p></li>
+<li><p><strong>Robust vs fragile patterns</strong> — Identify nodes with consistent vs inconsistent centrality</p></li>
+<li><p><strong>No distributional assumptions</strong> — Works when analytical standard errors unavailable</p></li>
+</ul>
+</section>
+<section id="id43">
+<h3><a class="toc-backref" href="#id110" role="doc-backlink">Example Output</a><a class="headerlink" href="#id43" title="Link to this heading"></a></h3>
+<p>Running on a multilayer network returns:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 13.8%" />
+<col style="width: 13.8%" />
+<col style="width: 11.0%" />
+<col style="width: 18.3%" />
+<col style="width: 11.0%" />
+<col style="width: 18.3%" />
+<col style="width: 13.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Node ID</p></th>
+<th class="head"><p>Layer</p></th>
+<th class="head"><p>Degree</p></th>
+<th class="head"><p>Mean Across Layers</p></th>
+<th class="head"><p>Std Dev</p></th>
+<th class="head"><p>Relative Variability</p></th>
+<th class="head"><p>Layer Coverage</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Alice</p></td>
+<td><p>social</p></td>
+<td><p>5</p></td>
+<td><p>4.3</p></td>
+<td><p>1.2</p></td>
+<td><p>0.28</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bob</p></td>
+<td><p>work</p></td>
+<td><p>3</p></td>
+<td><p>2.8</p></td>
+<td><p>0.5</p></td>
+<td><p>0.18</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-even"><td><p>Charlie</p></td>
+<td><p>family</p></td>
+<td><p>2</p></td>
+<td><p>3.1</p></td>
+<td><p>1.8</p></td>
+<td><p>0.58</p></td>
+<td><p>2</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p><strong>Low relative variability</strong> (Bob: 0.18) — Consistent importance across layers</p></li>
+<li><p><strong>High relative variability</strong> (Charlie: 0.58) — Importance varies dramatically by context</p></li>
+<li><p><strong>Layer coverage</strong> — Number of layers where the node appears</p></li>
+</ul>
+</section>
+<section id="id44">
+<h3><a class="toc-backref" href="#id111" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id44" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Cross-layer metric aggregation</p></li>
+<li><p>Coefficient of variation for relative variability</p></li>
+<li><p>Statistical comparison across layers</p></li>
+<li><p>Uncertainty quantification in multilayer networks</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="uncertainty-aware-ranking">
+<h2><a class="toc-backref" href="#id112" role="doc-backlink">13. Uncertainty-Aware Ranking</a><a class="headerlink" href="#uncertainty-aware-ranking" title="Link to this heading"></a></h2>
+<p><strong>Problem:</strong> Traditional rankings order nodes by a single metric (e.g., max centrality). But what if a node has high centrality in one layer but low in others? How do you account for consistency vs peak performance?</p>
+<p><strong>Solution:</strong> Compare multiple ranking strategies—by maximum value, by mean across layers, and by consistency (low variability)—to make uncertainty-aware decisions.</p>
+<section id="id45">
+<h3><a class="toc-backref" href="#id113" role="doc-backlink">Query Code</a><a class="headerlink" href="#id45" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_uncertainty_aware_ranking</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rank nodes considering variability across layers.</span>
+
+<span class="sd">    Traditional rankings use single-layer metrics. This demonstrates</span>
+<span class="sd">    uncertainty-aware ranking by considering how node importance varies</span>
+<span class="sd">    across different layers in a multilayer network.</span>
+
+<span class="sd">    Why it&#39;s interesting:</span>
+<span class="sd">    - Avoids over-confident conclusions from single-layer analysis</span>
+<span class="sd">    - Identifies nodes with consistent vs inconsistent importance</span>
+<span class="sd">    - Useful for decision-making in multilayer contexts</span>
+<span class="sd">    - Shows how cross-layer analysis changes conclusions</span>
+
+<span class="sd">    DSL concepts demonstrated:</span>
+<span class="sd">    - Cross-layer metric aggregation</span>
+<span class="sd">    - Variability-aware node ranking</span>
+<span class="sd">    - Comparing consistency vs peak performance</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        network: A multi_layer_network instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame comparing different ranking strategies</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+    <span class="c1"># Get betweenness with cross-layer variability</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">query_bootstrap_confidence_intervals</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Traditional ranking: order by max value across layers</span>
+    <span class="n">max_per_node</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;rank_by_max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="n">max_per_node</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Conservative ranking: order by mean across layers</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;rank_by_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Consistency ranking: prefer nodes with low variability</span>
+    <span class="c1"># Lower relative_variability = more consistent importance</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;consistency_score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;relative_variability&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;rank_by_consistency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;consistency_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Identify nodes where ranking changes significantly</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;rank_change&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;rank_by_max&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;rank_by_consistency&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;rank_by_mean&#39;</span><span class="p">)[</span>
+        <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;relative_variability&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;rank_by_max&#39;</span><span class="p">,</span> <span class="s1">&#39;rank_by_mean&#39;</span><span class="p">,</span> <span class="s1">&#39;rank_by_consistency&#39;</span><span class="p">,</span> <span class="s1">&#39;rank_change&#39;</span><span class="p">]</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id46">
+<h3><a class="toc-backref" href="#id114" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id46" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Beyond single-layer analysis</strong> — Consider multilayer context in rankings</p></li>
+<li><p><strong>Consistent vs peak performers</strong> — Identify nodes with stable vs specialized importance</p></li>
+<li><p><strong>Decision-making under uncertainty</strong> — Choose ranking strategy based on use case</p></li>
+<li><p><strong>Reveals ranking sensitivity</strong> — See how rankings change with different strategies</p></li>
+<li><p><strong>Practical implications</strong> — Different strategies matter for different applications</p></li>
+</ul>
+</section>
+<section id="id47">
+<h3><a class="toc-backref" href="#id115" role="doc-backlink">Example Output</a><a class="headerlink" href="#id47" title="Link to this heading"></a></h3>
+<p>Running on a multilayer network returns:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10.7%" />
+<col style="width: 10.7%" />
+<col style="width: 10.7%" />
+<col style="width: 8.9%" />
+<col style="width: 13.4%" />
+<col style="width: 10.7%" />
+<col style="width: 10.7%" />
+<col style="width: 13.4%" />
+<col style="width: 10.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Node ID</p></th>
+<th class="head"><p>Layer</p></th>
+<th class="head"><p>Betweenness</p></th>
+<th class="head"><p>Mean</p></th>
+<th class="head"><p>Rel. Variability</p></th>
+<th class="head"><p>Rank by Max</p></th>
+<th class="head"><p>Rank by Mean</p></th>
+<th class="head"><p>Rank by Consistency</p></th>
+<th class="head"><p>Rank Change</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Alice</p></td>
+<td><p>work</p></td>
+<td><p>0.45</p></td>
+<td><p>0.38</p></td>
+<td><p>0.25</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Charlie</p></td>
+<td><p>social</p></td>
+<td><p>0.42</p></td>
+<td><p>0.28</p></td>
+<td><p>0.52</p></td>
+<td><p>2</p></td>
+<td><p>3</p></td>
+<td><p>5</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-even"><td><p>Bob</p></td>
+<td><p>family</p></td>
+<td><p>0.38</p></td>
+<td><p>0.35</p></td>
+<td><p>0.18</p></td>
+<td><p>3</p></td>
+<td><p>2</p></td>
+<td><p>2</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p><strong>Alice</strong> — Top-ranked by all strategies (consistent high performer)</p></li>
+<li><p><strong>Charlie</strong> — Ranks highly by max (rank 2) but poorly by consistency (rank 5) due to high variability</p></li>
+<li><p><strong>Bob</strong> — More consistent than peak performer (rank 3 by max, rank 2 by consistency)</p></li>
+<li><p><strong>Rank change</strong> — Large values indicate sensitivity to ranking strategy</p></li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p><strong>Rank by max:</strong> When you need top performers in any context</p></li>
+<li><p><strong>Rank by mean:</strong> When you want overall consistent importance</p></li>
+<li><p><strong>Rank by consistency:</strong> When you need reliable performance across all contexts</p></li>
+</ul>
+</section>
+<section id="id48">
+<h3><a class="toc-backref" href="#id116" role="doc-backlink">DSL Concepts Demonstrated</a><a class="headerlink" href="#id48" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Cross-layer variability analysis</p></li>
+<li><p>Multiple ranking strategies</p></li>
+<li><p>Consistency scoring</p></li>
+<li><p>Sensitivity analysis for rankings</p></li>
+<li><p>Practical decision-making with uncertainty</p></li>
+</ul>
+<div class="tip admonition">
+<p class="admonition-title">Choosing a Ranking Strategy</p>
+<ul class="simple">
+<li><p><strong>High-stakes decisions:</strong> Use consistency ranking to avoid nodes with variable performance</p></li>
+<li><p><strong>Exploratory analysis:</strong> Use max ranking to find peak performers</p></li>
+<li><p><strong>General purpose:</strong> Use mean ranking for balanced assessment</p></li>
+<li><p><strong>Large rank changes:</strong> Investigate why nodes rank differently across strategies</p></li>
+</ul>
+</div>
+</section>
+</section>
+<hr class="docutils" />
 <section id="using-the-query-zoo">
-<h2><a class="toc-backref" href="#id70" role="doc-backlink">Using the Query Zoo</a><a class="headerlink" href="#using-the-query-zoo" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id117" role="doc-backlink">Using the Query Zoo</a><a class="headerlink" href="#using-the-query-zoo" title="Link to this heading"></a></h2>
 <section id="getting-started">
-<h3><a class="toc-backref" href="#id71" role="doc-backlink">Getting Started</a><a class="headerlink" href="#getting-started" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id118" role="doc-backlink">Getting Started</a><a class="headerlink" href="#getting-started" title="Link to this heading"></a></h3>
 <ol class="arabic">
 <li><p><strong>Install py3plex</strong> (if not already installed):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">py3plex</span>
@@ -1569,7 +2359,7 @@ for nodes. Both support the same coverage modes and grouping operations.</p>
 </ol>
 </section>
 <section id="adapting-queries-to-your-data">
-<h3><a class="toc-backref" href="#id72" role="doc-backlink">Adapting Queries to Your Data</a><a class="headerlink" href="#adapting-queries-to-your-data" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id119" role="doc-backlink">Adapting Queries to Your Data</a><a class="headerlink" href="#adapting-queries-to-your-data" title="Link to this heading"></a></h3>
 <p>All queries are designed to work with any <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> object. To adapt:</p>
 <ol class="arabic">
 <li><p><strong>Replace the dataset</strong>:</p>
@@ -1597,7 +2387,7 @@ for nodes. Both support the same coverage modes and grouping operations.</p>
 </ol>
 </section>
 <section id="datasets">
-<h3><a class="toc-backref" href="#id73" role="doc-backlink">Datasets</a><a class="headerlink" href="#datasets" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id120" role="doc-backlink">Datasets</a><a class="headerlink" href="#datasets" title="Link to this heading"></a></h3>
 <p>Three multilayer networks are provided:</p>
 <ol class="arabic simple">
 <li><p><strong>social_work_network</strong></p>
@@ -1626,7 +2416,7 @@ for nodes. Both support the same coverage modes and grouping operations.</p>
 </section>
 </section>
 <section id="further-reading">
-<h2><a class="toc-backref" href="#id74" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id121" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> — Complete DSL reference with syntax and operators</p></li>
 <li><p><a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> — Theory of multilayer networks</p></li>
