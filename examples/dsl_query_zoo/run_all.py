@@ -36,13 +36,16 @@ from examples.dsl_query_zoo.datasets import get_dataset
 from examples.dsl_query_zoo.queries import (
     query_advanced_centrality_comparison,
     query_basic_exploration,
+    query_bootstrap_confidence_intervals,
     query_community_structure,
     query_cross_layer_hubs,
+    query_cross_layer_paths_with_algebra,
+    query_edge_grouping_and_coverage,
+    query_layer_algebra_filtering,
     query_layer_similarity,
     query_multiplex_pagerank,
-    query_robustness_analysis,
     query_null_model_comparison,
-    query_bootstrap_confidence_intervals,
+    query_robustness_analysis,
     query_uncertainty_aware_ranking,
 )
 
@@ -276,7 +279,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     social_work_net, communication_net, transport_net = _load_datasets(seed)
 
     _execute_query(
-        "[1/10] Running: Basic Multilayer Exploration",
+        "[1/13] Running: Basic Multilayer Exploration",
         query_basic_exploration,
         (social_work_net,),
         "basic_exploration.csv",
@@ -286,7 +289,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[2/10] Running: Cross-Layer Hubs",
+        "[2/13] Running: Cross-Layer Hubs",
         query_cross_layer_hubs,
         (social_work_net, 5),
         "cross_layer_hubs.csv",
@@ -294,7 +297,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[3/10] Running: Layer Similarity Analysis",
+        "[3/13] Running: Layer Similarity Analysis",
         query_layer_similarity,
         (social_work_net,),
         "layer_similarity.csv",
@@ -305,7 +308,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[4/10] Running: Community Structure Analysis",
+        "[4/13] Running: Community Structure Analysis",
         query_community_structure,
         (communication_net,),
         "community_structure.csv",
@@ -313,7 +316,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[5/10] Running: Multiplex PageRank",
+        "[5/13] Running: Multiplex PageRank",
         query_multiplex_pagerank,
         (transport_net,),
         "multiplex_pagerank.csv",
@@ -321,7 +324,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[6/10] Running: Robustness Analysis",
+        "[6/13] Running: Robustness Analysis",
         query_robustness_analysis,
         (transport_net,),
         "robustness_analysis.csv",
@@ -331,18 +334,67 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[7/10] Running: Advanced Centrality Comparison",
+        "[7/13] Running: Advanced Centrality Comparison",
         query_advanced_centrality_comparison,
         (communication_net,),
         "centrality_comparison.csv",
         output_dir,
     )
 
+    _execute_query(
+        "[8/13] Running: Edge Grouping and Coverage",
+        query_edge_grouping_and_coverage,
+        (social_work_net, 3),
+        "edge_grouping_coverage.csv",
+        output_dir,
+        preview_rows=10,
+    )
+
+    # New layer algebra queries
+    print("\n--- Layer Algebra Features ---\n")
+
+    # Query 9: Layer algebra filtering returns a dict, need special handling
+    print("[9/13] Running: Layer Algebra Filtering")
+    try:
+        result = query_layer_algebra_filtering(social_work_net)
+        if isinstance(result, dict):
+            # Save each DataFrame in the result dict
+            for key, df in result.items():
+                if isinstance(df, pd.DataFrame) and not df.empty:
+                    save_dataframe(df, f"layer_algebra_{key}.csv", output_dir)
+            print(f"  Saved multiple DataFrames for layer algebra filtering\n")
+        else:
+            print(f"  Unexpected result type: {type(result)}\n")
+    except Exception as exc:  # pragma: no cover
+        print(f"  ERROR: {exc}")
+        traceback.print_exc()
+        print()
+
+    # Query 10: Cross-layer paths also returns a dict
+    print("[10/13] Running: Cross-Layer Paths with Algebra")
+    try:
+        # Get a sample node from the network for demonstration
+        nodes = list(social_work_net.get_nodes())
+        if len(nodes) >= 2:
+            source = nodes[0][0] if isinstance(nodes[0], tuple) else nodes[0]
+            target = nodes[1][0] if isinstance(nodes[1], tuple) else nodes[1]
+            result = query_cross_layer_paths_with_algebra(social_work_net, source, target)
+            if isinstance(result, dict):
+                print(f"  Result: {result.get('explanation', 'No explanation')}\n")
+            else:
+                print(f"  Unexpected result type: {type(result)}\n")
+        else:
+            print(f"  Not enough nodes in network for path query\n")
+    except Exception as exc:  # pragma: no cover
+        print(f"  ERROR: {exc}")
+        traceback.print_exc()
+        print()
+
     # New uncertainty and null model queries
     print("\n--- Uncertainty & Null Model Analysis ---\n")
 
     _execute_query(
-        "[8/10] Running: Null Model Comparison",
+        "[11/13] Running: Null Model Comparison",
         query_null_model_comparison,
         (social_work_net,),
         "null_model_comparison.csv",
@@ -352,7 +404,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[9/10] Running: Bootstrap Confidence Intervals",
+        "[12/13] Running: Bootstrap Confidence Intervals",
         query_bootstrap_confidence_intervals,
         (communication_net,),
         "bootstrap_confidence.csv",
@@ -362,7 +414,7 @@ def run_all_queries(seed: int = DEFAULT_SEED) -> None:
     )
 
     _execute_query(
-        "[10/10] Running: Uncertainty-Aware Ranking",
+        "[13/13] Running: Uncertainty-Aware Ranking",
         query_uncertainty_aware_ranking,
         (transport_net,),
         "uncertainty_ranking.csv",
