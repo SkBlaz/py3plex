@@ -6,22 +6,23 @@ The DSL Builder API provides a Pythonic, type-safe way to construct network quer
 Builder Pattern and Fluent API
 -------------------------------
 
-The builder API uses method chaining to construct queries incrementally. Each method returns the query object, allowing you to chain operations naturally:
+The builder API uses method chaining to construct queries incrementally. Each method returns the query object, allowing you to chain operations naturally.
 
-.. code-block:: python
+See ``examples/03_dsl_v2/01_builder_basic.py`` for a complete example:
 
-    from py3plex.dsl import Q, L
+.. literalinclude:: ../../examples/03_dsl_v2/01_builder_basic.py
+   :language: python
+   :lines: 9-29
+
+**Run this example:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/03_dsl_v2/01_builder_basic.py
     
-    # Basic query with chaining
-    result = (
-        Q.nodes()                           # Start with nodes
-         .from_layers(L["social"])          # Filter by layer
-         .where(degree__gt=5)               # Filter by degree
-         .compute("betweenness_centrality") # Compute measure
-         .order_by("-betweenness_centrality") # Sort descending
-         .limit(10)                         # Take top 10
-         .execute(network)                  # Execute query
-    )
+    # Or using python
+    python examples/03_dsl_v2/01_builder_basic.py
 
 **Advantages over string DSL:**
 

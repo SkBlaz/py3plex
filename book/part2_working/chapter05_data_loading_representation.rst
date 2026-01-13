@@ -45,15 +45,21 @@ Py3plex supports several ways to create multilayer networks:
 
 **1. Direct edge addition** (for programmatic construction):
 
-.. code-block:: python
+See the complete example in ``examples/01_network_construction/01_from_edges.py``:
 
-    from py3plex.core import multinet
+.. literalinclude:: ../../examples/01_network_construction/01_from_edges.py
+   :language: python
+   :lines: 10-28
+
+**Run this example:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/01_network_construction/01_from_edges.py
     
-    network = multinet.multi_layer_network()
-    network.add_edges([
-        ['Alice', 'friends', 'Bob', 'friends', 1],
-        ['Bob', 'friends', 'Carol', 'friends', 1],
-    ], input_type="list")
+    # Or using python
+    python examples/01_network_construction/01_from_edges.py
 
 **2. File loading** (for external data):
 
@@ -65,13 +71,21 @@ Py3plex supports several ways to create multilayer networks:
 
 **3. From NetworkX** (for integration):
 
-.. code-block:: python
+See the complete example in ``examples/01_network_construction/03_from_networkx.py``:
 
-    import networkx as nx
+.. literalinclude:: ../../examples/01_network_construction/03_from_networkx.py
+   :language: python
+   :lines: 9-22
+
+**Run this example:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/01_network_construction/03_from_networkx.py
     
-    G = nx.karate_club_graph()
-    network = multinet.multi_layer_network()
-    network.load_network_from_networkx(G, layer_name='social')
+    # Or using python
+    python examples/01_network_construction/03_from_networkx.py
 
 Edgelist Format
 ---------------

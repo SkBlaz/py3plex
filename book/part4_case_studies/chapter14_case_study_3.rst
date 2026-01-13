@@ -191,4 +191,5 @@ This case study (when completed) will demonstrate:
 
 * GTFS (General Transit Feed Specification) for public transit data
 * OpenStreetMap for walking/cycling networks
-* ``examples/network_analysis/`` for DSL patterns
+* ``examples/03_dsl_v2/`` for DSL patterns
+* ``examples/01_network_construction/`` for network building patterns

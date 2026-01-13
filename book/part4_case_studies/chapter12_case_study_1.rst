@@ -326,9 +326,7 @@ Reproducibility
 Code Repository
 ~~~~~~~~~~~~~~~
 
-Full analysis code available at: ``examples/case_studies/social_multiplex_analysis.py``
-
-To reproduce this analysis:
+This analysis workflow is based on the examples in the repository. To reproduce similar analyses:
 
 .. code-block:: bash
 
@@ -339,8 +337,10 @@ To reproduce this analysis:
     # Install dependencies
     pip install -e .
     
-    # Run analysis
-    python examples/case_studies/social_multiplex_analysis.py
+    # Run relevant examples
+    uv run examples/05_communities/02_multilayer_detection.py
+    uv run examples/03_dsl_v2/03_grouping_aggregation.py
+    uv run examples/06_dynamics/02_multilayer_epidemic.py
 
 Data Availability
 ~~~~~~~~~~~~~~~~~

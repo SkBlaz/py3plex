@@ -68,36 +68,43 @@ Random walk dynamics model diffusion processes:
 Basic Dynamics DSL Usage
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The dynamics DSL uses a builder API similar to the query DSL:
+The dynamics DSL uses a builder API similar to the query DSL. See ``examples/06_dynamics/`` for complete examples.
 
-.. code-block:: python
+**Example 1: SIS Epidemic Model**
 
-    from py3plex.core import multinet
-    from py3plex.dynamics import D, SIS
-    from py3plex.dsl import L
+See ``examples/06_dynamics/01_sis_epidemic.py``:
 
-    # Create network
-    network = multinet.multi_layer_network()
-    network.add_edges([
-        ['Alice', 'social', 'Bob', 'social', 1],
-        ['Bob', 'social', 'Carol', 'social', 1],
-        ['Carol', 'social', 'Dave', 'social', 1],
-    ], input_type="list")
+.. code-block:: bash
 
-    # Define SIS simulation
-    sim = (
-        D.process(SIS(beta=0.3, mu=0.1))  # Specify process and parameters
-         .initial(infected=0.05)           # 5% initially infected
-         .steps(100)                       # Run for 100 time steps
-         .measure("prevalence", "incidence")  # Track measures
-         .replicates(10)                   # Run 10 independent simulations
-         .seed(42)                         # For reproducibility
-    )
+    # Using uv
+    uv run examples/06_dynamics/01_sis_epidemic.py
+    
+    # Or using python
+    python examples/06_dynamics/01_sis_epidemic.py
 
-    # Execute simulation
-    result = sim.run(network)
+**Example 2: Multilayer Epidemic**
 
-    # Access results
+See ``examples/06_dynamics/02_multilayer_epidemic.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/06_dynamics/02_multilayer_epidemic.py
+    
+    # Or using python
+    python examples/06_dynamics/02_multilayer_epidemic.py
+
+**Example 3: Custom Dynamics Model**
+
+See ``examples/06_dynamics/03_custom_model.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/06_dynamics/03_custom_model.py
+    
+    # Or using python
+    python examples/06_dynamics/03_custom_model.py
     print(f"Mean final prevalence: {result.data['prevalence'][:, -1].mean():.3f}")
 
     # Convert to pandas for analysis
@@ -394,7 +401,23 @@ Combine layers using set operations:
 Aggregations by Node Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Group and aggregate by node properties:
+Group and aggregate by node properties. See ``examples/03_dsl_v2/03_grouping_aggregation.py`` for a complete example:
+
+.. literalinclude:: ../../examples/03_dsl_v2/03_grouping_aggregation.py
+   :language: python
+   :lines: 9-29
+
+**Run this example:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/03_dsl_v2/03_grouping_aggregation.py
+    
+    # Or using python
+    python examples/03_dsl_v2/03_grouping_aggregation.py
+
+**Additional grouping patterns:**
 
 .. code-block:: python
 
@@ -491,6 +514,56 @@ Direct export without intermediate DataFrame:
 **Supported formats:**
 
 * CSV (with custom delimiter)
+
+Dplyr-Style Data Manipulation
+------------------------------
+
+The ``graph_ops`` module provides dplyr-style operations for manipulating network data. See ``examples/04_graph_ops/`` for complete examples.
+
+**Example 1: Filter and Mutate**
+
+See ``examples/04_graph_ops/01_filter_mutate.py``:
+
+.. literalinclude:: ../../examples/04_graph_ops/01_filter_mutate.py
+   :language: python
+   :lines: 9-30
+
+**Run this example:**
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/04_graph_ops/01_filter_mutate.py
+    
+    # Or using python
+    python examples/04_graph_ops/01_filter_mutate.py
+
+**Example 2: Group and Summarise**
+
+See ``examples/04_graph_ops/02_group_summarise.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/04_graph_ops/02_group_summarise.py
+    
+    # Or using python
+    python examples/04_graph_ops/02_group_summarise.py
+
+**Example 3: Subgraph Extraction**
+
+See ``examples/04_graph_ops/03_subgraph.py``:
+
+.. code-block:: bash
+
+    # Using uv
+    uv run examples/04_graph_ops/03_subgraph.py
+    
+    # Or using python
+    python examples/04_graph_ops/03_subgraph.py
+
+**Supported export formats:**
+
 * JSON (various orientations)
 * pandas DataFrame (in-memory)
 
@@ -712,8 +785,9 @@ This chapter covered:
 Further Reading
 ---------------
 
-* Introduction to the Py3plex DSL
-* The Builder API and Explain Plans
-* ``examples/network_analysis/example_dsl_dynamics.py`` — Complete examples
-* ``examples/advanced/example_dynamics_core.py`` — Core dynamics classes
+* Introduction to the Py3plex DSL (Chapter 8)
+* The Builder API and Explain Plans (Chapter 9)
+* ``examples/03_dsl_v2/`` — Advanced DSL examples
+* ``examples/04_graph_ops/`` — Data manipulation examples
+* ``examples/06_dynamics/`` — Dynamics simulation examples
 * ``docfiles/sir_epidemic_simulator.rst`` — SIR multiplex simulator documentation
