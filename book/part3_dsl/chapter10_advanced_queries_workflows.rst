@@ -561,6 +561,9 @@ See ``examples/04_graph_ops/03_subgraph.py``:
     
     # Or using python
     python examples/04_graph_ops/03_subgraph.py
+
+**Supported export formats:**
+
 * JSON (various orientations)
 * pandas DataFrame (in-memory)
 
