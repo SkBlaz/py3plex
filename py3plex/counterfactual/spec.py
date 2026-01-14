@@ -438,27 +438,31 @@ class KnockoutSpec(InterventionSpec):
         
         if self.mode == "replicas":
             # Remove nodes from all layers
-            edges_to_remove = []
+            edges_to_remove = set()
             for node in self.nodes:
                 # Find all edges involving this node
                 for e in all_edges:
                     if e[0][0] == node or e[1][0] == node:
-                        edges_to_remove.append([e[0][0], e[0][1], e[1][0], e[1][1], 1.0])
+                        # Use tuple for deduplication
+                        edges_to_remove.add((e[0][0], e[0][1], e[1][0], e[1][1], 1.0))
             
             if edges_to_remove:
-                net_copy.remove_edges(edges_to_remove, input_type="list")
+                # Convert set to list for remove_edges
+                net_copy.remove_edges([list(e) for e in edges_to_remove], input_type="list")
         else:  # single_layer
             # Remove nodes only from specific layers
-            edges_to_remove = []
+            edges_to_remove = set()
             for node in self.nodes:
                 for layer in self.layers:
                     for e in all_edges:
                         if (e[0][0] == node and e[0][1] == layer) or \
                            (e[1][0] == node and e[1][1] == layer):
-                            edges_to_remove.append([e[0][0], e[0][1], e[1][0], e[1][1], 1.0])
+                            # Use tuple for deduplication
+                            edges_to_remove.add((e[0][0], e[0][1], e[1][0], e[1][1], 1.0))
             
             if edges_to_remove:
-                net_copy.remove_edges(edges_to_remove, input_type="list")
+                # Convert set to list for remove_edges
+                net_copy.remove_edges([list(e) for e in edges_to_remove], input_type="list")
         
         return net_copy
 
