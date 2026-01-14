@@ -1,8 +1,9 @@
 """
-Test for the README flagship example with integrated .uq() functionality.
+Test for the README flagship example with AutoCommunity and integrated UQ.
 
 This test validates that the flagship example in README.md works correctly
-after integrating uncertainty quantification into the master regulators query.
+using auto_select_community for automated algorithm selection and uncertainty
+quantification throughout.
 """
 
 import pytest
@@ -13,13 +14,12 @@ from py3plex.dsl import Q, UQ
 def test_flagship_example_imports():
     """Test that all imports from flagship example work."""
     from py3plex.core import datasets
-    from py3plex.dsl import Q, UQ
-    from py3plex.algorithms.community_detection import multilayer_louvain
+    from py3plex.dsl import Q
+    from py3plex.algorithms.community_detection import auto_select_community
 
     assert datasets is not None
     assert Q is not None
-    assert UQ is not None
-    assert multilayer_louvain is not None
+    assert auto_select_community is not None
 
 
 def test_flagship_dsl_query_structure_with_uq():
