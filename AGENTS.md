@@ -218,7 +218,7 @@ DSL v2 MUST satisfy the following design requirements:
 - `SemiringPathStmt`: Semiring path algebra query
 - `SemiringClosureStmt`: Semiring closure query
 
-**Immutability**: All AST nodes MUST be dataclasses with `frozen=False` (to allow construction and field assignment during building), but MUST be treated as immutable after construction is complete. Implementations MUST NOT modify AST nodes after they are returned from builder methods.
+**Immutability**: All AST nodes MUST be dataclasses with `frozen=False` (to allow field assignment during the construction phase). However, implementations MUST treat AST nodes as immutable after construction is complete - no fields should be modified after a node is returned from a builder method. This is a convention-based immutability pattern where the dataclass is technically mutable but mutation is only allowed during the building process.
 
 **Serialization**: All AST nodes MUST support JSON serialization via `dataclasses.asdict()` with custom handling for:
 - `ParamRef` → `{"__type__": "ParamRef", "name": "...", "type_hint": "..."}`
@@ -1251,7 +1251,7 @@ When UQ is enabled for a metric:
        "mean": float,
        "std": float,
        "quantiles": {0.025: float, 0.05: float, 0.5: float, 0.95: float, 0.975: float},
-       "certainty": float  # 1.0 - (std / mean) or similar confidence measure
+       "certainty": float  # Confidence measure (0-1), see section 10.1 for calculation
    }
    ```
 
@@ -1402,19 +1402,24 @@ All UQ results MUST be dictionaries with the following structure:
         0.95: float,
         0.975: float
     },
-    "certainty": float      # Confidence measure (0-1), implementation-defined (e.g., 1.0 for deterministic, or 1.0 - min(1.0, std/abs(mean)) for UQ)
+    "certainty": float      # Confidence measure (0-1), implementation-defined
+                            # Suggested: 1.0 for deterministic
+                            # For UQ: 1.0 - min(1.0, std/max(abs(mean), epsilon))
+                            # where epsilon prevents division by zero (e.g., 1e-10)
 }
 ```
 
 #### 10.2 UQ Methods
 
 **bootstrap**:
-- Resample edges, nodes, or layers
+- Resample or permute network elements
 - Parameters: 
-  - `bootstrap_unit` ("edges", "nodes", "layers"): What to resample
+  - `bootstrap_unit` ("edges", "nodes", "layers"): What to sample/permute
   - `bootstrap_mode`:
-    - `"resample"`: Sample with replacement (standard bootstrap)
-    - `"permute"`: Shuffle assignments without replacement (permutation test)
+    - `"resample"`: Sample with replacement (standard bootstrap) - creates replicates by randomly sampling elements, allowing duplicates
+    - `"permute"`: Permutation test without replacement - shuffles assignments (e.g., node-layer assignments) while preserving network structure
+
+**Note**: "resample" mode generates bootstrap samples for confidence intervals, while "permute" mode is used for null hypothesis testing by randomizing assignments.
 
 **perturbation**:
 - Add Gaussian noise to edge weights
