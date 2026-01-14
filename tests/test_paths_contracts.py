@@ -209,12 +209,15 @@ def test_random_walk_blocks_cross_layer_moves_without_layer_filter():
 
 
 def test_find_paths_unknown_algorithm_raises():
+    """Test that unknown algorithm raises AlgorithmError."""
+    from py3plex.exceptions import AlgorithmError
+    
     net = multinet.multi_layer_network(directed=False, verbose=False)
     net.add_edges([["n1", "L", "n2", "L", 1.0]], input_type="list")
 
     try:
         find_paths(net, source="n1", target="n2", path_type="does_not_exist")
-    except ValueError as exc:
-        assert "Unknown path algorithm" in str(exc)
+    except AlgorithmError as exc:
+        assert "is not registered" in str(exc)
     else:  # pragma: no cover
-        raise AssertionError("Expected ValueError for unknown algorithm name")
+        raise AssertionError("Expected AlgorithmError for unknown algorithm name")
