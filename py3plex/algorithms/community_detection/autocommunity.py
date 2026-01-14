@@ -276,7 +276,7 @@ class AutoCommunity:
         """Specify candidate algorithms to evaluate.
         
         Args:
-            *algorithms: Algorithm names ("louvain", "leiden", "sbm", "infomap")
+            *algorithms: Algorithm names ("louvain", "leiden", "sbm", "dc_sbm", "infomap")
         
         Returns:
             Self for chaining
@@ -288,7 +288,8 @@ class AutoCommunity:
         """Specify evaluation metrics.
         
         Args:
-            *metric_names: Metric names ("modularity", "stability", "coverage", "mdl")
+            *metric_names: Metric names ("modularity", "stability", "coverage", 
+                          "sbm_log_likelihood", "sbm_mdl")
         
         Returns:
             Self for chaining

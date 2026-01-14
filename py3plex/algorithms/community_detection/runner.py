@@ -71,10 +71,16 @@ def run_community_algorithm(
         elif algo_name == "label_propagation":
             result = _run_label_propagation(network, budget, seed, **kwargs)
 
+        elif algo_name in ("sbm", "standard_sbm"):
+            result = _run_sbm(network, budget, seed, **kwargs)
+
+        elif algo_name in ("dc_sbm", "degree_corrected_sbm"):
+            result = _run_dc_sbm(network, budget, seed, **kwargs)
+
         else:
             raise ValueError(
                 f"Unknown algorithm '{algo_name}'. "
-                f"Supported: louvain, leiden, label_propagation"
+                f"Supported: louvain, leiden, label_propagation, sbm, dc_sbm"
             )
 
         partition = result["partition"]
@@ -266,6 +272,236 @@ def _run_label_propagation(
         # Fallback: singleton communities
         partition = {node: i for i, node in enumerate(network.get_nodes())}
         meta = {"fallback": True}
+
+    return {
+        "partition": partition,
+        "warnings": [],
+        "meta": meta,
+    }
+
+
+def _run_sbm(
+    network: Any, budget: BudgetSpec, seed: int, **kwargs
+) -> Dict[str, Any]:
+    """Run standard SBM algorithm with budget constraints.
+
+    Args:
+        network: Multilayer network
+        budget: Budget specification
+        seed: Random seed
+        **kwargs: Additional parameters
+
+    Returns:
+        Dict with 'partition', 'warnings', 'meta'
+    """
+    import numpy as np
+    from py3plex.algorithms.sbm import fit_multilayer_sbm
+
+    # Extract budget parameters
+    max_iter = budget.max_iter or 500
+    n_restarts = budget.n_restarts or 5
+    
+    # Determine K_range from kwargs or budget
+    K_range = kwargs.pop("K_range", None)
+    if K_range is None:
+        # Default K range for model selection
+        K_range = [2, 3, 4, 5, 6, 7, 8]
+    
+    # Check if UQ is requested
+    enable_uq = budget.uq_samples is not None and budget.uq_samples > 1
+
+    if enable_uq:
+        # Run with UQ (multiple runs with different seeds)
+        n_samples = budget.uq_samples or 50
+        
+        from py3plex._parallel import spawn_seeds
+        uq_seeds = spawn_seeds(seed, n_samples)
+        
+        partitions = []
+        log_likelihoods = []
+        mdl_scores = []
+        
+        for uq_seed in uq_seeds:
+            # Fit with model selection
+            model, selection_info = fit_multilayer_sbm(
+                network,
+                n_blocks=K_range,
+                model="sbm",
+                layer_mode="shared_blocks",
+                n_init=n_restarts,
+                max_iter=max_iter,
+                seed=uq_seed,
+                verbose=False,
+                return_posterior=True
+            )
+            
+            partition_i = model.to_partition_vector()
+            partitions.append(partition_i)
+            
+            log_likelihoods.append(model.elbo_history_[-1])
+            
+            # Compute MDL if available
+            if 'best_result' in selection_info and 'bic' in selection_info['best_result']:
+                mdl_scores.append(selection_info['best_result']['bic'])
+        
+        # Build consensus partition (use first one for now, can improve)
+        partition = partitions[0]
+        
+        meta = {
+            "uq_enabled": True,
+            "n_samples": n_samples,
+            "log_likelihood": float(np.mean(log_likelihoods)),
+            "log_likelihood_std": float(np.std(log_likelihoods)),
+            "K_selected": model.K_,
+            "model_type": "sbm",
+        }
+        
+        if mdl_scores:
+            meta["mdl"] = float(np.mean(mdl_scores))
+            meta["mdl_std"] = float(np.std(mdl_scores))
+
+    else:
+        # Run without UQ
+        model, selection_info = fit_multilayer_sbm(
+            network,
+            n_blocks=K_range,
+            model="sbm",
+            layer_mode="shared_blocks",
+            n_init=n_restarts,
+            max_iter=max_iter,
+            seed=seed,
+            verbose=False,
+            return_posterior=True
+        )
+        
+        partition = model.to_partition_vector()
+        
+        meta = {
+            "uq_enabled": False,
+            "log_likelihood": float(model.elbo_history_[-1]),
+            "K_selected": model.K_,
+            "converged": model.converged_,
+            "n_iter": model.n_iter_,
+            "model_type": "sbm",
+        }
+        
+        if 'best_result' in selection_info and 'bic' in selection_info['best_result']:
+            meta["mdl"] = float(selection_info['best_result']['bic'])
+
+    return {
+        "partition": partition,
+        "warnings": [],
+        "meta": meta,
+    }
+
+
+def _run_dc_sbm(
+    network: Any, budget: BudgetSpec, seed: int, **kwargs
+) -> Dict[str, Any]:
+    """Run Degree-Corrected SBM algorithm with budget constraints.
+
+    Args:
+        network: Multilayer network
+        budget: Budget specification
+        seed: Random seed
+        **kwargs: Additional parameters
+
+    Returns:
+        Dict with 'partition', 'warnings', 'meta'
+    """
+    import numpy as np
+    from py3plex.algorithms.sbm import fit_multilayer_sbm
+
+    # Extract budget parameters
+    max_iter = budget.max_iter or 500
+    n_restarts = budget.n_restarts or 5
+    
+    # Determine K_range from kwargs or budget
+    K_range = kwargs.pop("K_range", None)
+    if K_range is None:
+        # Default K range for model selection
+        K_range = [2, 3, 4, 5, 6, 7, 8]
+    
+    # Check if UQ is requested
+    enable_uq = budget.uq_samples is not None and budget.uq_samples > 1
+
+    if enable_uq:
+        # Run with UQ (multiple runs with different seeds)
+        n_samples = budget.uq_samples or 50
+        
+        from py3plex._parallel import spawn_seeds
+        uq_seeds = spawn_seeds(seed, n_samples)
+        
+        partitions = []
+        log_likelihoods = []
+        mdl_scores = []
+        
+        for uq_seed in uq_seeds:
+            # Fit with model selection
+            model, selection_info = fit_multilayer_sbm(
+                network,
+                n_blocks=K_range,
+                model="dc_sbm",
+                layer_mode="shared_blocks",
+                n_init=n_restarts,
+                max_iter=max_iter,
+                seed=uq_seed,
+                verbose=False,
+                return_posterior=True
+            )
+            
+            partition_i = model.to_partition_vector()
+            partitions.append(partition_i)
+            
+            log_likelihoods.append(model.elbo_history_[-1])
+            
+            # Compute MDL if available
+            if 'best_result' in selection_info and 'bic' in selection_info['best_result']:
+                mdl_scores.append(selection_info['best_result']['bic'])
+        
+        # Build consensus partition (use first one for now, can improve)
+        partition = partitions[0]
+        
+        meta = {
+            "uq_enabled": True,
+            "n_samples": n_samples,
+            "log_likelihood": float(np.mean(log_likelihoods)),
+            "log_likelihood_std": float(np.std(log_likelihoods)),
+            "K_selected": model.K_,
+            "model_type": "dc_sbm",
+        }
+        
+        if mdl_scores:
+            meta["mdl"] = float(np.mean(mdl_scores))
+            meta["mdl_std"] = float(np.std(mdl_scores))
+
+    else:
+        # Run without UQ
+        model, selection_info = fit_multilayer_sbm(
+            network,
+            n_blocks=K_range,
+            model="dc_sbm",
+            layer_mode="shared_blocks",
+            n_init=n_restarts,
+            max_iter=max_iter,
+            seed=seed,
+            verbose=False,
+            return_posterior=True
+        )
+        
+        partition = model.to_partition_vector()
+        
+        meta = {
+            "uq_enabled": False,
+            "log_likelihood": float(model.elbo_history_[-1]),
+            "K_selected": model.K_,
+            "converged": model.converged_,
+            "n_iter": model.n_iter_,
+            "model_type": "dc_sbm",
+        }
+        
+        if 'best_result' in selection_info and 'bic' in selection_info['best_result']:
+            meta["mdl"] = float(selection_info['best_result']['bic'])
 
     return {
         "partition": partition,
