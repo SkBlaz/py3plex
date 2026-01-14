@@ -327,12 +327,30 @@ def should_apply_compositional_uq(select: SelectStmt) -> bool:
     Returns True if:
     - Query has UQ config
     - Query uses aggregate/summarize, order_by, or coverage
+    - Query is NOT a selection query (those use SelectionUQ instead)
+    
+    Selection queries (order_by + limit without aggregate) should use
+    the SelectionUQ framework, not compositional UQ.
     """
     if select.uq_config is None:
         return False
     
-    # Check if query uses operations that need compositional UQ
+    # Check if this is a selection query (should use SelectionUQ instead)
+    # Selection queries have:
+    # - order_by + limit (top-k) OR
+    # - limit_per_group (grouped top-k)
+    # WITHOUT aggregate/summarize
     has_aggregate = bool(select.aggregate_specs or select.summarize_aggs)
+    is_selection_query = (
+        (select.order_by and select.limit and not has_aggregate) or
+        (select.limit_per_group is not None)
+    )
+    
+    if is_selection_query:
+        # This should go to SelectionUQ, not compositional UQ
+        return False
+    
+    # Check if query uses operations that need compositional UQ
     has_ordering = bool(select.order_by)
     has_coverage = bool(select.coverage_mode)
     
