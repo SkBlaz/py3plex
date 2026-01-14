@@ -164,7 +164,7 @@ def format_query_result(result: Any, limit: int = 200) -> Dict[str, Any]:
     """Format DSL query result with truncation.
 
     Args:
-        result: QueryResult or dict from legacy DSL
+        result: QueryResult from DSL v2 or dict from legacy DSL
         limit: Maximum items to include
 
     Returns:
@@ -172,26 +172,57 @@ def format_query_result(result: Any, limit: int = 200) -> Dict[str, Any]:
     """
     # Handle QueryResult objects from DSL v2
     if hasattr(result, "to_dict"):
+        # DSL v2 QueryResult object
         result_dict = result.to_dict()
+        
+        # DSL v2 uses 'target' field to determine nodes vs edges
+        # Convert to legacy format for backward compatibility
+        target = result_dict.get("target", "nodes")
+        formatted_dict = {
+            target: result_dict.get(target, []),
+            "computed": result_dict.get("computed", {}),
+            "meta": result_dict.get("meta", {}),
+        }
+        
+        # Truncate nodes or edges
+        truncated = False
+        original_count = 0
+        
+        if target == "nodes":
+            nodes, truncated, original_count = truncate_list(formatted_dict["nodes"], limit)
+            formatted_dict["nodes"] = nodes
+        elif target == "edges":
+            edges, truncated, original_count = truncate_list(formatted_dict["edges"], limit)
+            formatted_dict["edges"] = edges
+        
+        # Serialize to JSON-safe types
+        formatted_dict = serialize_json(formatted_dict)
+        
+        return {
+            "result": formatted_dict,
+            "truncated": truncated,
+            "total_count": original_count if truncated else len(result_dict.get(target, [])),
+        }
     else:
+        # Legacy DSL result (dict)
         result_dict = result
 
-    # Truncate nodes or edges
-    truncated = False
-    original_count = 0
+        # Truncate nodes or edges
+        truncated = False
+        original_count = 0
 
-    if "nodes" in result_dict:
-        nodes, truncated, original_count = truncate_list(result_dict["nodes"], limit)
-        result_dict["nodes"] = nodes
-    elif "edges" in result_dict:
-        edges, truncated, original_count = truncate_list(result_dict["edges"], limit)
-        result_dict["edges"] = edges
+        if "nodes" in result_dict:
+            nodes, truncated, original_count = truncate_list(result_dict["nodes"], limit)
+            result_dict["nodes"] = nodes
+        elif "edges" in result_dict:
+            edges, truncated, original_count = truncate_list(result_dict["edges"], limit)
+            result_dict["edges"] = edges
 
-    # Serialize to JSON-safe types
-    result_dict = serialize_json(result_dict)
+        # Serialize to JSON-safe types
+        result_dict = serialize_json(result_dict)
 
-    return {
-        "result": result_dict,
-        "truncated": truncated,
-        "total_count": original_count if truncated else None,
-    }
+        return {
+            "result": result_dict,
+            "truncated": truncated,
+            "total_count": original_count if truncated else None,
+        }

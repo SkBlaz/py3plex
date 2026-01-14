@@ -35,6 +35,7 @@ except ImportError:
 
 from py3plex.core import multinet
 from py3plex.dsl_legacy import execute_query
+from py3plex.dsl import Q, L, Param, QueryResult  # DSL v2 support
 from py3plex_mcp.errors import (
     MCPError,
     NetworkNotFoundError,
@@ -189,25 +190,48 @@ async def py3plex_stats(net_id: str) -> List[types.TextContent]:
 
 @app.call_tool()
 async def py3plex_run_query(
-    net_id: str, query: str, limit: int = 200
+    net_id: str, query: str, limit: int = 200, use_v2: bool = False
 ) -> List[types.TextContent]:
     """Execute DSL query on network.
 
+    Supports both legacy (string-based) and DSL v2 (builder-based) queries.
+
     Args:
         net_id: Network handle ID
-        query: DSL query string (legacy syntax)
+        query: DSL query string (legacy syntax) or DSL v2 builder expression
         limit: Maximum items to return (default: 200)
+        use_v2: If True, interpret query as DSL v2 Python expression (default: False)
 
     Returns:
         Query results with truncation info
+
+    Examples:
+        Legacy: 'SELECT nodes WHERE degree > 5 COMPUTE pagerank'
+        DSL v2: 'Q.nodes().where(degree__gt=5).compute("pagerank").limit(20)'
     """
     try:
         registry = get_registry()
         net = registry.get(net_id)
 
-        # Execute query
+        # Execute query based on DSL version
         try:
-            result = execute_query(net, query)
+            if use_v2:
+                # DSL v2: Evaluate Python expression to build query
+                # Security: We only expose Q, L, Param from dsl module
+                safe_globals = {
+                    "Q": Q,
+                    "L": L,
+                    "Param": Param,
+                    "__builtins__": {},
+                }
+                # Evaluate the query expression
+                query_builder = eval(query, safe_globals, {})
+                
+                # Execute the query
+                result = query_builder.execute(net, progress=False)
+            else:
+                # Legacy DSL: String-based query
+                result = execute_query(net, query)
         except Exception as query_error:
             raise QueryParseError(query, str(query_error))
 
@@ -219,6 +243,7 @@ async def py3plex_run_query(
             data={
                 "net_id": net_id,
                 "query": query,
+                "dsl_version": "v2" if use_v2 else "legacy",
                 **formatted,
             },
             truncated=formatted["truncated"],
@@ -507,9 +532,165 @@ async def read_resource(uri: str) -> str:
     elif uri == "py3plex://help/dsl":
         return """# py3plex DSL Reference
 
+## DSL v2 (Builder API) - Recommended
+
+DSL v2 provides a Pythonic, chainable query builder with type hints and IDE support.
+
+### Basic Query Construction
+
+```python
+from py3plex.dsl import Q, L, Param
+
+# Query all nodes
+Q.nodes().execute(network)
+
+# Query edges
+Q.edges().execute(network)
+```
+
+### Layer Selection
+
+```python
+# Single layer
+Q.nodes().where(layer="social").execute(network)
+
+# Multiple layers with algebra
+Q.nodes().from_layers(L["social"] + L["work"]).execute(network)  # Union
+Q.nodes().from_layers(L["social"] - L["work"]).execute(network)  # Difference
+Q.nodes().from_layers(L["social"] & L["work"]).execute(network)  # Intersection
+```
+
+### WHERE Conditions (Django-style)
+
+```python
+# Exact match
+Q.nodes().where(layer="social").execute(network)
+
+# Comparisons
+Q.nodes().where(degree__gt=5).execute(network)       # degree > 5
+Q.nodes().where(degree__gte=5).execute(network)      # degree >= 5
+Q.nodes().where(degree__lt=10).execute(network)      # degree < 10
+Q.nodes().where(degree__lte=10).execute(network)     # degree <= 10
+Q.nodes().where(degree__ne=0).execute(network)       # degree != 0
+
+# Range
+Q.nodes().where(degree__between=(5, 10)).execute(network)
+
+# Containment
+Q.nodes().where(layer__in=["social", "work"]).execute(network)
+Q.nodes().where(layer__nin=["hobby"]).execute(network)
+
+# Intralayer/interlayer edges
+Q.edges().where(intralayer=True).execute(network)
+Q.edges().where(interlayer=True).execute(network)
+
+# Combine conditions
+Q.nodes().where(layer="social", degree__gt=5).execute(network)
+```
+
+### COMPUTE Metrics
+
+```python
+# Single metric
+Q.nodes().compute("degree").execute(network)
+
+# Multiple metrics
+Q.nodes().compute("degree", "pagerank", "betweenness_centrality").execute(network)
+
+# With alias
+Q.nodes().compute("betweenness_centrality", alias="bc").execute(network)
+
+# Available metrics:
+# - degree, in_degree, out_degree
+# - betweenness_centrality, closeness_centrality
+# - pagerank, eigenvector_centrality
+# - clustering, triangles
+# - katz_centrality, load_centrality
+```
+
+### ORDER BY and LIMIT
+
+```python
+# Order by computed metric
+Q.nodes().compute("degree").order_by("degree", desc=True).limit(10).execute(network)
+
+# Multiple sort keys
+Q.nodes().compute("degree", "pagerank").order_by("degree", "pagerank").execute(network)
+```
+
+### Parameterized Queries
+
+```python
+# Define parameter
+k = Param("k", default=5)
+
+# Use in query
+query = Q.nodes().where(degree__gt=k).compute("pagerank").limit(20)
+
+# Execute with different values
+result1 = query.execute(network, k=3)
+result2 = query.execute(network, k=10)
+```
+
+### Grouping (per_layer, per_layer_pair)
+
+```python
+# Group nodes by layer
+Q.nodes().per_layer().compute("degree").execute(network)
+
+# Group edges by layer pair
+Q.edges().per_layer_pair().where(interlayer=True).execute(network)
+```
+
+### Exporting Results
+
+```python
+result = Q.nodes().compute("degree", "pagerank").execute(network)
+
+# To pandas DataFrame
+df = result.to_pandas()
+
+# To dict
+data = result.to_dict()
+
+# To NetworkX graph
+G = result.to_networkx(network)
+
+# To JSON
+result.to_json("output.json")
+```
+
+### Query Execution Options
+
+```python
+# Disable progress logging
+Q.nodes().execute(network, progress=False)
+
+# Use specific parameters
+Q.nodes().where(degree__gt=k).execute(network, k=10)
+```
+
+### Examples
+
+```python
+# Find influential nodes in social layer
+Q.nodes().where(layer="social", degree__gt=5).compute("betweenness_centrality", alias="bc").order_by("bc", desc=True).limit(10).execute(network)
+
+# Find interlayer edges
+Q.edges().where(interlayer=True).execute(network)
+
+# Compare layers by average degree
+Q.nodes().per_layer().compute("degree").execute(network).group_summary()
+
+# Complex filtering
+Q.nodes().from_layers(L["social"] + L["work"]).where(degree__between=(3, 10)).compute("pagerank", "clustering").order_by("pagerank", desc=True).limit(20).execute(network)
+```
+
+---
+
 ## Legacy DSL (String-Based)
 
-The legacy DSL uses SQL-like syntax for querying networks.
+The legacy DSL uses SQL-like syntax for querying networks. **Use DSL v2 for new queries.**
 
 ### Basic Syntax
 
@@ -590,18 +771,30 @@ SELECT nodes FROM layer="social" WHERE degree > 3 COMPUTE pagerank
                 },
                 {
                     "name": "py3plex.run_query",
-                    "description": "Execute DSL query",
+                    "description": "Execute DSL query (supports both legacy and v2)",
                     "parameters": {
-                        "net_id": {"type": "string", "required": True},
-                        "query": {"type": "string", "required": True, "description": "DSL query string"},
-                        "limit": {"type": "integer", "default": 200, "description": "Max items"},
+                        "net_id": {"type": "string", "required": True, "description": "Network handle"},
+                        "query": {"type": "string", "required": True, "description": "DSL query string (legacy) or Python expression (v2)"},
+                        "limit": {"type": "integer", "default": 200, "description": "Max items to return"},
+                        "use_v2": {"type": "boolean", "default": False, "description": "Use DSL v2 builder API (eval Python expression)"},
                     },
-                    "returns": {"result": "object", "truncated": "boolean"},
-                    "example": {
-                        "net_id": "abc12345",
-                        "query": 'SELECT nodes WHERE degree > 5 COMPUTE pagerank',
-                        "limit": 200,
-                    },
+                    "returns": {"result": "object", "truncated": "boolean", "dsl_version": "string"},
+                    "examples": [
+                        {
+                            "description": "Legacy DSL query",
+                            "net_id": "abc12345",
+                            "query": 'SELECT nodes WHERE degree > 5 COMPUTE pagerank',
+                            "limit": 200,
+                            "use_v2": False,
+                        },
+                        {
+                            "description": "DSL v2 query",
+                            "net_id": "abc12345",
+                            "query": 'Q.nodes().where(degree__gt=5).compute("pagerank").limit(20)',
+                            "limit": 200,
+                            "use_v2": True,
+                        },
+                    ],
                 },
                 {
                     "name": "py3plex.community_detect",
