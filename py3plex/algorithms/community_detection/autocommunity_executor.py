@@ -525,12 +525,16 @@ def _compute_null_model_scores(
                         null_partition = null_leiden.partition
                     elif algo_name == "infomap":
                         from py3plex.algorithms.community_detection.community_wrapper import infomap_communities
-                        null_partition = infomap_communities(
-                            null_network,
-                            multiplex=True,
-                            verbose=False,
-                            seed=seed,
-                        )
+                        try:
+                            null_partition = infomap_communities(
+                                null_network,
+                                multiplex=True,
+                                verbose=False,
+                                seed=seed,
+                            )
+                        except Exception:
+                            # Skip if infomap fails on null model
+                            continue
                     else:
                         continue
                     

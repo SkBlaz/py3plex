@@ -21,6 +21,7 @@ from py3plex.algorithms.community_detection import (
     AutoCommunityResult,
     CommunityStats,
 )
+from py3plex.exceptions import Py3plexIOError
 
 
 class TestAutoCommunityBuilder:
@@ -668,7 +669,6 @@ class TestInfomapIntegration:
         # This test ensures the implementation doesn't crash when infomap fails
         with patch('py3plex.algorithms.community_detection.community_wrapper.infomap_communities') as mock_infomap:
             # Make infomap raise an error (simulating missing binary)
-            from py3plex.exceptions import Py3plexIOError
             mock_infomap.side_effect = Py3plexIOError("Infomap binary not found")
             
             # Should still work with other algorithms
