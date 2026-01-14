@@ -406,6 +406,70 @@ def example_consensus() -> None:
         print("  (One algorithm dominated all others)")
 
 
+def example_with_infomap() -> None:
+    """Example 6: Using Infomap algorithm in AutoCommunity."""
+    _print_header("Example 6: AutoCommunity with Infomap")
+
+    # Create a simple multilayer network
+    network = multinet.multi_layer_network(directed=False)
+
+    # Add nodes and edges to create clear community structure
+    nodes = [{"source": f"N{i}", "type": "layer1"} for i in range(15)]
+    network.add_nodes(nodes)
+
+    # Create 3 communities with 5 nodes each
+    for comm_idx in range(3):
+        start = comm_idx * 5
+        end = start + 5
+        for i in range(start, end):
+            for j in range(i+1, end):
+                network.add_edges([{
+                    "source": f"N{i}", "target": f"N{j}",
+                    "source_type": "layer1", "target_type": "layer1"
+                }])
+
+    # Add sparse bridges between communities
+    network.add_edges([
+        {"source": "N4", "target": "N5", "source_type": "layer1", "target_type": "layer1"},
+        {"source": "N9", "target": "N10", "source_type": "layer1", "target_type": "layer1"}
+    ])
+
+    print(f"Network: {len(list(network.get_nodes()))} nodes, "
+          f"{network.edge_count} edges")
+
+    # Run AutoCommunity with infomap included
+    print("\nRunning AutoCommunity with louvain, leiden, and infomap...")
+    print("Note: Infomap requires a binary to be installed.")
+    print("      If not available, it will be gracefully skipped.\n")
+
+    result = (
+        AutoCommunity()
+          .candidates("louvain", "leiden", "infomap")
+          .metrics("modularity", "coverage")
+          .seed(DEFAULT_SEED)
+          .execute(network)
+    )
+
+    # Display results
+    print("\n" + result.explain())
+
+    print("\n--- Algorithms Tested ---")
+    for algo in result.algorithms_tested:
+        print(f"  - {algo}")
+
+    # Check if infomap was successfully used
+    if any("infomap" in algo for algo in result.algorithms_tested):
+        print("\n✓ Infomap was successfully executed!")
+    else:
+        print("\n⚠ Infomap was not available or failed gracefully.")
+        print("  AutoCommunity continued with available algorithms.")
+
+    print("\n--- Results ---")
+    print(f"Selected algorithm: {result.selected}")
+    print(f"Number of communities: {result.community_stats.n_communities}")
+    print(f"Coverage: {result.community_stats.coverage:.3f}")
+
+
 def main() -> int:
     """Run all examples."""
     if IMPORT_ERROR:
@@ -425,6 +489,7 @@ def main() -> int:
         example_with_null_models()
         example_full_pipeline()
         example_consensus()
+        example_with_infomap()
 
         print("\n" + "=" * 80)
         print(" All examples completed successfully!")
@@ -436,6 +501,7 @@ def main() -> int:
         print("4. Null-model calibration ensures statistical significance")
         print("5. Consensus communities aggregate multiple good solutions")
         print("6. All decisions are inspectable via provenance")
+        print("7. Infomap can be used alongside other algorithms when available")
 
     except Exception as e:
         print(f"\n Error: {e}", file=sys.stderr)
