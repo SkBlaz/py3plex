@@ -1021,9 +1021,16 @@ def execute_autocommunity_sh(
     # Build provenance
     timestamp_utc = datetime.now(timezone.utc).isoformat()
     
+    # Get version dynamically
+    try:
+        import importlib.metadata
+        py3plex_version = importlib.metadata.version('py3plex')
+    except Exception:
+        py3plex_version = '1.1.1'  # Fallback for development installs
+    
     provenance = {
         'engine': 'autocommunity_successive_halving',
-        'py3plex_version': '1.1.1',
+        'py3plex_version': py3plex_version,
         'timestamp_utc': timestamp_utc,
         'seed': seed,
         'strategy': 'successive_halving',
