@@ -88,7 +88,7 @@ def run_community_algorithm(
     except Exception as e:
         raise AlgorithmError(
             f"Algorithm '{algo_name}' failed: {e}",
-            algorithm=algo_name,
+            algorithm_name=algo_name,
             suggestions=["Check network connectivity", "Verify network format"]
         ) from e
     
