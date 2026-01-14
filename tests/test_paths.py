@@ -96,9 +96,11 @@ class TestPathRegistry:
         assert callable(fn)
 
     def test_get_unknown_algorithm_raises_error(self):
-        """Test that getting an unknown algorithm raises ValueError."""
+        """Test that getting an unknown algorithm raises AlgorithmError."""
+        from py3plex.exceptions import AlgorithmError
+        
         registry = PathRegistry()
-        with pytest.raises(ValueError, match="Unknown path algorithm"):
+        with pytest.raises(AlgorithmError, match="is not registered"):
             registry.get("nonexistent_algorithm")
 
     def test_has_algorithm(self):
@@ -460,8 +462,10 @@ class TestFindPaths:
         assert len(result.paths) <= 1
 
     def test_find_paths_invalid_type(self, simple_network):
-        """Test that invalid path_type raises ValueError."""
-        with pytest.raises(ValueError, match="Unknown path algorithm"):
+        """Test that invalid path_type raises AlgorithmError."""
+        from py3plex.exceptions import AlgorithmError
+        
+        with pytest.raises(AlgorithmError, match="is not registered"):
             find_paths(
                 simple_network,
                 source="n1",
