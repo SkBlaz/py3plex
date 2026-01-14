@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jan 13, 2026}
+\date{Jan 14, 2026}
 \release{1.1.1}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -10910,6 +10910,329 @@ Null model comparison:
   Z\PYGZhy{}score: 31.49
   Interpretation: Highly significant (real structure)
 \end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Summary of metrics:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Modularity (Q):} Overall quality, general\sphinxhyphen{}purpose
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Coverage:} Simple interpretability (\% internal edges)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Performance:} Balances true positives and true negatives
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Conductance:} Community boundary quality (per\sphinxhyphen{}community)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Null model:} Statistical significance test
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Replica Consistency (RC):} Multilayer coherence guardrail
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layer Entropy (H):} Degeneracy guardrail for multilayer networks
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Recommendation:} Always report modularity + at least one other metric to get a complete picture.
+
+
+\paragraph{Multilayer Quality Metrics (Guardrails)}
+\label{\detokenize{how-to/run_community_detection:multilayer-quality-metrics-guardrails}}
+\sphinxAtStartPar
+For multilayer community detection, two specialized quality metrics serve as \sphinxstylestrong{guardrails} against degenerate partitions:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Replica Consistency (RC)}: Measures whether replicas of the same node across layers are assigned to the same community
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layer Entropy (H)}: Measures the balance of community sizes within each layer, averaged across layers
+
+\end{enumerate}
+
+\sphinxAtStartPar
+\sphinxstylestrong{What are guardrails?}
+
+\sphinxAtStartPar
+Guardrails are metrics that detect pathological partitions but are not primary optimization objectives. They ensure that:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Communities respect node identity across layers (RC)
+
+\item {} 
+\sphinxAtStartPar
+Partitions are not degenerate giant clusters or extreme fragmentation (H)
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Replica Consistency:}
+
+\sphinxAtStartPar
+Formula: For each node v with replicas in L\_v layers ({\color{red}\bfseries{}|L\_v|} ≥ 2):
+\begin{align*}\!\begin{aligned}
+RC(v) = \frac{2}{|L_v|(|L_v|-1)} \sum_{\ell_i < \ell_j} 1[c(v,\ell_i) = c(v,\ell_j)]\\
+RC = \frac{1}{|\{v: |L_v|\ge 2\}|} \sum_v RC(v)\\
+\end{aligned}\end{align*}
+\sphinxAtStartPar
+RC ranges from 0 to 1:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{RC = 1.0}: All replicas of each node have the same community (perfect coherence)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{RC = 0.0}: No agreement (random assignment)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{RC ∈ (0,1)}: Partial consistency
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Layer Entropy:}
+
+\sphinxAtStartPar
+Formula: For each layer ℓ with C\_ℓ communities:
+\begin{align*}\!\begin{aligned}
+H_\ell = -\sum_i p_i^\ell \log(p_i^\ell) / \log(|C_\ell|)\\
+H = \text{mean}_\ell(H_\ell), \quad \text{clipped to } [0.1, 0.9]\\
+\end{aligned}\end{align*}
+\sphinxAtStartPar
+H ranges from 0.1 to 0.9 (clipped):
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{H ≈ 0.9}: Balanced communities in all layers
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{H ≈ 0.1}: Giant cluster or extreme fragmentation (degenerate)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{H ∈ (0.1,0.9)}: Normal partition
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Usage example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}modularity}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{louvain\PYGZus{}multilayer}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}quality\PYGZus{}metrics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{p}{(}
+    \PYG{n}{replica\PYGZus{}consistency}\PYG{p}{,}
+    \PYG{n}{layer\PYGZus{}entropy}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Load network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}
+    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datasets/synthetic\PYGZus{}multilayer.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Detect communities}
+\PYG{n}{communities} \PYG{o}{=} \PYG{n}{louvain\PYGZus{}multilayer}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{omega}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Compute multilayer quality metrics}
+\PYG{n}{rc} \PYG{o}{=} \PYG{n}{replica\PYGZus{}consistency}\PYG{p}{(}\PYG{n}{communities}\PYG{p}{,} \PYG{n}{network}\PYG{p}{)}
+\PYG{n}{h} \PYG{o}{=} \PYG{n}{layer\PYGZus{}entropy}\PYG{p}{(}\PYG{n}{communities}\PYG{p}{,} \PYG{n}{network}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Replica Consistency: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{rc}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Layer Entropy: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{h}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Interpret}
+\PYG{k}{if} \PYG{n}{rc} \PYG{o}{\PYGZgt{}} \PYG{l+m+mf}{0.8}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  \(\checkmark\) High replica consistency (nodes coherent across layers)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{elif} \PYG{n}{rc} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{0.3}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  ⚠ Low replica consistency (nodes fragmented across layers)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{else}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  \(\rightarrow\) Moderate replica consistency}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{k}{if} \PYG{n}{h} \PYG{o}{\PYGZgt{}} \PYG{l+m+mf}{0.7}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  \(\checkmark\) High layer entropy (balanced communities)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{elif} \PYG{n}{h} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{0.3}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  ⚠ Low layer entropy (degenerate partition)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{else}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  \(\rightarrow\) Moderate layer entropy}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Replica Consistency: 0.8765
+Layer Entropy: 0.7234
+  \(\checkmark\) High replica consistency (nodes coherent across layers)
+  \(\checkmark\) High layer entropy (balanced communities)
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Comparison: good vs. bad partitions:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Good partition: coherent and balanced}
+\PYG{n}{good\PYGZus{}partition} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{\PYGZsh{} Bad partition 1: giant cluster (low entropy)}
+\PYG{n}{giant\PYGZus{}cluster} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{\PYGZsh{} Bad partition 2: fragmented replicas (low RC)}
+\PYG{n}{fragmented} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{2}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{4}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{5}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{6}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{7}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{8}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{9}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{10}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer3}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{11}\PYG{p}{,}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Good partition:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  RC=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{replica\PYGZus{}consistency}\PYG{p}{(}\PYG{n}{good\PYGZus{}partition}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{network}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{, H=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}entropy}\PYG{p}{(}\PYG{n}{good\PYGZus{}partition}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{network}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{Giant cluster (degenerate):}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  RC=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{replica\PYGZus{}consistency}\PYG{p}{(}\PYG{n}{giant\PYGZus{}cluster}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{network}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{, H=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}entropy}\PYG{p}{(}\PYG{n}{giant\PYGZus{}cluster}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{network}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{Fragmented replicas (incoherent):}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  RC=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{replica\PYGZus{}consistency}\PYG{p}{(}\PYG{n}{fragmented}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{network}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{, H=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}entropy}\PYG{p}{(}\PYG{n}{fragmented}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{network}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Good partition:
+  RC=1.000, H=0.900
+
+Giant cluster (degenerate):
+  RC=1.000, H=0.100
+
+Fragmented replicas (incoherent):
+  RC=0.000, H=0.900
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Integration with AutoCommunity:}
+
+\sphinxAtStartPar
+These metrics are automatically included in AutoCommunity’s multi\sphinxhyphen{}objective evaluation:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{auto\PYGZus{}select\PYGZus{}community}
+
+\PYG{c+c1}{\PYGZsh{} AutoCommunity will use these metrics as guardrails}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{auto\PYGZus{}select\PYGZus{}community}\PYG{p}{(}
+    \PYG{n}{network}\PYG{p}{,}
+    \PYG{n}{fast}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Access metrics from evaluation matrix}
+\PYG{n}{eval\PYGZus{}matrix} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{evaluation\PYGZus{}matrix}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{All metrics computed:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{eval\PYGZus{}matrix}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{algorithm\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{modularity}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{replica\PYGZus{}consistency}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer\PYGZus{}entropy}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{]}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{When to use these metrics:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{RC}: When node identity across layers is important (e.g., same protein in different interaction types)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{H}: To detect degenerate partitions (giant clusters or extreme fragmentation)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Both}: As sanity checks after multilayer community detection
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{AutoCommunity}: These are included by default; they contribute \textasciitilde{}22\% total weight in the default metric set
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Typical ranges:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{RC \textgreater{} 0.8}: Excellent replica consistency
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{RC ∈ {[}0.5, 0.8{]}}: Good consistency
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{RC \textless{} 0.5}: Poor consistency (investigate layer\sphinxhyphen{}specific communities)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{H \textgreater{} 0.7}: Well\sphinxhyphen{}balanced communities
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{H ∈ {[}0.3, 0.7{]}}: Normal range
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{H \textless{} 0.3}: Degenerate partition (too few or too many communities)
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Performance characteristics:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{RC}: O(Σ\_v {\color{red}\bfseries{}|}L\_v|\textasciicircum{}2) where L\_v is layers per node (efficient count\sphinxhyphen{}based implementation)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{H}: O({\color{red}\bfseries{}|assignments|}) linear in node\sphinxhyphen{}layer assignments
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Both}: Fast enough for large networks (\textless{} 1 second for 10,000 node\sphinxhyphen{}layers)
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Label\sphinxhyphen{}permutation invariance:}
+
+\sphinxAtStartPar
+RC is \sphinxstylestrong{label\sphinxhyphen{}permutation invariant}: it only compares community labels within each node across layers. Different algorithms can produce arbitrary label numbering, and RC will still work correctly.
 
 \sphinxAtStartPar
 \sphinxstylestrong{Summary of metrics:}
@@ -53722,7 +54045,8 @@ overridden on a per\sphinxhyphen{}metric basis.
 {\sphinxbfcode{\sphinxupquote{method}}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Uncertainty estimation method (‘bootstrap’, ‘perturbation’, ‘seed’, ‘null\_model’)
+Uncertainty estimation method (‘bootstrap’, ‘perturbation’, ‘seed’,
+‘null\_model’, ‘stratified\_perturbation’)
 \begin{quote}\begin{description}
 \sphinxlineitem{Type}
 \sphinxAtStartPar
@@ -53798,7 +54122,8 @@ int | None
 {\sphinxbfcode{\sphinxupquote{kwargs}}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Additional method\sphinxhyphen{}specific parameters (e.g., bootstrap\_unit, bootstrap\_mode)
+Additional method\sphinxhyphen{}specific parameters (e.g., bootstrap\_unit, bootstrap\_mode,
+strata, bins for stratified\_perturbation)
 \begin{quote}\begin{description}
 \sphinxlineitem{Type}
 \sphinxAtStartPar
@@ -53814,6 +54139,8 @@ Dict{[}str, Any{]}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{uq} \PYG{o}{=} \PYG{n}{UQConfig}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{perturbation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{n\PYGZus{}samples}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{ci}\PYG{o}{=}\PYG{l+m+mf}{0.95}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{uq} \PYG{o}{=} \PYG{n}{UQConfig}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bootstrap}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{n\PYGZus{}samples}\PYG{o}{=}\PYG{l+m+mi}{200}\PYG{p}{,} \PYG{n}{ci}\PYG{o}{=}\PYG{l+m+mf}{0.95}\PYG{p}{,}
 \PYG{g+gp}{... }              \PYG{n}{kwargs}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bootstrap\PYGZus{}unit}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{edges}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bootstrap\PYGZus{}mode}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{resample}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{uq} \PYG{o}{=} \PYG{n}{UQConfig}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{stratified\PYGZus{}perturbation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{n\PYGZus{}samples}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{ci}\PYG{o}{=}\PYG{l+m+mf}{0.95}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}
+\PYG{g+gp}{... }              \PYG{n}{kwargs}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{strata}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bins}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+m+mi}{5}\PYG{p}{\PYGZcb{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 \index{ci (py3plex.dsl.UQConfig attribute)@\spxentry{ci}\spxextra{py3plex.dsl.UQConfig attribute}}
 
@@ -59267,6 +59594,27 @@ str
 
 \end{fulllineitems}\end{savenotes}
 
+\index{STRATIFIED\_PERTURBATION (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{STRATIFIED\_PERTURBATION}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.ResamplingStrategy.STRATIFIED_PERTURBATION}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{STRATIFIED\_PERTURBATION}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Stratified perturbation that preserves key structural distributions
+(degree bins, layer densities, edge weight bins, layer\sphinxhyphen{}pair frequencies).
+Reduces estimator variance without increasing sample count.
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+str
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{BOOTSTRAP (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -59304,6 +59652,16 @@ str
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{SEED}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{STRATIFIED\_PERTURBATION (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{STRATIFIED\_PERTURBATION}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id278}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{STRATIFIED\_PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}stratified\_perturbation\textquotesingle{}}}}
 \pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
@@ -59451,7 +59809,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{group\_key (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{group\_key}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id278}}
+\phantomsection\label{\detokenize{reference/api_index:id279}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{group\_key}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Tuple\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -59461,7 +59819,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{items (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{items}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id279}}
+\phantomsection\label{\detokenize{reference/api_index:id280}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{items}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
@@ -59471,7 +59829,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{k (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{k}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id280}}
+\phantomsection\label{\detokenize{reference/api_index:id281}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{k}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -59481,7 +59839,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{ranks (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{ranks}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id281}}
+\phantomsection\label{\detokenize{reference/api_index:id282}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ranks}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -59491,7 +59849,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{scores (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{scores}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id282}}
+\phantomsection\label{\detokenize{reference/api_index:id283}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{scores}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -59501,7 +59859,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{target (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{target}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id283}}
+\phantomsection\label{\detokenize{reference/api_index:id284}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}nodes\textquotesingle{}}}}
@@ -60014,7 +60372,7 @@ dict
 \index{borderline\_items (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{borderline\_items}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id284}}
+\phantomsection\label{\detokenize{reference/api_index:id285}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{borderline\_items}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
@@ -60024,7 +60382,7 @@ dict
 \index{ci\_method (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{ci\_method}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id285}}
+\phantomsection\label{\detokenize{reference/api_index:id286}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ci\_method}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}wilson\textquotesingle{}}}}
@@ -60034,7 +60392,7 @@ dict
 \index{consensus\_items (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{consensus\_items}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id286}}
+\phantomsection\label{\detokenize{reference/api_index:id287}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{consensus\_items}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }set}}}
@@ -60182,7 +60540,7 @@ list of (item, present\_prob)
 \index{items\_universe (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{items\_universe}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id287}}
+\phantomsection\label{\detokenize{reference/api_index:id288}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{items\_universe}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
@@ -60192,7 +60550,7 @@ list of (item, present\_prob)
 \index{k (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{k}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id288}}
+\phantomsection\label{\detokenize{reference/api_index:id289}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{k}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -60202,7 +60560,7 @@ list of (item, present\_prob)
 \index{meta (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id289}}
+\phantomsection\label{\detokenize{reference/api_index:id290}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{meta}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -60212,7 +60570,7 @@ list of (item, present\_prob)
 \index{n\_samples (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{n\_samples}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id290}}
+\phantomsection\label{\detokenize{reference/api_index:id291}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -60222,7 +60580,7 @@ list of (item, present\_prob)
 \index{p\_in\_topk (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{p\_in\_topk}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id291}}
+\phantomsection\label{\detokenize{reference/api_index:id292}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{p\_in\_topk}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -60232,7 +60590,7 @@ list of (item, present\_prob)
 \index{present\_ci\_high (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{present\_ci\_high}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id292}}
+\phantomsection\label{\detokenize{reference/api_index:id293}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{present\_ci\_high}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -60242,7 +60600,7 @@ list of (item, present\_prob)
 \index{present\_ci\_low (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{present\_ci\_low}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id293}}
+\phantomsection\label{\detokenize{reference/api_index:id294}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{present\_ci\_low}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -60252,7 +60610,7 @@ list of (item, present\_prob)
 \index{present\_prob (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{present\_prob}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id294}}
+\phantomsection\label{\detokenize{reference/api_index:id295}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{present\_prob}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -60262,7 +60620,7 @@ list of (item, present\_prob)
 \index{rank\_ci\_high (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{rank\_ci\_high}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id295}}
+\phantomsection\label{\detokenize{reference/api_index:id296}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_ci\_high}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -60272,7 +60630,7 @@ list of (item, present\_prob)
 \index{rank\_ci\_low (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{rank\_ci\_low}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id296}}
+\phantomsection\label{\detokenize{reference/api_index:id297}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_ci\_low}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -60282,7 +60640,7 @@ list of (item, present\_prob)
 \index{rank\_mean (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{rank\_mean}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id297}}
+\phantomsection\label{\detokenize{reference/api_index:id298}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_mean}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -60292,7 +60650,7 @@ list of (item, present\_prob)
 \index{rank\_std (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{rank\_std}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id298}}
+\phantomsection\label{\detokenize{reference/api_index:id299}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_std}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -60302,7 +60660,7 @@ list of (item, present\_prob)
 \index{samples\_seen (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{samples\_seen}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id299}}
+\phantomsection\label{\detokenize{reference/api_index:id300}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{samples\_seen}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -60312,7 +60670,7 @@ list of (item, present\_prob)
 \index{size\_stats (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{size\_stats}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id300}}
+\phantomsection\label{\detokenize{reference/api_index:id301}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{size\_stats}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -60322,7 +60680,7 @@ list of (item, present\_prob)
 \index{stability\_stats (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{stability\_stats}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id301}}
+\phantomsection\label{\detokenize{reference/api_index:id302}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{stability\_stats}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -60332,7 +60690,7 @@ list of (item, present\_prob)
 \index{store\_mode (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{store\_mode}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id302}}
+\phantomsection\label{\detokenize{reference/api_index:id303}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{store\_mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}sketch\textquotesingle{}}}}
@@ -60367,7 +60725,7 @@ dict
 \index{target (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{target}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id303}}
+\phantomsection\label{\detokenize{reference/api_index:id304}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}nodes\textquotesingle{}}}}
@@ -60431,7 +60789,7 @@ pd.DataFrame
 \index{topk\_overlap\_stats (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{topk\_overlap\_stats}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id304}}
+\phantomsection\label{\detokenize{reference/api_index:id305}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{topk\_overlap\_stats}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -61077,6 +61435,128 @@ dict
 
 \end{fulllineitems}\end{savenotes}
 
+\index{StratificationSpec (class in py3plex.uncertainty)@\spxentry{StratificationSpec}\spxextra{class in py3plex.uncertainty}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.StratificationSpec}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.uncertainty.}}\sphinxbfcode{\sphinxupquote{StratificationSpec}}}
+{\sphinxparam{\DUrole{n}{strata: \textasciitilde{}typing.List{[}str{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{bins: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{int{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed: int | None = None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Configuration for stratified resampling.
+\index{strata (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{strata}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.StratificationSpec.strata}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{strata}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+List of stratification dimensions to apply.
+Supported: “degree”, “layer”, “layer\_pair”, “weight”
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+List{[}str{]}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{bins (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{bins}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.StratificationSpec.bins}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{bins}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Number of bins for each continuous dimension.
+E.g., \{“degree”: 5, “weight”: 3\}
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+Dict{[}str, int{]}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{seed (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{seed}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.StratificationSpec.seed}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{seed}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Random seed for reproducibility.
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+Optional{[}int{]}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{bins (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{bins}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id306}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{bins}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{seed (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{seed}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id307}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{strata (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{strata}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id308}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{strata}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_dict() (py3plex.uncertainty.StratificationSpec method)@\spxentry{to\_dict()}\spxextra{py3plex.uncertainty.StratificationSpec method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.StratificationSpec.to_dict}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_dict}}}
+{}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert to dictionary for serialization.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
 \index{TemporalWindowBootstrap (class in py3plex.uncertainty)@\spxentry{TemporalWindowBootstrap}\spxextra{class in py3plex.uncertainty}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -61541,7 +62021,7 @@ Literal{[}“python”, “jax”{]}
 \index{backend (py3plex.uncertainty.UQPlan attribute)@\spxentry{backend}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id305}}
+\phantomsection\label{\detokenize{reference/api_index:id309}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{backend}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}python\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}jax\textquotesingle{}}\DUrole{p}{{]}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}python\textquotesingle{}}}}
@@ -61551,7 +62031,7 @@ Literal{[}“python”, “jax”{]}
 \index{base\_callable (py3plex.uncertainty.UQPlan attribute)@\spxentry{base\_callable}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id306}}
+\phantomsection\label{\detokenize{reference/api_index:id310}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{base\_callable}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Callable\DUrole{p}{{[}}\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -61561,7 +62041,7 @@ Literal{[}“python”, “jax”{]}
 \index{n\_samples (py3plex.uncertainty.UQPlan attribute)@\spxentry{n\_samples}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id307}}
+\phantomsection\label{\detokenize{reference/api_index:id311}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -61571,7 +62051,7 @@ Literal{[}“python”, “jax”{]}
 \index{noise\_model (py3plex.uncertainty.UQPlan attribute)@\spxentry{noise\_model}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id308}}
+\phantomsection\label{\detokenize{reference/api_index:id312}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{noise\_model}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.NoiseModel}]{\sphinxcrossref{NoiseModel}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}}
@@ -61581,7 +62061,7 @@ Literal{[}“python”, “jax”{]}
 \index{reducers (py3plex.uncertainty.UQPlan attribute)@\spxentry{reducers}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id309}}
+\phantomsection\label{\detokenize{reference/api_index:id313}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{reducers}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.Reducer}]{\sphinxcrossref{Reducer}}}\DUrole{p}{{]}}}}}
@@ -61591,7 +62071,7 @@ Literal{[}“python”, “jax”{]}
 \index{seed (py3plex.uncertainty.UQPlan attribute)@\spxentry{seed}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id310}}
+\phantomsection\label{\detokenize{reference/api_index:id314}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -61601,7 +62081,7 @@ Literal{[}“python”, “jax”{]}
 \index{storage\_mode (py3plex.uncertainty.UQPlan attribute)@\spxentry{storage\_mode}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id311}}
+\phantomsection\label{\detokenize{reference/api_index:id315}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{storage\_mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}none\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sketch\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}samples\textquotesingle{}}\DUrole{p}{{]}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}sketch\textquotesingle{}}}}
@@ -61611,7 +62091,7 @@ Literal{[}“python”, “jax”{]}
 \index{strategy (py3plex.uncertainty.UQPlan attribute)@\spxentry{strategy}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id312}}
+\phantomsection\label{\detokenize{reference/api_index:id316}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{strategy}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}seed\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}perturbation\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}bootstrap\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}jackknife\textquotesingle{}}\DUrole{p}{{]}}}}}
@@ -61715,7 +62195,7 @@ dict
 \index{n\_samples (py3plex.uncertainty.UQResult attribute)@\spxentry{n\_samples}\spxextra{py3plex.uncertainty.UQResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id313}}
+\phantomsection\label{\detokenize{reference/api_index:id317}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -61725,7 +62205,7 @@ dict
 \index{provenance (py3plex.uncertainty.UQResult attribute)@\spxentry{provenance}\spxextra{py3plex.uncertainty.UQResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id314}}
+\phantomsection\label{\detokenize{reference/api_index:id318}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{provenance}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }dict}}}
@@ -61735,7 +62215,7 @@ dict
 \index{reducer\_outputs (py3plex.uncertainty.UQResult attribute)@\spxentry{reducer\_outputs}\spxextra{py3plex.uncertainty.UQResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id315}}
+\phantomsection\label{\detokenize{reference/api_index:id319}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{reducer\_outputs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }dict}}}
@@ -61745,7 +62225,7 @@ dict
 \index{samples (py3plex.uncertainty.UQResult attribute)@\spxentry{samples}\spxextra{py3plex.uncertainty.UQResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id316}}
+\phantomsection\label{\detokenize{reference/api_index:id320}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -61830,7 +62310,7 @@ Default resampling strategy.
 \index{default\_n\_runs (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id317}}
+\phantomsection\label{\detokenize{reference/api_index:id321}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_n\_runs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }50}}}
@@ -61840,7 +62320,7 @@ Default resampling strategy.
 \index{default\_resampling (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id318}}
+\phantomsection\label{\detokenize{reference/api_index:id322}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_resampling}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.ResamplingStrategy}]{\sphinxcrossref{ResamplingStrategy}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -61850,7 +62330,7 @@ Default resampling strategy.
 \index{mode (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id319}}
+\phantomsection\label{\detokenize{reference/api_index:id323}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.UncertaintyMode}]{\sphinxcrossref{UncertaintyMode}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -61935,7 +62415,7 @@ str
 \index{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id320}}
+\phantomsection\label{\detokenize{reference/api_index:id324}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{AUTO}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}auto\textquotesingle{}}}}
@@ -61945,7 +62425,7 @@ str
 \index{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id321}}
+\phantomsection\label{\detokenize{reference/api_index:id325}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{OFF}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -61955,7 +62435,7 @@ str
 \index{ON (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id322}}
+\phantomsection\label{\detokenize{reference/api_index:id326}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ON}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}on\textquotesingle{}}}}
@@ -62221,6 +62701,35 @@ float
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1} \PYG{o}{\PYGZlt{}}\PYG{o}{=} \PYG{n}{ari} \PYG{o}{\PYGZlt{}}\PYG{o}{=} \PYG{l+m+mi}{1}
 \PYG{g+go}{True}
 \end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{auto\_select\_strata() (in module py3plex.uncertainty)@\spxentry{auto\_select\_strata()}\spxextra{in module py3plex.uncertainty}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.auto_select_strata}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.uncertainty.}}\sphinxbfcode{\sphinxupquote{auto\_select\_strata}}}
+{\sphinxparam{\DUrole{n}{target}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
+{{ $\rightarrow$ List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Automatically select stratification dimensions based on query target.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{target}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Query target type (“nodes” or “edges”)
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Recommended stratification dimensions
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+List{[}str{]}
+
+\end{description}\end{quote}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -62510,6 +63019,83 @@ Based on the beta distribution relationship to the binomial.
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{clopper\PYGZus{}pearson\PYGZus{}interval}\PYG{p}{(}\PYG{l+m+mi}{50}\PYG{p}{,} \PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.05}\PYG{p}{)}
 \PYG{g+go}{(0.39..., 0.60...)}
 \end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{compute\_composite\_strata() (in module py3plex.uncertainty)@\spxentry{compute\_composite\_strata()}\spxextra{in module py3plex.uncertainty}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.compute_composite_strata}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.uncertainty.}}\sphinxbfcode{\sphinxupquote{compute\_composite\_strata}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network}]{\sphinxcrossref{multi\_layer\_network}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{spec}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.StratificationSpec}]{\sphinxcrossref{StratificationSpec}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}nodes\textquotesingle{}}}}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}Tuple\DUrole{p}{,}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compute composite stratification by crossing multiple dimensions.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{network}} ({\hyperref[\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network}]{\sphinxcrossref{\sphinxstyleliteralemphasis{\sphinxupquote{multi\_layer\_network}}}}}) \textendash{} The network to stratify.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{spec}} ({\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.StratificationSpec}]{\sphinxcrossref{\sphinxstyleliteralemphasis{\sphinxupquote{StratificationSpec}}}}}) \textendash{} Stratification specification.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{target}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Target type (“nodes” or “edges”)
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Mapping from composite stratum key to list of items.
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+Dict{[}Tuple, List{[}Any{]}{]}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{compute\_variance\_reduction\_ratio() (in module py3plex.uncertainty)@\spxentry{compute\_variance\_reduction\_ratio()}\spxextra{in module py3plex.uncertainty}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.compute_variance_reduction_ratio}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.uncertainty.}}\sphinxbfcode{\sphinxupquote{compute\_variance\_reduction\_ratio}}}
+{\sphinxparam{\DUrole{n}{baseline\_std}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{stratified\_std}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}}
+{{ $\rightarrow$ float}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compute variance reduction ratio.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{baseline\_std}} (\sphinxstyleliteralemphasis{\sphinxupquote{np.ndarray}}) \textendash{} Standard deviations from baseline (unstratified) estimation.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{stratified\_std}} (\sphinxstyleliteralemphasis{\sphinxupquote{np.ndarray}}) \textendash{} Standard deviations from stratified estimation.
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Variance reduction ratio: (baseline\_var \sphinxhyphen{} stratified\_var) / baseline\_var
+Values \textgreater{} 0 indicate variance reduction, \textless{} 0 indicate increase.
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+float
+
+\end{description}\end{quote}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -64157,10 +64743,31 @@ str
 
 \end{fulllineitems}\end{savenotes}
 
+\index{STRATIFIED\_PERTURBATION (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{STRATIFIED\_PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.uncertainty.types.ResamplingStrategy.STRATIFIED_PERTURBATION}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{STRATIFIED\_PERTURBATION}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Stratified perturbation that preserves key structural distributions
+(degree bins, layer densities, edge weight bins, layer\sphinxhyphen{}pair frequencies).
+Reduces estimator variance without increasing sample count.
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+str
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{BOOTSTRAP (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id323}}
+\phantomsection\label{\detokenize{reference/api_index:id327}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{BOOTSTRAP}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}bootstrap\textquotesingle{}}}}
@@ -64170,7 +64777,7 @@ str
 \index{JACKKNIFE (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id324}}
+\phantomsection\label{\detokenize{reference/api_index:id328}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{JACKKNIFE}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}jackknife\textquotesingle{}}}}
@@ -64180,7 +64787,7 @@ str
 \index{PERTURBATION (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id325}}
+\phantomsection\label{\detokenize{reference/api_index:id329}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}perturbation\textquotesingle{}}}}
@@ -64190,10 +64797,20 @@ str
 \index{SEED (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id326}}
+\phantomsection\label{\detokenize{reference/api_index:id330}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{SEED}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{STRATIFIED\_PERTURBATION (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{STRATIFIED\_PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id331}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{STRATIFIED\_PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}stratified\_perturbation\textquotesingle{}}}}
 \pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
@@ -64608,7 +65225,7 @@ Default resampling strategy.
 \index{default\_n\_runs (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id327}}
+\phantomsection\label{\detokenize{reference/api_index:id332}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_n\_runs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }50}}}
@@ -64618,7 +65235,7 @@ Default resampling strategy.
 \index{default\_resampling (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id328}}
+\phantomsection\label{\detokenize{reference/api_index:id333}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_resampling}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.ResamplingStrategy}]{\sphinxcrossref{ResamplingStrategy}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -64628,7 +65245,7 @@ Default resampling strategy.
 \index{mode (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id329}}
+\phantomsection\label{\detokenize{reference/api_index:id334}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.UncertaintyMode}]{\sphinxcrossref{UncertaintyMode}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -64713,7 +65330,7 @@ str
 \index{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id330}}
+\phantomsection\label{\detokenize{reference/api_index:id335}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{AUTO}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}auto\textquotesingle{}}}}
@@ -64723,7 +65340,7 @@ str
 \index{OFF (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id331}}
+\phantomsection\label{\detokenize{reference/api_index:id336}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{OFF}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -64733,7 +65350,7 @@ str
 \index{ON (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id332}}
+\phantomsection\label{\detokenize{reference/api_index:id337}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ON}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}on\textquotesingle{}}}}

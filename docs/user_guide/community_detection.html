@@ -198,10 +198,28 @@
 <p>py3plex provides <strong>several community detection algorithms</strong>:</p>
 <ul class="simple">
 <li><p><strong>Louvain</strong> — <strong>Fast modularity optimization</strong> (recommended for most use cases)</p></li>
+<li><p><strong>Leiden</strong> — <strong>Improved modularity optimization</strong> with better guarantees</p></li>
 <li><p><strong>Infomap</strong> — <strong>Flow-based</strong> community detection (requires external binary)</p></li>
 <li><p><strong>Label Propagation</strong> — <strong>Semi-supervised</strong> approach with known seed communities</p></li>
 <li><p><strong>Multilayer Modularity</strong> — <strong>True multilayer</strong> community detection (Mucha et al. 2010)</p></li>
+<li><p><strong>SBM (Stochastic Block Model)</strong> — <strong>Model-based</strong> approach with automatic model selection</p></li>
+<li><p><strong>DC-SBM (Degree-Corrected SBM)</strong> — <strong>Default SBM variant</strong> that accounts for degree heterogeneity</p></li>
 </ul>
+<section id="model-based-vs-objective-based-algorithms">
+<h3>Model-Based vs. Objective-Based Algorithms<a class="headerlink" href="#model-based-vs-objective-based-algorithms" title="Link to this heading"></a></h3>
+<p><strong>Objective-based algorithms</strong> (Louvain, Leiden, Infomap) optimize a quality function like modularity or code length:</p>
+<ul class="simple">
+<li><p><strong>Pros</strong>: Fast, scalable, work well on most networks</p></li>
+<li><p><strong>Cons</strong>: Number of communities not specified a priori, can be sensitive to resolution</p></li>
+</ul>
+<p><strong>Model-based algorithms</strong> (SBM, DC-SBM) fit a generative model to the network:</p>
+<ul class="simple">
+<li><p><strong>Pros</strong>: Principled model selection (automatic K), uncertainty quantification, handles degree heterogeneity (DC-SBM)</p></li>
+<li><p><strong>Cons</strong>: Computationally more expensive, requires careful parameter tuning</p></li>
+<li><p><strong>When to use</strong>: When you need to select the number of communities automatically, when degree distributions vary widely, or when you need rigorous statistical inference</p></li>
+</ul>
+<p><strong>Rule of thumb</strong>: Use <strong>Louvain/Leiden</strong> for exploratory analysis and large networks. Use <strong>DC-SBM</strong> when you need automatic model selection or degree-corrected communities.</p>
+</section>
 </section>
 <hr class="docutils" />
 <section id="louvain-algorithm">
@@ -356,6 +374,253 @@
 </ul>
 </section>
 </section>
+<section id="stochastic-block-model-sbm">
+<h2>Stochastic Block Model (SBM)<a class="headerlink" href="#stochastic-block-model-sbm" title="Link to this heading"></a></h2>
+<section id="model-based-community-detection">
+<h3>Model-Based Community Detection<a class="headerlink" href="#model-based-community-detection" title="Link to this heading"></a></h3>
+<p><strong>Stochastic Block Model (SBM)</strong> is a <strong>generative model</strong> for community structure. Unlike objective-based algorithms (Louvain, Leiden), SBM explicitly models the probability of edges based on community memberships.</p>
+<p><strong>Standard SBM:</strong></p>
+<div class="math notranslate nohighlight">
+\[P(A_{ij}=1 \mid z_i, z_j) = \theta_{z_i z_j}\]</div>
+<p><strong>Degree-Corrected SBM (DC-SBM)</strong> — <strong>Recommended default:</strong></p>
+<div class="math notranslate nohighlight">
+\[P(A_{ij}=1 \mid z_i, z_j) = \theta_i \theta_j \omega_{z_i z_j}\]</div>
+<p>DC-SBM accounts for <strong>degree heterogeneity</strong> (nodes with widely varying degrees), making it more realistic for many real-world networks.</p>
+</section>
+<section id="why-use-sbm">
+<h3>Why Use SBM?<a class="headerlink" href="#why-use-sbm" title="Link to this heading"></a></h3>
+<p><strong>Use SBM when you need:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Automatic model selection</strong> — Selects number of communities (K) via MDL/BIC</p></li>
+<li><p><strong>Degree-corrected communities</strong> — Handles hubs and low-degree nodes appropriately</p></li>
+<li><p><strong>Statistical inference</strong> — Principled likelihood-based approach</p></li>
+<li><p><strong>Uncertainty quantification</strong> — Natural support for bootstrap and perturbation UQ</p></li>
+</ol>
+<p><strong>Don’t use SBM when:</strong></p>
+<ul class="simple">
+<li><p>Network is very large (&gt;10K nodes) — Use Louvain/Leiden instead</p></li>
+<li><p>You already know the number of communities</p></li>
+<li><p>Speed is critical — SBM is slower than modularity-based methods</p></li>
+</ul>
+</section>
+<section id="basic-usage-with-autocommunity">
+<h3>Basic Usage (with AutoCommunity)<a class="headerlink" href="#basic-usage-with-autocommunity" title="Link to this heading"></a></h3>
+<p><strong>Recommended</strong>: Use via AutoCommunity runner for automatic budget management:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoCommunity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.budget</span><span class="w"> </span><span class="kn">import</span> <span class="n">BudgetSpec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_community_algorithm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run DC-SBM with AutoCommunity</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AutoCommunity</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;dc_sbm&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;sbm_log_likelihood&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="direct-usage">
+<h3>Direct Usage<a class="headerlink" href="#direct-usage" title="Link to this heading"></a></h3>
+<p><strong>For advanced users</strong>: Call runner directly with explicit budget:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_community_algorithm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.budget</span><span class="w"> </span><span class="kn">import</span> <span class="n">BudgetSpec</span>
+
+<span class="c1"># Define budget</span>
+<span class="n">budget</span> <span class="o">=</span> <span class="n">BudgetSpec</span><span class="p">(</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>      <span class="c1"># EM iterations</span>
+    <span class="n">n_restarts</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>      <span class="c1"># Random initializations</span>
+    <span class="n">uq_samples</span><span class="o">=</span><span class="kc">None</span>    <span class="c1"># No UQ (single run)</span>
+<span class="p">)</span>
+
+<span class="c1"># Run DC-SBM</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">run_community_algorithm</span><span class="p">(</span>
+    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span>
+    <span class="n">network</span><span class="o">=</span><span class="n">net</span><span class="p">,</span>
+    <span class="n">budget</span><span class="o">=</span><span class="n">budget</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">K_range</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>  <span class="c1"># Model selection range</span>
+<span class="p">)</span>
+
+<span class="c1"># Access results</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">partition</span>
+<span class="n">K_selected</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;K_selected&quot;</span><span class="p">]</span>
+<span class="n">log_likelihood</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;log_likelihood&quot;</span><span class="p">]</span>
+<span class="n">mdl</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;mdl&quot;</span><span class="p">]</span>  <span class="c1"># Lower is better</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected K=</span><span class="si">{</span><span class="n">K_selected</span><span class="si">}</span><span class="s2"> with MDL=</span><span class="si">{</span><span class="n">mdl</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="model-selection">
+<h3>Model Selection<a class="headerlink" href="#model-selection" title="Link to this heading"></a></h3>
+<p>SBM automatically selects the number of communities (K) using <strong>Minimum Description Length (MDL)</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Specify K range for model selection</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">run_community_algorithm</span><span class="p">(</span>
+    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span>
+    <span class="n">network</span><span class="o">=</span><span class="n">net</span><span class="p">,</span>
+    <span class="n">budget</span><span class="o">=</span><span class="n">BudgetSpec</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_restarts</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">K_range</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>  <span class="c1"># Try these K values</span>
+<span class="p">)</span>
+
+<span class="c1"># Best K is selected automatically</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected K: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;K_selected&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MDL score: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;mdl&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Lower = better</span>
+</pre></div>
+</div>
+<p><strong>Model selection criteria:</strong></p>
+<ul class="simple">
+<li><p><strong>ELBO</strong> (Evidence Lower Bound) — Maximize (higher is better)</p></li>
+<li><p><strong>MDL/BIC</strong> (Minimum Description Length) — Minimize (lower is better)</p></li>
+<li><p><strong>ICL</strong> (Integrated Classification Likelihood) — Minimize, penalizes fuzzy assignments</p></li>
+</ul>
+</section>
+<section id="uncertainty-quantification">
+<h3>Uncertainty Quantification<a class="headerlink" href="#uncertainty-quantification" title="Link to this heading"></a></h3>
+<p>Enable UQ via <code class="docutils literal notranslate"><span class="pre">uq_samples</span></code> in budget:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run with uncertainty quantification</span>
+<span class="n">budget_uq</span> <span class="o">=</span> <span class="n">BudgetSpec</span><span class="p">(</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">n_restarts</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">uq_samples</span><span class="o">=</span><span class="mi">20</span>  <span class="c1"># 20 bootstrap samples</span>
+<span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">run_community_algorithm</span><span class="p">(</span>
+    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span>
+    <span class="n">network</span><span class="o">=</span><span class="n">net</span><span class="p">,</span>
+    <span class="n">budget</span><span class="o">=</span><span class="n">budget_uq</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">K_range</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Access uncertainty metrics</span>
+<span class="n">ll_mean</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;log_likelihood&quot;</span><span class="p">]</span>
+<span class="n">ll_std</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;log_likelihood_std&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Log-likelihood: </span><span class="si">{</span><span class="n">ll_mean</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">ll_std</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="multilayer-networks">
+<h3>Multilayer Networks<a class="headerlink" href="#multilayer-networks" title="Link to this heading"></a></h3>
+<p>DC-SBM supports <strong>shared-membership multilayer networks</strong> where nodes have one community assignment across all layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create multilayer network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Add edges in multiple layers</span>
+<span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Run DC-SBM (automatically handles multilayer)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">run_community_algorithm</span><span class="p">(</span>
+    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span>
+    <span class="n">network</span><span class="o">=</span><span class="n">net</span><span class="p">,</span>
+    <span class="n">budget</span><span class="o">=</span><span class="n">BudgetSpec</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_restarts</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">K_range</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Partition is across all layers</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">partition</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: All layers must be <strong>node-aligned</strong> (same set of nodes across layers).</p>
+</section>
+<section id="successive-halving-with-sbm">
+<h3>Successive Halving with SBM<a class="headerlink" href="#successive-halving-with-sbm" title="Link to this heading"></a></h3>
+<p>SBM works with <strong>Successive Halving</strong> for efficient model selection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AutoCommunity</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="s2">&quot;dc_sbm&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;sbm_log_likelihood&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span>
+          <span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span>
+          <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+          <span class="n">budget0</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;n_restarts&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+          <span class="n">utility_method</span><span class="o">=</span><span class="s2">&quot;mean_minus_std&quot;</span>
+      <span class="p">)</span>
+      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Budget scaling</strong> for SBM across Successive Halving rounds:</p>
+<ul class="simple">
+<li><p><strong>Round 0</strong>: <code class="docutils literal notranslate"><span class="pre">max_iter=10,</span> <span class="pre">n_restarts=1,</span> <span class="pre">K_range=[2,3,4]</span></code></p></li>
+<li><p><strong>Round 1</strong>: <code class="docutils literal notranslate"><span class="pre">max_iter=30,</span> <span class="pre">n_restarts=3,</span> <span class="pre">K_range=[2,3,4,5,6]</span></code></p></li>
+<li><p><strong>Round 2</strong>: <code class="docutils literal notranslate"><span class="pre">max_iter=90,</span> <span class="pre">n_restarts=9,</span> <span class="pre">K_range=[2,3,4,5,6,7,8]</span></code></p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>Advantages<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Automatic K selection</strong> via MDL</p></li>
+<li><p><strong>Degree-corrected</strong> (handles heterogeneous degrees)</p></li>
+<li><p><strong>Principled statistical model</strong></p></li>
+<li><p><strong>Uncertainty quantification</strong></p></li>
+<li><p><strong>Multilayer support</strong></p></li>
+<li><p><strong>Deterministic</strong> (given seed)</p></li>
+</ul>
+</section>
+<section id="id7">
+<h3>Disadvantages<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Slower</strong> than modularity-based methods</p></li>
+<li><p><strong>Requires node-aligned multilayer networks</strong></p></li>
+<li><p><strong>More parameters</strong> to tune (max_iter, n_restarts)</p></li>
+<li><p><strong>Not suitable for very large networks</strong> (&gt;10K nodes)</p></li>
+</ul>
+</section>
+<section id="performance-recommendations">
+<h3>Performance Recommendations<a class="headerlink" href="#performance-recommendations" title="Link to this heading"></a></h3>
+<p>For <strong>small networks</strong> (&lt;100 nodes):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">BudgetSpec</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_restarts</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For <strong>medium networks</strong> (100-1000 nodes):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">BudgetSpec</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_restarts</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For <strong>large networks</strong> (1000-10000 nodes):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">BudgetSpec</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">n_restarts</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For <strong>very large networks</strong> (&gt;10000 nodes):</p>
+<p>Use Louvain/Leiden instead, or use SBM with small K_range and conservative budgets.</p>
+</section>
+<section id="sbm-metrics">
+<h3>SBM Metrics<a class="headerlink" href="#sbm-metrics" title="Link to this heading"></a></h3>
+<p>SBM provides specialized metrics for AutoCommunity:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sbm_log_likelihood</span></code> — Higher is better (maximize)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sbm_mdl</span></code> — Lower is better (minimize), MDL/BIC criterion</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sbm_n_blocks</span></code> — Number of blocks selected</p></li>
+</ul>
+<p>Use these in AutoCommunity for model comparison:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AutoCommunity</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span> <span class="s2">&quot;louvain&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;sbm_log_likelihood&quot;</span><span class="p">,</span> <span class="s2">&quot;sbm_mdl&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: SBM metrics only apply to SBM/DC-SBM algorithms. Other algorithms will have <code class="docutils literal notranslate"><span class="pre">None</span></code> values for these metrics.</p>
+</section>
+</section>
 <section id="multilayer-modularity">
 <h2>Multilayer Modularity<a class="headerlink" href="#multilayer-modularity" title="Link to this heading"></a></h2>
 <section id="true-multilayer-detection">
@@ -407,8 +672,8 @@
 <li><p><span class="math notranslate nohighlight">\(\delta(g_{i}^{[\alpha]}, g_{j}^{[\beta]})\)</span> is 1 if nodes are in the same community, 0 otherwise</p></li>
 </ul>
 </section>
-<section id="id6">
-<h3>Advantages<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<section id="id8">
+<h3>Advantages<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Accounts for multilayer structure</p></li>
 <li><p>Implements state-of-the-art algorithm</p></li>
@@ -416,8 +681,8 @@
 <li><p>Published in Science (Mucha et al. 2010)</p></li>
 </ul>
 </section>
-<section id="id7">
-<h3>Disadvantages<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<section id="id9">
+<h3>Disadvantages<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>More computationally expensive</p></li>
 <li><p>Requires parameter tuning</p></li>
@@ -859,8 +1124,8 @@
 <li><p><strong>Node confidence scores</strong>: Per-node stability measures</p></li>
 <li><p><strong>Boundary node identification</strong>: Nodes with uncertain assignments</p></li>
 </ul>
-<section id="id8">
-<h3>Basic Usage<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<section id="id10">
+<h3>Basic Usage<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_louvain_distribution</span>
 
@@ -904,8 +1169,8 @@
 </dd>
 </dl>
 </section>
-<section id="id9">
-<h3>Best Practices<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<section id="id11">
+<h3>Best Practices<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">coassoc_mode='auto'</span></code> for large networks (sparse for n_nodes &gt; 2000)</p></li>
 <li><p>Always set seed for reproducibility</p></li>
@@ -913,6 +1178,219 @@
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">weight_by='modularity'</span></code> to weight better partitions more heavily</p></li>
 </ol>
 <p>See <code class="docutils literal notranslate"><span class="pre">examples/communities/example_distributional_community_detection.py</span></code> for complete example.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="successive-halving-for-algorithm-selection">
+<h2>Successive Halving for Algorithm Selection<a class="headerlink" href="#successive-halving-for-algorithm-selection" title="Link to this heading"></a></h2>
+<p>When you don’t know which algorithm will work best, <strong>Successive Halving</strong> efficiently races multiple algorithms with increasing computational budgets, eliminating poor performers early.</p>
+<section id="id12">
+<h3>Overview<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<p>Successive Halving is a <strong>racing strategy</strong> that:</p>
+<ol class="arabic simple">
+<li><p>Starts with all candidate algorithms</p></li>
+<li><p>Evaluates on small budget (e.g., max_iter=5, uq_samples=10)</p></li>
+<li><p>Eliminates worst performers (keeps top 1/η)</p></li>
+<li><p>Increases budget and repeats with survivors</p></li>
+<li><p>Returns winner when one algorithm remains</p></li>
+</ol>
+<p><strong>Key benefits:</strong>
+- <strong>Efficient:</strong> Quickly eliminates poor algorithms
+- <strong>UQ-aware:</strong> Uses distribution-based utilities
+- <strong>Deterministic:</strong> Fully reproducible with seed
+- <strong>Provenance-rich:</strong> Complete racing history</p>
+</section>
+<section id="id13">
+<h3>Basic Usage<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoCommunity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run Successive Halving</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AutoCommunity</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="s2">&quot;label_propagation&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rounds</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Winner</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Winner: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Custom budget and utility function</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AutoCommunity</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span>
+          <span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span>
+          <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>                     <span class="c1"># Keep top 1/3 each round</span>
+          <span class="n">rounds</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>                  <span class="c1"># Number of rounds</span>
+          <span class="n">budget0</span><span class="o">=</span><span class="p">{</span>                  <span class="c1"># Initial budget</span>
+              <span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+              <span class="s2">&quot;n_restarts&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="s2">&quot;uq_samples&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="p">},</span>
+          <span class="n">budget_growth</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>         <span class="c1"># Budget scales 3x per round</span>
+          <span class="n">utility_method</span><span class="o">=</span><span class="s2">&quot;mean_minus_std&quot;</span><span class="p">,</span>  <span class="c1"># Utility function</span>
+          <span class="n">metric_weights</span><span class="o">=</span><span class="p">{</span>           <span class="c1"># Custom weights</span>
+              <span class="s2">&quot;modularity&quot;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>
+              <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
+          <span class="p">},</span>
+      <span class="p">)</span>
+      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="racing-history">
+<h3>Racing History<a class="headerlink" href="#racing-history" title="Link to this heading"></a></h3>
+<p>Access complete provenance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Racing summary</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">provenance</span><span class="p">[</span><span class="s2">&quot;racing_history&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rounds: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;rounds&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Winner: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;winner_algo_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Runtime: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;total_runtime_ms&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+
+<span class="c1"># Per-round details</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">round_rec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;rounds&quot;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Round </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Algorithms: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">&#39;algorithms&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Survivors: </span><span class="si">{</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">&#39;survivors&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Eliminated: </span><span class="si">{</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">&#39;eliminated&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show utilities</span>
+    <span class="n">utilities</span> <span class="o">=</span> <span class="n">round_rec</span><span class="p">[</span><span class="s2">&quot;utilities&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">algo</span><span class="p">,</span> <span class="n">utility</span> <span class="ow">in</span> <span class="n">utilities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">algo</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">utility</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="utility-methods">
+<h3>Utility Methods<a class="headerlink" href="#utility-methods" title="Link to this heading"></a></h3>
+<dl>
+<dt><strong>mean_minus_std</strong> (default):</dt><dd><p>U = mean(score) - λ * std(score)</p>
+<p>Balances expected performance with risk. Higher λ = more conservative.</p>
+</dd>
+<dt><strong>expected_regret</strong>:</dt><dd><p>U = -E[max(scores) - score]</p>
+<p>Minimizes expected loss relative to best.</p>
+</dd>
+<dt><strong>prob_near_best</strong>:</dt><dd><p>U = P(score ≥ max - ε)</p>
+<p>Probability of being near-optimal.</p>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use expected regret utility</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AutoCommunity</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span> <span class="n">utility_method</span><span class="o">=</span><span class="s2">&quot;expected_regret&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="with-uncertainty-quantification">
+<h3>With Uncertainty Quantification<a class="headerlink" href="#with-uncertainty-quantification" title="Link to this heading"></a></h3>
+<p>Enable UQ for stability-aware selection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AutoCommunity</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">,</span> <span class="s2">&quot;stability&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Enable UQ</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Check stability</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">community_stats</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stability: </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">stability_score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="when-to-use">
+<h3>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h3>
+<p><strong>Use Successive Halving when:</strong></p>
+<ul class="simple">
+<li><p>Testing many algorithms (&gt;5 candidates)</p></li>
+<li><p>Computational budget is limited</p></li>
+<li><p>Want efficient early elimination</p></li>
+<li><p>Clear metric preferences (weighted)</p></li>
+</ul>
+<p><strong>Use default Pareto strategy when:</strong></p>
+<ul class="simple">
+<li><p>Few candidates (&lt;5)</p></li>
+<li><p>Multi-objective without clear weights</p></li>
+<li><p>Want consensus from non-dominated set</p></li>
+<li><p>Null model calibration is critical</p></li>
+</ul>
+</section>
+<section id="id14">
+<h3>Best Practices<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Start small:</strong> budget0 with max_iter=5, uq_samples=10</p></li>
+<li><p><strong>Elimination:</strong> eta=3 for aggressive, eta=2 for conservative</p></li>
+<li><p><strong>UQ:</strong> Enable with uq_samples in budget for stability</p></li>
+<li><p><strong>Seed:</strong> Always set for reproducibility</p></li>
+<li><p><strong>Weights:</strong> Encode domain knowledge via metric_weights</p></li>
+<li><p><strong>History:</strong> Inspect racing_history to understand selection</p></li>
+</ol>
+</section>
+<section id="complete-example">
+<h3>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoCommunity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="c1"># 1. Load network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. Run Successive Halving with UQ</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AutoCommunity</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="s2">&quot;label_propagation&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">,</span> <span class="s2">&quot;stability&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span>
+          <span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span>
+          <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+          <span class="n">rounds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+          <span class="n">budget0</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;uq_samples&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">},</span>
+          <span class="n">utility_method</span><span class="o">=</span><span class="s2">&quot;mean_minus_std&quot;</span><span class="p">,</span>
+          <span class="n">metric_weights</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;modularity&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;stability&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span>
+      <span class="p">)</span>
+      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. Results</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Winner: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coverage: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">coverage</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 4. Export</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;communities.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># 5. Save provenance</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;provenance.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">provenance</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>

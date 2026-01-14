@@ -91,6 +91,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#quality-metrics">Quality Metrics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#compute-modularity">Compute Modularity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#additional-quality-metrics">Additional Quality Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-quality-metrics-guardrails">Multilayer Quality Metrics (Guardrails)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#cli-cross-reference-optional">CLI Cross-Reference (Optional)</a></li>
@@ -2357,6 +2358,187 @@ Community-level connectivity:
   Interpretation: Highly significant (real structure)
 </pre></div>
 </div>
+<p><strong>Summary of metrics:</strong></p>
+<ul class="simple">
+<li><p><strong>Modularity (Q):</strong> Overall quality, general-purpose</p></li>
+<li><p><strong>Coverage:</strong> Simple interpretability (% internal edges)</p></li>
+<li><p><strong>Performance:</strong> Balances true positives and true negatives</p></li>
+<li><p><strong>Conductance:</strong> Community boundary quality (per-community)</p></li>
+<li><p><strong>Null model:</strong> Statistical significance test</p></li>
+<li><p><strong>Replica Consistency (RC):</strong> Multilayer coherence guardrail</p></li>
+<li><p><strong>Layer Entropy (H):</strong> Degeneracy guardrail for multilayer networks</p></li>
+</ul>
+<p><strong>Recommendation:</strong> Always report modularity + at least one other metric to get a complete picture.</p>
+</section>
+<section id="multilayer-quality-metrics-guardrails">
+<h3>Multilayer Quality Metrics (Guardrails)<a class="headerlink" href="#multilayer-quality-metrics-guardrails" title="Link to this heading"></a></h3>
+<p>For multilayer community detection, two specialized quality metrics serve as <strong>guardrails</strong> against degenerate partitions:</p>
+<ol class="arabic simple">
+<li><p><strong>Replica Consistency (RC)</strong>: Measures whether replicas of the same node across layers are assigned to the same community</p></li>
+<li><p><strong>Layer Entropy (H)</strong>: Measures the balance of community sizes within each layer, averaged across layers</p></li>
+</ol>
+<p><strong>What are guardrails?</strong></p>
+<p>Guardrails are metrics that detect pathological partitions but are not primary optimization objectives. They ensure that:</p>
+<ul class="simple">
+<li><p>Communities respect node identity across layers (RC)</p></li>
+<li><p>Partitions are not degenerate giant clusters or extreme fragmentation (H)</p></li>
+</ul>
+<p><strong>Replica Consistency:</strong></p>
+<p>Formula: For each node v with replicas in L_v layers (<a href="#id3"><span class="problematic" id="id4">|L_v|</span></a> ≥ 2):</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}RC(v) = \frac{2}{|L_v|(|L_v|-1)} \sum_{\ell_i &lt; \ell_j} 1[c(v,\ell_i) = c(v,\ell_j)]\\RC = \frac{1}{|\{v: |L_v|\ge 2\}|} \sum_v RC(v)\end{aligned}\end{align} \]</div>
+<p>RC ranges from 0 to 1:</p>
+<ul class="simple">
+<li><p><strong>RC = 1.0</strong>: All replicas of each node have the same community (perfect coherence)</p></li>
+<li><p><strong>RC = 0.0</strong>: No agreement (random assignment)</p></li>
+<li><p><strong>RC ∈ (0,1)</strong>: Partial consistency</p></li>
+</ul>
+<p><strong>Layer Entropy:</strong></p>
+<p>Formula: For each layer ℓ with C_ℓ communities:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}H_\ell = -\sum_i p_i^\ell \log(p_i^\ell) / \log(|C_\ell|)\\H = \text{mean}_\ell(H_\ell), \quad \text{clipped to } [0.1, 0.9]\end{aligned}\end{align} \]</div>
+<p>H ranges from 0.1 to 0.9 (clipped):</p>
+<ul class="simple">
+<li><p><strong>H ≈ 0.9</strong>: Balanced communities in all layers</p></li>
+<li><p><strong>H ≈ 0.1</strong>: Giant cluster or extreme fragmentation (degenerate)</p></li>
+<li><p><strong>H ∈ (0.1,0.9)</strong>: Normal partition</p></li>
+</ul>
+<p><strong>Usage example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_quality_metrics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">replica_consistency</span><span class="p">,</span>
+    <span class="n">layer_entropy</span>
+<span class="p">)</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;datasets/synthetic_multilayer.txt&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Detect communities</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Compute multilayer quality metrics</span>
+<span class="n">rc</span> <span class="o">=</span> <span class="n">replica_consistency</span><span class="p">(</span><span class="n">communities</span><span class="p">,</span> <span class="n">network</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">layer_entropy</span><span class="p">(</span><span class="n">communities</span><span class="p">,</span> <span class="n">network</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Replica Consistency: </span><span class="si">{</span><span class="n">rc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer Entropy: </span><span class="si">{</span><span class="n">h</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Interpret</span>
+<span class="k">if</span> <span class="n">rc</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ High replica consistency (nodes coherent across layers)&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">rc</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ⚠ Low replica consistency (nodes fragmented across layers)&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  → Moderate replica consistency&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ High layer entropy (balanced communities)&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ⚠ Low layer entropy (degenerate partition)&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  → Moderate layer entropy&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Replica Consistency: 0.8765
+Layer Entropy: 0.7234
+  ✓ High replica consistency (nodes coherent across layers)
+  ✓ High layer entropy (balanced communities)
+</pre></div>
+</div>
+<p><strong>Comparison: good vs. bad partitions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good partition: coherent and balanced</span>
+<span class="n">good_partition</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Bad partition 1: giant cluster (low entropy)</span>
+<span class="n">giant_cluster</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Bad partition 2: fragmented replicas (low RC)</span>
+<span class="n">fragmented</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">6</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">7</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">):</span> <span class="mi">9</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">):</span> <span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;layer3&#39;</span><span class="p">):</span> <span class="mi">11</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Good partition:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RC=</span><span class="si">{</span><span class="n">replica_consistency</span><span class="p">(</span><span class="n">good_partition</span><span class="p">,</span><span class="w"> </span><span class="n">network</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, H=</span><span class="si">{</span><span class="n">layer_entropy</span><span class="p">(</span><span class="n">good_partition</span><span class="p">,</span><span class="w"> </span><span class="n">network</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Giant cluster (degenerate):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RC=</span><span class="si">{</span><span class="n">replica_consistency</span><span class="p">(</span><span class="n">giant_cluster</span><span class="p">,</span><span class="w"> </span><span class="n">network</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, H=</span><span class="si">{</span><span class="n">layer_entropy</span><span class="p">(</span><span class="n">giant_cluster</span><span class="p">,</span><span class="w"> </span><span class="n">network</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Fragmented replicas (incoherent):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RC=</span><span class="si">{</span><span class="n">replica_consistency</span><span class="p">(</span><span class="n">fragmented</span><span class="p">,</span><span class="w"> </span><span class="n">network</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, H=</span><span class="si">{</span><span class="n">layer_entropy</span><span class="p">(</span><span class="n">fragmented</span><span class="p">,</span><span class="w"> </span><span class="n">network</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Good partition:
+  RC=1.000, H=0.900
+
+Giant cluster (degenerate):
+  RC=1.000, H=0.100
+
+Fragmented replicas (incoherent):
+  RC=0.000, H=0.900
+</pre></div>
+</div>
+<p><strong>Integration with AutoCommunity:</strong></p>
+<p>These metrics are automatically included in AutoCommunity’s multi-objective evaluation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">auto_select_community</span>
+
+<span class="c1"># AutoCommunity will use these metrics as guardrails</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">auto_select_community</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">fast</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Access metrics from evaluation matrix</span>
+<span class="n">eval_matrix</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">evaluation_matrix</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All metrics computed:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eval_matrix</span><span class="p">[[</span><span class="s1">&#39;algorithm_id&#39;</span><span class="p">,</span> <span class="s1">&#39;modularity&#39;</span><span class="p">,</span> <span class="s1">&#39;replica_consistency&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_entropy&#39;</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p><strong>When to use these metrics:</strong></p>
+<ul class="simple">
+<li><p><strong>RC</strong>: When node identity across layers is important (e.g., same protein in different interaction types)</p></li>
+<li><p><strong>H</strong>: To detect degenerate partitions (giant clusters or extreme fragmentation)</p></li>
+<li><p><strong>Both</strong>: As sanity checks after multilayer community detection</p></li>
+<li><p><strong>AutoCommunity</strong>: These are included by default; they contribute ~22% total weight in the default metric set</p></li>
+</ul>
+<p><strong>Typical ranges:</strong></p>
+<ul class="simple">
+<li><p><strong>RC &gt; 0.8</strong>: Excellent replica consistency</p></li>
+<li><p><strong>RC ∈ [0.5, 0.8]</strong>: Good consistency</p></li>
+<li><p><strong>RC &lt; 0.5</strong>: Poor consistency (investigate layer-specific communities)</p></li>
+<li><p><strong>H &gt; 0.7</strong>: Well-balanced communities</p></li>
+<li><p><strong>H ∈ [0.3, 0.7]</strong>: Normal range</p></li>
+<li><p><strong>H &lt; 0.3</strong>: Degenerate partition (too few or too many communities)</p></li>
+</ul>
+<p><strong>Performance characteristics:</strong></p>
+<ul class="simple">
+<li><p><strong>RC</strong>: O(Σ_v <a href="#id1"><span class="problematic" id="id2">|</span></a>L_v|^2) where L_v is layers per node (efficient count-based implementation)</p></li>
+<li><p><strong>H</strong>: O(<a href="#id5"><span class="problematic" id="id6">|assignments|</span></a>) linear in node-layer assignments</p></li>
+<li><p><strong>Both</strong>: Fast enough for large networks (&lt; 1 second for 10,000 node-layers)</p></li>
+</ul>
+<p><strong>Label-permutation invariance:</strong></p>
+<p>RC is <strong>label-permutation invariant</strong>: it only compares community labels within each node across layers. Different algorithms can produce arbitrary label numbering, and RC will still work correctly.</p>
 <p><strong>Summary of metrics:</strong></p>
 <ul class="simple">
 <li><p><strong>Modularity (Q):</strong> Overall quality, general-purpose</p></li>
