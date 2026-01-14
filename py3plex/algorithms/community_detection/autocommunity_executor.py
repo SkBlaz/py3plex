@@ -374,6 +374,28 @@ def _run_candidate_algorithms(
                 }
                 continue  # Skip the standard result packaging below
             
+            elif algo_name == "infomap":
+                # Run infomap
+                from py3plex.algorithms.community_detection.community_wrapper import infomap_communities
+                # Note: UQ not yet supported for infomap
+                if uq_config:
+                    warnings.warn(
+                        "UQ not yet implemented for infomap, running without UQ",
+                        stacklevel=2
+                    )
+                try:
+                    partition_dict = infomap_communities(
+                        network,
+                        multiplex=True,
+                        verbose=False,
+                        seed=seed,
+                    )
+                    uq_data = None
+                except Exception as e:
+                    # If infomap fails (e.g., binary not found), skip gracefully
+                    warnings.warn(f"Infomap failed: {e}. Skipping this algorithm.", stacklevel=2)
+                    continue
+
             else:
                 warnings.warn(f"Algorithm '{algo_name}' not implemented yet", stacklevel=2)
                 continue
@@ -412,6 +434,10 @@ def _evaluate_algorithms(
         DataFrame with rows=algorithms, columns=metrics
     """
     from py3plex.algorithms.community_detection import multilayer_modularity
+    from py3plex.algorithms.community_detection.multilayer_quality_metrics import (
+        replica_consistency,
+        layer_entropy,
+    )
     
     rows = []
     
@@ -468,6 +494,14 @@ def _evaluate_algorithms(
                     # Placeholder for now
                     value = 0.0
                 
+                elif metric_name == "replica_consistency":
+                    # Multilayer coherence metric
+                    value = replica_consistency(partition, network)
+
+                elif metric_name == "layer_entropy":
+                    # Multilayer degeneracy guardrail
+                    value = layer_entropy(partition, network)
+
                 else:
                     warnings.warn(f"Metric '{metric_name}' not implemented", stacklevel=2)
                     value = 0.0
@@ -539,6 +573,18 @@ def _compute_null_model_scores(
                             seed=seed,
                         )
                         null_partition = null_leiden.partition
+                    elif algo_name == "infomap":
+                        from py3plex.algorithms.community_detection.community_wrapper import infomap_communities
+                        try:
+                            null_partition = infomap_communities(
+                                null_network,
+                                multiplex=True,
+                                verbose=False,
+                                seed=seed,
+                            )
+                        except Exception:
+                            # Skip if infomap fails on null model
+                            continue
                     else:
                         continue
                     
@@ -630,6 +676,8 @@ def _pareto_selection(
         'coverage': 'max',
         'entropy': 'min',  # Lower is better
         'mdl': 'min',  # Lower is better
+        'replica_consistency': 'max',  # Higher is better (multilayer coherence)
+        'layer_entropy': 'max',  # Higher is better (degeneracy guardrail)
     }
     
     # Extract metric columns

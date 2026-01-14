@@ -2886,11 +2886,29 @@ result = (
 
 **Metric Buckets**:
 - `objective`: Modularity, objective scores (cap: 30)
-- `structure`: Coverage, cut ratio, density (cap: 30)
-- `sanity`: Singleton fraction, size entropy, community count deviation (cap: 30)
+- `structure`: Coverage, cut ratio, density, **replica_consistency** (cap: 30)
+- `sanity`: Singleton fraction, size entropy, community count deviation, **layer_entropy** (cap: 30)
 - `stability`: Node entropy, VI, NMI from UQ (cap: 30, requires `uq=True`)
 - `runtime`: Execution time (cap: 10)
 - `predictive`: Reserved for future use (cap: 30)
+
+**Multilayer Quality Metrics (Guardrails)**:
+
+Two multilayer-specific metrics serve as guardrails against degenerate partitions:
+
+1. **replica_consistency** (bucket: structure, weight: 0.15):
+   - Measures whether replicas of the same node across layers are assigned to the same community
+   - Range: [0, 1], where 1.0 = perfect coherence, 0.0 = random
+   - Formula: For each node v, compute pairwise agreement of community labels across layers
+   - Label-permutation invariant (compares labels within-node only)
+   - Typical ranges: >0.8 = excellent, 0.5-0.8 = good, <0.5 = poor
+
+2. **layer_entropy** (bucket: sanity, weight: 0.07):
+   - Measures the balance of community sizes within each layer, averaged across layers
+   - Range: [0.1, 0.9] (clipped to prevent extreme values)
+   - Formula: Normalized Shannon entropy of community sizes per layer, then averaged
+   - Clipping prevents giant clusters (H→0) or extreme fragmentation from dominating
+   - Typical ranges: >0.7 = well-balanced, 0.3-0.7 = normal, <0.3 = degenerate
 
 **When to use**:
 - Exploring new datasets without prior knowledge of best algorithm

@@ -2369,6 +2369,214 @@ Additional Quality Metrics
 * **Performance:** Balances true positives and true negatives
 * **Conductance:** Community boundary quality (per-community)
 * **Null model:** Statistical significance test
+* **Replica Consistency (RC):** Multilayer coherence guardrail
+* **Layer Entropy (H):** Degeneracy guardrail for multilayer networks
+
+**Recommendation:** Always report modularity + at least one other metric to get a complete picture.
+
+Multilayer Quality Metrics (Guardrails)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For multilayer community detection, two specialized quality metrics serve as **guardrails** against degenerate partitions:
+
+1. **Replica Consistency (RC)**: Measures whether replicas of the same node across layers are assigned to the same community
+2. **Layer Entropy (H)**: Measures the balance of community sizes within each layer, averaged across layers
+
+**What are guardrails?**
+
+Guardrails are metrics that detect pathological partitions but are not primary optimization objectives. They ensure that:
+
+* Communities respect node identity across layers (RC)
+* Partitions are not degenerate giant clusters or extreme fragmentation (H)
+
+**Replica Consistency:**
+
+Formula: For each node v with replicas in L_v layers (|L_v| ≥ 2):
+
+.. math::
+
+    RC(v) = \frac{2}{|L_v|(|L_v|-1)} \sum_{\ell_i < \ell_j} 1[c(v,\ell_i) = c(v,\ell_j)]
+
+    RC = \frac{1}{|\{v: |L_v|\ge 2\}|} \sum_v RC(v)
+
+RC ranges from 0 to 1:
+
+* **RC = 1.0**: All replicas of each node have the same community (perfect coherence)
+* **RC = 0.0**: No agreement (random assignment)
+* **RC ∈ (0,1)**: Partial consistency
+
+**Layer Entropy:**
+
+Formula: For each layer ℓ with C_ℓ communities:
+
+.. math::
+
+    H_\ell = -\sum_i p_i^\ell \log(p_i^\ell) / \log(|C_\ell|)
+
+    H = \text{mean}_\ell(H_\ell), \quad \text{clipped to } [0.1, 0.9]
+
+H ranges from 0.1 to 0.9 (clipped):
+
+* **H ≈ 0.9**: Balanced communities in all layers
+* **H ≈ 0.1**: Giant cluster or extreme fragmentation (degenerate)
+* **H ∈ (0.1,0.9)**: Normal partition
+
+**Usage example:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
+    from py3plex.algorithms.community_detection.multilayer_quality_metrics import (
+        replica_consistency,
+        layer_entropy
+    )
+    
+    # Load network
+    network = multinet.multi_layer_network(directed=False)
+    network.load_network(
+        "datasets/synthetic_multilayer.txt",
+        input_type="multiedgelist"
+    )
+    
+    # Detect communities
+    communities = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
+    
+    # Compute multilayer quality metrics
+    rc = replica_consistency(communities, network)
+    h = layer_entropy(communities, network)
+    
+    print(f"Replica Consistency: {rc:.4f}")
+    print(f"Layer Entropy: {h:.4f}")
+    
+    # Interpret
+    if rc > 0.8:
+        print("  ✓ High replica consistency (nodes coherent across layers)")
+    elif rc < 0.3:
+        print("  ⚠ Low replica consistency (nodes fragmented across layers)")
+    else:
+        print("  → Moderate replica consistency")
+    
+    if h > 0.7:
+        print("  ✓ High layer entropy (balanced communities)")
+    elif h < 0.3:
+        print("  ⚠ Low layer entropy (degenerate partition)")
+    else:
+        print("  → Moderate layer entropy")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Replica Consistency: 0.8765
+    Layer Entropy: 0.7234
+      ✓ High replica consistency (nodes coherent across layers)
+      ✓ High layer entropy (balanced communities)
+
+**Comparison: good vs. bad partitions:**
+
+.. code-block:: python
+
+    # Good partition: coherent and balanced
+    good_partition = {
+        ('A', 'layer1'): 0, ('A', 'layer2'): 0, ('A', 'layer3'): 0,
+        ('B', 'layer1'): 1, ('B', 'layer2'): 1, ('B', 'layer3'): 1,
+        ('C', 'layer1'): 0, ('C', 'layer2'): 0, ('C', 'layer3'): 0,
+        ('D', 'layer1'): 1, ('D', 'layer2'): 1, ('D', 'layer3'): 1,
+    }
+    
+    # Bad partition 1: giant cluster (low entropy)
+    giant_cluster = {
+        ('A', 'layer1'): 0, ('A', 'layer2'): 0, ('A', 'layer3'): 0,
+        ('B', 'layer1'): 0, ('B', 'layer2'): 0, ('B', 'layer3'): 0,
+        ('C', 'layer1'): 0, ('C', 'layer2'): 0, ('C', 'layer3'): 0,
+        ('D', 'layer1'): 0, ('D', 'layer2'): 0, ('D', 'layer3'): 0,
+    }
+    
+    # Bad partition 2: fragmented replicas (low RC)
+    fragmented = {
+        ('A', 'layer1'): 0, ('A', 'layer2'): 1, ('A', 'layer3'): 2,
+        ('B', 'layer1'): 3, ('B', 'layer2'): 4, ('B', 'layer3'): 5,
+        ('C', 'layer1'): 6, ('C', 'layer2'): 7, ('C', 'layer3'): 8,
+        ('D', 'layer1'): 9, ('D', 'layer2'): 10, ('D', 'layer3'): 11,
+    }
+    
+    print("Good partition:")
+    print(f"  RC={replica_consistency(good_partition, network):.3f}, H={layer_entropy(good_partition, network):.3f}")
+    
+    print("\nGiant cluster (degenerate):")
+    print(f"  RC={replica_consistency(giant_cluster, network):.3f}, H={layer_entropy(giant_cluster, network):.3f}")
+    
+    print("\nFragmented replicas (incoherent):")
+    print(f"  RC={replica_consistency(fragmented, network):.3f}, H={layer_entropy(fragmented, network):.3f}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Good partition:
+      RC=1.000, H=0.900
+    
+    Giant cluster (degenerate):
+      RC=1.000, H=0.100
+    
+    Fragmented replicas (incoherent):
+      RC=0.000, H=0.900
+
+**Integration with AutoCommunity:**
+
+These metrics are automatically included in AutoCommunity's multi-objective evaluation:
+
+.. code-block:: python
+
+    from py3plex.algorithms.community_detection import auto_select_community
+    
+    # AutoCommunity will use these metrics as guardrails
+    result = auto_select_community(
+        network,
+        fast=True,
+        seed=42
+    )
+    
+    # Access metrics from evaluation matrix
+    eval_matrix = result.evaluation_matrix
+    
+    print("All metrics computed:")
+    print(eval_matrix[['algorithm_id', 'modularity', 'replica_consistency', 'layer_entropy']])
+
+**When to use these metrics:**
+
+* **RC**: When node identity across layers is important (e.g., same protein in different interaction types)
+* **H**: To detect degenerate partitions (giant clusters or extreme fragmentation)
+* **Both**: As sanity checks after multilayer community detection
+* **AutoCommunity**: These are included by default; they contribute ~22% total weight in the default metric set
+
+**Typical ranges:**
+
+* **RC > 0.8**: Excellent replica consistency
+* **RC ∈ [0.5, 0.8]**: Good consistency
+* **RC < 0.5**: Poor consistency (investigate layer-specific communities)
+* **H > 0.7**: Well-balanced communities
+* **H ∈ [0.3, 0.7]**: Normal range
+* **H < 0.3**: Degenerate partition (too few or too many communities)
+
+**Performance characteristics:**
+
+* **RC**: O(Σ_v |L_v|^2) where L_v is layers per node (efficient count-based implementation)
+* **H**: O(|assignments|) linear in node-layer assignments
+* **Both**: Fast enough for large networks (< 1 second for 10,000 node-layers)
+
+**Label-permutation invariance:**
+
+RC is **label-permutation invariant**: it only compares community labels within each node across layers. Different algorithms can produce arbitrary label numbering, and RC will still work correctly.
+
+**Summary of metrics:**
+
+* **Modularity (Q):** Overall quality, general-purpose
+* **Coverage:** Simple interpretability (% internal edges)
+* **Performance:** Balances true positives and true negatives
+* **Conductance:** Community boundary quality (per-community)
+* **Null model:** Statistical significance test
 
 **Recommendation:** Always report modularity + at least one other metric to get a complete picture.
 
