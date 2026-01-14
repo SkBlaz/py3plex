@@ -145,6 +145,12 @@ from .runner import (
 from .reducers.base import (
     Reducer,
 )
+from .stratification import (
+    StratificationSpec,
+    auto_select_strata,
+    compute_composite_strata,
+    compute_variance_reduction_ratio,
+)
 
 __all__ = [
     # Core stat types
@@ -224,4 +230,9 @@ __all__ = [
     "UQResult",
     "run_uq",
     "Reducer",
+    # Stratification
+    "StratificationSpec",
+    "auto_select_strata",
+    "compute_composite_strata",
+    "compute_variance_reduction_ratio",
 ]

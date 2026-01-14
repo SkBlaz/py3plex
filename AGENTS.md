@@ -2121,6 +2121,61 @@ result = (
 )
 ```
 
+**Stratified Perturbation** (NEW - Variance-Reduced):
+```python
+# Auto-select stratification dimensions
+result = (
+    Q.nodes()
+     .compute("betweenness_centrality")
+     .uq(method="stratified_perturbation", n_samples=100, edge_drop_p=0.1, seed=42)
+     .execute(net)
+)
+
+# Explicit stratification by degree with custom bins
+result = (
+    Q.nodes()
+     .compute("pagerank")
+     .uq(
+         method="stratified_perturbation",
+         n_samples=100,
+         strata=["degree"],
+         bins={"degree": 5},
+         edge_drop_p=0.05,
+         seed=42
+     )
+     .execute(net)
+)
+
+# Composite stratification (degree + layer)
+result = (
+    Q.nodes()
+     .compute("clustering")
+     .uq(
+         method="stratified_perturbation",
+         n_samples=100,
+         strata=["degree", "layer"],
+         bins={"degree": 5},
+         edge_drop_p=0.1,
+         seed=42
+     )
+     .execute(net)
+)
+
+# Edge stratification (layer_pair for edge metrics)
+result = (
+    Q.edges()
+     .compute("edge_betweenness_centrality")
+     .uq(
+         method="stratified_perturbation",
+         n_samples=100,
+         strata=["layer_pair"],
+         edge_drop_p=0.1,
+         seed=42
+     )
+     .execute(net)
+)
+```
+
 **Multi-seed (Deterministic Metrics)**:
 ```python
 result = (
@@ -2130,6 +2185,24 @@ result = (
      .execute(net)
 )
 ```
+
+### Stratified Perturbation Features
+
+**Variance Reduction**: Stratified resampling preserves key network structure (degree distribution, layer densities, edge weight distribution) during perturbation, reducing estimator variance without increasing sample count.
+
+**Stratification Dimensions**:
+- `degree`: Node degree quantiles (default for node queries)
+- `layer`: Per-layer grouping
+- `layer_pair`: Source-destination layer pairs (default for edge queries)
+- `weight`: Edge weight quantiles
+
+**Auto-Selection**: If `strata` is omitted or `None`, py3plex automatically selects appropriate dimensions based on query type.
+
+**Deterministic**: Same seed → identical results across runs and parallel executions (uses `numpy.random.SeedSequence`).
+
+**Metadata**: Results include stratification info in `result.meta["stratification"]` and `result.meta["n_strata"]`.
+
+**Fallback**: If stratification is infeasible (e.g., network too small, no meaningful strata), automatically falls back to regular perturbation.
 
 ### Bootstrap Units
 
@@ -2249,6 +2322,56 @@ print(result.meta["uq"]["stability"])  # VI, NMI, etc.
 
 **Node Entropy**: Low (<0.5) = consistent, High (>1.0) = ambiguous
 **Confidence**: High (>0.8) = clear, Low (<0.6) = boundary node
+
+
+### When to Use Which UQ Method
+
+**Use `stratified_perturbation` when**:
+- You want **lower variance** estimates without increasing sample count
+- Network has **heterogeneous structure** (varying degrees, multiple layers, weighted edges)
+- You need **production-quality** confidence intervals with fewer samples
+- Computing metrics is expensive and you want to minimize runs
+- Network structure should be preserved during uncertainty estimation
+
+**Use `perturbation` when**:
+- You want simple, general-purpose uncertainty estimation
+- Network is small or homogeneous
+- Stratification overhead is not worthwhile
+- You want the most straightforward approach
+
+**Use `bootstrap` when**:
+- You need to test **sampling variability**
+- You want to understand effect of data collection biases
+- You're performing hypothesis testing via resampling
+
+**Use `seed` when**:
+- The metric itself is stochastic (e.g., community detection)
+- You want to quantify algorithmic randomness
+- Network structure should **not** be perturbed
+
+
+### Agent Guidelines for UQ
+
+**When building pipelines**:
+1. Default to `stratified_perturbation` for production-quality UQ with minimal cost
+2. Use `n_samples=100` for stratified (equivalent to `n_samples=200+` for regular perturbation)
+3. Always specify `seed` for reproducibility
+4. Let auto-selection choose stratification dimensions unless you have domain knowledge
+
+**Example Decision Tree**:
+```python
+# High-stakes analysis requiring tight CIs → stratified_perturbation
+Q.nodes().compute("pagerank").uq(method="stratified_perturbation", n_samples=100, seed=42).execute(net)
+
+# Quick exploratory analysis → perturbation
+Q.nodes().compute("degree").uq(method="perturbation", n_samples=50, edge_drop_p=0.1, seed=42).execute(net)
+
+# Stochastic algorithm (Leiden) → seed
+Q.nodes().community(method="leiden").uq(method="seed", n_samples=50, seed=42).execute(net)
+
+# Testing data robustness → bootstrap
+Q.nodes().compute("betweenness").uq(method="bootstrap", bootstrap_unit="edges", n_samples=100, seed=42).execute(net)
+```
 
 
 ### Sensitivity Analysis

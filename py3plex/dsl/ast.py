@@ -204,16 +204,20 @@ class UQConfig:
     overridden on a per-metric basis.
 
     Attributes:
-        method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
+        method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 
+                'null_model', 'stratified_perturbation')
         n_samples: Number of samples for uncertainty estimation
         ci: Confidence interval level (e.g., 0.95 for 95% CI)
         seed: Random seed for reproducibility
-        kwargs: Additional method-specific parameters (e.g., bootstrap_unit, bootstrap_mode)
+        kwargs: Additional method-specific parameters (e.g., bootstrap_unit, bootstrap_mode,
+                strata, bins for stratified_perturbation)
 
     Example:
         >>> uq = UQConfig(method="perturbation", n_samples=100, ci=0.95, seed=42)
         >>> uq = UQConfig(method="bootstrap", n_samples=200, ci=0.95,
         ...               kwargs={"bootstrap_unit": "edges", "bootstrap_mode": "resample"})
+        >>> uq = UQConfig(method="stratified_perturbation", n_samples=100, ci=0.95, seed=42,
+        ...               kwargs={"strata": ["degree", "layer"], "bins": {"degree": 5}})
     """
 
     method: Optional[str] = None
