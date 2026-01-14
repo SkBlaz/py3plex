@@ -28,52 +28,43 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 ```python
 from py3plex.core import datasets
 from py3plex.dsl import Q
-from py3plex.algorithms.community_detection import auto_select_community
 
-# 1. Load a built-in multilayer biological network (~500 nodes, 4 layers)
+# Load a built-in multilayer biological network (~500 nodes, 4 layers)
 network = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
 
-# 2. Automated community detection with multi-objective Pareto selection
-best = auto_select_community(
-    network,
-    mode="pareto",          # Multi-objective optimization (no single objective)
-    fast=False,             # Full evaluation
-    uq=True,                # Uncertainty quantification enabled
-    uq_n_samples=30,        # Robustness via 30 perturbed runs
-    uq_method="seed",       # Vary random seeds for stability assessment
-    seed=42,                # Reproducibility
-)
-
-# Assign discovered communities and stability scores to network
-network.assign_partition(best.partition)
-if hasattr(best, 'community_stats') and best.community_stats.node_confidence:
-    for (node, layer), conf in best.community_stats.node_confidence.items():
-        network.set_node_attribute(f"{node}_{layer}", "community_stability", conf)
-    for (node, layer), comm_id in best.partition.items():
-        network.set_node_attribute(f"{node}_{layer}", "community_id", comm_id)
-
-# 3. Find master regulator candidates with uncertainty quantification
+# Find key regulator candidates with integrated community detection and uncertainty quantification
 master_regulators = (
-    Q.nodes()
-     .node_type("gene")                        # Filter by node type
-     .where(degree__gt=3)                      # Remove peripheral genes
-     .compute("degree_centrality", "betweenness_centrality", "pagerank")
-     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)  # Quantify confidence
-     .per_layer()                              # Group by layer
+    Q.communities(                           # Automated community detection (NEW!)
+        mode="pareto",                       # Multi-objective Pareto selection
+        fast=False,                          # Full evaluation (not fast mode)
+        uq=True,                             # Uncertainty quantification enabled
+        uq_n_samples=30,                     # Robustness via 30 perturbed runs
+        uq_method="seed",                    # Vary random seeds for stability
+        seed=42,                             # Reproducibility
+        write_attrs={                        # Attribute names for community info
+            "community_id": "community_id",
+            "community_stability": "community_stability",
+        },
+    )
+    .nodes()                                 # Switch to node-level analysis
+    .where(degree__gt=3)                     # Remove peripheral nodes
+    .compute("degree_centrality", "betweenness_centrality", "pagerank")
+    .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)  # Quantify confidence
+    .per_layer()                             # Group by layer
         .top_k(30, "betweenness_centrality__mean")  # Top 30 per layer by mean
-     .end_grouping()
-     .coverage(mode="at_least", k=2)           # Keep genes that are hubs in ≥2 layers
-     .mutate(                                  # Create derived influence score
-         score=lambda row: (
-             0.5 * row.get("betweenness_centrality__mean", 0) +
-             0.3 * row.get("pagerank__mean", 0) +
-             0.2 * row.get("degree_centrality__mean", 0)
-         )
-     )
-     .sort(by="score", descending=True)
-     .limit(20)                                # Final top 20 candidates
-     .explain(neighbors_top=5)                 # Enrich: community ID, top 5 partners, layers
-     .execute(network)
+    .end_grouping()
+    .coverage(mode="at_least", k=2)          # Keep nodes that are hubs in ≥2 layers
+    .mutate(                                 # Create derived influence score
+        score=lambda row: (
+            0.5 * row.get("betweenness_centrality__mean", 0) +
+            0.3 * row.get("pagerank__mean", 0) +
+            0.2 * row.get("degree_centrality__mean", 0)
+        )
+    )
+    .sort(by="score", descending=True)
+    .limit(20)                               # Final top 20 candidates
+    .explain(neighbors_top=5)                # Enrich: community ID, top 5 partners, layers
+    .execute(network)
 )
 
 df = master_regulators.to_pandas(expand_uncertainty=True, expand_explanations=True)
@@ -94,10 +85,11 @@ print(df[["id", "layer", "community_id",
 
 
 **Key features demonstrated:**
+- **Streamlined API**: Community detection integrated directly into the DSL query chain
 - **AutoCommunity**: Multi-objective Pareto-optimal selection across algorithms (Louvain, Leiden, etc.)
 - **Uncertainty Quantification**: Confidence intervals for both community detection and centrality measures
-- **Cross-layer analysis**: `.coverage(mode="at_least", k=2)` keeps only genes that are hubs in ≥2 layers
-- **Interpretability**: `.explain()` enriches results with community IDs (from partition), top interaction partners, and layer presence
+- **Cross-layer analysis**: `.coverage(mode="at_least", k=2)` keeps only nodes that are hubs in ≥2 layers
+- **Interpretability**: `.explain()` enriches results with community IDs, top interaction partners, and layer presence
 - **Composite scoring**: Weighted combination of multiple centrality measures for robust ranking
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
