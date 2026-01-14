@@ -443,6 +443,47 @@ def test_query_workflow(tmp_path):
 
 
 @pytest.mark.integration
+def test_query_workflow_dslv2(tmp_path):
+    """Test load -> DSL v2 query workflow."""
+    from py3plex.core import multinet
+    from py3plex.dsl import Q
+    from py3plex_mcp.registry import get_registry
+    from py3plex_mcp.schemas import format_query_result
+
+    # Create test network (multiedgelist format)
+    test_file = tmp_path / "test.csv"
+    test_file.write_text("A layer1 B layer1\nB layer1 C layer1\nC layer1 D layer1\n")
+
+    net = multinet.multi_layer_network(directed=False)
+    net.load_network(str(test_file), input_type="multiedgelist")
+
+    # Add to registry
+    registry = get_registry()
+    registry.clear()
+    net_id = registry.add(net, source=str(test_file))
+
+    # Execute DSL v2 query
+    result = Q.nodes().execute(net, progress=False)
+
+    # Format result
+    formatted = format_query_result(result, limit=2)
+
+    assert "result" in formatted
+    assert formatted["truncated"] in [True, False]
+    assert "nodes" in formatted["result"] or "edges" in formatted["result"]
+
+    # Test with computed metrics
+    result_with_compute = Q.nodes().compute("degree").execute(net, progress=False)
+    formatted_compute = format_query_result(result_with_compute, limit=10)
+
+    assert "result" in formatted_compute
+    assert "computed" in formatted_compute["result"]
+
+    # Clean up
+    registry.clear()
+
+
+@pytest.mark.integration
 def test_export_workflow(tmp_path):
     """Test export workflow."""
     from py3plex_mcp.safe_paths import make_unique_filename, resolve_out_dir

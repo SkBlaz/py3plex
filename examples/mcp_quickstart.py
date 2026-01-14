@@ -50,14 +50,15 @@ SKIP_CI: true - This is a documentation file showing JSON examples, not executab
 
 
 # ==============================================================================
-# Example 2: Query Network
+# Example 2: Query Network (Legacy DSL)
 # ==============================================================================
 
-# Tool call: py3plex.run_query
+# Tool call: py3plex.run_query (legacy DSL)
 {
     "net_id": "abc12345",
     "query": "SELECT nodes WHERE degree > 10 COMPUTE pagerank",
-    "limit": 50
+    "limit": 50,
+    "use_v2": False
 }
 
 # Response:
@@ -70,21 +71,100 @@ SKIP_CI: true - This is a documentation file showing JSON examples, not executab
     },
     "net_id": "abc12345",
     "query": "SELECT nodes WHERE degree > 10 COMPUTE pagerank",
+    "dsl_version": "legacy",
     "result": {
-        "target": "nodes",
         "nodes": [
             {"node": "Alice", "layer": "social", "degree": 15, "pagerank": 0.023},
             {"node": "Bob", "layer": "social", "degree": 12, "pagerank": 0.019},
             # ... more nodes
         ],
-        "count": 23
+        "computed": {
+            "pagerank": {...}
+        },
+        "meta": {}
     },
     "truncated": False
 }
 
 
 # ==============================================================================
-# Example 3: Community Detection
+# Example 3: Query Network (DSL v2 - Recommended)
+# ==============================================================================
+
+# Tool call: py3plex.run_query (DSL v2)
+{
+    "net_id": "abc12345",
+    "query": "Q.nodes().where(degree__gt=10).compute('pagerank').order_by('pagerank', desc=True).limit(20)",
+    "limit": 50,
+    "use_v2": True
+}
+
+# Response:
+{
+    "meta": {
+        "ok": True,
+        "tool": "py3plex.run_query",
+        "truncated": False,
+        "timestamp": 1704988815.0
+    },
+    "net_id": "abc12345",
+    "query": "Q.nodes().where(degree__gt=10).compute('pagerank').order_by('pagerank', desc=True).limit(20)",
+    "dsl_version": "v2",
+    "result": {
+        "nodes": [
+            ["Alice", "social"],
+            ["Bob", "social"],
+            ["Charlie", "social"],
+            # ... more nodes
+        ],
+        "computed": {
+            "pagerank": {
+                ("Alice", "social"): 0.025,
+                ("Bob", "social"): 0.021,
+                # ...
+            }
+        },
+        "meta": {}
+    },
+    "truncated": False
+}
+
+
+# ==============================================================================
+# Example 4: DSL v2 Advanced Queries
+# ==============================================================================
+
+# Layer selection with algebra
+{
+    "net_id": "abc12345",
+    "query": "Q.nodes().from_layers(L['social'] + L['work']).compute('degree')",
+    "use_v2": True
+}
+
+# Django-style filtering
+{
+    "net_id": "abc12345",
+    "query": "Q.nodes().where(layer='social', degree__between=(5, 15)).compute('betweenness_centrality', alias='bc').order_by('bc', desc=True).limit(10)",
+    "use_v2": True
+}
+
+# Edge queries
+{
+    "net_id": "abc12345",
+    "query": "Q.edges().where(interlayer=True).limit(100)",
+    "use_v2": True
+}
+
+# Grouped queries
+{
+    "net_id": "abc12345",
+    "query": "Q.nodes().per_layer().compute('degree')",
+    "use_v2": True
+}
+
+
+# ==============================================================================
+# Example 5: Community Detection
 # ==============================================================================
 
 # Tool call: py3plex.community_detect

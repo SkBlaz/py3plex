@@ -150,11 +150,12 @@ py3plex-mcp
 ```
 
 The MCP server exposes:
-- **7 tools**: Load networks, run queries, detect communities, export results, and more
-- **3 resources**: Complete documentation, DSL reference, and tool schemas
+- **7 tools**: Load networks, run queries (with DSL v2 support), detect communities, export results, and more
+- **3 resources**: Complete documentation, DSL v2 reference, and tool schemas
+- **DSL v2 support**: Modern builder API with type hints (`Q.nodes().where(degree__gt=5).compute('pagerank')`)
 - **Security-first**: Safe file access, automatic output directory, structured errors
 
-See [AGENTS.md](AGENTS.md#mcp-integration-model-context-protocol) for complete MCP documentation.
+See [AGENTS.md](AGENTS.md#mcp-integration-model-context-protocol) for complete MCP documentation including DSL v2 examples.
 
 ### Resources
 

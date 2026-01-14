@@ -4124,6 +4124,13 @@ ParameterMissingError  # Param binding failed
 
 py3plex provides a production-ready MCP server that exposes py3plex functionality as tools and resources for AI coding assistants like Claude, Gemini, and Codex.
 
+**Key Features**:
+- **DSL v2 Support**: Modern builder API with type hints and IDE autocomplete
+- **Backward Compatible**: Legacy string-based DSL still supported
+- **7 Tools**: Load networks, run queries, detect communities, export results, and more
+- **3 Resources**: Complete documentation, DSL reference, and tool schemas
+- **Security-First**: Safe file access, automatic output directory, structured errors
+
 **Requirements**: Python 3.10 or higher (due to MCP SDK dependency)
 
 **Note**: The base py3plex package supports Python 3.8+. Only the optional MCP feature requires Python 3.10+.
@@ -4187,23 +4194,63 @@ Get network statistics.
 
 #### 3. py3plex.run_query
 
-Execute DSL query on network.
+Execute DSL query on network. **Supports both legacy (string-based) and DSL v2 (builder-based) queries.**
 
 **Parameters**:
 - `net_id` (str, required): Network handle
-- `query` (str, required): Legacy DSL query string
+- `query` (str, required): DSL query string
+  - Legacy DSL: SQL-like syntax (e.g., `"SELECT nodes WHERE degree > 5 COMPUTE pagerank"`)
+  - DSL v2: Python builder expression (e.g., `"Q.nodes().where(degree__gt=5).compute('pagerank').limit(20)"`)
 - `limit` (int, default: 200): Maximum items to return
+- `use_v2` (bool, default: False): Use DSL v2 builder API (evaluates Python expression)
 
 **Returns**:
 - Query results with truncation info
+- `dsl_version`: "legacy" or "v2" indicating which DSL was used
 
-**Example**:
+**Example (Legacy DSL)**:
 ```json
 {
   "net_id": "abc12345",
   "query": "SELECT nodes WHERE degree > 5 COMPUTE pagerank",
-  "limit": 200
+  "limit": 200,
+  "use_v2": false
 }
+```
+
+**Example (DSL v2 - Recommended)**:
+```json
+{
+  "net_id": "abc12345",
+  "query": "Q.nodes().where(degree__gt=5).compute('pagerank').order_by('pagerank', desc=True).limit(20)",
+  "limit": 200,
+  "use_v2": true
+}
+```
+
+**DSL v2 Features**:
+- **Chainable builder API**: `Q.nodes().where(...).compute(...).limit(...)`
+- **Django-style lookups**: `degree__gt`, `degree__between`, `layer__in`
+- **Layer algebra**: `L["social"] + L["work"]` (union), `L["social"] - L["work"]` (difference)
+- **Grouping**: `.per_layer()` or `.per_layer_pair()`
+- **Type hints and IDE support**
+
+**DSL v2 Common Patterns**:
+```python
+# Filter by layer and degree
+"Q.nodes().where(layer='social', degree__gt=5).compute('pagerank')"
+
+# Multiple layers with union
+"Q.nodes().from_layers(L['social'] + L['work']).compute('degree')"
+
+# Range filtering
+"Q.nodes().where(degree__between=(5, 15)).compute('betweenness_centrality')"
+
+# Edge queries
+"Q.edges().where(interlayer=True).limit(100)"
+
+# Grouped by layer
+"Q.nodes().per_layer().compute('degree')"
 ```
 
 #### 4. py3plex.community_detect
