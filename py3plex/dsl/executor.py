@@ -60,6 +60,16 @@ from py3plex.uncertainty import (
     ResamplingStrategy,
 )
 
+# Import compositional UQ support
+from .compositional_uq import (
+    should_apply_compositional_uq,
+    ResampleSpec,
+    aggregate_with_uncertainty,
+    compute_rank_stability,
+    compute_coverage_stability,
+    create_resampled_network,
+)
+
 
 # Resampling method mapping for uncertainty estimation
 _RESAMPLING_METHOD_MAP = {
@@ -1301,6 +1311,16 @@ def _execute_select(
                 provenance_builder=provenance_builder,
                 provenance_record=provenance_record
             )
+    
+    # Check if compositional UQ should be applied (aggregate/summarize/order_by/coverage with UQ)
+    if should_apply_compositional_uq(select):
+        if progress:
+            logger.info("Detected compositional UQ query - routing to compositional UQ executor")
+        return _execute_select_with_compositional_uq(
+            network, select, params, progress=progress,
+            provenance_builder=provenance_builder,
+            provenance_record=provenance_record
+        )
     
     # Check if selection query with UQ is requested
     if hasattr(select, "uq_config") and select.uq_config and select.uq_config.method:
@@ -4901,3 +4921,316 @@ def _execute_nodes_with_community_uq(
         }
     
     return result
+
+
+def _execute_select_with_compositional_uq(
+    network: Any,
+    select: SelectStmt,
+    params: Optional[Dict[str, Any]] = None,
+    progress: bool = True,
+    provenance_builder: Optional[ProvenanceBuilder] = None,
+    provenance_record: Optional[Any] = None,
+) -> QueryResult:
+    """Execute a SELECT with compositional UQ (aggregate/summarize/order_by/coverage).
+    
+    This function wraps the entire query execution with resampling, executing
+    the query multiple times on resampled networks and aggregating results.
+    
+    Args:
+        network: Multilayer network
+        select: SELECT statement with UQ config
+        params: Parameter bindings
+        progress: If True, log progress messages
+        provenance_builder: Optional provenance builder
+        provenance_record: Optional provenance record
+        
+    Returns:
+        QueryResult with uncertainty information in attributes and metadata
+    """
+    logger_local = logging.getLogger(__name__)
+    
+    if progress:
+        logger_local.info("=== Compositional UQ Execution ===")
+    
+    # Extract UQ configuration
+    uq_config = select.uq_config
+    if not uq_config:
+        # Should not happen due to should_apply_compositional_uq check
+        logger_local.warning("No UQ config found, falling back to deterministic execution")
+        return _execute_select(network, select, params, progress, provenance_builder, provenance_record)
+    
+    # Create resample specification
+    resample_spec = ResampleSpec(
+        method=uq_config.method or "perturbation",
+        n_samples=uq_config.n_samples or 50,
+        seed=uq_config.seed,
+        kwargs=uq_config.kwargs or {},
+    )
+    
+    if progress:
+        logger_local.info(f"UQ Method: {resample_spec.method}, Samples: {resample_spec.n_samples}, Seed: {resample_spec.seed}")
+    
+    # Create a modified select without UQ for individual resample execution
+    select_no_uq = copy.deepcopy(select)
+    select_no_uq.uq_config = None
+    
+    # Storage for resample results
+    resample_results = []
+    
+    # Execute query on each resample
+    for i in range(resample_spec.n_samples):
+        if progress and i % max(1, resample_spec.n_samples // 10) == 0:
+            logger_local.info(f"Processing resample {i+1}/{resample_spec.n_samples}")
+        
+        # Create resampled network
+        resampled_net = create_resampled_network(network, resample_spec, i)
+        
+        # Execute query on this resample (without UQ to avoid recursion)
+        resample_result = _execute_select(
+            resampled_net,
+            select_no_uq,
+            params,
+            progress=False,  # Don't log for each resample
+            provenance_builder=None,
+            provenance_record=None,
+        )
+        
+        resample_results.append(resample_result)
+    
+    if progress:
+        logger_local.info(f"Completed {len(resample_results)} resamples")
+    
+    # Now aggregate results across resamples
+    final_result = _aggregate_compositional_results(
+        resample_results,
+        select,
+        resample_spec,
+        progress=progress,
+    )
+    
+    # Add UQ metadata
+    final_result.meta["uq"] = {
+        "type": "compositional",
+        "method": resample_spec.method,
+        "n_samples": resample_spec.n_samples,
+        "seed": resample_spec.seed,
+        "has_aggregate": bool(select.aggregate_specs or select.summarize_aggs),
+        "has_ordering": bool(select.order_by),
+        "has_coverage": bool(select.coverage_mode),
+    }
+    
+    # Add provenance
+    if provenance_record is not None:
+        provenance_record.metadata["randomness"] = {
+            "method": resample_spec.method,
+            "n_samples": resample_spec.n_samples,
+            "seed": resample_spec.seed,
+        }
+        provenance_record.metadata["uq"] = final_result.meta["uq"]
+        final_result.meta["provenance"] = provenance_record.to_dict()
+    elif provenance_builder is not None:
+        final_result.meta["provenance"] = provenance_builder.build()
+    
+    return final_result
+
+
+def _aggregate_compositional_results(
+    resample_results: List[QueryResult],
+    select: SelectStmt,
+    resample_spec: ResampleSpec,
+    progress: bool = True,
+) -> QueryResult:
+    """Aggregate results from multiple resamples into a single QueryResult with uncertainty.
+    
+    Args:
+        resample_results: List of QueryResult objects, one per resample
+        select: Original SELECT statement
+        resample_spec: Resampling specification
+        progress: If True, log progress messages
+        
+    Returns:
+        Aggregated QueryResult with uncertainty information
+    """
+    logger_local = logging.getLogger(__name__)
+    
+    if not resample_results:
+        return QueryResult(
+            target=select.target.value,
+            items=[],
+            attributes={},
+            meta={"warning": "No resample results to aggregate"},
+        )
+    
+    # Get the structure from the first result
+    first_result = resample_results[0]
+    target = first_result.target
+    
+    # Collect all unique items across resamples
+    all_items = set()
+    for result in resample_results:
+        all_items.update(result.items)
+    
+    final_items = sorted(all_items)
+    
+    if progress:
+        logger_local.info(f"Aggregating {len(final_items)} items across {len(resample_results)} resamples")
+    
+    # Aggregate attributes
+    final_attributes = {}
+    
+    # Get attribute names from first result
+    attr_names = list(first_result.attributes.keys())
+    
+    for attr_name in attr_names:
+        if progress:
+            logger_local.debug(f"Aggregating attribute: {attr_name}")
+        
+        final_attributes[attr_name] = {}
+        
+        # For each item, collect values across resamples
+        for item in final_items:
+            values = []
+            for result in resample_results:
+                if item in result.items and item in result.attributes.get(attr_name, {}):
+                    val = result.attributes[attr_name][item]
+                    
+                    # Extract numeric value (handle dict format from UQ)
+                    if isinstance(val, dict) and "mean" in val:
+                        values.append(val["mean"])
+                    elif isinstance(val, (int, float)):
+                        values.append(float(val))
+                    # Skip non-numeric values for now
+            
+            if values:
+                # Aggregate with uncertainty
+                uq_result = aggregate_with_uncertainty(
+                    values,
+                    func="mean",  # Always use mean for aggregating across resamples
+                    ci_level=0.95,
+                )
+                final_attributes[attr_name][item] = uq_result
+            else:
+                # Item not present in any resample or non-numeric
+                final_attributes[attr_name][item] = None
+    
+    # Handle ranking uncertainty if query has order_by
+    rank_stability = None
+    if select.order_by:
+        if progress:
+            logger_local.info("Computing rank stability")
+        rank_stability = _compute_rank_stability_across_resamples(
+            resample_results,
+            select.order_by,
+        )
+    
+    # Handle coverage uncertainty if query has coverage
+    coverage_stability = None
+    if select.coverage_mode:
+        if progress:
+            logger_local.info("Computing coverage stability")
+        coverage_stability = _compute_coverage_stability_across_resamples(
+            resample_results,
+            final_items,
+        )
+    
+    # Build final QueryResult
+    final_result = QueryResult(
+        target=target,
+        items=final_items,
+        attributes=final_attributes,
+        meta={
+            "dsl_version": "2.0",
+            "uq_compositional": True,
+            "n_resamples": len(resample_results),
+        },
+    )
+    
+    # Add stability metadata if computed
+    if rank_stability:
+        final_result.meta["rank_stability"] = rank_stability
+    
+    if coverage_stability:
+        final_result.meta["coverage_stability"] = coverage_stability
+    
+    return final_result
+
+
+def _compute_rank_stability_across_resamples(
+    resample_results: List[QueryResult],
+    order_by_spec: List[Any],
+) -> Dict[str, Any]:
+    """Compute ranking stability across resamples.
+    
+    Args:
+        resample_results: List of QueryResult objects
+        order_by_spec: ORDER BY specification
+        
+    Returns:
+        Dict with rank stability metrics
+    """
+    # Extract rankings from each resample
+    rank_samples = []
+    
+    for result in resample_results:
+        # Reconstruct ranking based on order_by attribute
+        # For simplicity, use first order_by key
+        if not order_by_spec:
+            continue
+        
+        first_order = order_by_spec[0]
+        key_attr = first_order.key if hasattr(first_order, 'key') else str(first_order)
+        desc = first_order.desc if hasattr(first_order, 'desc') else False
+        
+        # Get values for this attribute
+        if key_attr in result.attributes:
+            values = []
+            for item in result.items:
+                val = result.attributes[key_attr].get(item)
+                if val is not None:
+                    # Extract numeric value
+                    if isinstance(val, dict) and "mean" in val:
+                        values.append((item, val["mean"]))
+                    elif isinstance(val, (int, float)):
+                        values.append((item, val))
+            
+            # Sort to get ranking
+            values.sort(key=lambda x: x[1], reverse=desc)
+            
+            # Create rank dict
+            ranks = {item: rank + 1 for rank, (item, _) in enumerate(values)}
+            rank_samples.append(ranks)
+    
+    if not rank_samples:
+        return {}
+    
+    # Get all items
+    all_items = set()
+    for ranks in rank_samples:
+        all_items.update(ranks.keys())
+    
+    # Compute stability
+    return compute_rank_stability(rank_samples, list(all_items))
+
+
+def _compute_coverage_stability_across_resamples(
+    resample_results: List[QueryResult],
+    all_items: List[Any],
+) -> Dict[str, Any]:
+    """Compute coverage stability across resamples.
+    
+    Args:
+        resample_results: List of QueryResult objects
+        all_items: List of all items
+        
+    Returns:
+        Dict with coverage stability metrics
+    """
+    # Extract coverage membership from each resample
+    coverage_samples = []
+    
+    for result in resample_results:
+        # An item is covered if it's in the result
+        membership = {item: (item in result.items) for item in all_items}
+        coverage_samples.append(membership)
+    
+    return compute_coverage_stability(coverage_samples, all_items)
