@@ -269,6 +269,8 @@ class AutoCommunity:
         self._seed: int = 0
         self._custom_metrics: List[Callable] = []
         self._custom_candidates: List[Dict[str, Any]] = []
+        self._strategy: str = "default"
+        self._racer_config: Optional[Dict[str, Any]] = None
     
     def candidates(self, *algorithms: str) -> AutoCommunity:
         """Specify candidate algorithms to evaluate.
@@ -364,6 +366,52 @@ class AutoCommunity:
         self._seed = seed
         return self
     
+    def strategy(
+        self,
+        strategy: str = "default",
+        **racer_config
+    ) -> AutoCommunity:
+        """Set selection strategy.
+        
+        Args:
+            strategy: Selection strategy ("default", "successive_halving")
+            **racer_config: Configuration for racing strategy (if applicable)
+                For "successive_halving":
+                - eta: int = 3 (elimination factor)
+                - rounds: int | None = None (auto-compute if None)
+                - budget0: dict | None = None (initial budget)
+                - budget_growth: float | None = None (budget scaling, default=eta)
+                - early_stop: bool = True
+                - tie_mode: str = "keep_more" (or "underdetermined")
+                - utility_method: str = "mean_minus_std"
+                - utility_lambda: float = 1.0
+                - metric_weights: dict | None = None
+        
+        Returns:
+            Self for chaining
+        
+        Examples:
+            >>> # Default Pareto strategy
+            >>> AutoCommunity().strategy("default")
+            >>> 
+            >>> # Successive Halving with custom parameters
+            >>> AutoCommunity().strategy(
+            ...     "successive_halving",
+            ...     eta=3,
+            ...     budget0={"max_iter": 10, "uq_samples": 20},
+            ...     utility_method="mean_minus_std",
+            ... )
+        """
+        if strategy not in ("default", "successive_halving"):
+            raise ValueError(
+                f"Invalid strategy '{strategy}'. "
+                f"Supported: 'default', 'successive_halving'"
+            )
+        
+        self._strategy = strategy
+        self._racer_config = racer_config if racer_config else None
+        return self
+    
     def execute(self, network: Any) -> AutoCommunityResult:
         """Execute AutoCommunity meta-algorithm.
         
@@ -389,22 +437,37 @@ class AutoCommunity:
                 suggestions=["Call .metrics() with metric names"]
             )
         
-        # Import here to avoid circular dependencies
-        from py3plex.algorithms.community_detection.autocommunity_executor import (
-            execute_autocommunity
-        )
-        
-        # Execute the meta-algorithm
-        result = execute_autocommunity(
-            network=network,
-            candidate_algorithms=self._candidate_algorithms,
-            metric_names=self._metric_names,
-            uq_config=self._uq_config,
-            null_config=self._null_config,
-            use_pareto=self._use_pareto,
-            seed=self._seed,
-            custom_metrics=self._custom_metrics,
-            custom_candidates=self._custom_candidates,
-        )
+        # Route to appropriate strategy
+        if self._strategy == "successive_halving":
+            # Use Successive Halving racer
+            from py3plex.algorithms.community_detection.autocommunity_executor import (
+                execute_autocommunity_sh
+            )
+            
+            result = execute_autocommunity_sh(
+                network=network,
+                candidate_algorithms=self._candidate_algorithms,
+                metric_names=self._metric_names,
+                uq_config=self._uq_config,
+                seed=self._seed,
+                racer_config=self._racer_config,
+            )
+        else:
+            # Default: use Pareto selection
+            from py3plex.algorithms.community_detection.autocommunity_executor import (
+                execute_autocommunity
+            )
+            
+            result = execute_autocommunity(
+                network=network,
+                candidate_algorithms=self._candidate_algorithms,
+                metric_names=self._metric_names,
+                uq_config=self._uq_config,
+                null_config=self._null_config,
+                use_pareto=self._use_pareto,
+                seed=self._seed,
+                custom_metrics=self._custom_metrics,
+                custom_candidates=self._custom_candidates,
+            )
         
         return result
