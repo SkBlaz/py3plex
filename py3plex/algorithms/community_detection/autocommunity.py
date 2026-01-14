@@ -276,7 +276,7 @@ class AutoCommunity:
         """Specify candidate algorithms to evaluate.
         
         Args:
-            *algorithms: Algorithm names ("louvain", "leiden", "sbm", "infomap")
+            *algorithms: Algorithm names ("louvain", "leiden", "infomap")
         
         Returns:
             Self for chaining

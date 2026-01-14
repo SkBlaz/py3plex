@@ -336,6 +336,28 @@ def _run_candidate_algorithms(
                     partition_dict = leiden_result.communities  # Use 'communities', not 'partition'
                     uq_data = None
             
+            elif algo_name == "infomap":
+                # Run infomap
+                from py3plex.algorithms.community_detection.community_wrapper import infomap_communities
+                # Note: UQ not yet supported for infomap
+                if uq_config:
+                    warnings.warn(
+                        "UQ not yet implemented for infomap, running without UQ",
+                        stacklevel=2
+                    )
+                try:
+                    partition_dict = infomap_communities(
+                        network,
+                        multiplex=True,
+                        verbose=False,
+                        seed=seed,
+                    )
+                    uq_data = None
+                except Exception as e:
+                    # If infomap fails (e.g., binary not found), skip gracefully
+                    warnings.warn(f"Infomap failed: {e}. Skipping this algorithm.", stacklevel=2)
+                    continue
+            
             else:
                 warnings.warn(f"Algorithm '{algo_name}' not implemented yet", stacklevel=2)
                 continue
@@ -501,6 +523,14 @@ def _compute_null_model_scores(
                             seed=seed,
                         )
                         null_partition = null_leiden.partition
+                    elif algo_name == "infomap":
+                        from py3plex.algorithms.community_detection.community_wrapper import infomap_communities
+                        null_partition = infomap_communities(
+                            null_network,
+                            multiplex=True,
+                            verbose=False,
+                            seed=seed,
+                        )
                     else:
                         continue
                     

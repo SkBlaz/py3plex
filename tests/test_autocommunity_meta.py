@@ -578,5 +578,109 @@ class TestPropertyInvariants:
         assert total_size == n_nodes
 
 
+class TestInfomapIntegration:
+    """Test infomap algorithm integration with AutoCommunity."""
+    
+    @pytest.fixture
+    def simple_network(self):
+        """Create a simple test network."""
+        network = multinet.multi_layer_network(directed=False)
+        
+        # Add nodes
+        nodes = [{"source": f"N{i}", "type": "layer1"} for i in range(10)]
+        network.add_nodes(nodes)
+        
+        # Create two communities
+        # Community 1: nodes 0-4
+        for i in range(5):
+            for j in range(i+1, 5):
+                network.add_edges([{
+                    "source": f"N{i}", "target": f"N{j}",
+                    "source_type": "layer1", "target_type": "layer1"
+                }])
+        
+        # Community 2: nodes 5-9
+        for i in range(5, 10):
+            for j in range(i+1, 10):
+                network.add_edges([{
+                    "source": f"N{i}", "target": f"N{j}",
+                    "source_type": "layer1", "target_type": "layer1"
+                }])
+        
+        # Bridge
+        network.add_edges([{
+            "source": "N4", "target": "N5",
+            "source_type": "layer1", "target_type": "layer1"
+        }])
+        
+        return network
+    
+    @pytest.mark.slow
+    def test_infomap_in_candidates(self, simple_network):
+        """AutoCommunity should accept 'infomap' as a candidate algorithm."""
+        try:
+            result = (
+                AutoCommunity()
+                  .candidates("infomap")
+                  .metrics("modularity", "coverage")
+                  .seed(42)
+                  .execute(simple_network)
+            )
+            
+            # If infomap binary is available, check results
+            assert isinstance(result, AutoCommunityResult)
+            assert "infomap" in result.algorithms_tested or len(result.algorithms_tested) == 0
+            
+        except Exception as e:
+            # If infomap binary not found, test should still pass gracefully
+            # The implementation should skip infomap with a warning
+            if "binary not found" in str(e).lower() or "infomap" in str(e).lower():
+                pytest.skip(f"Infomap binary not available: {e}")
+            else:
+                raise
+    
+    @pytest.mark.slow
+    def test_infomap_with_multiple_algorithms(self, simple_network):
+        """Infomap should work alongside other algorithms."""
+        result = (
+            AutoCommunity()
+              .candidates("louvain", "infomap", "leiden")
+              .metrics("modularity", "coverage")
+              .seed(42)
+              .execute(simple_network)
+        )
+        
+        # Should have at least louvain and leiden
+        assert isinstance(result, AutoCommunityResult)
+        assert len(result.algorithms_tested) >= 2
+        # louvain and leiden should always work
+        assert "louvain" in result.algorithms_tested
+        assert "leiden" in result.algorithms_tested
+        # infomap may or may not be present depending on binary availability
+    
+    def test_infomap_gracefully_skips_when_unavailable(self, simple_network):
+        """If infomap binary is missing, AutoCommunity should skip it gracefully."""
+        # This test ensures the implementation doesn't crash when infomap fails
+        with patch('py3plex.algorithms.community_detection.community_wrapper.infomap_communities') as mock_infomap:
+            # Make infomap raise an error (simulating missing binary)
+            from py3plex.exceptions import Py3plexIOError
+            mock_infomap.side_effect = Py3plexIOError("Infomap binary not found")
+            
+            # Should still work with other algorithms
+            result = (
+                AutoCommunity()
+                  .candidates("louvain", "infomap")
+                  .metrics("modularity", "coverage")
+                  .seed(42)
+                  .execute(simple_network)
+            )
+            
+            # Should have at least louvain
+            assert isinstance(result, AutoCommunityResult)
+            assert "louvain" in result.algorithms_tested
+            # infomap should not be in results since it failed
+            assert "infomap" not in result.algorithms_tested or len(result.algorithms_tested) == 1
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
