@@ -146,28 +146,31 @@ def stratify_nodes_by_layer(
     Dict[str, List[Any]]
         Mapping from layer name to list of nodes.
     """
-    strata: Dict[str, List[Any]] = {}
+    from collections import defaultdict
     
-    for node in network.get_nodes():
-        # Get layers for this node
-        node_layers = set()
-        for edge in network.core_network.edges(node, data=True):
-            # Check source_type and target_type
-            if 'source_type' in edge[2]:
-                node_layers.add(edge[2]['source_type'])
-            if 'target_type' in edge[2]:
-                node_layers.add(edge[2]['target_type'])
-            # Also check 'type' field for backward compatibility
-            if 'type' in edge[2]:
-                node_layers.add(edge[2]['type'])
+    strata: Dict[str, List[Any]] = defaultdict(list)
+    node_layers: Dict[Any, set] = defaultdict(set)
+    
+    # First pass: collect all layers for each node
+    for edge in network.core_network.edges(data=True):
+        src, dst, data = edge
         
-        # Add node to each layer stratum
-        for layer in node_layers:
-            if layer not in strata:
-                strata[layer] = []
+        # Check source_type and target_type
+        if 'source_type' in data:
+            node_layers[src].add(data['source_type'])
+        if 'target_type' in data:
+            node_layers[dst].add(data['target_type'])
+        # Also check 'type' field for backward compatibility
+        if 'type' in data:
+            node_layers[src].add(data['type'])
+            node_layers[dst].add(data['type'])
+    
+    # Second pass: add each node to its layer strata (once per layer)
+    for node, layers in node_layers.items():
+        for layer in layers:
             strata[layer].append(node)
     
-    return strata
+    return dict(strata)
 
 
 def stratify_edges_by_layer_pair(

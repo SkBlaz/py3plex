@@ -466,8 +466,14 @@ def _estimate_via_stratified_perturbation(
             try:
                 result = metric_fn(perturbed_net)
                 all_samples.append(result)
-            except Exception:
-                # If metric fails, skip this sample
+            except (ValueError, RuntimeError, ZeroDivisionError) as e:
+                # Expected errors during perturbation (empty network, disconnected graph, etc.)
+                # Skip this sample and continue
+                continue
+            except Exception as e:
+                # Unexpected error - log and skip
+                import warnings
+                warnings.warn(f"Unexpected error computing metric on perturbed network: {e}")
                 continue
     
     # Aggregate samples
