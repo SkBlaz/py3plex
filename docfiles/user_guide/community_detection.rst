@@ -822,3 +822,230 @@ Best Practices
 4. Use ``weight_by='modularity'`` to weight better partitions more heavily
 
 See ``examples/communities/example_distributional_community_detection.py`` for complete example.
+
+----
+
+Successive Halving for Algorithm Selection
+-------------------------------------------
+
+When you don't know which algorithm will work best, **Successive Halving** efficiently races multiple algorithms with increasing computational budgets, eliminating poor performers early.
+
+Overview
+~~~~~~~~
+
+Successive Halving is a **racing strategy** that:
+
+1. Starts with all candidate algorithms
+2. Evaluates on small budget (e.g., max_iter=5, uq_samples=10)
+3. Eliminates worst performers (keeps top 1/η)
+4. Increases budget and repeats with survivors
+5. Returns winner when one algorithm remains
+
+**Key benefits:**
+- **Efficient:** Quickly eliminates poor algorithms
+- **UQ-aware:** Uses distribution-based utilities
+- **Deterministic:** Fully reproducible with seed
+- **Provenance-rich:** Complete racing history
+
+Basic Usage
+~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.algorithms.community_detection import AutoCommunity
+    from py3plex.core import multinet
+    
+    # Load network
+    network = multinet.multi_layer_network(directed=False)
+    network.load_network("network.csv", input_type="edgelist")
+    
+    # Run Successive Halving
+    result = (
+        AutoCommunity()
+          .candidates("louvain", "leiden", "label_propagation")
+          .metrics("modularity", "coverage")
+          .strategy("successive_halving", eta=3, rounds=2)
+          .seed(42)
+          .execute(network)
+    )
+    
+    # Winner
+    print(f"Winner: {result.selected}")
+    print(f"Communities: {result.community_stats.n_communities}")
+
+Configuration
+~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    # Custom budget and utility function
+    result = (
+        AutoCommunity()
+          .candidates("louvain", "leiden")
+          .metrics("modularity", "coverage")
+          .strategy(
+              "successive_halving",
+              eta=3,                     # Keep top 1/3 each round
+              rounds=3,                  # Number of rounds
+              budget0={                  # Initial budget
+                  "max_iter": 10,
+                  "n_restarts": 1,
+                  "uq_samples": 15,
+              },
+              budget_growth=3.0,         # Budget scales 3x per round
+              utility_method="mean_minus_std",  # Utility function
+              metric_weights={           # Custom weights
+                  "modularity": 0.6,
+                  "coverage": 0.4,
+              },
+          )
+          .seed(42)
+          .execute(network)
+    )
+
+Racing History
+~~~~~~~~~~~~~~
+
+Access complete provenance:
+
+.. code-block:: python
+
+    # Racing summary
+    history = result.provenance["racing_history"]
+    print(f"Rounds: {len(history['rounds'])}")
+    print(f"Winner: {history['winner_algo_id']}")
+    print(f"Runtime: {history['total_runtime_ms']:.2f} ms")
+    
+    # Per-round details
+    for i, round_rec in enumerate(history["rounds"]):
+        print(f"Round {i}:")
+        print(f"  Algorithms: {len(round_rec['algorithms'])}")
+        print(f"  Survivors: {round_rec['survivors']}")
+        print(f"  Eliminated: {round_rec['eliminated']}")
+        
+        # Show utilities
+        utilities = round_rec["utilities"]
+        for algo, utility in utilities.items():
+            print(f"    {algo}: {utility:.4f}")
+
+Utility Methods
+~~~~~~~~~~~~~~~
+
+**mean_minus_std** (default):
+  U = mean(score) - λ * std(score)
+  
+  Balances expected performance with risk. Higher λ = more conservative.
+
+**expected_regret**:
+  U = -E[max(scores) - score]
+  
+  Minimizes expected loss relative to best.
+
+**prob_near_best**:
+  U = P(score ≥ max - ε)
+  
+  Probability of being near-optimal.
+
+.. code-block:: python
+
+    # Use expected regret utility
+    result = (
+        AutoCommunity()
+          .candidates("louvain", "leiden")
+          .metrics("modularity")
+          .strategy("successive_halving", utility_method="expected_regret")
+          .seed(42)
+          .execute(network)
+    )
+
+With Uncertainty Quantification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Enable UQ for stability-aware selection:
+
+.. code-block:: python
+
+    result = (
+        AutoCommunity()
+          .candidates("louvain", "leiden")
+          .metrics("modularity", "coverage", "stability")
+          .uq(method="seed", n_samples=20)  # Enable UQ
+          .strategy("successive_halving", eta=3)
+          .seed(42)
+          .execute(network)
+    )
+    
+    # Check stability
+    stats = result.community_stats
+    print(f"Stability: {stats.stability_score:.3f}")
+
+When to Use
+~~~~~~~~~~~
+
+**Use Successive Halving when:**
+
+- Testing many algorithms (>5 candidates)
+- Computational budget is limited
+- Want efficient early elimination
+- Clear metric preferences (weighted)
+
+**Use default Pareto strategy when:**
+
+- Few candidates (<5)
+- Multi-objective without clear weights
+- Want consensus from non-dominated set
+- Null model calibration is critical
+
+Best Practices
+~~~~~~~~~~~~~~
+
+1. **Start small:** budget0 with max_iter=5, uq_samples=10
+2. **Elimination:** eta=3 for aggressive, eta=2 for conservative
+3. **UQ:** Enable with uq_samples in budget for stability
+4. **Seed:** Always set for reproducibility
+5. **Weights:** Encode domain knowledge via metric_weights
+6. **History:** Inspect racing_history to understand selection
+
+Complete Example
+~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.algorithms.community_detection import AutoCommunity
+    from py3plex.core import multinet
+    import json
+    
+    # 1. Load network
+    net = multinet.multi_layer_network(directed=False)
+    net.load_network("network.csv", input_type="edgelist")
+    
+    # 2. Run Successive Halving with UQ
+    result = (
+        AutoCommunity()
+          .candidates("louvain", "leiden", "label_propagation")
+          .metrics("modularity", "coverage", "stability")
+          .uq(method="seed", n_samples=20)
+          .strategy(
+              "successive_halving",
+              eta=3,
+              rounds=2,
+              budget0={"max_iter": 10, "uq_samples": 15},
+              utility_method="mean_minus_std",
+              metric_weights={"modularity": 0.5, "coverage": 0.3, "stability": 0.2},
+          )
+          .seed(42)
+          .execute(net)
+    )
+    
+    # 3. Results
+    print(f"Winner: {result.selected}")
+    print(f"Communities: {result.community_stats.n_communities}")
+    print(f"Coverage: {result.community_stats.coverage:.3f}")
+    
+    # 4. Export
+    df = result.to_pandas()
+    df.to_csv("communities.csv", index=False)
+    
+    # 5. Save provenance
+    with open("provenance.json", "w") as f:
+        json.dump(result.provenance, f, indent=2)

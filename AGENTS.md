@@ -2898,6 +2898,262 @@ result = (
 - Need reproducible algorithm choice with provenance
 - Comparing algorithms fairly across multiple quality dimensions
 
+---
+
+### Successive Halving: Efficient Algorithm Racing
+
+**Purpose**: Efficiently race multiple community detection algorithms using increasing computational budgets with progressive elimination. This is a first-class strategy for AutoCommunity that reduces computational cost while maintaining selection quality.
+
+**How it works**:
+1. Start with all candidate algorithms
+2. Evaluate each on a small budget (e.g., max_iter=5, uq_samples=10)
+3. Compute utilities (UQ-aware) and eliminate worst performers
+4. Increase budget and repeat with survivors
+5. Return winner when one algorithm remains
+
+**Key advantages**:
+- **Efficiency**: Quickly eliminates poor algorithms with minimal computation
+- **UQ-aware**: Utilities computed from distributions, not point estimates
+- **Deterministic**: Fully reproducible with seed control (including parallel execution)
+- **Provenance-rich**: Complete racing history with per-round budgets and metrics
+- **Configurable**: Customizable budgets, utility functions, and elimination strategies
+
+**Builder API**:
+```python
+from py3plex.algorithms.community_detection import AutoCommunity
+
+# Basic Successive Halving
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden", "label_propagation")
+      .metrics("modularity", "coverage")
+      .strategy("successive_halving", eta=3, rounds=2)
+      .seed(42)
+      .execute(network)
+)
+
+# Access racing history
+history = result.provenance["racing_history"]
+print(f"Rounds: {len(history['rounds'])}")
+print(f"Winner: {history['winner_algo_id']}")
+print(f"Total runtime: {history['total_runtime_ms']:.2f} ms")
+
+# Inspect elimination progression
+for i, round_rec in enumerate(history["rounds"]):
+    print(f"Round {i}: {len(round_rec['algorithms'])} algorithms")
+    print(f"  Survivors: {round_rec['survivors']}")
+    print(f"  Eliminated: {round_rec['eliminated']}")
+```
+
+**Configuration Parameters**:
+```python
+# Custom budget schedule
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden")
+      .metrics("modularity", "coverage")
+      .strategy(
+          "successive_halving",
+          eta=3,                  # Elimination factor (keep top 1/3 each round)
+          rounds=3,               # Number of rounds (None = auto-compute)
+          budget0={               # Initial budget
+              "max_iter": 10,
+              "n_restarts": 1,
+              "uq_samples": 15,
+          },
+          budget_growth=3.0,      # Budget growth factor per round
+          utility_method="mean_minus_std",  # Utility function
+          utility_lambda=1.0,     # Lambda for mean_minus_std
+          tie_mode="keep_more",   # Tie handling ("keep_more" or "underdetermined")
+          metric_weights={        # Custom metric weights
+              "modularity": 0.6,
+              "coverage": 0.4,
+          },
+      )
+      .seed(42)
+      .execute(network)
+)
+```
+
+**BudgetSpec Structure**:
+- `max_iter`: Maximum iterations (for iterative algorithms)
+- `n_restarts`: Number of random restarts
+- `resolution_trials`: Number of resolution parameter trials
+- `time_limit_s`: Time limit in seconds (optional)
+- `uq_samples`: Number of samples for UQ evaluation
+- `n_jobs`: Parallelism (algorithms ignore unsupported parameters)
+
+**Utility Methods**:
+1. **mean_minus_std** (default): `U = mean(score) - lambda * std(score)`
+   - Balances expected performance with risk
+   - Higher lambda = more conservative (prefer consistent algorithms)
+   
+2. **expected_regret**: `U = -E[max(scores) - score]`
+   - Minimizes expected loss relative to best algorithm
+   
+3. **prob_near_best**: `U = P(score >= max - eps)`
+   - Probability of being close to best (eps = 0.01 default)
+
+**Metric Aggregation**:
+- Multiple metrics → single scalar via weighted sum
+- Normalization: robust min-max per round (configurable)
+- Default weights: equal across metrics
+- Missing metrics: handled gracefully with warnings
+
+**Provenance Metadata**:
+```python
+prov = result.provenance
+
+# Always present
+assert prov["engine"] == "autocommunity_successive_halving"
+assert "py3plex_version" in prov
+assert "timestamp_utc" in prov
+assert "seed" in prov
+assert "strategy" == "successive_halving"
+
+# Racing-specific
+history = prov["racing_history"]
+assert "rounds" in history          # List of round records
+assert "winner_algo_id" in history  # Winning algorithm
+assert "finalists" in history       # List (multiple if underdetermined)
+assert "status" in history          # "ok", "underdetermined", "error"
+assert "total_runtime_ms" in history
+
+# Each round record contains:
+round0 = history["rounds"][0]
+assert "round" in round0           # Round index
+assert "budget" in round0          # BudgetSpec as dict
+assert "algorithms" in round0      # Algorithms run this round
+assert "metrics" in round0         # Metrics DataFrame
+assert "utilities" in round0       # Utility per algorithm
+assert "survivors" in round0       # Survivors to next round
+assert "eliminated" in round0      # Eliminated this round
+```
+
+**Determinism Guarantees**:
+```python
+# Same seed → identical results (deterministic)
+result1 = AutoCommunity().candidates(...).strategy("successive_halving").seed(42).execute(net)
+result2 = AutoCommunity().candidates(...).strategy("successive_halving").seed(42).execute(net)
+assert result1.selected == result2.selected
+assert result1.provenance["racing_history"] == result2.provenance["racing_history"]
+
+# Parallel invariance (not yet implemented for n_jobs>1)
+# Future: n_jobs=1 and n_jobs=4 will produce identical results
+```
+
+**Underdetermined Handling**:
+```python
+# If top-2 utilities are too close (tie)
+result = AutoCommunity().strategy("successive_halving", tie_mode="underdetermined").execute(net)
+
+if result.provenance["racing_history"]["status"] == "underdetermined":
+    finalists = result.provenance["racing_history"]["finalists"]
+    print(f"No clear winner. Finalists: {finalists}")
+    # result.selected is arbitrary choice from finalists
+```
+
+**When to use Successive Halving vs Default Pareto**:
+- **Use SH when**:
+  - Large number of candidate algorithms (>5)
+  - Computational budget is limited
+  - Want efficient early elimination
+  - Clear metric preferences (weighted)
+  
+- **Use Pareto when**:
+  - Small number of candidates (<5)
+  - Multi-objective optimization without clear weights
+  - Want consensus from non-dominated set
+  - Null model calibration is critical
+
+**Performance**:
+- Conservative default budgets: fast exploration in early rounds
+- Budget growth: 3x per round by default (configurable)
+- Budget caps: prevent explosion (max_iter: 1000, uq_samples: 200, etc.)
+- Early stopping: enabled by default (stop when 1 survivor)
+
+**Best Practices**:
+1. Start with small budget0 (max_iter=5, uq_samples=10)
+2. Use eta=3 for aggressive elimination, eta=2 for conservative
+3. Enable UQ with uq_samples in budget for stability-aware selection
+4. Set seed for reproducibility
+5. Inspect racing_history to understand selection rationale
+6. Use metric_weights to encode domain knowledge
+7. Check status for "underdetermined" to detect ties
+
+**Advanced: Direct Racer Usage**:
+```python
+from py3plex.algorithms.community_detection.successive_halving import (
+    SuccessiveHalvingRacer,
+    SuccessiveHalvingConfig,
+)
+from py3plex.algorithms.community_detection.budget import BudgetSpec
+
+# Configure racer directly
+config = SuccessiveHalvingConfig(
+    eta=3,
+    rounds=3,
+    budget0=BudgetSpec(max_iter=5, uq_samples=10),
+    utility_method="mean_minus_std",
+    normalize_metrics=True,
+)
+
+racer = SuccessiveHalvingRacer(config, seed=42)
+
+# Run race
+history = racer.race(
+    network=network,
+    algorithm_ids=["louvain", "leiden", "label_propagation"],
+    metric_names=["modularity", "coverage"],
+    n_jobs=1,
+)
+
+# Inspect results
+print(f"Winner: {history.winner_algo_id}")
+print(f"Status: {history.status}")
+```
+
+**Golden Path: AutoCommunity with Successive Halving**:
+```python
+# 1. Load network
+net = multinet.multi_layer_network(directed=False)
+net.load_network("network.csv", input_type="edgelist")
+
+# 2. Run Successive Halving
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden", "label_propagation")
+      .metrics("modularity", "coverage", "stability")
+      .uq(method="seed", n_samples=20)  # Enable UQ
+      .strategy("successive_halving", eta=3, rounds=2)
+      .seed(42)
+      .execute(net)
+)
+
+# 3. Access winner and history
+print(f"Winner: {result.selected}")
+print(f"Communities: {result.community_stats.n_communities}")
+
+# 4. Export results
+df = result.to_pandas()
+df.to_csv("communities.csv", index=False)
+
+# 5. Save provenance
+import json
+with open("provenance.json", "w") as f:
+    json.dump(result.provenance, f, indent=2)
+```
+
+**Invariants**:
+- Budget must be monotone-increasing across rounds
+- Determinism: same seed → same winner → same elimination order
+- Provenance completeness: all rounds, budgets, utilities tracked
+- No API sprawl: clean integration with existing AutoCommunity
+
+---
+
+### Community Quality Metrics
+
 ### AutoCommunity Meta-Algorithm (v2.0) — **NEW Design**
 
 **Purpose**: Multi-objective, uncertainty-aware, null-model-calibrated meta-algorithm for principled community detection in multilayer networks.
