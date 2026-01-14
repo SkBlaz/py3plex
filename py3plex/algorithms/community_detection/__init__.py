@@ -36,6 +36,12 @@ from .distributional import (
 )
 from .auto_select import auto_select_community
 from .autocommunity import AutoCommunity, AutoCommunityResult, CommunityStats
+from .budget import BudgetSpec, CommunityResult
+from .successive_halving import (
+    SuccessiveHalvingRacer,
+    SuccessiveHalvingConfig,
+    RacingHistory,
+)
 from .label_propagation import (
     multilayer_label_propagation_supra,
     multiplex_label_propagation_consensus,

@@ -897,3 +897,162 @@ def _build_stats_from_partition(
         coverage=coverage,
         orphan_nodes=orphan_nodes,
     )
+
+
+def execute_autocommunity_sh(
+    network: Any,
+    candidate_algorithms: List[str],
+    metric_names: List[str],
+    uq_config: Optional[Dict[str, Any]],
+    seed: int,
+    racer_config: Optional[Dict[str, Any]],
+) -> AutoCommunityResult:
+    """Execute AutoCommunity with Successive Halving strategy.
+    
+    Args:
+        network: Multilayer network
+        candidate_algorithms: List of algorithm names
+        metric_names: List of metric names
+        uq_config: UQ configuration (or None)
+        seed: Random seed
+        racer_config: Racer configuration (or None)
+    
+    Returns:
+        AutoCommunityResult with racing history
+    """
+    from datetime import datetime, timezone
+    from py3plex.algorithms.community_detection.successive_halving import (
+        SuccessiveHalvingRacer,
+        SuccessiveHalvingConfig,
+    )
+    from py3plex.algorithms.community_detection.budget import BudgetSpec
+    
+    # Build racer config
+    racer_config = racer_config or {}
+    
+    # Extract budget0 if provided
+    budget0_dict = racer_config.pop("budget0", None)
+    if budget0_dict is not None:
+        if isinstance(budget0_dict, dict):
+            budget0 = BudgetSpec.from_dict(budget0_dict)
+        elif isinstance(budget0_dict, BudgetSpec):
+            budget0 = budget0_dict
+        else:
+            budget0 = None
+    else:
+        # Default budget
+        budget0 = BudgetSpec(
+            max_iter=5,
+            n_restarts=1,
+            resolution_trials=3,
+            uq_samples=uq_config.get('n_samples', 10) if uq_config else 10,
+        )
+    
+    # Build config
+    config = SuccessiveHalvingConfig(
+        budget0=budget0,
+        **racer_config
+    )
+    
+    # Create racer
+    racer = SuccessiveHalvingRacer(config, seed=seed)
+    
+    # Run race
+    history = racer.race(
+        network=network,
+        algorithm_ids=candidate_algorithms,
+        metric_names=metric_names,
+        n_jobs=1,
+    )
+    
+    # Extract winner partition
+    winner_id = history.winner_algo_id
+    
+    # Re-run winner to get final partition (or extract from last round)
+    if history.rounds:
+        last_round = history.rounds[-1]
+        
+        # Find winner's metrics in last round
+        winner_metrics_records = [
+            r for r in last_round['metrics']
+            if r['algo_id'] == winner_id
+        ]
+        
+        if winner_metrics_records:
+            winner_metrics = winner_metrics_records[0]
+        else:
+            winner_metrics = {}
+    else:
+        winner_metrics = {}
+    
+    # Re-run winner with full budget to get partition
+    from py3plex.algorithms.community_detection.runner import run_community_algorithm
+    
+    final_budget = BudgetSpec(
+        max_iter=50,
+        n_restarts=5,
+        resolution_trials=10,
+        uq_samples=uq_config.get('n_samples', 50) if uq_config else 50,
+    )
+    
+    final_result = run_community_algorithm(
+        algorithm_id=winner_id,
+        network=network,
+        budget=final_budget,
+        seed=seed,
+    )
+    
+    consensus_partition = final_result.partition
+    
+    # Build stats from partition
+    community_stats = _build_stats_from_partition(consensus_partition)
+    
+    # Build evaluation matrix from racing history
+    eval_rows = []
+    for round_rec in history.rounds:
+        for metric_rec in round_rec['metrics']:
+            eval_rows.append(metric_rec)
+    
+    if eval_rows:
+        evaluation_matrix = pd.DataFrame(eval_rows)
+    else:
+        evaluation_matrix = pd.DataFrame()
+    
+    # Build provenance
+    timestamp_utc = datetime.now(timezone.utc).isoformat()
+    
+    provenance = {
+        'engine': 'autocommunity_successive_halving',
+        'py3plex_version': '1.1.1',
+        'timestamp_utc': timestamp_utc,
+        'seed': seed,
+        'strategy': 'successive_halving',
+        'racer_config': config.__dict__,
+        'n_candidates': len(candidate_algorithms),
+        'n_metrics': len(metric_names),
+        'n_rounds': len(history.rounds),
+        'racing_history': history.to_dict(),
+    }
+    
+    # Build diagnostics
+    diagnostics = {
+        'racing_status': history.status,
+        'finalists': history.finalists,
+        'total_runtime_ms': history.total_runtime_ms,
+    }
+    
+    # Build result
+    result = AutoCommunityResult(
+        algorithms_tested=candidate_algorithms,
+        pareto_front=[winner_id],  # For compatibility
+        selected=winner_id,
+        consensus_partition=consensus_partition,
+        community_stats=community_stats,
+        evaluation_matrix=evaluation_matrix,
+        diagnostics=diagnostics,
+        provenance=provenance,
+        null_model_results=None,
+        graph_regime=None,
+    )
+    
+    return result
