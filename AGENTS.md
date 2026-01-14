@@ -155,1375 +155,1868 @@ for claim in claims[:5]:
 
 ---
 
-## DSL v2 (Q / UQ / L) — Complete Reference
+## DSL v2 — Formal Specification
 
-### Minimal Mental Model
-
-**Core Concepts**:
-1. **Builder Lifecycle**: Build → Execute → Result
-   - `Q.nodes()` creates a builder (lazy)
-   - `.where()`, `.compute()`, etc. configure the builder (still lazy)
-   - `.execute(network)` runs the query (eager) → returns `QueryResult`
-
-2. **Lazy vs Eager**:
-   - All builder methods (`.where()`, `.compute()`, `.from_layers()`) are **lazy** - they just build an AST
-   - Only `.execute(network)` is **eager** - it runs the query
-   - You can call `.to_ast()` to see the query without executing it
-
-3. **Grouping and Coverage**:
-   - `.per_layer()` / `.per_layer_pair()` enable grouping
-   - `.top_k(k, key)` keeps top-k items **per group**
-   - `.coverage(mode="all")` filters cross-group: keep items in all/any/k groups
-   - **Order matters**: grouping → operations → end_grouping → coverage
-
-4. **Return Types**:
-   - Builder methods → `QueryBuilder` (chainable)
-   - `.execute(network)` → `QueryResult` (rich result object)
-   - `QueryResult.to_pandas()` → pandas DataFrame
-   - `QueryResult.to_networkx()` → NetworkX graph
-   - `QueryResult.to_arrow()` → Apache Arrow table
-
-5. **Compute vs Aggregate**:
-   - `.compute("degree")` - compute metric **per item** (node/edge)
-   - `.aggregate(avg_degree="mean(degree)")` - compute **per group** statistic
-   - Aggregate requires grouping; compute does not
+This section provides a normative, implementation-faithful specification of DSL v2. All behavior is specified using RFC 2119 keywords (MUST, MUST NOT, SHOULD, MAY).
 
 ---
 
-### Q — Query Builder Factory
+### 1. DSL v2 Design Goals (Normative)
+
+DSL v2 MUST satisfy the following design requirements:
+
+1. **Lazy Evaluation**: All builder methods MUST return builder objects without executing queries. Only `.execute(network)` MAY trigger execution.
+
+2. **Composability**: Builder methods MUST return `self` (or compatible builder type) to enable method chaining.
+
+3. **Type Safety**: All builder methods MUST accept type-hinted parameters. Implementations SHOULD validate types at runtime.
+
+4. **Determinism**: Identical queries with identical parameters and networks MUST produce identical results when `seed` is specified.
+
+5. **Multilayer Native**: All constructs MUST support multilayer networks without explicit flattening.
+
+6. **AST-Based**: All frontends (builder API, string DSL) MUST compile to the same AST representation defined in `py3plex.dsl.ast`.
+
+7. **Error Reporting**: All errors MUST use the exception hierarchy in `py3plex.dsl.errors` with actionable messages.
+
+8. **Backward Compatibility**: DSL v2 MUST NOT break existing DSL v1 (string-based) queries.
+
+---
+
+### 2. Core Abstractions
+
+#### 2.1 Query Builder (`QueryBuilder`)
+
+**Location**: `py3plex.dsl.builder.QueryBuilder`
+
+**Lifecycle**:
+1. **Construction**: Created via factory methods (`Q.nodes()`, `Q.edges()`, `Q.communities()`)
+2. **Configuration**: Modified via chainable methods (`.where()`, `.compute()`, etc.)
+3. **Compilation**: Converted to AST via `.to_ast()` (explicit) or `.execute()` (implicit)
+4. **Execution**: Executed via `.execute(network, **params)` → returns `QueryResult`
+
+**Mutability**: Builder objects are MUTABLE. Each method call modifies the internal `_select` AST node and returns `self`.
+
+**Immutability Guarantee**: Calling `.to_ast()` MUST create a deep copy of the internal AST to prevent external mutation.
+
+**Serialization**: Builders MUST be serializable via `.to_ast()` followed by AST serialization.
+
+#### 2.2 Abstract Syntax Tree (AST)
+
+**Location**: `py3plex.dsl.ast`
+
+**Purpose**: Canonical representation of all DSL queries, independent of frontend syntax.
+
+**Top-Level Nodes**:
+- `Query`: Root query node (contains `SelectStmt` or `explain=True` flag)
+- `SelectStmt`: SELECT query (target, layers, conditions, computations, ordering, limits, grouping, etc.)
+- `CompareStmt`: Network comparison query
+- `NullModelStmt`: Null model generation query
+- `PathStmt`: Path finding query
+- `DynamicsStmt`: Dynamics simulation query
+- `TrajectoriesStmt`: Trajectory sampling query
+- `SemiringPathStmt`: Semiring path algebra query
+- `SemiringClosureStmt`: Semiring closure query
+
+**Immutability**: All AST nodes MUST be dataclasses with `frozen=False` (to allow field assignment during the construction phase). However, implementations MUST treat AST nodes as immutable after construction is complete - no fields should be modified after a node is returned from a builder method. This is a convention-based immutability pattern where the dataclass is technically mutable but mutation is only allowed during the building process.
+
+**Serialization**: All AST nodes MUST support JSON serialization via `dataclasses.asdict()` with custom handling for:
+- `ParamRef` → `{"__type__": "ParamRef", "name": "...", "type_hint": "..."}`
+- `LayerSet` → `{"__type__": "LayerSet", "expr": "..."}`
+
+#### 2.3 Query Result (`QueryResult`)
+
+**Location**: `py3plex.dsl.result.QueryResult`
+
+**Attributes**:
+- `target`: `str` - "nodes" or "edges"
+- `items`: `List[Any]` - List of node/edge identifiers
+- `attributes`: `Dict[str, Union[List[Any], Dict[Any, Any]]]` - Computed attributes (column → values)
+- `meta`: `Dict[str, Any]` - Execution metadata (provenance, grouping, etc.)
+- `computed_metrics`: `Set[str]` - Set of metrics computed during execution
+- `sensitivity_result`: `Optional[SensitivityResult]` - Sensitivity analysis results if requested
+
+**Export Methods**:
+- `to_pandas(expand_uncertainty=False, ci_level=0.95, expand_explanations=False)` → `pd.DataFrame`
+- `to_networkx()` → `nx.Graph` or `nx.MultiGraph`
+- `to_arrow()` → `pa.Table`
+- `to_json()` → `str` (JSON string)
+- `to_csv(path, **kwargs)` → `None` (writes to file)
+
+**Provenance Methods**:
+- `provenance` → `Optional[Dict[str, Any]]` - Get provenance dictionary
+- `is_replayable` → `bool` - Check if result has replayable provenance
+- `replay(strict=True)` → `QueryResult` - Replay query from provenance
+
+**Grouping Methods**:
+- `group_summary()` → `pd.DataFrame` - Summary of groups (when grouping is active)
+
+**Immutability**: QueryResult objects are IMMUTABLE after construction. All export methods MUST NOT modify the result.
+
+#### 2.4 Layer Set (`LayerSet`)
+
+**Location**: `py3plex.dsl.layers.LayerSet`
+
+**Purpose**: First-class abstraction for layer selection with set-theoretic operations.
+
+**Lifecycle**:
+1. **Construction**: Created via `LayerSet("name")` or `LayerSet.parse("expr")`
+2. **Composition**: Combined via operators (`|`, `&`, `-`, `~`)
+3. **Resolution**: Resolved to concrete layer names via `.resolve(network)` → `Set[str]`
+
+**Immutability**: LayerSet objects are IMMUTABLE. All operators return new LayerSet instances.
+
+**Operations**:
+- `self | other` - Union (returns layers in either set)
+- `self & other` - Intersection (returns layers in both sets)
+- `self - other` - Difference (returns layers in self but not other)
+- `~self` - Complement (returns all layers except those in self)
+
+**Special Layer Names**:
+- `"*"` - All layers in the network
+- Named groups: Defined via `LayerSet.define_group("name", LayerSet(...))`
+
+**Resolution Semantics**:
+- MUST resolve layer names at execution time (late binding)
+- MUST raise `UnknownLayerError` if any referenced layer does not exist (when `strict=True`)
+- MAY warn if a layer expression resolves to empty set (when `warn_empty=True`)
+
+**String Parsing**:
+- `LayerSet.parse("* - coupling")` - Parse from expression string
+- Syntax: `term (op term)*` where `op` is `|`, `&`, or `-`
+- Parentheses for precedence: `"(a | b) & c"`
+- Complement prefix: `"~a"` (all except a)
+
+---
+
+### 3. Builder Objects — Complete API Contract
+
+#### 3.1 Q — Query Factory (Namespace)
 
 **Import**: `from py3plex.dsl import Q`
 
-#### Q.nodes(autocompute=True) → QueryBuilder
+**Factory Methods**:
+
+##### `Q.nodes(autocompute=True) → QueryBuilder`
 
 Create a node query builder.
 
-**Args**:
-- `autocompute` (bool, default=True): Auto-compute referenced metrics if missing
+**Parameters**:
+- `autocompute` (bool, default=`True`): If `True`, automatically compute missing metrics referenced in `.where()`, `.order_by()`, `.top_k()`. If `False`, raise `DslMissingMetricError` if a metric is referenced but not computed.
 
-**Returns**: `QueryBuilder` for nodes
+**Returns**: `QueryBuilder` with `target=Target.NODES`
+
+**Semantics**: MUST create a builder that queries nodes from the network. Nodes MUST be uniquely identified by `(node_id, layer)` tuple in multilayer networks.
 
 **Example**:
 ```python
-Q.nodes().where(degree__gt=5).execute(net)
-Q.nodes(autocompute=False).where(layer="social").execute(net)
+Q.nodes()  # All nodes, autocompute enabled
+Q.nodes(autocompute=False)  # Autocompute disabled
 ```
 
-**Failure modes**:
-- If `autocompute=False` and you filter on a metric not yet computed, execution fails
-- Use `.compute()` explicitly to avoid this
-
----
-
-#### Q.edges(autocompute=True) → QueryBuilder
+##### `Q.edges(autocompute=True) → QueryBuilder`
 
 Create an edge query builder.
 
-**Args**:
-- `autocompute` (bool, default=True): Auto-compute referenced metrics if missing
+**Parameters**:
+- `autocompute` (bool, default=`True`): Same as `Q.nodes()`
 
-**Returns**: `QueryBuilder` for edges
+**Returns**: `QueryBuilder` with `target=Target.EDGES`
+
+**Semantics**: MUST create a builder that queries edges from the network. Edges MUST be uniquely identified by `(source, target, source_layer, target_layer)` tuple.
 
 **Example**:
 ```python
-Q.edges().where(weight__gt=1.0).execute(net)
-Q.edges().per_layer_pair().aggregate(count="count()").execute(net)
+Q.edges()  # All edges
+Q.edges(autocompute=False)
 ```
 
-**Failure modes**:
-- Edge endpoint properties (src_degree, dst_degree) require autocompute or pre-computation
-
----
-
-#### Q.communities(autocompute=True, partition="default") → CommunityQueryBuilder
+##### `Q.communities(partition="default", autocompute=True) → CommunityQueryBuilder`
 
 Create a community query builder.
 
-**Args**:
-- `autocompute` (bool, default=True): Auto-compute metrics if missing
-- `partition` (str, default="default"): Partition name to query
+**Parameters**:
+- `partition` (str, default=`"default"`): Name of the partition to query
+- `autocompute` (bool, default=`True`): Same as `Q.nodes()`
 
-**Returns**: `CommunityQueryBuilder` (extends QueryBuilder)
+**Returns**: `CommunityQueryBuilder` (extends `QueryBuilder`)
 
-**Example**:
-```python
-# Detect communities first
-from py3plex.algorithms.community_detection import louvain
-communities = louvain(net)
-
-# Query communities
-Q.communities().where(size__gt=10).compute("modularity").execute(net)
-Q.communities(partition="louvain").where(conductance__lt=0.5).execute(net)
-```
-
-**Failure modes**:
-- Community partition must exist before querying
-- Use `detect_communities()` first or pass results to network
-
----
-
-#### Q.dynamics(process_name, **params) → DynamicsBuilder
-
-Create a dynamics simulation builder.
-
-**Args**:
-- `process_name` (str): Process type ("SIS", "SIR", "SEIR", "RANDOM_WALK", "CUSTOM")
-- `**params`: Process-specific parameters (e.g., `beta=0.3`, `mu=0.1`)
-
-**Returns**: `DynamicsBuilder`
+**Semantics**: MUST create a builder that queries communities from a pre-computed partition. If partition does not exist, MUST raise `DslExecutionError` at execution time.
 
 **Example**:
 ```python
-sim = (
-    Q.dynamics("SIS", beta=0.3, mu=0.1)
-     .on_layers(L["contacts"])
-     .seed_infections(0.01)
-     .run(steps=100, replicates=10)
-     .execute(net)
-)
+Q.communities()  # Default partition
+Q.communities(partition="leiden_gamma_1.2")
 ```
 
-**See**: [Dynamics Simulations](#dynamics-simulations) section for full reference
+**Global Configuration**:
 
----
+##### `Q.uncertainty`
 
-#### Q.trajectories(process_ref) → TrajectoriesBuilder
+Global uncertainty quantification configuration (namespace).
 
-Create a trajectories query builder (query simulation results).
+**Attributes**:
+- `enabled` (bool): Global UQ toggle (default: `False`)
+- `defaults` (dict): Default UQ parameters for all queries
 
-**Args**:
-- `process_ref` (str): Reference to simulation result
+**Methods**:
+- `Q.uncertainty.defaults(**kwargs)` - Set global UQ defaults
+- `Q.uncertainty.enable()` - Enable UQ globally
+- `Q.uncertainty.disable()` - Disable UQ globally
 
-**Returns**: `TrajectoriesBuilder`
+**Priority Order** (highest to lowest):
+1. Per-metric parameters in `.compute(..., uncertainty=True, n_samples=100)`
+2. Query-level UQ config from `.uq(method="bootstrap", n_samples=50)`
+3. Global `Q.uncertainty.defaults`
+4. Hardcoded defaults in `py3plex.uncertainty`
 
 **Example**:
 ```python
-# After running a simulation
-result = Q.trajectories("sim_1").at(50).measure("peak_time").execute(context)
+Q.uncertainty.defaults(method="bootstrap", n_samples=100, ci=0.95)
+Q.uncertainty.enable()
 ```
 
----
+#### 3.2 QueryBuilder — Chainable Builder
 
-#### Q.counterexample() → CounterexampleBuilder
+**Location**: `py3plex.dsl.builder.QueryBuilder`
 
-Create a counterexample search builder.
+**Constructor**: MUST NOT be called directly. Use `Q.nodes()`, `Q.edges()`, or `Q.communities()`.
 
-**Returns**: `CounterexampleBuilder`
+**All Methods MUST**:
+- Return `self` (or compatible builder type) for chaining
+- Not execute the query (lazy evaluation)
+- Modify the internal `_select` AST node in place
 
-**Example**:
-```python
-cex = (
-    Q.counterexample()
-     .claim("degree__ge(k) -> pagerank__rank_le(r)")
-     .params(k=10, r=50)
-     .seed(42)
-     .execute(net)
-)
-```
+##### `.from_layers(layer_expr) → QueryBuilder`
 
-**See**: [Counterexample Generation](#counterexample-generation) section
+Filter query to specific layers using layer algebra.
 
----
-
-#### Q.learn_claims() → ClaimLearnerBuilder
-
-Create a claim learning builder (hypothesis discovery).
-
-**Returns**: `ClaimLearnerBuilder`
-
-**Example**:
-```python
-claims = (
-    Q.learn_claims()
-     .from_metrics(["degree", "pagerank", "betweenness_centrality"])
-     .min_support(0.9)
-     .min_coverage(0.05)
-     .seed(42)
-     .execute(net)
-)
-```
-
-**See**: [Claim Learning](#claim-learning-hypothesis-discovery) section
-
----
-
-### QueryBuilder — Main Query Builder
-
-**Obtained from**: `Q.nodes()` or `Q.edges()`
-
-All methods return `self` (QueryBuilder) for chaining unless otherwise noted.
-
----
-
-#### .from_layers(layer_expr) → QueryBuilder
-
-Filter by layers using layer algebra.
-
-**Args**:
-- `layer_expr`: LayerExprBuilder from `L[...]` or LayerSet
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().from_layers(L["social"])
-Q.nodes().from_layers(L["social"] + L["work"])
-Q.nodes().from_layers(L["* - coupling"])  # All except coupling
-```
+**Parameters**:
+- `layer_expr` (Union[LayerExprBuilder, LayerSet]): Layer expression
 
 **Semantics**:
-- Selects only nodes/edges in specified layers
-- Layer algebra: `+` (union), `-` (difference), `&` (intersection)
-- `L["*"]` means all layers
+- MUST restrict query to nodes/edges in specified layers
+- For nodes: `(node_id, layer)` tuples where `layer` is in the resolved layer set
+- For edges: `(src, dst, src_layer, dst_layer)` tuples where `src_layer` and `dst_layer` are in the resolved layer set
+- Layer expression MUST be resolved at execution time
 
-**Failure modes**:
-- Unknown layer names are caught at execution (raises `UnknownLayerError`)
-- Empty layer expression → empty result (not an error)
-
----
-
-#### .where(*args, **kwargs) → QueryBuilder
-
-Add WHERE conditions (filtering).
-
-**Args**:
-- `*args`: BooleanExpression objects from `F` (e.g., `F.degree > 5`)
-- `**kwargs`: Conditions as keyword arguments
-
-**Returns**: QueryBuilder (self)
-
-**Keyword Syntax**:
-- Simple equality: `layer="social"`
-- Comparisons: `degree__gt=5`, `degree__gte=5`, `degree__lt=10`, `degree__lte=10`, `degree__eq=5`, `degree__ne=3`
-- Special predicates:
-  - `intralayer=True` - edges within same layer
-  - `interlayer=("social", "work")` - edges between specific layers
-  - `t__between=(100, 200)` - temporal range
-  - `t__gte=100`, `t__lt=200` - temporal comparisons
-
-**Expression Syntax** (using `F`):
-```python
-from py3plex.dsl import F
-
-Q.nodes().where(F.degree > 5)
-Q.nodes().where((F.degree > 5) & (F.layer == "social"))
-Q.nodes().where((F.degree > 10) | (F.clustering < 0.5))
-```
-
-**Operators**: `>`, `>=`, `<`, `<=`, `==`, `!=`, `&` (and), `|` (or), `~` (not)
+**Compatibility**:
+- MUST support legacy `LayerExprBuilder` (from `L["a"] + L["b"]`)
+- MUST support new `LayerSet` (from `L["* - coupling"]`)
 
 **Example**:
 ```python
-# Keyword style
-Q.nodes().where(layer="social", degree__gt=5)
-Q.edges().where(weight__gte=1.0, intralayer=True)
-
-# Expression style
-Q.nodes().where(F.degree > 5, F.layer == "social")
-Q.nodes().where((F.degree > 10) | (F.betweenness_centrality > 0.1))
-
-# Mix both
-Q.nodes().where(F.degree > 5, layer="social")
+.from_layers(L["social"] + L["work"])  # Union (legacy)
+.from_layers(L["* - coupling"])  # Difference (new)
+.from_layers(LayerSet("social") | LayerSet("work"))  # Union (new)
 ```
+
+##### `.where(*exprs, **conditions) → QueryBuilder`
+
+Add filtering conditions.
+
+**Parameters**:
+- `*exprs` (BooleanExpression): Boolean expressions from `F` (e.g., `F.degree > 5`)
+- `**conditions` (keyword arguments): Condition specifications using suffixes
+
+**Condition Syntax**:
+
+1. **Equality**: `attr=value` → `attr = value`
+2. **Comparison**: `attr__gt=value` → `attr > value`
+   - Suffixes: `__gt` (>), `__gte` (>=), `__lt` (<), `__lte` (<=), `__eq` (=), `__ne` (!=)
+3. **Special Predicates**:
+   - `intralayer=True` → Edges within same layer
+   - `interlayer=("layer1", "layer2")` → Edges between specific layers
+4. **Temporal**: `t__between=(t_start, t_end)` → Time range filter
+   - Also: `t__gte=t`, `t__lte=t`, `t__gt=t`, `t__lt=t`
+
+**Operator Precedence** (for F expressions):
+1. Comparison operators (`<`, `>`, `<=`, `>=`, `==`, `!=`)
+2. NOT (`~`)
+3. AND (`&`)
+4. OR (`|`)
 
 **Semantics**:
 - Multiple conditions are combined with AND
-- Conditions are evaluated lazily at execution time
-- Autocompute metrics referenced in conditions (if autocompute=True)
+- MUST filter items (nodes/edges) matching ALL conditions
+- MUST support comparison on computed metrics (if autocompute enabled) or existing attributes
+- MUST raise `UnknownAttributeError` if attribute does not exist and cannot be autocomputed
 
-**Failure modes**:
-- Unknown attributes raise `UnknownAttributeError` at execution
-- Type mismatches (e.g., `layer > 5`) raise `TypeMismatchError`
-- If autocompute=False and metric not computed, execution fails
+**Example**:
+```python
+.where(degree__gt=5, layer="social")  # AND semantics
+.where(F.degree > 5)  # Expression syntax
+.where((F.degree > 5) & (F.layer == "social"))  # Complex expression
+.where(intralayer=True)  # Special predicate
+.where(t__between=(100, 200))  # Temporal filter
+```
 
----
+**Error Conditions**:
+- If `autocompute=False` and filtering on uncomputed metric → `DslMissingMetricError`
+- If attribute does not exist → `UnknownAttributeError` with suggestions
 
-#### .compute(*measures, **options) → QueryBuilder
+##### `.compute(*measures, alias=None, aliases=None, uncertainty=None, **uq_params) → QueryBuilder`
 
-Compute metrics per item (node/edge).
+Compute metrics on nodes/edges.
 
-**Args**:
-- `*measures` (str): Metric names to compute
+**Parameters**:
+- `*measures` (str): Metric names to compute (e.g., "degree", "betweenness_centrality")
 - `alias` (str, optional): Alias for single measure
-- `aliases` (Dict[str, str], optional): Map measure→alias
-- `uncertainty` (bool, optional): Enable uncertainty for these measures
-- `method`, `n_samples`, `ci`, etc.: Uncertainty options (see UQ section)
+- `aliases` (Dict[str, str], optional): Dictionary mapping measures to aliases
+- `uncertainty` (bool, optional): Enable UQ for these metrics (default: inherits from query-level or global)
+- `**uq_params`: UQ parameters (method, n_samples, ci, bootstrap_unit, bootstrap_mode, n_null, null_model, random_state)
 
-**Returns**: QueryBuilder (self)
+**UQ Parameters**:
+- `method` (str): "bootstrap", "perturbation", "seed", "null_model", "stratified_perturbation"
+- `n_samples` (int): Number of samples (default: from uq_config or 50)
+- `ci` (float): Confidence interval level (default: 0.95)
+- `bootstrap_unit` (str): "edges", "nodes", or "layers"
+- `bootstrap_mode` (str): "resample" or "permute"
+- `n_null` (int): Number of null model replicates
+- `null_model` (str): "degree_preserving", "erdos_renyi", "configuration"
+- `random_state` (int): Random seed
+
+**Semantics**:
+- MUST compute specified metrics for all items in the current result set
+- MUST store results in `attributes` dictionary of QueryResult
+- MAY compute metrics lazily (deferred until needed by `.where()`, `.order_by()`, etc.)
+- MUST use measure_registry to look up metric implementations
+
+**Metric Types**:
+1. **Centrality**: degree, betweenness_centrality, closeness_centrality, eigenvector_centrality, pagerank
+2. **Clustering**: clustering, triangles
+3. **Community**: community_id, community_size (requires partition)
+4. **Custom**: User-defined via `@dsl_operator`
+
+**UQ Behavior**:
+- If `uncertainty=True`, results MUST be dictionaries with keys: `mean`, `std`, `quantiles`, `certainty`
+- If `uncertainty=False` or `None` (and not enabled globally), results MUST be scalars
+- Quantiles MUST include at minimum: 0.025, 0.05, 0.5, 0.95, 0.975 for ci=0.95
 
 **Example**:
 ```python
-Q.nodes().compute("degree")
-Q.nodes().compute("degree", "betweenness_centrality", "pagerank")
-Q.nodes().compute("degree", alias="node_degree")
-Q.nodes().compute("betweenness_centrality", "pagerank",
-                  aliases={"betweenness_centrality": "bc", "pagerank": "pr"})
-
-# With uncertainty
-Q.nodes().compute("pagerank", uncertainty=True, n_samples=100, ci=0.95, seed=42)
+.compute("degree", "betweenness_centrality")  # Multiple metrics
+.compute("degree", alias="deg")  # With alias
+.compute("degree", uncertainty=True, method="bootstrap", n_samples=100)  # With UQ
 ```
 
-**Built-in Metrics** (nodes):
-- `degree` - Node degree
-- `degree_centrality` - Normalized degree centrality
-- `betweenness_centrality` - Betweenness centrality
-- `closeness_centrality` - Closeness centrality
-- `eigenvector_centrality` - Eigenvector centrality
-- `pagerank` - PageRank
-- `clustering` - Clustering coefficient
-- `strength` - Weighted degree (sum of edge weights)
-- `layer_count` - Number of layers node appears in
+##### `.order_by(key, desc=False) → QueryBuilder`
 
-**Built-in Metrics** (edges):
-- `weight` - Edge weight (default: 1.0)
-- `src_degree`, `dst_degree` - Endpoint degrees
-- `edge_betweenness_centrality` - Edge betweenness
+Order results by attribute.
 
-**Custom Metrics**: Use plugin system or `.mutate()` for derived metrics
+**Parameters**:
+- `key` (str): Attribute name to order by
+- `desc` (bool, default=False): If True, descending order; if False, ascending
 
 **Semantics**:
-- Computes metrics for **each item** (not aggregated)
-- Results stored in QueryResult.attributes
-- Multiple `.compute()` calls accumulate (don't replace)
-
-**Failure modes**:
-- Unknown measure names raise `UnknownMeasureError`
-- Some measures require simple graphs (e.g., clustering) → auto-converted if needed
-- Computationally expensive on large networks (>10k nodes)
-
----
-
-#### .order_by(*keys, desc=False) → QueryBuilder
-
-Sort results by one or more keys.
-
-**Args**:
-- `*keys` (str): Attribute names to sort by. Prefix with `-` for descending (e.g., `"-degree"`)
-- `desc` (bool, default=False): Sort descending (applies to all keys if no `-` prefix)
-
-**Returns**: QueryBuilder (self)
+- MUST sort items by specified attribute
+- MUST support ordering by computed metrics
+- For UQ metrics with uncertainty, MUST order by `mean` value
+- MUST preserve stable sort order (items with equal keys maintain relative order)
 
 **Example**:
 ```python
-Q.nodes().compute("degree").order_by("degree")  # Ascending
-Q.nodes().compute("degree").order_by("-degree")  # Descending
-Q.nodes().compute("degree").order_by("degree", desc=True)  # Descending
-Q.nodes().compute("degree", "layer").order_by("layer", "degree")  # Multi-key
-Q.nodes().compute("degree", "pagerank").order_by("-pagerank", "-degree")  # Both desc
+.order_by("degree", desc=True)  # Descending
+.order_by("betweenness_centrality")  # Ascending
 ```
 
-**Semantics**:
-- Stable sort (preserves order of equal elements)
-- Multi-key sort: primary key first, then secondary, etc.
-- `-` prefix overrides `desc` parameter for that key
+##### `.limit(n) → QueryBuilder`
 
-**Failure modes**:
-- Unknown keys raise error at execution
-- Keys must be in result (computed or intrinsic like "node", "layer")
+Limit results to top n items.
 
----
-
-#### .limit(n) → QueryBuilder
-
-Limit result to first n items.
-
-**Args**:
+**Parameters**:
 - `n` (int): Maximum number of items to return
 
-**Returns**: QueryBuilder (self)
+**Semantics**:
+- MUST return at most `n` items
+- MUST apply AFTER ordering (if `.order_by()` was called)
+- MUST apply AFTER filtering (if `.where()` was called)
+- If n <= 0, MUST return empty result
 
 **Example**:
 ```python
-Q.nodes().compute("degree").order_by("-degree").limit(10)  # Top 10 by degree
+.limit(20)  # Top 20 items
 ```
+
+##### `.top_k(k, key) → QueryBuilder`
+
+Keep top-k items by attribute value.
+
+**Parameters**:
+- `k` (int): Number of items to keep
+- `key` (str): Attribute to rank by
 
 **Semantics**:
-- Applied **after** ordering
-- Does not interact with grouping (see `.top_k()` for per-group limits)
+- MUST keep top `k` items ranked by `key` (descending order)
+- If grouping is active (`.per_layer()` or `.per_layer_pair()`), MUST apply per group
+- MUST support UQ metrics (ranks by `mean` value)
 
----
-
-#### .uq(method, n_samples, ci, seed, **options) → QueryBuilder
-
-Enable uncertainty quantification for the query.
-
-**Args**:
-- `method` (str): "bootstrap", "perturbation", "seed"
-- `n_samples` (int): Number of samples for UQ
-- `ci` (float): Confidence interval level (e.g., 0.95 for 95%)
-- `seed` (int): Random seed for reproducibility
-- `**options`: Additional UQ options (bootstrap_unit, bootstrap_mode, etc.)
-
-**Returns**: QueryBuilder (self)
+**Difference from `.limit()`**:
+- `.limit(n)` applies globally after all operations
+- `.top_k(k, key)` can apply per group when grouping is active
 
 **Example**:
 ```python
-Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, ci=0.95, seed=42)
-Q.nodes().compute("degree", "betweenness").uq(method="perturbation", n_samples=50, seed=123)
+.top_k(10, "degree")  # Global top-10
+.per_layer().top_k(5, "betweenness")  # Top-5 per layer
 ```
 
-**Methods**:
-- `"bootstrap"`: Resample edges/nodes/layers
-- `"perturbation"`: Add noise to edge weights
-- `"seed"`: Multi-run with different random seeds
+##### `.per_layer() → QueryBuilder`
+
+Enable per-layer grouping for nodes.
 
 **Semantics**:
-- Computes metrics multiple times with resampling
-- Returns mean, std, confidence intervals
-- Use `.to_pandas(expand_uncertainty=True)` to get CI columns
+- MUST group nodes by their layer
+- Operations after `.per_layer()` MUST apply independently per layer
+- MUST enable `.aggregate()` and `.coverage()` operations
+- Grouping MUST remain active until `.end_grouping()` is called (implicit at execution if not called)
 
-**See**: [Uncertainty Quantification](#uncertainty-quantification) for detailed reference
-
-**Failure modes**:
-- Computationally expensive (n_samples × metric cost)
-- Requires deterministic metrics (some algorithms use randomness)
-- Seed must be set for reproducibility
-
----
-
-#### .per_layer() → QueryBuilder
-
-Group results by layer (for **node** queries).
-
-**Returns**: QueryBuilder (self)
+**Supported Operations in Grouping Context**:
+- `.top_k(k, key)` - Top-k per layer
+- `.where()` - Filter within each layer
+- `.aggregate()` - Compute per-layer statistics
+- `.coverage()` - Cross-layer filtering
 
 **Example**:
 ```python
-Q.nodes().per_layer().top_k(5, "degree")
+.per_layer().top_k(10, "degree")  # Top-10 nodes per layer
 ```
+
+##### `.per_layer_pair() → QueryBuilder`
+
+Enable per-layer-pair grouping for edges.
 
 **Semantics**:
-- Shorthand for `.group_by("layer")`
-- Enables per-layer operations (`.top_k()`, `.aggregate()`)
-- **Only valid for node queries** (raises error for edges)
-
-**After grouping, use**:
-- `.top_k(k, key)` - top-k per layer
-- `.aggregate(...)` - compute per-layer statistics
-- `.end_grouping()` - marker for readability
-- `.coverage(...)` - cross-layer filtering
-
-**Failure modes**:
-- Called on edge query → raises `DslExecutionError`
-- Forgetting `.end_grouping()` before `.coverage()` → may be confusing but not an error
-
----
-
-#### .per_layer_pair() → QueryBuilder
-
-Group edge results by (src_layer, dst_layer) pair (for **edge** queries).
-
-**Returns**: QueryBuilder (self)
+- MUST group edges by (source_layer, target_layer) tuple
+- MUST only be valid for edge queries (raises error for node queries)
+- Operations after `.per_layer_pair()` MUST apply independently per layer pair
+- Grouping MUST remain active until `.end_grouping()` is called
 
 **Example**:
 ```python
-Q.edges().per_layer_pair().aggregate(count="count()", avg_weight="mean(weight)")
+Q.edges().per_layer_pair().top_k(5, "weight")  # Top-5 edges per layer pair
 ```
+
+##### `.end_grouping() → QueryBuilder`
+
+Explicitly end grouping context.
 
 **Semantics**:
-- Shorthand for `.group_by("src_layer", "dst_layer")`
-- Enables per-layer-pair operations
-- **Only valid for edge queries** (raises error for nodes)
-
-**Failure modes**:
-- Called on node query → raises `DslExecutionError`
-
----
-
-#### .top_k(k, key=None) → QueryBuilder
-
-Keep top-k items per group.
-
-**Args**:
-- `k` (int): Number of items to keep per group
-- `key` (str, optional): Attribute to sort by (descending). If None, uses existing order_by.
-
-**Returns**: QueryBuilder (self)
+- MUST flatten grouped results back to single collection
+- MUST be called before `.coverage()` to enable cross-group filtering
+- If not called explicitly, MUST be applied implicitly at execution time
 
 **Example**:
 ```python
-Q.nodes().per_layer().top_k(5, "degree")
-Q.nodes().per_layer().compute("betweenness").top_k(10, "betweenness_centrality")
+.per_layer().top_k(10, "degree").end_grouping().coverage(mode="all")
 ```
+
+##### `.coverage(mode="all", k=None) → QueryBuilder`
+
+Filter items by cross-group coverage.
+
+**Parameters**:
+- `mode` (str): Coverage mode - "all", "any", or "k"
+- `k` (int, optional): Required for mode="k" - minimum number of groups
+
+**Preconditions**:
+- MUST be called after grouping context has ended (after `.end_grouping()` or before `.per_layer()`)
+- MUST raise `GroupingError` if called within active grouping context
 
 **Semantics**:
-- Requires prior grouping (`.per_layer()` or `.group_by()`)
-- Keeps top-k **per group** (not global top-k)
-- If key provided, implicitly sets `.order_by(f"-{key}")`
-
-**Failure modes**:
-- Called without grouping → raises `ValueError`
-- Key must be in result (computed or intrinsic)
-
----
-
-#### .end_grouping() → QueryBuilder
-
-Marker for end of grouping configuration (readability).
-
-**Returns**: QueryBuilder (self)
+- **mode="all"**: Keep items present in ALL groups
+- **mode="any"**: Keep items present in ANY group (no-op, all items pass)
+- **mode="k"**: Keep items present in at least `k` groups
+- For nodes: Compare by node_id (ignore layer)
+- For edges: Compare by (source, target) tuple (ignore layers)
 
 **Example**:
 ```python
-(Q.nodes()
-  .per_layer()
-    .top_k(5, "degree")
-  .end_grouping()
-  .coverage(mode="all"))
+# Nodes in all layers
+.per_layer().top_k(10, "degree").end_grouping().coverage(mode="all")
+
+# Edges in at least 2 layer pairs
+Q.edges().per_layer_pair().top_k(5, "weight").end_grouping().coverage(mode="k", k=2)
 ```
+
+##### `.aggregate(**aggregations) → QueryBuilder`
+
+Compute per-group aggregations.
+
+**Parameters**:
+- `**aggregations` (str): Aggregation specifications in format `alias="func(column)"`
+
+**Preconditions**:
+- MUST be called within active grouping context (after `.per_layer()` or `.per_layer_pair()`)
+- MUST raise `GroupingError` if called outside grouping context
+
+**Supported Functions**:
+- `mean(col)` - Mean value
+- `sum(col)` - Sum
+- `count(col)` or `count()` - Count of items
+- `min(col)` - Minimum
+- `max(col)` - Maximum
+- `std(col)` - Standard deviation
+- `median(col)` - Median
 
 **Semantics**:
-- No execution effect (purely for API readability)
-- Helps visually separate grouping operations from post-grouping operations
-
----
-
-#### .coverage(mode, k=None, threshold=None, p=None) → QueryBuilder
-
-Filter items based on cross-group coverage.
-
-**Args**:
-- `mode` (str): "all", "any", "at_least", "exact", "fraction"
-- `k` (int, optional): Threshold for "at_least" or "exact" modes
-- `threshold` (int, optional): Alias for `k`
-- `p` (float, optional): Fraction threshold (0.0-1.0) for "fraction" mode
-
-**Returns**: QueryBuilder (self)
-
-**Modes**:
-- `"all"`: Keep items in ALL groups
-- `"any"`: Keep items in at least ONE group (default behavior, not usually needed)
-- `"at_least"`: Keep items in at least k groups (requires `k` or `threshold`)
-- `"exact"`: Keep items in exactly k groups (requires `k`)
-- `"fraction"`: Keep items in at least p fraction of groups (requires `p`, e.g., p=0.67 for 67%)
+- MUST compute aggregation per group
+- Result MUST have one row per group
+- MUST support aggregating UQ metrics (aggregates the `mean` field)
 
 **Example**:
 ```python
-# Cross-layer hubs (top-5 degree in ALL layers)
-Q.nodes().per_layer().top_k(5, "degree").coverage(mode="all")
-
-# Top-5 in at least 2 layers
-Q.nodes().per_layer().top_k(5, "degree").coverage(mode="at_least", k=2)
-
-# Top-10 in at least 70% of layers
-Q.nodes().per_layer().top_k(10, "degree").coverage(mode="fraction", p=0.7)
+.per_layer().aggregate(avg_degree="mean(degree)", node_count="count()")
 ```
+
+##### `.uq(method="perturbation", n_samples=50, ci=0.95, seed=None, **kwargs) → QueryBuilder`
+
+Set query-level uncertainty quantification configuration.
+
+**Parameters**:
+- `method` (str or UQConfig or None): UQ method name, UQConfig instance, or None to disable
+- `n_samples` (int, default=50): Number of samples
+- `ci` (float, default=0.95): Confidence interval level
+- `seed` (int, optional): Random seed
+- `**kwargs`: Method-specific parameters
 
 **Semantics**:
-- Requires prior grouping
-- Applied **after** per-group operations (`.top_k()`, `.aggregate()`)
-- Filters final result to items meeting cross-group criteria
+- MUST apply UQ defaults to all `.compute()` calls in this query
+- Per-metric parameters in `.compute()` MUST override query-level UQ
+- If `method=None`, MUST disable query-level UQ
 
-**Failure modes**:
-- Called without grouping → raises `GroupingError`
-- Invalid mode → raises `ValueError`
-- Missing required parameters (k for "at_least", p for "fraction") → raises `ValueError`
-
----
-
-#### .aggregate(**aggregations) → QueryBuilder
-
-Compute per-group statistics.
-
-**Args**:
-- `**aggregations`: Map of `alias="function(attribute)"` pairs
-
-**Returns**: QueryBuilder (self)
-
-**Functions**:
-- `count()` / `n()`: Count of items in group
-- `mean(attr)`: Arithmetic mean
-- `median(attr)`: Median value
-- `sum(attr)`: Sum of values
-- `min(attr)`, `max(attr)`: Minimum/maximum
-- `std(attr)`, `var(attr)`: Standard deviation and variance
-- `quantile(attr, p)`: p-th quantile (e.g., `quantile(degree, 0.95)`)
+**Priority** (highest to lowest):
+1. Per-metric parameters in `.compute(uncertainty=True, n_samples=200)`
+2. Query-level config from `.uq()`
+3. Global `Q.uncertainty.defaults`
 
 **Example**:
 ```python
-# Per-layer statistics
-Q.nodes().per_layer().aggregate(
-    node_count="count()",
-    avg_degree="mean(degree)",
-    median_degree="median(degree)",
-    q95_degree="quantile(degree, 0.95)"
-)
-
-# Per-layer-pair edge statistics
-Q.edges().per_layer_pair().aggregate(
-    edge_count="count()",
-    avg_weight="mean(weight)",
-    total_weight="sum(weight)"
-)
+.uq(method="bootstrap", n_samples=100, ci=0.95, bootstrap_unit="edges")
+.uq(UQ.fast())  # Use preset
+.uq(method=None)  # Disable
 ```
+
+##### `.at(time) → QueryBuilder`
+
+Query network at specific time point (temporal networks).
+
+**Parameters**:
+- `time` (float): Timestamp
 
 **Semantics**:
-- Requires prior grouping
-- Returns **one row per group** (not per item)
-- Result has group keys (layer, src_layer/dst_layer) + computed aggregates
-
-**Failure modes**:
-- Called without grouping → error
-- Unknown aggregation functions → error
-- Attribute not in result → error
-
----
-
-#### .filter(*args, **kwargs) → QueryBuilder
-
-Alias for `.where()` (dplyr-style naming).
-
-**See**: `.where()` documentation above
-
----
-
-#### .filter_expr(expr) → QueryBuilder
-
-Filter using string expression.
-
-**Args**:
-- `expr` (str): Boolean expression string
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().filter_expr("degree > 5 and layer == 'social'")
-Q.edges().filter_expr("weight >= 1.0 and intralayer")
-```
-
-**Semantics**:
-- Parses expression and converts to condition AST
-- Supports: `>`, `>=`, `<`, `<=`, `==`, `!=`, `and`, `or`, `not`
-
-**Failure modes**:
-- Invalid syntax → parse error
-- Unknown attributes → error at execution
-
----
-
-#### .head(n=5) → QueryBuilder
-
-Keep first n results (dplyr-style).
-
-**Args**:
-- `n` (int, default=5): Number of items to keep
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().compute("degree").order_by("-degree").head(10)
-```
-
-**Semantics**:
-- Alias for `.limit(n)`
-- Applied after ordering
-
----
-
-#### .tail(n=5) → QueryBuilder
-
-Keep last n results (dplyr-style).
-
-**Args**:
-- `n` (int, default=5): Number of items to keep
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().compute("degree").order_by("degree").tail(10)  # 10 lowest degree
-```
-
-**Semantics**:
-- Reverses order, takes first n, reverses again
-- Applied after ordering
-
----
-
-#### .sample(n=5, seed=None) → QueryBuilder
-
-Random sample of n items (dplyr-style).
-
-**Args**:
-- `n` (int, default=5): Number of items to sample
-- `seed` (int, optional): Random seed for reproducibility
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().sample(10, seed=42)  # Random 10 nodes, reproducible
-```
-
-**Semantics**:
-- Random sampling without replacement
-- Seed ensures reproducibility
-
-**Failure modes**:
-- If n > result size, returns all items (not an error)
-
----
-
-#### .slice(start, end=None) → QueryBuilder
-
-Array-style slicing (dplyr-style).
-
-**Args**:
-- `start` (int): Start index (inclusive, 0-based)
-- `end` (int, optional): End index (exclusive). If None, goes to end.
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().slice(10, 20)  # Items 10-19
-Q.nodes().slice(5, None)  # Items 5 to end
-```
-
-**Semantics**:
-- Python-style slicing
-- Applied after ordering
-
----
-
-#### .mutate(**transformations) → QueryBuilder
-
-Add or modify attributes using lambda functions (dplyr-style).
-
-**Args**:
-- `**transformations`: Map of `new_attr=lambda row: expression` pairs
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().compute("degree").mutate(
-    norm_deg=lambda r: r["degree"] / 10,
-    is_hub=lambda r: r["degree"] > 5
-)
-```
-
-**Semantics**:
-- Computes new attributes from existing ones
-- Lambda receives row dict with all current attributes
-- Can reference computed metrics
-
-**Failure modes**:
-- Lambda errors (e.g., KeyError for missing attr) propagate at execution
-
----
-
-#### .select(*columns) → QueryBuilder
-
-Keep only specified columns in result (dplyr-style).
-
-**Args**:
-- `*columns` (str): Column names to keep
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().compute("degree", "pagerank").select("node", "layer", "degree")
-```
-
-**Semantics**:
-- Projection operation (like SQL SELECT)
-- Other columns are dropped from result
-
----
-
-#### .rename(**mapping) → QueryBuilder
-
-Rename columns (dplyr-style).
-
-**Args**:
-- `**mapping`: Map of `old_name="new_name"` pairs
-
-**Returns**: QueryBuilder (self)
-
-**Example**:
-```python
-Q.nodes().compute("degree").rename(degree="node_degree", layer="layer_name")
-```
-
----
-
-#### .arrange(*columns, desc=False) → QueryBuilder
-
-Alias for `.order_by()` (dplyr-style).
-
-**See**: `.order_by()` documentation
-
----
-
-#### .at(t) → QueryBuilder
-
-Temporal snapshot at time t (temporal networks).
-
-**Args**:
-- `t` (float): Timestamp
-
-**Returns**: QueryBuilder (self)
+- MUST filter to edges/nodes active at specified time
+- MUST work with `TemporalMultiLayerNetwork` instances
+- Temporal context MUST be set in AST as `TemporalContext(kind="at", t0=time, t1=time)`
 
 **Example**:
 ```python
 Q.edges().at(150.0).execute(temporal_net)
 ```
 
-**Semantics**:
-- Filters edges to those active at time t
-- Requires `t_start`/`t_end` or `t` on edges
+##### `.during(t_start, t_end) → QueryBuilder`
 
-**See**: [Temporal Networks](#temporal-networks) section
+Query network during time interval (temporal networks).
 
----
-
-#### .during(t_start, t_end) → QueryBuilder
-
-Temporal range query [t_start, t_end] (temporal networks).
-
-**Args**:
+**Parameters**:
 - `t_start` (float): Start time (inclusive)
 - `t_end` (float): End time (inclusive)
 
-**Returns**: QueryBuilder (self)
+**Semantics**:
+- MUST filter to edges/nodes active during [t_start, t_end]
+- MUST work with `TemporalMultiLayerNetwork` instances
+- Temporal context MUST be set in AST as `TemporalContext(kind="during", t0=t_start, t1=t_end)`
 
 **Example**:
 ```python
 Q.edges().during(100.0, 200.0).execute(temporal_net)
 ```
 
+##### `.window(size, step=None, start=None, end=None, aggregation="list") → QueryBuilder`
+
+Iterate over sliding time windows (temporal networks).
+
+**Parameters**:
+- `size` (float or str): Window size
+- `step` (float or str, optional): Step size (default: size, non-overlapping)
+- `start` (float, optional): Start time
+- `end` (float, optional): End time
+- `aggregation` (str, default="list"): How to aggregate results across windows
+
 **Semantics**:
-- Filters edges to those active in interval
-- Requires `t_start`/`t_end` or `t` on edges
-
----
-
-#### .before(t) → QueryBuilder
-
-Temporal query for edges before time t.
-
-**Args**:
-- `t` (float): Cutoff time
-
-**Returns**: QueryBuilder (self)
-
----
-
-#### .after(t) → QueryBuilder
-
-Temporal query for edges after time t.
-
-**Args**:
-- `t` (float): Cutoff time
-
-**Returns**: QueryBuilder (self)
-
----
-
-#### .window(size, stride=None, ...) → QueryBuilder
-
-Sliding window temporal query (temporal networks).
-
-**Args**:
-- `size` (float): Window size
-- `stride` (float, optional): Stride (default: size, non-overlapping)
-- Additional params: anchors, aggregation, etc.
-
-**Returns**: QueryBuilder (self)
+- MUST generate non-overlapping windows if `step=None` or `step=size`
+- MUST generate overlapping windows if `step < size`
+- Result MUST include window metadata in `meta["windows"]`
 
 **Example**:
 ```python
-Q.edges().window(size=100.0, stride=50.0).execute(temporal_net)
+.window(size=100.0, step=50.0)  # Overlapping windows
+.window(size="7d", step="1d")  # Duration strings (if supported)
 ```
 
-**See**: [Temporal Networks](#temporal-networks) section
+##### `.community(method="leiden", gamma=1.0, omega=1.0, random_state=None, partition_name="default", **kwargs) → QueryBuilder`
 
----
+Run community detection and attach partition.
 
-#### .execute(network, progress=True, **params) → QueryResult
+**Parameters**:
+- `method` (str, default="leiden"): Algorithm name
+- `gamma` (float or dict, default=1.0): Resolution parameter
+- `omega` (float or array, default=1.0): Interlayer coupling strength
+- `random_state` (int, optional): Random seed (default: 0)
+- `partition_name` (str, default="default"): Partition name
+- `**kwargs`: Algorithm-specific parameters
 
-Execute the query and return results.
+**Supported Algorithms**:
+- `"leiden"` - Multilayer Leiden (production-ready with UQ)
+- `"louvain"` - Multilayer Louvain
+- `"infomap"` - Infomap (if available)
+- `"label_propagation_supra"` - Supra-graph label propagation
+- `"label_propagation_consensus"` - Consensus label propagation
 
-**Args**:
-- `network`: multi_layer_network or TemporalMultiLayerNetwork instance
-- `progress` (bool, default=True): Show progress logging
-- `**params`: Parameter bindings (for Param.ref placeholders)
+**Semantics**:
+- MUST run community detection on the network
+- MUST attach results to network under `partition_name`
+- Results MUST be accessible via `Q.communities(partition=partition_name)`
+- When combined with `.uq()`, MUST enable probabilistic community detection
+
+**Example**:
+```python
+.community(method="leiden", gamma=1.2, random_state=42)
+.community(method="leiden").uq(method="ensemble", n_samples=50)  # With UQ
+```
+
+##### `.sensitivity(perturb, grid=None, n_samples=30, metrics=None, **kwargs) → QueryBuilder`
+
+Enable sensitivity analysis for query conclusions.
+
+**Parameters**:
+- `perturb` (str): Perturbation method ("edge_drop", "degree_preserving_rewire")
+- `grid` (List[float], optional): Perturbation strength grid (default: [0.0, 0.05, 0.1, 0.15, 0.2])
+- `n_samples` (int, default=30): Samples per grid point
+- `metrics` (List[str], optional): Stability metrics (default: ["kendall_tau"])
+- `**kwargs`: Perturbation-specific parameters
+
+**Semantics**:
+- MUST test stability of query CONCLUSIONS (rankings, sets, communities), NOT metric values
+- Result MUST include `sensitivity_result` with stability curves
+- DISTINCT from `.uq()` which estimates uncertainty of metric VALUES
+
+**Stability Metrics**:
+- `"kendall_tau"` - Ranking correlation
+- `"jaccard_at_k(k)"` - Set overlap at top-k
+- `"nmi"` - Normalized mutual information (for communities)
+
+**Example**:
+```python
+.sensitivity(perturb="edge_drop", grid=[0.0, 0.05, 0.1], n_samples=30)
+```
+
+##### `.explain(neighbors_top=None, include=None, **config) → QueryBuilder or ExplainQuery`
+
+Attach explanations to results OR get execution plan.
+
+**Two Modes**:
+
+1. **Execution Plan Mode** (no arguments): Returns `ExplainQuery` showing execution plan
+2. **Explanations Mode** (with arguments): Attaches explanations to each result row
+
+**Parameters** (Explanations Mode):
+- `neighbors_top` (int, default=10): Max neighbors to include
+- `include` (List[str], optional): Explanation blocks (default: ["community", "top_neighbors", "layer_footprint"])
+- `exclude` (List[str], optional): Blocks to exclude
+- `neighbors` (dict, optional): Neighbor config (metric, scope, direction)
+- `cache` (bool, default=True): Cache lookups
+- `as_columns` (bool, default=True): Store as top-level columns
+- `prefix` (str, default=""): Column name prefix
+
+**Explanation Blocks**:
+- `"community"` - Community membership and size
+- `"top_neighbors"` - Top neighbors by weight/degree
+- `"layer_footprint"` - Layers where node/edge appears
+
+**Example**:
+```python
+.explain()  # Execution plan
+.explain(neighbors_top=5, include=["top_neighbors"])  # With explanations
+```
+
+##### `.to_ast() → Query`
+
+Convert builder to AST.
+
+**Returns**: `Query` AST node
+
+**Semantics**:
+- MUST create deep copy of internal AST to prevent mutation
+- MUST NOT execute the query
+- Result MUST be serializable to JSON
+
+**Example**:
+```python
+ast = Q.nodes().where(degree__gt=5).to_ast()
+```
+
+##### `.execute(network, progress=True, **params) → QueryResult`
+
+Execute query on network.
+
+**Parameters**:
+- `network` (Any): Multilayer network object
+- `progress` (bool, default=True): Enable progress logging
+- `**params` (Any): Parameter bindings for `ParamRef` placeholders
 
 **Returns**: `QueryResult`
+
+**Semantics**:
+- MUST compile builder to AST
+- MUST bind all `ParamRef` parameters using `**params`
+- MUST execute query using `execute_ast(network, query, params)`
+- MUST raise `ParameterMissingError` if any parameter is missing
+- MUST return `QueryResult` with items, attributes, and metadata
 
 **Example**:
 ```python
 result = Q.nodes().where(degree__gt=Param.int("k")).execute(net, k=5)
-```
-
-**Semantics**:
-- **This is the only eager operation**
-- Compiles query to AST, binds parameters, executes
-- Returns rich QueryResult object
-
-**Failure modes**:
-- Network validation errors
-- Unknown layers, attributes, measures
-- Parameter binding errors (missing or type mismatch)
-
----
-
-#### .to_ast() → Query
-
-Export query as AST without executing.
-
-**Returns**: AST Query object
-
-**Example**:
-```python
-ast = Q.nodes().where(degree__gt=5).compute("pagerank").to_ast()
-print(ast)  # Inspect AST structure
-```
-
-**Use cases**:
-- Debugging query structure
-- Serializing queries
-- Static analysis
-
----
-
-### QueryResult — Rich Result Object
-
-**Obtained from**: `.execute(network)`
-
-#### Attributes
-
-- `result.target`: "nodes" or "edges"
-- `result.items`: List of node/edge items (tuples)
-- `result.attributes`: Dict of computed attributes (e.g., `{"degree": {...}}`)
-- `result.meta`: Metadata dict (provenance, grouping, etc.)
-- `result.count`: Number of items (same as `len(result)`)
-
-#### Methods
-
-##### .to_pandas(expand_uncertainty=False, expand_explanations=False) → DataFrame
-
-Convert to pandas DataFrame.
-
-**Args**:
-- `expand_uncertainty` (bool): Expand UQ columns (_mean, _std, _ci95_low, _ci95_high)
-- `expand_explanations` (bool): Expand explain() metadata into columns
-
-**Returns**: pandas DataFrame
-
-**Example**:
-```python
-df = result.to_pandas()
-df = result.to_pandas(expand_uncertainty=True)
+result = Q.nodes().execute(net, progress=False)  # Disable logging
 ```
 
 ---
 
-##### .to_networkx() → nx.Graph
-
-Convert result to NetworkX graph.
-
-**Returns**: NetworkX Graph or MultiGraph
-
----
-
-##### .to_arrow() → pyarrow.Table
-
-Convert to Apache Arrow table (for interop with other tools).
-
-**Returns**: Apache Arrow Table
-
----
-
-##### .to_dict() → dict
-
-Convert to plain dictionary (backward compatible with legacy DSL).
-
-**Returns**: Dictionary with keys: query, target, nodes/edges, count, computed, meta
-
----
-
-##### .group_summary() → DataFrame
-
-Get summary of grouped results (when grouping is used).
-
-**Returns**: DataFrame with group keys and per-group statistics
-
-**Example**:
-```python
-result = (Q.nodes()
-           .per_layer()
-           .aggregate(count="count()", avg_degree="mean(degree)")
-           .execute(net))
-df = result.group_summary()
-```
-
----
-
-##### .counterexample(claim, **kwargs) → Counterexample | None
-
-Lazily find counterexample for a claim on this result's network.
-
-**Args**:
-- `claim` (str): Claim string (e.g., "degree__ge(k) -> pagerank__rank_le(r)")
-- `**kwargs`: Passed to counterexample engine (params, seed, etc.)
-
-**Returns**: Counterexample object or None
-
-**Example**:
-```python
-result = Q.nodes().compute("degree", "pagerank").execute(net)
-cex = result.counterexample("degree__ge(k) -> pagerank__rank_le(r)", k=10, r=50, seed=42)
-```
-
-**See**: [Counterexample Generation](#counterexample-generation)
-
----
-
-### L — Layer Algebra Builder
+#### 3.3 L — Layer Expression Factory
 
 **Import**: `from py3plex.dsl import L`
 
-#### L["layer_name"] → LayerExprBuilder
+**Syntax**:
+- `L["name"]` → LayerExprBuilder or LayerSet (single layer)
+- `L["name1", "name2"]` → LayerExprBuilder (union)
+- `L["* - coupling"]` → LayerSet (parsed expression)
 
-Create a layer expression builder.
+**Semantics**:
+- MUST support both legacy (LayerExprBuilder) and new (LayerSet) backends
+- MUST detect expressions with operators and use LayerSet
+- MUST use LayerExprBuilder for simple names (backward compatibility)
 
 **Example**:
 ```python
 L["social"]  # Single layer
-L["social"] + L["work"]  # Union
-L["social"] - L["bots"]  # Difference
-L["social"] & L["work"]  # Intersection
-L["*"]  # All layers
-L["*"] - L["coupling"]  # All except coupling
-```
-
-**Operators**:
-- `+`: Union of layers
-- `-`: Difference (A - B = elements in A but not B)
-- `&`: Intersection
-- `L["*"]`: All layers (wildcard)
-
-**Advanced Syntax** (LayerSet parsing):
-```python
-L["* - coupling"]  # String expression with operators
-L["(ppi | gene) & disease"]  # Parentheses and pipe operator
-```
-
-**Semantics**:
-- Builds AST for layer selection
-- Resolved at execution time against network's layers
-- Unknown layers → error at execution
-
-**Failure modes**:
-- Empty result (e.g., `L["social"] & L["work"]` on network without both) → empty query result, not error
-
----
-
-#### L.define(name, layer_expr)
-
-Define named layer group for reuse.
-
-**Args**:
-- `name` (str): Group name
-- `layer_expr`: LayerExprBuilder or LayerSet
-
-**Example**:
-```python
-bio = L["ppi"] | L["gene"] | L["disease"]
-L.define("bio", bio)
-
-# Later
-Q.nodes().from_layers(L["bio"]).execute(net)
+L["social", "work"]  # Union (legacy)
+L["* - coupling"]  # Expression (new)
 ```
 
 ---
 
-#### L.list_groups() → dict
-
-List all defined layer groups.
-
-**Returns**: Dictionary mapping group names to layer expressions
-
----
-
-#### L.clear_groups()
-
-Clear all defined layer groups.
-
----
-
-### UQ — Uncertainty Quantification Factory
-
-**Import**: `from py3plex.dsl import UQ`
-
-UQ provides defaults for uncertainty quantification across queries.
-
-#### UQ.defaults(method, n_samples, ci, seed, **options) → UncertaintyConfig
-
-Set default UQ configuration.
-
-**Args**:
-- `method` (str): "bootstrap", "perturbation", "seed"
-- `n_samples` (int): Number of samples
-- `ci` (float): Confidence interval level (e.g., 0.95)
-- `seed` (int): Random seed
-- `**options`: bootstrap_unit, bootstrap_mode, etc.
-
-**Returns**: UncertaintyConfig object
-
-**Example**:
-```python
-UQ.defaults(method="bootstrap", n_samples=100, ci=0.95, seed=42)
-
-# Now all queries with uncertainty=True use these defaults
-Q.nodes().compute("pagerank", uncertainty=True).execute(net)
-```
-
-**See**: [Uncertainty Quantification](#uncertainty-quantification) for full reference
-
----
-
-### Param — Parameter Placeholders
+#### 3.4 Param — Parameter Reference Factory
 
 **Import**: `from py3plex.dsl import Param`
 
-Param creates parameter placeholders for parameterized queries.
+**Factory Methods**:
+- `Param.int(name)` → ParamRef with type hint "int"
+- `Param.float(name)` → ParamRef with type hint "float"
+- `Param.str(name)` → ParamRef with type hint "str"
 
-#### Param.int(name) → ParamRef
-
-Integer parameter.
+**Semantics**:
+- MUST create `ParamRef` AST nodes as placeholders
+- Parameters MUST be bound at execution time via `.execute(**params)`
+- Type hints MAY be used for validation (implementation-defined)
 
 **Example**:
 ```python
-q = Q.nodes().where(degree__gt=Param.int("k"))
-result = q.execute(net, k=5)
+.where(degree__gt=Param.int("threshold"))
+.execute(net, threshold=5)
 ```
 
 ---
 
-#### Param.float(name) → ParamRef
+#### 3.5 UQ — Uncertainty Quantification Presets
 
-Float parameter.
+**Import**: `from py3plex.dsl import UQ`
+
+**Preset Methods**:
+- `UQ.fast(seed=None)` → UQConfig with n_samples=20
+- `UQ.standard(seed=None)` → UQConfig with n_samples=100
+- `UQ.publication(seed=None)` → UQConfig with n_samples=500
+- `UQ.off()` → None (disable UQ)
+
+**Semantics**:
+- MUST return `UQConfig` instances ready for use in `.uq()`
+- MUST set reasonable defaults for method, ci, and other parameters
 
 **Example**:
 ```python
-q = Q.nodes().where(weight__gte=Param.float("threshold"))
-result = q.execute(net, threshold=1.5)
+.uq(UQ.fast())  # Quick UQ with 20 samples
+.uq(UQ.publication(seed=42))  # Publication-quality with 500 samples
 ```
 
 ---
 
-#### Param.str(name) → ParamRef
-
-String parameter.
-
-**Example**:
-```python
-q = Q.nodes().where(layer=Param.str("target_layer"))
-result = q.execute(net, target_layer="social")
-```
-
----
-
-#### Param.ref(name) → ParamRef
-
-Untyped parameter reference.
-
-**Example**:
-```python
-q = Q.nodes().where(degree__gt=Param.ref("threshold"))
-result = q.execute(net, threshold=10)
-```
-
----
-
-### F — Field Expressions
+#### 3.6 F — Field Expression Builder
 
 **Import**: `from py3plex.dsl import F`
 
-F provides a fluent API for building filter expressions.
+**Syntax**:
+- `F.attr` → FieldExpression for attribute
+- `F.attr > value` → BooleanExpression (comparison)
+- `(F.attr > 5) & (F.layer == "social")` → Complex BooleanExpression
 
-#### F.field_name → FieldProxy
+**Supported Operators**:
+- Comparison: `>`, `<`, `>=`, `<=`, `==`, `!=`
+- Logical: `&` (AND), `|` (OR), `~` (NOT)
 
-Access field for comparisons.
+**Precedence** (highest to lowest):
+1. Comparison operators
+2. NOT (`~`)
+3. AND (`&`)
+4. OR (`|`)
+
+**Semantics**:
+- MUST create `ConditionExpr` AST nodes compatible with `.where()`
+- Logical operators MUST follow Python's bitwise operator precedence
 
 **Example**:
 ```python
-F.degree > 5
-F.degree >= 10
-F.layer == "social"
-F.weight != 1.0
-(F.degree > 5) & (F.layer == "social")
-(F.degree > 10) | (F.clustering < 0.5)
-~(F.degree < 5)  # NOT
-```
-
-**Operators**:
-- Comparison: `>`, `>=`, `<`, `<=`, `==`, `!=`
-- Logical: `&` (and), `|` (or), `~` (not)
-
-**Usage in `.where()`**:
-```python
-Q.nodes().where(F.degree > 5)
-Q.nodes().where((F.degree > 5) & (F.layer == "social"))
+.where(F.degree > 5)
+.where((F.degree > 5) & (F.layer == "social"))
+.where((F.degree > 10) | (F.clustering < 0.5))
 ```
 
 ---
 
-### Common Patterns
+#### 3.7 C — Comparison Builder Factory
 
-#### Pattern 1: Top-k Hubs per Layer
+**Import**: `from py3plex.dsl import C`
 
+**Factory Method**:
+- `C.compare(net1_name, net2_name)` → CompareBuilder
+
+**Semantics**:
+- MUST create comparison query builder for two networks
+- Networks MUST be provided as dict to `.execute({name1: net1, name2: net2})`
+
+**Example**:
 ```python
-result = (
-    Q.nodes()
-     .from_layers(L["*"])
-     .compute("degree", "betweenness_centrality")
-     .per_layer()
-       .top_k(10, "degree")
-     .end_grouping()
-     .execute(net)
+C.compare("baseline", "treatment").using("multiplex_jaccard").execute(networks)
+```
+
+---
+
+#### 3.8 N — Null Model Builder Factory
+
+**Import**: `from py3plex.dsl import N`
+
+**Factory Methods**:
+- `N.configuration()` → NullModelBuilder (configuration model)
+- `N.erdos_renyi()` → NullModelBuilder (Erdős-Rényi model)
+- `N.degree_preserving()` → NullModelBuilder (degree-preserving rewiring)
+
+**Semantics**:
+- MUST generate null model instances
+- MUST support `.samples(n)` to specify number of replicates
+- MUST support `.seed(s)` for reproducibility
+
+**Example**:
+```python
+N.configuration().samples(100).seed(42).execute(net)
+```
+
+---
+
+#### 3.9 P — Path Builder Factory
+
+**Import**: `from py3plex.dsl import P`
+
+**Factory Methods**:
+- `P.shortest(source, target)` → PathBuilder (shortest paths)
+- `P.random_walk(start, steps)` → PathBuilder (random walks)
+
+**Semantics**:
+- MUST find paths in multilayer networks
+- MUST support `.crossing_layers()` for interlayer paths
+
+**Example**:
+```python
+P.shortest("Alice", "Bob").crossing_layers().execute(net)
+```
+
+---
+
+#### 3.10 D — Dynamics Builder Factory
+
+**Import**: `from py3plex.dsl import D` (if available)
+
+**Factory Methods**:
+- `D.simulate(model)` → DynamicsBuilder
+
+**Semantics**:
+- MUST simulate network dynamics (SIR, SIS, etc.)
+- MUST support `.steps(n)` for number of timesteps
+
+**Example**:
+```python
+from py3plex.dynamics import SIRModel
+D.simulate(SIRModel(beta=0.3, gamma=0.1)).steps(100).execute(net)
+```
+
+---
+
+### 4. Query Grammar (Formal + Executable)
+
+#### 4.1 BNF Grammar
+
+```bnf
+<query> ::= <select_stmt> | <explain_stmt> | <compare_stmt> | <null_model_stmt> | <path_stmt> | <dynamics_stmt>
+
+<select_stmt> ::= "SELECT" <target> [ <from_clause> ] [ <where_clause> ] [ <compute_clause> ] [ <order_clause> ] [ <limit_clause> ] [ <export_clause> ]
+
+<target> ::= "nodes" | "edges" | "communities"
+
+<from_clause> ::= "FROM" <layer_expr>
+
+<layer_expr> ::= <layer_term> [ <layer_op> <layer_term> ]*
+<layer_term> ::= "LAYER" "(" <string> ")" | "*"
+<layer_op> ::= "+" | "-" | "&"
+
+<where_clause> ::= "WHERE" <condition_expr>
+
+<condition_expr> ::= <condition_atom> [ <logical_op> <condition_atom> ]*
+<condition_atom> ::= <comparison> | <special_predicate> | <function_call>
+<comparison> ::= <attribute> <comp_op> <value>
+<comp_op> ::= ">" | "<" | ">=" | "<=" | "=" | "!="
+<special_predicate> ::= "intralayer" | "interlayer" "(" <string> "," <string> ")"
+<logical_op> ::= "AND" | "OR"
+
+<compute_clause> ::= "COMPUTE" <compute_item> [ "," <compute_item> ]*
+<compute_item> ::= <measure_name> [ "AS" <alias> ]
+
+<order_clause> ::= "ORDER" "BY" <attribute> [ "DESC" | "ASC" ]
+
+<limit_clause> ::= "LIMIT" <integer>
+
+<export_clause> ::= "TO" <export_target>
+<export_target> ::= "pandas" | "networkx" | "arrow" | "json"
+
+<attribute> ::= <identifier>
+<value> ::= <string> | <number> | <param_ref>
+<param_ref> ::= ":" <identifier>
+```
+
+#### 4.2 Operator Precedence
+
+**Layer Algebra** (evaluated left-to-right, no precedence):
+1. `LAYER("a") + LAYER("b") - LAYER("c")` → `((a + b) - c)`
+
+**Logical Operators** (in WHERE clause):
+1. AND (higher precedence)
+2. OR (lower precedence)
+3. Use parentheses for explicit grouping
+
+**F Expressions** (Python builder):
+1. Comparison: `>`, `<`, `>=`, `<=`, `==`, `!=`
+2. NOT: `~`
+3. AND: `&`
+4. OR: `|`
+
+---
+
+### 5. Layer Algebra (Formal Semantics)
+
+#### 5.1 Operations
+
+Let `L` be the set of all layers in a network, and `S, T ⊆ L` be layer sets.
+
+**Union** (`S | T` or `S + T`):
+```
+S ∪ T = {l | l ∈ S ∨ l ∈ T}
+```
+
+**Intersection** (`S & T`):
+```
+S ∩ T = {l | l ∈ S ∧ l ∈ T}
+```
+
+**Difference** (`S - T`):
+```
+S \ T = {l | l ∈ S ∧ l ∉ T}
+```
+
+**Complement** (`~S`):
+```
+L \ S = {l | l ∈ L ∧ l ∉ S}
+```
+
+#### 5.2 Special Cases
+
+**Wildcard** (`*`):
+```
+* = L (all layers in the network)
+```
+
+**Empty Set**:
+```
+∅ (no layers; results in empty query)
+```
+
+#### 5.3 Evaluation Order
+
+Layer expressions MUST be evaluated left-to-right without operator precedence:
+```
+L["a"] + L["b"] - L["c"]  →  ((L["a"] + L["b"]) - L["c"])
+```
+
+Use parentheses for different grouping:
+```
+LayerSet.parse("a + (b - c)")  →  (a + (b - c))
+```
+
+---
+
+### 6. Filtering Semantics
+
+#### 6.1 Attribute Access
+
+Attributes MUST be resolved in the following order:
+1. **Computed metrics**: Metrics added via `.compute()`
+2. **Intrinsic attributes**: Node/edge attributes (e.g., "weight", "label")
+3. **Structural properties**: "degree", "layer", "source_layer", "target_layer"
+4. **Autocomputed metrics**: If `autocompute=True` and attribute is a known measure
+
+#### 6.2 Comparison Semantics
+
+**Numeric Comparisons**:
+- `attr > value`: `attr_value > value`
+- `attr >= value`: `attr_value >= value`
+- `attr < value`: `attr_value < value`
+- `attr <= value`: `attr_value <= value`
+
+**Equality**:
+- `attr == value`: Exact equality (for strings, case-sensitive)
+- `attr != value`: Inequality
+
+**Null Handling**:
+- If `attr` is `None` or missing, comparison MUST return `False` (except for `!= None` which returns `True`)
+
+#### 6.3 Logical Operators
+
+**AND**:
+```
+result = item1 AND item2
+Keep item if it satisfies BOTH conditions
+```
+
+**OR**:
+```
+result = item1 OR item2
+Keep item if it satisfies EITHER condition
+```
+
+**NOT** (F expressions only):
+```
+result = ~(item)
+Keep item if it does NOT satisfy condition
+```
+
+---
+
+### 7. Compute Semantics
+
+#### 7.1 Metric Computation
+
+Metrics MUST be computed using the following process:
+
+1. **Lookup**: Check `measure_registry` for metric implementation
+2. **Execution**: Call metric function with network and current items
+3. **Storage**: Store results in `attributes` dictionary
+4. **Aliasing**: If alias provided, store under alias name instead of original name
+
+#### 7.2 Autocompute Behavior
+
+When `autocompute=True`:
+1. If metric is referenced in `.where()`, `.order_by()`, or `.top_k()` but not computed
+2. AND metric exists in `measure_registry` or `CENTRALITY_ALIASES`
+3. THEN automatically compute metric before applying operation
+4. ELSE raise `DslMissingMetricError`
+
+When `autocompute=False`:
+- Any reference to uncomputed metric MUST raise `DslMissingMetricError`
+
+#### 7.3 Uncertainty Quantification
+
+When UQ is enabled for a metric:
+
+1. **Sampling**: Generate `n_samples` network replicates using specified method
+2. **Computation**: Compute metric on each replicate
+3. **Aggregation**: Compute mean, std, and quantiles across samples
+4. **Result Format**:
+   ```python
+   {
+       "mean": float,
+       "std": float,
+       "quantiles": {0.025: float, 0.05: float, 0.5: float, 0.95: float, 0.975: float},
+       "certainty": float  # Confidence measure (0-1), see section 10.1 for calculation
+   }
+   ```
+
+---
+
+### 8. Grouping & Coverage (Critical)
+
+#### 8.1 Grouping Lifecycle
+
+**States**:
+1. **No Grouping** (initial state): Operations apply globally
+2. **Active Grouping**: After `.per_layer()` or `.per_layer_pair()`, operations apply per group
+3. **Ended Grouping**: After `.end_grouping()` (explicit) or before `.coverage()`, groups are flattened
+
+**State Transitions**:
+```
+No Grouping → [.per_layer()] → Active Grouping
+Active Grouping → [.end_grouping()] → Ended Grouping
+Ended Grouping → [.coverage()] → No Grouping
+```
+
+#### 8.2 `.per_layer()` Semantics
+
+**For Nodes**:
+- Group by `layer` attribute
+- Each group contains nodes from exactly one layer
+- Groups MUST be disjoint
+
+**For Edges**:
+- Group by `(source_layer, target_layer)` tuple
+- Intralayer edges: `source_layer == target_layer`
+- Interlayer edges: `source_layer != target_layer`
+
+**Metadata**:
+- Result MUST include `meta["grouping"]` with group information
+- Format:
+  ```python
+  {
+      "mode": "per_layer",
+      "groups": ["layer1", "layer2", ...],
+      "counts": {"layer1": 10, "layer2": 15, ...}
+  }
+  ```
+
+#### 8.3 `.per_layer_pair()` Semantics
+
+**For Edges Only**:
+- Group by `(source_layer, target_layer)` tuple
+- Each group represents edges between specific layer pair
+
+**Metadata**:
+- Result MUST include `meta["grouping"]` with group information
+- Format:
+  ```python
+  {
+      "mode": "per_layer_pair",
+      "groups": [("layer1", "layer2"), ("layer1", "layer1"), ...],
+      "counts": {("layer1", "layer2"): 5, ("layer1", "layer1"): 10, ...}
+  }
+  ```
+
+#### 8.4 `.coverage()` Semantics
+
+**Preconditions**:
+- MUST NOT be in active grouping state
+- MUST be called after `.end_grouping()` or before any grouping
+
+**mode="all"** (Intersection):
+- Keep items present in ALL groups
+- For nodes: Compare by `node_id` (ignore layer)
+- For edges: Compare by `(source, target)` tuple (ignore layers)
+- Formula: `result = ∩ all_groups`
+
+**mode="any"** (Union):
+- Keep items present in ANY group
+- Effectively a no-op (all items pass)
+- Formula: `result = ∪ all_groups`
+
+**mode="k"** (K-coverage):
+- Keep items present in at least `k` groups
+- MUST specify `k` parameter
+- Formula: `result = {item | count(groups containing item) >= k}`
+
+**Example**:
+```python
+# Find nodes in all three layers
+result = (Q.nodes()
+    .from_layers(L["social"] + L["work"] + L["hobby"])
+    .per_layer()
+    .top_k(10, "degree")
+    .end_grouping()
+    .coverage(mode="all")
+    .execute(net))
+```
+
+---
+
+### 9. Aggregations & Statistics
+
+#### 9.1 Aggregate Functions
+
+**Supported Functions**:
+- `count()` or `count(col)`: Count of items (or non-null values in column)
+- `mean(col)`: Arithmetic mean
+- `sum(col)`: Sum of values
+- `min(col)`: Minimum value
+- `max(col)`: Maximum value
+- `std(col)`: Standard deviation
+- `median(col)`: Median value
+
+#### 9.2 Aggregation Semantics
+
+**Preconditions**:
+- MUST be in active grouping state
+
+**Execution**:
+1. For each group, apply aggregation function to specified column
+2. Result MUST have one row per group
+3. Group identifier MUST be included in result
+
+**UQ Handling**:
+- If column contains UQ results (dicts with `mean`, `std`, etc.), MUST aggregate the `mean` field
+
+**Example**:
+```python
+.per_layer().aggregate(
+    avg_degree="mean(degree)",
+    max_betweenness="max(betweenness_centrality)",
+    node_count="count()"
 )
 ```
 
 ---
 
-#### Pattern 2: Cross-Layer Hubs (All Layers)
+### 10. Uncertainty Quantification (First-Class Type)
 
+#### 10.1 UQ Result Format
+
+All UQ results MUST be dictionaries with the following structure:
 ```python
-result = (
-    Q.nodes()
-     .from_layers(L["*"])
-     .compute("degree")
-     .per_layer()
-       .top_k(20, "degree")
-     .end_grouping()
-     .coverage(mode="all")  # Must be top-20 in ALL layers
-     .execute(net)
-)
+{
+    "mean": float,          # Point estimate
+    "std": float,           # Standard deviation
+    "quantiles": {          # Quantile dictionary
+        0.025: float,
+        0.05: float,
+        0.5: float,         # Median
+        0.95: float,
+        0.975: float
+    },
+    "certainty": float      # Confidence measure (0-1), implementation-defined
+                            # Suggested: 1.0 for deterministic
+                            # For UQ: 1.0 - min(1.0, std/max(abs(mean), epsilon))
+                            # where epsilon prevents division by zero (e.g., 1e-10)
+}
+```
+
+#### 10.2 UQ Methods
+
+**bootstrap**:
+- Resample or permute network elements
+- Parameters: 
+  - `bootstrap_unit` ("edges", "nodes", "layers"): What to sample/permute
+  - `bootstrap_mode`:
+    - `"resample"`: Sample with replacement (standard bootstrap) - creates replicates by randomly sampling elements, allowing duplicates
+    - `"permute"`: Permutation test without replacement - shuffles assignments (e.g., node-layer assignments) while preserving network structure
+
+**Note**: "resample" mode generates bootstrap samples for confidence intervals, while "permute" mode is used for null hypothesis testing by randomizing assignments.
+
+**perturbation**:
+- Add Gaussian noise to edge weights
+- Parameters: `noise_std` (standard deviation of noise)
+
+**seed**:
+- Run algorithm multiple times with different random seeds
+- Parameters: `n_samples` (number of runs)
+
+**null_model**:
+- Compare against null model ensemble
+- Parameters: `null_model` ("degree_preserving", "erdos_renyi", "configuration"), `n_null` (number of null networks)
+
+**stratified_perturbation**:
+- Stratified resampling by node/edge attributes
+- Parameters: `strata` (list of attributes), `bins` (dict of binning specs)
+
+#### 10.3 UQ Priority Order
+
+1. **Per-metric parameters** in `.compute(uncertainty=True, n_samples=100)`
+2. **Query-level config** from `.uq(method="bootstrap", n_samples=50)`
+3. **Global defaults** from `Q.uncertainty.defaults(n_samples=100)`
+4. **Hardcoded defaults** in `py3plex.uncertainty` (n_samples=50, ci=0.95, method="perturbation")
+
+#### 10.4 UQ in DataFrame Export
+
+When calling `to_pandas(expand_uncertainty=True, ci_level=0.95)`:
+- Each UQ column MUST expand to multiple columns:
+  - `{col}`: Point estimate (mean)
+  - `{col}_std`: Standard deviation
+  - `{col}_ci{pct}_low`: Lower CI bound (e.g., `degree_ci95_low`)
+  - `{col}_ci{pct}_high`: Upper CI bound
+  - `{col}_ci{pct}_width`: CI width
+
+---
+
+### 11. Temporal Semantics
+
+#### 11.1 Temporal Network Requirements
+
+Temporal queries MUST work with `TemporalMultiLayerNetwork` instances that support:
+- `.get_snapshot(time)`: Get network state at specific time
+- `.get_edges_in_range(t_start, t_end)`: Get edges active in time range
+
+#### 11.2 `.at(time)` Semantics
+
+**Behavior**:
+- Filter network to snapshot at `time`
+- MUST use `get_snapshot(time)` method
+- Result MUST include only edges/nodes active at specified time
+
+#### 11.3 `.during(t_start, t_end)` Semantics
+
+**Behavior**:
+- Filter network to time range [t_start, t_end] (inclusive)
+- MUST use `get_edges_in_range(t_start, t_end)` method
+- Result MUST include all edges/nodes active anytime during interval
+
+#### 11.4 `.window(size, step)` Semantics
+
+**Behavior**:
+- Iterate over sliding time windows
+- Window `i` spans `[start + i*step, start + i*step + size]`
+- Execute query independently for each window
+- Aggregate results according to `aggregation` parameter
+
+**Aggregation Modes**:
+- `"list"`: Return list of QueryResult objects (one per window)
+- `"concat"`: Concatenate all results into single QueryResult
+- `"avg"`: Average numeric attributes across windows
+
+---
+
+### 12. Result Model (QueryResult)
+
+#### 12.1 Core Attributes
+
+**target** (str):
+- MUST be "nodes" or "edges"
+- Indicates what the query selected
+
+**items** (List[Any]):
+- For nodes: List of `(node_id, layer)` tuples
+- For edges: List of `(source, target, source_layer, target_layer)` tuples
+- Order MUST match the order of attribute values
+
+**attributes** (Dict[str, Union[List[Any], Dict[Any, Any]]]):
+- Mapping from attribute name to values
+- Values MUST be either:
+  - List (one value per item, same order as `items`)
+  - Dict (mapping item to value)
+- UQ results MUST be dicts with structure specified in section 10.1
+
+**meta** (Dict[str, Any]):
+- Execution metadata
+- MUST include:
+  - `"query_ast"`: Serialized AST (if provenance enabled)
+  - `"execution_time"`: Time in seconds
+  - `"grouping"`: Grouping metadata (if grouping was used)
+  - `"provenance"`: Provenance dictionary (if provenance enabled)
+  - `"computed_metrics"`: Set of metrics computed during execution
+
+**computed_metrics** (Set[str]):
+- Set of metric names computed during execution
+- Includes both explicit (via `.compute()`) and autocomputed metrics
+
+**sensitivity_result** (Optional[SensitivityResult]):
+- Sensitivity analysis results (if `.sensitivity()` was used)
+- Contains stability curves and metrics
+
+#### 12.2 Export Methods
+
+##### `to_pandas(expand_uncertainty=False, ci_level=0.95, expand_explanations=False) → pd.DataFrame`
+
+**Parameters**:
+- `expand_uncertainty` (bool, default=False): Expand UQ results to multiple columns
+- `ci_level` (float, default=0.95): Confidence interval level for expansion
+- `expand_explanations` (bool, default=False): Expand explanation dicts to columns
+
+**Behavior**:
+- MUST create DataFrame with one row per item
+- For nodes: Index MUST be `(node_id, layer)` tuple
+- For edges: Index MUST be `(source, target, source_layer, target_layer)` tuple
+- If `expand_uncertainty=True`, MUST expand UQ columns as specified in section 10.4
+- If `expand_explanations=True`, MUST expand explanation dicts (e.g., `top_neighbors`) to JSON strings
+
+##### `to_networkx() → nx.Graph or nx.MultiGraph`
+
+**Behavior**:
+- MUST convert result to NetworkX graph
+- For node queries: Return graph with selected nodes and their attributes
+- For edge queries: Return graph with selected edges and their attributes
+- MUST use MultiGraph if multiple layers or parallel edges exist
+
+##### `to_arrow() → pa.Table`
+
+**Behavior**:
+- MUST convert result to Apache Arrow table
+- Column types MUST be inferred from attribute types
+- UQ results MUST be stored as struct columns
+
+##### `to_json() → str`
+
+**Behavior**:
+- MUST serialize result to JSON string
+- Format:
+  ```json
+  {
+      "target": "nodes",
+      "items": [...],
+      "attributes": {...},
+      "meta": {...}
+  }
+  ```
+
+##### `to_csv(path, **kwargs)`
+
+**Behavior**:
+- MUST write result to CSV file at `path`
+- MUST use `to_pandas().to_csv(path, **kwargs)` internally
+
+#### 12.3 Provenance Methods
+
+##### `provenance → Optional[Dict[str, Any]]`
+
+**Returns**: Provenance dictionary from `meta["provenance"]` if available
+
+##### `is_replayable → bool`
+
+**Returns**: True if result has replayable provenance
+
+**Requirements for Replayability**:
+- Provenance mode MUST be "replayable"
+- AST MUST be serialized
+- Network snapshot MUST be captured
+
+##### `replay(strict=True) → QueryResult`
+
+**Behavior**:
+- MUST reconstruct network and query from provenance
+- MUST re-execute query
+- Result MUST match original result (if deterministic)
+- If `strict=True`, MUST enforce version compatibility
+
+#### 12.4 Grouping Methods
+
+##### `group_summary() → pd.DataFrame`
+
+**Behavior**:
+- MUST return summary DataFrame when grouping was used
+- Columns: group identifier, item count, aggregated statistics
+- MUST raise error if no grouping was used
+
+---
+
+### 13. Provenance & Reproducibility
+
+#### 13.1 Provenance Modes
+
+**Disabled** (default):
+- No provenance captured
+- Minimal metadata in `meta`
+
+**Replayable**:
+- Full AST serialization
+- Network snapshot capture
+- Parameter bindings
+- Random seeds
+- Version information
+
+#### 13.2 Provenance Capture
+
+To enable replayable provenance:
+```python
+from py3plex.provenance import enable_provenance
+enable_provenance(mode="replayable", capture_network=True)
+```
+
+**Captured Information**:
+- Query AST (serialized)
+- Parameter bindings
+- Network structure (snapshot or delta)
+- Random seeds
+- Library versions (py3plex, networkx, numpy)
+- Execution environment (Python version, platform)
+
+#### 13.3 Replay Process
+
+1. **Deserialize**: Load provenance from result
+2. **Reconstruct Network**: Rebuild network from snapshot
+3. **Reconstruct Query**: Deserialize AST
+4. **Bind Parameters**: Apply saved parameter bindings
+5. **Execute**: Run query with same seeds
+6. **Compare**: Verify result matches original
+
+---
+
+### 14. Error Model (Complete Hierarchy)
+
+#### 14.1 Base Error
+
+**`DslError(message, query=None, line=None, column=None)`**
+- Base class for all DSL errors
+- Attributes:
+  - `message` (str): Error message
+  - `query` (str, optional): Query string that caused error
+  - `line` (int, optional): Line number in query
+  - `column` (int, optional): Column number in query
+- Methods:
+  - `format_message()`: Format error with context
+
+#### 14.2 Syntax Errors
+
+**`DslSyntaxError`** (extends `DslError`):
+- Raised when query syntax is invalid
+- Example: `"SELECT nodes FROMM LAYER("social")"` (typo in FROM)
+
+#### 14.3 Execution Errors
+
+**`DslExecutionError`** (extends `DslError`):
+- Raised when query execution fails
+- Example: Network does not support required operations
+
+#### 14.4 Semantic Errors
+
+**`UnknownAttributeError(attribute, known_attributes=None)`**:
+- Raised when referencing unknown attribute
+- Includes suggestions via Levenshtein distance
+- Example: `"degree_centraliity"` → suggests `"degree_centrality"`
+
+**`UnknownMeasureError(measure, known_measures=None)`**:
+- Raised when computing unknown measure
+- Includes suggestions
+- Example: `"betweeness"` → suggests `"betweenness_centrality"`
+
+**`UnknownLayerError(layer, known_layers=None)`**:
+- Raised when referencing unknown layer
+- Includes suggestions
+- Example: `"socail"` → suggests `"social"`
+
+**`ParameterMissingError(parameter, provided_params=None)`**:
+- Raised when required parameter is not provided
+- Lists provided parameters
+- Example: `.execute(net)` when query has `Param.int("k")` → suggests providing `k=...`
+
+**`TypeMismatchError(attribute, expected_type, actual_type)`**:
+- Raised when attribute has wrong type
+- Example: `degree__gt="five"` when degree is numeric
+
+**`GroupingError(message)`**:
+- Raised when grouping operations are used incorrectly
+- Example: Calling `.coverage()` within active grouping context
+
+**`DslMissingMetricError(metric, required_by=None, autocompute_enabled=True)`**:
+- Raised when metric is missing and cannot be autocomputed
+- Example: `.where(custom_metric__gt=5)` when `custom_metric` is not computed and not autocomputable
+
+#### 14.5 Error Handling Best Practices
+
+**For Agent Implementations**:
+1. MUST catch `DslError` and subclasses
+2. SHOULD extract suggestions from error attributes
+3. SHOULD display formatted error messages to user
+4. MAY attempt automatic correction for simple typos
+
+**Example**:
+```python
+try:
+    result = Q.nodes().where(degree_centraliity__gt=0.5).execute(net)
+except UnknownAttributeError as e:
+    print(f"Error: {e}")
+    if e.suggestion:
+        print(f"Did you mean '{e.suggestion}'?")
+    # Try again with corrected name
+    result = Q.nodes().where(**{e.suggestion + "__gt": 0.5}).execute(net)
 ```
 
 ---
 
-#### Pattern 3: Aggregation per Layer
+### 15. Legacy Compatibility Rules
 
+#### 15.1 String DSL (Legacy)
+
+**Format**:
+```sql
+SELECT nodes
+FROM LAYER("social") + LAYER("work")
+WHERE intralayer AND degree > 5
+COMPUTE betweenness_centrality AS bc
+ORDER BY bc DESC
+LIMIT 20
+TO pandas
+```
+
+**Compatibility**:
+- MUST compile to same AST as builder API
+- MUST support all legacy keywords (`FROM`, `WHERE`, `COMPUTE`, `ORDER BY`, `LIMIT`, `TO`)
+- MUST support legacy layer syntax (`LAYER("name") + LAYER("name")`)
+
+**Import**:
 ```python
-result = (
-    Q.nodes()
-     .per_layer()
-     .aggregate(
-         node_count="count()",
-         avg_degree="mean(degree)",
-         q95_degree="quantile(degree, 0.95)"
-     )
-     .execute(net)
-)
+from py3plex.dsl_legacy import execute_query
+result = execute_query(network, query_string)
+```
 
-df = result.to_pandas()
-# Columns: layer, node_count, avg_degree, q95_degree
+#### 15.2 Migration Path
+
+**From Legacy DSL to Builder API**:
+```python
+# Legacy
+execute_query(net, 'SELECT nodes WHERE degree > 5 COMPUTE betweenness_centrality')
+
+# Builder API (equivalent)
+Q.nodes().where(degree__gt=5).compute("betweenness_centrality").execute(net)
 ```
 
 ---
 
-#### Pattern 4: Filtered Aggregation
+### 16. Minimal Canonical Examples
+
+Each example demonstrates ONE concept unambiguously.
+
+#### 16.1 Basic Node Query with Filtering
 
 ```python
+from py3plex.dsl import Q, L
+
+# Find high-degree nodes in social layer
 result = (
     Q.nodes()
-     .where(degree__gt=5)  # Filter first
-     .per_layer()
-     .aggregate(
-         high_degree_count="count()",
-         avg_bc="mean(betweenness_centrality)"
-     )
-     .execute(net)
+    .from_layers(L["social"])
+    .where(degree__gt=5)
+    .execute(network)
 )
+
+# Result: QueryResult with nodes from "social" layer where degree > 5
+# items: [('Alice', 'social'), ('Bob', 'social'), ...]
+# attributes: {'degree': [6, 8, ...]}
 ```
 
----
-
-#### Pattern 5: Temporal Snapshot with Grouping
+#### 16.2 Computing Metrics with Uncertainty
 
 ```python
+from py3plex.dsl import Q
+
+# Compute betweenness with bootstrap uncertainty
+result = (
+    Q.nodes()
+    .compute(
+        "betweenness_centrality",
+        uncertainty=True,
+        method="bootstrap",
+        n_samples=100,
+        ci=0.95,
+        bootstrap_unit="edges"
+    )
+    .execute(network)
+)
+
+# Result: Each node has UQ result dict
+# attributes: {
+#     'betweenness_centrality': {
+#         ('Alice', 'social'): {'mean': 0.15, 'std': 0.02, 'quantiles': {...}},
+#         ...
+#     }
+# }
+
+# Export to DataFrame with expanded columns
+df = result.to_pandas(expand_uncertainty=True, ci_level=0.95)
+# Columns: node, layer, betweenness_centrality, betweenness_centrality_std,
+#          betweenness_centrality_ci95_low, betweenness_centrality_ci95_high,
+#          betweenness_centrality_ci95_width
+```
+
+#### 16.3 Per-Layer Grouping with Top-K
+
+```python
+from py3plex.dsl import Q, L
+
+# Find top-5 nodes per layer by degree
+result = (
+    Q.nodes()
+    .from_layers(L["social"] + L["work"] + L["hobby"])
+    .per_layer()              # Enable grouping
+    .compute("degree")
+    .top_k(5, "degree")       # Top-5 per layer (not global)
+    .execute(network)
+)
+
+# Result: 15 nodes total (5 from each layer)
+# meta['grouping']: {
+#     'mode': 'per_layer',
+#     'groups': ['social', 'work', 'hobby'],
+#     'counts': {'social': 5, 'work': 5, 'hobby': 5}
+# }
+```
+
+#### 16.4 Coverage Filtering (Cross-Layer)
+
+```python
+from py3plex.dsl import Q, L
+
+# Find nodes present in ALL three layers (after selecting top-10 per layer)
+result = (
+    Q.nodes()
+    .from_layers(L["social"] + L["work"] + L["hobby"])
+    .per_layer()
+    .compute("degree")
+    .top_k(10, "degree")
+    .end_grouping()            # Exit grouping context
+    .coverage(mode="all")      # Keep nodes in all groups
+    .execute(network)
+)
+
+# Result: Nodes that appear in top-10 of ALL three layers
+# Compares by node_id (ignores layer)
+```
+
+#### 16.5 Aggregation with Grouping
+
+```python
+from py3plex.dsl import Q
+
+# Compute per-layer statistics
+result = (
+    Q.nodes()
+    .per_layer()
+    .compute("degree", "betweenness_centrality")
+    .aggregate(
+        avg_degree="mean(degree)",
+        max_betweenness="max(betweenness_centrality)",
+        node_count="count()"
+    )
+    .execute(network)
+)
+
+# Result: One row per layer with aggregated stats
+# items: ['social', 'work', 'hobby']
+# attributes: {
+#     'avg_degree': [5.2, 4.8, 3.5],
+#     'max_betweenness': [0.45, 0.38, 0.22],
+#     'node_count': [100, 80, 60]
+# }
+```
+
+#### 16.6 Temporal Query
+
+```python
+from py3plex.dsl import Q
+
+# Query edges active during time window
 result = (
     Q.edges()
-     .during(100.0, 200.0)
-     .per_layer_pair()
-     .aggregate(
-         edge_count="count()",
-         avg_weight="mean(weight)"
-     )
-     .execute(temporal_net)
+    .during(100.0, 200.0)
+    .where(weight__gt=0.5)
+    .execute(temporal_network)
 )
+
+# Result: Edges active anytime in [100, 200] with weight > 0.5
 ```
 
----
-
-#### Pattern 6: Uncertainty with Filtering
+#### 16.7 Parameterized Query
 
 ```python
-result = (
+from py3plex.dsl import Q, Param
+
+# Create reusable query with parameters
+query = (
     Q.nodes()
-     .where(degree__gt=10)
-     .compute("pagerank", "betweenness_centrality")
-     .uq(method="bootstrap", n_samples=100, ci=0.95, seed=42)
-     .order_by("-pagerank")
-     .limit(20)
-     .execute(net)
+    .where(degree__gt=Param.int("min_degree"))
+    .compute("betweenness_centrality")
+    .order_by("betweenness_centrality", desc=True)
+    .limit(Param.int("top_n"))
 )
 
-df = result.to_pandas(expand_uncertainty=True)
-# Columns include: pagerank_mean, pagerank_std, pagerank_ci95_low, pagerank_ci95_high
+# Execute with different parameter values
+result1 = query.execute(network, min_degree=5, top_n=20)
+result2 = query.execute(network, min_degree=10, top_n=10)
+
+# Results have different items based on parameters
 ```
 
 ---
 
-### Failure Mode Reference
+### 17. DSL v2 Specification Compliance Checklist
 
-**Empty Results**:
-- Layer expressions that match no layers → empty result (not error)
-- Filters that match no items → empty result (not error)
-- `SELECT nodes WHERE degree > 1000` on small network → empty result
+For implementations and agents:
 
-**Execution Errors**:
-- Unknown layer names → `UnknownLayerError`
-- Unknown attributes → `UnknownAttributeError`
-- Unknown measures → `UnknownMeasureError`
-- Type mismatches (e.g., `layer > 5`) → `TypeMismatchError`
-- Grouping errors (e.g., `.top_k()` without `.per_layer()`) → `GroupingError`
+**Core Abstractions**:
+- [ ] QueryBuilder is mutable and chainable
+- [ ] `.to_ast()` creates deep copy
+- [ ] `.execute()` returns QueryResult
+- [ ] QueryResult is immutable
+- [ ] LayerSet supports all operators (|, &, -, ~)
+- [ ] LayerSet resolves at execution time
 
-**Parameter Binding Errors**:
-- Missing parameters → `ParameterMissingError`
-- Type mismatches → binding errors at execution
+**Builder Methods**:
+- [ ] All methods return `self` (except `.execute()` and `.to_ast()`)
+- [ ] `.where()` supports both kwargs and F expressions
+- [ ] `.compute()` supports UQ parameters
+- [ ] `.per_layer()` enables grouping for nodes
+- [ ] `.per_layer_pair()` enables grouping for edges
+- [ ] `.coverage()` requires ended grouping context
+- [ ] `.aggregate()` requires active grouping context
 
-**Autocompute Limitations**:
-- If `autocompute=False` and metric referenced in filter not computed → error
-- Circular dependencies in metrics → error (rare)
+**Filtering**:
+- [ ] Comparison suffixes (__gt, __gte, __lt, __lte, __eq, __ne) work correctly
+- [ ] Special predicates (intralayer, interlayer) work
+- [ ] Temporal filters (t__between, t__gte, etc.) work
+- [ ] Unknown attributes raise UnknownAttributeError with suggestions
+- [ ] autocompute=False raises DslMissingMetricError for uncomputed metrics
 
-**Performance Issues**:
-- Large networks (>10k nodes) with expensive metrics (betweenness, closeness) → slow
-- UQ with many samples (>1000) → very slow
-- Solution: Use smaller sample sizes, profile with `.meta['provenance']['performance']`
+**Grouping & Coverage**:
+- [ ] `.per_layer()` groups nodes by layer
+- [ ] `.per_layer_pair()` groups edges by (src_layer, dst_layer)
+- [ ] Operations in grouping context apply per group
+- [ ] `.coverage(mode="all")` keeps items in all groups
+- [ ] `.coverage(mode="k", k=2)` keeps items in ≥2 groups
+- [ ] `.aggregate()` computes per-group statistics
+
+**Uncertainty Quantification**:
+- [ ] UQ results have correct format (mean, std, quantiles, certainty)
+- [ ] UQ priority order: per-metric > query-level > global > defaults
+- [ ] `.to_pandas(expand_uncertainty=True)` expands UQ columns correctly
+- [ ] Bootstrap, perturbation, seed, and null_model methods work
+
+**Temporal**:
+- [ ] `.at(time)` filters to snapshot
+- [ ] `.during(t_start, t_end)` filters to time range
+- [ ] `.window(size, step)` iterates over windows
+
+**Export**:
+- [ ] `.to_pandas()` creates correct DataFrame
+- [ ] `.to_networkx()` creates correct graph
+- [ ] `.to_arrow()` creates correct table
+- [ ] `.to_json()` serializes correctly
+- [ ] `.to_csv(path)` writes to file
+
+**Error Handling**:
+- [ ] All errors extend DslError
+- [ ] UnknownAttributeError includes suggestions
+- [ ] UnknownMeasureError includes suggestions
+- [ ] UnknownLayerError includes suggestions
+- [ ] ParameterMissingError lists provided params
+- [ ] GroupingError provides actionable message
+
+**Provenance**:
+- [ ] Provenance mode can be set to "replayable"
+- [ ] `.is_replayable` checks for replayable provenance
+- [ ] `.replay()` reconstructs and re-executes query
+
+**Legacy Compatibility**:
+- [ ] String DSL compiles to same AST as builder API
+- [ ] Legacy layer syntax (LAYER("name") + LAYER("name")) works
+- [ ] execute_query() function works with legacy strings
 
 ---
-
-### Performance Tips
-
-1. **Filter early**: Use `.where()` before `.compute()` to reduce computation
-2. **Disable autocompute**: If you know metrics are pre-computed, use `autocompute=False`
-3. **Use layer algebra**: `L["social"]` is faster than selecting all and filtering
-4. **Batch computations**: Compute multiple metrics in one `.compute()` call
-5. **UQ sampling**: Start with n_samples=10-20 for development, increase for production
-6. **Temporal queries**: Use `.at()` or `.during()` to reduce edge set before other operations
-7. **Grouping**: Use `.per_layer()` early to parallelize computations (future feature)
-
----
-
 
 ## Decision Guide: Which API When?
 
