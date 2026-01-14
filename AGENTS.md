@@ -218,7 +218,7 @@ DSL v2 MUST satisfy the following design requirements:
 - `SemiringPathStmt`: Semiring path algebra query
 - `SemiringClosureStmt`: Semiring closure query
 
-**Immutability**: All AST nodes MUST be immutable dataclasses with `frozen=False` (mutable for construction) but treated as immutable after construction.
+**Immutability**: All AST nodes MUST be dataclasses with `frozen=False` (to allow construction and field assignment during building), but MUST be treated as immutable after construction is complete. Implementations MUST NOT modify AST nodes after they are returned from builder methods.
 
 **Serialization**: All AST nodes MUST support JSON serialization via `dataclasses.asdict()` with custom handling for:
 - `ParamRef` → `{"__type__": "ParamRef", "name": "...", "type_hint": "..."}`
@@ -1402,15 +1402,19 @@ All UQ results MUST be dictionaries with the following structure:
         0.95: float,
         0.975: float
     },
-    "certainty": float      # Confidence measure (0-1)
+    "certainty": float      # Confidence measure (0-1), implementation-defined (e.g., 1.0 for deterministic, or 1.0 - min(1.0, std/abs(mean)) for UQ)
 }
 ```
 
 #### 10.2 UQ Methods
 
 **bootstrap**:
-- Resample edges, nodes, or layers with replacement
-- Parameters: `bootstrap_unit` ("edges", "nodes", "layers"), `bootstrap_mode` ("resample", "permute")
+- Resample edges, nodes, or layers
+- Parameters: 
+  - `bootstrap_unit` ("edges", "nodes", "layers"): What to resample
+  - `bootstrap_mode`:
+    - `"resample"`: Sample with replacement (standard bootstrap)
+    - `"permute"`: Shuffle assignments without replacement (permutation test)
 
 **perturbation**:
 - Add Gaussian noise to edge weights
