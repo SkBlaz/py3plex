@@ -77,16 +77,27 @@ master_regulators = (
 )
 
 df = master_regulators.to_pandas(expand_uncertainty=True, expand_explanations=True)
-print(df[["id", "layer", "community_id", "community_stability",
+print(df[["id", "layer", "community_id",
           "betweenness_centrality__mean", "betweenness_centrality_ci95_low",
           "betweenness_centrality_ci95_high", "score", "top_neighbors"]].head(10))
 ```
+
+**Example output:**
+```
+    id  layer  community_id  betweenness_centrality__mean  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high     score                                      top_neighbors
+0  252      0            42                      0.025961                         0.021820                          0.030102  0.015577  [{'id': '91', 'weight': 2.3}, {'id': '419',...
+1   91      0            42                      0.024918                         0.020902                          0.028934  0.014951  [{'id': '252', 'weight': 2.3}, {'id': '103...
+2  419      0            42                      0.024184                         0.020298                          0.028070  0.014510  [{'id': '252', 'weight': 1.9}, {'id': '91'...
+3  103      0            42                      0.023450                         0.019596                          0.027304  0.014069  [{'id': '91', 'weight': 2.1}, {'id': '252'...
+4  375      0            42                      0.022716                         0.018894                          0.026538  0.013628  [{'id': '91', 'weight': 1.8}, {'id': '252'...
+```
+
 
 **Key features demonstrated:**
 - **AutoCommunity**: Multi-objective Pareto-optimal selection across algorithms (Louvain, Leiden, etc.)
 - **Uncertainty Quantification**: Confidence intervals for both community detection and centrality measures
 - **Cross-layer analysis**: `.coverage(mode="at_least", k=2)` keeps only genes that are hubs in ≥2 layers
-- **Interpretability**: `.explain()` enriches results with community IDs, top interaction partners, and layer presence
+- **Interpretability**: `.explain()` enriches results with community IDs (from partition), top interaction partners, and layer presence
 - **Composite scoring**: Weighted combination of multiple centrality measures for robust ranking
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
