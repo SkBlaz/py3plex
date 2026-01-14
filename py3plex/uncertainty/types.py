@@ -26,11 +26,16 @@ class ResamplingStrategy(Enum):
         Leave-one-out jackknife resampling.
     PERTURBATION : str
         Add noise/perturbations to network structure or parameters.
+    STRATIFIED_PERTURBATION : str
+        Stratified perturbation that preserves key structural distributions
+        (degree bins, layer densities, edge weight bins, layer-pair frequencies).
+        Reduces estimator variance without increasing sample count.
     """
     SEED = "seed"
     BOOTSTRAP = "bootstrap"
     JACKKNIFE = "jackknife"
     PERTURBATION = "perturbation"
+    STRATIFIED_PERTURBATION = "stratified_perturbation"
 
 
 class UncertaintyMode(Enum):

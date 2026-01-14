@@ -82,6 +82,7 @@ _RESAMPLING_TO_METHOD = {
     ResamplingStrategy.BOOTSTRAP: "bootstrap",
     ResamplingStrategy.PERTURBATION: "perturbation",
     ResamplingStrategy.SEED: "seed",
+    ResamplingStrategy.STRATIFIED_PERTURBATION: "stratified_perturbation",
     # Jackknife currently maps to seed-style multi-run execution until dedicated support lands
     ResamplingStrategy.JACKKNIFE: "seed",
 }
