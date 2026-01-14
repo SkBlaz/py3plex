@@ -445,20 +445,22 @@ def _estimate_via_stratified_perturbation(
     
     all_samples: List[Union[Dict, float, np.ndarray]] = []
     
-    for (stratum_key, stratum_items), stratum_seed in zip(
+    for (stratum_key, stratum_items), stratum_seed_seq in zip(
         sorted(strata.items()), stratum_seeds
     ):
         n_stratum = samples_per_stratum[stratum_key]
         
         # Generate seeds for this stratum's samples
-        sample_seeds = np.random.SeedSequence(stratum_seed).spawn(n_stratum)
+        # Convert SeedSequence to integers
+        sample_seed_seqs = stratum_seed_seq.spawn(n_stratum)
         
         # Generate samples for this stratum
-        for sample_seed in sample_seeds:
-            sample_rng = np.random.default_rng(sample_seed)
+        for sample_seed_seq in sample_seed_seqs:
+            # Create RNG from SeedSequence
+            sample_rng = np.random.default_rng(sample_seed_seq)
             
-            # Apply perturbation
-            perturbed_net = perturbation.apply(network, random_state=int(sample_rng.integers(0, 2**31)))
+            # Apply perturbation with RNG
+            perturbed_net = perturbation.apply(network, sample_rng)
             
             # Compute metric on perturbed network
             try:

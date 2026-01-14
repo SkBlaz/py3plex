@@ -96,6 +96,10 @@ def stratify_nodes_by_degree(
     Dict[int, List[Any]]
         Mapping from bin index to list of nodes.
     """
+    # Handle empty network or network without core_network
+    if network.core_network is None or network.core_network.number_of_nodes() == 0:
+        return {0: []}
+    
     # Get degrees
     degrees = dict(network.core_network.degree())
     if not degrees:
@@ -146,12 +150,16 @@ def stratify_nodes_by_layer(
     
     for node in network.get_nodes():
         # Get layers for this node
-        node_layers = []
+        node_layers = set()
         for edge in network.core_network.edges(node, data=True):
+            # Check source_type and target_type
+            if 'source_type' in edge[2]:
+                node_layers.add(edge[2]['source_type'])
+            if 'target_type' in edge[2]:
+                node_layers.add(edge[2]['target_type'])
+            # Also check 'type' field for backward compatibility
             if 'type' in edge[2]:
-                layer = edge[2]['type']
-                if layer not in node_layers:
-                    node_layers.append(layer)
+                node_layers.add(edge[2]['type'])
         
         # Add node to each layer stratum
         for layer in node_layers:
