@@ -4464,3 +4464,311 @@ Check that the server is running and stdio transport is properly configured.
 
 **Last Updated**: 2026-01-11 (for py3plex v1.1.1 + MCP v1.0.0)
 
+
+---
+
+## SBM (Stochastic Block Model) — Model-Based Community Detection
+
+### Overview
+
+**Stochastic Block Model (SBM)** is a generative, model-based approach to community detection, integrated with AutoCommunity, Successive Halving, and UQ frameworks.
+
+**Key Features:**
+- Automatic model selection (number of communities K)
+- Degree-corrected variant (DC-SBM) as default
+- Principled statistical inference
+- Compatible with BudgetSpec and Successive Halving
+- Full UQ support
+
+### Algorithm Variants
+
+**Standard SBM:**
+```
+P(A_ij = 1 | z_i, z_j) = θ_{z_i z_j}
+```
+
+**DC-SBM (Degree-Corrected, recommended):**
+```
+P(A_ij = 1 | z_i, z_j) = θ_i θ_j ω_{z_i z_j}
+```
+
+DC-SBM accounts for degree heterogeneity, making it more realistic for real-world networks.
+
+### When to Use SBM
+
+**Use SBM when:**
+- You need automatic model selection (K selection via MDL/BIC)
+- Network has heterogeneous degree distribution
+- You want principled statistical inference
+- UQ is critical
+
+**Use Louvain/Leiden when:**
+- Network is very large (>10K nodes)
+- Speed is critical
+- You already know the number of communities
+
+**Rule of thumb:** SBM is a "model-based" method vs. Louvain/Leiden's "objective-based" approach. SBM has higher computational cost but provides automatic K selection and better statistical foundations.
+
+### Basic Usage (with AutoCommunity)
+
+```python
+from py3plex.algorithms.community_detection import AutoCommunity
+from py3plex.core import multinet
+
+net = multinet.multi_layer_network(directed=False)
+net.load_network("network.csv", input_type="edgelist")
+
+# Include SBM as candidate
+result = (
+    AutoCommunity()
+      .candidates("louvain", "dc_sbm")
+      .metrics("modularity", "sbm_log_likelihood")
+      .seed(42)
+      .execute(net)
+)
+
+print(f"Selected: {result.selected}")
+print(f"Communities: {result.community_stats.n_communities}")
+```
+
+### Direct Runner Usage
+
+```python
+from py3plex.algorithms.community_detection.runner import run_community_algorithm
+from py3plex.algorithms.community_detection.budget import BudgetSpec
+
+# Define budget
+budget = BudgetSpec(
+    max_iter=100,      # EM iterations
+    n_restarts=5,      # Random initializations
+    uq_samples=None    # No UQ (single run)
+)
+
+# Run DC-SBM
+result = run_community_algorithm(
+    algorithm_id="dc_sbm",
+    network=net,
+    budget=budget,
+    seed=42,
+    K_range=[2, 3, 4, 5, 6, 7, 8]  # Model selection range
+)
+
+# Access results
+partition = result.partition
+K_selected = result.meta["K_selected"]
+log_likelihood = result.meta["log_likelihood"]
+mdl = result.meta["mdl"]  # Lower is better
+```
+
+### Budget Mapping
+
+SBM respects BudgetSpec parameters:
+
+| BudgetSpec Parameter | SBM Interpretation |
+|----------------------|-------------------|
+| `max_iter` | EM iterations (default: 500) |
+| `n_restarts` | Random initializations (default: 5) |
+| `uq_samples` | Bootstrap samples (default: None) |
+| `time_limit_s` | Not yet implemented |
+| `K_range` (kwarg) | Model selection range (default: [2..8]) |
+
+**Example:**
+```python
+budget = BudgetSpec(max_iter=50, n_restarts=2, uq_samples=20)
+# → SBM runs 50 EM iterations, 2 restarts, 20 bootstrap samples for UQ
+```
+
+### Model Selection
+
+SBM automatically selects K using **Minimum Description Length (MDL)**:
+
+```python
+result = run_community_algorithm(
+    algorithm_id="dc_sbm",
+    network=net,
+    budget=BudgetSpec(max_iter=100, n_restarts=3),
+    seed=42,
+    K_range=[2, 3, 4, 5, 6, 7, 8]
+)
+
+print(f"Selected K: {result.meta['K_selected']}")
+print(f"MDL: {result.meta['mdl']:.2f}")  # Lower = better
+```
+
+**Criteria available:**
+- **ELBO** (Evidence Lower Bound) — Maximize
+- **MDL/BIC** (Minimum Description Length) — Minimize (default)
+- **ICL** (Integrated Classification Likelihood) — Minimize
+
+### UQ Integration
+
+Enable UQ via `uq_samples`:
+
+```python
+budget_uq = BudgetSpec(max_iter=50, n_restarts=2, uq_samples=20)
+
+result = run_community_algorithm(
+    algorithm_id="dc_sbm",
+    network=net,
+    budget=budget_uq,
+    seed=42,
+    K_range=[2, 3, 4, 5]
+)
+
+# Access uncertainty
+ll_mean = result.meta["log_likelihood"]
+ll_std = result.meta["log_likelihood_std"]
+print(f"Log-likelihood: {ll_mean:.2f} ± {ll_std:.2f}")
+```
+
+**UQ modes supported:**
+1. **Bootstrap restarts:** Different random initializations (via `uq_samples`)
+2. **Edge perturbation:** Refit on perturbed graphs (future)
+
+### Successive Halving with SBM
+
+SBM is SH-compatible with automatic budget scaling:
+
+```python
+result = (
+    AutoCommunity()
+      .candidates("louvain", "leiden", "dc_sbm")
+      .metrics("modularity", "sbm_log_likelihood")
+      .strategy(
+          "successive_halving",
+          eta=3,
+          budget0={"max_iter": 10, "n_restarts": 1},
+          utility_method="mean_minus_std"
+      )
+      .seed(42)
+      .execute(net)
+)
+```
+
+**Budget progression example (eta=3):**
+- **Round 0:** `max_iter=10, n_restarts=1, K_range=[2,3,4]`
+- **Round 1:** `max_iter=30, n_restarts=3, K_range=[2,3,4,5,6]`
+- **Round 2:** `max_iter=90, n_restarts=9, K_range=[2,3,4,5,6,7,8]`
+
+**Note:** SBM has higher computational cost per round than Louvain/Leiden, so SH is especially valuable for early elimination.
+
+### Multilayer Support
+
+SBM supports **shared-membership multilayer networks**:
+
+```python
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'A', 'target': 'C', 'source_type': 'work', 'target_type': 'work'},
+])
+
+result = run_community_algorithm(
+    algorithm_id="dc_sbm",
+    network=net,
+    budget=BudgetSpec(max_iter=100, n_restarts=3),
+    seed=42,
+    K_range=[2, 3, 4]
+)
+```
+
+**Constraints:**
+- All layers must be **node-aligned** (same nodes across layers)
+- One latent assignment per node (shared across layers)
+- Separate block affinity matrices per layer
+
+### SBM Metrics
+
+SBM provides specialized metrics for AutoCommunity:
+
+| Metric | Direction | Description |
+|--------|-----------|-------------|
+| `sbm_log_likelihood` | Maximize | Model log-likelihood (higher = better fit) |
+| `sbm_mdl` | Minimize | Minimum Description Length / BIC |
+| `sbm_n_blocks` | None | Number of blocks selected by model |
+
+**Usage:**
+```python
+result = (
+    AutoCommunity()
+      .candidates("dc_sbm", "louvain")
+      .metrics("modularity", "sbm_log_likelihood", "sbm_mdl")
+      .seed(42)
+      .execute(net)
+)
+```
+
+**Note:** SBM metrics return `None` for non-SBM algorithms.
+
+### Determinism
+
+SBM is fully deterministic under fixed seed:
+
+```python
+result1 = run_community_algorithm("dc_sbm", net, budget, seed=42)
+result2 = run_community_algorithm("dc_sbm", net, budget, seed=42)
+
+# Same partition, same K, same log-likelihood
+assert result1.meta["K_selected"] == result2.meta["K_selected"]
+assert abs(result1.meta["log_likelihood"] - result2.meta["log_likelihood"]) < 1e-6
+```
+
+**Seeding strategy:**
+- Main seed spawns per-restart seeds deterministically
+- UQ samples use deterministic seed spawning
+- Multiple runs with same seed produce identical results
+
+### Performance Guidelines
+
+| Network Size | Recommended Budget |
+|--------------|-------------------|
+| Small (<100 nodes) | `BudgetSpec(max_iter=200, n_restarts=10)` |
+| Medium (100-1K nodes) | `BudgetSpec(max_iter=100, n_restarts=5)` |
+| Large (1K-10K nodes) | `BudgetSpec(max_iter=50, n_restarts=2)` |
+| Very Large (>10K nodes) | Use Louvain/Leiden instead |
+
+**Tips:**
+- Start with small K_range (e.g., [2, 3, 4, 5]) for faster convergence
+- Use Successive Halving to eliminate SBM early if underperforming
+- Disable UQ for initial exploration (`uq_samples=None`)
+
+### Metadata Schema
+
+SBM results include:
+
+```python
+result.meta = {
+    "model_type": "dc_sbm",              # or "sbm"
+    "K_selected": 3,                     # Selected number of blocks
+    "log_likelihood": -1234.56,          # ELBO (higher = better)
+    "mdl": 2500.12,                      # MDL/BIC (lower = better)
+    "converged": True,                   # Whether EM converged
+    "n_iter": 45,                        # Number of EM iterations
+    "uq_enabled": False,                 # Whether UQ was run
+    "n_samples": None,                   # UQ samples (if enabled)
+    "log_likelihood_std": None,          # Std dev of LL (if UQ enabled)
+    "mdl_std": None,                     # Std dev of MDL (if UQ enabled)
+}
+```
+
+### Common Pitfalls
+
+1. **Node alignment:** Multilayer networks must have all nodes in all layers
+   - **Fix:** Ensure all layers share the same node set
+
+2. **Large K_range on big networks:** Exponential cost
+   - **Fix:** Use conservative K_range (e.g., [2, 3, 4, 5])
+
+3. **Comparing SBM metrics to non-SBM algorithms:** Apples to oranges
+   - **Fix:** Use shared metrics like `modularity` or `coverage` for cross-algorithm comparison
+
+4. **Insufficient restarts:** SBM can get stuck in local optima
+   - **Fix:** Use `n_restarts >= 3` for reliable results
+
+### References
+
+- **Standard SBM:** Holland et al. (1983)
+- **Degree-Corrected SBM:** Karrer & Newman (2011)
+- **Variational inference:** Gopalan & Blei (2013)
+- **Multilayer SBM:** Stanley et al. (2016)
+
