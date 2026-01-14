@@ -2251,6 +2251,206 @@ print(result.meta["uq"]["stability"])  # VI, NMI, etc.
 **Confidence**: High (>0.8) = clear, Low (<0.6) = boundary node
 
 
+### 9.3 Compositional UQ (Aggregate/Summarize/Ranking) — **NEW in v1.1**
+
+**Goal**: Propagate uncertainty through complete query pipelines, not just compute() operations.
+
+Compositional UQ wraps the entire query execution with resampling, executing the query multiple times on resampled networks and aggregating results. This provides uncertainty for:
+- Aggregate/summarize statistics (mean, median, quantiles)
+- Ranking stability (order_by/limit operations)
+- Coverage membership probability
+
+#### Why Compositional UQ?
+
+Traditional UQ only affects `.compute()` - it gives you uncertainty per node/edge but deterministic aggregates. Compositional UQ gives you uncertainty **for the aggregate itself**.
+
+**Example**: "What is the average degree with confidence interval?"
+- Traditional: Average of uncertain node degrees → single value
+- Compositional: Uncertain average degree → mean ± std, with CI
+
+#### Basic Usage: Aggregate with UQ
+
+```python
+from py3plex.dsl import Q
+
+# Compute average degree with uncertainty
+result = (
+    Q.nodes()
+     .compute("degree")
+     .summarize(avg_degree="mean(degree)", median="median(degree)")
+     .uq(method="seed", n_samples=50, seed=42)
+     .execute(net)
+)
+
+# Extract results with uncertainty
+df = result.to_pandas(expand_uncertainty=True)
+print(df[["avg_degree", "avg_degree_std", "avg_degree_ci95_low", "avg_degree_ci95_high"]])
+```
+
+**Output attributes** have uncertainty structure:
+```python
+{
+    "mean": 2.5,           # Mean across resamples
+    "std": 0.3,            # Standard deviation
+    "quantiles": {         # Confidence intervals
+        0.025: 1.9,
+        0.975: 3.1
+    },
+    "n_samples": 50
+}
+```
+
+#### Per-Layer Aggregation with UQ
+
+```python
+result = (
+    Q.nodes()
+     .compute("degree")
+     .per_layer()
+     .aggregate(
+         avg_degree="mean(degree)",
+         node_count="count()",
+         q95_degree="quantile(degree, 0.95)"
+     )
+     .uq(method="perturbation", n_samples=100, seed=42)
+     .execute(net)
+)
+
+# Each layer gets uncertainty estimates
+df = result.to_pandas(expand_uncertainty=True)
+# Columns: layer, avg_degree, avg_degree_std, avg_degree_ci95_low, ...
+```
+
+#### Ranking Stability (Order_by with UQ)
+
+Compositional UQ for ranking produces **rank stability metrics**:
+
+```python
+result = (
+    Q.nodes()
+     .compute("betweenness_centrality")
+     .order_by("-betweenness_centrality")
+     .limit(10)  # Top 10
+     .uq(method="perturbation", n_samples=50, seed=42)
+     .execute(net)
+)
+
+# Access rank stability
+rank_stab = result.meta["rank_stability"]
+print(f"Kendall tau: {rank_stab['kendall_tau_mean']:.3f}")
+
+# Per-node rank uncertainty
+for node in result.items[:5]:
+    rank_mean = rank_stab["rank_means"][node]
+    rank_std = rank_stab["rank_stds"][node]
+    print(f"{node}: rank {rank_mean:.1f} ± {rank_std:.2f}")
+```
+
+**Stability Metrics**:
+- `kendall_tau_mean`: Rank correlation across resamples (1.0 = perfect stability)
+- `rank_means`: Mean rank per item
+- `rank_stds`: Standard deviation of rank per item
+- `rank_quantiles`: CI for ranks
+
+**Interpreting rank stability**:
+- Kendall tau > 0.8: Stable ranking
+- Kendall tau 0.6-0.8: Moderate stability
+- Kendall tau < 0.6: Unstable (sensitive to perturbations)
+
+#### Coverage with UQ
+
+Coverage membership becomes probabilistic:
+
+```python
+result = (
+    Q.nodes()
+     .compute("degree")
+     .per_layer()
+     .top_k(5, "degree")
+     .coverage(mode="all")  # Cross-layer hubs
+     .uq(method="perturbation", n_samples=100, seed=42)
+     .execute(net)
+)
+
+# Access coverage stability
+cov_stab = result.meta["coverage_stability"]
+print(f"Stable members: {len(cov_stab['stable_members'])}")
+print(f"Boundary members: {len(cov_stab['boundary_members'])}")
+
+# Per-node inclusion probability
+for node in result.items:
+    prob = cov_stab["inclusion_probability"][node]
+    print(f"{node}: {prob:.1%} inclusion")
+```
+
+**Coverage Metrics**:
+- `inclusion_probability`: P(node in coverage set) across resamples
+- `stable_members`: Nodes with P ≥ 0.8
+- `boundary_members`: Nodes with 0.2 < P < 0.8
+
+#### UQ Methods
+
+Same as compute() UQ, but affects entire pipeline:
+- `"seed"`: Multi-run with different random seeds (fastest, for stochastic algorithms)
+- `"perturbation"`: Perturb network structure between runs (most informative)
+- `"bootstrap"`: Resample edges/nodes with replacement
+
+**Seed specification** is critical for reproducibility:
+```python
+# Deterministic: same seed → identical results
+.uq(method="seed", n_samples=100, seed=42)
+```
+
+Internal: Uses `numpy.random.SeedSequence` to generate child seeds deterministically.
+
+#### Metadata
+
+Compositional UQ adds to `result.meta`:
+```python
+{
+    "uq": {
+        "type": "compositional",
+        "method": "perturbation",
+        "n_samples": 50,
+        "seed": 42,
+        "has_aggregate": True,
+        "has_ordering": True,
+        "has_coverage": False
+    },
+    "rank_stability": {...},      # If order_by used
+    "coverage_stability": {...}   # If coverage used
+}
+```
+
+#### When to Use Compositional vs Compute UQ
+
+**Use Compositional UQ when**:
+- You need uncertainty for **aggregate statistics** (mean, median, quantiles)
+- You want **ranking stability** (which nodes are reliably in top-k?)
+- You want **coverage membership probability**
+- Your query has `.aggregate()`, `.summarize()`, `.order_by()`, or `.coverage()`
+
+**Use Compute UQ when**:
+- You only need **per-node/per-edge uncertainty**
+- No aggregation or ranking involved
+- Query is just `.compute()` → `.to_pandas()`
+
+**Both work together**: Compositional UQ automatically wraps compute() operations.
+
+#### Performance Notes
+
+Compositional UQ runs the entire query `n_samples` times:
+- Cost: O(n_samples × query_cost)
+- Typical: 50-100 samples for dev, 300+ for publications
+- Parallelization: Not yet implemented (future work)
+
+**Tips**:
+- Start with `n_samples=10` during development
+- Use `method="seed"` for quick iterations (no network modification)
+- Increase to 50-100 for reliable CI estimates
+- Use 300+ for publication-quality results
+
+
 ### Sensitivity Analysis
 
 **PSEUDOCODE** (Feature planned):
