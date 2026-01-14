@@ -335,22 +335,22 @@ def _run_candidate_algorithms(
                     )
                     partition_dict = leiden_result.communities  # Use 'communities', not 'partition'
                     uq_data = None
-            
+
             elif algo_name in ("sbm", "standard_sbm", "dc_sbm", "degree_corrected_sbm"):
                 # Use runner for SBM algorithms
                 from py3plex.algorithms.community_detection.runner import run_community_algorithm
                 from py3plex.algorithms.community_detection.budget import BudgetSpec
-                
+
                 # Configure budget
                 budget = BudgetSpec(
                     max_iter=100,
                     n_restarts=3,
                     uq_samples=uq_config.get('n_samples', None) if uq_config else None
                 )
-                
+
                 # Map algorithm name
                 algo_id_runner = "dc_sbm" if algo_name in ("dc_sbm", "degree_corrected_sbm") else "sbm"
-                
+
                 # Run via runner
                 result = run_community_algorithm(
                     algorithm_id=algo_id_runner,
@@ -359,11 +359,11 @@ def _run_candidate_algorithms(
                     seed=seed,
                     K_range=[2, 3, 4, 5, 6]  # Conservative K range for AutoCommunity
                 )
-                
+
                 partition_dict = result.partition
                 runtime_ms = result.runtime_ms
                 uq_data = None  # UQ data already aggregated in meta
-                
+
                 # Store in results with metadata
                 results[algo_id] = {
                     'algorithm': algo_name,
@@ -373,7 +373,7 @@ def _run_candidate_algorithms(
                     'meta': result.meta,  # Include SBM-specific metadata
                 }
                 continue  # Skip the standard result packaging below
-            
+
             elif algo_name == "infomap":
                 # Run infomap
                 from py3plex.algorithms.community_detection.community_wrapper import infomap_communities
