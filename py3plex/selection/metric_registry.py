@@ -63,6 +63,7 @@ class MetricRegistry:
         self._register_sanity_metrics()
         self._register_stability_metrics()
         self._register_runtime_metrics()
+        self._register_multilayer_metrics()
     
     def _register_objective_metrics(self):
         """Register objective function metrics."""
@@ -276,6 +277,57 @@ class MetricRegistry:
             bucket="runtime",
             requires_uq=False,
         ))
+    
+    def _register_multilayer_metrics(self):
+        """Register multilayer-specific quality metrics (guardrails)."""
+        try:
+            from py3plex.algorithms.community_detection.multilayer_quality_metrics import (
+                replica_consistency,
+                layer_entropy,
+            )
+            
+            # Replica consistency: multilayer coherence
+            # Weight: 0.15 (moderate guardrail)
+            def replica_consistency_wrapper(partition: Dict, net: Any, context: Dict) -> float:
+                """Replica consistency: coherence of node assignments across layers."""
+                try:
+                    return replica_consistency(partition, net)
+                except Exception as e:
+                    logger.warning(f"Failed to compute replica_consistency: {e}")
+                    return 0.0
+            
+            self.register(MetricSpec(
+                name="replica_consistency",
+                callable=replica_consistency_wrapper,
+                direction="max",
+                bucket="structure",
+                requires_uq=False,
+                enabled_by_default=True,
+            ))
+            
+            # Layer entropy: degeneracy guardrail
+            # Weight: 0.07 (light guardrail)
+            def layer_entropy_wrapper(partition: Dict, net: Any, context: Dict) -> float:
+                """Layer entropy: normalized entropy of community sizes per layer."""
+                try:
+                    return layer_entropy(partition, net)
+                except Exception as e:
+                    logger.warning(f"Failed to compute layer_entropy: {e}")
+                    return 0.0
+            
+            self.register(MetricSpec(
+                name="layer_entropy",
+                callable=layer_entropy_wrapper,
+                direction="max",
+                bucket="sanity",
+                requires_uq=False,
+                enabled_by_default=True,
+            ))
+            
+            logger.debug("Registered multilayer quality metrics")
+            
+        except ImportError as e:
+            logger.debug(f"Multilayer quality metrics not available: {e}")
     
     def register(self, metric: MetricSpec):
         """Register a metric.

@@ -386,6 +386,10 @@ class SuccessiveHalvingRacer:
             DataFrame with columns: algo_id, metric1, metric2, ...
         """
         from py3plex.algorithms.community_detection import multilayer_modularity
+        from py3plex.algorithms.community_detection.multilayer_quality_metrics import (
+            replica_consistency,
+            layer_entropy,
+        )
 
         rows = []
 
@@ -427,6 +431,14 @@ class SuccessiveHalvingRacer:
                                 value = np.nan  # UQ data present but no confidence
                         else:
                             value = np.nan  # UQ not available
+
+                    elif metric_name == "replica_consistency":
+                        # Multilayer coherence metric
+                        value = replica_consistency(result.partition, network)
+
+                    elif metric_name == "layer_entropy":
+                        # Multilayer degeneracy guardrail
+                        value = layer_entropy(result.partition, network)
 
                     else:
                         warnings.warn(
