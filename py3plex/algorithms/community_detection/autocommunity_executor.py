@@ -374,6 +374,10 @@ def _evaluate_algorithms(
         DataFrame with rows=algorithms, columns=metrics
     """
     from py3plex.algorithms.community_detection import multilayer_modularity
+    from py3plex.algorithms.community_detection.multilayer_quality_metrics import (
+        replica_consistency,
+        layer_entropy,
+    )
     
     rows = []
     
@@ -429,6 +433,14 @@ def _evaluate_algorithms(
                     # Description length (if available)
                     # Placeholder for now
                     value = 0.0
+                
+                elif metric_name == "replica_consistency":
+                    # Multilayer coherence metric
+                    value = replica_consistency(partition, network)
+                
+                elif metric_name == "layer_entropy":
+                    # Multilayer degeneracy guardrail
+                    value = layer_entropy(partition, network)
                 
                 else:
                     warnings.warn(f"Metric '{metric_name}' not implemented", stacklevel=2)
@@ -592,6 +604,8 @@ def _pareto_selection(
         'coverage': 'max',
         'entropy': 'min',  # Lower is better
         'mdl': 'min',  # Lower is better
+        'replica_consistency': 'max',  # Higher is better (multilayer coherence)
+        'layer_entropy': 'max',  # Higher is better (degeneracy guardrail)
     }
     
     # Extract metric columns
