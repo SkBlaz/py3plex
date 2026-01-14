@@ -2749,6 +2749,35 @@ class QueryBuilder:
             QueryResult with results and metadata
         """
         from .executor import execute_ast
+        
+        # Check if auto-detection is configured
+        if hasattr(self, "_auto_detect_config"):
+            config = self._auto_detect_config
+            mode = config.get("mode")
+            params_dict = config.get("params", {})
+            write_attrs = config.get("write_attrs", {})
+            
+            # Import auto_select_community
+            from py3plex.algorithms.community_detection import auto_select_community
+            
+            # Run auto-detection
+            result = auto_select_community(network, mode=mode, **params_dict)
+            
+            # Assign partition to network
+            network.assign_partition(result.partition)
+            
+            # Write additional attributes if community stats are available
+            if hasattr(result, 'community_stats') and result.community_stats is not None:
+                # Write community stability if available
+                if hasattr(result.community_stats, 'node_confidence') and result.community_stats.node_confidence:
+                    stability_attr = write_attrs.get("community_stability", "community_stability")
+                    for (node, layer), conf in result.community_stats.node_confidence.items():
+                        network.set_node_attribute(f"{node}_{layer}", stability_attr, conf)
+                
+                # Write community ID
+                community_id_attr = write_attrs.get("community_id", "community_id")
+                for (node, layer), comm_id in result.partition.items():
+                    network.set_node_attribute(f"{node}_{layer}", community_id_attr, comm_id)
 
         ast = Query(explain=False, select=self._select)
         return execute_ast(network, ast, params=params, progress=progress)
@@ -2815,18 +2844,50 @@ class CommunityQueryBuilder(QueryBuilder):
     Use Q.communities() to create.
     """
 
-    def __init__(self, autocompute: bool = True, partition_name: str = "default"):
+    def __init__(
+        self,
+        autocompute: bool = True,
+        partition_name: str = "default",
+        mode: Optional[str] = None,
+        fast: Optional[bool] = None,
+        uq: Optional[bool] = None,
+        uq_n_samples: Optional[int] = None,
+        uq_method: Optional[str] = None,
+        seed: Optional[int] = None,
+        write_attrs: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
         """Initialize community query builder.
 
         Args:
             autocompute: Whether to automatically compute missing metrics (default: True)
             partition_name: Name of the partition to query (default: "default")
+            mode: Auto-detection mode - "pareto" or "wins" (if provided, enables auto-detection)
+            fast: Use fast mode with smaller grids/samples (default: True)
+            uq: Enable uncertainty quantification (default: False)
+            uq_n_samples: Number of UQ samples (default: 10)
+            uq_method: UQ method - "seed", "perturbation", or "bootstrap" (default: "seed")
+            seed: Master random seed for reproducibility
+            write_attrs: Dict mapping attribute names to write (e.g., {"community_id": "community_id"})
+            **kwargs: Additional parameters passed to auto_select_community
         """
         super().__init__(Target.COMMUNITIES, autocompute=autocompute)
         self._partition_name = partition_name
         # Store partition name in select for executor
         if not hasattr(self._select, "partition_name"):
             self._select.partition_name = partition_name
+        
+        # Store auto-detection parameters
+        self._auto_detect_mode = mode
+        self._auto_detect_params = {
+            "fast": fast if fast is not None else True,
+            "uq": uq if uq is not None else False,
+            "uq_n_samples": uq_n_samples if uq_n_samples is not None else 10,
+            "uq_method": uq_method if uq_method is not None else "seed",
+            "seed": seed if seed is not None else 0,
+            **kwargs
+        }
+        self._write_attrs = write_attrs or {}
 
     def from_partition(self, name: str) -> "CommunityQueryBuilder":
         """Select which partition to query.
@@ -2843,6 +2904,41 @@ class CommunityQueryBuilder(QueryBuilder):
         self._partition_name = name
         self._select.partition_name = name
         return self
+    
+    def nodes(self) -> QueryBuilder:
+        """Trigger community detection and return a node query builder.
+        
+        If auto-detection mode is configured (via mode parameter), this method
+        will run auto_select_community, assign the results to the network,
+        and return a QueryBuilder for nodes with community attributes.
+        
+        Returns:
+            QueryBuilder for nodes with community attributes
+            
+        Example:
+            >>> # Auto-detect communities and query nodes
+            >>> result = (
+            ...     Q.communities(mode="pareto", fast=False, uq=True, seed=42,
+            ...                   write_attrs={"community_id": "community_id"})
+            ...      .nodes()
+            ...      .node_type("gene")
+            ...      .where(degree__gt=3)
+            ...      .execute(network)
+            ... )
+        """
+        # Create a new node query builder
+        node_builder = QueryBuilder(Target.NODES, autocompute=self._select.autocompute)
+        
+        # If auto-detection mode is configured, mark for execution
+        if self._auto_detect_mode is not None:
+            # Store auto-detection configuration in the node builder
+            node_builder._auto_detect_config = {
+                "mode": self._auto_detect_mode,
+                "params": self._auto_detect_params,
+                "write_attrs": self._write_attrs,
+            }
+        
+        return node_builder
 
     def members(self) -> QueryBuilder:
         """Return nodes that are members of the selected communities.
@@ -3088,13 +3184,30 @@ class Q:
 
     @staticmethod
     def communities(
-        autocompute: bool = True, partition: str = "default"
+        autocompute: bool = True,
+        partition: str = "default",
+        mode: Optional[str] = None,
+        fast: Optional[bool] = None,
+        uq: Optional[bool] = None,
+        uq_n_samples: Optional[int] = None,
+        uq_method: Optional[str] = None,
+        seed: Optional[int] = None,
+        write_attrs: Optional[Dict[str, str]] = None,
+        **kwargs
     ) -> CommunityQueryBuilder:
         """Create a query builder for communities.
 
         Args:
             autocompute: Whether to automatically compute missing metrics (default: True)
             partition: Name of the partition to query (default: "default")
+            mode: Auto-detection mode - "pareto" or "wins" (if provided, enables auto-detection)
+            fast: Use fast mode with smaller grids/samples (default: True)
+            uq: Enable uncertainty quantification (default: False)
+            uq_n_samples: Number of UQ samples (default: 10)
+            uq_method: UQ method - "seed", "perturbation", or "bootstrap" (default: "seed")
+            seed: Master random seed for reproducibility
+            write_attrs: Dict mapping attribute names to write (e.g., {"community_id": "community_id"})
+            **kwargs: Additional parameters passed to auto_select_community
 
         Returns:
             CommunityQueryBuilder for communities
@@ -3108,8 +3221,22 @@ class Q:
 
             >>> # Get members of large communities
             >>> Q.communities().where(size__gt=10).members().compute("degree")
+            
+            >>> # Auto-detection with community assignment
+            >>> Q.communities(mode="pareto", fast=False, uq=True, seed=42).nodes()
         """
-        return CommunityQueryBuilder(autocompute=autocompute, partition_name=partition)
+        return CommunityQueryBuilder(
+            autocompute=autocompute,
+            partition_name=partition,
+            mode=mode,
+            fast=fast,
+            uq=uq,
+            uq_n_samples=uq_n_samples,
+            uq_method=uq_method,
+            seed=seed,
+            write_attrs=write_attrs,
+            **kwargs
+        )
 
     @staticmethod
     def dynamics(process_name: str, **params) -> "DynamicsBuilder":
