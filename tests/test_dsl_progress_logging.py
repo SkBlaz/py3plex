@@ -156,3 +156,97 @@ class TestProgressLogging:
             for record in info_messages:
                 if "Starting DSL query execution" in record.message:
                     assert record.name == "py3plex.dsl.executor"
+
+    def test_query_pipeline_summary(self, sample_network, caplog):
+        """Test that query pipeline summary is logged."""
+        with caplog.at_level(logging.INFO):
+            q = (
+                Q.nodes()
+                .from_layers(L["social"])
+                .where(degree__gt=0)
+                .compute("degree", "betweenness")
+                .order_by("degree", desc=True)
+                .limit(5)
+            )
+            result = q.execute(sample_network, progress=True)
+            
+            # Check for pipeline summary
+            assert "Query pipeline:" in caplog.text
+            assert "Target: nodes" in caplog.text
+            assert "Compute: 2 measure(s)" in caplog.text
+            assert "Order: degree" in caplog.text
+            assert "Limit: 5" in caplog.text
+
+    def test_grouping_and_coverage_progress(self, sample_network, caplog):
+        """Test progress logging for grouping and coverage operations."""
+        with caplog.at_level(logging.INFO):
+            # Add more nodes to different layers for meaningful grouping test
+            network = sample_network
+            network.add_nodes([
+                {'source': 'F', 'type': 'work'},
+                {'source': 'G', 'type': 'work'},
+            ])
+            network.add_edges([
+                {'source': 'F', 'target': 'E', 'source_type': 'work', 'target_type': 'work'},
+                {'source': 'F', 'target': 'G', 'source_type': 'work', 'target_type': 'work'},
+            ])
+            
+            q = (
+                Q.nodes()
+                .from_layers(L["social"] + L["work"])
+                .compute("degree")
+                .per_layer()
+                .top_k(2, "degree")
+                .end_grouping()
+                .coverage(mode="at_least", k=1)
+            )
+            result = q.execute(network, progress=True)
+            
+            # Check for grouping progress messages
+            assert "Applying grouping and coverage filtering" in caplog.text
+            assert "Grouping" in caplog.text
+            assert "Created" in caplog.text and "groups" in caplog.text
+            assert "Applying per-group top-k" in caplog.text
+            assert "Applying coverage filter" in caplog.text
+
+    def test_post_processing_progress(self, sample_network, caplog):
+        """Test progress logging for post-processing operations."""
+        with caplog.at_level(logging.INFO):
+            q = (
+                Q.nodes()
+                .from_layers(L["social"])
+                .compute("degree")
+                .mutate(score=lambda r: r.get("degree", 0) * 2)
+                .limit(3)
+            )
+            result = q.execute(sample_network, progress=True)
+            
+            # Check for post-processing progress messages
+            assert "Applying post-processing operations" in caplog.text
+            assert "Applying mutate" in caplog.text
+
+    def test_uq_progress_in_compute(self, sample_network, caplog):
+        """Test progress logging shows UQ information in compute steps."""
+        with caplog.at_level(logging.INFO):
+            # Install uncertainty support if available
+            try:
+                from py3plex.uncertainty import bootstrap_metric
+                has_uq = True
+            except ImportError:
+                has_uq = False
+            
+            if not has_uq:
+                import pytest
+                pytest.skip("Uncertainty module not available")
+            
+            q = (
+                Q.nodes()
+                .from_layers(L["social"])
+                .compute("degree")  # This will be with UQ
+                .uq(method="perturbation", n_samples=10, seed=42)
+                .limit(3)
+            )
+            result = q.execute(sample_network, progress=True)
+            
+            # Check that UQ is mentioned in progress
+            assert "UQ:" in caplog.text or "with UQ" in caplog.text
