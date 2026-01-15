@@ -517,6 +517,78 @@ class AutoCommunityConfig:
 
 
 @dataclass
+class JoinNode:
+    """A join operation between two query results.
+
+    Represents a relational join between two query pipelines. Joins are
+    row-wise relational joins, not graph merges.
+
+    Attributes:
+        left: Left query (SelectStmt or JoinNode)
+        right: Right query (SelectStmt or JoinNode)
+        on: Tuple of column names to join on
+        how: Join type ('inner', 'left', 'right', 'outer', 'semi', 'anti')
+        suffixes: Tuple of suffixes for name collisions (left_suffix, right_suffix)
+
+    Example:
+        >>> # Join nodes with communities
+        >>> JoinNode(
+        ...     left=SelectStmt(target=Target.NODES, ...),
+        ...     right=SelectStmt(target=Target.COMMUNITIES, ...),
+        ...     on=("node", "layer"),
+        ...     how="left",
+        ...     suffixes=("", "_comm")
+        ... )
+    """
+
+    left: Union["SelectStmt", "JoinNode"]
+    right: Union["SelectStmt", "JoinNode"]
+    on: Tuple[str, ...]
+    how: str = "inner"  # 'inner', 'left', 'right', 'outer', 'semi', 'anti'
+    suffixes: Tuple[str, str] = ("", "_r")
+
+    def requires_fields(self) -> set:
+        """Get fields required by this join (join keys)."""
+        return set(self.on)
+
+    def provides_fields(self, left_fields: set, right_fields: set) -> set:
+        """Get fields provided by this join.
+
+        Args:
+            left_fields: Fields from left query
+            right_fields: Fields from right query
+
+        Returns:
+            Set of field names after join
+        """
+        if self.how in ("semi", "anti"):
+            # Semi/anti joins only return left columns
+            return left_fields
+
+        # Determine which fields need suffixing
+        collision_fields = left_fields & right_fields
+        result_fields = set()
+
+        # Add left fields
+        for field in left_fields:
+            if field in collision_fields and field not in self.on:
+                result_fields.add(f"{field}{self.suffixes[0]}")
+            else:
+                result_fields.add(field)
+
+        # Add right fields (except for join keys)
+        for field in right_fields:
+            if field in self.on:
+                continue  # Join keys not duplicated
+            if field in collision_fields:
+                result_fields.add(f"{field}{self.suffixes[1]}")
+            else:
+                result_fields.add(field)
+
+        return result_fields
+
+
+@dataclass
 class SelectStmt:
     """A SELECT statement.
 

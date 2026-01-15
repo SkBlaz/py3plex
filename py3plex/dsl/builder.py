@@ -24,7 +24,7 @@ Example:
 
 import logging
 import pandas as pd
-from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING, Tuple
 import numpy as np
 
 if TYPE_CHECKING:
@@ -2796,6 +2796,93 @@ class QueryBuilder:
 
         return engine.run()
 
+    def join(
+        self,
+        right: Union["QueryBuilder", QueryResult],
+        on: Union[str, List[str]],
+        how: str = "inner",
+        suffixes: Tuple[str, str] = ("", "_r"),
+    ) -> "QueryBuilder":
+        """Join this query with another query or result.
+
+        Performs a relational join between two query results. Joins are row-wise
+        relational joins, not graph merges. The join is lazy and will be executed
+        when .execute() is called.
+
+        Args:
+            right: Right query (QueryBuilder or QueryResult to join with)
+            on: Column name(s) to join on. Can be a single string or list of strings.
+                All keys must exist in both left and right schemas.
+            how: Join type. One of:
+                - 'inner': Only rows with matching keys in both sides
+                - 'left': All left rows, matching right rows (nulls for non-matches)
+                - 'right': All right rows, matching left rows (nulls for non-matches)
+                - 'outer': All rows from both sides (nulls for non-matches)
+                - 'semi': Left rows that have a match in right (left columns only)
+                - 'anti': Left rows that have NO match in right (left columns only)
+            suffixes: Tuple of (left_suffix, right_suffix) for name collisions.
+                Default: ("", "_r")
+
+        Returns:
+            JoinBuilder wrapping the join operation for further chaining
+
+        Raises:
+            ValueError: If join type is invalid
+            InvalidJoinKeyError: If join keys don't exist in schemas (at execute time)
+
+        Examples:
+            >>> # Join nodes with communities
+            >>> result = (
+            ...     Q.nodes()
+            ...      .compute("degree")
+            ...      .join(
+            ...          Q.communities(mode="leiden").members(),
+            ...          on=["node", "layer"],
+            ...          how="left",
+            ...          suffixes=("", "_comm")
+            ...      )
+            ...      .where(degree__gt=3)
+            ...      .execute(network)
+            ... )
+
+            >>> # Join with pre-computed result
+            >>> communities = Q.communities().members().execute(network)
+            >>> result = (
+            ...     Q.nodes()
+            ...      .compute("degree")
+            ...      .join(communities, on=["node", "layer"], how="inner")
+            ...      .execute(network)
+            ... )
+
+            >>> # Self-join (same query, different filters)
+            >>> high_degree = Q.nodes().where(degree__gt=10)
+            >>> high_bc = Q.nodes().compute("betweenness_centrality").where(betweenness_centrality__gt=0.1)
+            >>> result = high_degree.join(high_bc, on=["node", "layer"], how="inner").execute(network)
+        """
+        from .ast import JoinNode
+
+        # Validate join type
+        valid_join_types = {"inner", "left", "right", "outer", "semi", "anti"}
+        if how not in valid_join_types:
+            raise ValueError(
+                f"Invalid join type '{how}'. Must be one of: {', '.join(sorted(valid_join_types))}"
+            )
+
+        # Normalize on to tuple
+        if isinstance(on, str):
+            on_tuple = (on,)
+        else:
+            on_tuple = tuple(on)
+
+        # Create JoinBuilder
+        return JoinBuilder(
+            left=self,
+            right=right,
+            on=on_tuple,
+            how=how,
+            suffixes=suffixes,
+        )
+
     def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
         """Execute the query.
 
@@ -2896,6 +2983,181 @@ class QueryBuilder:
     
     def __repr__(self) -> str:
         return f"QueryBuilder(target={self._select.target.value})"
+
+
+class JoinBuilder:
+    """Builder for join operations.
+
+    This class wraps a JoinNode and provides a chainable interface for
+    operations after a join. Join execution is deferred until .execute()
+    is called.
+
+    Do not instantiate directly - use QueryBuilder.join() or QueryResult.join().
+    """
+
+    def __init__(
+        self,
+        left: Union[QueryBuilder, QueryResult],
+        right: Union[QueryBuilder, QueryResult],
+        on: Tuple[str, ...],
+        how: str,
+        suffixes: Tuple[str, str],
+    ):
+        """Initialize JoinBuilder.
+
+        Args:
+            left: Left query or result
+            right: Right query or result
+            on: Tuple of join keys
+            how: Join type
+            suffixes: Suffix tuple for name collisions
+        """
+        from .ast import JoinNode
+
+        self._left = left
+        self._right = right
+        self._on = on
+        self._how = how
+        self._suffixes = suffixes
+
+        # Build JoinNode
+        left_select = left._select if isinstance(left, QueryBuilder) else left._to_select_stmt()
+        right_select = right._select if isinstance(right, QueryBuilder) else right._to_select_stmt()
+
+        self._join_node = JoinNode(
+            left=left_select,
+            right=right_select,
+            on=on,
+            how=how,
+            suffixes=suffixes,
+        )
+
+        # Post-join operations (where, compute, order_by, limit)
+        self._where: Optional[ConditionExpr] = None
+        self._compute: List[ComputeItem] = []
+        self._order_by: List[OrderItem] = []
+        self._limit: Optional[int] = None
+
+    def where(self, **kwargs) -> "JoinBuilder":
+        """Filter joined results.
+
+        Args:
+            **kwargs: Conditions (same as QueryBuilder.where)
+
+        Returns:
+            Self for chaining
+        """
+        condition = build_condition_from_kwargs(kwargs)
+        if self._where is None:
+            self._where = condition
+        else:
+            # Merge with AND
+            self._where.atoms.extend(condition.atoms)
+            if condition.atoms:
+                self._where.ops.append("AND")
+            self._where.ops.extend(condition.ops)
+        return self
+
+    def compute(self, *measures: str, **kwargs) -> "JoinBuilder":
+        """Compute measures on joined results.
+
+        Args:
+            *measures: Measure names
+            **kwargs: Additional compute options (alias, uncertainty, etc.)
+
+        Returns:
+            Self for chaining
+        """
+        # Extract kwargs for ComputeItem
+        alias = kwargs.get("alias")
+        aliases = kwargs.get("aliases")
+        uncertainty = kwargs.get("uncertainty", False)
+        method = kwargs.get("method")
+        n_samples = kwargs.get("n_samples")
+
+        if aliases:
+            for name, al in aliases.items():
+                self._compute.append(ComputeItem(
+                    name=name,
+                    alias=al,
+                    uncertainty=uncertainty,
+                    method=method,
+                    n_samples=n_samples,
+                ))
+        elif alias and len(measures) == 1:
+            self._compute.append(ComputeItem(
+                name=measures[0],
+                alias=alias,
+                uncertainty=uncertainty,
+                method=method,
+                n_samples=n_samples,
+            ))
+        else:
+            self._compute.extend(
+                ComputeItem(
+                    name=m,
+                    uncertainty=uncertainty,
+                    method=method,
+                    n_samples=n_samples,
+                ) for m in measures
+            )
+        return self
+
+    def order_by(self, *keys: str, desc: bool = False) -> "JoinBuilder":
+        """Order joined results.
+
+        Args:
+            *keys: Attribute names to order by
+            desc: Default sort direction
+
+        Returns:
+            Self for chaining
+        """
+        for k in keys:
+            if k.startswith("-"):
+                self._order_by.append(OrderItem(key=k[1:], desc=True))
+            else:
+                self._order_by.append(OrderItem(key=k, desc=desc))
+        return self
+
+    def limit(self, n: int) -> "JoinBuilder":
+        """Limit joined results.
+
+        Args:
+            n: Maximum number of results
+
+        Returns:
+            Self for chaining
+        """
+        self._limit = n
+        return self
+
+    def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
+        """Execute the join query.
+
+        Args:
+            network: Multilayer network object
+            progress: If True, log progress messages
+            **params: Parameter bindings
+
+        Returns:
+            QueryResult with joined data and provenance
+        """
+        from .executor import execute_join
+
+        return execute_join(
+            network=network,
+            join_node=self._join_node,
+            post_where=self._where,
+            post_compute=self._compute,
+            post_order_by=self._order_by,
+            post_limit=self._limit,
+            params=params,
+            progress=progress,
+        )
+
+    def __repr__(self) -> str:
+        return f"JoinBuilder(on={self._on}, how={self._how})"
 
 
 class CommunityQueryBuilder(QueryBuilder):

@@ -69,6 +69,7 @@ from .ast import (
     # Core AST nodes
     Query,
     SelectStmt,
+    JoinNode,
     Target,
     ExportTarget,
     ExportSpec,
@@ -109,6 +110,7 @@ from .ast import (
 from .builder import (
     Q,
     QueryBuilder,
+    JoinBuilder,
     CommunityQueryBuilder,
     LayerExprBuilder,
     LayerProxy,
@@ -188,6 +190,10 @@ from .errors import (
     TypeMismatchError,
     GroupingError,
     DslMissingMetricError,
+    DSLCompileError,
+    InvalidJoinKeyError,
+    ComputedFieldMisuseError,
+    InvalidGroupAggregateError,
 )
 
 from .registry import measure_registry
@@ -252,6 +258,7 @@ __all__ = [
     # AST
     "Query",
     "SelectStmt",
+    "JoinNode",
     "Target",
     "ExportTarget",
     "ExportSpec",
@@ -289,6 +296,7 @@ __all__ = [
     # Builder
     "Q",
     "QueryBuilder",
+    "JoinBuilder",
     "CommunityQueryBuilder",
     "LayerExprBuilder",
     "LayerProxy",
@@ -356,6 +364,10 @@ __all__ = [
     "TypeMismatchError",
     "GroupingError",
     "DslMissingMetricError",
+    "DSLCompileError",
+    "InvalidJoinKeyError",
+    "ComputedFieldMisuseError",
+    "InvalidGroupAggregateError",
     # Registry
     "measure_registry",
     # Operator Registry
