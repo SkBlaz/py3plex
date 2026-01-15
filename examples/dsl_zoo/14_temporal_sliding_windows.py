@@ -12,7 +12,7 @@ tnet.add_edges(edges, input_type="tuple")
 result = (
     Q.edges()
     .from_layers(L["social"])
-    .window(size=100.0, step=50.0, aggregation="list")
+    .window(window_size=100.0, step=50.0, aggregation="list")
     .summarise(count="n()")
     .execute(tnet)
 )
