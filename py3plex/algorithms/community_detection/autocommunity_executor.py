@@ -1112,7 +1112,7 @@ def execute_autocommunity_sh(
         import importlib.metadata
         py3plex_version = importlib.metadata.version('py3plex')
     except Exception:
-        py3plex_version = '1.1.1'  # Fallback for development installs
+        py3plex_version = '1.1.2'  # Fallback for development installs
     
     provenance = {
         'engine': 'autocommunity_successive_halving',

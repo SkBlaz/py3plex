@@ -157,7 +157,7 @@ py3plex follows semantic versioning (MAJOR.MINOR.PATCH):
 
 * **MAJOR** (1.x → 2.x) — Breaking changes possible
 * **MINOR** (1.1 → 1.2) — New features, stable API unchanged
-* **PATCH** (1.1.0 → 1.1.1) — Bug fixes only
+* **PATCH** (1.1.1 → 1.1.2) — Bug fixes only
 
 Deprecation Policy
 ~~~~~~~~~~~~~~~~~~

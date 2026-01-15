@@ -26,7 +26,7 @@ SKIP_CI: true - This is a documentation file showing JSON examples, not executab
         "ok": True,
         "tool": "py3plex.load_network",
         "version": {
-            "py3plex": "1.1.1",
+            "py3plex": "1.1.2",
             "mcp_server": "1.0.0"
         },
         "timestamp": 1704988800.0
