@@ -1,6 +1,6 @@
 # DSL Zoo: Runnable Examples for Multilayer Network Analysis
 
-This directory contains 25 runnable examples demonstrating the full multilayer analysis surface of py3plex using single-invocation DSL calls.
+This directory contains 35 runnable examples demonstrating the full multilayer analysis surface of py3plex using single-invocation DSL calls.
 
 ## Overview
 
@@ -30,9 +30,10 @@ Each example demonstrates a specific DSL feature with:
 - `11_interlayer_specific_pair.py` - Specific layer pair with where(interlayer=("gene","disease"))
 - `12_edge_weight_summary.py` - Per-layer-pair aggregation with summarise()
 
-### Temporal Network Queries (13-14)
+### Temporal Network Queries (13-14, 27)
 - `13_temporal_during_interval.py` - Filter edges during time interval using .during(t0, t1)
 - `14_temporal_sliding_windows.py` - Sliding window aggregation with .window(size, step)
+- `27_temporal_at_time.py` - Query network at specific time point with .at(t)
 
 ### Uncertainty Quantification (15-16)
 - `15_uq_pagerank_bootstrap.py` - Bootstrap uncertainty for pagerank with confidence intervals
@@ -50,6 +51,17 @@ Each example demonstrates a specific DSL feature with:
 - `23_pattern_matching.py` - Cypher-like pattern matching with Q.pattern()
 - `24_semiring_closure.py` - Semiring algebra closure computation with S.closure()
 - `25_arrow_export.py` - Export query results to Apache Arrow format
+
+### Extended DSL Features (26-35)
+- `26_coverage_cross_layer.py` - Cross-layer coverage filtering with .coverage(mode="all")
+- `28_field_expressions.py` - Complex filtering with F expressions (F.degree > 2) & (F.clustering < 0.5)
+- `29_parameterized_queries.py` - Parameterized queries with Param placeholders
+- `30_column_rename_drop.py` - Column manipulation with .rename() and .drop()
+- `31_network_comparison.py` - Network comparison using C.compare()
+- `32_shortest_paths.py` - Path queries with P.shortest()
+- `33_zscore_normalization.py` - Z-score normalization per layer with .zscore()
+- `34_random_sampling.py` - Random sampling of results with .sample()
+- `35_distinct_unique.py` - Get unique/distinct rows with .distinct()
 
 ## Running Examples
 
