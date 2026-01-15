@@ -47,6 +47,7 @@ master_regulators = (
         },
     )
     .nodes()                                 # Switch to node-level analysis
+    .node_type("gene")                       # Filter by node type
     .where(degree__gt=3)                     # Remove peripheral nodes
     .compute("degree_centrality", "betweenness_centrality", "pagerank")
     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)  # Quantify confidence
