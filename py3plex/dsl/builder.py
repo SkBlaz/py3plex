@@ -2796,12 +2796,14 @@ class QueryBuilder:
 
         return engine.run()
 
-    def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
+    def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, **params) -> QueryResult:
         """Execute the query.
 
         Args:
             network: Multilayer network object
             progress: If True, log progress messages during query execution (default: True)
+            explain_plan: If True, populate result.meta["plan"] with execution plan (default: False)
+            planner: Optional planner configuration dict (compute_policy, enable_cache, etc.)
             **params: Parameter bindings
 
         Returns:
@@ -2841,7 +2843,54 @@ class QueryBuilder:
                 network.set_node_attribute((node, layer), community_id_attr, comm_id)
 
         ast = Query(explain=False, select=self._select)
-        return execute_ast(network, ast, params=params, progress=progress)
+        return execute_ast(network, ast, params=params, progress=progress, explain_plan=explain_plan, planner_config=planner)
+    
+    def explain_plan(self) -> "QueryBuilder":
+        """Enable plan explanation in the next execute() call.
+        
+        When enabled, the execution plan will be included in result.meta["plan"]
+        showing stage order, costs, and optimization rewrites.
+        
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> result = Q.nodes().compute("degree").explain_plan().execute(net)
+            >>> print(result.meta["plan"]["rewrite_summary"])
+        """
+        # Store flag that will be passed to execute
+        if not hasattr(self, "_explain_plan_flag"):
+            self._explain_plan_flag = True
+        return self
+    
+    def planner(self, compute_policy: str = "explicit", enable_cache: bool = True, **kwargs) -> "QueryBuilder":
+        """Configure query planner behavior.
+        
+        Args:
+            compute_policy: Compute policy - "explicit" (default), "minimal", or "all"
+            enable_cache: Whether to enable result caching (default: True)
+            **kwargs: Additional planner configuration
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Use minimal compute policy to optimize performance
+            >>> result = Q.nodes().compute("degree", "betweenness").where(degree__gt=5)\\
+            ...     .planner(compute_policy="minimal").execute(net)
+            
+            >>> # Disable caching for one-off queries
+            >>> result = Q.nodes().compute("degree")\\
+            ...     .planner(enable_cache=False).execute(net)
+        """
+        if not hasattr(self, "_planner_config"):
+            self._planner_config = {}
+        
+        self._planner_config["compute_policy"] = compute_policy
+        self._planner_config["enable_cache"] = enable_cache
+        self._planner_config.update(kwargs)
+        
+        return self
 
     def to_ast(self) -> Query:
         """Export as AST Query object.
