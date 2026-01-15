@@ -158,7 +158,8 @@ def test_flagship_progress_shows_pipeline_length(multilayer_network, caplog):
 
 
 if __name__ == "__main__":
-    # For manual testing - print the logs
+    # Manual testing / demo script
+    # This block allows running this test file directly to see the progress logging in action
     import sys
     logging.basicConfig(level=logging.INFO, format='%(message)s', stream=sys.stdout)
     

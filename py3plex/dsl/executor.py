@@ -80,6 +80,27 @@ _RESAMPLING_METHOD_MAP = {
 }
 
 
+def _format_uq_info(compute_item: ComputeItem, for_edges: bool = False) -> str:
+    """Format UQ information for progress logging.
+    
+    Args:
+        compute_item: ComputeItem with uncertainty configuration
+        for_edges: If True, format message for edge queries (UQ not yet supported)
+        
+    Returns:
+        Formatted string like " with UQ (perturbation, n=50)" or empty string
+    """
+    if not compute_item.uncertainty:
+        return ""
+    
+    if for_edges:
+        return " with UQ (not yet supported for edges)"
+    
+    method = compute_item.method or "perturbation"
+    n_samples = compute_item.n_samples or 50
+    return f" with UQ ({method}, n={n_samples})"
+
+
 def _wrap_deterministic_uncertainty(values: Any, items: List[Any]) -> Dict[Any, Any]:
     """Wrap deterministic results with uncertainty scaffolding (std=0, certainty=1.0)."""
 
@@ -1582,11 +1603,7 @@ def _execute_select(
 
             for i, compute_item in enumerate(select.compute):
                 if progress:
-                    uq_info = ""
-                    if compute_item.uncertainty:
-                        method = compute_item.method or "perturbation"
-                        n_samples = compute_item.n_samples or 50
-                        uq_info = f" with UQ ({method}, n={n_samples})"
+                    uq_info = _format_uq_info(compute_item)
                     logger.info(
                         f"  Computing {compute_item.name} ({i+1}/{len(select.compute)}){uq_info}"
                     )
@@ -1650,9 +1667,7 @@ def _execute_select(
             # Edge measures - new implementation
             for i, compute_item in enumerate(select.compute):
                 if progress:
-                    uq_info = ""
-                    if compute_item.uncertainty:
-                        uq_info = " with UQ (not yet supported for edges)"
+                    uq_info = _format_uq_info(compute_item, for_edges=True)
                     logger.info(
                         f"  Computing {compute_item.name} ({i+1}/{len(select.compute)}){uq_info}"
                     )
