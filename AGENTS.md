@@ -8,7 +8,7 @@
 - A set of known-good pipeline blueprints ("Golden Paths")
 - A reproducibility + performance policy manual
 
-**Version**: py3plex 1.1.1 | DSL v2.1 | Python 3.8+
+**Version**: py3plex 1.1.2 | DSL v2.1 | Python 3.8+
 
 ---
 
@@ -4319,7 +4319,7 @@ prov = result.meta['provenance']
 
 # Key provenance fields
 print(prov['engine'])             # "dsl_v2_executor"
-print(prov['py3plex_version'])    # "1.1.1"
+print(prov['py3plex_version'])    # "1.1.2"
 print(prov['timestamp_utc'])      # ISO8601 timestamp
 print(prov['network_fingerprint']) # Node/edge counts, layers
 print(prov['query']['ast_hash'])  # Stable hash of query AST
@@ -4638,11 +4638,12 @@ raise Py3plexException("Invalid configuration")
 ```python
 import py3plex
 
-print(py3plex.__version__)  # "1.1.1"
+print(py3plex.__version__)  # "1.1.2"
 ```
 
 **Version History**:
-- **1.1.1** (Current): Documentation updates and AutoCommunity examples
+- **1.1.2** (Current): Removed redundant documentation files
+- **1.1.1**: Documentation updates and AutoCommunity examples
 - **1.1.0**: DSL v2, Dynamics, UQ, Temporal, Null models, Counterexamples, Claim learning
 - **1.0.0**: Initial stable release
 - **0.96**: Pre-release
@@ -5071,7 +5072,7 @@ All successful tool responses include:
     "ok": true,
     "tool": "tool_name",
     "version": {
-      "py3plex": "1.1.1",
+      "py3plex": "1.1.2",
       "mcp_server": "1.0.0"
     },
     "timestamp": 1673456789.123,
@@ -5125,7 +5126,7 @@ Check that the server is running and stdio transport is properly configured.
 
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-01-11 (for py3plex v1.1.1 + MCP v1.0.0)
+**Last Updated**: 2026-01-15 (for py3plex v1.1.2 + MCP v1.0.0)
 
 
 ---
