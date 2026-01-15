@@ -26,4 +26,4 @@ result = (
     .execute(net)
 )
 
-print(result.to_pandas().head())
+print("Edge count between gene and disease layers:", result.attributes.get('count', {}).get('__global__', 0))

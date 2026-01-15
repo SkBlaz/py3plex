@@ -19,7 +19,7 @@ net.add_edges([
 result = (
     Q.edges()
     .from_layers(L["*"])
-    .per_layer()
+    .per_layer_pair()
     .summarise(mean_w="mean(weight)", sum_w="sum(weight)", count="n()")
     .end_grouping()
     .execute(net)
