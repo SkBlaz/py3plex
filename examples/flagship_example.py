@@ -74,9 +74,6 @@ def main():
     print("   - Per-layer top-k selection (30 genes per layer)")
     print("   - Cross-layer coverage filter (≥2 layers)")
     print("   - Composite influence scoring")
-    print("   - Per-layer top-k selection (30 genes per layer)")
-    print("   - Cross-layer coverage filter (≥2 layers)")
-    print("   - Composite influence scoring")
 
     res = (
         Q.communities(  # auto community detection + writes attributes onto nodes

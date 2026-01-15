@@ -1340,10 +1340,11 @@ class QueryBuilder:
         if exclude:
             final_include = [b for b in final_include if b not in exclude]
 
-        # Handle include_community shorthand (overrides exclude)
+        # Handle include_community shorthand (takes precedence over exclude)
+        # This is processed after exclude so that include_community can override it
         if include_community is not None:
             if include_community:
-                # Ensure community is in the include list
+                # Ensure community is in the include list (even if it was excluded)
                 if "community" not in final_include:
                     final_include.append("community")
             else:
