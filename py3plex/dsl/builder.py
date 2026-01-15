@@ -1234,6 +1234,7 @@ class QueryBuilder:
         cache: bool = True,
         as_columns: bool = True,
         prefix: str = "",
+        include_community: Optional[bool] = None,
     ) -> Union["QueryBuilder", ExplainQuery]:
         """Attach explanations to results OR get execution plan.
 
@@ -1264,6 +1265,8 @@ class QueryBuilder:
             cache: Whether to cache neighbor lookups (default: True)
             as_columns: Store explanations as top-level columns in result (default: True)
             prefix: Optional prefix for explanation column names (default: "")
+            include_community: Shorthand to include/exclude community info (True to include, False to exclude).
+                             Overrides include/exclude parameters for "community" block.
 
         Returns:
             QueryBuilder (self) for chaining when in explanations mode
@@ -1291,6 +1294,14 @@ class QueryBuilder:
             >>> # df now has columns: id, layer, degree, betweenness,
             >>> #                      community_id, community_size, top_neighbors,
             >>> #                      layers_present, n_layers_present
+
+            >>> # With community info shorthand
+            >>> result = (
+            ...     Q.nodes()
+            ...      .compute("betweenness")
+            ...      .explain(neighbors_top=5, include_community=True)
+            ...      .execute(network)
+            ... )
         """
         # Check if this is execution plan mode (no arguments provided)
         has_any_arg = any(
@@ -1304,6 +1315,7 @@ class QueryBuilder:
                 not cache,  # cache defaults to True, so False means it was set
                 not as_columns,  # as_columns defaults to True, so False means it was set
                 prefix != "",  # prefix defaults to "", so non-empty means it was set
+                include_community is not None,  # New parameter
             ]
         )
 
@@ -1323,6 +1335,16 @@ class QueryBuilder:
             final_include = ["community", "top_neighbors", "layer_footprint"]
         else:
             final_include = list(include)
+
+        # Handle include_community shorthand
+        if include_community is not None:
+            if include_community:
+                # Ensure community is in the include list
+                if "community" not in final_include:
+                    final_include.append("community")
+            else:
+                # Ensure community is NOT in the include list
+                final_include = [b for b in final_include if b != "community"]
 
         # Apply exclusions
         if exclude:
