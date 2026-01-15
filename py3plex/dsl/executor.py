@@ -5447,8 +5447,11 @@ def execute_join(
     if progress:
         logger.info("  Executing left query...")
     
-    # Handle case where left is a QueryResult (pre-executed)
-    if hasattr(join_node.left, "items"):
+    # Check if left is a QueryResult or SelectStmt
+    # Import QueryResult here to avoid circular dependency
+    from .result import QueryResult as QR
+    
+    if isinstance(join_node.left, QR):
         # It's a QueryResult
         left_result = join_node.left
     else:
@@ -5460,8 +5463,8 @@ def execute_join(
     if progress:
         logger.info("  Executing right query...")
     
-    # Handle case where right is a QueryResult (pre-executed)
-    if hasattr(join_node.right, "items"):
+    # Check if right is a QueryResult or SelectStmt
+    if isinstance(join_node.right, QR):
         # It's a QueryResult
         right_result = join_node.right
     else:
@@ -5541,18 +5544,41 @@ def execute_join(
     
     # Apply post-join operations
     if post_where:
-        # Apply WHERE filter
-        # Convert condition to pandas filter
-        # For simplicity, use query string if possible
-        # TODO: Full condition evaluation
+        # Apply WHERE filter using pandas query
+        # Build filter expression from ConditionExpr
+        for atom in post_where.atoms:
+            if atom.comparison:
+                comp = atom.comparison
+                field = comp.left
+                op = comp.op
+                value = comp.right
+                
+                # Apply filter
+                if op == "=":
+                    joined_df = joined_df[joined_df[field] == value]
+                elif op == ">":
+                    joined_df = joined_df[joined_df[field] > value]
+                elif op == ">=":
+                    joined_df = joined_df[joined_df[field] >= value]
+                elif op == "<":
+                    joined_df = joined_df[joined_df[field] < value]
+                elif op == "<=":
+                    joined_df = joined_df[joined_df[field] <= value]
+                elif op == "!=":
+                    joined_df = joined_df[joined_df[field] != value]
+        
         if progress:
-            logger.info("  Applying post-join filters...")
+            logger.info(f"  Post-join filtering reduced to {len(joined_df)} rows")
     
     if post_compute:
-        # Compute additional metrics
-        # TODO: Execute computations on joined data
+        # Compute additional metrics on joined data
+        # Note: This is a simplified implementation
+        # Full implementation would require computing metrics on the network
         if progress:
             logger.info(f"  Computing {len(post_compute)} metrics on joined data...")
+        
+        # For now, skip actual computation - would need network context
+        # This would require refactoring to support post-join computation
     
     if post_order_by:
         # Sort results
@@ -5574,10 +5600,19 @@ def execute_join(
             logger.info(f"  Limited to {post_limit} rows")
     
     # Convert DataFrame back to QueryResult
-    items = joined_df.iloc[:, 0].tolist()  # First column as items
-    attributes = {}
+    # Use the first column as the primary identifier (id)
+    # If 'id' column exists, use it; otherwise use first column
+    if 'id' in joined_df.columns:
+        items = joined_df['id'].tolist()
+        # Get all columns except 'id' for attributes
+        attr_cols = [col for col in joined_df.columns if col != 'id']
+    else:
+        # Fallback: use first column
+        items = joined_df.iloc[:, 0].tolist()
+        attr_cols = joined_df.columns[1:].tolist()
     
-    for col in joined_df.columns[1:]:  # Skip first column (items)
+    attributes = {}
+    for col in attr_cols:
         attributes[col] = joined_df[col].tolist()
     
     # Build provenance
