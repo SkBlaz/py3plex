@@ -14,7 +14,7 @@ result = (
     S.closure()
     .semiring("min_plus")
     .from_layers(L["*"])
-    .k(5)
+    .method("auto")
     .execute(net)
 )
 
