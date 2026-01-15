@@ -48,7 +48,7 @@ def test_flagship_dsl_query_structure_with_uq():
         .compute("degree_centrality", "betweenness_centrality")
         .top_k(2, "betweenness_centrality__mean")  # Using __mean selector
         .end_grouping()
-        .sort(by="betweenness_centrality__mean", descending=True)
+        .order_by("betweenness_centrality__mean", desc=True)
         .limit(3)
         .explain(neighbors_top=5)  # Add explanations as in README
         .execute(net)
@@ -175,7 +175,7 @@ def test_uq_profiles_alternative():
 
 
 def test_selector_syntax_with_mean():
-    """Test that selector syntax (metric__mean) works in top_k and sort."""
+    """Test that selector syntax (metric__mean) works in top_k and order_by."""
     net = multinet.multi_layer_network(directed=False, verbose=False)
 
     edges = [
@@ -191,7 +191,7 @@ def test_selector_syntax_with_mean():
         Q.nodes()
         .uq(method="perturbation", n_samples=10, seed=42)
         .compute("degree")
-        .sort(by="degree__mean", descending=True)  # Sort by mean
+        .order_by("degree__mean", desc=True)  # Order by mean
         .limit(3)
         .execute(net)
     )
@@ -204,6 +204,47 @@ def test_selector_syntax_with_mean():
         # Should be sorted descending by degree mean
         degrees = df["degree"].values
         assert degrees[0] >= degrees[-1]
+
+
+def test_explain_include_community_parameter():
+    """Test the include_community parameter in explain()."""
+    net = multinet.multi_layer_network(directed=False, verbose=False)
+
+    edges = [
+        ["A", "L0", "B", "L0", 1.0],
+        ["B", "L0", "C", "L0", 1.0],
+        ["C", "L0", "A", "L0", 1.0],
+    ]
+    net.add_edges(edges, input_type="list")
+
+    # Assign a simple community partition
+    net.assign_partition({("A", "L0"): 0, ("B", "L0"): 0, ("C", "L0"): 1})
+
+    # Test with include_community=True
+    result = (
+        Q.nodes()
+        .compute("degree")
+        .explain(neighbors_top=3, include_community=True)
+        .execute(net)
+    )
+
+    df = result.to_pandas(expand_explanations=True)
+    assert len(df) > 0
+    # Community info should be present
+    assert "community_id" in df.columns or "community" in df.columns
+
+    # Test with include_community=False
+    result2 = (
+        Q.nodes()
+        .compute("degree")
+        .explain(neighbors_top=3, include_community=False)
+        .execute(net)
+    )
+
+    df2 = result2.to_pandas(expand_explanations=True)
+    assert len(df2) > 0
+    # Community info should NOT be present
+    assert "community_id" not in df2.columns and "community" not in df2.columns
 
 
 if __name__ == "__main__":

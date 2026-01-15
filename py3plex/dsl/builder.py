@@ -1336,7 +1336,11 @@ class QueryBuilder:
         else:
             final_include = list(include)
 
-        # Handle include_community shorthand
+        # Apply exclusions first
+        if exclude:
+            final_include = [b for b in final_include if b not in exclude]
+
+        # Handle include_community shorthand (overrides exclude)
         if include_community is not None:
             if include_community:
                 # Ensure community is in the include list
@@ -1345,10 +1349,6 @@ class QueryBuilder:
             else:
                 # Ensure community is NOT in the include list
                 final_include = [b for b in final_include if b != "community"]
-
-        # Apply exclusions
-        if exclude:
-            final_include = [b for b in final_include if b not in exclude]
 
         # Validate include list
         supported_blocks = {"community", "top_neighbors", "layer_footprint"}
