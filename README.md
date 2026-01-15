@@ -36,7 +36,6 @@ network = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
 master_regulators = (
     Q.communities(                           # Automated community detection (NEW!)
         mode="pareto",                       # Multi-objective Pareto selection
-        fast=False,                          # Full evaluation (not fast mode)
         uq=True,                             # Uncertainty quantification enabled
         uq_n_samples=30,                     # Robustness via 30 perturbed runs
         uq_method="seed",                    # Vary random seeds for stability
@@ -49,20 +48,20 @@ master_regulators = (
     .nodes()                                 # Switch to node-level analysis
     .node_type("gene")                       # Filter by node type
     .where(degree__gt=3)                     # Remove peripheral nodes
-    .compute("degree_centrality", "betweenness_centrality", "pagerank")
     .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)  # Quantify confidence
+    .compute("betweenness_centrality", "pagerank", "degree_centrality")
     .per_layer()                             # Group by layer
         .top_k(30, "betweenness_centrality__mean")  # Top 30 per layer by mean
     .end_grouping()
     .coverage(mode="at_least", k=2)          # Keep nodes that are hubs in ≥2 layers
     .mutate(                                 # Create derived influence score
         score=lambda row: (
-            0.5 * row.get("betweenness_centrality__mean", 0) +
-            0.3 * row.get("pagerank__mean", 0) +
-            0.2 * row.get("degree_centrality__mean", 0)
+            0.5 * row.get("betweenness_centrality__mean", 0.0) +
+            0.3 * row.get("pagerank__mean", 0.0) +
+            0.2 * row.get("degree_centrality__mean", 0.0)
         )
     )
-    .sort(by="score", descending=True)
+    .order_by("score", desc=True)
     .limit(20)                               # Final top 20 candidates
     .explain(neighbors_top=5)                # Enrich: community ID, top 5 partners, layers
     .execute(network)

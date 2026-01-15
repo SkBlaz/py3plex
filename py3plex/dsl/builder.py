@@ -1234,6 +1234,7 @@ class QueryBuilder:
         cache: bool = True,
         as_columns: bool = True,
         prefix: str = "",
+        include_community: Optional[bool] = None,
     ) -> Union["QueryBuilder", ExplainQuery]:
         """Attach explanations to results OR get execution plan.
 
@@ -1254,6 +1255,7 @@ class QueryBuilder:
                          If None and no other args, returns execution plan (mode 1).
             include: List of explanation blocks to compute. If None, uses defaults:
                     ["community", "top_neighbors", "layer_footprint"]
+                    Community info is included by default when available.
             exclude: List of explanation blocks to exclude from include list
             neighbors: Optional configuration for neighbor selection:
                       - "metric": "weight" or "degree" (default: "weight")
@@ -1264,6 +1266,9 @@ class QueryBuilder:
             cache: Whether to cache neighbor lookups (default: True)
             as_columns: Store explanations as top-level columns in result (default: True)
             prefix: Optional prefix for explanation column names (default: "")
+            include_community: Optional shorthand to explicitly exclude community info (use False).
+                             By default, community info is included automatically when available.
+                             Set to False to exclude it. Setting to True is redundant (default behavior).
 
         Returns:
             QueryBuilder (self) for chaining when in explanations mode
@@ -1279,6 +1284,7 @@ class QueryBuilder:
             >>> print(plan.steps)
 
             >>> # Explanations mode (with arguments)
+            >>> # Community info is included by default when available
             >>> result = (
             ...     Q.nodes()
             ...      .from_layers(L["social"])
@@ -1291,6 +1297,14 @@ class QueryBuilder:
             >>> # df now has columns: id, layer, degree, betweenness,
             >>> #                      community_id, community_size, top_neighbors,
             >>> #                      layers_present, n_layers_present
+
+            >>> # Explicitly exclude community info if not needed
+            >>> result = (
+            ...     Q.nodes()
+            ...      .compute("betweenness")
+            ...      .explain(neighbors_top=5, include_community=False)
+            ...      .execute(network)
+            ... )
         """
         # Check if this is execution plan mode (no arguments provided)
         has_any_arg = any(
@@ -1304,6 +1318,7 @@ class QueryBuilder:
                 not cache,  # cache defaults to True, so False means it was set
                 not as_columns,  # as_columns defaults to True, so False means it was set
                 prefix != "",  # prefix defaults to "", so non-empty means it was set
+                include_community is not None,  # New parameter
             ]
         )
 
@@ -1324,9 +1339,20 @@ class QueryBuilder:
         else:
             final_include = list(include)
 
-        # Apply exclusions
+        # Apply exclusions first
         if exclude:
             final_include = [b for b in final_include if b not in exclude]
+
+        # Handle include_community shorthand (takes precedence over exclude)
+        # This is processed after exclude so that include_community can override it
+        if include_community is not None:
+            if include_community:
+                # Ensure community is in the include list (even if it was excluded)
+                if "community" not in final_include:
+                    final_include.append("community")
+            else:
+                # Ensure community is NOT in the include list
+                final_include = [b for b in final_include if b != "community"]
 
         # Validate include list
         supported_blocks = {"community", "top_neighbors", "layer_footprint"}
