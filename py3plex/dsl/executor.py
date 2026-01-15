@@ -2818,6 +2818,7 @@ def _evaluate_special(
 
     elif special.kind == "interlayer":
         # For edges: check if source is in src_layer and target is in dst_layer
+        # If params is empty, check for any inter-layer edge (src_layer != dst_layer)
         src_layer = special.params.get("src")
         dst_layer = special.params.get("dst")
 
@@ -2825,7 +2826,12 @@ def _evaluate_special(
             source, target = item[0], item[1]
             if isinstance(source, tuple) and isinstance(target, tuple):
                 if len(source) >= 2 and len(target) >= 2:
-                    return source[1] == src_layer and target[1] == dst_layer
+                    if src_layer is None and dst_layer is None:
+                        # interlayer=True: any inter-layer edge
+                        return source[1] != target[1]
+                    else:
+                        # interlayer=(src, dst): specific layer pair
+                        return source[1] == src_layer and target[1] == dst_layer
         return False
 
     elif special.kind == "temporal_range":
