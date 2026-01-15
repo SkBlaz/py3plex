@@ -155,7 +155,16 @@ def build_condition_from_kwargs(kwargs: Dict[str, Any]) -> ConditionExpr:
                 )
 
         elif key == "interlayer":
-            if isinstance(value, tuple) and len(value) == 2:
+            if value is True:
+                # interlayer=True means any inter-layer edge
+                atoms.append(
+                    ConditionAtom(
+                        special=SpecialPredicate(
+                            kind="interlayer", params={}
+                        )
+                    )
+                )
+            elif isinstance(value, tuple) and len(value) == 2:
                 src, dst = value
                 atoms.append(
                     ConditionAtom(
@@ -166,7 +175,7 @@ def build_condition_from_kwargs(kwargs: Dict[str, Any]) -> ConditionExpr:
                 )
             else:
                 raise ValueError(
-                    "interlayer requires a tuple of (src_layer, dst_layer)"
+                    "interlayer requires True or a tuple of (src_layer, dst_layer)"
                 )
 
         else:
@@ -1490,6 +1499,30 @@ class QueryBuilder:
             ...   .end_grouping()
             ...   .coverage(mode="all"))
         """
+        return self
+
+    def summarise(self, **aggs: str) -> "QueryBuilder":
+        """Aggregate grouped results using summary expressions.
+
+        This method is used with grouping (e.g., per_layer(), per_layer_pair())
+        to compute aggregate statistics per group.
+
+        Args:
+            **aggs: Named aggregation expressions:
+                - count="n" - Count of items in group
+                - mean_w="mean(weight)" - Mean of weight attribute
+                - sum_w="sum(weight)" - Sum of weight attribute
+                - n_layers="n_unique(layer)" - Count of unique layer values
+
+        Returns:
+            Self for chaining
+
+        Example:
+            >>> Q.edges().per_layer_pair().summarise(count="n", mean_w="mean(weight)").end_grouping()
+        """
+        if self._select.summarize_aggs is None:
+            self._select.summarize_aggs = {}
+        self._select.summarize_aggs.update(aggs)
         return self
 
     def coverage(
