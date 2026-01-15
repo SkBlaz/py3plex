@@ -567,7 +567,12 @@ class QueryPlanner:
             
         Returns:
             Tuple of (reordered stages, rewrite summary)
+            
+        Raises:
+            DslExecutionError: If dependencies cannot be satisfied
         """
+        from .errors import DslExecutionError
+        
         rewrite_summary = []
         
         # Separate stages by type
@@ -591,10 +596,12 @@ class QueryPlanner:
         
         # Build optimized order
         optimized = []
+        computed_fields = set(available_fields)
         
         # 1. Always start with GetItems
         if get_items:
             optimized.append(get_items)
+            computed_fields.update(get_items.provides_fields)
         
         # 2. Push layer filtering early
         if filter_layers:
@@ -605,13 +612,35 @@ class QueryPlanner:
         if filter_where:
             # Check if all referenced fields are available without compute
             refs = filter_where.requires_fields
-            computed_refs = refs - available_fields
+            computed_refs = refs - computed_fields
             
             if not computed_refs:
                 # All fields available - filter early
                 optimized.append(filter_where)
                 rewrite_summary.append("Moved WHERE filter before compute")
                 filter_where = None  # Don't add again later
+            elif computes:
+                # Some fields need computation - validate they will be provided
+                compute_provides = set()
+                for compute in computes:
+                    compute_provides.update(compute.provides_fields)
+                
+                missing = computed_refs - compute_provides
+                if missing:
+                    # Fields are referenced but never computed
+                    missing_list = sorted(missing)
+                    raise DslExecutionError(
+                        f"Field(s) {missing_list} referenced in WHERE clause but not computed. "
+                        f"Add .compute({', '.join(repr(m) for m in missing_list)}) before the WHERE clause, "
+                        f"or use .compute(...) earlier in the query."
+                    )
+            else:
+                # No compute stages but WHERE needs computed fields
+                missing_list = sorted(computed_refs)
+                raise DslExecutionError(
+                    f"Field(s) {missing_list} referenced in WHERE clause but not computed. "
+                    f"Add .compute({', '.join(repr(m) for m in missing_list)}) before the WHERE clause."
+                )
         
         # 4. Add compute stage (delayed as much as possible)
         if computes:
@@ -628,12 +657,39 @@ class QueryPlanner:
                             f"{len(needed_measures)} measures (compute pushdown)"
                         )
             optimized.extend(computes)
+            for compute in computes:
+                computed_fields.update(compute.provides_fields)
         
         # 5. Add WHERE filter if it needs computed fields
         if filter_where:
             optimized.append(filter_where)
         
-        # 6. Add remaining stages in dependency order
+        # 6. Validate remaining stages have required fields
+        for stage in others:
+            missing = stage.requires_fields - computed_fields
+            if missing:
+                # Try to provide helpful error message
+                stage_name = stage.name or stage.stage_type.value
+                missing_list = sorted(missing)
+                
+                # Check if missing fields look like measures
+                known_measures = ["degree", "betweenness_centrality", "closeness_centrality", 
+                                 "eigenvector_centrality", "pagerank"]
+                likely_measures = [m for m in missing_list if m in known_measures]
+                
+                if likely_measures:
+                    raise DslExecutionError(
+                        f"Field(s) {likely_measures} required by {stage_name} but not computed. "
+                        f"Add .compute({', '.join(repr(m) for m in likely_measures)}) before "
+                        f"the operation that requires them."
+                    )
+                else:
+                    raise DslExecutionError(
+                        f"Field(s) {missing_list} required by {stage_name} are not available. "
+                        f"Check that all required fields are computed or available as intrinsic fields."
+                    )
+        
+        # 7. Add remaining stages in dependency order
         optimized.extend(others)
         
         return optimized, rewrite_summary

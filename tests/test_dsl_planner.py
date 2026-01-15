@@ -517,5 +517,39 @@ def test_planner_compute_policy_enum():
     assert ComputePolicy.ALL.value == "all"
 
 
+def test_error_missing_computed_field_in_where(small_network):
+    """Test that planner raises actionable error for missing computed field in WHERE."""
+    from py3plex.dsl.errors import DslExecutionError
+    
+    # Query references betweenness in WHERE but doesn't compute it
+    q = Q.nodes().where(betweenness_centrality__gt=0.1)  # No .compute("betweenness_centrality")
+    
+    # Planning should fail with helpful error
+    with pytest.raises(DslExecutionError) as exc_info:
+        plan_query(q.to_ast(), small_network)
+    
+    # Error should mention the field and suggest compute
+    error_msg = str(exc_info.value)
+    assert "betweenness" in error_msg.lower()
+    assert "compute" in error_msg.lower()
+
+
+def test_error_missing_computed_field_in_order_by(small_network):
+    """Test that planner raises actionable error for missing computed field in ORDER BY."""
+    from py3plex.dsl.errors import DslExecutionError
+    
+    # Query orders by betweenness but doesn't compute it
+    q = Q.nodes().order_by("betweenness_centrality")  # No .compute()
+    
+    # Planning should fail with helpful error
+    with pytest.raises(DslExecutionError) as exc_info:
+        plan_query(q.to_ast(), small_network)
+    
+    # Error should mention the field and suggest compute
+    error_msg = str(exc_info.value)
+    assert "betweenness" in error_msg.lower()
+    assert "compute" in error_msg.lower()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
