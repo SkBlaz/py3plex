@@ -76,8 +76,8 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jan 14, 2026}
-\release{1.1.1}
+\date{Jan 15, 2026}
+\release{1.1.2}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
 \renewcommand{\releasename}{Release}
@@ -36931,7 +36931,7 @@ Self for chaining
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{CommunityQueryBuilder}}}
-{\sphinxparam{\DUrole{n}{autocompute}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{partition\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}default\textquotesingle{}}}}
+{\sphinxparam{\DUrole{n}{autocompute}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{partition\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}default\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{mode}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{fast}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uq}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uq\_n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uq\_method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_attrs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -37217,6 +37217,45 @@ NodeQueryBuilder for members
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Get nodes in large communities}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{communities}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{size\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{)}\PYG{o}{.}\PYG{n}{members}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{nodes() (py3plex.dsl.CommunityQueryBuilder method)@\spxentry{nodes()}\spxextra{py3plex.dsl.CommunityQueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.CommunityQueryBuilder.nodes}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{nodes}}}
+{}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Trigger community detection and return a node query builder.
+
+\sphinxAtStartPar
+If auto\sphinxhyphen{}detection mode is configured (via mode parameter), this method
+will run auto\_select\_community, assign the results to the network,
+and return a QueryBuilder for nodes with community attributes.
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+QueryBuilder for nodes with community attributes
+
+\end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Auto\PYGZhy{}detect communities and query nodes}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+\PYG{g+gp}{... }    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{communities}\PYG{p}{(}\PYG{n}{mode}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pareto}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{fast}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{uq}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}
+\PYG{g+gp}{... }                  \PYG{n}{write\PYGZus{}attrs}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{community\PYGZus{}id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{community\PYGZus{}id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{node\PYGZus{}type}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{gene}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{)}
+\PYG{g+gp}{... }     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{g+gp}{... }\PYG{p}{)}
 \end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
@@ -45748,7 +45787,7 @@ Query factory for creating QueryBuilder instances.
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{static\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{communities}}}
-{\sphinxparam{\DUrole{n}{autocompute}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{partition}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}default\textquotesingle{}}}}
+{\sphinxparam{\DUrole{n}{autocompute}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{partition}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}default\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{mode}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{fast}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uq}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uq\_n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uq\_method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_attrs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.CommunityQueryBuilder}]{\sphinxcrossref{CommunityQueryBuilder}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -45762,6 +45801,38 @@ Create a query builder for communities.
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{partition}} \textendash{} Name of the partition to query (default: “default”)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{mode}} \textendash{} Auto\sphinxhyphen{}detection mode \sphinxhyphen{} “pareto” or “wins” (if provided, enables auto\sphinxhyphen{}detection)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{fast}} \textendash{} Use fast mode with smaller grids/samples (default: True)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{uq}} \textendash{} Enable uncertainty quantification (default: False)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{uq\_n\_samples}} \textendash{} Number of UQ samples (default: 10)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{uq\_method}} \textendash{} UQ method \sphinxhyphen{} “seed”, “perturbation”, or “bootstrap” (default: “seed”)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{seed}} \textendash{} Master random seed for reproducibility
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_attrs}} \textendash{} Dict mapping attribute names to write (e.g., \{“community\_id”: “community\_id”\})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{**kwargs}} \textendash{} Additional parameters passed to auto\_select\_community
 
 \end{itemize}
 
@@ -45785,6 +45856,11 @@ CommunityQueryBuilder for communities
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Get members of large communities}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{communities}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{size\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{)}\PYG{o}{.}\PYG{n}{members}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Auto\PYGZhy{}detection with community assignment}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{communities}\PYG{p}{(}\PYG{n}{mode}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pareto}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{fast}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{uq}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
@@ -48868,6 +48944,44 @@ Self for chaining
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{sort}\PYG{p}{(}\PYG{n}{by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{descending}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{summarise() (py3plex.dsl.QueryBuilder method)@\spxentry{summarise()}\spxextra{py3plex.dsl.QueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.summarise}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{summarise}}}
+{\sphinxparam{\DUrole{o}{**}\DUrole{n}{aggs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Aggregate grouped results using summary expressions.
+
+\sphinxAtStartPar
+This method is used with grouping (e.g., per\_layer(), per\_layer\_pair())
+to compute aggregate statistics per group.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{**aggs}} \textendash{} Named aggregation expressions:
+\sphinxhyphen{} count=”n” \sphinxhyphen{} Count of items in group
+\sphinxhyphen{} mean\_w=”mean(weight)” \sphinxhyphen{} Mean of weight attribute
+\sphinxhyphen{} sum\_w=”sum(weight)” \sphinxhyphen{} Sum of weight attribute
+\sphinxhyphen{} n\_layers=”n\_unique(layer)” \sphinxhyphen{} Count of unique layer values
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Self for chaining
+
+\end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{per\PYGZus{}layer\PYGZus{}pair}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{summarise}\PYG{p}{(}\PYG{n}{count}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{mean\PYGZus{}w}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mean(weight)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{end\PYGZus{}grouping}\PYG{p}{(}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
