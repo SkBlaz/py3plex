@@ -253,11 +253,15 @@ def execute_ast(
     planned_query = None
     if planner_config or explain_plan:
         from .planner import plan_query
+        from .errors import DslError
         
         try:
             planned_query = plan_query(query, network, params, planner_config)
+        except DslError:
+            # Re-raise DSL-specific errors (these are actionable user errors)
+            raise
         except Exception as e:
-            # If planning fails, log warning and continue without plan
+            # If planning fails due to unexpected error, log warning and continue
             logger.warning(f"Query planning failed: {e}. Continuing without planner.")
             planned_query = None
 

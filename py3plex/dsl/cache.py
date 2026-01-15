@@ -87,6 +87,12 @@ class CacheBackend(ABC):
         pass
 
 
+# Size estimation constants for cache entries
+_SIZE_ESTIMATE_DICT_ENTRY = 100  # bytes per dict entry
+_SIZE_ESTIMATE_LIST_ITEM = 50    # bytes per list item
+_SIZE_ESTIMATE_DEFAULT = 1000    # bytes for unknown types
+
+
 class InMemoryCacheBackend(CacheBackend):
     """In-memory cache backend with LRU eviction.
     
@@ -150,17 +156,15 @@ class InMemoryCacheBackend(CacheBackend):
         This is a rough estimate based on type.
         """
         if isinstance(value, dict):
-            # Assume each entry is ~100 bytes
-            return len(value) * 100
+            return len(value) * _SIZE_ESTIMATE_DICT_ENTRY
         elif isinstance(value, (list, tuple)):
-            return len(value) * 50
+            return len(value) * _SIZE_ESTIMATE_LIST_ITEM
         elif isinstance(value, str):
             return len(value)
         elif isinstance(value, (int, float)):
             return 8
         else:
-            # Default estimate
-            return 1000
+            return _SIZE_ESTIMATE_DEFAULT
     
     def _evict_if_needed(self) -> None:
         """Evict entries if limits are exceeded."""

@@ -13,12 +13,7 @@ import hashlib
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-
-try:
-    from typing import TYPE_CHECKING
-except ImportError:
-    TYPE_CHECKING = False
+from typing import Any, Dict, List, Optional, Set, Tuple, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .ast import Query, SelectStmt
@@ -138,12 +133,15 @@ class CoverageStage(Stage):
 @dataclass
 class ComputeStage(Stage):
     """Stage for computing measures."""
+    # Base cost for compute stage - actual cost varies by measure
+    BASE_COST = 50
+    
     def __init__(self, measures: List[str]):
         super().__init__(
             stage_type=StageType.COMPUTE,
             name="compute",
             provides_fields=set(measures),
-            cost_estimate=50,  # Expensive
+            cost_estimate=self.BASE_COST,  # Could be refined based on measures
             params={"measures": measures}
         )
 
@@ -488,9 +486,15 @@ class QueryPlanner:
             
         Returns:
             Set of field names
+            
+        Note:
+            This is a simplified implementation. Full implementation would
+            parse aggregation expressions to extract field references.
+            For now, assumes aggregations may reference any available fields.
         """
-        # This is a simplified implementation
-        # In practice, would parse aggregation expressions
+        # Conservative approach: return empty set since we can't parse complex expressions yet
+        # This means aggregations won't trigger dependency errors, but also won't
+        # benefit from compute pushdown optimization
         return set()
     
     def _get_intrinsic_fields(self, target: str) -> Set[str]:
@@ -629,11 +633,32 @@ class QueryPlanner:
                 if missing:
                     # Fields are referenced but never computed
                     missing_list = sorted(missing)
-                    raise DslExecutionError(
-                        f"Field(s) {missing_list} referenced in WHERE clause but not computed. "
-                        f"Add .compute({', '.join(repr(m) for m in missing_list)}) before the WHERE clause, "
-                        f"or use .compute(...) earlier in the query."
-                    )
+                    
+                    # Check if missing fields look like known measures
+                    # Get known measures from registry if available
+                    try:
+                        from .registry import measure_registry
+                        known_measures = list(measure_registry.keys())
+                    except Exception:
+                        # Fallback to common measures if registry unavailable
+                        known_measures = ["degree", "betweenness_centrality", 
+                                         "closeness_centrality", "eigenvector_centrality", 
+                                         "pagerank"]
+                    
+                    likely_measures = [m for m in missing_list if m in known_measures]
+                    
+                    if likely_measures:
+                        raise DslExecutionError(
+                            f"Field(s) {likely_measures} referenced in WHERE clause but not computed. "
+                            f"Add .compute({', '.join(repr(m) for m in likely_measures)}) before the WHERE clause, "
+                            f"or use .compute(...) earlier in the query."
+                        )
+                    else:
+                        raise DslExecutionError(
+                            f"Field(s) {missing_list} referenced in WHERE clause but not computed. "
+                            f"Add .compute({', '.join(repr(m) for m in missing_list)}) before the WHERE clause, "
+                            f"or use .compute(...) earlier in the query."
+                        )
             else:
                 # No compute stages but WHERE needs computed fields
                 missing_list = sorted(computed_refs)
@@ -672,9 +697,16 @@ class QueryPlanner:
                 stage_name = stage.name or stage.stage_type.value
                 missing_list = sorted(missing)
                 
-                # Check if missing fields look like measures
-                known_measures = ["degree", "betweenness_centrality", "closeness_centrality", 
-                                 "eigenvector_centrality", "pagerank"]
+                # Check if missing fields look like known measures
+                try:
+                    from .registry import measure_registry
+                    known_measures = list(measure_registry.keys())
+                except Exception:
+                    # Fallback to common measures if registry unavailable
+                    known_measures = ["degree", "betweenness_centrality", 
+                                     "closeness_centrality", "eigenvector_centrality", 
+                                     "pagerank"]
+                
                 likely_measures = [m for m in missing_list if m in known_measures]
                 
                 if likely_measures:

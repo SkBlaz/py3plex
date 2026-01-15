@@ -321,7 +321,7 @@ def test_explain_plan_method(small_network):
     
     # Verify flag is set
     assert hasattr(q, "_explain_plan_flag")
-    assert q._explain_plan_flag == True
+    assert q._explain_plan_flag is True
 
 
 def test_planner_config_method(small_network):
