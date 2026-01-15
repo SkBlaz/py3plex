@@ -104,7 +104,7 @@ def main():
         )
         .order_by("score", desc=True)
         .limit(20)  # Top 20 candidates
-        .explain(neighbors_top=5, include_community=True)  # Enrich with top 5 neighbors
+        .explain(neighbors_top=5)  # Enrich with top 5 neighbors and community info
         .execute(net)
     )
 

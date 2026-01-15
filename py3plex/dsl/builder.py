@@ -1255,6 +1255,7 @@ class QueryBuilder:
                          If None and no other args, returns execution plan (mode 1).
             include: List of explanation blocks to compute. If None, uses defaults:
                     ["community", "top_neighbors", "layer_footprint"]
+                    Community info is included by default when available.
             exclude: List of explanation blocks to exclude from include list
             neighbors: Optional configuration for neighbor selection:
                       - "metric": "weight" or "degree" (default: "weight")
@@ -1265,8 +1266,9 @@ class QueryBuilder:
             cache: Whether to cache neighbor lookups (default: True)
             as_columns: Store explanations as top-level columns in result (default: True)
             prefix: Optional prefix for explanation column names (default: "")
-            include_community: Shorthand to include/exclude community info (True to include, False to exclude).
-                             Overrides include/exclude parameters for "community" block.
+            include_community: Optional shorthand to explicitly exclude community info (use False).
+                             By default, community info is included automatically when available.
+                             Set to False to exclude it. Setting to True is redundant (default behavior).
 
         Returns:
             QueryBuilder (self) for chaining when in explanations mode
@@ -1282,6 +1284,7 @@ class QueryBuilder:
             >>> print(plan.steps)
 
             >>> # Explanations mode (with arguments)
+            >>> # Community info is included by default when available
             >>> result = (
             ...     Q.nodes()
             ...      .from_layers(L["social"])
@@ -1295,11 +1298,11 @@ class QueryBuilder:
             >>> #                      community_id, community_size, top_neighbors,
             >>> #                      layers_present, n_layers_present
 
-            >>> # With community info shorthand
+            >>> # Explicitly exclude community info if not needed
             >>> result = (
             ...     Q.nodes()
             ...      .compute("betweenness")
-            ...      .explain(neighbors_top=5, include_community=True)
+            ...      .explain(neighbors_top=5, include_community=False)
             ...      .execute(network)
             ... )
         """

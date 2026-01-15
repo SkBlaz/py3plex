@@ -220,20 +220,20 @@ def test_explain_include_community_parameter():
     # Assign a simple community partition
     net.assign_partition({("A", "L0"): 0, ("B", "L0"): 0, ("C", "L0"): 1})
 
-    # Test with include_community=True
+    # Test default behavior (community info included by default)
     result = (
         Q.nodes()
         .compute("degree")
-        .explain(neighbors_top=3, include_community=True)
+        .explain(neighbors_top=3)
         .execute(net)
     )
 
     df = result.to_pandas(expand_explanations=True)
     assert len(df) > 0
-    # Community info should be present
+    # Community info should be present by default
     assert "community_id" in df.columns or "community" in df.columns
 
-    # Test with include_community=False
+    # Test with include_community=False (explicitly exclude)
     result2 = (
         Q.nodes()
         .compute("degree")
@@ -243,7 +243,7 @@ def test_explain_include_community_parameter():
 
     df2 = result2.to_pandas(expand_explanations=True)
     assert len(df2) > 0
-    # Community info should NOT be present
+    # Community info should NOT be present when explicitly excluded
     assert "community_id" not in df2.columns and "community" not in df2.columns
 
 

@@ -63,7 +63,7 @@ master_regulators = (
     )
     .order_by("score", desc=True)
     .limit(20)                               # Final top 20 candidates
-    .explain(neighbors_top=5, include_community=True)  # Enrich: community ID, top 5 partners, layers
+    .explain(neighbors_top=5)                # Enrich: community ID, top 5 partners, layers
     .execute(network)
 )
 
