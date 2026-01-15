@@ -122,6 +122,88 @@ CENTRALITY_ALIASES = {
 }
 
 
+def _log_query_summary(select: SelectStmt, logger: logging.Logger) -> None:
+    """Log a summary of the query pipeline to be executed.
+    
+    Args:
+        select: SELECT statement
+        logger: Logger instance
+    """
+    steps = []
+    
+    # Target
+    steps.append(f"Target: {select.target.value}")
+    
+    # Layers
+    if select.layer_set is not None:
+        steps.append(f"Layers: {len(select.layer_set.layers) if hasattr(select.layer_set, 'layers') else 'specified'}")
+    elif select.layer_expr:
+        steps.append("Layers: filtered")
+    
+    # Filters
+    if select.where:
+        steps.append("Filters: WHERE conditions")
+    
+    # Compute
+    if select.compute:
+        compute_names = [c.name for c in select.compute]
+        uq_enabled = any(c.uncertainty for c in select.compute)
+        uq_marker = " (with UQ)" if uq_enabled else ""
+        steps.append(f"Compute: {len(select.compute)} measure(s){uq_marker} [{', '.join(compute_names[:3])}{'...' if len(compute_names) > 3 else ''}]")
+    
+    # Query-level UQ
+    if hasattr(select, "uq_config") and select.uq_config and select.uq_config.method:
+        method = select.uq_config.method
+        n_samples = select.uq_config.n_samples or 50
+        steps.append(f"UQ: {method} (n={n_samples})")
+    
+    # Grouping
+    if select.group_by:
+        grouping_desc = ", ".join(select.group_by)
+        steps.append(f"Grouping: by {grouping_desc}")
+        if select.limit_per_group:
+            steps.append(f"  Top-k: {select.limit_per_group} per group")
+    
+    # Coverage
+    if select.coverage_mode:
+        coverage_desc = select.coverage_mode
+        if select.coverage_k:
+            coverage_desc += f" (k={select.coverage_k})"
+        elif select.coverage_p:
+            coverage_desc += f" (p={select.coverage_p})"
+        steps.append(f"Coverage: {coverage_desc}")
+    
+    # Post-processing
+    post_ops = []
+    if select.mutate_specs:
+        post_ops.append(f"mutate({len(select.mutate_specs)})")
+    if select.aggregate_specs:
+        post_ops.append(f"aggregate({len(select.aggregate_specs)})")
+    if select.summarize_aggs:
+        post_ops.append(f"summarize({len(select.summarize_aggs)})")
+    if select.rank_specs:
+        post_ops.append(f"rank({len(select.rank_specs)})")
+    if post_ops:
+        steps.append(f"Post-processing: {', '.join(post_ops)}")
+    
+    # Ordering
+    if select.order_by:
+        order_keys = [o.key for o in select.order_by]
+        steps.append(f"Order: {', '.join(order_keys[:2])}{'...' if len(order_keys) > 2 else ''}")
+    
+    # Limit
+    if select.limit:
+        steps.append(f"Limit: {select.limit}")
+    
+    # Explain
+    if select.explain_spec:
+        steps.append("Explain: enrich with explanations")
+    
+    logger.info("Query pipeline:")
+    for step in steps:
+        logger.info(f"  • {step}")
+
+
 def execute_ast(
     network: Any,
     query: Query,
@@ -238,6 +320,10 @@ def execute_ast(
     if progress:
         logger.info("Step 1: Binding parameters")
     bound_query = _bind_parameters(query, params)
+    
+    if progress:
+        # Show query pipeline summary after binding
+        _log_query_summary(bound_query.select, logger)
 
     if use_new_provenance:
         bind_time = (time.monotonic() - stage_start) * 1000
@@ -1496,8 +1582,13 @@ def _execute_select(
 
             for i, compute_item in enumerate(select.compute):
                 if progress:
+                    uq_info = ""
+                    if compute_item.uncertainty:
+                        method = compute_item.method or "perturbation"
+                        n_samples = compute_item.n_samples or 50
+                        uq_info = f" with UQ ({method}, n={n_samples})"
                     logger.info(
-                        f"  Computing {compute_item.name} ({i+1}/{len(select.compute)})"
+                        f"  Computing {compute_item.name} ({i+1}/{len(select.compute)}){uq_info}"
                     )
                 try:
                     # First, try to resolve from operator registry
@@ -1559,8 +1650,11 @@ def _execute_select(
             # Edge measures - new implementation
             for i, compute_item in enumerate(select.compute):
                 if progress:
+                    uq_info = ""
+                    if compute_item.uncertainty:
+                        uq_info = " with UQ (not yet supported for edges)"
                     logger.info(
-                        f"  Computing {compute_item.name} ({i+1}/{len(select.compute)})"
+                        f"  Computing {compute_item.name} ({i+1}/{len(select.compute)}){uq_info}"
                     )
                 try:
                     # Check if this is an edge-specific measure
@@ -1600,6 +1694,7 @@ def _execute_select(
             network=network,
             G=G,
             attributes=attributes,
+            progress=progress,
         )
         if progress and grouping_metadata is not None:
             num_groups = len(grouping_metadata.get("groups", []))
@@ -1651,6 +1746,7 @@ def _execute_select(
             select=select,
             network=network,
             G=G,
+            progress=progress,
         )
     _record_timing("group_aggregate", (time.monotonic() - stage_start) * 1000)
 
@@ -3129,6 +3225,7 @@ def _apply_grouping_and_coverage(
     network: Any,
     G: nx.Graph,
     attributes: Dict[str, Dict],
+    progress: bool = False,
 ) -> Tuple[List[Any], Optional[Dict[str, Any]]]:
     """Apply grouping, per-group operations, and coverage filtering.
 
@@ -3144,6 +3241,7 @@ def _apply_grouping_and_coverage(
         network: Multilayer network
         G: Core network graph
         attributes: Computed attributes dict
+        progress: If True, log progress messages
 
     Returns:
         Tuple of (filtered items, grouping_metadata)
@@ -3152,6 +3250,7 @@ def _apply_grouping_and_coverage(
     Raises:
         DslExecutionError: If configuration is invalid
     """
+    logger = logging.getLogger(__name__)
     # Validate grouping is set up when needed
     if not select.group_by:
         # Check for coverage specifically to provide better error
@@ -3193,26 +3292,42 @@ def _apply_grouping_and_coverage(
             )
 
     # Build groups
+    if progress:
+        logger.info(f"  Grouping {len(items)} items by {select.group_by}")
     groups: Dict[Any, List[Any]] = {}
     for item in items:
         group_key = _get_group_key(item, select, network, G)
         if group_key not in groups:
             groups[group_key] = []
         groups[group_key].append(item)
+    
+    if progress:
+        logger.info(f"  Created {len(groups)} groups")
 
     # Per-group ordering
     if select.order_by:
+        if progress:
+            logger.info(f"  Applying per-group ORDER BY")
         for key in groups:
             groups[key] = _apply_ordering(groups[key], select.order_by, attributes)
 
     # Per-group top-k
     if select.limit_per_group is not None:
         k = select.limit_per_group
+        if progress:
+            logger.info(f"  Applying per-group top-k (k={k})")
         for key in groups:
             groups[key] = groups[key][:k]
 
     # Coverage filtering
     if select.coverage_mode:
+        if progress:
+            mode_desc = select.coverage_mode
+            if select.coverage_k is not None:
+                mode_desc += f" k={select.coverage_k}"
+            elif select.coverage_p is not None:
+                mode_desc += f" p={select.coverage_p}"
+            logger.info(f"  Applying coverage filter (mode={mode_desc})")
         # Build coverage map: identity -> set of groups it appears in
         coverage_map: Dict[Any, Set[Any]] = {}
         for group_key, group_items in groups.items():
@@ -3261,11 +3376,17 @@ def _apply_grouping_and_coverage(
                 if identity in allowed_ids:
                     filtered_group.append(item)
             groups[group_key] = filtered_group
+        
+        if progress:
+            logger.info(f"  Coverage filter kept {len(allowed_ids)} unique items across groups")
 
     # Flatten groups back to a single list (ordered by group key for determinism)
     new_items = []
     for key in sorted(groups.keys(), key=lambda x: str(x)):
         new_items.extend(groups[key])
+    
+    if progress:
+        logger.info(f"  Flattened to {len(new_items)} items after grouping operations")
 
     # Build grouping metadata
     grouping_kind = "custom"
@@ -3881,6 +4002,7 @@ def _apply_post_processing(
     select: SelectStmt,
     network: Any,
     G: nx.Graph,
+    progress: bool = False,
 ) -> Tuple[List[Any], Dict[str, Dict]]:
     """Apply post-processing operations to query results.
 
@@ -3903,44 +4025,65 @@ def _apply_post_processing(
         select: SELECT statement with post-processing specs
         network: Multilayer network
         G: Core network graph
+        progress: If True, log progress messages
 
     Returns:
         Tuple of (processed_items, processed_attributes)
     """
+    logger = logging.getLogger(__name__)
+    
     # 0. Apply aggregate (more flexible aggregation with lambda support)
     if select.aggregate_specs:
+        if progress:
+            logger.info(f"    Applying aggregate on {len(select.aggregate_specs)} column(s)")
         items, attributes = _apply_aggregate(items, attributes, select, network, G)
 
     # 1. Apply summarize (aggregation over groups)
     if select.summarize_aggs:
+        if progress:
+            logger.info(f"    Applying summarize with {len(select.summarize_aggs)} aggregation(s)")
         items, attributes = _apply_summarize(items, attributes, select, network, G)
 
     # 2. Apply mutate (create or transform columns row-by-row)
     if select.mutate_specs:
+        if progress:
+            logger.info(f"    Applying mutate on {len(select.mutate_specs)} column(s)")
         attributes = _apply_mutate(items, attributes, select, network, G)
 
     # 3. Apply rank_by (add rank columns)
     if select.rank_specs:
+        if progress:
+            logger.info(f"    Applying rank_by for {len(select.rank_specs)} column(s)")
         attributes = _apply_rank_by(items, attributes, select, network, G)
 
     # 4. Apply zscore (add z-score columns)
     if select.zscore_attrs:
+        if progress:
+            logger.info(f"    Applying zscore for {len(select.zscore_attrs)} column(s)")
         attributes = _apply_zscore(items, attributes, select, network, G)
 
     # 5. Apply distinct (deduplicate rows)
     if select.distinct_cols is not None:
+        if progress:
+            logger.info(f"    Applying distinct on {len(select.distinct_cols) if select.distinct_cols else 'all'} column(s)")
         items = _apply_distinct(items, attributes, select)
 
     # 6. Apply rename (rename columns - must be before select/drop)
     if select.rename_map:
+        if progress:
+            logger.info(f"    Renaming {len(select.rename_map)} column(s)")
         attributes = _apply_rename(attributes, select.rename_map)
 
     # 7. Apply select (filter columns)
     if select.select_cols:
+        if progress:
+            logger.info(f"    Selecting {len(select.select_cols)} column(s)")
         attributes = _apply_select(attributes, select.select_cols)
 
     # 8. Apply drop (remove columns)
     if select.drop_cols:
+        if progress:
+            logger.info(f"    Dropping {len(select.drop_cols)} column(s)")
         attributes = _apply_drop(attributes, select.drop_cols)
 
     return items, attributes
