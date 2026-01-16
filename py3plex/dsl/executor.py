@@ -230,6 +230,8 @@ def execute_ast(
     query: Query,
     params: Optional[Dict[str, Any]] = None,
     progress: bool = True,
+    explain_plan: bool = False,
+    planner_config: Optional[Dict[str, Any]] = None,
 ) -> Union[QueryResult, ExecutionPlan]:
     """Execute an AST query on a multilayer network.
 
@@ -238,12 +240,30 @@ def execute_ast(
         query: Query AST
         params: Parameter bindings
         progress: If True, log progress messages during query execution (default: True)
+        explain_plan: If True, populate result.meta["plan"] with execution plan
+        planner_config: Optional planner configuration dict
 
     Returns:
         QueryResult or ExecutionPlan (if explain=True)
     """
     params = params or {}
     logger = logging.getLogger(__name__)
+    
+    # Create plan if planner is enabled
+    planned_query = None
+    if planner_config or explain_plan:
+        from .planner import plan_query
+        from .errors import DslError
+        
+        try:
+            planned_query = plan_query(query, network, params, planner_config)
+        except DslError:
+            # Re-raise DSL-specific errors (these are actionable user errors)
+            raise
+        except Exception as e:
+            # If planning fails due to unexpected error, log warning and continue
+            logger.warning(f"Query planning failed: {e}. Continuing without planner.")
+            planned_query = None
 
     # Check for provenance configuration in query
     provenance_config = getattr(query.select, "provenance_config", None)
@@ -421,7 +441,19 @@ def execute_ast(
         )
 
         # Finalize and attach provenance
-        result.meta["provenance"] = provenance_builder.build()
+        prov_dict = provenance_builder.build()
+        
+        # Add plan metadata if planner was used
+        if planned_query:
+            prov_dict["query"]["plan_hash"] = planned_query.plan_hash
+            prov_dict["backend"]["cache"] = {}  # Will be populated during execution
+            prov_dict["performance"]["plan_ms"] = planned_query.plan_meta.get("plan_time_ms", 0)
+            
+            # Add plan to result metadata if explain_plan is True
+            if explain_plan:
+                result.meta["plan"] = planned_query.to_dict()
+        
+        result.meta["provenance"] = prov_dict
     # Step 6: Handle sensitivity analysis if requested
     if bound_query.select.sensitivity_spec is not None:
         if progress:
@@ -5409,6 +5441,8 @@ def execute_join(
     post_limit: Optional[int] = None,
     params: Optional[Dict[str, Any]] = None,
     progress: bool = True,
+    explain_plan: bool = False,
+    planner_config: Optional[Dict[str, Any]] = None,
 ) -> QueryResult:
     """Execute a join operation between two queries.
 
@@ -5424,6 +5458,8 @@ def execute_join(
         post_limit: Optional limit to apply after join
         params: Parameter bindings
         progress: Whether to log progress
+        explain_plan: If True, populate result.meta["plan"] with execution plan
+        planner_config: Optional planner configuration dict
     
     Returns:
         QueryResult with joined data and provenance

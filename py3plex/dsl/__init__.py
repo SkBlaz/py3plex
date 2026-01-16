@@ -209,6 +209,29 @@ from .operator_registry import (
 
 from .context import DSLExecutionContext
 
+# Import planner module
+from .planner import (
+    QueryPlanner,
+    PlannedQuery,
+    CachePlan,
+    Stage,
+    StageType,
+    ComputePolicy,
+    plan_query,
+)
+
+# Import cache module
+from .cache import (
+    CacheBackend,
+    InMemoryCacheBackend,
+    CacheStatistics,
+    get_global_cache,
+    set_global_cache,
+    clear_cache,
+    get_cache_statistics,
+    create_cache_key,
+)
+
 # Import lint module
 from .lint import (
     lint,
@@ -381,6 +404,23 @@ __all__ = [
     "describe_operator",
     # Execution Context
     "DSLExecutionContext",
+    # Planner
+    "QueryPlanner",
+    "PlannedQuery",
+    "CachePlan",
+    "Stage",
+    "StageType",
+    "ComputePolicy",
+    "plan_query",
+    # Cache
+    "CacheBackend",
+    "InMemoryCacheBackend",
+    "CacheStatistics",
+    "get_global_cache",
+    "set_global_cache",
+    "clear_cache",
+    "get_cache_statistics",
+    "create_cache_key",
     # Linting and Analysis
     "lint",
     "explain",

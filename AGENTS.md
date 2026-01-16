@@ -35,11 +35,12 @@
 19. [Plugin System](#plugin-system)
 20. [Configuration and Profiling](#configuration-and-profiling)
 21. [Exception Hierarchy](#exception-hierarchy)
-22. [Performance Guidelines](#performance-guidelines)
-23. [Reproducibility Policy](#reproducibility-policy)
-24. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
-25. [Testing Strategy](#testing-strategy)
-26. [File Locations](#file-locations)
+22. [Query Planner and Optimization](#query-planner-and-optimization)
+23. [Performance Guidelines](#performance-guidelines)
+24. [Reproducibility Policy](#reproducibility-policy)
+25. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
+26. [Testing Strategy](#testing-strategy)
+27. [File Locations](#file-locations)
 
 ---
 
@@ -4264,6 +4265,314 @@ except Py3plexIOError as e:
 **Don't use generic exceptions for domain errors**:
 -  `FileNotFoundError` →  `Py3plexIOError`
 -  `ValueError` →  `NetworkConstructionError`
+
+---
+
+## Query Planner and Optimization
+
+### Overview
+
+The DSL v2 query planner is an internal optimization layer that sits between AST compilation and execution. It automatically:
+
+1. **Reorders stages** to reduce execution cost (filter early, compute late)
+2. **Pushes down computations** to compute only measures needed downstream
+3. **Caches expensive results** keyed by stable identifiers + provenance
+4. **Provides execution plans** via `explain_plan()` for debugging and optimization
+5. **Ensures determinism** - same network + AST + params + seed → same plan and results
+
+**Key Property**: The planner is **semantically transparent** - planned and unplanned execution produce identical results.
+
+### Usage
+
+#### Basic Usage (Automatic)
+
+The planner runs automatically on all DSL v2 queries. No code changes needed:
+
+```python
+from py3plex.dsl import Q
+
+# Planner runs automatically
+result = Q.nodes().compute("degree", "betweenness").where(degree__gt=5).execute(net)
+```
+
+#### Viewing Execution Plans
+
+Use `explain_plan=True` to see how the planner optimized your query:
+
+```python
+# Get plan in result metadata
+result = (
+    Q.nodes()
+     .compute("degree", "betweenness")
+     .where(degree__gt=5)
+     .order_by("betweenness", desc=True)
+     .limit(10)
+     .execute(net, explain_plan=True)
+)
+
+# Inspect plan
+plan = result.meta["plan"]
+print(f"Plan hash: {plan['plan_hash']}")
+print(f"Stages: {[s['name'] for s in plan['planned_stage_order']]}")
+print(f"Rewrites: {plan['rewrite_summary']}")
+print(f"Total cost: {plan['total_estimated_cost']}")
+```
+
+**Typical output**:
+```
+Plan hash: a3f8c2e1b9d4...
+Stages: ['get_nodes', 'filter_layers', 'filter_where', 'compute', 'order_by', 'limit']
+Rewrites: ['Moved layer filtering early', 'Moved WHERE filter before compute']
+Total cost: 73
+```
+
+#### Configuring the Planner
+
+Use `.planner()` to customize planner behavior:
+
+```python
+# Minimal compute policy: only compute measures actually used
+result = (
+    Q.nodes()
+     .compute("degree", "betweenness", "closeness")  # 3 measures requested
+     .where(degree__gt=5)                             # Only degree used in WHERE
+     .planner(compute_policy="minimal")               # Only degree computed!
+     .execute(net)
+)
+
+# Disable caching for one-off queries
+result = (
+    Q.nodes()
+     .compute("betweenness")
+     .planner(enable_cache=False)
+     .execute(net)
+)
+
+# Or pass config to execute()
+result = Q.nodes().compute("degree").execute(
+    net, 
+    planner={"compute_policy": "minimal", "enable_cache": True}
+)
+```
+
+### Compute Policies
+
+The planner supports three compute policies:
+
+| Policy | Behavior | Use When |
+|--------|----------|----------|
+| `explicit` | Compute all user-requested measures + measures needed for semantics (ORDER BY, WHERE) | Default - balances performance and explicitness |
+| `minimal` | Compute only measures actually used downstream (ignores unused user-requested computes) | Performance-critical queries where you over-specified computes |
+| `all` | Compute everything requested regardless of usage | Debugging or when you want all measures exported |
+
+**Example**:
+```python
+# User requests 3 measures but only uses degree
+q = Q.nodes().compute("degree", "betweenness", "closeness").where(degree__gt=5)
+
+# explicit (default): computes all 3
+q.execute(net, planner={"compute_policy": "explicit"})
+
+# minimal: computes only degree (used in WHERE)
+q.execute(net, planner={"compute_policy": "minimal"})
+
+# all: computes all 3 (same as explicit in this case)
+q.execute(net, planner={"compute_policy": "all"})
+```
+
+### Caching
+
+The planner caches expensive computations (primarily centrality measures) with deterministic keys:
+
+**Cache Key = hash(network_fingerprint + AST_hash + params + seed + UQ_config)**
+
+**Cache behavior**:
+- **First execution**: Computes and stores in cache (MISS)
+- **Second execution** (same network, query, params): Retrieves from cache (HIT)
+- **Different params/seed**: New cache entry (MISS)
+
+**Checking cache statistics**:
+```python
+from py3plex.dsl import get_cache_statistics, clear_cache
+
+# Execute query twice
+result1 = Q.nodes().compute("betweenness").execute(net)
+result2 = Q.nodes().compute("betweenness").execute(net)
+
+# Check stats
+stats = get_cache_statistics()
+print(f"Hits: {stats['hits']}, Misses: {stats['misses']}")
+print(f"Hit rate: {stats['hit_rate']:.2%}")
+
+# Clear cache if needed
+clear_cache()
+```
+
+**Cache is automatically invalidated when**:
+- Network structure changes (different node/edge/layer counts)
+- Query AST changes
+- Parameters change
+- Random seed changes
+- UQ configuration changes
+
+### Optimization Rules
+
+The planner applies these optimization rules **safely** (never changes semantics):
+
+1. **Layer filtering early**: `.from_layers()` always executes immediately after GetItems
+2. **WHERE before compute**: Filters on intrinsic fields (layer, type, id) move before compute
+3. **WHERE after compute**: Filters on computed fields (degree, betweenness) stay after compute
+4. **Compute delayed**: Computation delayed until after filters (reduce item set first)
+5. **ORDER BY after compute**: Sorting happens after measures are computed
+6. **LIMIT after sort**: Limit applied after ordering (or after filters if no ordering)
+
+**Example reordering**:
+```python
+# Original query order
+q = Q.nodes().compute("degree").from_layers(L["social"]).where(layer="social")
+
+# Planner reorders to:
+# 1. GetItems (get_nodes)
+# 2. FilterLayers (from_layers) ← moved early
+# 3. FilterWhere (layer="social") ← moved before compute (intrinsic field)
+# 4. Compute (degree)
+
+# Result: fewer nodes to compute degree for!
+```
+
+### Error Handling
+
+The planner detects and reports dependency errors with **actionable hints**:
+
+```python
+# Error: WHERE references computed field without computing it
+q = Q.nodes().where(betweenness_centrality__gt=0.1)  # No .compute()
+
+# Raises DslExecutionError with hint:
+# "Field 'betweenness_centrality' referenced in WHERE clause but not computed.
+#  Add .compute('betweenness_centrality') before the WHERE clause."
+```
+
+```python
+# Error: ORDER BY references uncomputed field
+q = Q.nodes().order_by("pagerank")  # No .compute()
+
+# Raises DslExecutionError with hint:
+# "Field 'pagerank' required by order_by but not computed.
+#  Add .compute('pagerank') before the operation that requires it."
+```
+
+### Provenance Integration
+
+When the planner is used, it adds metadata to `result.meta["provenance"]`:
+
+```python
+result = Q.nodes().compute("degree").execute(net)
+
+prov = result.meta["provenance"]
+# prov["query"]["plan_hash"] - hash of planned stages
+# prov["backend"]["cache"] - cache hit/miss statistics  
+# prov["performance"]["plan_ms"] - time spent planning
+```
+
+**Full provenance structure**:
+```json
+{
+  "query": {
+    "target": "nodes",
+    "ast_hash": "a3f8c2e1...",
+    "plan_hash": "b7d4a9f2...",  // NEW
+    "params": {}
+  },
+  "backend": {
+    "graph_backend": "networkx",
+    "cache": {  // NEW
+      "hits": 2,
+      "misses": 1
+    }
+  },
+  "performance": {
+    "total_ms": 145.3,
+    "plan_ms": 0.8,  // NEW
+    "temporal_context": 0.1
+  }
+}
+```
+
+### Determinism Guarantees
+
+The planner is **fully deterministic**:
+
+**Same input → Same plan → Same results**
+
+Where "same input" means:
+- Same network structure (node/edge/layer counts + topology)
+- Same AST (query structure)
+- Same bound parameters
+- Same random seed (if randomness used)
+- Same UQ configuration (if UQ enabled)
+
+**Implications**:
+- Plans are reproducible across runs
+- Cache hits are deterministic
+- Reordering is deterministic (no random tie-breaking)
+- Plan hashes are stable
+
+**Example**:
+```python
+# First execution
+plan1 = plan_query(Q.nodes().compute("degree").to_ast(), net)
+
+# Second execution (identical query + network)
+plan2 = plan_query(Q.nodes().compute("degree").to_ast(), net)
+
+# Plans are identical
+assert plan1.plan_hash == plan2.plan_hash
+assert [s.stage_type for s in plan1.planned_stages] == [s.stage_type for s in plan2.planned_stages]
+```
+
+### Advanced: Direct Planner API
+
+For advanced use cases, access the planner directly:
+
+```python
+from py3plex.dsl import plan_query, QueryPlanner
+
+# Plan a query
+q = Q.nodes().compute("degree", "betweenness").where(degree__gt=5)
+plan = plan_query(q.to_ast(), network)
+
+# Inspect plan structure
+print(f"Stages: {len(plan.planned_stages)}")
+print(f"Required measures: {plan.required_measures}")
+print(f"Rewrite summary: {plan.plan_meta['rewrite_summary']}")
+
+# Custom planner with specific config
+planner = QueryPlanner({"compute_policy": "minimal", "enable_cache": False})
+plan = planner.plan(q.to_ast(), network, params={})
+```
+
+### Performance Impact
+
+**Planning overhead**: < 1ms for typical queries (measured via `provenance.performance.plan_ms`)
+
+**Expected speedups**:
+- **Layer filtering early**: 2-10x fewer nodes to process downstream
+- **WHERE before compute**: 2-5x faster (avoid computing on filtered nodes)
+- **Compute pushdown**: 1.5-3x faster (avoid unused expensive measures)
+- **Caching**: 10-100x faster on second run (for expensive centralities)
+
+**Example**:
+```python
+# Without planner (manual optimization)
+result = Q.nodes().from_layers(L["social"]).compute("betweenness").execute(net)
+# Time: 5.2s
+
+# With planner (automatic optimization)
+result = Q.nodes().compute("betweenness").from_layers(L["social"]).execute(net)
+# Time: 5.2s (planner reorders automatically)
+# Plan: ['get_nodes', 'filter_layers' ← moved early, 'compute']
+```
 
 ---
 
