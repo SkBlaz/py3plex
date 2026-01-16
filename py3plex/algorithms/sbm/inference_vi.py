@@ -140,6 +140,8 @@ class VariationalInference:
                 ]
                 # Apply coupling: pull B matrices toward their mean
                 # Normalize by number of layers so coupling_strength is layer-count independent
+                # coupling_strength=0: No coupling (independent B matrices)
+                # coupling_strength=1: Full coupling (B matrices converge to mean)
                 if len(B_layers) > 1:
                     B_mean = np.mean(B_layers, axis=0)
                     # Alpha determines the weight on the mean: alpha=0 (no coupling), alpha=1 (full coupling)
