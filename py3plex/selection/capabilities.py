@@ -63,6 +63,8 @@ class CapabilitiesScanner:
         "infomap",
         "label_propagation",
         "spectral_clustering",
+        "sbm_fit",
+        "fit_multilayer_sbm",
     ]
     
     # Modules to search for algorithms
@@ -71,6 +73,8 @@ class CapabilitiesScanner:
         "py3plex.algorithms.community_detection.leiden_multilayer",
         "py3plex.algorithms.community_detection.leiden_uq",
         "py3plex.algorithms.community_detection.multilayer_modularity",
+        "py3plex.algorithms.community_detection.sbm_wrapper",
+        "py3plex.algorithms.sbm",
     ]
     
     # Modules to search for metrics

@@ -55,6 +55,10 @@ class CommunityRegistry:
         "omega": [0.0, 0.1, 0.2],
         "coupling": [0.0, 0.1, 0.2],
         "lambda": [0.0, 0.1, 0.2],
+        "n_blocks": [2, 3, 4, 5],
+        "B_min": [2],
+        "B_max": [8],
+        "mode": ["shared_blocks", "coupled"],
     }
     
     # Smaller grids for fast mode
@@ -64,6 +68,10 @@ class CommunityRegistry:
         "omega": [0.1],
         "coupling": [0.1],
         "lambda": [0.1],
+        "n_blocks": [3],
+        "B_min": [2],
+        "B_max": [5],
+        "mode": ["shared_blocks"],
     }
     
     def __init__(self, capabilities: CapabilitiesReport):
@@ -102,6 +110,8 @@ class CommunityRegistry:
                 "leiden_multilayer",
                 "multilayer_louvain",
                 "louvain_multilayer",
+                "sbm_fit",
+                "fit_multilayer_sbm",
             ]
         else:
             # Prefer single-layer algorithms
@@ -110,6 +120,7 @@ class CommunityRegistry:
                 "multilayer_leiden",
                 "louvain_multilayer",
                 "multilayer_louvain",
+                "sbm_fit",
             ]
         
         # Add candidates from priority algorithms
