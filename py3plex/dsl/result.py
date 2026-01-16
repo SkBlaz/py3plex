@@ -5,7 +5,7 @@ and includes metadata about the query execution.
 """
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, Tuple
 import math
 
 
@@ -1064,3 +1064,68 @@ class QueryResult:
 
     def __repr__(self) -> str:
         return f"QueryResult(target='{self.target}', count={len(self.items)}, attributes={list(self.attributes.keys())})"
+
+    def join(
+        self,
+        right: Union["QueryResult", Any],  # Any for QueryBuilder
+        on: Union[str, List[str]],
+        how: str = "inner",
+        suffixes: Tuple[str, str] = ("", "_r"),
+    ) -> Any:  # Returns JoinBuilder
+        """Join this result with another result or query.
+
+        This is the escape hatch for joining pre-executed results. For most
+        cases, prefer using QueryBuilder.join() which is lazy and planner-aware.
+
+        Args:
+            right: Right result or query to join with
+            on: Column name(s) to join on
+            how: Join type ('inner', 'left', 'right', 'outer', 'semi', 'anti')
+            suffixes: Tuple of suffixes for name collisions
+
+        Returns:
+            JoinBuilder for further chaining and execution
+
+        Examples:
+            >>> # Join two pre-computed results
+            >>> nodes = Q.nodes().compute("degree").execute(network)
+            >>> communities = Q.communities().members().execute(network)
+            >>> joined = nodes.join(communities, on=["node", "layer"], how="left")
+            >>> result = joined.execute(network)
+        """
+        from .builder import JoinBuilder
+
+        # Normalize on to list
+        if isinstance(on, str):
+            on_list = [on]
+        else:
+            on_list = list(on)
+
+        return JoinBuilder(
+            left=self,
+            right=right,
+            on=tuple(on_list),
+            how=how,
+            suffixes=suffixes,
+        )
+
+    def _to_select_stmt(self):
+        """Convert QueryResult to a SelectStmt for join operations.
+
+        This is used internally when joining results. It creates a minimal
+        SelectStmt that represents this result.
+        """
+        from .ast import SelectStmt, Target
+
+        # Determine target from result
+        if self.target == "nodes":
+            target = Target.NODES
+        elif self.target == "edges":
+            target = Target.EDGES
+        elif self.target == "communities":
+            target = Target.COMMUNITIES
+        else:
+            target = Target.NODES
+
+        # Create minimal SelectStmt (will be materialized from result data)
+        return SelectStmt(target=target)
