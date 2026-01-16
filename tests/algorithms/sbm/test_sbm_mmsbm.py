@@ -17,13 +17,11 @@ def create_test_network(n_nodes=40, K=3, n_layers=2, seed=42):
     
     # Create nodes
     nodes = [f"N{i}" for i in range(n_nodes)]
-    for node in nodes:
-        for layer_idx in range(n_layers):
-            net.add_node(node, layer=f"L{layer_idx}")
     
     # Generate edges based on block structure
     block_assignments = rng.choice(K, size=n_nodes)
     
+    edges = []
     for layer_idx in range(n_layers):
         layer = f"L{layer_idx}"
         
@@ -36,7 +34,15 @@ def create_test_network(n_nodes=40, K=3, n_layers=2, seed=42):
                     p = 0.05
                 
                 if rng.random() < p:
-                    net.add_edge(nodes[i], nodes[j], layer_src=layer, layer_dst=layer)
+                    edges.append({
+                        'source': nodes[i],
+                        'target': nodes[j],
+                        'source_type': layer,
+                        'target_type': layer
+                    })
+    
+    if edges:
+        net.add_edges(edges)
     
     return net, block_assignments
 

@@ -41,13 +41,10 @@ def create_coupled_test_network(n_nodes=30, K=2, n_layers=3, coupling_strength=0
             layer_assignments.append(assignments)
     
     # Create edges based on layer-specific assignments
+    edges = []
     for layer_idx in range(n_layers):
         layer = f"L{layer_idx}"
         assignments = layer_assignments[layer_idx]
-        
-        # Add nodes
-        for node in nodes:
-            net.add_node(node, layer=layer)
         
         # Add edges
         for i in range(n_nodes):
@@ -58,7 +55,15 @@ def create_coupled_test_network(n_nodes=30, K=2, n_layers=3, coupling_strength=0
                     p = 0.05  # Between-block edge probability
                 
                 if rng.random() < p:
-                    net.add_edge(nodes[i], nodes[j], layer_src=layer, layer_dst=layer)
+                    edges.append({
+                        'source': nodes[i],
+                        'target': nodes[j],
+                        'source_type': layer,
+                        'target_type': layer
+                    })
+    
+    if edges:
+        net.add_edges(edges)
     
     return net, layer_assignments, base_assignments
 
