@@ -83,7 +83,9 @@ print(evaluated[["algorithm", "config_id", "params_json", "runtime_ms"]].to_stri
 if hasattr(res, "benchmark"):
     print("\n=== Pareto Front ===")
     pareto = res.benchmark.pareto_front()
-    if pareto is not None:
-        print(pareto.to_pandas())
+    if pareto is not None and not pareto.empty:
+        print(pareto)
+    else:
+        print("(Pareto front not available)")
 
 print("\n✅ Budget fairness demo complete!")

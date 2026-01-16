@@ -162,9 +162,14 @@ def execute_benchmark(ast: BenchmarkNode, **params) -> QueryResult:
     attributes = {}
     
     if runs:
-        # Extract columns from run dicts
-        for key in runs[0].keys():
-            attributes[key] = [run[key] for run in runs]
+        # Collect all possible keys from all runs
+        all_keys = set()
+        for run in runs:
+            all_keys.update(run.keys())
+        
+        # Extract columns from run dicts, filling missing values with None
+        for key in sorted(all_keys):  # Sort for deterministic ordering
+            attributes[key] = [run.get(key) for run in runs]
     
     return QueryResult(target="communities", items=items, attributes=attributes, meta=meta)
 
@@ -464,24 +469,27 @@ def _run_single_config(
 
     except AlgorithmError as e:
         warnings.warn(f"Algorithm {runner.name} failed: {e}")
-        return [
-            {
-                "dataset_id": dataset_id,
-                "layer_expr": layer_expr,
-                "repeat_id": repeat_id,
-                "algorithm": runner.name,
-                "config_id": config_id,
-                "params_json": json.dumps(params, sort_keys=True),
-                "error": str(e),
-                "timed_out": False,
-                "budget_limit_ms": budget.limit_ms if budget else None,
-                "budget_used_ms": budget.used_ms if budget else 0.0,
-                "eval_count": budget.eval_count if budget else 0,
-                "prov_ast_hash": ast_hash,
-                "prov_seed": algo_seed,
-                "prov_engine": "benchmark",
-            }
-        ]
+        error_row = {
+            "dataset_id": dataset_id,
+            "layer_expr": layer_expr,
+            "repeat_id": repeat_id,
+            "algorithm": runner.name,
+            "config_id": config_id,
+            "params_json": json.dumps(params, sort_keys=True),
+            "runtime_ms": 0.0,
+            "error": str(e),
+            "timed_out": False,
+            "budget_limit_ms": budget.limit_ms if budget else None,
+            "budget_used_ms": budget.used_ms if budget else 0.0,
+            "eval_count": budget.eval_count if budget else 0,
+            "prov_ast_hash": ast_hash,
+            "prov_seed": algo_seed,
+            "prov_engine": "benchmark",
+        }
+        # Add NaN for all metrics
+        for metric in metrics:
+            error_row[metric] = float("nan")
+        return [error_row]
 
     # Compute metrics
     metric_values = _compute_metrics(

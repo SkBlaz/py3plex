@@ -82,18 +82,26 @@ print(f"\nColumns: {list(df.columns)}")
 if hasattr(res, "benchmark"):
     print("\n=== Leaderboard ===")
     leaderboard = res.benchmark.leaderboard()
-    print(leaderboard.to_pandas())
+    if not leaderboard.empty:
+        print(leaderboard)
+    else:
+        print("(Leaderboard not available)")
 
     # Show best by algorithm
     print("\n=== Best Config Per Algorithm ===")
     best = res.benchmark.best_by_algo()
-    print(best.to_pandas())
+    if not best.empty:
+        print(best)
+    else:
+        print("(Best by algorithm not available)")
 
     # Show AutoCommunity trace if available
     print("\n=== AutoCommunity Trace (first 10 candidates) ===")
     trace = res.benchmark.trace("autocommunity")
-    if trace is not None:
+    if trace is not None and not trace.empty:
         print(trace.head(10))
+    else:
+        print("(Trace not available)")
 else:
     print("\n=== Run-level Results (sample) ===")
     print(df.head(10))

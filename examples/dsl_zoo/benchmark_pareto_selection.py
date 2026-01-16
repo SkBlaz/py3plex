@@ -78,10 +78,11 @@ print(f"Total configs evaluated: {len(df_pareto)}")
 if hasattr(res_pareto, "benchmark"):
     print("\n=== Pareto Front (non-dominated solutions) ===")
     pareto = res_pareto.benchmark.pareto_front()
-    if pareto is not None:
-        pareto_df = pareto.to_pandas()
-        print(pareto_df[["algorithm", "params_json", "modularity", "coverage", "runtime_ms"]])
-        print(f"\nPareto front size: {len(pareto_df)} solutions")
+    if pareto is not None and not pareto.empty:
+        print(pareto[["algorithm", "params_json", "modularity", "coverage", "runtime_ms"]])
+        print(f"\nPareto front size: {len(pareto)} solutions")
+    else:
+        print("(Pareto front not available)")
 
 print("\n" + "="*60)
 print("Now running with weighted selection...")
@@ -111,9 +112,10 @@ print("\n=== Weighted Selection Results ===\n")
 if hasattr(res_weighted, "benchmark"):
     print("Best overall (weighted score):")
     best = res_weighted.benchmark.best_by_algo()
-    if best is not None:
-        best_df = best.to_pandas()
-        print(best_df[["algorithm", "params_json", "modularity", "coverage", "runtime_ms"]])
+    if best is not None and not best.empty:
+        print(best[["algorithm", "params_json", "modularity", "coverage", "runtime_ms"]])
+    else:
+        print("(Best by algorithm not available)")
 
 print("\n✅ Pareto selection demo complete!")
 print("\nKey insight: Pareto front reveals trade-offs, weighted selection picks one solution.")
