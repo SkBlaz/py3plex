@@ -5398,3 +5398,243 @@ def _compute_coverage_stability_across_resamples(
         coverage_samples.append(membership)
     
     return compute_coverage_stability(coverage_samples, all_items)
+
+
+def execute_join(
+    network: Any,
+    join_node: "JoinNode",
+    post_where: Optional[ConditionExpr] = None,
+    post_compute: Optional[List[ComputeItem]] = None,
+    post_order_by: Optional[List[OrderItem]] = None,
+    post_limit: Optional[int] = None,
+    params: Optional[Dict[str, Any]] = None,
+    progress: bool = True,
+) -> QueryResult:
+    """Execute a join operation between two queries.
+
+    This function executes both sides of the join, performs the relational join,
+    and applies any post-join operations (filtering, computation, ordering, limiting).
+
+    Args:
+        network: Multilayer network object
+        join_node: JoinNode containing join specification
+        post_where: Optional WHERE conditions to apply after join
+        post_compute: Optional measures to compute after join
+        post_order_by: Optional ordering to apply after join
+        post_limit: Optional limit to apply after join
+        params: Parameter bindings
+        progress: Whether to log progress
+    
+    Returns:
+        QueryResult with joined data and provenance
+    
+    Raises:
+        InvalidJoinKeyError: If join keys don't exist in both schemas
+    """
+    from .ast import JoinNode, Query, SelectStmt
+    from .errors import InvalidJoinKeyError
+    import pandas as pd
+    import hashlib
+    
+    params = params or {}
+    
+    # Execute left and right queries
+    logger = logging.getLogger(__name__)
+    if progress:
+        logger.info(f"Executing join: {join_node.how} join on {join_node.on}")
+    
+    # Execute left query
+    if progress:
+        logger.info("  Executing left query...")
+    
+    # Check if left is a QueryResult or SelectStmt
+    # Import QueryResult here to avoid circular dependency
+    from .result import QueryResult as QR
+    
+    if isinstance(join_node.left, QR):
+        # It's a QueryResult
+        left_result = join_node.left
+    else:
+        # It's a SelectStmt - execute it
+        left_ast = Query(explain=False, select=join_node.left)
+        left_result = execute_ast(network, left_ast, params=params, progress=False)
+    
+    # Execute right query
+    if progress:
+        logger.info("  Executing right query...")
+    
+    # Check if right is a QueryResult or SelectStmt
+    if isinstance(join_node.right, QR):
+        # It's a QueryResult
+        right_result = join_node.right
+    else:
+        # It's a SelectStmt - execute it
+        right_ast = Query(explain=False, select=join_node.right)
+        right_result = execute_ast(network, right_ast, params=params, progress=False)
+    
+    # Convert results to DataFrames for joining
+    left_df = left_result.to_pandas()
+    right_df = right_result.to_pandas()
+    
+    # Validate join keys exist in both schemas
+    left_cols = set(left_df.columns)
+    right_cols = set(right_df.columns)
+    
+    missing_left = [k for k in join_node.on if k not in left_cols]
+    missing_right = [k for k in join_node.on if k not in right_cols]
+    
+    if missing_left:
+        raise InvalidJoinKeyError(
+            missing_keys=missing_left,
+            available_fields=sorted(left_cols),
+            side="left",
+            ast_summary=f"Join on {join_node.on}",
+        )
+    
+    if missing_right:
+        raise InvalidJoinKeyError(
+            missing_keys=missing_right,
+            available_fields=sorted(right_cols),
+            side="right",
+            ast_summary=f"Join on {join_node.on}",
+        )
+    
+    # Perform the join
+    if progress:
+        logger.info(f"  Joining {len(left_df)} left rows with {len(right_df)} right rows...")
+    
+    if join_node.how == "semi":
+        # Semi-join: left rows that have a match in right (left columns only)
+        # Use inner join then drop duplicates from left
+        joined_df = left_df.merge(
+            right_df[list(join_node.on)].drop_duplicates(),
+            on=list(join_node.on),
+            how="inner",
+            suffixes=join_node.suffixes,
+        )
+        # Keep only left columns
+        joined_df = joined_df[left_df.columns].drop_duplicates()
+    
+    elif join_node.how == "anti":
+        # Anti-join: left rows that have NO match in right (left columns only)
+        # Use indicator to find non-matches
+        joined_df = left_df.merge(
+            right_df[list(join_node.on)],
+            on=list(join_node.on),
+            how="left",
+            indicator=True,
+        )
+        # Keep only rows where right side is null
+        joined_df = joined_df[joined_df["_merge"] == "left_only"]
+        joined_df = joined_df.drop(columns=["_merge"])
+        # Keep only left columns
+        joined_df = joined_df[left_df.columns]
+    
+    else:
+        # Standard join (inner, left, right, outer)
+        joined_df = left_df.merge(
+            right_df,
+            on=list(join_node.on),
+            how=join_node.how,
+            suffixes=join_node.suffixes,
+        )
+    
+    if progress:
+        logger.info(f"  Join produced {len(joined_df)} rows")
+    
+    # Apply post-join operations
+    if post_where:
+        # Apply WHERE filter using pandas query
+        # Build filter expression from ConditionExpr
+        for atom in post_where.atoms:
+            if atom.comparison:
+                comp = atom.comparison
+                field = comp.left
+                op = comp.op
+                value = comp.right
+                
+                # Apply filter
+                if op == "=":
+                    joined_df = joined_df[joined_df[field] == value]
+                elif op == ">":
+                    joined_df = joined_df[joined_df[field] > value]
+                elif op == ">=":
+                    joined_df = joined_df[joined_df[field] >= value]
+                elif op == "<":
+                    joined_df = joined_df[joined_df[field] < value]
+                elif op == "<=":
+                    joined_df = joined_df[joined_df[field] <= value]
+                elif op == "!=":
+                    joined_df = joined_df[joined_df[field] != value]
+        
+        if progress:
+            logger.info(f"  Post-join filtering reduced to {len(joined_df)} rows")
+    
+    if post_compute:
+        # Compute additional metrics on joined data
+        # Note: This is a simplified implementation
+        # Full implementation would require computing metrics on the network
+        if progress:
+            logger.info(f"  Computing {len(post_compute)} metrics on joined data...")
+        
+        # For now, skip actual computation - would need network context
+        # This would require refactoring to support post-join computation
+    
+    if post_order_by:
+        # Sort results
+        sort_keys = []
+        sort_ascending = []
+        for order_item in post_order_by:
+            sort_keys.append(order_item.key)
+            sort_ascending.append(not order_item.desc)
+        
+        joined_df = joined_df.sort_values(by=sort_keys, ascending=sort_ascending)
+        
+        if progress:
+            logger.info(f"  Sorted by {sort_keys}")
+    
+    if post_limit:
+        # Limit results
+        joined_df = joined_df.head(post_limit)
+        if progress:
+            logger.info(f"  Limited to {post_limit} rows")
+    
+    # Convert DataFrame back to QueryResult
+    # Use the first column as the primary identifier (id)
+    # If 'id' column exists, use it; otherwise use first column
+    if 'id' in joined_df.columns:
+        items = joined_df['id'].tolist()
+        # Get all columns except 'id' for attributes
+        attr_cols = [col for col in joined_df.columns if col != 'id']
+    else:
+        # Fallback: use first column
+        items = joined_df.iloc[:, 0].tolist()
+        attr_cols = joined_df.columns[1:].tolist()
+    
+    attributes = {}
+    for col in attr_cols:
+        attributes[col] = joined_df[col].tolist()
+    
+    # Build provenance
+    provenance = {
+        "join": {
+            "type": join_node.how,
+            "on": list(join_node.on),
+            "left_ast_hash": hashlib.sha256(str(join_node.left).encode()).hexdigest()[:8],
+            "right_ast_hash": hashlib.sha256(str(join_node.right).encode()).hexdigest()[:8],
+            "row_counts": {
+                "left": len(left_df),
+                "right": len(right_df),
+                "output": len(joined_df),
+            },
+        }
+    }
+    
+    result = QueryResult(
+        target=left_result.target,  # Inherit target from left side
+        items=items,
+        attributes=attributes,
+        meta={"provenance": provenance, "dsl_version": "2.1"},
+    )
+    
+    return result

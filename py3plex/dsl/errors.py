@@ -250,3 +250,156 @@ class DslMissingMetricError(DslError):
             message += f"\nThis metric cannot be automatically computed. Call .compute('{metric}') explicitly."
         
         super().__init__(message, query, line, column)
+
+
+class DSLCompileError(DslError):
+    """Exception raised for DSL compile-time errors with rich diagnostics.
+    
+    This error provides compiler-quality error messages with:
+    - Stage identification (where error occurred in DSL pipeline)
+    - Field-specific context
+    - Actionable suggestions
+    - AST summary for debugging
+    
+    Attributes:
+        message: Error message
+        stage: DSL stage where error occurred (e.g., 'where', 'compute', 'join')
+        field: Field name related to the error, if applicable
+        suggestion: Actionable suggestion to fix the error
+        ast_summary: Compact AST summary for context
+        expected: Expected value/type, if applicable
+        actual: Actual value/type received, if applicable
+    """
+    
+    def __init__(
+        self,
+        message: str,
+        stage: Optional[str] = None,
+        field: Optional[str] = None,
+        suggestion: Optional[str] = None,
+        ast_summary: Optional[str] = None,
+        expected: Optional[str] = None,
+        actual: Optional[str] = None,
+        query: Optional[str] = None,
+        line: Optional[int] = None,
+        column: Optional[int] = None,
+    ):
+        self.stage = stage
+        self.field = field
+        self.suggestion = suggestion
+        self.ast_summary = ast_summary
+        self.expected = expected
+        self.actual = actual
+        
+        # Enhance message with structured diagnostics
+        full_message = message
+        
+        if stage:
+            full_message += f"\n  Stage: {stage}"
+        
+        if field:
+            full_message += f"\n  Field: {field}"
+        
+        if expected and actual:
+            full_message += f"\n  Expected: {expected}"
+            full_message += f"\n  Actual: {actual}"
+        
+        if suggestion:
+            full_message += f"\n  Suggestion: {suggestion}"
+        
+        if ast_summary:
+            full_message += f"\n  Query: {ast_summary}"
+        
+        super().__init__(full_message, query, line, column)
+
+
+class InvalidJoinKeyError(DSLCompileError):
+    """Exception raised when join keys are invalid or missing from schema.
+    
+    Attributes:
+        missing_keys: List of keys not found in the schema
+        available_fields: List of available fields in the schema
+        side: Which side of the join has the issue ('left' or 'right')
+    """
+    
+    def __init__(
+        self,
+        missing_keys: List[str],
+        available_fields: List[str],
+        side: str = "left",
+        ast_summary: Optional[str] = None,
+    ):
+        self.missing_keys = missing_keys
+        self.available_fields = available_fields
+        self.side = side
+        
+        message = f"Join key(s) not found in {side} schema: {', '.join(missing_keys)}"
+        
+        suggestion = f"Available fields in {side}: {', '.join(sorted(available_fields)[:10])}"
+        if len(available_fields) > 10:
+            suggestion += f" ... and {len(available_fields) - 10} more"
+        
+        super().__init__(
+            message=message,
+            stage="join",
+            suggestion=suggestion,
+            ast_summary=ast_summary,
+        )
+
+
+class ComputedFieldMisuseError(DSLCompileError):
+    """Exception raised when filtering on a computed field before it's computed.
+    
+    Attributes:
+        field: The computed field being misused
+        stage: Stage where the misuse occurred
+    """
+    
+    def __init__(
+        self,
+        field: str,
+        stage: str = "where",
+        ast_summary: Optional[str] = None,
+    ):
+        message = f"Field '{field}' is computed but not available at this stage"
+        suggestion = f"Add .compute('{field}') before .{stage}()"
+        
+        super().__init__(
+            message=message,
+            stage=stage,
+            field=field,
+            suggestion=suggestion,
+            ast_summary=ast_summary,
+        )
+
+
+class InvalidGroupAggregateError(DSLCompileError):
+    """Exception raised when filtering on raw fields after grouping.
+    
+    Attributes:
+        field: The field being filtered
+        available_aggregates: List of available aggregate functions
+    """
+    
+    def __init__(
+        self,
+        field: str,
+        available_aggregates: Optional[List[str]] = None,
+        ast_summary: Optional[str] = None,
+    ):
+        message = f"Filtering on raw field '{field}' after grouping is ambiguous"
+        
+        if available_aggregates:
+            agg_list = ", ".join(available_aggregates[:5])
+            suggestion = f"Use an aggregate (e.g., {field}__mean__gt=3) or move filter before grouping"
+        else:
+            suggestion = "Move filter before grouping or use aggregated form"
+        
+        super().__init__(
+            message=message,
+            stage="where",
+            field=field,
+            suggestion=suggestion,
+            ast_summary=ast_summary,
+        )
+
