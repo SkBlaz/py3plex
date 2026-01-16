@@ -105,6 +105,10 @@ from .ast import (
     SemiringClosureStmt,
     SemiringFixedPointStmt,
     SemiringStmt,
+    # Benchmark AST nodes
+    BenchmarkNode,
+    BenchmarkAlgorithmSpec,
+    BenchmarkProtocol,
 )
 
 from .builder import (
@@ -135,6 +139,12 @@ from .builder import (
     CounterexampleBuilder,
     # Claim learning builder
     ClaimLearnerBuilder,
+)
+
+from .benchmark import (
+    B,
+    CommunityBenchmarkBuilder,
+    BenchmarkProxy,
 )
 
 from .layers import (
@@ -293,6 +303,10 @@ __all__ = [
     "SemiringClosureStmt",
     "SemiringFixedPointStmt",
     "SemiringStmt",
+    # Benchmark AST
+    "BenchmarkNode",
+    "BenchmarkAlgorithmSpec",
+    "BenchmarkProtocol",
     # Builder
     "Q",
     "QueryBuilder",
@@ -323,6 +337,10 @@ __all__ = [
     "CounterexampleBuilder",
     # Claim Learning Builder
     "ClaimLearnerBuilder",
+    # Benchmark Builder
+    "B",
+    "CommunityBenchmarkBuilder",
+    "BenchmarkProxy",
     # Pattern Matching
     "PatternNode",
     "PatternEdge",
