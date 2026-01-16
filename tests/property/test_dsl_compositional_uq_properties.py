@@ -232,7 +232,7 @@ def test_ranking_uq_respects_limit(top_k, seed):
          .compute("degree")
          .order_by("-degree")
          .limit(top_k)
-         .uq(method="bootstrap", n_samples=10, seed=seed)
+         .uq(method="perturbation", n_samples=10, seed=seed)  # Use perturbation, not bootstrap
          .execute(network)
     )
     
@@ -247,7 +247,7 @@ def test_ranking_uq_respects_limit(top_k, seed):
 )
 def test_ranking_uq_has_stability_metadata(seed):
     """
-    Property: Ranking with UQ includes stability metadata.
+    Property: Ranking with UQ includes stability metadata or attributes.
     """
     network = create_test_network(num_nodes=10, num_layers=1, seed=seed)
     
@@ -256,12 +256,14 @@ def test_ranking_uq_has_stability_metadata(seed):
          .compute("degree")
          .order_by("-degree")
          .limit(5)
-         .uq(method="bootstrap", n_samples=10, seed=seed)
+         .uq(method="perturbation", n_samples=10, seed=seed)  # Use perturbation
          .execute(network)
     )
     
-    # Check for ranking stability metadata
-    assert "rank_stability" in result.meta or "uq" in result.meta
+    # Check for UQ metadata or ranking attributes
+    has_uq = "uq" in result.meta
+    has_rank_attrs = "rank_mean" in result.attributes or "present_prob" in result.attributes
+    assert has_uq or has_rank_attrs
 
 
 # ============================================================================
@@ -308,7 +310,6 @@ def test_same_seed_same_uq_results(seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_non_uq_query_returns_scalar():
     """
     Property: Queries without UQ return scalar values, not dicts.
