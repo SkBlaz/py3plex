@@ -21,6 +21,18 @@ def create_test_network(n_nodes=40, K=3, n_layers=2, seed=42):
     # Generate edges based on block structure
     block_assignments = rng.choice(K, size=n_nodes)
     
+    # First, ensure all nodes exist in all layers by adding initial edges
+    for layer_idx in range(n_layers):
+        layer = f"L{layer_idx}"
+        for node_id in range(n_nodes):
+            net.add_edges([{
+                'source': nodes[node_id],
+                'target': nodes[(node_id + 1) % n_nodes],
+                'source_type': layer,
+                'target_type': layer
+            }])
+    
+    # Then add block-structured edges
     edges = []
     for layer_idx in range(n_layers):
         layer = f"L{layer_idx}"

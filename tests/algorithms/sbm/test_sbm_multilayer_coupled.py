@@ -41,6 +41,18 @@ def create_coupled_test_network(n_nodes=30, K=2, n_layers=3, coupling_strength=0
             layer_assignments.append(assignments)
     
     # Create edges based on layer-specific assignments
+    # First ensure all nodes exist in all layers
+    for layer_idx in range(n_layers):
+        layer = f"L{layer_idx}"
+        for node_id in range(n_nodes):
+            net.add_edges([{
+                'source': nodes[node_id],
+                'target': nodes[(node_id + 1) % n_nodes],
+                'source_type': layer,
+                'target_type': layer
+            }])
+    
+    # Then add block-structured edges
     edges = []
     for layer_idx in range(n_layers):
         layer = f"L{layer_idx}"
