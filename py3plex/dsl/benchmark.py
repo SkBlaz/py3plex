@@ -295,7 +295,7 @@ class CommunityBenchmarkBuilder:
         Raises:
             ValueError: If configuration is invalid
         """
-        from py3plex.dsl.executor.benchmark_executor import execute_benchmark
+        from py3plex.dsl.executors.benchmark_executor import execute_benchmark
 
         # Validate
         if self._node.datasets is None:
