@@ -14,11 +14,11 @@ net = multinet.multi_layer_network(directed=False)
 
 # Add nodes (3 blocks, 10 nodes each)
 nodes = [f'N{i}' for i in range(30)]
-for node in nodes:
-    net.add_node(node, layer='social')
+net.add_nodes([{'source': node, 'type': 'social'} for node in nodes])
 
 # Generate edges with block structure
 # Block 0: nodes 0-9, Block 1: nodes 10-19, Block 2: nodes 20-29
+edges_to_add = []
 for i in range(30):
     for j in range(i+1, 30):
         # Within-block: high probability
@@ -26,7 +26,14 @@ for i in range(30):
         p = 0.4 if same_block else 0.05
         
         if np.random.rand() < p:
-            net.add_edge(nodes[i], nodes[j], layer_src='social', layer_dst='social')
+            edges_to_add.append({
+                'source': nodes[i],
+                'target': nodes[j],
+                'source_type': 'social',
+                'target_type': 'social'
+            })
+
+net.add_edges(edges_to_add)
 
 # Fit SBM with K=3
 print("Fitting SBM with K=3 blocks...")

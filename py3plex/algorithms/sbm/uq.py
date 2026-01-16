@@ -205,6 +205,10 @@ def sbm_seed_resampling_uq(
         - soft_membership_mean: Mean soft membership across samples (n_nodes x K)
         - soft_membership_std: Std soft membership across samples (n_nodes x K)
         
+        Note: soft_membership statistics are computed WITHOUT label alignment,
+        which may produce incorrect results when labels are permuted across runs.
+        For accurate soft membership statistics, manual alignment is required.
+        
     Example:
         >>> uq_result = sbm_seed_resampling_uq(
         ...     A_layers, K=3, layers=layers, node_to_idx=node_to_idx,
