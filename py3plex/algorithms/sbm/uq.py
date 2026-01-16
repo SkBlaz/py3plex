@@ -272,7 +272,8 @@ def sbm_seed_resampling_uq(
         consensus_confidence[i] = counts.max() / n_samples
     
     # Compute mean and std of soft memberships
-    # Note: Need to align soft memberships too using same permutations
+    # TODO: Apply label permutations to align soft memberships before aggregating
+    # For now, compute statistics without alignment (may be incorrect if labels are permuted)
     soft_membership_mean = np.mean(soft_memberships, axis=0)
     soft_membership_std = np.std(soft_memberships, axis=0)
     

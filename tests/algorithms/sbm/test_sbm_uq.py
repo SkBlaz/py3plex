@@ -17,7 +17,7 @@ from py3plex.algorithms.sbm.conversions import extract_layer_adjacencies
 
 def create_test_network(n_nodes=30, K=2, n_layers=1, seed=42):
     """Create a simple test network."""
-    rng = np.random.RandomState(seed)
+    rng = np.random.default_rng(seed)
     
     net = multinet.multi_layer_network(directed=False)
     
@@ -37,7 +37,7 @@ def create_test_network(n_nodes=30, K=2, n_layers=1, seed=42):
                 else:
                     p = 0.05
                 
-                if rng.rand() < p:
+                if rng.random() < p:
                     net.add_edge(nodes[i], nodes[j], layer_src=layer, layer_dst=layer)
     
     return net, block_assignments

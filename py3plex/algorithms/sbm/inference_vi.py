@@ -139,11 +139,13 @@ class VariationalInference:
                     for A_l in A_layers
                 ]
                 # Apply coupling: pull B matrices toward their mean
+                # Normalize by number of layers so coupling_strength is layer-count independent
                 if len(B_layers) > 1:
                     B_mean = np.mean(B_layers, axis=0)
+                    # Alpha determines the weight on the mean: alpha=0 (no coupling), alpha=1 (full coupling)
+                    alpha = self.coupling_strength
                     for l in range(len(B_layers)):
-                        B_layers[l] = (1 - self.coupling_strength / len(B_layers)) * B_layers[l] + \
-                                      (self.coupling_strength / len(B_layers)) * B_mean
+                        B_layers[l] = (1 - alpha) * B_layers[l] + alpha * B_mean
                         B_layers[l] = np.maximum(B_layers[l], 1e-10)
             else:
                 B_layers = [

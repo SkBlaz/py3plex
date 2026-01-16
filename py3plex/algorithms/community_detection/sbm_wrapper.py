@@ -66,7 +66,8 @@ def sbm_fit(
         max_iter: Maximum iterations per fit
         tol: Convergence tolerance
         seed: Random seed
-        uq: Enable uncertainty quantification
+        uq: Enable uncertainty quantification (default: False)
+            Note: UQ is only available when mixed_membership=False
         uq_n_samples: Number of UQ samples (if uq=True)
         return_model: If True, return (partition, model), else just partition
         verbose: Print progress

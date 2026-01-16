@@ -15,7 +15,7 @@ def create_coupled_test_network(n_nodes=30, K=2, n_layers=3, coupling_strength=0
     
     Higher coupling_strength means layers share more similar community structure.
     """
-    rng = np.random.RandomState(seed)
+    rng = np.random.default_rng(seed)
     
     net = multinet.multi_layer_network(directed=False)
     
@@ -36,7 +36,7 @@ def create_coupled_test_network(n_nodes=30, K=2, n_layers=3, coupling_strength=0
             # Flip some assignments with probability (1 - coupling_strength)
             flip_prob = 1 - coupling_strength
             for i in range(n_nodes):
-                if rng.rand() < flip_prob:
+                if rng.random() < flip_prob:
                     assignments[i] = rng.choice(K)
             layer_assignments.append(assignments)
     
@@ -57,7 +57,7 @@ def create_coupled_test_network(n_nodes=30, K=2, n_layers=3, coupling_strength=0
                 else:
                     p = 0.05  # Between-block edge probability
                 
-                if rng.rand() < p:
+                if rng.random() < p:
                     net.add_edge(nodes[i], nodes[j], layer_src=layer, layer_dst=layer)
     
     return net, layer_assignments, base_assignments
