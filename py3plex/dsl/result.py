@@ -452,6 +452,29 @@ class QueryResult:
         """Iterate over items."""
         return iter(self.items)
 
+    @property
+    def benchmark(self):
+        """Get benchmark result helper.
+
+        Provides convenient access to benchmark-specific views like
+        leaderboards, summaries, and traces.
+
+        Returns:
+            BenchmarkResultHelper instance
+
+        Raises:
+            ValueError: If result does not contain benchmark data
+
+        Example:
+            >>> res = B.community().on(net).algorithms("louvain").execute()
+            >>> leaderboard = res.benchmark.leaderboard()
+            >>> summary = res.benchmark.summary()
+            >>> trace = res.benchmark.trace("autocommunity")
+        """
+        from py3plex.dsl.benchmark_result import BenchmarkResultHelper
+
+        return BenchmarkResultHelper(self)
+
     def to_pandas(
         self,
         multiindex: bool = False,

@@ -291,6 +291,15 @@ class AlgorithmError(Py3plexException):
         super().__init__(message, suggestions=suggestions, did_you_mean=did_you_mean, **kwargs)
 
 
+class BenchmarkError(Py3plexException):
+    """Exception raised when benchmark execution fails.
+
+    Error code: PX302
+    """
+
+    default_code = "PX302"
+
+
 class CommunityDetectionError(AlgorithmError):
     """Exception raised when community detection fails.
 
