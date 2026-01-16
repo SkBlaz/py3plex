@@ -7,8 +7,11 @@ and uncertainty quantification.
 
 Main API:
     - fit_multilayer_sbm: Fit SBM to a multilayer network
+    - mmsbm_fit: Fit Mixed-Membership SBM (soft assignments)
     - select_multilayer_sbm_model: Model selection across multiple K values
     - SBMFittedModel: Fitted model with predictions and diagnostics
+    - sbm_seed_resampling_uq: UQ via seed resampling
+    - align_labels_hungarian: Label alignment across runs
 
 Example:
     >>> from py3plex.core import multinet
@@ -28,6 +31,10 @@ Example:
     >>>
     >>> # Get partition
     >>> partition = model.to_partition_vector()
+    >>> 
+    >>> # Mixed-membership SBM
+    >>> model = mmsbm_fit(net, n_blocks=3)
+    >>> soft_memberships = model.memberships_  # Soft assignments
 """
 
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -43,6 +50,12 @@ from .model_selection import (
     model_selection_report
 )
 from .utils import sparse_edge_count
+from .uq import (
+    align_labels_hungarian,
+    compute_node_stability,
+    sbm_seed_resampling_uq,
+    compute_co_assignment_matrix
+)
 
 
 def fit_multilayer_sbm(
@@ -78,6 +91,7 @@ def fit_multilayer_sbm(
             - "independent": separate B per layer
             - "shared_blocks": shared memberships, separate B
             - "shared_affinity": shared memberships and B
+            - "coupled": shared memberships, separate B with coupling penalty
         interlayer: Interlayer edge handling (currently only "none" supported)
         directed: Whether network is directed
         likelihood: "bernoulli" or "poisson"
@@ -358,10 +372,85 @@ def select_multilayer_sbm_model(
     return best_model, selection_info
 
 
+def mmsbm_fit(
+    network: Any,
+    n_blocks: int,
+    model: str = "dc_sbm",
+    layer_mode: str = "shared_blocks",
+    directed: bool = False,
+    init: str = "spectral",
+    n_init: int = 5,
+    max_iter: int = 500,
+    tol: float = 1e-5,
+    seed: int = 0,
+    verbose: bool = True
+) -> SBMFittedModel:
+    """
+    Fit Mixed-Membership Stochastic Block Model (MMSBM).
+    
+    This is a wrapper around fit_multilayer_sbm that emphasizes the
+    soft membership interpretation. The returned model contains soft
+    membership probabilities in model.memberships_ (n_nodes x K).
+    
+    MMSBM allows nodes to belong to multiple communities with different
+    probabilities, unlike hard clustering approaches.
+    
+    Args:
+        network: py3plex multi_layer_network object (must be node-aligned)
+        n_blocks: Number of blocks (int)
+        model: "sbm" or "dc_sbm" (default: "dc_sbm")
+        layer_mode: Layer coupling mode (default: "shared_blocks")
+        directed: Whether network is directed
+        init: Initialization method ("random", "kmeans", "spectral")
+        n_init: Number of random restarts
+        max_iter: Maximum iterations per fit
+        tol: Convergence tolerance
+        seed: Random seed
+        verbose: Print progress
+        
+    Returns:
+        SBMFittedModel with soft memberships in .memberships_ attribute
+        
+    Example:
+        >>> # Fit MMSBM
+        >>> model = mmsbm_fit(net, n_blocks=3, model="dc_sbm")
+        >>> 
+        >>> # Access soft memberships
+        >>> soft_memberships = model.memberships_  # (n_nodes x K)
+        >>> print(soft_memberships[0])  # Node 0's membership probabilities
+        >>> 
+        >>> # Hard partition (for compatibility)
+        >>> partition = model.to_partition_vector()
+    """
+    # Call fit_multilayer_sbm with single K
+    model = fit_multilayer_sbm(
+        network=network,
+        n_blocks=n_blocks,
+        model=model,
+        layer_mode=layer_mode,
+        interlayer="none",
+        directed=directed,
+        init=init,
+        n_init=n_init,
+        max_iter=max_iter,
+        tol=tol,
+        seed=seed,
+        return_posterior=False,
+        verbose=verbose
+    )
+    
+    return model
+
+
 __all__ = [
     'fit_multilayer_sbm',
+    'mmsbm_fit',
     'select_multilayer_sbm_model',
     'SBMFittedModel',
     'compute_bic',
     'compute_icl',
+    'align_labels_hungarian',
+    'compute_node_stability',
+    'sbm_seed_resampling_uq',
+    'compute_co_assignment_matrix',
 ]

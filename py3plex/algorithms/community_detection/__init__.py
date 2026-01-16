@@ -50,6 +50,10 @@ from .spectral_multilayer import (
     spectral_multilayer_supra,
     spectral_multilayer_multiplex,
 )
+from .sbm_wrapper import (
+    sbm_fit,
+    sbm_multilayer_fit,
+)
 
 
 def multilayer_louvain(
@@ -150,4 +154,6 @@ __all__ = [
     "multiplex_label_propagation_consensus",
     "spectral_multilayer_supra",
     "spectral_multilayer_multiplex",
+    "sbm_fit",
+    "sbm_multilayer_fit",
 ]
