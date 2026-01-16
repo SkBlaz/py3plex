@@ -5441,6 +5441,8 @@ def execute_join(
     post_limit: Optional[int] = None,
     params: Optional[Dict[str, Any]] = None,
     progress: bool = True,
+    explain_plan: bool = False,
+    planner_config: Optional[Dict[str, Any]] = None,
 ) -> QueryResult:
     """Execute a join operation between two queries.
 
@@ -5456,6 +5458,8 @@ def execute_join(
         post_limit: Optional limit to apply after join
         params: Parameter bindings
         progress: Whether to log progress
+        explain_plan: If True, populate result.meta["plan"] with execution plan
+        planner_config: Optional planner configuration dict
     
     Returns:
         QueryResult with joined data and provenance

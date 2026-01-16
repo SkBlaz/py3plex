@@ -2796,7 +2796,6 @@ class QueryBuilder:
 
         return engine.run()
 
-    def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, **params) -> QueryResult:
     def join(
         self,
         right: Union["QueryBuilder", QueryResult],
@@ -2884,7 +2883,7 @@ class QueryBuilder:
             suffixes=suffixes,
         )
 
-    def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
+    def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, **params) -> QueryResult:
         """Execute the query.
 
         Args:
@@ -3182,12 +3181,14 @@ class JoinBuilder:
         self._limit = n
         return self
 
-    def execute(self, network: Any, progress: bool = True, **params) -> QueryResult:
+    def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, **params) -> QueryResult:
         """Execute the join query.
 
         Args:
             network: Multilayer network object
             progress: If True, log progress messages
+            explain_plan: If True, populate result.meta["plan"] with execution plan (default: False)
+            planner: Optional planner configuration dict (compute_policy, enable_cache, etc.)
             **params: Parameter bindings
 
         Returns:
@@ -3204,6 +3205,8 @@ class JoinBuilder:
             post_limit=self._limit,
             params=params,
             progress=progress,
+            explain_plan=explain_plan,
+            planner_config=planner,
         )
 
     def __repr__(self) -> str:
