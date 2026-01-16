@@ -157,7 +157,16 @@ def execute_benchmark(ast: BenchmarkNode, **params) -> QueryResult:
         }
     }
 
-    return QueryResult(items=runs, meta=meta)
+    # Convert runs to QueryResult format
+    items = list(range(len(runs)))
+    attributes = {}
+    
+    if runs:
+        # Extract columns from run dicts
+        for key in runs[0].keys():
+            attributes[key] = [run[key] for run in runs]
+    
+    return QueryResult(target="communities", items=items, attributes=attributes, meta=meta)
 
 
 # ==============================================================================

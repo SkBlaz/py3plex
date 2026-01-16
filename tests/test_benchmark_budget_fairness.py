@@ -140,11 +140,10 @@ class TestBudgetFairness:
         """Test that grid expansion is deterministic."""
         from py3plex.dsl.executors.benchmark_executor import _expand_grid
 
+        # Test with a grid spec
         params = {
-            "grid": {
-                "gamma": [0.8, 1.0, 1.2],
-                "n_iter": [2, 5],
-            }
+            "gamma": [0.8, 1.0, 1.2],
+            "n_iter": [2, 5],
         }
 
         # Expand multiple times

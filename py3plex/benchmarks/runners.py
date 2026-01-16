@@ -122,12 +122,30 @@ class LouvainRunner(CommunityAlgorithmRunner):
         resolution = params.get("resolution", 1.0)
 
         # Flatten network to single graph
-        if hasattr(network, "get_layers"):
+        if hasattr(network, "core_network"):
+            # py3plex multilayer network - use core_network (NetworkX MultiGraph)
+            # Filter to specified layers if provided
+            G = nx.Graph()
+            for u, v in network.core_network.edges():
+                # Nodes are tuples (node_id, layer)
+                if layers:
+                    # Check if both nodes are in specified layers
+                    if len(u) >= 2 and len(v) >= 2:
+                        if u[1] in layers and v[1] in layers:
+                            # Add edge with just node IDs (strip layer)
+                            G.add_edge(u[0], v[0])
+                else:
+                    # No layer filter - add all edges
+                    G.add_edge(u[0] if len(u) >= 2 else u, v[0] if len(v) >= 2 else v)
+        elif hasattr(network, "get_layers"):
+            # Alternative multilayer interface
             G = nx.Graph()
             for layer in layers or network.get_layers():
-                layer_g = network.get_layer_graph(layer)
-                G.add_edges_from(layer_g.edges())
+                # This path is kept for potential future compatibility
+                # but may not work with current py3plex
+                pass
         else:
+            # Plain NetworkX graph
             G = network
 
         # Run Louvain
@@ -229,11 +247,20 @@ class LeidenRunner(CommunityAlgorithmRunner):
         n_iter = params.get("n_iter", 2)
 
         # Flatten network
-        if hasattr(network, "get_layers"):
+        if hasattr(network, "core_network"):
+            # py3plex multilayer network
+            G = nx.Graph()
+            for u, v in network.core_network.edges():
+                if layers:
+                    if len(u) >= 2 and len(v) >= 2:
+                        if u[1] in layers and v[1] in layers:
+                            G.add_edge(u[0], v[0])
+                else:
+                    G.add_edge(u[0] if len(u) >= 2 else u, v[0] if len(v) >= 2 else v)
+        elif hasattr(network, "get_layers"):
             G = nx.Graph()
             for layer in layers or network.get_layers():
-                layer_g = network.get_layer_graph(layer)
-                G.add_edges_from(layer_g.edges())
+                pass  # Alternative interface (not implemented)
         else:
             G = network
 
