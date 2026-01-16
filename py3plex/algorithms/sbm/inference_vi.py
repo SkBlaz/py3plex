@@ -32,6 +32,7 @@ class VariationalInference:
         beta: float = 1.0,
         gamma_shape: float = 1.0,
         gamma_rate: float = 1.0,
+        coupling_strength: float = 1.0,
         verbose: bool = True
     ):
         """
@@ -41,7 +42,7 @@ class VariationalInference:
             model: "sbm" or "dc_sbm"
             likelihood: "bernoulli" or "poisson"
             directed: Whether graphs are directed
-            layer_mode: "independent", "shared_blocks", or "shared_affinity"
+            layer_mode: "independent", "shared_blocks", "shared_affinity", or "coupled"
             max_iter: Maximum number of iterations
             tol: Convergence tolerance for relative ELBO change
             convergence_window: Number of iterations to check for convergence
@@ -49,6 +50,7 @@ class VariationalInference:
             beta: Prior parameter for block affinities
             gamma_shape: Gamma prior shape for theta (DC-SBM)
             gamma_rate: Gamma prior rate for theta (DC-SBM)
+            coupling_strength: Coupling penalty for "coupled" mode (default: 1.0)
             verbose: Whether to print progress
         """
         self.model = model
@@ -62,6 +64,7 @@ class VariationalInference:
         self.beta = beta
         self.gamma_shape = gamma_shape
         self.gamma_rate = gamma_rate
+        self.coupling_strength = coupling_strength
         self.verbose = verbose
     
     def fit(
@@ -112,6 +115,9 @@ class VariationalInference:
         if self.layer_mode == "shared_affinity":
             # Single shared B
             B_layers = [self._init_B(A_layers, q, theta, K, rng)]
+        elif self.layer_mode == "coupled":
+            # Per-layer B with coupling
+            B_layers = [self._init_B([A_l], q, theta, K, rng) for A_l in A_layers]
         else:
             # Per-layer B
             B_layers = [self._init_B([A_l], q, theta, K, rng) for A_l in A_layers]
@@ -126,6 +132,19 @@ class VariationalInference:
             # M-step: Update B (block affinities)
             if self.layer_mode == "shared_affinity":
                 B_layers = [self._update_B_shared(A_layers, q, theta)]
+            elif self.layer_mode == "coupled":
+                # Coupled mode: per-layer B with coupling regularization
+                B_layers = [
+                    self._update_B_layer(A_l, q, theta)
+                    for A_l in A_layers
+                ]
+                # Apply coupling: pull B matrices toward their mean
+                if len(B_layers) > 1:
+                    B_mean = np.mean(B_layers, axis=0)
+                    for l in range(len(B_layers)):
+                        B_layers[l] = (1 - self.coupling_strength / len(B_layers)) * B_layers[l] + \
+                                      (self.coupling_strength / len(B_layers)) * B_mean
+                        B_layers[l] = np.maximum(B_layers[l], 1e-10)
             else:
                 B_layers = [
                     self._update_B_layer(A_l, q, theta)
