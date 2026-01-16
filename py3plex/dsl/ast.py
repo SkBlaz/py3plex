@@ -1094,3 +1094,141 @@ class SemiringStmt:
     paths: Optional[SemiringPathStmt] = None
     closure: Optional[SemiringClosureStmt] = None
     fixed_point: Optional[SemiringFixedPointStmt] = None
+
+
+# ==============================================================================
+# Benchmark AST Nodes
+# ==============================================================================
+
+
+@dataclass
+class BenchmarkAlgorithmSpec:
+    """Specification for an algorithm in a benchmark.
+
+    Supports:
+    - Single config: ("leiden", {"gamma": 1.0})
+    - Grid search: ("leiden", {"grid": {"gamma": [0.8, 1.0, 1.2]}})
+    - AutoCommunity: ("autocommunity", {"mode": "pareto"})
+
+    Attributes:
+        algorithm: Algorithm name
+        params: Parameters or grid specification
+        config_id: Optional stable hash of configuration
+    """
+
+    algorithm: str
+    params: Dict[str, Any] = field(default_factory=dict)
+    config_id: Optional[str] = None
+
+
+@dataclass
+class BenchmarkProtocol:
+    """Protocol specification for benchmark execution.
+
+    Defines how algorithms should be evaluated: repeats, seeds, UQ, budgets.
+
+    Attributes:
+        repeat: Number of repeats per (dataset, layer) pair
+        seed: Base seed for reproducibility
+        uq_config: Optional UQ configuration
+        budget_limit_ms: Optional time budget per unit
+        budget_limit_evals: Optional eval budget per unit
+        budget_per: Budgeting unit ("dataset", "repeat")
+        n_jobs: Parallel jobs
+    """
+
+    repeat: int = 1
+    seed: Optional[int] = None
+    uq_config: Optional[UQConfig] = None
+    budget_limit_ms: Optional[float] = None
+    budget_limit_evals: Optional[int] = None
+    budget_per: str = "repeat"
+    n_jobs: int = 1
+
+
+@dataclass
+class BenchmarkNode:
+    """AST node for benchmarking queries.
+
+    Represents a benchmark comparing algorithms on datasets with a protocol.
+
+    DSL Example:
+        B.community()
+         .on(dataset)
+         .layers(L["social"])
+         .algorithms(
+             ("louvain", {"grid": {"resolution": [0.8, 1.0, 1.2]}}),
+             ("autocommunity", {"mode": "pareto"}),
+         )
+         .metrics("modularity", "runtime_ms")
+         .repeat(5, seed=42)
+         .budget(runtime_ms=10_000)
+         .select("wins")
+         .execute()
+
+    Attributes:
+        benchmark_type: Type of benchmark ("community")
+        datasets: Dataset specifications (name, network, or dict)
+        layer_expr: Optional layer expression
+        algorithm_specs: List of algorithm specifications
+        metrics: List of metric names
+        protocol: Execution protocol (repeats, seeds, budgets)
+        selection_mode: How to select winners ("wins", "pareto", weighted)
+        selection_weights: Optional weights for weighted selection
+        return_trace: Whether to include AutoCommunity traces
+        provenance: Provenance metadata
+    """
+
+    benchmark_type: str
+    datasets: Any
+    layer_expr: Optional[LayerExpr] = None
+    algorithm_specs: List[BenchmarkAlgorithmSpec] = field(default_factory=list)
+    metrics: List[str] = field(default_factory=list)
+    protocol: BenchmarkProtocol = field(default_factory=BenchmarkProtocol)
+    selection_mode: str = "wins"
+    selection_weights: Optional[Dict[str, float]] = None
+    return_trace: bool = True
+    provenance: Dict[str, Any] = field(default_factory=dict)
+
+
+# ==============================================================================
+# Benchmark AST Nodes
+# ==============================================================================
+
+
+@dataclass
+class BenchmarkAlgorithmSpec:
+    """Specification for an algorithm in a benchmark."""
+
+    algorithm: str
+    params: Dict[str, Any] = field(default_factory=dict)
+    config_id: Optional[str] = None
+
+
+@dataclass
+class BenchmarkProtocol:
+    """Protocol specification for benchmark execution."""
+
+    repeat: int = 1
+    seed: Optional[int] = None
+    uq_config: Optional[UQConfig] = None
+    budget_limit_ms: Optional[float] = None
+    budget_limit_evals: Optional[int] = None
+    budget_per: str = "repeat"
+    n_jobs: int = 1
+
+
+@dataclass
+class BenchmarkNode:
+    """AST node for benchmarking queries."""
+
+    benchmark_type: str
+    datasets: Any
+    layer_expr: Optional[LayerExpr] = None
+    algorithm_specs: List[BenchmarkAlgorithmSpec] = field(default_factory=list)
+    metrics: List[str] = field(default_factory=list)
+    protocol: BenchmarkProtocol = field(default_factory=BenchmarkProtocol)
+    selection_mode: str = "wins"
+    selection_weights: Optional[Dict[str, float]] = None
+    return_trace: bool = True
+    provenance: Dict[str, Any] = field(default_factory=dict)
