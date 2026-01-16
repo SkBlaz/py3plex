@@ -1,6 +1,6 @@
 # DSL Zoo: Runnable Examples for Multilayer Network Analysis
 
-This directory contains 35 runnable examples demonstrating the full multilayer analysis surface of py3plex using single-invocation DSL calls.
+This directory contains 42 runnable examples demonstrating the full multilayer analysis surface of py3plex using single-invocation DSL calls.
 
 ## Overview
 
@@ -35,9 +35,10 @@ Each example demonstrates a specific DSL feature with:
 - `14_temporal_sliding_windows.py` - Sliding window aggregation with .window(size, step)
 - `27_temporal_at_time.py` - Query network at specific time point with .at(t)
 
-### Uncertainty Quantification (15-16)
+### Uncertainty Quantification (15-16, 42)
 - `15_uq_pagerank_bootstrap.py` - Bootstrap uncertainty for pagerank with confidence intervals
 - `16_uq_per_layer_ranking.py` - Per-layer UQ with seed method, showing expanded uncertainty
+- `42_compositional_uq.py` - Compositional UQ with aggregate operations (per-layer mean/max with uncertainty)
 
 ### Community Detection (17-21)
 - `17_community_attach.py` - Attach community partition to network with .community()
@@ -52,7 +53,7 @@ Each example demonstrates a specific DSL feature with:
 - `24_semiring_closure.py` - Semiring algebra closure computation with S.closure()
 - `25_arrow_export.py` - Export query results to Apache Arrow format
 
-### Extended DSL Features (26-35)
+### Extended DSL Features (26-35, 42)
 - `26_coverage_cross_layer.py` - Cross-layer coverage filtering with .coverage(mode="all")
 - `28_field_expressions.py` - Complex filtering with F expressions (F.degree > 2) & (F.clustering < 0.5)
 - `29_parameterized_queries.py` - Parameterized queries with Param placeholders
@@ -62,6 +63,7 @@ Each example demonstrates a specific DSL feature with:
 - `33_zscore_normalization.py` - Z-score normalization per layer with .zscore()
 - `34_random_sampling.py` - Random sampling of results with .sample()
 - `35_distinct_unique.py` - Get unique/distinct rows with .distinct()
+- `42_compositional_uq.py` - Compositional UQ with per-layer aggregates and ranking stability
 
 ## Running Examples
 

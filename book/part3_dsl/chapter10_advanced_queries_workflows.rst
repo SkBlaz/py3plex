@@ -770,6 +770,200 @@ For declarative specification of complex analyses, ``workflows`` supports YAML/J
 
 **Use case:** Batch processing, configuration management, and non-programmer friendly analysis.
 
+Advanced DSL Features
+---------------------
+
+This section covers advanced DSL capabilities including field expressions, semiring algebra, and compositional uncertainty quantification.
+
+Field Expressions (F Builder)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The **F builder** provides a Pythonic way to construct complex boolean conditions in WHERE clauses using operator overloading:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L, F
+    
+    # Simple comparison
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree", "clustering")
+         .where(F.degree > 5)
+         .execute(network)
+    )
+    
+    # Complex boolean logic with AND/OR
+    result = (
+        Q.nodes()
+         .compute("degree", "clustering")
+         .where((F.degree > 10) | ((F.layer == "social") & (F.clustering < 0.5)))
+         .execute(network)
+    )
+    
+    # Negation
+    result = (
+        Q.nodes()
+         .where(~F.is_infected)
+         .execute(network)
+    )
+    
+    # Mix with kwargs
+    result = (
+        Q.nodes()
+         .where(F.degree > 5, layer="social")
+         .execute(network)
+    )
+
+**Supported operators:**
+
+* Comparison: ``>``, ``>=``, ``<``, ``<=``, ``==``, ``!=``
+* Boolean: ``&`` (AND), ``|`` (OR), ``~`` (NOT)
+* Parentheses for grouping: ``(F.a > 5) & (F.b < 10)``
+
+**Example:** See ``examples/dsl_zoo/28_field_expressions.py``
+
+.. code-block:: bash
+
+    python examples/dsl_zoo/28_field_expressions.py
+
+**Advantages:**
+
+* Type-safe compared to string-based queries
+* IDE autocompletion for field names
+* Natural Python syntax with operators
+* Combines with kwargs-based filtering
+
+Semiring Algebra (S Builder)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The **S builder** provides semiring-based path queries for computing shortest paths, reachability, and closure operations:
+
+.. code-block:: python
+
+    from py3plex.dsl import S, L
+    
+    # Shortest paths using min-plus semiring
+    result = (
+        S.path()
+         .source("A")
+         .semiring("min_plus")
+         .from_layers(L["*"])
+         .execute(network)
+    )
+    
+    # All-pairs shortest paths via closure
+    result = (
+        S.closure()
+         .semiring("min_plus")
+         .from_layers(L["social"])
+         .method("auto")
+         .execute(network)
+    )
+    
+    # Reachability using boolean semiring
+    result = (
+        S.closure()
+         .semiring("boolean")
+         .from_layers(L["*"])
+         .execute(network)
+    )
+
+**Available semirings:**
+
+* ``min_plus`` — Shortest paths (tropical semiring)
+* ``boolean`` — Reachability (OR-AND algebra)
+* ``max_times`` — Widest paths (reliability)
+
+**Path constraints:**
+
+* ``.max_hops(k)`` — Limit path length to k hops
+* ``.crossing_layers("allowed")`` — Allow cross-layer edges
+* ``.witness(True)`` — Track witness paths
+
+**Example:** See ``examples/dsl_zoo/24_semiring_closure.py``
+
+.. code-block:: bash
+
+    python examples/dsl_zoo/24_semiring_closure.py
+
+**Use cases:**
+
+* Multi-hop analysis in multilayer networks
+* Layer-aware shortest paths
+* Network accessibility and connectivity analysis
+
+Compositional Uncertainty Quantification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Compositional UQ** extends basic uncertainty quantification to aggregate and ranking operations, providing uncertainty estimates for complex query results:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Per-layer aggregation with uncertainty
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .compute("degree", "clustering")
+         .per_layer()
+         .aggregate(
+             avg_degree="mean(degree)",
+             max_cluster="max(clustering)",
+             node_count="count()"
+         )
+         .uq(method="bootstrap", n_samples=20, ci=0.95, seed=42)
+         .execute(network)
+    )
+    
+    # Ranking with stability metrics
+    result = (
+        Q.nodes()
+         .compute("degree")
+         .order_by("-degree")
+         .limit(10)
+         .uq(method="perturbation", n_samples=50, seed=42)
+         .execute(network)
+    )
+
+**Key features:**
+
+* **Aggregate UQ:** Mean, median, max, min with confidence intervals
+* **Ranking stability:** Top-k selection with stability scores
+* **Coverage probability:** Membership probability in result sets
+* **Method support:** bootstrap, perturbation, seed-based resampling
+
+**Result structure:**
+
+Aggregates return dictionary values with uncertainty:
+
+.. code-block:: python
+
+    # Example aggregate result
+    {
+        'mean': 5.2,           # Point estimate
+        'std': 0.3,            # Standard error
+        'quantiles': {         # Confidence intervals
+            0.025: 4.8,
+            0.975: 5.6
+        },
+        'n_samples': 20
+    }
+
+**Example:** See ``examples/dsl_zoo/42_compositional_uq.py``
+
+.. code-block:: bash
+
+    python examples/dsl_zoo/42_compositional_uq.py
+
+**Use cases:**
+
+* Robust layer comparisons with statistical confidence
+* Stable hub identification in noisy networks
+* Uncertainty-aware decision making
+* Sensitivity analysis for network metrics
+
 Summary
 -------
 
@@ -781,13 +975,19 @@ This chapter covered:
 4. **Query integration** — Using Q.nodes() for targeted initial conditions
 5. **Parameter comparison** — Systematic exploration of parameter space
 6. **Result analysis** — Rich result objects with pandas export and plotting
-7. **Alternative APIs** — Dplyr-style, sklearn-style, and config-driven workflows
+7. **Field expressions (F)** — Type-safe boolean conditions with operator overloading
+8. **Semiring algebra (S)** — Path queries and closure operations with semiring semantics
+9. **Compositional UQ** — Uncertainty quantification for aggregates and rankings
+10. **Alternative APIs** — Dplyr-style, sklearn-style, and config-driven workflows
 
 **Key takeaways:**
 
 * The dynamics DSL follows the same design philosophy as the query DSL
 * Simulations are fully declarative and composable
 * Integration with query DSL enables sophisticated initial condition specification
+* F expressions provide type-safe filtering with natural Python operators
+* S builder enables semiring-based path analysis across layers
+* Compositional UQ propagates uncertainty through complex query pipelines
 * Results are analysis-ready with pandas, xarray, and plotting support
 * Choose API style based on your workflow needs: DSL (query-focused), graph_ops (data munging), pipeline (reproducibility), workflows (configuration)
 
