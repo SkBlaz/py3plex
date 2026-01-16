@@ -13,14 +13,13 @@ np.random.seed(43)
 net = multinet.multi_layer_network(directed=False)
 
 nodes = [f'N{i}' for i in range(40)]
-for node in nodes:
-    net.add_node(node, layer='network')
 
 # Generate edges with block structure AND degree heterogeneity
 # Block 0: nodes 0-19 (some hubs, some low-degree)
 # Block 1: nodes 20-39 (similar structure)
 node_propensities = np.random.gamma(2, 0.5, 40)  # Heterogeneous degrees
 
+edges = []
 for i in range(40):
     for j in range(i+1, 40):
         # Within-block: higher probability
@@ -32,7 +31,15 @@ for i in range(40):
         p = min(p, 0.9)  # Cap probability
         
         if np.random.rand() < p:
-            net.add_edge(nodes[i], nodes[j], layer_src='network', layer_dst='network')
+            edges.append({
+                'source': nodes[i],
+                'target': nodes[j],
+                'source_type': 'network',
+                'target_type': 'network'
+            })
+
+if edges:
+    net.add_edges(edges)
 
 # Compare standard SBM vs DC-SBM
 print("Fitting standard SBM...")

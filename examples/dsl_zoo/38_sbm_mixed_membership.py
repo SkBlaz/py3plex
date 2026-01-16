@@ -13,8 +13,6 @@ np.random.seed(44)
 net = multinet.multi_layer_network(directed=False)
 
 nodes = [f'N{i}' for i in range(30)]
-for node in nodes:
-    net.add_node(node, layer='social')
 
 # Create soft membership ground truth
 # Most nodes belong primarily to one community
@@ -51,13 +49,22 @@ B = np.array([
     [0.05, 0.05, 0.5]
 ])
 
+edges = []
 for i in range(n_nodes):
     for j in range(i+1, n_nodes):
         # Probability of edge based on soft memberships and B
         p = np.dot(true_soft_membership[i], np.dot(B, true_soft_membership[j]))
         
         if np.random.rand() < p:
-            net.add_edge(nodes[i], nodes[j], layer_src='social', layer_dst='social')
+            edges.append({
+                'source': nodes[i],
+                'target': nodes[j],
+                'source_type': 'social',
+                'target_type': 'social'
+            })
+
+if edges:
+    net.add_edges(edges)
 
 # Fit MMSBM
 print("Fitting mixed-membership SBM...")

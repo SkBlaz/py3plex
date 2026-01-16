@@ -40,17 +40,23 @@ B_matrices = {
 }
 
 # Generate edges for each layer
+edges = []
 for layer in layers:
-    for node in nodes:
-        net.add_node(node, layer=layer)
-    
     B = B_matrices[layer]
     for i in range(n_nodes):
         for j in range(i+1, n_nodes):
             p = B[block_assignments[i], block_assignments[j]]
             
             if np.random.rand() < p:
-                net.add_edge(nodes[i], nodes[j], layer_src=layer, layer_dst=layer)
+                edges.append({
+                    'source': nodes[i],
+                    'target': nodes[j],
+                    'source_type': layer,
+                    'target_type': layer
+                })
+
+if edges:
+    net.add_edges(edges)
 
 # Fit multilayer SBM with shared memberships
 print("Fitting multilayer SBM with shared memberships...")

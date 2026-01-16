@@ -26,10 +26,8 @@ base_B = np.array([
 ])
 
 # Generate edges for each layer
+edges = []
 for layer in layers:
-    for node in nodes:
-        net.add_node(node, layer=layer)
-    
     # Add small layer-specific noise
     noise = np.random.randn(2, 2) * 0.05
     B = np.clip(base_B + noise, 0.01, 0.99)
@@ -40,7 +38,15 @@ for layer in layers:
             p = B[block_assignments[i], block_assignments[j]]
             
             if np.random.rand() < p:
-                net.add_edge(nodes[i], nodes[j], layer_src=layer, layer_dst=layer)
+                edges.append({
+                    'source': nodes[i],
+                    'target': nodes[j],
+                    'source_type': layer,
+                    'target_type': layer
+                })
+
+if edges:
+    net.add_edges(edges)
 
 # Fit with independent mode (baseline)
 print("Fitting independent SBM (no coupling)...")
