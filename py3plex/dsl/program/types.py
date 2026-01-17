@@ -102,7 +102,11 @@ class Type:
         
         # Handle types with metadata
         if type_name == "TableType":
-            return TableType(columns=data.get("columns", {}))
+            columns_data = data.get("columns", {})
+            columns = {}
+            for col_name, col_type_data in columns_data.items():
+                columns[col_name] = cls.from_dict(col_type_data)
+            return TableType(columns=columns)
         elif type_name == "NodeSetType":
             layers = data.get("layers")
             return NodeSetType(
@@ -117,6 +121,10 @@ class Type:
             )
         elif type_name == "PartitionType":
             return PartitionType(partition_name=data.get("partition_name"))
+        elif type_name == "TimeSeriesType":
+            element_type_data = data.get("element_type")
+            element_type = cls.from_dict(element_type_data) if element_type_data else ScalarType()
+            return TimeSeriesType(element_type=element_type)
         
         return type_cls()
 
@@ -639,10 +647,15 @@ def _to_table_type(source_type: Type, stmt: SelectStmt) -> TableType:
     columns = {}
     
     # Add base columns based on source type
-    if isinstance(source_type, NodeSetType) or isinstance(source_type, (DistributionType)) and isinstance(source_type.inner, NodeSetType):
+    is_nodeset = (isinstance(source_type, NodeSetType) or 
+                  (isinstance(source_type, DistributionType) and isinstance(source_type.inner, NodeSetType)))
+    is_edgeset = (isinstance(source_type, EdgeSetType) or 
+                  (isinstance(source_type, DistributionType) and isinstance(source_type.inner, EdgeSetType)))
+    
+    if is_nodeset:
         columns["node"] = StringType()
         columns["layer"] = StringType()
-    elif isinstance(source_type, EdgeSetType) or isinstance(source_type, (DistributionType)) and isinstance(source_type.inner, EdgeSetType):
+    elif is_edgeset:
         columns["source"] = StringType()
         columns["target"] = StringType()
         columns["source_layer"] = StringType()
