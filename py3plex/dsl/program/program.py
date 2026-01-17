@@ -448,27 +448,19 @@ class GraphProgram:
         Returns:
             Reconstructed GraphProgram
         
+        Raises:
+            NotImplementedError: AST deserialization is complex and not yet implemented
+        
         Example:
             >>> program_dict = program.to_dict()
             >>> restored = GraphProgram.from_dict(program_dict)
             >>> assert restored.hash() == program.hash()
         """
-        # Reconstruct AST from dict
-        ast = _ast_from_dict(data["canonical_ast"])
-        
-        # Reconstruct metadata
-        metadata = ProgramMetadata.from_dict(data["metadata"])
-        
-        # Reconstruct type signature
-        from .types import Type
-        type_signature = Type.from_dict(data["type_signature"])
-        
-        # Create program (this will recompute hash and verify consistency)
-        return cls(
-            canonical_ast=ast,
-            type_signature=type_signature,
-            program_hash=data["program_hash"],
-            metadata=metadata,
+        # AST deserialization is complex and requires complete reconstruction
+        # of all AST node types. This is deferred for future implementation.
+        raise NotImplementedError(
+            "AST deserialization not yet implemented. "
+            "Use GraphProgram.from_ast() to create programs."
         )
 
 
@@ -567,20 +559,6 @@ def _layer_expr_to_dict(layer_expr) -> Dict[str, Any]:
             "ops": layer_expr.ops,
         }
     return {}
-
-
-def _ast_from_dict(data: Dict[str, Any]) -> Query:
-    """Reconstruct AST from dictionary.
-    
-    This is a simplified implementation - full reconstruction would
-    require complete AST deserialization logic.
-    """
-    # For now, raise NotImplementedError - full deserialization is complex
-    # and should be implemented when caching is needed
-    raise NotImplementedError(
-        "AST deserialization not yet implemented. "
-        "Use GraphProgram.from_ast() to create programs."
-    )
 
 
 def _merge_asts(ast1: Query, ast2: Query) -> Query:
