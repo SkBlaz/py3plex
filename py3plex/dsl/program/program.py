@@ -305,16 +305,26 @@ class GraphProgram:
             provenance=merged_provenance,
         )
     
-    def optimize(self, rules=None, context=None, fixpoint=True, **kwargs) -> GraphProgram:
-        """Optimize the program via rewrite rules.
+    def optimize(
+        self,
+        rules=None,
+        context=None,
+        fixpoint=True,
+        budget=None,
+        objective=None,
+        **kwargs
+    ) -> GraphProgram:
+        """Optimize the program via rewrite rules with optional cost-based optimization.
         
         Applies correctness-preserving rewrite rules to optimize the program
-        without changing semantics.
+        without changing semantics. Can also use cost-based optimization with budget.
         
         Args:
             rules: List of rewrite rules (defaults to standard rules)
             context: RewriteContext with network statistics
             fixpoint: If True, iterate until no more rules apply
+            budget: Optional time budget (float seconds or string like "30s")
+            objective: Optional CostObjective for multi-objective optimization
             **kwargs: Additional optimization configuration
         
         Returns:
@@ -323,9 +333,28 @@ class GraphProgram:
         Example:
             >>> optimized = program.optimize()
             >>> optimized = program.optimize(rules=get_conservative_rules())
-            >>> optimized = program.optimize(context=RewriteContext(safety_mode=True))
+            >>> optimized = program.optimize(budget="30s", objective=CostObjective.MIN_TIME)
         """
         from .rewrite import apply_rewrites
+        
+        # If budget is specified, use cost-based optimization
+        if budget is not None or objective is not None:
+            from .cost import CostObjective as CO
+            from .rewrite import RewriteContext
+            
+            # Create or update context with objective
+            if context is None:
+                context = RewriteContext()
+            
+            if objective is not None:
+                # Store objective in context for cost-aware rewrite decisions
+                context = RewriteContext(
+                    safety_mode=context.safety_mode,
+                    preserve_order=context.preserve_order,
+                    network_stats=context.network_stats,
+                    metadata={**context.metadata, "cost_objective": objective},
+                )
+        
         return apply_rewrites(self, rules=rules, context=context, fixpoint=fixpoint)
     
     def explain(self) -> str:

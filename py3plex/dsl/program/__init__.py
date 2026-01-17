@@ -74,6 +74,27 @@ from .rewrite import (
     get_conservative_rules,
 )
 
+from .cost import (
+    Cost,
+    CostModel,
+    CostObjective,
+    GraphStats,
+    parse_time_budget,
+    format_time_estimate,
+    format_memory_estimate,
+)
+
+from .executor import (
+    ExecutionContext,
+    ExecutionPlan,
+    PlanStage,
+    BudgetExceededError,
+    ExecutionTimeoutError,
+    create_execution_plan,
+    execute_program,
+    estimate_program_cost,
+)
+
 __all__ = [
     # Types
     "GraphType",
@@ -108,4 +129,21 @@ __all__ = [
     "get_standard_rules",
     "get_aggressive_rules",
     "get_conservative_rules",
+    # Cost Model
+    "Cost",
+    "CostModel",
+    "CostObjective",
+    "GraphStats",
+    "parse_time_budget",
+    "format_time_estimate",
+    "format_memory_estimate",
+    # Executor
+    "ExecutionContext",
+    "ExecutionPlan",
+    "PlanStage",
+    "BudgetExceededError",
+    "ExecutionTimeoutError",
+    "create_execution_plan",
+    "execute_program",
+    "estimate_program_cost",
 ]
