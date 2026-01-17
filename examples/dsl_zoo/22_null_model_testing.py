@@ -1,6 +1,6 @@
 # Null-model statistical testing
 from py3plex.core import multinet
-from py3plex.dsl import N, L
+from py3plex.dsl import N
 
 net = multinet.multi_layer_network(directed=False)
 net.add_nodes([{'source': f'N{i}', 'type': 'social'} for i in range(15)])
@@ -20,5 +20,4 @@ result = (
     .execute(net)
 )
 
-print("Generated", result.n_samples if hasattr(result, 'n_samples') else len(result) if hasattr(result, '__len__') else "N/A", "null model samples")
-print(type(result).__name__)
+print("Null model samples:", result.n_samples if hasattr(result, "n_samples") else len(result))

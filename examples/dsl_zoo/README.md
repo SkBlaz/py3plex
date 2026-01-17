@@ -45,7 +45,7 @@ Each example demonstrates a specific DSL feature with:
 - `18_query_communities.py` - Query communities via Q.communities() with summarise
 - `19_community_uq.py` - Community detection with uncertainty quantification
 - `20_auto_community_shortcut.py` - AutoCommunity DSL shortcut with auto_select()
-- `21_auto_community_flagship.py` - Full AutoCommunity with Pareto, UQ, null calibration
+- `21_auto_community_flagship.py` - Full AutoCommunity with Pareto + null calibration
 
 ### Advanced Features (22-25)
 - `22_null_model_testing.py` - Null model generation using N.configuration()
@@ -69,12 +69,12 @@ Each example demonstrates a specific DSL feature with:
 
 ```bash
 # Run a single example
-python examples/dsl_zoo/01_per_layer_top_hubs.py
+uv run python examples/dsl_zoo/01_per_layer_top_hubs.py
 
 # Run all examples
 for f in examples/dsl_zoo/*.py; do
     echo "Running $f..."
-    python "$f"
+    uv run python "$f"
 done
 ```
 

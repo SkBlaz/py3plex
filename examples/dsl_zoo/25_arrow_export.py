@@ -19,17 +19,16 @@ result = (
 # Export to Arrow format
 try:
     arrow_table = result.to_arrow()
-    print("Arrow table exported successfully!")
     print(f"Schema: {arrow_table.schema}")
     print(f"Rows: {arrow_table.num_rows}")
-    
-    # Optionally save to file
+
+    # Optional: save to Parquet if pyarrow is available
     import pyarrow.parquet as pq
-    output_path = "/home/runner/work/py3plex/py3plex/examples/dsl_zoo/out_pagerank.parquet"
+    output_path = "examples/dsl_zoo/out_pagerank.parquet"
     pq.write_table(arrow_table, output_path)
     print(f"Saved to: {output_path}")
 except ImportError:
-    print("PyArrow not installed, showing pandas instead:")
+    print("PyArrow not installed; showing pandas instead:")
     print(result.to_pandas().head())
 except Exception as e:
     print(f"Export failed: {e}")

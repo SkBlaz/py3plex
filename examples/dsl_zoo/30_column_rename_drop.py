@@ -13,7 +13,7 @@ result = (
     Q.nodes()
     .from_layers(L["*"])
     .compute("degree", "pagerank", "betweenness_centrality")
-    .rename(node_id="id", pr="pagerank")
+    .rename(pr="pagerank")
     .drop("betweenness_centrality")
     .execute(net)
 )

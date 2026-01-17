@@ -26,4 +26,5 @@ result = (
     .execute(net)
 )
 
-print("Edge count between gene and disease layers:", result.attributes.get('count', {}).get('__global__', 0))
+count = result.attributes.get("count", {}).get("__global__", 0)
+print("Edge count between gene and disease layers:", count)

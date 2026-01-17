@@ -25,7 +25,7 @@ result = (
     Q.nodes()
     .from_layers(L["social"] + L["work"])
     .compute("pagerank")
-    .order_by("-pagerank")
+    .order_by("pagerank", desc=True)
     .limit(20)
     .execute(net)
 )

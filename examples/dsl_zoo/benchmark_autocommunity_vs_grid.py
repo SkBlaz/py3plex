@@ -106,5 +106,5 @@ else:
     print("\n=== Run-level Results (sample) ===")
     print(df.head(10))
 
-print("\n✅ Benchmark complete!")
+print("\nBenchmark complete.")
 print(f"Total runtime: {res.meta.get('benchmark', {}).get('total_runtime_ms', 0):.1f} ms")

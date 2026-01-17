@@ -1,4 +1,4 @@
-# Field expressions (F.attr) for complex filtering
+# Field expressions (F.attr) for filtering
 from py3plex.core import multinet
 from py3plex.dsl import Q, L, F
 
@@ -16,7 +16,7 @@ result = (
     Q.nodes()
     .from_layers(L["*"])
     .compute("degree", "clustering")
-    .where((F.degree > 2) & (F.clustering < 0.5))
+    .where(F.degree >= 2)
     .execute(net)
 )
 

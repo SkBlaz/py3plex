@@ -88,4 +88,4 @@ if hasattr(res, "benchmark"):
     else:
         print("(Pareto front not available)")
 
-print("\n✅ Budget fairness demo complete!")
+print("\nBudget fairness demo complete.")

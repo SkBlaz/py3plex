@@ -68,7 +68,7 @@ if hasattr(result, 'leaderboard') and result.leaderboard is not None:
     if 'contestant_id' in leaderboard_df.columns:
         sbm_rows = leaderboard_df[leaderboard_df['contestant_id'].str.contains('sbm', case=False)]
         if len(sbm_rows) > 0:
-            print(f"\n✓ SBM variants were evaluated: {len(sbm_rows)}")
+            print(f"\nSBM variants evaluated: {len(sbm_rows)}")
         else:
             print("\n(SBM may not have been included due to fast=True limiting candidates)")
 else:
@@ -81,7 +81,7 @@ print(f"\nCommunity sizes: {dict(sorted(comm_sizes.items()))}")
 
 # If winner is SBM, show additional info
 if 'sbm' in result.algorithm['name'].lower():
-    print("\n🎉 SBM was selected as the best algorithm!")
+    print("\nSBM was selected as the best algorithm.")
     if 'mode' in result.algorithm.get('params', {}):
         print(f"   Mode: {result.algorithm['params']['mode']}")
     if 'n_blocks' in result.algorithm.get('params', {}):
