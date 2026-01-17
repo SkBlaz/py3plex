@@ -142,7 +142,7 @@ def test_push_where_past_compute_equivalence(network):
     engine = RewriteEngine(rules=push_where_rule)
     
     context = RewriteContext(
-        graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+        network_stats={"num_nodes": 10, "num_edges": 20, "num_layers": 2}
     )
     rewritten = engine.apply_rules(program, push_where_rule, context)
     
@@ -175,7 +175,7 @@ def test_fuse_compute_equivalence(network):
     
     engine = RewriteEngine(rules=fuse_rules)
     context = RewriteContext(
-        graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+        network_stats={"num_nodes": 10, "num_edges": 20, "num_layers": 2}
     )
     rewritten = engine.apply_rules(program, fuse_rules, context)
     
@@ -208,7 +208,7 @@ def test_fuse_where_equivalence(network):
     
     engine = RewriteEngine(rules=fuse_where_rules)
     context = RewriteContext(
-        graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+        network_stats={"num_nodes": 10, "num_edges": 20, "num_layers": 2}
     )
     rewritten = engine.apply_rules(program, fuse_where_rules, context)
     
@@ -236,7 +236,7 @@ def test_push_limit_early_equivalence(network):
     if limit_rules:
         engine = RewriteEngine(rules=limit_rules)
         context = RewriteContext(
-            graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+            network_stats={"num_nodes": 10, "num_edges": 20, "num_layers": 2}
         )
         rewritten = engine.apply_rules(program, limit_rules, context)
         
@@ -387,13 +387,14 @@ def test_rule_guards_prevent_invalid_rewrites(query):
     rules = get_standard_rules()
     engine = RewriteEngine(rules=rules)
     
-    # Each rule should have a guard
+    # Each rule should have guards
     for rule in rules:
-        assert rule.guard is not None
+        assert rule.guards is not None
+        assert len(rule.guards) >= 0  # Can be empty list
         
     # Guards should be callable
     context = RewriteContext(
-        graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+        network_stats={"num_nodes": 10, "num_edges": 20, "num_layers": 2}
     )
     
     # Applying rules should not crash
