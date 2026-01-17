@@ -229,7 +229,7 @@ def test_push_limit_early_equivalence(network):
         .limit(5)
         .to_program())
     
-        rules = get_aggressive_rules()
+    rules = get_aggressive_rules()
     limit_rules = [r for r in rules if "limit" in r.name.lower() or "top_k" in r.name.lower()]
     
     if limit_rules:
@@ -260,7 +260,7 @@ def test_multiple_rewrites_preserve_semantics(network, query):
     """Property: Applying multiple rewrites preserves semantics."""
     program = query.to_program()
     
-        # Apply all standard rules
+    # Apply all standard rules
     rewritten = apply_rewrites(program, get_standard_rules())
     
     # Execute both
@@ -284,7 +284,7 @@ def test_aggressive_rewrites_preserve_semantics(network, query):
     """Property: Aggressive optimization preserves semantics."""
     program = query.to_program()
     
-        # Apply aggressive rules
+    # Apply aggressive rules
     rewritten = apply_rewrites(program, get_aggressive_rules())
     
     result1 = program.execute(network)
@@ -305,7 +305,7 @@ def test_rewrite_preserves_type_validity(query):
     """Property: Rewrites preserve type validity."""
     program = query.to_program()
     
-        # Original should be type-valid
+    # Original should be type-valid
     from py3plex.dsl.program import type_check
     assert type_check(program.canonical_ast)
     
@@ -321,7 +321,7 @@ def test_rewrite_preserves_hash_determinism(query):
     """Property: Rewritten programs have stable hashes."""
     program = query.to_program()
     
-        rewritten = apply_rewrites(program, get_standard_rules())
+    rewritten = apply_rewrites(program, get_standard_rules())
     
     # Hash should be stable
     hash1 = rewritten.hash()
@@ -338,7 +338,7 @@ def test_rewrite_produces_valid_provenance(query):
     """Property: Rewrites update provenance correctly."""
     program = query.to_program()
     
-        rewritten = apply_rewrites(program, get_standard_rules())
+    rewritten = apply_rewrites(program, get_standard_rules())
     
     # Provenance should exist
     assert rewritten.metadata is not None
@@ -360,7 +360,7 @@ def test_rewrite_idempotence(query):
     """Property: Applying rewrites twice gives same result as once."""
     program = query.to_program()
     
-        rules = get_standard_rules()
+    rules = get_standard_rules()
     
     # Apply once
     rewritten_once = apply_rewrites(program, rules)
@@ -383,7 +383,7 @@ def test_rule_guards_prevent_invalid_rewrites(query):
     """Property: Rule guards prevent application when preconditions not met."""
     program = query.to_program()
     
-        engine = RewriteEngine()
+    engine = RewriteEngine()
     rules = get_standard_rules()
     
     # Each rule should have a guard
@@ -411,7 +411,7 @@ def test_rewrite_cost_estimate_valid(query):
     """Property: Cost estimates remain valid after rewrites."""
     program = query.to_program()
     
-        from py3plex.dsl.program import CostModel, GraphStats
+    from py3plex.dsl.program import CostModel, GraphStats
     
     cost_model = CostModel()
     stats = GraphStats(num_nodes=100, num_edges=500, num_layers=2)
@@ -441,7 +441,7 @@ def test_rewrite_empty_program():
     """Property: Rewriting minimal programs doesn't break them."""
     program = Q.nodes().to_program()
     
-        rewritten = apply_rewrites(program, get_standard_rules())
+    rewritten = apply_rewrites(program, get_standard_rules())
     
     # Should still be valid
     from py3plex.dsl.program import type_check
@@ -457,7 +457,7 @@ def test_rewrite_with_no_optimizations(network):
     # Simple program that can't be optimized much
     program = Q.nodes().to_program()
     
-        rewritten = apply_rewrites(program, get_standard_rules())
+    rewritten = apply_rewrites(program, get_standard_rules())
     
     # Should execute successfully
     result = rewritten.execute(network)
