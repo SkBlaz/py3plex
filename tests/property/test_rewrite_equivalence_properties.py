@@ -131,7 +131,6 @@ def test_push_where_past_compute_equivalence(network):
         .to_program())
     
     # Get the push_where_past_compute rule
-    engine = RewriteEngine()
     rules = get_standard_rules()
     push_where_rule = [r for r in rules if "push_where" in r.name.lower()]
     
@@ -139,6 +138,8 @@ def test_push_where_past_compute_equivalence(network):
         # Skip if rule not found
         assume(False)
         return
+    
+    engine = RewriteEngine(rules=push_where_rule)
     
     context = RewriteContext(
         graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
@@ -172,7 +173,7 @@ def test_fuse_compute_equivalence(network):
         assume(False)
         return
     
-    engine = RewriteEngine()
+    engine = RewriteEngine(rules=fuse_rules)
     context = RewriteContext(
         graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
     )
@@ -205,7 +206,7 @@ def test_fuse_where_equivalence(network):
         assume(False)
         return
     
-    engine = RewriteEngine()
+    engine = RewriteEngine(rules=fuse_where_rules)
     context = RewriteContext(
         graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
     )
@@ -233,7 +234,7 @@ def test_push_limit_early_equivalence(network):
     limit_rules = [r for r in rules if "limit" in r.name.lower() or "top_k" in r.name.lower()]
     
     if limit_rules:
-        engine = RewriteEngine()
+        engine = RewriteEngine(rules=limit_rules)
         context = RewriteContext(
             graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
         )
@@ -383,8 +384,8 @@ def test_rule_guards_prevent_invalid_rewrites(query):
     """Property: Rule guards prevent application when preconditions not met."""
     program = query.to_program()
     
-    engine = RewriteEngine()
     rules = get_standard_rules()
+    engine = RewriteEngine(rules=rules)
     
     # Each rule should have a guard
     for rule in rules:
