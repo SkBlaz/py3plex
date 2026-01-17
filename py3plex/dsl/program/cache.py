@@ -53,9 +53,27 @@ def graph_fingerprint(network: Any) -> str:
         64-character hex hash of network structure
     """
     # Extract network properties in deterministic order
+    layers_list = []
+    try:
+        if hasattr(network, "get_layers"):
+            layers = network.get_layers()
+            # Extract stable layer identifiers, handling MultiGraph objects
+            for layer in layers:
+                if hasattr(layer, "name"):
+                    # NetworkX graph with a name attribute
+                    layers_list.append(str(layer.name) if layer.name is not None else repr(type(layer)))
+                elif hasattr(layer, "__class__"):
+                    # Use the class name as identifier for graph objects
+                    # This avoids memory addresses in the repr
+                    layers_list.append(f"{layer.__class__.__name__}")
+                else:
+                    layers_list.append(str(layer))
+    except Exception:
+        pass
+    
     data = {
         "directed": getattr(network, "directed", False),
-        "layers": sorted([str(layer) for layer in getattr(network, "get_layers", lambda: [])()]),
+        "layers": sorted(layers_list),
     }
     
     # Get nodes and edges in sorted order
