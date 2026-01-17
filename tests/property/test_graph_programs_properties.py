@@ -56,22 +56,32 @@ def small_multilayer_network(draw):
     
     net = multinet.multi_layer_network(directed=False)
     
-    # Add nodes to each layer
+    # Add nodes to each layer using correct API
     nodes = [f"n{i}" for i in range(num_nodes)]
     layers = [f"layer{i}" for i in range(num_layers)]
     
+    node_list = []
     for layer in layers:
         for node in nodes:
-            net.add_node(node, layer=layer)
+            node_list.append({"source": node, "type": layer})
+    net.add_nodes(node_list)
     
     # Add some edges
     num_edges = draw(st.integers(min_value=num_nodes, max_value=num_nodes * 2))
+    edge_list = []
     for _ in range(num_edges):
         src = draw(st.sampled_from(nodes))
         tgt = draw(st.sampled_from(nodes))
         layer = draw(st.sampled_from(layers))
         if src != tgt:
-            net.add_edge(src, tgt, layer_from=layer, layer_to=layer)
+            edge_list.append({
+                "source": src,
+                "target": tgt,
+                "source_type": layer,
+                "target_type": layer
+            })
+    if edge_list:
+        net.add_edges(edge_list)
     
     return net
 
@@ -196,7 +206,6 @@ def test_type_inference_deterministic(query_builder):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
 def test_node_query_returns_nodeset_type():
     """Property: Node queries always return NodeSet or Table type."""
     program = Q.nodes().to_program()
@@ -207,7 +216,6 @@ def test_node_query_returns_nodeset_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
 def test_edge_query_returns_edgeset_type():
     """Property: Edge queries always return EdgeSet or Table type."""
     program = Q.edges().to_program()
@@ -510,7 +518,6 @@ def test_program_metadata_exists(query_builder):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_empty_program_valid():
     """Property: Minimal programs are valid."""
     program = Q.nodes().to_program()

@@ -47,19 +47,29 @@ def random_multilayer_network(draw):
     nodes = [f"node{i}" for i in range(num_nodes)]
     layers = [f"L{i}" for i in range(num_layers)]
     
-    # Add all nodes to all layers
+    # Add all nodes to all layers using correct API
+    node_list = []
     for layer in layers:
         for node in nodes:
-            net.add_node(node, layer=layer)
+            node_list.append({"source": node, "type": layer})
+    net.add_nodes(node_list)
     
     # Add edges based on density
     import random
     random.seed(42)  # Deterministic for reproducibility
+    edge_list = []
     for layer in layers:
         for i, src in enumerate(nodes):
             for tgt in nodes[i+1:]:
                 if random.random() < density:
-                    net.add_edge(src, tgt, layer_from=layer, layer_to=layer)
+                    edge_list.append({
+                        "source": src,
+                        "target": tgt,
+                        "source_type": layer,
+                        "target_type": layer
+                    })
+    if edge_list:
+        net.add_edges(edge_list)
     
     return net
 
@@ -453,7 +463,6 @@ def test_rewrite_cost_estimate_valid(query):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_rewrite_empty_program():
     """Property: Rewriting minimal programs doesn't break them."""
     program = Q.nodes().to_program()
