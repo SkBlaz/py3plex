@@ -95,6 +95,36 @@ from .executor import (
     estimate_program_cost,
 )
 
+from .distribution import (
+    Distribution,
+    UQMode,
+    UQMetadata,
+    propagate_distribution,
+)
+
+from .cache import (
+    ProgramCache,
+    CacheKey,
+    graph_fingerprint,
+    program_fingerprint,
+    execution_fingerprint,
+    environment_signature,
+    get_global_cache,
+    clear_global_cache,
+)
+
+from .diff import (
+    ProgramDiff,
+    DiffNode,
+    DiffType,
+    diff_programs,
+)
+
+from .explain import (
+    ExplainResult,
+    explain_program,
+)
+
 __all__ = [
     # Types
     "GraphType",
@@ -146,4 +176,26 @@ __all__ = [
     "create_execution_plan",
     "execute_program",
     "estimate_program_cost",
+    # Distribution
+    "Distribution",
+    "UQMode",
+    "UQMetadata",
+    "propagate_distribution",
+    # Cache
+    "ProgramCache",
+    "CacheKey",
+    "graph_fingerprint",
+    "program_fingerprint",
+    "execution_fingerprint",
+    "environment_signature",
+    "get_global_cache",
+    "clear_global_cache",
+    # Diff
+    "ProgramDiff",
+    "DiffNode",
+    "DiffType",
+    "diff_programs",
+    # Explain
+    "ExplainResult",
+    "explain_program",
 ]
