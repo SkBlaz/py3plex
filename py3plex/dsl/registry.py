@@ -236,6 +236,22 @@ def _compute_clustering(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any, 
     return nx.clustering(G)
 
 
+@measure_registry.register("triangles", description="Number of triangles per node")
+def _compute_triangles(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any, int]:
+    """Compute number of triangles for each node.
+    
+    Note: NetworkX triangles is not implemented for MultiGraphs.
+    If G is a MultiGraph, we convert it to a simple Graph by removing
+    parallel edges (keeping the edge with maximum weight if weights exist).
+    """
+    # Convert to simple graph if needed
+    G = _convert_multigraph_to_simple(G)
+    
+    if nodes is not None:
+        return {node: nx.triangles(G, node) for node in nodes if node in G}
+    return nx.triangles(G)
+
+
 @measure_registry.register("communities", aliases=["community"],
                           description="Community detection (Louvain)")
 def _compute_communities(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any, int]:

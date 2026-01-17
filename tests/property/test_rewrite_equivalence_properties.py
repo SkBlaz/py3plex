@@ -438,7 +438,6 @@ def test_rewrite_cost_estimate_valid(query):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.filter_too_much])
 def test_rewrite_empty_program():
     """Property: Rewriting minimal programs doesn't break them."""
     program = Q.nodes().to_program()
