@@ -116,10 +116,6 @@ def complex_node_query(draw):
 # ============================================================================
 
 @pytest.mark.property
-@pytest.mark.skipif(
-    not hasattr(Q.nodes(), 'to_program'),
-    reason="Graph Programs not fully integrated"
-)
 @settings(
     deadline=None,
     max_examples=15,
