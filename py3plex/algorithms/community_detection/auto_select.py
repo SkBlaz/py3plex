@@ -337,6 +337,8 @@ def _auto_select_pareto(
                 "fast_mode": fast,
                 "max_candidates": max_candidates,
                 "uq_enabled": uq_config is not None,
+                "uq_n_samples": uq_n_samples if uq_config else None,
+                "uq_method": uq_method if uq_config else None,
                 "null_model_enabled": null_model,
                 "seed": seed,
             },
