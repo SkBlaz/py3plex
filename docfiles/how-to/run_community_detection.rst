@@ -2737,6 +2737,169 @@ Automatic Algorithm Selection (AutoCommunity)
 
 See AGENTS.md for complete API documentation.
 
+Hierarchical Flow-Based Community Detection
+--------------------------------------------
+
+**Goal:** Detect hierarchical community structure based on flow/diffusion dynamics rather than modularity optimization.
+
+**What is hierarchical flow-based detection?**
+
+Unlike modularity-based methods (Louvain, Leiden) that optimize a single quality function, hierarchical flow-based community detection (HFCD) identifies communities as sets of nodes that **retain probability mass** under random walk dynamics for longer times than expected by chance. The hierarchy emerges naturally from observing how flow-based communities merge as diffusion time increases.
+
+**Key concepts:**
+
+* **Communities = flow retention**: Groups that trap random walkers internally
+* **Hierarchy = time scales**: Different community structures at different diffusion times
+* **No resolution parameter**: Hierarchy levels correspond to stability plateaus
+* **Multilayer-aware**: Native support for interlayer coupling via :math:`\alpha` parameter
+
+**Mathematical foundation:**
+
+For a multilayer network, construct transition operator:
+
+.. math::
+
+    P = \alpha P_{\text{intra}} + (1-\alpha) P_{\text{inter}}
+
+where :math:`\alpha \in [0,1]` controls interlayer coupling. Flow affinity at scale :math:`t`:
+
+.. math::
+
+    F(t) = \sum_{k=1}^{t} P^k, \quad S_{ij}(t) = \frac{F_{ij}(t) + F_{ji}(t)}{2}
+
+Community quality (flow retention):
+
+.. math::
+
+    \text{FlowRetention}(C, t) = \frac{\text{internal flow}}{\text{total flow}}
+
+**Basic example:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.community_detection import flow_hierarchical_communities
+    
+    # Load network
+    network = multinet.multi_layer_network(directed=False)
+    network.load_network(
+        "datasets/synthetic_multilayer.txt",
+        input_type="multiedgelist"
+    )
+    
+    # Run hierarchical flow detection
+    result = flow_hierarchical_communities(
+        network,
+        approx="mc",      # Monte Carlo (scalable) or "exact"
+        alpha=0.8,        # Interlayer coupling (0=full, 1=independent)
+        n_walks=100,      # MC walks per node
+        seed=42           # Reproducibility
+    )
+    
+    # Access best partition (maximum stability)
+    partition = result.get_partition()
+    
+    # Get partition with specific number of communities
+    partition_3 = result.get_flat_partition(n_communities=3)
+    
+    # Display hierarchy
+    print(result.summary())
+    
+    # Explore all hierarchy levels
+    for scale, part in result.hierarchy_levels.items():
+        stability = result.stability_scores[scale]
+        n_comms = len(set(part.values()))
+        print(f"Scale {scale}: {n_comms} communities (stability={stability:.3f})")
+
+**Expected output:**
+
+.. code-block:: text
+
+    ======================================================================
+    Hierarchical Flow-Based Community Detection Results
+    ======================================================================
+    Total nodes: 120
+    Hierarchy levels detected: 4
+    Scale range: [1.00, 8.00]
+    
+    Best partition (max stability):
+      Scale: 4.00
+      Stability: 0.8523
+      Communities: 5
+    
+    Scale 1.0: 120 communities (stability=1.000)
+    Scale 2.0: 12 communities (stability=0.912)
+    Scale 4.0: 5 communities (stability=0.852)
+    Scale 8.0: 2 communities (stability=0.734)
+
+**Result structure:**
+
+The ``FlowHierarchyResult`` object contains:
+
+* ``dendrogram``: List of merge events (comm_i, comm_j, scale, stability_before, stability_after)
+* ``hierarchy_levels``: Dict[scale → partition] at all detected levels
+* ``stability_scores``: Flow retention at each scale (range [0,1])
+* ``merge_scales``: Array of scales where merges occurred
+* ``metadata``: Algorithm config (flow_type, alpha, approx, seed, scale_schedule)
+
+**Multilayer-specific parameters:**
+
+.. code-block:: python
+
+    # High alpha (0.9): Layers mostly independent
+    result_high = flow_hierarchical_communities(net, alpha=0.9, seed=42)
+    
+    # Low alpha (0.2): Strong interlayer coupling
+    result_low = flow_hierarchical_communities(net, alpha=0.2, seed=42)
+    
+    # Communities bridge layers based on alpha
+
+**Approximation methods:**
+
+* **Monte Carlo (approx="mc")**: Memory-efficient O(n × walks), slight randomness (use seed)
+* **Exact (approx="exact")**: Deterministic O(n²), memory-intensive for large networks
+
+**Algorithm complexity:**
+
+* **Time**: O(t × m × k) where t=scales, m=edges, k=merges
+* **Space**: O(n²) exact, O(n × walks) Monte Carlo
+* **Recommended**: n < 10,000 (exact) or n < 100,000 (MC)
+
+**When to use:**
+
+* Understanding hierarchical organization at multiple scales
+* Networks where modularity optimization may miss structure
+* Multilayer networks with different layer coupling strengths
+* Temporal networks where communities evolve across time slices
+* Comparing with flow-based baselines (Infomap, Markov Stability)
+
+**Comparison with other methods:**
+
++-------------------+---------------------------+---------------------------+
+| Aspect            | Flow Hierarchy            | Louvain/Leiden            |
++===================+===========================+===========================+
+| Quality metric    | Flow retention            | Modularity                |
++-------------------+---------------------------+---------------------------+
+| Hierarchy         | Full dendrogram           | Flat partition            |
++-------------------+---------------------------+---------------------------+
+| Scale selection   | Stability plateaus        | Resolution parameter γ    |
++-------------------+---------------------------+---------------------------+
+| Multilayer        | Native (α coupling)       | Requires ω parameter      |
++-------------------+---------------------------+---------------------------+
+| Determinism       | Seed-controlled (MC/exact)| Heuristic-dependent       |
++-------------------+---------------------------+---------------------------+
+
+**Examples:**
+
+* Basic usage: :download:`example_flow_hierarchy_basic.py <../../examples/communities/example_flow_hierarchy_basic.py>`
+* Multilayer with alpha variations: :download:`example_flow_hierarchy_multilayer.py <../../examples/communities/example_flow_hierarchy_multilayer.py>`
+
+**References:**
+
+* Schaub et al., "Markov Dynamics as a Zooming Lens for Multiscale Community Detection", *PLoS ONE* 7(2): e32210 (2012)
+* Delvenne et al., "Stability of graph communities across time scales", *PNAS* 107(29): 12755-12760 (2010)
+* Lambiotte et al., "Random Walks, Markov Processes and the Multiscale Modular Organization of Complex Networks", *IEEE Trans. Network Science and Engineering* 1(2): 76-90 (2014)
+
 **Community detection checklist:**
 
 - [ ] Run at least 2 different algorithms

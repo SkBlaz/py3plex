@@ -54,6 +54,10 @@ from .sbm_wrapper import (
     sbm_fit,
     sbm_multilayer_fit,
 )
+from .flow_hierarchy import (
+    flow_hierarchical_communities,
+    FlowHierarchyResult,
+)
 
 
 def multilayer_louvain(
@@ -156,4 +160,6 @@ __all__ = [
     "spectral_multilayer_multiplex",
     "sbm_fit",
     "sbm_multilayer_fit",
+    "flow_hierarchical_communities",
+    "FlowHierarchyResult",
 ]
