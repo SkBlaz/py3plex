@@ -236,6 +236,10 @@ class GraphProgram:
         params: Optional[Dict[str, Any]] = None,
         progress: bool = True,
         explain_plan: bool = False,
+        seed: Optional[int] = None,
+        n_jobs: int = 1,
+        cache_policy: str = "auto",
+        **kwargs: Any,
     ) -> QueryResult:
         """Execute the program on a network.
         
@@ -244,21 +248,77 @@ class GraphProgram:
             params: Parameter bindings for the query
             progress: If True, log progress messages
             explain_plan: If True, populate result.meta["plan"]
+            seed: Random seed for reproducibility
+            n_jobs: Number of parallel jobs for execution
+            cache_policy: Cache policy ("auto", "enabled", "disabled")
+            **kwargs: Additional execution parameters
         
         Returns:
             QueryResult from DSL executor
         
         Example:
-            >>> result = program.execute(network, params={"k": 10})
+            >>> result = program.execute(network, params={"k": 10}, seed=42)
             >>> df = result.to_pandas()
         """
-        return execute_ast(
+        # Set random seed if provided
+        if seed is not None:
+            import random
+            import numpy as np
+            random.seed(seed)
+            np.random.seed(seed)
+        
+        # Check cache if enabled
+        if cache_policy != "disabled":
+            from .cache import (
+                get_global_cache,
+                graph_fingerprint,
+                execution_fingerprint,
+                environment_signature,
+                CacheKey,
+            )
+            cache = get_global_cache()
+            
+            # Create cache key
+            key = CacheKey(
+                graph_fingerprint=graph_fingerprint(network),
+                program_hash=self.program_hash,
+                execution_context=execution_fingerprint(seed=seed, n_jobs=n_jobs),
+                environment_signature=environment_signature(),
+            )
+            
+            # Try to get from cache
+            cached_result = cache.get(key)
+            if cached_result is not None:
+                return cached_result
+        
+        # Execute the query
+        result = execute_ast(
             network=network,
             query=self.canonical_ast,
             params=params,
             progress=progress,
             explain_plan=explain_plan,
         )
+        
+        # Store in cache if enabled
+        if cache_policy != "disabled" and seed is not None:
+            from .cache import (
+                get_global_cache,
+                graph_fingerprint,
+                execution_fingerprint,
+                environment_signature,
+                CacheKey,
+            )
+            cache = get_global_cache()
+            key = CacheKey(
+                graph_fingerprint=graph_fingerprint(network),
+                program_hash=self.program_hash,
+                execution_context=execution_fingerprint(seed=seed, n_jobs=n_jobs),
+                environment_signature=environment_signature(),
+            )
+            cache.put(key, result)
+        
+        return result
     
     def compose(self, other: GraphProgram) -> GraphProgram:
         """Compose this program with another program sequentially.

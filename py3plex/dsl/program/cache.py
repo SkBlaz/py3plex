@@ -55,7 +55,7 @@ def graph_fingerprint(network: Any) -> str:
     # Extract network properties in deterministic order
     data = {
         "directed": getattr(network, "directed", False),
-        "layers": sorted(getattr(network, "get_layers", lambda: [])()),
+        "layers": sorted([str(layer) for layer in getattr(network, "get_layers", lambda: [])()]),
     }
     
     # Get nodes and edges in sorted order
