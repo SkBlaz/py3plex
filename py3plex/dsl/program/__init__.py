@@ -7,22 +7,25 @@ Core Components:
     - TypeSystem: Static type system for DSL IR (implemented)
     - GraphProgram: Immutable program object with canonical AST (implemented)
     - ProgramMetadata: Provenance and version tracking (implemented)
-    - RewriteEngine: Correctness-preserving program transformations (planned)
+    - RewriteEngine: Correctness-preserving program transformations (implemented)
     - CostModel: Time/memory cost estimation (planned)
     - ExecutionPlan: Optimized execution strategy (planned)
     - Distribution: UQ-aware result type (planned)
     - ProgramCache: Reproducibility-keyed caching (planned)
 
 Example:
-    >>> from py3plex.dsl.program import GraphProgram, type_check, infer_type
+    >>> from py3plex.dsl.program import GraphProgram, type_check, infer_type, apply_rewrites
     >>> from py3plex.dsl import Q
     >>>
     >>> # Create program from AST
     >>> query_ast = Q.nodes().compute("degree").to_ast()
     >>> program = GraphProgram.from_ast(query_ast)
     >>>
+    >>> # Optimize with rewrites
+    >>> optimized = apply_rewrites(program)
+    >>>
     >>> # Execute program
-    >>> result = program.execute(network)
+    >>> result = optimized.execute(network)
     >>>
     >>> # Type check and infer
     >>> type_check(query_ast)
@@ -59,6 +62,18 @@ from .program import (
     compose,
 )
 
+from .rewrite import (
+    Match,
+    RewriteContext,
+    RuleGuard,
+    RewriteRule,
+    RewriteEngine,
+    apply_rewrites,
+    get_standard_rules,
+    get_aggressive_rules,
+    get_conservative_rules,
+)
+
 __all__ = [
     # Types
     "GraphType",
@@ -83,4 +98,14 @@ __all__ = [
     "GraphProgram",
     "ProgramMetadata",
     "compose",
+    # Rewrites
+    "Match",
+    "RewriteContext",
+    "RuleGuard",
+    "RewriteRule",
+    "RewriteEngine",
+    "apply_rewrites",
+    "get_standard_rules",
+    "get_aggressive_rules",
+    "get_conservative_rules",
 ]

@@ -305,24 +305,28 @@ class GraphProgram:
             provenance=merged_provenance,
         )
     
-    def optimize(self, **kwargs) -> GraphProgram:
+    def optimize(self, rules=None, context=None, fixpoint=True, **kwargs) -> GraphProgram:
         """Optimize the program via rewrite rules.
         
-        This is a placeholder for future optimization passes.
-        Currently returns self unchanged.
+        Applies correctness-preserving rewrite rules to optimize the program
+        without changing semantics.
         
         Args:
-            **kwargs: Optimization configuration
+            rules: List of rewrite rules (defaults to standard rules)
+            context: RewriteContext with network statistics
+            fixpoint: If True, iterate until no more rules apply
+            **kwargs: Additional optimization configuration
         
         Returns:
-            Optimized GraphProgram (currently returns self)
+            Optimized GraphProgram
         
         Example:
-            >>> optimized = program.optimize(level=2)
+            >>> optimized = program.optimize()
+            >>> optimized = program.optimize(rules=get_conservative_rules())
+            >>> optimized = program.optimize(context=RewriteContext(safety_mode=True))
         """
-        # Placeholder - will be implemented with rewrite engine
-        # For now, return self (no optimization)
-        return self
+        from .rewrite import apply_rewrites
+        return apply_rewrites(self, rules=rules, context=context, fixpoint=fixpoint)
     
     def explain(self) -> str:
         """Generate human-readable explanation of the program.
