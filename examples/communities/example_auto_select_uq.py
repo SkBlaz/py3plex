@@ -17,7 +17,6 @@ SKIP_CI: slow - UQ requires multiple runs and is computationally intensive
 from __future__ import annotations
 
 import sys
-from typing import Dict
 
 try:
     from py3plex.algorithms.community_detection import auto_select_community
@@ -182,7 +181,18 @@ def example_uq_comparison() -> None:
         print("\nTop 3 by stability:")
         if 'stability' in leaderboard.columns:
             stable_sorted = leaderboard.sort_values('stability', ascending=False)
-            print(stable_sorted.head(3)[['rank', 'algorithm', 'stability']].to_string(index=False))
+
+            # Determine which columns to display based on leaderboard structure
+            # Pareto mode has 'algorithm_id', wins mode has 'algorithm' and 'rank'
+            display_cols = ['stability']
+            if 'algorithm_id' in leaderboard.columns:
+                display_cols.insert(0, 'algorithm_id')
+            elif 'algorithm' in leaderboard.columns:
+                if 'rank' in leaderboard.columns:
+                    display_cols.insert(0, 'rank')
+                display_cols.insert(0, 'algorithm')
+
+            print(stable_sorted.head(3)[display_cols].to_string(index=False))
     else:
         print("Note: Stability metrics may require specific UQ configuration")
 
@@ -256,10 +266,12 @@ def example_uq_parameter_robustness() -> None:
     print(f"Total contestants: {report['n_contestants']}")
     print(f"Total metrics: {report['n_metrics']}")
 
-    print("\nMetrics by bucket:")
-    for bucket, metrics in report['metrics_by_bucket'].items():
-        if metrics:
-            print(f"  {bucket}: {len(metrics)} metrics")
+    # Show metrics by bucket (only available in wins mode)
+    if 'metrics_by_bucket' in report:
+        print("\nMetrics by bucket:")
+        for bucket, metrics in report['metrics_by_bucket'].items():
+            if metrics:
+                print(f"  {bucket}: {len(metrics)} metrics")
 
 
 def main() -> int:
