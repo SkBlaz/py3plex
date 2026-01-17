@@ -667,15 +667,32 @@ def _to_table_type(source_type: Type, stmt: SelectStmt) -> TableType:
     # Add computed metrics
     for compute_item in stmt.compute:
         metric_name = compute_item.result_name
-        # A metric is wrapped in DistributionType only if BOTH conditions are true:
-        # 1. The compute item has uncertainty=True
-        # 2. There is a query-level UQ config with a method specified
-        if compute_item.uncertainty and (stmt.uq_config and stmt.uq_config.method):
+        # A metric is wrapped in DistributionType only if both conditions are true
+        if _should_wrap_in_distribution(compute_item, stmt):
             columns[metric_name] = DistributionType(NumericType())
         else:
             columns[metric_name] = NumericType()
     
     return TableType(columns=columns)
+
+
+def _should_wrap_in_distribution(compute_item: ComputeItem, stmt: SelectStmt) -> bool:
+    """Check if a metric should be wrapped in DistributionType.
+    
+    A metric is wrapped if BOTH:
+    1. The compute item has uncertainty=True
+    2. There is a query-level UQ config with a method specified
+    
+    Args:
+        compute_item: The compute item to check
+        stmt: The SELECT statement containing UQ config
+    
+    Returns:
+        True if the metric should be wrapped in DistributionType
+    """
+    has_uncertainty = compute_item.uncertainty
+    has_uq_config = stmt.uq_config is not None and stmt.uq_config.method is not None
+    return has_uncertainty and has_uq_config
 
 
 def _extract_layer_names(layer_expr: Optional[LayerExpr]) -> Optional[List[str]]:
@@ -695,6 +712,9 @@ BASE_NODE_ATTRIBUTES = frozenset({"node", "layer", "degree"})
 BASE_EDGE_ATTRIBUTES = frozenset({"source", "target", "source_layer", "target_layer"})
 
 # Known numeric metric names (for type inference)
+# NOTE: This is a default set. New metrics can be registered via plugins or
+# custom operators. Type inference will still work for unregistered metrics
+# by defaulting to ScalarType.
 NUMERIC_METRIC_NAMES = frozenset({
     "degree", "betweenness_centrality", "closeness_centrality", 
     "pagerank", "clustering", "eigenvector_centrality",
@@ -990,7 +1010,11 @@ class TypeSystem:
             inner = self.unify(t1, t2.inner)
             return DistributionType(inner) if inner else None
         
-        # Numeric types unify to ScalarType (least upper bound)
+        # Numeric and Scalar unify to ScalarType (least upper bound)
+        # NOTE: In type theory, LUB is the most general type that encompasses both.
+        # ScalarType is more general than NumericType, so it's the correct LUB.
+        # Example: unify(NumericType, StringType) would fail, but
+        #          unify(NumericType, ScalarType) succeeds with ScalarType.
         if isinstance(t1, (NumericType, ScalarType)) and isinstance(t2, (NumericType, ScalarType)):
             return ScalarType()
         
