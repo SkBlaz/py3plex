@@ -103,9 +103,8 @@ class Type:
         # Handle types with metadata
         if type_name == "TableType":
             columns_data = data.get("columns", {})
-            columns = {}
-            for col_name, col_type_data in columns_data.items():
-                columns[col_name] = cls.from_dict(col_type_data)
+            columns = {col_name: cls.from_dict(col_type_data) 
+                      for col_name, col_type_data in columns_data.items()}
             return TableType(columns=columns)
         elif type_name == "NodeSetType":
             layers = data.get("layers")
@@ -668,7 +667,10 @@ def _to_table_type(source_type: Type, stmt: SelectStmt) -> TableType:
     # Add computed metrics
     for compute_item in stmt.compute:
         metric_name = compute_item.result_name
-        if compute_item.uncertainty or (stmt.uq_config and stmt.uq_config.method):
+        # A metric is wrapped in DistributionType only if BOTH conditions are true:
+        # 1. The compute item has uncertainty=True
+        # 2. There is a query-level UQ config with a method specified
+        if compute_item.uncertainty and (stmt.uq_config and stmt.uq_config.method):
             columns[metric_name] = DistributionType(NumericType())
         else:
             columns[metric_name] = NumericType()
@@ -681,6 +683,23 @@ def _extract_layer_names(layer_expr: Optional[LayerExpr]) -> Optional[List[str]]
     if layer_expr is None:
         return None
     return layer_expr.get_layer_names()
+
+
+# ============================================================================
+# Type Checking Constants
+# ============================================================================
+
+
+# Base attributes that are always available on nodes and edges
+BASE_NODE_ATTRIBUTES = frozenset({"node", "layer", "degree"})
+BASE_EDGE_ATTRIBUTES = frozenset({"source", "target", "source_layer", "target_layer"})
+
+# Known numeric metric names (for type inference)
+NUMERIC_METRIC_NAMES = frozenset({
+    "degree", "betweenness_centrality", "closeness_centrality", 
+    "pagerank", "clustering", "eigenvector_centrality",
+    "katz_centrality", "harmonic_centrality", "load_centrality"
+})
 
 
 # ============================================================================
@@ -838,8 +857,7 @@ def _is_metric_computed(metric: str, stmt: SelectStmt) -> bool:
 def _is_attribute_available(attr: str, stmt: SelectStmt) -> bool:
     """Check if an attribute is available (computed or base attribute)."""
     # Base attributes always available
-    base_attrs = {"node", "layer", "source", "target", "source_layer", "target_layer", "degree"}
-    if attr in base_attrs:
+    if attr in BASE_NODE_ATTRIBUTES or attr in BASE_EDGE_ATTRIBUTES:
         return True
     
     # Check computed metrics
@@ -856,11 +874,18 @@ def _is_attribute_available(attr: str, stmt: SelectStmt) -> bool:
 def _get_attribute_type(attr: str, stmt: SelectStmt) -> Type:
     """Get the type of an attribute."""
     # Base attributes
-    if attr in {"node", "layer", "source", "target", "source_layer", "target_layer"}:
-        return StringType()
+    if attr in BASE_NODE_ATTRIBUTES or attr in BASE_EDGE_ATTRIBUTES:
+        if attr in {"node", "layer", "source", "target", "source_layer", "target_layer"}:
+            return StringType()
+        else:
+            return NumericType()
     
-    # Numeric attributes
-    if attr in {"degree", "betweenness_centrality", "closeness_centrality", "pagerank", "clustering"}:
+    # Numeric metrics
+    if attr in NUMERIC_METRIC_NAMES:
+        # Check if it has uncertainty
+        for compute_item in stmt.compute:
+            if compute_item.result_name == attr and compute_item.uncertainty:
+                return DistributionType(NumericType())
         return NumericType()
     
     # Check computed metrics
@@ -965,9 +990,9 @@ class TypeSystem:
             inner = self.unify(t1, t2.inner)
             return DistributionType(inner) if inner else None
         
-        # Numeric types unify to NumericType
+        # Numeric types unify to ScalarType (least upper bound)
         if isinstance(t1, (NumericType, ScalarType)) and isinstance(t2, (NumericType, ScalarType)):
-            return NumericType()
+            return ScalarType()
         
         # NodeSetType unification
         if isinstance(t1, NodeSetType) and isinstance(t2, NodeSetType):
