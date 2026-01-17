@@ -535,22 +535,18 @@ def test_program_execution_deterministic_with_seed(network):
     """Property: Execution with same seed is deterministic."""
     program = Q.nodes().compute("degree").to_program()
     
-    try:
-        result1 = program.execute(network, seed=42)
-        result2 = program.execute(network, seed=42)
-        
-        # Should get same results
-        assert set(result1.items) == set(result2.items)
-        
-        # Attributes should match
-        if result1.attributes and result2.attributes:
-            for key in result1.attributes:
-                if key in result2.attributes:
-                    # Note: Floating point may have small differences
-                    pass
-    except Exception:
-        # If execution fails for this network, skip it
-        assume(False)
+    result1 = program.execute(network, seed=42)
+    result2 = program.execute(network, seed=42)
+    
+    # Should get same results
+    assert set(result1.items) == set(result2.items)
+    
+    # Attributes should match
+    if result1.attributes and result2.attributes:
+        for key in result1.attributes:
+            if key in result2.attributes:
+                # Note: Floating point may have small differences
+                pass
 
 
 if __name__ == "__main__":

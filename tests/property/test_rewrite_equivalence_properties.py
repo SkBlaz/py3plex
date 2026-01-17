@@ -130,27 +130,27 @@ def test_push_where_past_compute_equivalence(network):
         .where(degree__gt=1)
         .to_program())
     
-    try:
-        # Get the push_where_past_compute rule
-        engine = RewriteEngine()
-        rules = get_standard_rules()
-        push_where_rule = [r for r in rules if "push_where" in r.name.lower()]
-        
-        if push_where_rule:
-            context = RewriteContext(
-                graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
-            )
-            rewritten = engine.apply_rules(program, push_where_rule, context)
-            
-            # Execute both
-            result1 = program.execute(network)
-            result2 = rewritten.execute(network)
-            
-            # Should have same items
-            assert set(result1.items) == set(result2.items)
-    except Exception as e:
-        # Skip if query not applicable or execution fails
+    # Get the push_where_past_compute rule
+    engine = RewriteEngine()
+    rules = get_standard_rules()
+    push_where_rule = [r for r in rules if "push_where" in r.name.lower()]
+    
+    if not push_where_rule:
+        # Skip if rule not found
         assume(False)
+        return
+    
+    context = RewriteContext(
+        graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+    )
+    rewritten = engine.apply_rules(program, push_where_rule, context)
+    
+    # Execute both - let real errors propagate
+    result1 = program.execute(network)
+    result2 = rewritten.execute(network)
+    
+    # Should have same items
+    assert set(result1.items) == set(result2.items)
 
 
 @pytest.mark.property
@@ -164,26 +164,26 @@ def test_fuse_compute_equivalence(network):
         .compute("clustering")
         .to_program())
     
-    try:
-        # Apply fuse_compute rewrite
-        rules = get_standard_rules()
-        fuse_rules = [r for r in rules if "fuse" in r.name.lower() and "compute" in r.name.lower()]
-        
-        if fuse_rules:
-            engine = RewriteEngine()
-            context = RewriteContext(
-                graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
-            )
-            rewritten = engine.apply_rules(program, fuse_rules, context)
-            
-            result1 = program.execute(network)
-            result2 = rewritten.execute(network)
-            
-            # Should compute same attributes
-            assert result1.computed_metrics == result2.computed_metrics
-            assert set(result1.items) == set(result2.items)
-    except Exception:
+    # Apply fuse_compute rewrite
+    rules = get_standard_rules()
+    fuse_rules = [r for r in rules if "fuse" in r.name.lower() and "compute" in r.name.lower()]
+    
+    if not fuse_rules:
         assume(False)
+        return
+    
+    engine = RewriteEngine()
+    context = RewriteContext(
+        graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+    )
+    rewritten = engine.apply_rules(program, fuse_rules, context)
+    
+    result1 = program.execute(network)
+    result2 = rewritten.execute(network)
+    
+    # Should compute same attributes
+    assert result1.computed_metrics == result2.computed_metrics
+    assert set(result1.items) == set(result2.items)
 
 
 @pytest.mark.property
@@ -198,23 +198,23 @@ def test_fuse_where_equivalence(network):
         .where(degree__lt=10)
         .to_program())
     
-    try:
-        rules = get_standard_rules()
-        fuse_where_rules = [r for r in rules if "fuse" in r.name.lower() and "where" in r.name.lower()]
-        
-        if fuse_where_rules:
-            engine = RewriteEngine()
-            context = RewriteContext(
-                graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
-            )
-            rewritten = engine.apply_rules(program, fuse_where_rules, context)
-            
-            result1 = program.execute(network)
-            result2 = rewritten.execute(network)
-            
-            assert set(result1.items) == set(result2.items)
-    except Exception:
+    rules = get_standard_rules()
+    fuse_where_rules = [r for r in rules if "fuse" in r.name.lower() and "where" in r.name.lower()]
+    
+    if not fuse_where_rules:
         assume(False)
+        return
+    
+    engine = RewriteEngine()
+    context = RewriteContext(
+        graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+    )
+    rewritten = engine.apply_rules(program, fuse_where_rules, context)
+    
+    result1 = program.execute(network)
+    result2 = rewritten.execute(network)
+    
+    assert set(result1.items) == set(result2.items)
 
 
 @pytest.mark.property
@@ -229,24 +229,21 @@ def test_push_limit_early_equivalence(network):
         .limit(5)
         .to_program())
     
-    try:
         rules = get_aggressive_rules()
-        limit_rules = [r for r in rules if "limit" in r.name.lower() or "top_k" in r.name.lower()]
+    limit_rules = [r for r in rules if "limit" in r.name.lower() or "top_k" in r.name.lower()]
+    
+    if limit_rules:
+        engine = RewriteEngine()
+        context = RewriteContext(
+            graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+        )
+        rewritten = engine.apply_rules(program, limit_rules, context)
         
-        if limit_rules:
-            engine = RewriteEngine()
-            context = RewriteContext(
-                graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
-            )
-            rewritten = engine.apply_rules(program, limit_rules, context)
-            
-            result1 = program.execute(network)
-            result2 = rewritten.execute(network)
-            
-            # Results should have same size and top items
-            assert len(result1.items) == len(result2.items)
-    except Exception:
-        assume(False)
+        result1 = program.execute(network)
+        result2 = rewritten.execute(network)
+        
+        # Results should have same size and top items
+        assert len(result1.items) == len(result2.items)
 
 
 # ============================================================================
@@ -263,21 +260,18 @@ def test_multiple_rewrites_preserve_semantics(network, query):
     """Property: Applying multiple rewrites preserves semantics."""
     program = query.to_program()
     
-    try:
         # Apply all standard rules
-        rewritten = apply_rewrites(program, get_standard_rules())
-        
-        # Execute both
-        result1 = program.execute(network)
-        result2 = rewritten.execute(network)
-        
-        # Core items should match
-        assert set(result1.items) == set(result2.items)
-        
-        # Computed metrics should match
-        assert result1.computed_metrics == result2.computed_metrics
-    except Exception:
-        assume(False)
+    rewritten = apply_rewrites(program, get_standard_rules())
+    
+    # Execute both
+    result1 = program.execute(network)
+    result2 = rewritten.execute(network)
+    
+    # Core items should match
+    assert set(result1.items) == set(result2.items)
+    
+    # Computed metrics should match
+    assert result1.computed_metrics == result2.computed_metrics
 
 
 @pytest.mark.property
@@ -290,17 +284,14 @@ def test_aggressive_rewrites_preserve_semantics(network, query):
     """Property: Aggressive optimization preserves semantics."""
     program = query.to_program()
     
-    try:
         # Apply aggressive rules
-        rewritten = apply_rewrites(program, get_aggressive_rules())
-        
-        result1 = program.execute(network)
-        result2 = rewritten.execute(network)
-        
-        # Should have same core results
-        assert set(result1.items) == set(result2.items)
-    except Exception:
-        assume(False)
+    rewritten = apply_rewrites(program, get_aggressive_rules())
+    
+    result1 = program.execute(network)
+    result2 = rewritten.execute(network)
+    
+    # Should have same core results
+    assert set(result1.items) == set(result2.items)
 
 
 # ============================================================================
@@ -314,16 +305,13 @@ def test_rewrite_preserves_type_validity(query):
     """Property: Rewrites preserve type validity."""
     program = query.to_program()
     
-    try:
         # Original should be type-valid
-        from py3plex.dsl.program import type_check
-        assert type_check(program.canonical_ast)
-        
-        # Rewritten should also be type-valid
-        rewritten = apply_rewrites(program, get_standard_rules())
-        assert type_check(rewritten.canonical_ast)
-    except Exception:
-        assume(False)
+    from py3plex.dsl.program import type_check
+    assert type_check(program.canonical_ast)
+    
+    # Rewritten should also be type-valid
+    rewritten = apply_rewrites(program, get_standard_rules())
+    assert type_check(rewritten.canonical_ast)
 
 
 @pytest.mark.property
@@ -333,17 +321,14 @@ def test_rewrite_preserves_hash_determinism(query):
     """Property: Rewritten programs have stable hashes."""
     program = query.to_program()
     
-    try:
         rewritten = apply_rewrites(program, get_standard_rules())
-        
-        # Hash should be stable
-        hash1 = rewritten.hash()
-        hash2 = rewritten.hash()
-        
-        assert hash1 == hash2
-        assert len(hash1) == 64
-    except Exception:
-        assume(False)
+    
+    # Hash should be stable
+    hash1 = rewritten.hash()
+    hash2 = rewritten.hash()
+    
+    assert hash1 == hash2
+    assert len(hash1) == 64
 
 
 @pytest.mark.property
@@ -353,18 +338,15 @@ def test_rewrite_produces_valid_provenance(query):
     """Property: Rewrites update provenance correctly."""
     program = query.to_program()
     
-    try:
         rewritten = apply_rewrites(program, get_standard_rules())
-        
-        # Provenance should exist
-        assert rewritten.metadata is not None
-        assert hasattr(rewritten.metadata, "provenance_chain")
-        
-        # If rewrites were applied, provenance should reflect that
-        if program.hash() != rewritten.hash():
-            assert len(rewritten.metadata.provenance_chain) > 0
-    except Exception:
-        assume(False)
+    
+    # Provenance should exist
+    assert rewritten.metadata is not None
+    assert hasattr(rewritten.metadata, "provenance_chain")
+    
+    # If rewrites were applied, provenance should reflect that
+    if program.hash() != rewritten.hash():
+        assert len(rewritten.metadata.provenance_chain) > 0
 
 
 # ============================================================================
@@ -378,19 +360,16 @@ def test_rewrite_idempotence(query):
     """Property: Applying rewrites twice gives same result as once."""
     program = query.to_program()
     
-    try:
         rules = get_standard_rules()
-        
-        # Apply once
-        rewritten_once = apply_rewrites(program, rules)
-        
-        # Apply again
-        rewritten_twice = apply_rewrites(rewritten_once, rules)
-        
-        # Hashes should be same (idempotent)
-        assert rewritten_once.hash() == rewritten_twice.hash()
-    except Exception:
-        assume(False)
+    
+    # Apply once
+    rewritten_once = apply_rewrites(program, rules)
+    
+    # Apply again
+    rewritten_twice = apply_rewrites(rewritten_once, rules)
+    
+    # Hashes should be same (idempotent)
+    assert rewritten_once.hash() == rewritten_twice.hash()
 
 
 # ============================================================================
@@ -404,24 +383,21 @@ def test_rule_guards_prevent_invalid_rewrites(query):
     """Property: Rule guards prevent application when preconditions not met."""
     program = query.to_program()
     
-    try:
         engine = RewriteEngine()
-        rules = get_standard_rules()
+    rules = get_standard_rules()
+    
+    # Each rule should have a guard
+    for rule in rules:
+        assert rule.guard is not None
         
-        # Each rule should have a guard
-        for rule in rules:
-            assert rule.guard is not None
-            
-        # Guards should be callable
-        context = RewriteContext(
-            graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
-        )
-        
-        # Applying rules should not crash
-        rewritten = engine.apply_rules(program, rules, context)
-        assert rewritten is not None
-    except Exception:
-        assume(False)
+    # Guards should be callable
+    context = RewriteContext(
+        graph_stats=GraphStats(num_nodes=10, num_edges=20, num_layers=2)
+    )
+    
+    # Applying rules should not crash
+    rewritten = engine.apply_rules(program, rules, context)
+    assert rewritten is not None
 
 
 # ============================================================================
@@ -435,27 +411,24 @@ def test_rewrite_cost_estimate_valid(query):
     """Property: Cost estimates remain valid after rewrites."""
     program = query.to_program()
     
-    try:
         from py3plex.dsl.program import CostModel, GraphStats
-        
-        cost_model = CostModel()
-        stats = GraphStats(num_nodes=100, num_edges=500, num_layers=2)
-        
-        # Original cost
-        cost1 = cost_model.estimate_program_cost(program, stats)
-        
-        # Rewritten cost
-        rewritten = apply_rewrites(program, get_standard_rules())
-        cost2 = cost_model.estimate_program_cost(rewritten, stats)
-        
-        # Both should have valid estimates
-        assert cost1.time_estimate_seconds > 0
-        assert cost2.time_estimate_seconds > 0
-        
-        # Rewritten should ideally be faster or same
-        # (but we can't enforce this strictly)
-    except Exception:
-        assume(False)
+    
+    cost_model = CostModel()
+    stats = GraphStats(num_nodes=100, num_edges=500, num_layers=2)
+    
+    # Original cost
+    cost1 = cost_model.estimate_program_cost(program, stats)
+    
+    # Rewritten cost
+    rewritten = apply_rewrites(program, get_standard_rules())
+    cost2 = cost_model.estimate_program_cost(rewritten, stats)
+    
+    # Both should have valid estimates
+    assert cost1.time_estimate_seconds > 0
+    assert cost2.time_estimate_seconds > 0
+    
+    # Rewritten should ideally be faster or same
+    # (but we can't enforce this strictly)
 
 
 # ============================================================================
@@ -468,15 +441,12 @@ def test_rewrite_empty_program():
     """Property: Rewriting minimal programs doesn't break them."""
     program = Q.nodes().to_program()
     
-    try:
         rewritten = apply_rewrites(program, get_standard_rules())
-        
-        # Should still be valid
-        from py3plex.dsl.program import type_check
-        assert type_check(rewritten.canonical_ast)
-        assert rewritten.hash() is not None
-    except Exception:
-        assume(False)
+    
+    # Should still be valid
+    from py3plex.dsl.program import type_check
+    assert type_check(rewritten.canonical_ast)
+    assert rewritten.hash() is not None
 
 
 @pytest.mark.property
@@ -487,14 +457,11 @@ def test_rewrite_with_no_optimizations(network):
     # Simple program that can't be optimized much
     program = Q.nodes().to_program()
     
-    try:
         rewritten = apply_rewrites(program, get_standard_rules())
-        
-        # Should execute successfully
-        result = rewritten.execute(network)
-        assert result is not None
-    except Exception:
-        assume(False)
+    
+    # Should execute successfully
+    result = rewritten.execute(network)
+    assert result is not None
 
 
 if __name__ == "__main__":
