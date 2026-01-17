@@ -258,6 +258,39 @@ class RewriteEngine:
             randomness_meta=program.metadata.randomness_metadata,
         )
     
+    def apply_rules(
+        self,
+        program: GraphProgram,
+        rules: Union[List[RewriteRule], RewriteRule],
+        context: Optional[RewriteContext] = None,
+    ) -> GraphProgram:
+        """Apply specific rules to a program.
+        
+        This is a convenience method for applying a subset of rules rather than
+        all rules in the engine.
+        
+        Args:
+            program: GraphProgram to optimize
+            rules: Single rule or list of rules to apply
+            context: Optional rewrite context with statistics
+            
+        Returns:
+            Optimized GraphProgram (new instance)
+        """
+        # Convert single rule to list
+        if isinstance(rules, RewriteRule):
+            rules = [rules]
+        
+        # Create temporary engine with specified rules
+        temp_engine = RewriteEngine(
+            rules=rules,
+            max_iterations=self.max_iterations,
+            enable_provenance=self.enable_provenance,
+        )
+        
+        # Apply using the main apply method
+        return temp_engine.apply(program, context, fixpoint=True)
+    
     def explain_rewrites(self, program: GraphProgram, context: Optional[RewriteContext] = None) -> List[str]:
         """Explain which rewrites would apply to a program.
         
