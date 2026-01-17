@@ -18,5 +18,7 @@ result = (
     .execute(net)
 )
 
-print("Communities detected:", len(result.communities) if hasattr(result, 'communities') else "N/A")
-print(result.to_pandas().head() if hasattr(result, 'to_pandas') else result)
+if hasattr(result, "to_pandas"):
+    print(result.to_pandas().head())
+else:
+    print(result)

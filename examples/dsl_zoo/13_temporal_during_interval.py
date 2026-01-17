@@ -1,21 +1,20 @@
-# Temporal: filter edges during interval
-from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+# Temporal: filter edges during interval (edges carry a time attribute)
+from py3plex.core import multinet
 from py3plex.dsl import Q, L
 
-tnet = TemporalMultiLayerNetwork(directed=False)
-edges = [
-    ('Alice', 'social', 'Bob', 'social', 50.0, 1.0),
-    ('Bob', 'social', 'Carol', 'social', 120.0, 1.0),
-    ('Carol', 'social', 'Dave', 'social', 180.0, 1.0),
-    ('Dave', 'social', 'Alice', 'social', 250.0, 1.0),
-]
-tnet.add_edges(edges, input_type="tuple")
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social', 't': 50.0},
+    {'source': 'Bob', 'target': 'Carol', 'source_type': 'social', 'target_type': 'social', 't': 120.0},
+    {'source': 'Carol', 'target': 'Dave', 'source_type': 'social', 'target_type': 'social', 't': 180.0},
+    {'source': 'Dave', 'target': 'Alice', 'source_type': 'social', 'target_type': 'social', 't': 250.0},
+])
 
 result = (
     Q.edges()
     .during(100.0, 200.0)
     .from_layers(L["social"])
-    .execute(tnet)
+    .execute(net)
 )
 
 print(result.to_pandas().head())

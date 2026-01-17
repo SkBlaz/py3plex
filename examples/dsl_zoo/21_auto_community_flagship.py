@@ -1,4 +1,4 @@
-# AutoCommunity full "flagship" (Pareto + UQ + null calibration)
+# AutoCommunity full "flagship" (Pareto + null calibration)
 from py3plex.core import multinet
 from py3plex.algorithms.community_detection import AutoCommunity
 
@@ -16,12 +16,11 @@ result = (
     AutoCommunity()
     .candidates("louvain", "leiden")
     .metrics("modularity", "coverage")
-    .uq(method="perturbation", n_samples=20, seed=42)
     .null_model(type="configuration", samples=20)
     .pareto()
     .seed(42)
     .execute(net)
 )
 
-print("Selected algorithm:", result.algorithm.get('name', 'N/A') if hasattr(result, 'algorithm') else "N/A")
-print("Communities:", result.community_stats.n_communities if hasattr(result, 'community_stats') else "N/A")
+print("Selected algorithm:", result.selected)
+print("Communities:", result.community_stats.n_communities)

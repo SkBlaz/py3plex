@@ -117,5 +117,5 @@ if hasattr(res_weighted, "benchmark"):
     else:
         print("(Best by algorithm not available)")
 
-print("\n✅ Pareto selection demo complete!")
+print("\nPareto selection demo complete.")
 print("\nKey insight: Pareto front reveals trade-offs, weighted selection picks one solution.")

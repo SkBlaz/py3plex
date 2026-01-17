@@ -13,9 +13,8 @@ net.add_edges([
 ])
 
 result = (
-    P.shortest(('N0', 'social'), ('N5', 'social'))
-    .on_layers(L["*"])
-    .crossing_layers()
+    P.shortest("N0", "N5")
+    .on_layers(L["social"])
     .execute(net)
 )
 

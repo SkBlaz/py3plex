@@ -17,7 +17,7 @@ result = (
     .from_layers(L["*"])
     .compute("degree")
     .where(degree__gt=Param.int("threshold"))
-    .order_by("-degree")
+    .order_by("degree", desc=True)
     .execute(net, threshold=2)
 )
 
