@@ -64,7 +64,8 @@ def graph_fingerprint(network: Any) -> str:
         edges = []
         
         if hasattr(network, "get_nodes"):
-            nodes = sorted(network.get_nodes())
+            # Convert all nodes to strings before sorting to handle mixed types
+            nodes = sorted([str(n) for n in network.get_nodes()])
         
         if hasattr(network, "get_edges"):
             edge_list = network.get_edges()

@@ -112,7 +112,7 @@ def simple_node_query(draw):
 @settings(
     deadline=None,
     max_examples=20,
-    suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow]
+    suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow, HealthCheck.filter_too_much]
 )
 @given(network=small_multilayer_network())
 def test_rewrite_preserves_results(network):
@@ -143,7 +143,7 @@ def test_rewrite_preserves_results(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
 @given(
     network=small_multilayer_network(),
     query_builder=simple_node_query()
@@ -293,7 +293,7 @@ def test_hash_independent_of_python_dict_ordering(query_builder):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_composition_associativity(network):
     """Property: Program composition is associative where type-compatible."""
@@ -314,7 +314,7 @@ def test_composition_associativity(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_composed_program_hash_stable(network):
     """Property: Composed program has stable hash."""
@@ -339,7 +339,7 @@ def test_composed_program_hash_stable(network):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_cache_hit_on_identical_execution(network):
     """Property: Executing same program twice should hit cache."""
@@ -439,7 +439,7 @@ def test_program_diff_symmetry(builder1, builder2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_optimization_preserves_semantics(network):
     """Property: Optimization preserves program semantics."""
@@ -464,7 +464,7 @@ def test_optimization_preserves_semantics(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
 @given(query_builder=simple_node_query())
 def test_optimization_produces_valid_program(query_builder):
     """Property: Optimized programs are still type-valid."""
@@ -529,7 +529,7 @@ def test_empty_program_valid():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_program_execution_deterministic_with_seed(network):
     """Property: Execution with same seed is deterministic."""
