@@ -71,7 +71,7 @@ def benchmark_classification(
                 a[labels_tmp] = 1
                 predictions.append(a)
 
-            predicted_labels = np.matrix(predictions)[X_test]
+            predicted_labels = np.asarray(predictions)[X_test]
             micro = f1_score(true_labels, predicted_labels, average="micro")
             macro = f1_score(true_labels, predicted_labels, average="macro")
             end = time.time()
@@ -93,7 +93,6 @@ def benchmark_classification(
         return df
 
     else:
-        df = pd.DataFrame()
         results = []
         for j in np.arange(0.1, 0.9, 0.1):
             micros = []
@@ -132,7 +131,7 @@ def benchmark_classification(
                     a[labels_tmp] = 1
                     predictions.append(a)
 
-                predicted_labels = np.matrix(predictions)[X_test]
+                predicted_labels = np.asarray(predictions)[X_test]
                 micro = f1_score(true_labels, predicted_labels, average="micro")
                 macro = f1_score(true_labels, predicted_labels, average="macro")
                 end = time.time()
@@ -150,8 +149,8 @@ def benchmark_classification(
                 "time": np.mean(times),
             }
             results.append(outarray)
-            df = pd.concat([df, pd.DataFrame([outarray])], ignore_index=True)
 
+    df = pd.DataFrame(results)
     df = df.reset_index()
     return df
 

@@ -47,7 +47,7 @@ def evaluate_oracle_F1(probs: np.ndarray, Y_real: np.ndarray) -> tuple[float, fl
         labels_tmp = probs_.argsort()[-k:]
         a[labels_tmp] = 1
         predictions.append(a)
-    predictions = np.matrix(predictions)
+    predictions = np.asarray(predictions)
 
     micro = f1_score(Y_real, predictions, average="micro")
     macro = f1_score(Y_real, predictions, average="macro")

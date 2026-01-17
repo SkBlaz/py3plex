@@ -174,7 +174,6 @@ def validate_label_propagation(
     if verbose:
         print("Propagation..")
     results = []
-    df = pd.DataFrame()
     for k in range(repetitions):
         for j in np.arange(0.1, 1, 0.1):
             if verbose:
@@ -209,7 +208,7 @@ def validate_label_propagation(
                     a[labels_tmp] = 1
                     predictions.append(a)
 
-                predicted_labels = np.matrix(predictions)[X_test]
+                predicted_labels = np.asarray(predictions)[X_test]
                 micro = f1_score(true_labels, predicted_labels, average="micro")
                 macro = f1_score(true_labels, predicted_labels, average="macro")
                 end = time.time()
@@ -228,8 +227,8 @@ def validate_label_propagation(
                 "alpha": alpha_value,
             }
             results.append(outarray)
-            df = df.append(outarray, ignore_index=True)
 
+    df = pd.DataFrame(results)
     df = df.reset_index()
     return df
 

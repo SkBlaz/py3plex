@@ -530,7 +530,7 @@ def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
             else:
                 embedding_matrix.append(parts[1:])
                 embedding_indices.append(parts[0])
-    embedding_matrix_np = np.matrix(embedding_matrix)
+    embedding_matrix_np = np.asarray(embedding_matrix)
     embedding_indices_np = np.array(embedding_indices)
     return (embedding_matrix_np, embedding_indices_np)
 
