@@ -6,7 +6,7 @@ evaluation and a "most wins" decision engine.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from py3plex.selection.capabilities import scan_capabilities
 from py3plex.selection.community_registry import build_registry_from_capabilities
@@ -104,13 +104,13 @@ def auto_select_community(
         ... )
     """
     logger.info(f"Starting AutoCommunity selection (mode={mode})")
-    
+
     # Validate mode
     if mode not in ("pareto", "wins"):
         raise ValueError(
             f"Invalid mode '{mode}'. Must be 'pareto' or 'wins'."
         )
-    
+
     # Route to appropriate implementation
     if mode == "pareto":
         return _auto_select_pareto(
@@ -164,22 +164,19 @@ def _auto_select_pareto(
     Returns unified AutoCommunityResult compatible with wins mode.
     """
     logger.info("Using Pareto-based selection (multi-objective mode)")
-    
+
     # Import AutoCommunity executor
     from py3plex.algorithms.community_detection.autocommunity_executor import (
         execute_autocommunity
     )
-    from py3plex.algorithms.community_detection.autocommunity import (
-        AutoCommunityResult as ParetoResult
-    )
-    
+
     # Phase 0: Detection
     logger.info("Scanning capabilities...")
     capabilities = scan_capabilities()
-    
+
     # Build candidate algorithms list
     is_multilayer = _is_multilayer_network(network)
-    
+
     if custom_candidates:
         # Extract algorithm names from custom candidates
         candidate_algorithms = [c.algo_name for c in custom_candidates]
@@ -190,10 +187,10 @@ def _auto_select_pareto(
                 "No community detection algorithms found. "
                 "Please ensure py3plex.algorithms.community_detection is properly installed."
             )
-        
+
         # Select top algorithms based on capabilities
         candidate_algorithms = []
-        
+
         # Map detected names to executor names
         algorithm_mapping = {
             'multilayer_leiden': 'leiden',
@@ -202,7 +199,7 @@ def _auto_select_pareto(
             'louvain_multilayer': 'louvain',
             'label_propagation': 'label_propagation',
         }
-        
+
         # Try preferred algorithms first
         for detected_name in ['multilayer_leiden', 'multilayer_louvain', 'label_propagation']:
             if detected_name in capabilities.algorithms_found:
@@ -211,7 +208,7 @@ def _auto_select_pareto(
                     candidate_algorithms.append(mapped_name)
             if len(candidate_algorithms) >= max_candidates:
                 break
-        
+
         # Fallback to any available multilayer algorithm
         if not candidate_algorithms:
             for detected_name, algo_info in capabilities.algorithms_found.items():
@@ -221,15 +218,15 @@ def _auto_select_pareto(
                         candidate_algorithms.append(mapped_name)
                     if len(candidate_algorithms) >= max_candidates:
                         break
-        
+
         if not candidate_algorithms:
             raise RuntimeError(
                 "No suitable multilayer algorithms found. "
                 "Please ensure py3plex.algorithms.community_detection is properly installed."
             )
-    
+
     logger.info(f"Selected {len(candidate_algorithms)} candidate algorithms: {candidate_algorithms}")
-    
+
     # Build metric names list
     if custom_metrics:
         metric_names = [m.name for m in custom_metrics]
@@ -239,9 +236,9 @@ def _auto_select_pareto(
         if uq:
             metric_names.append("stability")
         custom_metrics = []  # Use empty list instead of custom_metric_funcs
-    
+
     logger.info(f"Using {len(metric_names)} metrics: {metric_names}")
-    
+
     # Configure UQ
     uq_config = None
     if uq or not fast:  # Enable UQ in Pareto mode unless fast=True
@@ -251,7 +248,7 @@ def _auto_select_pareto(
             'seed': seed,
         }
         logger.info(f"UQ enabled: {uq_config}")
-    
+
     # Configure null models
     null_config = None
     if null_model:
@@ -261,7 +258,7 @@ def _auto_select_pareto(
             'seed': seed,
         }
         logger.info(f"Null model enabled: {null_config}")
-    
+
     # Execute Pareto pipeline
     logger.info("Executing Pareto pipeline...")
     pareto_result = execute_autocommunity(
@@ -275,17 +272,17 @@ def _auto_select_pareto(
         custom_metrics=[],  # Pass custom_metrics directly
         custom_candidates=[],
     )
-    
+
     # Convert ParetoResult to unified AutoCommunityResult format
     # Note: The Pareto result structure is already close to what we need
-    
+
     # Build a ContestantResult for the winner (for API compatibility)
     # Extract actual metrics and runtime from pareto_result if available
     from py3plex.selection.result import ContestantResult
-    
+
     winner_metrics = {}
     winner_runtime = 0.0
-    
+
     # Try to extract metrics from evaluation_matrix
     if not pareto_result.evaluation_matrix.empty:
         winner_rows = pareto_result.evaluation_matrix[
@@ -297,11 +294,11 @@ def _auto_select_pareto(
             for col in pareto_result.evaluation_matrix.columns:
                 if col != 'algorithm_id':
                     winner_metrics[col] = winner_row[col]
-    
+
     # Try to extract runtime from diagnostics
     if pareto_result.selected in pareto_result.diagnostics:
         winner_runtime = pareto_result.diagnostics[pareto_result.selected].get('runtime_ms', 0.0)
-    
+
     winner_contestant = ContestantResult(
         contestant_id=pareto_result.selected,
         algo_name=pareto_result.selected.split(':')[0] if ':' in pareto_result.selected else pareto_result.selected,
@@ -311,7 +308,7 @@ def _auto_select_pareto(
         runtime_ms=winner_runtime,  # Actual runtime from diagnostics
         seed_used=seed,
     )
-    
+
     # Build unified result (extend AutoCommunityResult from selection.result)
     # Add Pareto-specific fields as attributes
     unified_result = AutoCommunityResult(
@@ -344,7 +341,7 @@ def _auto_select_pareto(
             },
         },
     )
-    
+
     # Attach Pareto-specific fields
     unified_result.pareto_front = pareto_result.pareto_front
     unified_result.evaluation_matrix = pareto_result.evaluation_matrix
@@ -352,7 +349,7 @@ def _auto_select_pareto(
     unified_result.null_model_results = pareto_result.null_model_results
     unified_result.graph_regime = pareto_result.graph_regime
     unified_result.diagnostics = pareto_result.diagnostics
-    
+
     logger.info("Pareto selection complete")
     return unified_result
 
@@ -375,27 +372,27 @@ def _auto_select_wins(
     backward compatibility.
     """
     logger.info("Using wins-based selection (legacy mode)")
-    
+
     # Phase 0: Detection
     logger.info("Scanning capabilities...")
     capabilities = scan_capabilities()
-    
+
     logger.info(
         f"Found {len(capabilities.algorithms_found)} algorithms, "
         f"{len(capabilities.metrics_found)} metrics, "
         f"UQ={'available' if capabilities.uq_available else 'unavailable'}"
     )
-    
+
     # Check if we have any algorithms
     if not capabilities.algorithms_found:
         raise RuntimeError(
             "No community detection algorithms found. "
             "Please ensure py3plex.algorithms.community_detection is properly installed."
         )
-    
+
     # Phase 1: Build candidate set
     is_multilayer = _is_multilayer_network(network)
-    
+
     if custom_candidates:
         candidates = custom_candidates
         logger.info(f"Using {len(candidates)} custom candidates")
@@ -407,30 +404,30 @@ def _auto_select_wins(
             max_candidates=max_candidates,
         )
         logger.info(f"Built {len(candidates)} candidates")
-    
+
     # Phase 2: Get metrics
     metric_registry = get_metric_registry()
-    
+
     if custom_metrics:
         metrics = custom_metrics
         logger.info(f"Using {len(metrics)} custom metrics")
     else:
         metrics = metric_registry.get_default_metrics(uq_enabled=uq)
         logger.info(f"Using {len(metrics)} default metrics")
-    
+
     # Phase 3: Evaluate contestants
     logger.info("Evaluating contestants...")
     contestants: List[ContestantResult] = []
-    
+
     uq_config = {
         "method": uq_method,
         "n_samples": uq_n_samples,
         "seed": seed,
     } if uq else None
-    
+
     for i, candidate in enumerate(candidates, 1):
         logger.info(f"Evaluating {i}/{len(candidates)}: {candidate.contestant_id}")
-        
+
         try:
             contestant_result = evaluate_contestant(
                 network=network,
@@ -441,23 +438,23 @@ def _auto_select_wins(
                 uq_config=uq_config,
                 time_budget_s=time_budget_s,
             )
-            
+
             # Skip failed contestants
             if contestant_result.errors:
                 logger.warning(f"Skipping {candidate.contestant_id}: {contestant_result.errors}")
                 continue
-            
+
             contestants.append(contestant_result)
-        
+
         except Exception as e:
             logger.error(f"Failed to evaluate {candidate.contestant_id}: {e}")
             continue
-    
+
     if not contestants:
         raise RuntimeError("All contestants failed to evaluate")
-    
+
     logger.info(f"Successfully evaluated {len(contestants)} contestants")
-    
+
     # Phase 4: Compute wins
     logger.info("Computing pairwise wins...")
     total_wins, wins_by_bucket, leaderboard = compute_pairwise_wins(
@@ -465,7 +462,7 @@ def _auto_select_wins(
         metrics=metrics,
         bucket_caps=metric_registry.BUCKET_CAPS,
     )
-    
+
     # Phase 5: Select winner
     logger.info("Selecting winner...")
     winner = select_winner(
@@ -473,7 +470,7 @@ def _auto_select_wins(
         total_wins=total_wins,
         wins_by_bucket=wins_by_bucket,
     )
-    
+
     # Phase 6: Build result
     provenance = {
         "algorithms_detected": list(capabilities.algorithms_found.keys()),
@@ -492,7 +489,7 @@ def _auto_select_wins(
         },
         "wins_by_bucket": wins_by_bucket[winner.contestant_id],
     }
-    
+
     report = {
         "n_contestants": len(contestants),
         "n_metrics": len(metrics),
@@ -501,7 +498,7 @@ def _auto_select_wins(
             for bucket in metric_registry.BUCKET_CAPS.keys()
         },
     }
-    
+
     result = AutoCommunityResult(
         chosen=winner,
         partition=winner.partition,
@@ -514,7 +511,7 @@ def _auto_select_wins(
         report=report,
         provenance=provenance,
     )
-    
+
     logger.info("AutoCommunity selection complete")
     return result
 
@@ -532,6 +529,6 @@ def _is_multilayer_network(network: Any) -> bool:
     if hasattr(network, "get_layers"):
         layers = network.get_layers()
         return len(layers) > 1
-    
+
     # Default to multilayer assumption
     return True
