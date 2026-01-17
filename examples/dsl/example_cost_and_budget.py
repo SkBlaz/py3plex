@@ -54,8 +54,8 @@ def create_example_network():
         })
     net.add_edges(edges)
     
-    print(f"  Nodes: {net.number_of_nodes()}")
-    print(f"  Edges: {net.number_of_edges()}")
+    print(f"  Nodes: {net.node_count}")
+    print(f"  Edges: {net.edge_count}")
     print()
     
     return net
