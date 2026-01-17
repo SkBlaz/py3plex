@@ -2883,6 +2883,40 @@ class QueryBuilder:
             suffixes=suffixes,
         )
 
+    def to_program(self) -> "GraphProgram":
+        """Convert query to a GraphProgram object without executing.
+        
+        This creates an immutable program object that can be:
+        - Composed with other programs
+        - Optimized with rewrite rules
+        - Explained with cost estimates
+        - Diffed against other programs
+        - Cached for reproducibility
+        - Executed later
+        
+        Returns:
+            GraphProgram object
+            
+        Example:
+            >>> from py3plex.dsl import Q, L
+            >>> program = (Q.nodes()
+            ...     .from_layers(L["social"])
+            ...     .compute("degree", "betweenness_centrality")
+            ...     .top_k(10, "degree")
+            ...     .to_program())
+            >>> 
+            >>> # Inspect without executing
+            >>> print(program.hash())
+            >>> print(program.explain())
+            >>>
+            >>> # Optimize and execute
+            >>> optimized = program.optimize(budget="10s")
+            >>> result = optimized.execute(network)
+        """
+        from py3plex.dsl.program import GraphProgram
+        ast = Query(explain=False, select=self._select)
+        return GraphProgram.from_ast(ast)
+
     def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, **params) -> QueryResult:
         """Execute the query.
 
