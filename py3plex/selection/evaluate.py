@@ -149,7 +149,7 @@ def _run_algorithm(
         # Could be (partition, score) or (model, selection_info)
         first_elem = result[0]
         
-        # Check if first element is an SBM model
+        # Check if first element is an SBM model or other object with to_partition_vector
         if hasattr(first_elem, 'to_partition_vector') and callable(getattr(first_elem, 'to_partition_vector')):
             # SBM model with selection info
             partition = first_elem.to_partition_vector()
@@ -157,11 +157,7 @@ def _run_algorithm(
             # Standard (partition, score) tuple
             partition = first_elem
         else:
-            # Try to convert first element if it has the method
-            if hasattr(first_elem, 'to_partition_vector'):
-                partition = first_elem.to_partition_vector()
-            else:
-                raise ValueError(f"Unexpected tuple element type: {type(first_elem)}")
+            raise ValueError(f"Unexpected tuple element type: {type(first_elem)}")
     elif isinstance(result, dict):
         partition = result
     elif hasattr(result, 'to_partition_vector') and callable(getattr(result, 'to_partition_vector')):

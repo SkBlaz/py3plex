@@ -254,10 +254,13 @@ def example_random_network() -> None:
     
     # Handle different provenance structures between modes
     selection_config = result.provenance.get('selection_config', {})
-    if 'n_candidates_evaluated' in selection_config:
-        print(f"Candidates evaluated: {selection_config['n_candidates_evaluated']}")
-    if 'n_metrics_used' in selection_config:
-        print(f"Metrics used: {selection_config['n_metrics_used']}")
+    n_candidates = selection_config.get('n_candidates_evaluated')
+    n_metrics = selection_config.get('n_metrics_used')
+    
+    if n_candidates is not None:
+        print(f"Candidates evaluated: {n_candidates}")
+    if n_metrics is not None:
+        print(f"Metrics used: {n_metrics}")
 
     # Show wins by bucket (only available in wins mode)
     if 'wins_by_bucket' in result.provenance:
