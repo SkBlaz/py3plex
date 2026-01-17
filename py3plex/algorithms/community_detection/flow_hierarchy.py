@@ -88,6 +88,14 @@ from py3plex.exceptions import AlgorithmError, Py3plexException
 
 
 # ============================================================================
+# Constants
+# ============================================================================
+
+# Memory threshold for exact matrix computation (number of nodes)
+MAX_NODES_EXACT_MEMORY_WARNING = 1000
+
+
+# ============================================================================
 # Result Container
 # ============================================================================
 
@@ -268,7 +276,8 @@ def _build_transition_matrix(
     if not isinstance(network, multinet.multi_layer_network):
         raise AlgorithmError("Network must be a multi_layer_network instance")
 
-    # Get all unique nodes (these are (node_id, layer) tuples in py3plex)
+    # Get all unique nodes (these are (node_id, layer) tuples in py3plex multilayer networks)
+    # For single-layer networks with one layer, they're still stored as tuples
     try:
         nodes = list(network.get_nodes())
     except AttributeError:
@@ -331,6 +340,8 @@ def _compute_flow_affinity_mc(
     """
     Compute flow affinity matrix using Monte Carlo random walks.
 
+    This implementation uses row-wise sparse sampling to minimize memory usage.
+
     Parameters
     ----------
     P : scipy.sparse.csr_matrix
@@ -353,20 +364,31 @@ def _compute_flow_affinity_mc(
     # Accumulate flow from all walks
     F = np.zeros((n, n), dtype=np.float64)
 
-    # Convert P to dense row probabilities for sampling
-    # This is memory-heavy but necessary for multinomial sampling
-    P_dense = P.toarray()
-
+    # Process each starting node
     for start_node in range(n):
         for _ in range(n_walks):
             current = start_node
             for step in range(1, t + 1):
-                # Sample next node from transition probabilities
-                probs = P_dense[current, :]
-                if probs.sum() == 0:
-                    break  # Dead end
-
-                next_node = rng.choice(n, p=probs / probs.sum())
+                # Extract transition probabilities for current node (row-wise, sparse-friendly)
+                row_start = P.indptr[current]
+                row_end = P.indptr[current + 1]
+                
+                if row_start == row_end:
+                    # Dead end (no outgoing edges)
+                    break
+                
+                # Get non-zero indices and values for this row
+                indices = P.indices[row_start:row_end]
+                probs = P.data[row_start:row_end]
+                
+                # Normalize to ensure it's a valid probability distribution
+                prob_sum = probs.sum()
+                if prob_sum == 0:
+                    break
+                probs = probs / prob_sum
+                
+                # Sample next node
+                next_node = rng.choice(indices, p=probs)
                 F[start_node, next_node] += 1.0 / n_walks
                 current = next_node
 
@@ -400,7 +422,7 @@ def _compute_flow_affinity_matrix(
     n = P.shape[0]
 
     # Memory check
-    if n > 1000 and t > max_t_exact:
+    if n > MAX_NODES_EXACT_MEMORY_WARNING and t > max_t_exact:
         warnings.warn(
             f"Large matrix ({n}x{n}) with t={t} may consume significant memory. "
             f"Consider using approx='mc' for Monte Carlo approximation.",
@@ -436,6 +458,8 @@ def _compute_flow_retention(
     """
     Compute flow retention for a partition.
 
+    This implementation optimizes by leveraging matrix symmetry.
+
     Parameters
     ----------
     S : np.ndarray
@@ -459,7 +483,8 @@ def _compute_flow_retention(
     for node_idx, comm_id in partition.items():
         communities[comm_id].append(node_idx)
 
-    # Compute internal and external flow for each community
+    # Compute internal flow and total flow
+    # Optimize by using upper triangle only (since S is symmetric)
     total_internal = 0.0
     total_flow = 0.0
 
@@ -467,11 +492,18 @@ def _compute_flow_retention(
         members_set = set(members)
 
         for i in members:
-            for j in range(n):
+            # Diagonal contribution
+            total_flow += S[i, i]
+            if i in members_set:
+                total_internal += S[i, i]
+            
+            # Upper triangle only (j > i) to avoid double counting
+            for j in range(i + 1, n):
                 flow_ij = S[i, j]
-                total_flow += flow_ij
+                total_flow += 2.0 * flow_ij  # Count both directions
+                
                 if j in members_set:
-                    total_internal += flow_ij
+                    total_internal += 2.0 * flow_ij  # Both directions internal
 
     # Normalize by total flow to get retention ratio
     # Higher values = better flow retention within communities
