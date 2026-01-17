@@ -173,6 +173,7 @@ def _auto_select_pareto(
     # Phase 0: Detection
     logger.info("Scanning capabilities...")
     capabilities = scan_capabilities()
+    metric_registry = get_metric_registry()
 
     # Build candidate algorithms list
     is_multilayer = _is_multilayer_network(network)
@@ -259,6 +260,19 @@ def _auto_select_pareto(
         }
         logger.info(f"Null model enabled: {null_config}")
 
+    metric_specs = []
+    if custom_metrics:
+        metric_specs = custom_metrics
+    else:
+        default_specs = metric_registry.get_default_metrics(uq_enabled=uq)
+        metric_specs = [m for m in default_specs if m.name in metric_names]
+
+    metric_directions = {
+        m.name: m.direction
+        for m in metric_specs
+        if getattr(m, "direction", None) in {"min", "max"}
+    }
+
     # Execute Pareto pipeline
     logger.info("Executing Pareto pipeline...")
     pareto_result = execute_autocommunity(
@@ -269,8 +283,9 @@ def _auto_select_pareto(
         null_config=null_config,
         use_pareto=True,
         seed=seed,
-        custom_metrics=[],  # Pass custom_metrics directly
+        custom_metrics=custom_metrics,
         custom_candidates=[],
+        metric_directions=metric_directions,
     )
 
     # Convert ParetoResult to unified AutoCommunityResult format
@@ -325,6 +340,10 @@ def _auto_select_pareto(
             "n_metrics": len(metric_names),
             "mode": "pareto",
             "pareto_front_size": len(pareto_result.pareto_front),
+            "metrics_by_bucket": {
+                bucket: [m.name for m in metric_specs if m.bucket == bucket]
+                for bucket in metric_registry.BUCKET_CAPS.keys()
+            },
         },
         provenance={
             **pareto_result.provenance,
