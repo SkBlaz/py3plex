@@ -1,6 +1,7 @@
 # This is the main data structure container
 
 import itertools
+import os
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple, Union
 import matplotlib.pyplot as plt
@@ -1110,9 +1111,11 @@ class multi_layer_network:
     def monitor(self, message):
         """A simple monitor method for logging"""
 
-        logger.info("-" * 20)
-        logger.info(message)
-        logger.info("-" * 20)
+        if os.environ.get("PY3PLEX_QUIET", "0") == "1":
+            return
+        logger.debug("-" * 20)
+        logger.debug(message)
+        logger.debug("-" * 20)
 
     def get_neighbors(self, node_id: str, layer_id: Optional[str] = None) -> Any:
         """Get neighbors of a node in a specific layer.

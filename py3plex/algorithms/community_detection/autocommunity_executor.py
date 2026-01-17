@@ -36,6 +36,7 @@ def execute_autocommunity(
     seed: int,
     custom_metrics: List[Callable],
     custom_candidates: List[Dict[str, Any]],
+    metric_directions: Optional[Dict[str, str]] = None,
 ) -> AutoCommunityResult:
     """Execute AutoCommunity meta-algorithm.
     
@@ -112,9 +113,18 @@ def execute_autocommunity(
     
     # Phase 5: Pareto selection
     if use_pareto:
+        if metric_directions is None:
+            metric_directions = {}
+            for metric in custom_metrics:
+                name = getattr(metric, "name", None)
+                direction = getattr(metric, "direction", None)
+                if name and direction in {"min", "max"}:
+                    metric_directions[name] = direction
+
         pareto_front, selected_id = _pareto_selection(
             evaluation_matrix=evaluation_matrix,
             algorithm_results=algorithm_results,
+            metric_directions=metric_directions,
         )
     else:
         # Fallback: single-metric selection (backward compatibility)
@@ -439,6 +449,17 @@ def _evaluate_algorithms(
         layer_entropy,
     )
     
+    import inspect
+
+    custom_metric_map = {}
+    for metric in custom_metrics:
+        name = getattr(metric, "name", None)
+        func = getattr(metric, "callable", None)
+        if name and func:
+            custom_metric_map[name] = func
+        elif callable(metric):
+            custom_metric_map[metric.__name__] = metric
+
     rows = []
     
     for algo_id, result in algorithm_results.items():
@@ -503,8 +524,62 @@ def _evaluate_algorithms(
                     value = layer_entropy(partition, network)
 
                 else:
-                    warnings.warn(f"Metric '{metric_name}' not implemented", stacklevel=2)
-                    value = 0.0
+                    custom_func = custom_metric_map.get(metric_name)
+                    if custom_func is None:
+                        warnings.warn(
+                            f"Metric '{metric_name}' not implemented",
+                            stacklevel=2,
+                        )
+                        value = 0.0
+                    else:
+                        context = {
+                            "algorithm_id": algo_id,
+                            "algorithm": result.get("algorithm"),
+                            "runtime_ms": result.get("runtime_ms"),
+                            "uq": result.get("uq_data"),
+                        }
+                        values = {
+                            "partition": partition,
+                            "communities": partition,
+                            "community_assignments": partition,
+                            "net": network,
+                            "network": network,
+                            "context": context,
+                            "contestant_metadata": context,
+                            "meta": context,
+                            "metadata": context,
+                        }
+
+                        try:
+                            sig = inspect.signature(custom_func)
+                            params = sig.parameters
+                        except (TypeError, ValueError):
+                            params = {}
+
+                        if params:
+                            kwargs = {
+                                name: values[name]
+                                for name in params
+                                if name in values
+                            }
+                            if any(p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values()):
+                                kwargs.setdefault("partition", partition)
+                                kwargs.setdefault("network", network)
+                                kwargs.setdefault("context", context)
+                            if kwargs:
+                                value = custom_func(**kwargs)
+                            else:
+                                arity = len(params)
+                                if arity >= 3:
+                                    value = custom_func(partition, network, context)
+                                elif arity == 2:
+                                    value = custom_func(partition, network)
+                                elif arity == 1:
+                                    value = custom_func(partition)
+                                else:
+                                    value = custom_func()
+                        else:
+                            value = custom_func(partition, network, context)
                 
                 row[metric_name] = value
             
@@ -659,6 +734,7 @@ def _filter_by_null_scores(
 def _pareto_selection(
     evaluation_matrix: pd.DataFrame,
     algorithm_results: Dict[str, Dict[str, Any]],
+    metric_directions: Optional[Dict[str, str]] = None,
 ) -> Tuple[List[str], str]:
     """Apply Pareto dominance to select non-dominated algorithms.
     
@@ -670,7 +746,7 @@ def _pareto_selection(
         Tuple of (pareto_front, selected_id)
     """
     # Define metric directions (max or min)
-    metric_directions = {
+    base_directions = {
         'modularity': 'max',
         'stability': 'max',
         'coverage': 'max',
@@ -679,6 +755,9 @@ def _pareto_selection(
         'replica_consistency': 'max',  # Higher is better (multilayer coherence)
         'layer_entropy': 'max',  # Higher is better (degeneracy guardrail)
     }
+    direction_map = dict(base_directions)
+    if metric_directions:
+        direction_map.update(metric_directions)
     
     # Extract metric columns
     metric_cols = [col for col in evaluation_matrix.columns if col != 'algorithm_id']
@@ -708,7 +787,7 @@ def _pareto_selection(
                 if np.isnan(val_i) or np.isnan(val_j):
                     continue
                 
-                direction = metric_directions.get(metric, 'max')
+                direction = direction_map.get(metric, 'max')
                 
                 if direction == 'max':
                     if val_j < val_i:
@@ -734,10 +813,32 @@ def _pareto_selection(
     if len(pareto_front) == 1:
         selected = pareto_front[0]
     else:
-        # If multiple, select by modularity (as tiebreaker)
-        selected = evaluation_matrix[
+        # If multiple, select by modularity (as tiebreaker) when available,
+        # otherwise use a mean rank across available metrics.
+        pareto_rows = evaluation_matrix[
             evaluation_matrix['algorithm_id'].isin(pareto_front)
-        ].sort_values('modularity', ascending=False).iloc[0]['algorithm_id']
+        ]
+        if 'modularity' in pareto_rows.columns:
+            selected = pareto_rows.sort_values('modularity', ascending=False).iloc[0][
+                'algorithm_id'
+            ]
+        else:
+            ranks = []
+            for metric in metric_cols:
+                if metric not in pareto_rows.columns:
+                    continue
+                direction = direction_map.get(metric, 'max')
+                if direction == 'min':
+                    rank = pareto_rows[metric].rank(ascending=True, method='average')
+                else:
+                    rank = pareto_rows[metric].rank(ascending=False, method='average')
+                ranks.append(rank)
+
+            if ranks:
+                mean_rank = sum(ranks) / len(ranks)
+                selected = pareto_rows.loc[mean_rank.idxmin(), 'algorithm_id']
+            else:
+                selected = pareto_rows.iloc[0]['algorithm_id']
     
     return pareto_front, selected
 
