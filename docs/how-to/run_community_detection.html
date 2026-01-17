@@ -97,6 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#cli-cross-reference-optional">CLI Cross-Reference (Optional)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#automatic-algorithm-selection-autocommunity">Automatic Algorithm Selection (AutoCommunity)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hierarchical-flow-based-community-detection">Hierarchical Flow-Based Community Detection</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
@@ -2687,6 +2688,164 @@ py3plex<span class="w"> </span>community<span class="w"> </span>network.edgelist
 </ul>
 <p><strong>When to use:</strong> Exploratory analysis, comparing algorithms fairly, reproducible algorithm choice with provenance.</p>
 <p>See AGENTS.md for complete API documentation.</p>
+</section>
+<section id="hierarchical-flow-based-community-detection">
+<h2>Hierarchical Flow-Based Community Detection<a class="headerlink" href="#hierarchical-flow-based-community-detection" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Detect hierarchical community structure based on flow/diffusion dynamics rather than modularity optimization.</p>
+<p><strong>What is hierarchical flow-based detection?</strong></p>
+<p>Unlike modularity-based methods (Louvain, Leiden) that optimize a single quality function, hierarchical flow-based community detection (HFCD) identifies communities as sets of nodes that <strong>retain probability mass</strong> under random walk dynamics for longer times than expected by chance. The hierarchy emerges naturally from observing how flow-based communities merge as diffusion time increases.</p>
+<p><strong>Key concepts:</strong></p>
+<ul class="simple">
+<li><p><strong>Communities = flow retention</strong>: Groups that trap random walkers internally</p></li>
+<li><p><strong>Hierarchy = time scales</strong>: Different community structures at different diffusion times</p></li>
+<li><p><strong>No resolution parameter</strong>: Hierarchy levels correspond to stability plateaus</p></li>
+<li><p><strong>Multilayer-aware</strong>: Native support for interlayer coupling via <span class="math notranslate nohighlight">\(\alpha\)</span> parameter</p></li>
+</ul>
+<p><strong>Mathematical foundation:</strong></p>
+<p>For a multilayer network, construct transition operator:</p>
+<div class="math notranslate nohighlight">
+\[P = \alpha P_{\text{intra}} + (1-\alpha) P_{\text{inter}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha \in [0,1]\)</span> controls interlayer coupling. Flow affinity at scale <span class="math notranslate nohighlight">\(t\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[F(t) = \sum_{k=1}^{t} P^k, \quad S_{ij}(t) = \frac{F_{ij}(t) + F_{ji}(t)}{2}\]</div>
+<p>Community quality (flow retention):</p>
+<div class="math notranslate nohighlight">
+\[\text{FlowRetention}(C, t) = \frac{\text{internal flow}}{\text{total flow}}\]</div>
+<p><strong>Basic example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow_hierarchical_communities</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;datasets/synthetic_multilayer.txt&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Run hierarchical flow detection</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">flow_hierarchical_communities</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;mc&quot;</span><span class="p">,</span>      <span class="c1"># Monte Carlo (scalable) or &quot;exact&quot;</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>        <span class="c1"># Interlayer coupling (0=full, 1=independent)</span>
+    <span class="n">n_walks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>      <span class="c1"># MC walks per node</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>           <span class="c1"># Reproducibility</span>
+<span class="p">)</span>
+
+<span class="c1"># Access best partition (maximum stability)</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_partition</span><span class="p">()</span>
+
+<span class="c1"># Get partition with specific number of communities</span>
+<span class="n">partition_3</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_flat_partition</span><span class="p">(</span><span class="n">n_communities</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Display hierarchy</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+
+<span class="c1"># Explore all hierarchy levels</span>
+<span class="k">for</span> <span class="n">scale</span><span class="p">,</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">hierarchy_levels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">stability</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stability_scores</span><span class="p">[</span><span class="n">scale</span><span class="p">]</span>
+    <span class="n">n_comms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scale </span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">n_comms</span><span class="si">}</span><span class="s2"> communities (stability=</span><span class="si">{</span><span class="n">stability</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>======================================================================
+Hierarchical Flow-Based Community Detection Results
+======================================================================
+Total nodes: 120
+Hierarchy levels detected: 4
+Scale range: [1.00, 8.00]
+
+Best partition (max stability):
+  Scale: 4.00
+  Stability: 0.8523
+  Communities: 5
+
+Scale 1.0: 120 communities (stability=1.000)
+Scale 2.0: 12 communities (stability=0.912)
+Scale 4.0: 5 communities (stability=0.852)
+Scale 8.0: 2 communities (stability=0.734)
+</pre></div>
+</div>
+<p><strong>Result structure:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">FlowHierarchyResult</span></code> object contains:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dendrogram</span></code>: List of merge events (comm_i, comm_j, scale, stability_before, stability_after)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hierarchy_levels</span></code>: Dict[scale → partition] at all detected levels</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stability_scores</span></code>: Flow retention at each scale (range [0,1])</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">merge_scales</span></code>: Array of scales where merges occurred</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code>: Algorithm config (flow_type, alpha, approx, seed, scale_schedule)</p></li>
+</ul>
+<p><strong>Multilayer-specific parameters:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># High alpha (0.9): Layers mostly independent</span>
+<span class="n">result_high</span> <span class="o">=</span> <span class="n">flow_hierarchical_communities</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Low alpha (0.2): Strong interlayer coupling</span>
+<span class="n">result_low</span> <span class="o">=</span> <span class="n">flow_hierarchical_communities</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Communities bridge layers based on alpha</span>
+</pre></div>
+</div>
+<p><strong>Approximation methods:</strong></p>
+<ul class="simple">
+<li><p><strong>Monte Carlo (approx=”mc”)</strong>: Memory-efficient O(n × walks), slight randomness (use seed)</p></li>
+<li><p><strong>Exact (approx=”exact”)</strong>: Deterministic O(n²), memory-intensive for large networks</p></li>
+</ul>
+<p><strong>Algorithm complexity:</strong></p>
+<ul class="simple">
+<li><p><strong>Time</strong>: O(t × m × k) where t=scales, m=edges, k=merges</p></li>
+<li><p><strong>Space</strong>: O(n²) exact, O(n × walks) Monte Carlo</p></li>
+<li><p><strong>Recommended</strong>: n &lt; 10,000 (exact) or n &lt; 100,000 (MC)</p></li>
+</ul>
+<p><strong>When to use:</strong></p>
+<ul class="simple">
+<li><p>Understanding hierarchical organization at multiple scales</p></li>
+<li><p>Networks where modularity optimization may miss structure</p></li>
+<li><p>Multilayer networks with different layer coupling strengths</p></li>
+<li><p>Temporal networks where communities evolve across time slices</p></li>
+<li><p>Comparing with flow-based baselines (Infomap, Markov Stability)</p></li>
+</ul>
+<p><strong>Comparison with other methods:</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspect</p></th>
+<th class="head"><p>Flow Hierarchy</p></th>
+<th class="head"><p>Louvain/Leiden</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Quality metric</p></td>
+<td><p>Flow retention</p></td>
+<td><p>Modularity</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hierarchy</p></td>
+<td><p>Full dendrogram</p></td>
+<td><p>Flat partition</p></td>
+</tr>
+<tr class="row-even"><td><p>Scale selection</p></td>
+<td><p>Stability plateaus</p></td>
+<td><p>Resolution parameter γ</p></td>
+</tr>
+<tr class="row-odd"><td><p>Multilayer</p></td>
+<td><p>Native (α coupling)</p></td>
+<td><p>Requires ω parameter</p></td>
+</tr>
+<tr class="row-even"><td><p>Determinism</p></td>
+<td><p>Seed-controlled (MC/exact)</p></td>
+<td><p>Heuristic-dependent</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<ul class="simple">
+<li><p>Basic usage: <a class="reference download internal" download="" href="../_downloads/592b3da520748edacd08d76e5317c4b0/example_flow_hierarchy_basic.py"><code class="xref download docutils literal notranslate"><span class="pre">example_flow_hierarchy_basic.py</span></code></a></p></li>
+<li><p>Multilayer with alpha variations: <a class="reference download internal" download="" href="../_downloads/41a133fec5bd046c365809979a2127db/example_flow_hierarchy_multilayer.py"><code class="xref download docutils literal notranslate"><span class="pre">example_flow_hierarchy_multilayer.py</span></code></a></p></li>
+</ul>
+<p><strong>References:</strong></p>
+<ul class="simple">
+<li><p>Schaub et al., “Markov Dynamics as a Zooming Lens for Multiscale Community Detection”, <em>PLoS ONE</em> 7(2): e32210 (2012)</p></li>
+<li><p>Delvenne et al., “Stability of graph communities across time scales”, <em>PNAS</em> 107(29): 12755-12760 (2010)</p></li>
+<li><p>Lambiotte et al., “Random Walks, Markov Processes and the Multiscale Modular Organization of Complex Networks”, <em>IEEE Trans. Network Science and Engineering</em> 1(2): 76-90 (2014)</p></li>
+</ul>
 <p><strong>Community detection checklist:</strong></p>
 <ul class="simple">
 <li><p>[ ] Run at least 2 different algorithms</p></li>
