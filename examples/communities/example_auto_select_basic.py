@@ -124,6 +124,37 @@ def example_simple_network() -> None:
     """Example 2: Simple network with Pareto mode (recommended)."""
     _print_header("Example 2: Simple network with Pareto mode")
 
+    # Create a simple network
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add nodes
+    nodes = [{"source": f"N{i}", "type": "layer1"} for i in range(8)]
+    network.add_nodes(nodes)
+    
+    # Add edges forming two communities
+    edges = [
+        # Community 1
+        {"source": "N0", "target": "N1", "source_type": "layer1", "target_type": "layer1"},
+        {"source": "N1", "target": "N2", "source_type": "layer1", "target_type": "layer1"},
+        {"source": "N2", "target": "N3", "source_type": "layer1", "target_type": "layer1"},
+        # Community 2
+        {"source": "N4", "target": "N5", "source_type": "layer1", "target_type": "layer1"},
+        {"source": "N5", "target": "N6", "source_type": "layer1", "target_type": "layer1"},
+        {"source": "N6", "target": "N7", "source_type": "layer1", "target_type": "layer1"},
+        # Bridge
+        {"source": "N3", "target": "N4", "source_type": "layer1", "target_type": "layer1"},
+    ]
+    network.add_edges(edges)
+    
+    print(f"Network: {len(list(network.get_nodes()))} nodes, {network.edge_count} edges")
+    
+    # Run auto-select with Pareto mode
+    print("\nRunning auto-select...")
+    result = auto_select_community(network, mode="pareto", fast=True, seed=DEFAULT_SEED)
+    
+    # Show results
+    print("\n" + result.explain())
+
     # Show partition summary
     print("\n--- Partition Summary ---")
     communities: Dict[int, int] = {}
@@ -220,14 +251,20 @@ def example_random_network() -> None:
     # Show provenance information
     print("\n--- Selection Provenance ---")
     print(f"Algorithms detected: {len(result.provenance['algorithms_detected'])}")
-    print(f"Candidates evaluated: {result.provenance['selection_config']['n_candidates_evaluated']}")
-    print(f"Metrics used: {result.provenance['selection_config']['n_metrics_used']}")
+    
+    # Handle different provenance structures between modes
+    selection_config = result.provenance.get('selection_config', {})
+    if 'n_candidates_evaluated' in selection_config:
+        print(f"Candidates evaluated: {selection_config['n_candidates_evaluated']}")
+    if 'n_metrics_used' in selection_config:
+        print(f"Metrics used: {selection_config['n_metrics_used']}")
 
-    # Show wins by bucket
-    print("\n--- Winner's wins by metric bucket ---")
-    for bucket, wins in result.provenance['wins_by_bucket'].items():
-        if wins > 0:
-            print(f"  {bucket}: {wins}")
+    # Show wins by bucket (only available in wins mode)
+    if 'wins_by_bucket' in result.provenance:
+        print("\n--- Winner's wins by metric bucket ---")
+        for bucket, wins in result.provenance['wins_by_bucket'].items():
+            if wins > 0:
+                print(f"  {bucket}: {wins}")
 
 
 def main() -> int:

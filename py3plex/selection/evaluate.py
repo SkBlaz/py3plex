@@ -146,10 +146,51 @@ def _run_algorithm(
     
     # Handle different return types
     if isinstance(result, tuple):
-        # Common pattern: (partition, score)
-        partition = result[0]
+        # Could be (partition, score) or (model, selection_info)
+        first_elem = result[0]
+        
+        # Check if first element is an SBM model
+        if hasattr(first_elem, 'to_partition_vector') and callable(getattr(first_elem, 'to_partition_vector')):
+            # SBM model with selection info
+            partition = first_elem.to_partition_vector()
+        elif isinstance(first_elem, dict):
+            # Standard (partition, score) tuple
+            partition = first_elem
+        else:
+            # Try to convert first element if it has the method
+            if hasattr(first_elem, 'to_partition_vector'):
+                partition = first_elem.to_partition_vector()
+            else:
+                raise ValueError(f"Unexpected tuple element type: {type(first_elem)}")
     elif isinstance(result, dict):
         partition = result
+    elif hasattr(result, 'to_partition_vector') and callable(getattr(result, 'to_partition_vector')):
+        # Direct SBM model return
+        partition = result.to_partition_vector()
+    elif hasattr(result, 'consensus_partition'):
+        # UQResult or similar object with consensus_partition attribute
+        consensus = getattr(result, 'consensus_partition')
+        if callable(consensus):
+            # CommunityDistribution with consensus_partition() method
+            partition_array = consensus()
+            # Convert array to dict - need to get nodes from result
+            if hasattr(result, 'nodes'):
+                nodes = result.nodes
+                partition = {node: int(partition_array[i]) for i, node in enumerate(nodes)}
+            else:
+                raise ValueError(f"Result has consensus_partition() method but no nodes attribute: {type(result)}")
+        elif isinstance(consensus, dict):
+            # UQResult with consensus_partition dict attribute
+            partition = consensus
+        else:
+            raise ValueError(f"Unexpected consensus_partition type: {type(consensus)}")
+    elif hasattr(result, 'consensus'):
+        # Check for consensus attribute (might be alternative naming)
+        consensus = getattr(result, 'consensus')
+        if isinstance(consensus, dict):
+            partition = consensus
+        else:
+            raise ValueError(f"Unexpected consensus type: {type(consensus)}")
     else:
         raise ValueError(f"Unexpected result type: {type(result)}")
     
