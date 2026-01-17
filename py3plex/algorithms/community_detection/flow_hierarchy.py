@@ -450,7 +450,7 @@ def _compute_flow_retention(
     Returns
     -------
     float
-        Flow retention score.
+        Flow retention score (normalized by total flow).
     """
     n = S.shape[0]
 
@@ -461,20 +461,25 @@ def _compute_flow_retention(
 
     # Compute internal and external flow for each community
     total_internal = 0.0
-    total_external = 0.0
+    total_flow = 0.0
 
     for comm_id, members in communities.items():
         members_set = set(members)
 
         for i in members:
             for j in range(n):
+                flow_ij = S[i, j]
+                total_flow += flow_ij
                 if j in members_set:
-                    total_internal += S[i, j]
-                else:
-                    total_external += S[i, j]
+                    total_internal += flow_ij
 
-    # Flow retention = internal / (external + epsilon)
-    retention = total_internal / (total_external + epsilon)
+    # Normalize by total flow to get retention ratio
+    # Higher values = better flow retention within communities
+    if total_flow > epsilon:
+        retention = total_internal / total_flow
+    else:
+        retention = 0.0
+    
     return retention
 
 
