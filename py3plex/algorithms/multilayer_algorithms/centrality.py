@@ -42,6 +42,27 @@ from py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality i
     katz_centrality,
 )
 
+# Import algorithm requirements system
+from py3plex.requirements import AlgoRequirements, check_compat, AlgorithmCompatibilityError
+
+
+# Define requirements for multilayer PageRank
+_PAGERANK_REQUIREMENTS = AlgoRequirements(
+    allowed_modes=("multilayer", "multiplex"),
+    replica_model=("none", "partial", "strict"),
+    interlayer_coupling=("none", "identity", "explicit_edges", "both"),
+    requires_edge_weights=False,
+    requires_positive_weights=False,
+    supports_directed=True,
+    supports_undirected=True,
+    uses_randomness=False,
+    requires_seed_for_repro=False,
+    supports_uq=False,
+    expected_complexity="O(k * m) where k is iterations",
+    memory_profile="O(n^2) for dense, O(m) for sparse",
+    practical_limits={"max_nodes": 100000},
+)
+
 
 class MultilayerCentrality:
     """
@@ -478,7 +499,19 @@ class MultilayerCentrality:
             - PageRank values sum to 1.0 (within tol=1e-6)
             - All values are non-negative
             - Converges for strongly connected components or with teleportation
+        
+        Raises:
+            AlgorithmCompatibilityError: If network is incompatible with algorithm requirements
         """
+        # Check compatibility with network
+        if hasattr(self.network, 'capabilities'):
+            net_caps = self.network.capabilities()
+            diagnostics = check_compat(net_caps, _PAGERANK_REQUIREMENTS, algorithm_name='pagerank_centrality')
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='pagerank_centrality')
+        
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
 

@@ -21,6 +21,27 @@ from ._utils import (
     count_infected_neighbors,
 )
 
+# Import algorithm requirements system
+from py3plex.requirements import AlgoRequirements, check_compat, AlgorithmCompatibilityError
+
+
+# Define requirements for SIS dynamics
+_SIS_REQUIREMENTS = AlgoRequirements(
+    allowed_modes=("single", "multilayer", "multiplex"),
+    replica_model=("none", "partial", "strict"),
+    interlayer_coupling=("none", "identity", "explicit_edges", "both"),
+    requires_edge_weights=False,
+    requires_positive_weights=False,
+    supports_directed=True,
+    supports_undirected=True,
+    uses_randomness=True,
+    requires_seed_for_repro=True,
+    supports_uq=False,
+    expected_complexity="O(m * steps)",
+    memory_profile="O(n)",
+    practical_limits={"max_nodes": 1000000},
+)
+
 
 class RandomWalkDynamics(DynamicsProcess):
     """Single-walker discrete-time random walk on a (multi)layer network.
@@ -302,6 +323,15 @@ class SISDynamics(DynamicsProcess):
         self._adj_matrix = None
         self._node_to_idx = None
         self._idx_to_node = None
+        
+        # Check compatibility with network
+        if hasattr(graph, 'capabilities'):
+            net_caps = graph.capabilities()
+            diagnostics = check_compat(net_caps, _SIS_REQUIREMENTS, algorithm_name='SISDynamics', seed=seed)
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='SISDynamics')
     
     def initialize_state(self, seed: Optional[int] = None) -> Any:
         """Initialize SIS state.
