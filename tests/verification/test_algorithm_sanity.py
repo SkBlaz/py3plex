@@ -180,7 +180,9 @@ def test_connected_network_properties():
     query = Q.nodes().compute('degree').to_ast()
     result = execute_ast(network, query)
     
-    df = result.to_pandas().set_index('node')
+    df = result.to_pandas()
+    id_col = 'id' if 'id' in df.columns else 'node'
+    df = df.set_index(id_col)
     
     # All nodes should have degree >= 1
     assert np.all(df['degree'] >= 1), "Connected nodes should have degree >= 1"
@@ -226,7 +228,9 @@ def test_star_graph_centralities():
     query = Q.nodes().compute('degree').compute('betweenness_centrality').to_ast()
     result = execute_ast(network, query)
     
-    df = result.to_pandas().set_index('node')
+    df = result.to_pandas()
+    id_col = 'id' if 'id' in df.columns else 'node'
+    df = df.set_index(id_col)
     
     # Center has highest degree
     assert df.loc['C', 'degree'] == 4, "Center should have degree 4"
