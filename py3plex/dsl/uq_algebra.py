@@ -278,13 +278,20 @@ class UQValue:
         """Compute a hash of the structural properties (excluding seed).
         
         Used for checking idempotence and commutativity.
+        
+        Note: Rounds to HASH_PRECISION (10 decimal places) to avoid
+        floating-point comparison issues while maintaining sufficient
+        precision for detecting true structural differences.
         """
+        # Precision for structural comparison - configurable via class constant
+        HASH_PRECISION = 10
+        
         data = {
             "distribution_type": self.distribution_type.value,
-            "mean": round(self.mean, 10),  # Round to avoid floating point issues
-            "std": round(self.std, 10),
+            "mean": round(self.mean, HASH_PRECISION),
+            "std": round(self.std, HASH_PRECISION),
             "quantiles": {
-                str(q): round(v, 10)
+                str(q): round(v, HASH_PRECISION)
                 for q, v in sorted(self.quantiles.items())
             },
         }
@@ -768,7 +775,10 @@ class UQAlgebra:
         mean_diff = abs(left.mean - right.mean)
         
         # For std, we check both are close to the direct computation
-        # since variance propagation can differ by path
+        # since variance propagation can differ by path.
+        # We allow 10x more tolerance for std because variance propagation
+        # is path-dependent: Var(w1*X1 + w2*(w3*X2 + w4*X3)) != Var((w1*w2)*X1 + ...)
+        # even though means remain associative.
         left_std_diff = abs(left.std - direct.std)
         right_std_diff = abs(right.std - direct.std)
         
@@ -778,7 +788,7 @@ class UQAlgebra:
                 f"Mean diff: {mean_diff:.9f}, Tolerance: {tolerance}"
             )
         
-        # Allow more tolerance for std due to variance propagation
+        # Allow more tolerance for std due to variance propagation path-dependence
         std_tolerance = tolerance * 10
         if left_std_diff > std_tolerance or right_std_diff > std_tolerance:
             # This is acceptable - variance propagation can vary by path

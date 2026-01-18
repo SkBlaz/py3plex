@@ -64,7 +64,8 @@ class TestBootstrapIntegration:
         if isinstance(first_degree, dict):
             assert "mean" in first_degree
             assert "std" in first_degree
-            # Bootstrap parameters should be in result
+            # Note: Supporting both old (n_boot) and new (n_samples) field names
+            # during transition period to new UQ algebra format
             assert "n_samples" in first_degree or "n_boot" in first_degree
     
     def test_bootstrap_nodes_method(self):

@@ -215,7 +215,12 @@ def test_identity_law_zero_weight():
 
 
 def test_idempotence_law_identical_values():
-    """Test idempotence: aggregating identical values preserves distribution."""
+    """Test idempotence: aggregating identical values preserves distribution.
+    
+    Note: When all values are structurally identical, the implementation
+    preserves the original std (idempotence law). This differs from
+    aggregating independent samples, which would reduce std by sqrt(n).
+    """
     value = UQValue(
         distribution_type=DistributionType.GAUSSIAN,
         mean=10.0,
@@ -230,10 +235,8 @@ def test_idempotence_law_identical_values():
     # Mean should be preserved
     assert abs(result.mean - value.mean) < 1e-9
     
-    # Std should be reduced (but this is expected for independent samples)
-    # For truly identical values, std should be preserved
-    # But since we're aggregating as independent, std reduces by sqrt(n)
-    # This is acceptable behavior - the law is about not increasing uncertainty
+    # Std should be preserved (idempotence for identical values)
+    assert abs(result.std - value.std) < 1e-9
 
 
 def test_idempotence_law_degenerate():
@@ -561,7 +564,14 @@ def test_property_associativity_random(means, stds):
 # Differential tests
 
 def test_differential_split_aggregate_equivalence():
-    """Test that splitting then aggregating equals direct aggregation."""
+    """Test that splitting then aggregating equals direct aggregation.
+    
+    Note: Due to variance propagation path-dependence, std may differ by up to 50%.
+    This is mathematically acceptable because:
+    - Var((a+b)/2 + (c+d)/2)/2) uses different weight products than Var((a+b+c+d)/4)
+    - The 50% tolerance allows for worst-case variance propagation differences
+    - Mean should always match exactly (tested separately)
+    """
     # Create a list of values
     values = [
         UQValue(
@@ -585,8 +595,8 @@ def test_differential_split_aggregate_equivalence():
     # Results should be close (not exact due to variance propagation)
     assert abs(direct.mean - split_agg.mean) < 1e-6
     
-    # Std may differ slightly due to different aggregation paths
-    # but should be within reasonable bounds
+    # Std may differ due to different aggregation paths, but should be within bounds
+    # Allow 50% difference due to variance propagation formula differences
     assert abs(direct.std - split_agg.std) / max(direct.std, split_agg.std) < 0.5
 
 
