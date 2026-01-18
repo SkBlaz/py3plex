@@ -44,24 +44,21 @@ from py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality i
 
 # Import algorithm requirements system
 from py3plex.requirements import AlgoRequirements, check_compat, AlgorithmCompatibilityError
-
-
-# Define requirements for multilayer PageRank
-_PAGERANK_REQUIREMENTS = AlgoRequirements(
-    allowed_modes=("multilayer", "multiplex"),
-    replica_model=("none", "partial", "strict"),
-    interlayer_coupling=("none", "identity", "explicit_edges", "both"),
-    requires_edge_weights=False,
-    requires_positive_weights=False,
-    supports_directed=True,
-    supports_undirected=True,
-    uses_randomness=False,
-    requires_seed_for_repro=False,
-    supports_uq=False,
-    expected_complexity="O(k * m) where k is iterations",
-    memory_profile="O(n^2) for dense, O(m) for sparse",
-    practical_limits={"max_nodes": 100000},
+from py3plex.algorithms.requirements_registry import (
+    PAGERANK_REQS,
+    BETWEENNESS_REQS,
+    CLOSENESS_REQS,
+    GENERAL_MULTILAYER_REQS,
 )
+
+
+# Define requirements for multilayer PageRank (kept for backward compatibility)
+_PAGERANK_REQUIREMENTS = PAGERANK_REQS
+
+# Define requirements for other centrality measures
+_BETWEENNESS_REQUIREMENTS = BETWEENNESS_REQS
+_CLOSENESS_REQUIREMENTS = CLOSENESS_REQS
+_EIGENVECTOR_REQUIREMENTS = GENERAL_MULTILAYER_REQS
 
 
 class MultilayerCentrality:
@@ -676,6 +673,19 @@ class MultilayerCentrality:
             connection). They are converted to distances via 1/weight for
             shortest path computation. If your edge weights already represent
             distances, use them directly without this function's weight inversion.
+        
+        Raises:
+            AlgorithmCompatibilityError: If network is incompatible with algorithm requirements
+        """
+        # Check compatibility with network
+        if hasattr(self.network, 'capabilities'):
+            net_caps = self.network.capabilities()
+            diagnostics = check_compat(net_caps, _CLOSENESS_REQUIREMENTS, algorithm_name='multilayer_closeness_centrality')
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='multilayer_closeness_centrality')
+        
 
         Examples:
             >>> # For connected networks, standard closeness works well
@@ -789,7 +799,19 @@ class MultilayerCentrality:
             converted to distances (1/weight) for shortest path computation.
             Weights must be positive (> 0). Zero or negative weights will
             cause undefined behavior.
+        
+        Raises:
+            AlgorithmCompatibilityError: If network is incompatible with algorithm requirements
         """
+        # Check compatibility with network
+        if hasattr(self.network, 'capabilities'):
+            net_caps = self.network.capabilities()
+            diagnostics = check_compat(net_caps, _BETWEENNESS_REQUIREMENTS, algorithm_name='multilayer_betweenness_centrality')
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='multilayer_betweenness_centrality')
+        
         # Convert supra-adjacency matrix to NetworkX graph
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()

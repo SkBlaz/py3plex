@@ -14,6 +14,13 @@ from . import centrality
 # Routing algorithms
 from . import routing
 
+# Algorithm requirements registry
+from .requirements_registry import (
+    list_algorithms,
+    get_algorithm_requirements,
+    register_algorithm,
+)
+
 # SIR epidemic simulator (requires numpy and scipy)
 try:
     from .sir_multiplex import (
@@ -50,4 +57,7 @@ __all__ = [
     "EpidemicResult",
     "centrality",
     "routing",
+    "list_algorithms",
+    "get_algorithm_requirements",
+    "register_algorithm",
 ]
