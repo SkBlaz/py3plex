@@ -24,7 +24,7 @@ This chapter covers py3plex's three major algorithm families for multilayer netw
             .execute(network)
        )
 
-       # Multi-layer comparison
+       # Multilayer comparison
        for layer in ["social", "work"]:
            result = (
                Q.nodes()
