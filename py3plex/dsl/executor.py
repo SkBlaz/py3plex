@@ -53,6 +53,15 @@ from .errors import (
     GroupingError,
 )
 
+# Import UQ resolution and validation
+from .uq_resolution import (
+    resolve_uq_config,
+    validate_uq_result_schema,
+    wrap_deterministic_as_uq,
+    UQResolutionError,
+    UQSchemaValidationError,
+)
+
 # Import uncertainty support
 from py3plex.uncertainty import (
     StatSeries,
@@ -1032,7 +1041,7 @@ def _ensure_attribute(
                         null_model=select.uq_config.kwargs.get("null_model"),
                     )
                     values = _compute_measure_with_uncertainty(
-                        network, compute_item, measure_fn, subgraph, items
+                        network, compute_item, measure_fn, subgraph, items, select
                     )
                 else:
                     # Compute deterministically
@@ -1234,8 +1243,15 @@ def _compute_measure_with_uncertainty(
     measure_fn: Any,
     subgraph: nx.Graph,
     items: List[Any],
+    select: Optional[SelectStmt] = None,
 ) -> Dict[Any, Any]:
     """Compute a measure with optional uncertainty estimation.
+    
+    This function implements the canonical UQ resolution and validation pipeline:
+    1. Resolve UQ config from all priority levels
+    2. Compute metric with resolved config
+    3. Validate result schema before returning
+    4. Store resolved config in result metadata
 
     Args:
         network: Multilayer network
@@ -1243,25 +1259,40 @@ def _compute_measure_with_uncertainty(
         measure_fn: Measure function to call
         subgraph: Subgraph to compute on
         items: List of items (nodes or edges)
+        select: Optional SelectStmt for query-level UQ config
 
     Returns:
-        Dictionary mapping items to values or StatSeries objects
+        Dictionary mapping items to values or UQ result dictionaries
+        
+    Raises:
+        UQResolutionError: If UQ configuration is invalid
+        UQSchemaValidationError: If result doesn't conform to canonical schema
     """
-    if not compute_item.uncertainty:
-        # No uncertainty requested, compute normally
+    # Step 1: Resolve UQ configuration using priority order
+    query_uq_config = select.uq_config if select else None
+    resolved_config = resolve_uq_config(
+        compute_item=compute_item,
+        query_uq_config=query_uq_config,
+        metric_name=compute_item.name,
+    )
+    
+    # If UQ is not enabled, return deterministic results
+    if resolved_config is None:
         return measure_fn(subgraph, items)
-
-    # Determine which uncertainty method to use
-    method = compute_item.method or "perturbation"
-
-    # Get uncertainty parameters with fallbacks
-    n_samples = compute_item.n_samples or 50
-    ci = compute_item.ci or 0.95
-    random_state = compute_item.random_state
-
-    # Import the new engines
+    
+    # Log resolved configuration for debugging
+    logger = logging.getLogger(__name__)
+    logger.debug(
+        f"UQ resolution for '{compute_item.name}': "
+        f"method={resolved_config.method}, "
+        f"n_samples={resolved_config.n_samples}, "
+        f"seed={resolved_config.seed}, "
+        f"provenance={resolved_config.provenance}"
+    )
+    
+    # Import the uncertainty engines
     from py3plex.uncertainty import bootstrap_metric, null_model_metric
-
+    
     # Create metric function that works with uncertainty engines
     def metric_fn_wrapper(net):
         """Wrapper that computes the measure on the network."""
@@ -1270,102 +1301,173 @@ def _compute_measure_with_uncertainty(
             g = net.core_network
         else:
             g = net
-
+        
         # Only compute on nodes that exist in the graph
         valid_items = [item for item in items if item in g]
         if not valid_items:
             return {}
-
+        
         sub = g.subgraph(valid_items).copy()
         return measure_fn(sub, valid_items)
-
-    # Choose the appropriate uncertainty estimation method
-    if method.lower() in ["bootstrap"]:
+    
+    # Step 2: Choose the appropriate uncertainty estimation method
+    method = resolved_config.method.lower()
+    
+    if method == "bootstrap":
         # Use bootstrap engine
-        bootstrap_unit = compute_item.bootstrap_unit or "edges"
-        bootstrap_mode = compute_item.bootstrap_mode or "resample"
-        n_boot = compute_item.n_samples or 50
-
+        bootstrap_unit = resolved_config.kwargs.get("bootstrap_unit", "edges")
+        bootstrap_mode = resolved_config.kwargs.get("bootstrap_mode", "resample")
+        
         result = bootstrap_metric(
             graph=network,
             metric_fn=metric_fn_wrapper,
-            n_boot=n_boot,
+            n_boot=resolved_config.n_samples,
             unit=bootstrap_unit,
             mode=bootstrap_mode,
-            ci=ci,
-            random_state=random_state,
+            ci=resolved_config.ci,
+            random_state=resolved_config.seed,
         )
-
-        # Convert bootstrap result to dict format
-        # For each item, create a dict with mean, std, ci_low, ci_high
+        
+        # Step 3: Convert bootstrap result to canonical UQ schema
         uncertainty_dict = {}
         for i, item in enumerate(result["index"]):
-            uncertainty_dict[item] = {
+            item_result = {
+                "value": float(result["mean"][i]),
                 "mean": float(result["mean"][i]),
                 "std": float(result["std"][i]),
+                "ci_low": float(result["ci_low"][i]),
+                "ci_high": float(result["ci_high"][i]),
                 "quantiles": {
-                    (1 - ci) / 2: float(result["ci_low"][i]),
-                    1 - (1 - ci) / 2: float(result["ci_high"][i]),
+                    (1 - resolved_config.ci) / 2: float(result["ci_low"][i]),
+                    1 - (1 - resolved_config.ci) / 2: float(result["ci_high"][i]),
                 },
-                "n_boot": result["n_boot"],
-                "method": result["method"],
+                "n_samples": resolved_config.n_samples,  # Use resolved config, not result
+                "method": "bootstrap",
+                "seed": resolved_config.seed,
+                "bootstrap_unit": bootstrap_unit,
+                "bootstrap_mode": bootstrap_mode,
             }
+            
+            # Step 4: Validate against canonical schema
+            try:
+                validate_uq_result_schema(item_result, compute_item.name)
+            except UQSchemaValidationError as e:
+                logger.error(f"UQ schema validation failed for {compute_item.name}: {e}")
+                raise
+            
+            uncertainty_dict[item] = item_result
+        
         return uncertainty_dict
-
-    elif method.lower() in ["null_model"]:
+    
+    elif method == "null_model":
         # Use null model engine
-        n_null = compute_item.n_null or 200
-        null_model = compute_item.null_model or "degree_preserving"
-
+        n_null = resolved_config.kwargs.get("n_null", 200)
+        null_model = resolved_config.kwargs.get("null_model")
+        
+        if not null_model:
+            raise UQResolutionError(
+                f"null_model method requires 'null_model' parameter for metric '{compute_item.name}'"
+            )
+        
         result = null_model_metric(
             graph=network,
             metric_fn=metric_fn_wrapper,
             n_null=n_null,
             model=null_model,
-            random_state=random_state,
+            random_state=resolved_config.seed,
         )
-
-        # Convert null model result to dict format
-        # For each item, create a dict with mean, zscore, pvalue
+        
+        # Convert null model result to canonical UQ schema
         uncertainty_dict = {}
         for i, item in enumerate(result["index"]):
-            uncertainty_dict[item] = {
+            item_result = {
+                "value": float(result["observed"][i]),
                 "mean": float(result["observed"][i]),
-                "mean_null": float(result["mean_null"][i]),
                 "std": float(result["std_null"][i]),
+                "ci_low": None,  # Null model doesn't provide CI directly
+                "ci_high": None,
+                "quantiles": {},
+                "n_samples": resolved_config.n_samples,  # Use resolved config
+                "method": "null_model",
+                "seed": resolved_config.seed,
+                "null_model": result["model"],
+                # Null model specific fields
+                "mean_null": float(result["mean_null"][i]),
                 "zscore": float(result["zscore"][i]),
                 "pvalue": float(result["pvalue"][i]),
-                "n_null": result["n_null"],
-                "method": result["model"],
             }
+            
+            # Validate against canonical schema (allow no CI for null model)
+            try:
+                validate_uq_result_schema(item_result, compute_item.name, allow_degenerate=True)
+            except UQSchemaValidationError as e:
+                logger.error(f"UQ schema validation failed for {compute_item.name}: {e}")
+                raise
+            
+            uncertainty_dict[item] = item_result
+        
         return uncertainty_dict
-
-    elif method.lower() in ["perturbation", "seed"]:
-        # Use existing estimate_uncertainty (legacy)
-        # Determine resampling strategy
+    
+    elif method in ["perturbation", "seed", "stratified_perturbation"]:
+        # Use existing estimate_uncertainty (legacy) or stratified version
         resampling = _RESAMPLING_METHOD_MAP.get(
-            method.lower(), ResamplingStrategy.PERTURBATION
+            method, ResamplingStrategy.PERTURBATION
         )
-
+        
         # Estimate uncertainty
         result = estimate_uncertainty(
             network=network,
             metric_fn=metric_fn_wrapper,
-            n_runs=n_samples,
+            n_runs=resolved_config.n_samples,
             resampling=resampling,
-            random_seed=random_state,
+            random_seed=resolved_config.seed,
         )
-
-        # If result is a StatSeries, convert to dict format for attributes
+        
+        # If result is a StatSeries, convert to dict format
         if isinstance(result, StatSeries):
-            return result.to_dict()
+            result_dict = result.to_dict()
+            
+            # Ensure all items conform to canonical schema
+            for item, item_result in result_dict.items():
+                if isinstance(item_result, dict):
+                    # Add missing required fields
+                    if "method" not in item_result:
+                        item_result["method"] = method
+                    if "seed" not in item_result and resolved_config.seed is not None:
+                        item_result["seed"] = resolved_config.seed
+                    if "n_samples" not in item_result:
+                        item_result["n_samples"] = resolved_config.n_samples
+                    
+                    # Ensure ci_low/ci_high are present
+                    if "ci_low" not in item_result or "ci_high" not in item_result:
+                        quantiles = item_result.get("quantiles", {})
+                        if quantiles:
+                            sorted_qs = sorted(quantiles.keys())
+                            if len(sorted_qs) >= 2:
+                                item_result["ci_low"] = quantiles[sorted_qs[0]]
+                                item_result["ci_high"] = quantiles[sorted_qs[-1]]
+                    
+                    # Validate
+                    try:
+                        validate_uq_result_schema(item_result, compute_item.name, allow_degenerate=True)
+                    except UQSchemaValidationError as e:
+                        logger.warning(f"UQ schema validation warning for {compute_item.name}: {e}")
+                        # Don't fail on legacy results, just warn
+            
+            return result_dict
         else:
+            # Wrap non-StatSeries result
             return result
+    
     else:
-        logging.getLogger(__name__).warning(
-            f"Unknown uncertainty method '{method}'. Returning deterministic values with std=0."
+        # Unknown method - should have been caught by validation, but handle gracefully
+        logger.error(
+            f"Unknown uncertainty method '{method}' for metric '{compute_item.name}'. "
+            f"This should have been caught during resolution."
         )
-        return _wrap_deterministic_uncertainty(measure_fn(subgraph, items), items)
+        raise UQResolutionError(
+            f"Unknown uncertainty method '{method}' for metric '{compute_item.name}'"
+        )
 
 
 def _execute_select(
@@ -1683,9 +1785,13 @@ def _execute_select(
                                 measure_fn=measure_fn,
                                 subgraph=subgraph,
                                 items=items,
+                                select=select,
                             )
 
                         attributes[result_name] = values
+                except (UQResolutionError, UQSchemaValidationError):
+                    # UQ errors should propagate (fail-fast)
+                    raise
                 except UnknownMeasureError:
                     # Re-raise unknown measure errors (they have helpful suggestions)
                     raise

@@ -206,6 +206,23 @@ from .errors import (
     InvalidGroupAggregateError,
 )
 
+# Import UQ resolution and validation
+from .uq_resolution import (
+    ResolvedUQConfig,
+    UQResolutionError,
+    UQSchemaValidationError,
+    UQUnsupportedError,
+    resolve_uq_config,
+    validate_uq_result_schema,
+    create_degenerate_uq_result,
+    wrap_deterministic_as_uq,
+    set_global_uq_defaults,
+    get_global_uq_defaults,
+    reset_global_uq_defaults,
+    CANONICAL_UQ_SCHEMA,
+    LIBRARY_UQ_DEFAULTS,
+)
+
 from .registry import measure_registry
 
 from .operator_registry import (
@@ -409,6 +426,20 @@ __all__ = [
     "InvalidJoinKeyError",
     "ComputedFieldMisuseError",
     "InvalidGroupAggregateError",
+    # UQ Resolution
+    "ResolvedUQConfig",
+    "UQResolutionError",
+    "UQSchemaValidationError",
+    "UQUnsupportedError",
+    "resolve_uq_config",
+    "validate_uq_result_schema",
+    "create_degenerate_uq_result",
+    "wrap_deterministic_as_uq",
+    "set_global_uq_defaults",
+    "get_global_uq_defaults",
+    "reset_global_uq_defaults",
+    "CANONICAL_UQ_SCHEMA",
+    "LIBRARY_UQ_DEFAULTS",
     # Registry
     "measure_registry",
     # Operator Registry
