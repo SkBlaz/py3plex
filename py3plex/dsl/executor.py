@@ -9,7 +9,7 @@ import copy
 import logging
 import random
 import time
-from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union, Callable
 
 try:
     from typing import TYPE_CHECKING
