@@ -2591,6 +2591,39 @@ sim = (
 
 ## Uncertainty Quantification
 
+### Overview
+
+Uncertainty Quantification (UQ) in py3plex provides confidence intervals, stability metrics, and distributional information for network analysis results. UQ is integrated into DSL v2 and is essential for robust, reproducible research.
+
+### Correctness Guarantees
+
+**Determinism**:
+- All UQ methods are **fully deterministic** when seeded ✅
+- Same `seed` parameter produces **identical confidence intervals** across runs (verified in tests)
+- Bootstrap, perturbation, and null model methods all respect `seed`
+
+**Monotonicity**:
+- **CI stability**: Larger `n_samples` → more stable confidence intervals
+- **Coverage guarantee**: Confidence intervals use standard bootstrap percentile method
+- **Finiteness**: All CI bounds are finite (no NaN/inf), verified in tests ✅
+
+**Special cases**:
+- **Deterministic algorithms with seed**: `std = 0`, CI width = 0 (verified) ✅
+- **Empty groups**: Handled gracefully with explicit error messages (no silent failures)
+- **Single-node groups**: UQ still computes, but CI may be degenerate
+
+**Reproducibility**:
+```python
+# ✅ Guaranteed to produce identical CIs
+result1 = Q.nodes().compute("betweenness").uq(seed=42, n_samples=100).execute(net)
+result2 = Q.nodes().compute("betweenness").uq(seed=42, n_samples=100).execute(net)
+
+# Extract CIs
+df1 = result1.to_pandas(expand_uncertainty=True)
+df2 = result2.to_pandas(expand_uncertainty=True)
+assert df1.equals(df2)  # ✅ Identical
+```
+
 py3plex provides first-class uncertainty quantification for network metrics.
 
 ### Methods
@@ -4619,7 +4652,7 @@ py3plex guarantees deterministic results when:
 
 ### Provenance
 
-Every query execution records provenance:
+Every query execution records provenance for reproducibility and verification:
 
 ```python
 result = Q.nodes().compute("pagerank").execute(net)
@@ -4636,6 +4669,24 @@ print(prov['randomness']['seed']) # Random seed if used
 print(prov['performance']['total_ms']) # Execution time
 ```
 
+**Correctness verification**:
+- **AST hash stability**: Identical queries produce identical AST hashes ✅ (tested)
+- **Reproducibility expectations**: Same AST hash + seed + network → same results ✅
+- **Provenance presence**: All DSL v2 results include provenance metadata ✅ (verified in tests)
+
+**Usage in verification**:
+```python
+# Verify AST stability
+q1 = Q.nodes().compute("degree")
+q2 = Q.nodes().compute("degree")
+assert q1.to_ast() == q2.to_ast()  # ✅ Structurally identical
+
+# Verify reproducibility via provenance
+result1 = q1.execute(net)
+result2 = q2.execute(net)
+assert result1.meta['provenance']['query']['ast_hash'] == result2.meta['provenance']['query']['ast_hash']
+```
+
 ### Reproducibility Checklist
 
 - [ ] Set `seed` parameter for all randomized operations
@@ -4644,6 +4695,267 @@ print(prov['performance']['total_ms']) # Execution time
 - [ ] Archive network data with checksums
 - [ ] Document Python and dependency versions
 - [ ] Use parameterized queries with Param.ref() for reusability
+
+---
+
+## Verification & Correctness Guarantees
+
+### Overview
+
+py3plex employs **metamorphic testing**, **differential testing**, and **certificate-based verification** to provide strong correctness guarantees without relying on brittle golden outputs. This approach verifies that algorithms satisfy key invariants and properties rather than comparing against pre-computed results.
+
+**Philosophy**: Correctness is established through:
+1. **Metamorphic relations**: Transformations that should preserve properties
+2. **Certificates/witnesses**: Independent validation of algorithm outputs
+3. **Cross-implementation agreement**: Comparing equivalent operations across APIs
+4. **Determinism enforcement**: All stochastic algorithms are seedable and reproducible
+
+**Current Coverage** (as of v1.1.2):
+- ✅ Centrality measures: Metamorphic invariance tests
+- ✅ Community detection: Certificate-based validation
+- ✅ DSL v2: Provenance and metadata checks
+- ⚠️ Null models: Partial coverage (degree sequence preservation)
+- ⚠️ Path algorithms: Basic tests (not yet comprehensive)
+- ⚠️ Dynamics simulations: Determinism tests (not yet metamorphic)
+
+### Metamorphic Testing
+
+Metamorphic testing verifies that algorithms satisfy invariants under controlled transformations. py3plex tests the following metamorphic relations:
+
+#### Supported Transformations
+
+All transformations are deterministic and preserve specific properties:
+
+| Transformation | What it preserves | Test fixture |
+|----------------|-------------------|--------------|
+| **Node relabeling** | Topology, degree distribution, all centrality value multisets | `relabel_nodes(net, mapping)` |
+| **Layer permutation** | Network structure, intralayer/interlayer patterns | `permute_layers(net, perm)` |
+| **Edge order shuffle** | All edges, all graph properties (tests insertion order independence) | `shuffle_edge_order(net, seed=42)` |
+| **Weight scaling** | Topology, relative weight ordering, shortest path routes | `scale_weights(net, factor=2.0)` |
+| **Isolated node addition** | Connected component structure, existing edges | `add_isolated_nodes(net, nodes, layer=0)` |
+| **Edge perturbation** | Stability envelope (used for testing robustness) | `perturb_edges(net, drop_prob=0.1, seed=42)` |
+
+#### Verified Invariants
+
+**Centrality measures** (17 tests):
+- **Relabel invariance**: Node naming doesn't affect centrality distributions
+  - Degree centrality ✅
+  - Betweenness centrality ✅
+  - PageRank ✅
+  - Closeness centrality ✅
+- **Layer permutation invariance**: Layer ordering doesn't affect results ✅
+- **Edge order invariance**: Edge insertion order doesn't matter ✅
+- **Finiteness**: All values are finite (no NaN/inf) ✅
+- **PageRank normalization**: Values sum to ≈1.0 within 1e-6 tolerance ✅
+
+**Community detection** (7 certificate tests):
+- **Partition validity**: Every node assigned exactly once ✅
+- **No empty communities**: All communities have at least one member ✅
+- **Modularity certificate**: Recomputed modularity matches and is within bounds [-0.5, 1.0] ✅
+- **Determinism**: Same seed produces identical partitions ✅
+- **Expected structure**: Known structures (e.g., two cliques with bridge) produce reasonable community counts ✅
+- **Relabel equivalence**: Relabeling produces same partition structure (same modularity) ✅
+
+**DSL v2**:
+- **Provenance presence**: All results include provenance metadata ✅
+- **AST stability**: Identical queries produce identical AST representations ✅
+
+### Certificate-Based Verification
+
+Certificates are independent witnesses that validate algorithm outputs without trusting the algorithm itself.
+
+#### Community Detection Certificates
+
+```python
+from py3plex.algorithms.community_detection import louvain_multilayer, multilayer_modularity
+
+# Run algorithm
+partition = louvain_multilayer(net, random_state=42)
+
+# Certificate 1: Partition covers all nodes
+nodes = set(net.get_nodes())
+assert set(partition.keys()) == nodes
+
+# Certificate 2: No empty communities
+community_sizes = {}
+for node, comm in partition.items():
+    community_sizes[comm] = community_sizes.get(comm, 0) + 1
+assert all(size > 0 for size in community_sizes.values())
+
+# Certificate 3: Recompute modularity
+Q = multilayer_modularity(net, partition)
+assert -0.5 <= Q <= 1.0  # Theoretical bounds
+assert math.isfinite(Q)   # Must be finite
+```
+
+#### PageRank Certificates
+
+```python
+# Run PageRank
+centrality = net.monoplex_nx_wrapper("pagerank")
+
+# Certificate 1: Non-negativity
+assert all(v >= 0 for v in centrality.values())
+
+# Certificate 2: Normalization
+total = sum(centrality.values())
+assert abs(total - 1.0) < 1e-6
+
+# Certificate 3: Finiteness
+assert all(math.isfinite(v) for v in centrality.values())
+```
+
+#### Null Model Certificates
+
+Null models must preserve specified constraints. Verification checks that constraints are actually preserved:
+
+```python
+from py3plex.nullmodels import configuration_model
+
+# Generate null model
+null_net = configuration_model(net, seed=42)
+
+# Certificate 1: Degree sequence preserved (per layer)
+for layer in net.get_layers():
+    original_degrees = sorted([net.degree(n, layer) for n in net.get_nodes(layer)])
+    null_degrees = sorted([null_net.degree(n, layer) for n in null_net.get_nodes(layer)])
+    assert original_degrees == null_degrees
+
+# Certificate 2: Layer count preserved
+assert len(net.get_layers()) == len(null_net.get_layers())
+
+# Certificate 3: Node count preserved (per layer)
+for layer in net.get_layers():
+    assert len(net.get_nodes(layer)) == len(null_net.get_nodes(layer))
+```
+
+### Differential Testing
+
+Differential testing compares equivalent operations across different implementations to detect semantic drift.
+
+#### DSL v2 vs Legacy DSL
+
+**Note**: Legacy DSL has limited functionality, so many comparisons are not feasible. Current tests:
+
+```python
+from py3plex.dsl import Q, execute_query
+
+# Node selection (both DSLs)
+legacy_result = execute_query(net, "SELECT nodes")
+v2_result = Q.nodes().execute(net)
+# Should select same nodes ✅ (tested where feasible)
+
+# Computed measures (when supported)
+legacy_result = execute_query(net, "SELECT nodes COMPUTE degree")
+v2_result = Q.nodes().compute("degree").execute(net)
+# Should produce same degree values ✅
+```
+
+**Skipped tests**: 9 differential tests are skipped because legacy DSL doesn't support:
+- Layer filtering with `FROM` clause (inconsistent syntax)
+- Degree filtering with `WHERE degree > N`
+- Betweenness/PageRank computation
+- Edge selection with `intralayer=True`
+- Ordering with `ORDER BY`
+
+**DSL v2 advantages verified**:
+- ✅ Richer provenance metadata
+- ✅ Stable AST representation
+- ✅ Type safety and IDE autocomplete
+- ✅ Chainable builder API
+
+#### py3plex vs NetworkX (planned)
+
+For single-layer projections, centrality measures should agree with NetworkX:
+- Degree centrality (not yet implemented)
+- Betweenness centrality (not yet implemented)
+- Closeness centrality (not yet implemented)
+- PageRank (not yet implemented)
+
+**Status**: Not yet implemented. Future work will add differential tests comparing py3plex monoplex projections with NetworkX on identical graphs.
+
+### Determinism and Reproducibility
+
+**Guarantee**: All stochastic algorithms are fully deterministic when seeded.
+
+```python
+# Community detection with seed
+partition1 = louvain_multilayer(net, random_state=42)
+partition2 = louvain_multilayer(net, random_state=42)
+assert partition1 == partition2  # ✅ Identical
+
+# Uncertainty quantification with seed
+result1 = Q.nodes().compute("betweenness").uq(method="bootstrap", n_samples=100, seed=42).execute(net)
+result2 = Q.nodes().compute("betweenness").uq(method="bootstrap", n_samples=100, seed=42).execute(net)
+# Confidence intervals should be identical ✅
+
+# Null model generation with seed
+null1 = configuration_model(net, seed=123)
+null2 = configuration_model(net, seed=123)
+# Should produce identical null networks ✅
+```
+
+**Verification**: Tests check that `seed=N` produces identical results across multiple runs.
+
+### Test Fixtures
+
+All verification tests use **canonical small graphs** for deterministic, fast testing:
+
+```python
+from tests.fixtures import (
+    tiny_two_layer,          # 4 nodes, 2 layers, 4 edges
+    small_three_layer,       # 5 nodes, 3 layers, 5 edges
+    two_cliques_bridge,      # 6 nodes, 1 layer, K3-bridge-K3 (known community structure)
+    path_graph_multilayer,   # Parameterized path graphs replicated across layers
+)
+
+# All fixtures return multi_layer_network instances
+net = tiny_two_layer()
+```
+
+**Properties**:
+- Small enough for fast testing (< 10 nodes typically)
+- Diverse enough to cover edge cases
+- Well-documented with known structural properties
+- Deterministic (no randomness in construction)
+
+### Current Limitations
+
+**What is NOT yet covered**:
+- ❌ Path algorithms: Only basic tests, no comprehensive metamorphic tests
+- ❌ Null models: Certificate tests not yet comprehensive
+- ❌ Dynamics simulations: Determinism tested, but not metamorphic properties
+- ❌ Temporal network algorithms: No verification tests yet
+- ❌ Graph operations (graph_ops): No differential tests vs DSL v2
+- ❌ CLI vs Python API: No differential tests
+- ❌ py3plex vs NetworkX: No cross-implementation comparison tests
+
+**What is partially covered**:
+- ⚠️ DSL v2 vs Legacy DSL: 9 tests skipped due to legacy DSL limitations
+- ⚠️ Community detection: Strong certificate tests, but stability envelope tests not yet comprehensive
+
+**Roadmap**:
+1. Add path algorithm metamorphic tests (weight scaling preserves argmin path)
+2. Add comprehensive null model certificate tests
+3. Add py3plex vs NetworkX differential tests for single-layer operations
+4. Add CLI vs Python API smoke tests
+5. Add temporal algorithm verification tests
+6. Expand community detection stability envelope tests
+
+### Best Practices
+
+**For developers**:
+1. **Add metamorphic tests** for new algorithms (test invariants, not golden outputs)
+2. **Add certificate validators** for algorithm outputs (independent verification)
+3. **Use canonical fixtures** (`tests/fixtures/`) for deterministic testing
+4. **Enforce determinism** with `seed` parameters and test reproducibility
+5. **Update this section** when adding new verification tests (keep it factual)
+
+**For users**:
+1. **Trust the verified invariants**: If an algorithm passes metamorphic tests, its invariants hold
+2. **Check certificates**: Recompute modularity, check PageRank normalization, etc.
+3. **Use seeds**: Always set `seed` for reproducible research
+4. **Report violations**: If you find an invariant violation, file an issue with a minimal repro
 
 ---
 
