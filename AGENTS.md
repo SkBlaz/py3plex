@@ -1455,6 +1455,350 @@ When calling `to_pandas(expand_uncertainty=True, ci_level=0.95)`:
   - `{col}_ci{pct}_high`: Upper CI bound
   - `{col}_ci{pct}_width`: CI width
 
+#### 10.5 UQ Algebraic Laws (Formal Specification)
+
+**Status**: Implemented in `py3plex.dsl.uq_algebra` (v1.1.2+)
+
+All UQ operations in py3plex are governed by formal algebraic laws that ensure mathematical correctness, composability, and reproducibility. UQ outputs are treated as first-class algebraic objects, and all operations combining, transforming, or aggregating UQ results MUST obey explicit laws. Any violation raises a hard error (fail-fast policy).
+
+##### 10.5.1 UQValue Object Model
+
+All UQ results are represented as `UQValue` objects with the following structure:
+
+```python
+from py3plex.dsl.uq_algebra import UQValue, DistributionType, ProvenanceInfo
+
+# Create a UQValue
+value = UQValue(
+    distribution_type=DistributionType.GAUSSIAN,  # EMPIRICAL, GAUSSIAN, or DEGENERATE
+    mean=10.0,                    # Point estimate
+    std=2.0,                      # Standard deviation
+    quantiles={0.025: 6.08, 0.975: 13.92},  # Quantile dictionary
+    samples=None,                 # Optional: raw samples (for EMPIRICAL)
+    support={"layer": "social"},  # Optional: support domain (grouping context)
+    provenance=ProvenanceInfo(    # Provenance information
+        method="bootstrap",
+        n_samples=100,
+        seed=42,
+        bootstrap_unit="edges",
+        bootstrap_mode="resample"
+    ),
+    effective_count=1.0,          # Number of original observations represented
+)
+```
+
+**Distribution Types**:
+- `EMPIRICAL`: Distribution from bootstrap/resampling samples (has raw samples)
+- `GAUSSIAN`: Parametric Gaussian approximation (mean + std)
+- `DEGENERATE`: Single-value distribution (std=0, deterministic)
+
+**Provenance Fields**:
+- `method`: UQ method used (bootstrap, perturbation, seed, null_model, etc.)
+- `n_samples`: Number of samples/replicates
+- `seed`: Random seed used (None if not applicable)
+- `null_model`: Null model type (if method is null_model)
+- `bootstrap_unit`: Bootstrap unit (if method is bootstrap)
+- `bootstrap_mode`: Bootstrap mode (if method is bootstrap)
+- `extra`: Additional method-specific parameters
+
+**Serialization**:
+```python
+# Convert to canonical UQ format
+data = value.to_dict()
+# {
+#     "mean": 10.0,
+#     "value": 10.0,  # Alias for compatibility
+#     "std": 2.0,
+#     "quantiles": {0.025: 6.08, 0.975: 13.92},
+#     "ci_low": 6.08,
+#     "ci_high": 13.92,
+#     "certainty": 0.8,
+#     "method": "bootstrap",
+#     "n_samples": 100,
+#     "seed": 42,
+#     ...
+# }
+
+# Reconstruct from dict
+reconstructed = UQValue.from_dict(data)
+```
+
+##### 10.5.2 Algebraic Laws (Complete List)
+
+All UQ aggregation operations MUST respect the following laws:
+
+**[IDENTITY]**
+- **Law**: Aggregating a single UQValue MUST return the same UQValue
+- **Enforced**: ✅ `UQAlgebra.aggregate_mean([value])` returns `value`
+- **Violation**: Raises `UQIdentityViolation`
+- **Special case**: Zero-weight aggregation is forbidden (raises error)
+
+**[IDEMPOTENCE]**
+- **Law**: Aggregating identical UQValues with identical provenance MUST NOT change distribution
+- **Enforced**: ✅ Structural hash used to detect identical values; std preserved
+- **Violation**: Raises `UQIdempotenceViolation`
+- **Implementation**: If all values have same structural hash, preserve original std
+
+**[ASSOCIATIVITY]**
+- **Law**: `(A ⊕ B) ⊕ C == A ⊕ (B ⊕ C)` for mean (std may vary slightly due to variance propagation)
+- **Enforced**: ✅ Uses `effective_count` weighting to ensure mean associativity
+- **Violation**: Raises `UQAssociativityViolation` if mean differs beyond tolerance
+- **Tolerance**: 1e-6 for mean, 1e-5 for std
+- **Note**: Std may differ by aggregation path due to variance propagation formula
+
+**[COMMUTATIVITY]**
+- **Law**: `A ⊕ B == B ⊕ A` (order-independent aggregation)
+- **Enforced**: ✅ Aggregation uses symmetric weighting by effective counts
+- **Violation**: Raises `UQCommutativityViolation`
+- **Tolerance**: 1e-9
+
+**[MONOTONICITY]**
+- **Law**: Increasing sample count MUST NOT increase uncertainty (variance inflation forbidden)
+- **Enforced**: ✅ Post-aggregation check validates result std ≤ max(input stds) * tolerance
+- **Violation**: Raises `UQMonotonicityViolation`
+- **Rationale**: More evidence should not reduce confidence
+
+**[DISTRIBUTION CLOSURE]**
+- **Law**: Operation between two UQValues MUST result in a valid UQValue
+- **Enforced**: ✅ All aggregation operations return `UQValue` instances
+- **Violation**: Raises `UQClosureViolation`
+- **Mixed types**: EMPIRICAL + GAUSSIAN → EMPIRICAL; GAUSSIAN + DEGENERATE → GAUSSIAN
+
+**[DEGENERACY CONSISTENCY]**
+- **Law**: Degenerate distributions (std=0) act as neutral elements
+- **Enforced**: ✅ DEGENERATE + DEGENERATE → DEGENERATE; DEGENERATE + non-DEGENERATE preserves uncertainty
+- **Violation**: Raises `UQDegeneracyViolation`
+- **Special case**: Deterministic values (method="deterministic") can mix with any provenance
+
+**[GROUPING INVARIANCE]**
+- **Law**: Algebraic laws MUST hold within and across grouping contexts
+- **Enforced**: ✅ per_layer aggregation equivalent to explicit layer-wise aggregation
+- **Violation**: Raises `UQGroupingViolation`
+- **Implementation**: Support field tracks grouping context; operations check compatibility
+
+**[NULL-MODEL DOMINANCE]**
+- **Law**: Aggregation involving null-model UQ MUST reflect increased uncertainty
+- **Enforced**: ✅ Null-model variance propagates correctly
+- **Violation**: Raises `UQDominanceViolation`
+- **Rationale**: Null-model UQ represents baseline uncertainty that cannot be reduced
+
+**[SEED DETERMINISM]**
+- **Law**: Same operands + same seeds → identical result
+- **Enforced**: ✅ Seed recorded in provenance; aggregation with same seeds produces identical output
+- **Violation**: Raises `UQDeterminismViolation`
+- **Note**: Aggregation of multiple values invalidates single seed (provenance.seed becomes None)
+
+##### 10.5.3 Forbidden Operations
+
+The following operations are **FORBIDDEN** and will raise typed errors:
+
+1. **Aggregating UQValues with incompatible support domains**
+   - Error: `UQIncompatibleSupport`
+   - Example: Mixing `support={"layer": "social"}` and `support={"layer": "work"}`
+   - Fix: Ensure all values have compatible or None support
+
+2. **Mixing incompatible provenance without reconciliation**
+   - Error: `UQIncompatibleProvenance`
+   - Example: Mixing `method="bootstrap"` with `method="null_model"` (unless one is deterministic)
+   - Fix: Use same UQ method for values to be aggregated
+
+3. **Silent distribution coercion**
+   - Error: `UQSilentCoercion`
+   - Example: Implicitly converting EMPIRICAL to GAUSSIAN
+   - Fix: Use explicit conversion with documented rationale
+
+4. **Scalar math on UQValues outside algebra definitions**
+   - Error: `UQScalarOperation`
+   - Example: `uqvalue + 5.0` (not supported)
+   - Fix: Use `UQAlgebra.aggregate_mean([uqvalue, UQValue.degenerate(5.0)])`
+
+##### 10.5.4 Usage Examples
+
+**Basic Aggregation**:
+```python
+from py3plex.dsl.uq_algebra import UQValue, UQAlgebra, DistributionType, ProvenanceInfo
+
+# Create UQValues
+v1 = UQValue(
+    distribution_type=DistributionType.GAUSSIAN,
+    mean=10.0,
+    std=2.0,
+    quantiles={0.025: 6.08, 0.975: 13.92},
+    provenance=ProvenanceInfo(method="bootstrap", n_samples=100, seed=42),
+)
+v2 = UQValue(
+    distribution_type=DistributionType.GAUSSIAN,
+    mean=15.0,
+    std=3.0,
+    quantiles={0.025: 9.15, 0.975: 20.85},
+    provenance=ProvenanceInfo(method="bootstrap", n_samples=100, seed=43),
+)
+
+# Aggregate (mean is weighted by effective_count)
+result = UQAlgebra.aggregate_mean([v1, v2])
+print(f"Mean: {result.mean}, Std: {result.std}")
+# Mean: 12.5, Std: 1.803 (variance propagation)
+```
+
+**Weighted Aggregation**:
+```python
+# Custom weights
+result = UQAlgebra.aggregate_mean([v1, v2], weights=[0.3, 0.7])
+print(f"Mean: {result.mean}")
+# Mean: 13.5 (0.3*10 + 0.7*15)
+```
+
+**Checking Algebraic Laws**:
+```python
+# Check commutativity
+UQAlgebra.check_commutativity(v1, v2, tolerance=1e-9)
+# No exception → law holds
+
+# Check associativity
+v3 = UQValue(
+    distribution_type=DistributionType.GAUSSIAN,
+    mean=20.0,
+    std=4.0,
+    quantiles={},
+    provenance=ProvenanceInfo(method="bootstrap", n_samples=100),
+)
+UQAlgebra.check_associativity(v1, v2, v3, tolerance=1e-6)
+# No exception → law holds
+```
+
+**Mixing Degenerate and Non-Degenerate**:
+```python
+degenerate = UQValue.degenerate(value=5.0, method="deterministic")
+non_degenerate = UQValue(
+    distribution_type=DistributionType.GAUSSIAN,
+    mean=10.0,
+    std=2.0,
+    quantiles={},
+    provenance=ProvenanceInfo(method="bootstrap", n_samples=50),
+)
+
+# Deterministic values can mix with any method
+result = UQAlgebra.aggregate_mean([degenerate, non_degenerate])
+print(f"Result is degenerate: {result.is_degenerate()}")
+# False (uncertainty preserved from non-degenerate)
+```
+
+**Converting to/from Canonical Format**:
+```python
+# From canonical UQ dict
+uq_dict = {
+    "mean": 10.0,
+    "std": 2.0,
+    "quantiles": {0.025: 6.0, 0.975: 14.0},
+    "method": "bootstrap",
+    "n_samples": 100,
+}
+value = UQValue.from_dict(uq_dict)
+
+# To canonical UQ dict
+canonical = value.to_dict()
+# Compatible with existing DSL v2 UQ format
+```
+
+##### 10.5.5 Guarantees vs Non-Guarantees
+
+**What py3plex GUARANTEES**:
+- ✅ All algebraic laws are enforced via runtime checks
+- ✅ Violations raise typed, informative errors (fail-fast)
+- ✅ UQValue objects are validated on construction
+- ✅ Provenance is tracked and recorded for all operations
+- ✅ Seed determinism (same seeds → identical results)
+- ✅ Distribution closure (operations always produce valid UQValues)
+- ✅ Mean is always associative and commutative
+- ✅ Idempotence for identical values
+
+**What py3plex DOES NOT GUARANTEE**:
+- ❌ Exact std associativity (variance propagation path-dependent)
+- ❌ Std preservation under aggregation (reduces by variance formula unless identical)
+- ❌ Backward compatibility with UQValues created before v1.1.2
+- ❌ Numeric exactness beyond 1e-9 tolerance (floating point limitations)
+
+##### 10.5.6 Fail-Fast Policy
+
+All algebra violations raise **typed exceptions** with actionable error messages:
+
+```python
+try:
+    UQAlgebra.aggregate_mean([])
+except UQIdentityViolation as e:
+    print(f"Identity violation: {e}")
+    # "Identity law violation: Cannot aggregate empty list of UQValues"
+
+try:
+    incompatible1 = UQValue(..., support={"layer": "social"})
+    incompatible2 = UQValue(..., support={"layer": "work"})
+    UQAlgebra.aggregate_mean([incompatible1, incompatible2])
+except UQIncompatibleSupport as e:
+    print(f"Support incompatibility: {e}")
+    # "Cannot aggregate UQValues with incompatible support: ..."
+
+try:
+    bootstrap_value = UQValue(..., provenance=ProvenanceInfo(method="bootstrap"))
+    null_model_value = UQValue(..., provenance=ProvenanceInfo(method="null_model"))
+    UQAlgebra.aggregate_mean([bootstrap_value, null_model_value])
+except UQIncompatibleProvenance as e:
+    print(f"Provenance incompatibility: {e}")
+    # "Cannot aggregate UQValues with incompatible provenance: ..."
+```
+
+##### 10.5.7 Testing Strategy
+
+UQ algebra is verified via:
+
+**Property-Based Tests** (Hypothesis):
+- Random UQValues generated with fixed seeds
+- Laws checked for all combinations
+- Counterexamples saved for regression
+
+**Differential Tests**:
+- Same aggregation via different code paths → identical results
+- Direct vs split-aggregate equivalence
+
+**Metamorphic Tests**:
+- Splitting then aggregating equals direct aggregation
+- Reordering operands preserves results
+- Scaling all values scales mean proportionally
+
+**Regression Tests**:
+- Known-good UQ algebra outcomes stored as fixtures
+- Checked on every commit
+
+**Test Coverage**:
+- 32 tests in `tests/test_uq_algebra.py`
+- All algebraic laws covered
+- All error conditions covered
+- Property tests with 50+ random examples each
+
+##### 10.5.8 Implementation Notes
+
+**Location**: `py3plex/dsl/uq_algebra.py`
+
+**Key Classes**:
+- `UQValue`: First-class UQ object
+- `DistributionType`: Enum (EMPIRICAL, GAUSSIAN, DEGENERATE)
+- `ProvenanceInfo`: Immutable provenance tracking
+- `UQAlgebra`: Static methods for aggregation and law checking
+
+**Key Functions**:
+- `UQAlgebra.aggregate_mean(values, weights=None)`: Primary aggregation operation
+- `UQAlgebra.check_associativity(a, b, c, tolerance)`: Verify associativity law
+- `UQAlgebra.check_commutativity(a, b, tolerance)`: Verify commutativity law
+- `convert_to_uqvalue(data)`: Convert dict/scalar/UQValue to UQValue
+
+**Integration Points**:
+- DSL v2 executor uses UQValue internally (planned)
+- Existing UQ resolution in `uq_resolution.py` (planned integration)
+- Compositional UQ in `compositional_uq.py` (planned integration)
+
+**Backward Compatibility**:
+- Existing dict-based UQ format still supported via `to_dict()` / `from_dict()`
+- New code should use UQValue directly for algebra guarantees
+
 ---
 
 ### 11. Temporal Semantics

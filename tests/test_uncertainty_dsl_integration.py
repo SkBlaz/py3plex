@@ -64,7 +64,8 @@ class TestBootstrapIntegration:
         if isinstance(first_degree, dict):
             assert "mean" in first_degree
             assert "std" in first_degree
-            assert "n_boot" in first_degree
+            # Bootstrap parameters should be in result
+            assert "n_samples" in first_degree or "n_boot" in first_degree
     
     def test_bootstrap_nodes_method(self):
         """Test bootstrap method with node resampling."""
@@ -194,7 +195,8 @@ class TestNullModelIntegration:
             assert "mean" in first_degree
             assert "zscore" in first_degree
             assert "pvalue" in first_degree
-            assert "n_null" in first_degree
+            # Null model parameters should be in result
+            assert "n_samples" in first_degree or "n_null" in first_degree
     
     def test_null_model_erdos_renyi(self):
         """Test null model method with Erdős-Rényi."""
@@ -343,22 +345,23 @@ class TestEdgeCases:
     """Edge case tests for uncertainty integration."""
     
     def test_invalid_method(self):
-        """Test that invalid method is handled gracefully."""
+        """Test that invalid method raises error (fail-fast policy)."""
         net = build_test_network()
         
-        # Invalid method should be caught and logged, not crash
-        result = (
-            Q.nodes()
-            .compute(
-                "degree",
-                uncertainty=True,
-                method="invalid_method"
-            )
-            .execute(net)
-        )
+        # Invalid method should raise UQResolutionError (fail-fast)
+        from py3plex.dsl.uq_resolution import UQResolutionError
+        import pytest
         
-        # Should still return a result (with error handling)
-        assert result is not None
+        with pytest.raises(UQResolutionError, match="Invalid UQ method"):
+            result = (
+                Q.nodes()
+                .compute(
+                    "degree",
+                    uncertainty=True,
+                    method="invalid_method"
+                )
+                .execute(net)
+            )
     
     def test_bootstrap_with_order_by(self):
         """Test bootstrap with order_by clause."""
