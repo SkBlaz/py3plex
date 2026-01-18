@@ -538,7 +538,7 @@ class AlgorithmCompatibilityError(Py3plexException):
         return "\n".join(lines)
 
 
-def requires(requirements: AlgoRequirements):
+def requires(requirements: AlgoRequirements, register: bool = True):
     """Decorator to attach requirements to an algorithm and enforce compatibility.
     
     This decorator:
@@ -546,9 +546,11 @@ def requires(requirements: AlgoRequirements):
     2. Wraps the function to check compatibility before execution
     3. Raises AlgorithmCompatibilityError if incompatible
     4. Propagates warnings into result metadata where possible
+    5. Auto-registers the algorithm in the global registry (if register=True)
     
     Args:
         requirements: AlgoRequirements specification
+        register: Whether to auto-register in global registry (default: True)
     
     Returns:
         Decorator function
@@ -567,6 +569,15 @@ def requires(requirements: AlgoRequirements):
     def decorator(func: Callable) -> Callable:
         # Attach requirements as attribute
         func.requirements = requirements
+        
+        # Auto-register if requested (deferred to avoid circular import)
+        if register:
+            try:
+                from py3plex.algorithms.requirements_registry import register_algorithm
+                register_algorithm(func.__name__, requirements)
+            except ImportError:
+                # Registry not available yet during early imports
+                pass
         
         @wraps(func)
         def wrapper(network, *args, **kwargs):
@@ -618,3 +629,124 @@ def requires(requirements: AlgoRequirements):
         return wrapper
     
     return decorator
+
+
+def validate_module_algorithms(module, exempt_patterns: Optional[List[str]] = None):
+    """Validate that all public algorithm functions in a module have requirements.
+    
+    This function inspects a module and checks that all public callable functions
+    (not starting with '_') have a 'requirements' attribute attached by @requires.
+    
+    Args:
+        module: Python module to validate
+        exempt_patterns: List of function name patterns to exempt from validation
+                        (e.g., ["helper_", "internal_"])
+    
+    Returns:
+        tuple: (all_valid, missing_requirements)
+            - all_valid: Boolean indicating if all algorithms have requirements
+            - missing_requirements: List of function names without requirements
+    
+    Example:
+        >>> import py3plex.algorithms.community_detection as cd
+        >>> all_valid, missing = validate_module_algorithms(cd)
+        >>> if not all_valid:
+        ...     print(f"Missing requirements: {missing}")
+    """
+    import inspect
+    
+    if exempt_patterns is None:
+        exempt_patterns = []
+    
+    missing_requirements = []
+    
+    # Get all public callable objects from module
+    for name, obj in inspect.getmembers(module):
+        # Skip private/protected members
+        if name.startswith('_'):
+            continue
+        
+        # Skip exempted patterns
+        if any(pattern in name for pattern in exempt_patterns):
+            continue
+        
+        # Check if it's a function (not a class)
+        if inspect.isfunction(obj) or inspect.ismethod(obj):
+            # Check if it has requirements attribute
+            if not hasattr(obj, 'requirements'):
+                missing_requirements.append(name)
+        elif inspect.isclass(obj):
+            # For classes, check their public methods
+            for method_name, method in inspect.getmembers(obj, predicate=inspect.isfunction):
+                if not method_name.startswith('_'):
+                    full_name = f"{name}.{method_name}"
+                    if not hasattr(method, 'requirements'):
+                        # Some methods might be utility methods, not algorithms
+                        # Only flag if they seem like algorithm entry points
+                        if any(keyword in method_name.lower() for keyword in 
+                               ['centrality', 'community', 'detect', 'compute', 'calculate', 'simulate', 'run']):
+                            missing_requirements.append(full_name)
+    
+    all_valid = len(missing_requirements) == 0
+    return all_valid, missing_requirements
+
+
+def enforce_requirements(module, raise_on_missing: bool = True, exempt_patterns: Optional[List[str]] = None):
+    """Enforce that all algorithms in a module have requirements declared.
+    
+    This function validates that algorithms have requirements and optionally
+    raises an error if any are missing.
+    
+    Args:
+        module: Python module to validate
+        raise_on_missing: If True, raise ValueError when algorithms lack requirements
+        exempt_patterns: List of function name patterns to exempt
+    
+    Raises:
+        ValueError: If raise_on_missing=True and algorithms lack requirements
+    
+    Example:
+        >>> import py3plex.algorithms.community_detection as cd
+        >>> enforce_requirements(cd)  # Raises if any algorithms lack requirements
+    """
+    all_valid, missing = validate_module_algorithms(module, exempt_patterns)
+    
+    if not all_valid and raise_on_missing:
+        raise ValueError(
+            f"Module '{module.__name__}' has algorithms without requirements: {missing}. "
+            f"All algorithms must use @requires decorator to declare their requirements."
+        )
+    
+    return all_valid, missing
+
+
+def check_algorithm_has_requirements(func: Callable, warn: bool = True) -> bool:
+    """Check if an algorithm function has requirements declared.
+    
+    This is a runtime check that can be used to validate algorithms
+    before execution. Optionally emits a warning if requirements are missing.
+    
+    Args:
+        func: Function to check
+        warn: If True, emit warning when requirements are missing
+    
+    Returns:
+        bool: True if requirements are present, False otherwise
+    
+    Example:
+        >>> if not check_algorithm_has_requirements(my_algorithm):
+        ...     print("Warning: Algorithm missing requirements!")
+    """
+    has_reqs = hasattr(func, 'requirements')
+    
+    if not has_reqs and warn:
+        import warnings
+        warnings.warn(
+            f"Algorithm '{func.__name__}' does not declare requirements. "
+            f"This is deprecated and will become an error in future versions. "
+            f"Please use @requires decorator to declare algorithm requirements.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+    
+    return has_reqs

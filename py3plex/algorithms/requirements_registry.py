@@ -11,7 +11,7 @@ Categories include:
 - Null model generators
 """
 
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Tuple
 from py3plex.requirements import AlgoRequirements
 
 
@@ -362,6 +362,44 @@ class AlgorithmRegistry:
         """
         for name in names:
             self.register(name, requirements)
+    
+    def is_registered(self, name: str) -> bool:
+        """Check if an algorithm is registered.
+        
+        Args:
+            name: Algorithm name
+            
+        Returns:
+            bool: True if registered, False otherwise
+        """
+        return name in self._registry
+    
+    def get_unregistered_algorithms(self, module) -> List[str]:
+        """Find algorithms in a module that are not registered.
+        
+        Args:
+            module: Python module to check
+            
+        Returns:
+            List of unregistered algorithm names
+        """
+        import inspect
+        
+        unregistered = []
+        
+        # Get all public callable objects from module
+        for name, obj in inspect.getmembers(module):
+            # Skip private/protected members
+            if name.startswith('_'):
+                continue
+            
+            # Check if it's a function
+            if inspect.isfunction(obj) or inspect.ismethod(obj):
+                # Check if it's NOT registered
+                if not self.is_registered(name):
+                    unregistered.append(name)
+        
+        return unregistered
 
 
 # Global registry instance
@@ -401,6 +439,51 @@ def list_algorithms(compatible_with=None) -> List[str]:
         List of algorithm names
     """
     return _global_registry.list_algorithms(compatible_with=compatible_with)
+
+
+def is_algorithm_registered(name: str) -> bool:
+    """Check if an algorithm is registered in the global registry.
+    
+    Args:
+        name: Algorithm name
+        
+    Returns:
+        bool: True if registered, False otherwise
+    """
+    return _global_registry.is_registered(name)
+
+
+def validate_module(module, strict: bool = False) -> Tuple[bool, List[str]]:
+    """Validate that algorithms in a module are properly registered.
+    
+    This checks that all public algorithm functions are registered in the
+    global registry with their requirements.
+    
+    Args:
+        module: Python module to validate
+        strict: If True, raises ValueError on validation failure
+        
+    Returns:
+        tuple: (all_valid, unregistered_algorithms)
+    
+    Raises:
+        ValueError: If strict=True and validation fails
+    
+    Example:
+        >>> import py3plex.algorithms.community_detection as cd
+        >>> valid, unregistered = validate_module(cd, strict=True)
+    """
+    unregistered = _global_registry.get_unregistered_algorithms(module)
+    all_valid = len(unregistered) == 0
+    
+    if not all_valid and strict:
+        raise ValueError(
+            f"Module '{module.__name__}' has unregistered algorithms: {unregistered}. "
+            f"All algorithms must be registered with requirements using @requires decorator "
+            f"or manual registration via register_algorithm()."
+        )
+    
+    return all_valid, unregistered
 
 
 # ============================================================================

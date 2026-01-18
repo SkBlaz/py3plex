@@ -19,6 +19,8 @@ from .requirements_registry import (
     list_algorithms,
     get_algorithm_requirements,
     register_algorithm,
+    is_algorithm_registered,
+    validate_module,
 )
 
 # SIR epidemic simulator (requires numpy and scipy)
@@ -60,4 +62,6 @@ __all__ = [
     "list_algorithms",
     "get_algorithm_requirements",
     "register_algorithm",
+    "is_algorithm_registered",
+    "validate_module",
 ]
