@@ -1,0 +1,612 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graph Programs: First-Class Compositional Objects &mdash; py3plex 1.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=6f037312"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/part_intro.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/what_is_py3plex.html">What is py3plex?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/key_use_cases.html">Key Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/multilayer_in_2min.html">Multilayer Networks in 2 Minutes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started (Tutorials)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">Quick Start Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">How-to Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_and_build_networks.html">How to Load and Build Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_zoo.html">Query Zoo: DSL Gallery for Multilayer Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute_statistics.html">How to Compute Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_community_detection.html">How to Run Community Detection on Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulate_dynamics.html">How to Simulate Multilayer Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_random_walks.html">How to Run Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_serialize.html">How to Export and Serialize Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualize_networks.html">How to Visualize Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_dsl.html">How to Query Multilayer Graphs with the SQL-like DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="query_with_patterns.html">How to Find Graph Patterns and Motifs with the Pattern Matching API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_pipelines.html">How to Build Analysis Pipelines with Dplyr-style Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproduce_workflows.html">How to Reproduce Common Analysis Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API &amp; DSL Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">API &amp; DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dsl_reference.html">DSL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/layer_set_algebra.html">Layer Set Algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/uncertainty_first_statistics.html">Uncertainty-First Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project/part_intro.html">Project Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/roadmap.html">Roadmap &amp; Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/benchmarking.html">Benchmarking &amp; Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project/citing.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Deployment &amp; GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Graph Programs: First-Class Compositional Objects</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/how-to/graph_programs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graph-programs-first-class-compositional-objects">
+<h1>Graph Programs: First-Class Compositional Objects<a class="headerlink" href="#graph-programs-first-class-compositional-objects" title="Link to this heading"></a></h1>
+<p><strong>Goal:</strong> Use Graph Programs to build typed, optimizable, reproducible query pipelines that can be inspected, composed, and cached before execution.</p>
+<div class="tip admonition">
+<p class="admonition-title">🎯 Key Concept</p>
+<p>Graph Programs turn DSL v2 queries into <strong>first-class objects</strong> with:</p>
+<ul class="simple">
+<li><p>Canonical AST representation</p></li>
+<li><p>Stable hash for reproducibility</p></li>
+<li><p>Type signatures for validation</p></li>
+<li><p>Cost model metadata</p></li>
+<li><p>Rewrite-based optimization</p></li>
+<li><p>Provenance tracking</p></li>
+</ul>
+</div>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Understanding of DSL v2 (see <a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a>)</p></li>
+<li><p>A loaded <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> object</p></li>
+<li><p>Python 3.8+</p></li>
+</ul>
+</section>
+<section id="core-concepts">
+<h2>Core Concepts<a class="headerlink" href="#core-concepts" title="Link to this heading"></a></h2>
+<section id="what-is-a-graphprogram">
+<h3>What is a GraphProgram?<a class="headerlink" href="#what-is-a-graphprogram" title="Link to this heading"></a></h3>
+<p>A <code class="docutils literal notranslate"><span class="pre">GraphProgram</span></code> is an <strong>immutable, typed representation</strong> of a DSL query pipeline that can be:</p>
+<ul class="simple">
+<li><p><strong>Composed</strong>: Chain multiple programs together</p></li>
+<li><p><strong>Optimized</strong>: Apply rewrite rules to reduce cost</p></li>
+<li><p><strong>Explained</strong>: Inspect pipeline steps and costs</p></li>
+<li><p><strong>Diffed</strong>: Compare two programs</p></li>
+<li><p><strong>Cached</strong>: Store results with reproducibility guarantees</p></li>
+<li><p><strong>Executed</strong>: Run against a network</p></li>
+</ul>
+</section>
+<section id="creating-a-graphprogram">
+<h3>Creating a GraphProgram<a class="headerlink" href="#creating-a-graphprogram" title="Link to this heading"></a></h3>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">.to_program()</span></code> method on any DSL query:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">GraphProgram</span>
+
+<span class="c1"># Build a program without executing</span>
+<span class="n">program</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">to_program</span><span class="p">())</span>
+
+<span class="c1"># Inspect the program</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Program hash: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type signature: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">type_signature</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="type-system">
+<h2>Type System<a class="headerlink" href="#type-system" title="Link to this heading"></a></h2>
+<p>Every GraphProgram has a type signature inferred from its operations. The type system includes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GraphType</span></code>: The full multilayer network</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NodeSetType</span></code>: Set of nodes (possibly filtered by layer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EdgeSetType</span></code>: Set of edges</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PartitionType</span></code>: Community partition</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TableType</span></code>: Tabular results (like pandas DataFrame)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DistributionType[T]</span></code>: Uncertainty-quantified values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ScalarType</span></code>: Single numeric/string value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TimeSeriesType</span></code>: Temporal sequence</p></li>
+</ul>
+<p>Type checking happens automatically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">type_check</span><span class="p">,</span> <span class="n">infer_type</span>
+
+<span class="c1"># Check if program is well-typed</span>
+<span class="n">is_valid</span> <span class="o">=</span> <span class="n">type_check</span><span class="p">(</span><span class="n">program</span><span class="o">.</span><span class="n">canonical_ast</span><span class="p">)</span>
+
+<span class="c1"># Infer the output type</span>
+<span class="n">output_type</span> <span class="o">=</span> <span class="n">infer_type</span><span class="p">(</span><span class="n">program</span><span class="o">.</span><span class="n">canonical_ast</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output type: </span><span class="si">{</span><span class="n">output_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="optimization-with-rewrite-rules">
+<h2>Optimization with Rewrite Rules<a class="headerlink" href="#optimization-with-rewrite-rules" title="Link to this heading"></a></h2>
+<p>GraphPrograms can be optimized using <strong>correctness-preserving rewrite rules</strong>:</p>
+<section id="optimization-levels">
+<h3>Optimization Levels<a class="headerlink" href="#optimization-levels" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic optimization (safe rewrites only)</span>
+<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Aggressive optimization</span>
+<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">&quot;min_time&quot;</span><span class="p">)</span>
+
+<span class="c1"># Budget-constrained optimization</span>
+<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">budget</span><span class="o">=</span><span class="s2">&quot;10s&quot;</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">&quot;min_time&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="available-rewrite-rules">
+<h3>Available Rewrite Rules<a class="headerlink" href="#available-rewrite-rules" title="Link to this heading"></a></h3>
+<p><strong>Pushdown/Fusion Rules:</strong></p>
+<ol class="arabic simple">
+<li><p>Push <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> before <code class="docutils literal notranslate"><span class="pre">COMPUTE</span></code> (avoids computing filtered nodes)</p></li>
+<li><p>Fuse multiple <code class="docutils literal notranslate"><span class="pre">COMPUTE</span></code> into one pass</p></li>
+<li><p>Fuse multiple <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> clauses</p></li>
+<li><p>Push <code class="docutils literal notranslate"><span class="pre">LIMIT</span></code> early</p></li>
+<li><p>Eliminate unused metrics</p></li>
+</ol>
+<p><strong>Layer Distributivity Rules:</strong></p>
+<ol class="arabic simple" start="6">
+<li><p>Move <code class="docutils literal notranslate"><span class="pre">per_layer()</span></code> early for parallelization</p></li>
+<li><p>Fuse nested <code class="docutils literal notranslate"><span class="pre">per_layer()</span></code></p></li>
+<li><p>Convert <code class="docutils literal notranslate"><span class="pre">group_by(layer)</span></code> to canonical form</p></li>
+</ol>
+<p><strong>UQ-Aware Rules:</strong></p>
+<ol class="arabic simple" start="9">
+<li><p>Move deterministic operations inside UQ to reduce sampling cost</p></li>
+<li><p>Hoist reporting operations outside UQ</p></li>
+<li><p>Cache identical subprograms in UQ samples</p></li>
+</ol>
+<p><strong>Community-Specific Rules:</strong></p>
+<ol class="arabic simple" start="12">
+<li><p>Fuse community detection + annotation</p></li>
+<li><p>Optimize community filtering to partition slicing</p></li>
+<li><p>Batch multiple community metrics</p></li>
+</ol>
+<p><strong>Common Subexpression Elimination:</strong></p>
+<ol class="arabic simple" start="15">
+<li><p>Detect and cache common subexpressions</p></li>
+<li><p>Mark expensive metrics for caching</p></li>
+</ol>
+</section>
+</section>
+<section id="cost-model">
+<h2>Cost Model<a class="headerlink" href="#cost-model" title="Link to this heading"></a></h2>
+<p>Every operator has cost estimates for time and memory:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">CostModel</span><span class="p">,</span> <span class="n">GraphStats</span>
+
+<span class="c1"># Create cost model</span>
+<span class="n">cost_model</span> <span class="o">=</span> <span class="n">CostModel</span><span class="p">()</span>
+
+<span class="c1"># Estimate program cost</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">GraphStats</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_edges</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cost</span> <span class="o">=</span> <span class="n">cost_model</span><span class="o">.</span><span class="n">estimate_program_cost</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">stats</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Estimated time: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">time_estimate_seconds</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time complexity: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">time_complexity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallelizable: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">parallelizable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="budget-enforcement">
+<h3>Budget Enforcement<a class="headerlink" href="#budget-enforcement" title="Link to this heading"></a></h3>
+<p>Programs can enforce time budgets:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExecutionContext</span><span class="p">,</span> <span class="n">execute_program</span>
+
+<span class="c1"># Create execution context with budget</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">ExecutionContext</span><span class="p">(</span>
+    <span class="n">time_budget</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>  <span class="c1"># 30 seconds</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span>
+<span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">execute_program</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">BudgetExceededError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Budget exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Suggestions: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">suggestions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="explaining-programs">
+<h2>Explaining Programs<a class="headerlink" href="#explaining-programs" title="Link to this heading"></a></h2>
+<p>Generate human-readable explanations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic explanation</span>
+<span class="n">explanation</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">explanation</span><span class="p">)</span>
+
+<span class="c1"># Detailed explanation with costs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">explain_program</span>
+
+<span class="n">detailed</span> <span class="o">=</span> <span class="n">explain_program</span><span class="p">(</span>
+    <span class="n">program</span><span class="p">,</span>
+    <span class="n">include_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_types</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_optimizations</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">detailed</span><span class="o">.</span><span class="n">to_text</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">============================================================</span>
+<span class="n">Graph</span> <span class="n">Program</span> <span class="n">Explanation</span>
+<span class="o">============================================================</span>
+
+<span class="n">Pipeline</span> <span class="n">Steps</span><span class="p">:</span>
+  <span class="mf">1.</span> <span class="n">SELECT</span> <span class="n">nodes</span>
+     <span class="n">Type</span><span class="p">:</span> <span class="n">NodeSet</span>
+     <span class="n">Cost</span><span class="p">:</span> <span class="n">O</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
+  <span class="mf">2.</span> <span class="n">FROM</span> <span class="n">layers</span><span class="p">:</span> <span class="n">social</span>
+     <span class="n">Type</span><span class="p">:</span> <span class="n">NodeSet</span> <span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
+     <span class="n">Cost</span><span class="p">:</span> <span class="n">O</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="nb">filter</span>
+
+  <span class="mf">3.</span> <span class="n">COMPUTE</span> <span class="n">degree</span>
+     <span class="n">Type</span><span class="p">:</span> <span class="n">Table</span>
+     <span class="n">Cost</span><span class="p">:</span> <span class="n">O</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+
+  <span class="mf">4.</span> <span class="n">COMPUTE</span> <span class="n">betweenness_centrality</span>
+     <span class="n">Type</span><span class="p">:</span> <span class="n">Table</span>
+     <span class="n">Cost</span><span class="p">:</span> <span class="n">O</span><span class="p">(</span><span class="n">VE</span><span class="p">)</span>
+
+  <span class="mf">5.</span> <span class="n">ORDER</span> <span class="n">BY</span> <span class="n">degree</span> <span class="n">DESC</span>
+     <span class="n">Type</span><span class="p">:</span> <span class="n">Table</span>
+     <span class="n">Cost</span><span class="p">:</span> <span class="n">O</span><span class="p">(</span><span class="n">N</span> <span class="n">log</span> <span class="n">N</span><span class="p">)</span> <span class="n">sort</span>
+
+  <span class="mf">6.</span> <span class="n">LIMIT</span> <span class="mi">10</span>
+     <span class="n">Type</span><span class="p">:</span> <span class="n">Table</span>
+     <span class="n">Cost</span><span class="p">:</span> <span class="n">O</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="nb">slice</span>
+
+<span class="n">Total</span> <span class="n">Estimated</span> <span class="n">Cost</span><span class="p">:</span> <span class="mf">2.340</span><span class="n">s</span> <span class="p">(</span><span class="n">est</span><span class="o">.</span><span class="p">)</span>
+
+<span class="o">============================================================</span>
+</pre></div>
+</div>
+</section>
+<section id="comparing-programs">
+<h2>Comparing Programs<a class="headerlink" href="#comparing-programs" title="Link to this heading"></a></h2>
+<p>Diff two programs to see structural and semantic differences:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">diff_programs</span>
+
+<span class="c1"># Create two programs</span>
+<span class="n">program1</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
+<span class="n">program2</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
+
+<span class="c1"># Compare them</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">diff_programs</span><span class="p">(</span><span class="n">program1</span><span class="p">,</span> <span class="n">program2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hash changed: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">hash_changed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type changed: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">type_changed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">cost_impact</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cost impact: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">cost_impact</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Found</span> <span class="mi">1</span> <span class="n">difference</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="o">-</span> <span class="n">AST</span> <span class="n">structure</span> <span class="n">differs</span> <span class="p">(</span><span class="mi">3</span> <span class="n">line</span> <span class="n">changes</span><span class="p">)</span> <span class="p">(</span><span class="n">impact</span><span class="p">:</span> <span class="n">high</span><span class="p">)</span>
+
+<span class="n">Program</span> <span class="nb">hash</span> <span class="n">changed</span> <span class="o">-</span> <span class="n">cache</span> <span class="n">invalidated</span>
+</pre></div>
+</div>
+</section>
+<section id="composing-programs">
+<h2>Composing Programs<a class="headerlink" href="#composing-programs" title="Link to this heading"></a></h2>
+<p>Combine multiple programs into pipelines:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">compose</span>
+
+<span class="c1"># Define reusable components</span>
+<span class="n">select_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
+<span class="n">compute_centrality</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
+
+<span class="c1"># Compose them</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">select_nodes</span><span class="p">,</span> <span class="n">compute_centrality</span><span class="p">)</span>
+
+<span class="c1"># Execute composed program</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reproducibility-caching">
+<h2>Reproducibility &amp; Caching<a class="headerlink" href="#reproducibility-caching" title="Link to this heading"></a></h2>
+<p>Programs support deterministic caching for reproducibility:</p>
+<section id="graph-fingerprints">
+<h3>Graph Fingerprints<a class="headerlink" href="#graph-fingerprints" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph_fingerprint</span>
+
+<span class="c1"># Generate stable network fingerprint</span>
+<span class="n">fingerprint</span> <span class="o">=</span> <span class="n">graph_fingerprint</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network fingerprint: </span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cache-keys">
+<h3>Cache Keys<a class="headerlink" href="#cache-keys" title="Link to this heading"></a></h3>
+<p>Cache keys combine graph, program, and execution context:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CacheKey</span><span class="p">,</span>
+    <span class="n">graph_fingerprint</span><span class="p">,</span>
+    <span class="n">execution_fingerprint</span><span class="p">,</span>
+    <span class="n">environment_signature</span>
+<span class="p">)</span>
+
+<span class="c1"># Create cache key</span>
+<span class="n">key</span> <span class="o">=</span> <span class="n">CacheKey</span><span class="p">(</span>
+    <span class="n">graph_fingerprint</span><span class="o">=</span><span class="n">graph_fingerprint</span><span class="p">(</span><span class="n">network</span><span class="p">),</span>
+    <span class="n">program_hash</span><span class="o">=</span><span class="n">program</span><span class="o">.</span><span class="n">hash</span><span class="p">(),</span>
+    <span class="n">execution_context</span><span class="o">=</span><span class="n">execution_fingerprint</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">environment_signature</span><span class="o">=</span><span class="n">environment_signature</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-the-cache">
+<h3>Using the Cache<a class="headerlink" href="#using-the-cache" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_global_cache</span><span class="p">,</span> <span class="n">clear_global_cache</span>
+
+<span class="c1"># Execute with caching</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Second execution uses cache</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Check cache statistics</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="n">get_global_cache</span><span class="p">()</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">statistics</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache hits: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;hits&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache misses: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;misses&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hit rate: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;hit_rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Clear cache</span>
+<span class="n">clear_global_cache</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="uq-semantics">
+<h2>UQ Semantics<a class="headerlink" href="#uq-semantics" title="Link to this heading"></a></h2>
+<p>Programs support uncertainty quantification with Distribution types:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">UQMode</span><span class="p">,</span> <span class="n">UQMetadata</span>
+
+<span class="c1"># Create distribution from samples</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">,</span> <span class="mf">0.52</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">,</span> <span class="mf">0.49</span><span class="p">]</span>
+
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">UQMetadata</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="n">UQMode</span><span class="o">.</span><span class="n">BOOTSTRAP</span><span class="p">,</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">ci_level</span><span class="o">=</span><span class="mf">0.95</span>
+<span class="p">)</span>
+
+<span class="n">dist</span> <span class="o">=</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">from_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+
+<span class="c1"># Get confidence intervals</span>
+<span class="n">ci_low</span><span class="p">,</span> <span class="n">ci_high</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mf">0.95</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;95% CI: [</span><span class="si">{</span><span class="n">ci_low</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ci_high</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean: </span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">mean</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">std</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="distribution-propagation">
+<h3>Distribution Propagation<a class="headerlink" href="#distribution-propagation" title="Link to this heading"></a></h3>
+<p>Distributions propagate through aggregations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">propagate_distribution</span>
+
+<span class="c1"># Propagate through mean operation</span>
+<span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>  <span class="c1"># Mix of Distributions and floats</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">propagate_distribution</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+
+<span class="c1"># Result is a Distribution if any input is a Distribution</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>  <span class="c1"># Distribution</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="complete-example">
+<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
+<p>Here’s a complete workflow using Graph Programs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GraphProgram</span><span class="p">,</span>
+    <span class="n">explain_program</span><span class="p">,</span>
+    <span class="n">diff_programs</span><span class="p">,</span>
+    <span class="n">get_global_cache</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Load network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Build program</span>
+<span class="n">program</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">to_program</span><span class="p">())</span>
+
+<span class="c1"># Inspect before execution</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Program Info ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hash: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">type_signature</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Explain</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Explanation ===&quot;</span><span class="p">)</span>
+<span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_program</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">include_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">explanation</span><span class="o">.</span><span class="n">to_text</span><span class="p">())</span>
+
+<span class="c1"># Optimize</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Optimization ===&quot;</span><span class="p">)</span>
+<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">budget</span><span class="o">=</span><span class="s2">&quot;30s&quot;</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">&quot;min_time&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rewrites applied: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">optimized</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">provenance_chain</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compare</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Diff ===&quot;</span><span class="p">)</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">diff_programs</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">optimized</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+
+<span class="c1"># Execute with caching</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Execution ===&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">optimized</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Cache stats</span>
+<span class="n">cache_stats</span> <span class="o">=</span> <span class="n">get_global_cache</span><span class="p">()</span><span class="o">.</span><span class="n">statistics</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache hit rate: </span><span class="si">{</span><span class="n">cache_stats</span><span class="p">[</span><span class="s1">&#39;hit_rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Export results</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;top_nodes.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results exported: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="query_with_dsl.html"><span class="doc">How to Query Multilayer Graphs with the SQL-like DSL</span></a> - DSL v2 query fundamentals</p></li>
+<li><p><a class="reference internal" href="uncertainty_analysis.html"><span class="doc">How-To: Uncertainty-Aware Network Analysis</span></a> - Uncertainty quantification</p></li>
+<li><p><a class="reference internal" href="build_pipelines.html"><span class="doc">How to Build Analysis Pipelines with Dplyr-style Operations</span></a> - Pipeline composition</p></li>
+<li><p><a class="reference internal" href="reproduce_workflows.html"><span class="doc">How to Reproduce Common Analysis Workflows</span></a> - Reproducibility best practices</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
