@@ -362,6 +362,8 @@ Store metadata as node/edge attributes:
 Representing Different Network Types
 -------------------------------------
 
+This section provides practical examples for loading different types of multilayer networks. For theoretical foundations and mathematical definitions, see :ref:`multilayer-basics-chapter`.
+
 Multiplex Networks (Same Nodes Across Layers)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

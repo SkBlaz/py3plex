@@ -1,3 +1,5 @@
+.. _multilayer-basics-chapter:
+
 Multilayer Network Basics
 ====================================
 

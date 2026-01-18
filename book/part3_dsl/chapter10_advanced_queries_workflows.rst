@@ -93,11 +93,18 @@ See ``examples/dynamics/random_walk.py``:
 .. code-block:: bash
 
     python examples/dynamics/random_walk.py
+
+**Accessing simulation results:**
+
+.. code-block:: python
+
+    # result.data is a dict of numpy arrays mapping measure names to time-series data
+    # Each array has shape (num_runs, num_timesteps)
     print(f"Mean final prevalence: {result.data['prevalence'][:, -1].mean():.3f}")
 
-    # Convert to pandas for analysis
+    # Convert to pandas DataFrames for analysis
     df_dict = result.to_pandas()
-    prevalence_df = df_dict['prevalence']
+    prevalence_df = df_dict['prevalence']  # DataFrame with columns for each timestep
 
 **Key components:**
 
@@ -514,7 +521,7 @@ Direct export without intermediate DataFrame:
 Dplyr-Style Data Manipulation
 ------------------------------
 
-The ``graph_ops`` module provides dplyr-style operations for manipulating network data.
+The ``graph_ops`` module provides dplyr-style operations (inspired by R's dplyr data manipulation library) for manipulating network data with a chainable API.
 
 **Example 1: Filter and Mutate**
 
