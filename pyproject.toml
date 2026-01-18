@@ -245,6 +245,10 @@ markers = [
     "integration: integration tests that require multiple components",
     "unit: fast unit tests",
     "metamorphic: metamorphic tests that verify invariants under transformations",
+    "fast: fast unit tests that run quickly",
+    "fuzz: fuzzing tests for discovering edge cases",
+    "cli: CLI command tests",
+    "verification: verification and correctness tests",
 ]
 timeout = 300
 doctest_optionflags = [
