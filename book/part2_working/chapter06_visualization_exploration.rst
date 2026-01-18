@@ -48,7 +48,9 @@ This produces a circular layout with each layer shown in a different color.
 .. admonition:: API Note: Input Format
    :class: note
 
-   ``draw_multilayer_default`` expects a dict or list of NetworkX graphs. Always use ``network.get_layers()`` to get the properly formatted dict of layer graphs. This method handles layout computation and layer separation automatically.
+   ``draw_multilayer_default`` expects a dict or list of NetworkX graphs. Always use ``network.get_layers()`` to get the properly formatted dict of layer graphs. This method returns a dictionary mapping layer names (strings) to NetworkX graph objects, and handles layout computation and layer separation automatically.
+   
+   Example: ``{'social': <NetworkX Graph>, 'work': <NetworkX Graph>}``
 
 Preset Visualization Modes
 ---------------------------
@@ -201,11 +203,11 @@ Py3plex provides several color palette options:
 **Available palettes** (from ``py3plex.config``):
 
 - ``colorblind_safe``: 8 colors safe for colorblind viewers (default)
-- ``wong``: 7-color Wong palette [#wong2011]_ (optimized for color vision deficiency)
+- ``wong``: 7-color Wong palette [#wong2011]_ (optimized for color vision deficiency, including protanopia and deuteranopia)
 - ``tol_bright``: 7 bright colors
 - ``rainbow``: Full spectrum colors (not recommended for accessibility)
 
-**Recommendation:** Use ``colorblind_safe`` or ``wong`` palettes for publications and presentations to ensure accessibility for all viewers, including those with color vision deficiency.
+**Recommendation:** Use ``colorblind_safe`` or ``wong`` palettes for publications and presentations to ensure accessibility for all viewers, including those with color blindness or other color vision deficiencies.
 
 Matrix Visualizations
 ---------------------

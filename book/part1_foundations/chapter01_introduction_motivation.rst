@@ -26,7 +26,7 @@ When we flatten a multilayer network into a single graph, we lose:
 
 4. **Cross-layer dynamics:** Information spreading from email to in-person meetings follows specific patterns that become invisible when layers are merged.
 
-**Example:** A researcher with 2 coauthors and 500 Twitter followers has degree 502 in a flattened network, suggesting high influence. But their academic impact (degree 2) is actually modest—the Twitter followers don't write papers with them. Multilayer analysis preserves this distinction.
+**Example:** Consider a researcher with 2 coauthors and 500 Twitter followers. In a flattened network, they have degree 502, suggesting high influence. However, their actual academic impact is modest (degree 2 in the coauthor layer). The Twitter followers don't collaborate on research papers. Multilayer analysis preserves this critical distinction between different types of influence.
 
 What py3plex Enables
 --------------------

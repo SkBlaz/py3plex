@@ -17,7 +17,7 @@ This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like q
        # Simple: Find high-degree nodes
        result = Q.nodes().where(degree__gt=5).execute(network)
 
-       # Powerful: Multi-layer analysis with export
+       # Powerful: Multilayer analysis with export
        result = (
            Q.nodes()
             .from_layers(L["social"] + L["work"])

@@ -24,7 +24,7 @@ This chapter covers py3plex's three major algorithm families for multilayer netw
             .execute(network)
        )
 
-       # Multi-layer comparison
+       # Multilayer comparison
        for layer in ["social", "work"]:
            result = (
                Q.nodes()
@@ -209,9 +209,15 @@ Centrality measures identify important nodes in the network. py3plex provides di
 
 **Additional measures via NetworkX** (use ``network.core_network`` with any ``nx.*_centrality`` function):
 
-* Katz centrality, load centrality, harmonic centrality, current flow betweenness, percolation centrality, subgraph centrality, and many more
+* **Katz centrality** — Weighted count of walks (influence via connections)
+* **Load centrality** — Traffic load through each node
+* **Harmonic centrality** — Average inverse distance to all nodes
+* **Current flow betweenness** — Betweenness based on electrical current flow
+* **Percolation centrality** — Importance during network cascades
+* **Subgraph centrality** — Based on counting closed walks
+* And 24+ more available in NetworkX
 
-See :ref:`appendix-e` for complete API reference.
+See NetworkX documentation at https://networkx.org/documentation/stable/reference/algorithms/centrality.html and :ref:`appendix-e` for complete API reference.
 
 Multilayer PageRank
 ~~~~~~~~~~~~~~~~~~~

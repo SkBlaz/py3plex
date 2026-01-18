@@ -116,13 +116,13 @@ Online Resources
 
 **Community:**
 
-* Network Science community: http://www.netscisociety.net/
+* Network Science community: https://netscisociety.net/
 * Complex Networks: https://www.complexnetworks.org/
 
 **Datasets:**
 
-* Network Repository: http://networkrepository.com/
-* SNAP: Stanford Network Analysis Project: http://snap.stanford.edu/data/
+* Network Repository: https://networkrepository.com/
+* SNAP: Stanford Network Analysis Project: https://snap.stanford.edu/data/
 * Netzschleuder: https://networks.skewed.de/
 
 Recommended Reading Path
