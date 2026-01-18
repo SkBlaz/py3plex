@@ -103,13 +103,87 @@ class DslError(Exception):
 
 
 class DslSyntaxError(DslError):
-    """Exception raised for DSL syntax errors."""
-    pass
+    """Exception raised for DSL syntax errors.
+    
+    Enhanced with pedagogical guidance:
+    - What the user likely intended
+    - Why the syntax is invalid
+    - Corrected query examples
+    - Common pitfall notes
+    """
+    
+    def __init__(self, message: str, intent: Optional[str] = None,
+                 why_failed: Optional[str] = None,
+                 examples: Optional[List[str]] = None,
+                 pitfall: Optional[str] = None,
+                 **kwargs):
+        """Initialize with pedagogical context.
+        
+        Args:
+            message: Base error message
+            intent: What the user likely intended to do
+            why_failed: Explanation of why the syntax is invalid
+            examples: List of corrected query examples (1-2 recommended)
+            pitfall: Common pitfall note to help avoid this error
+            **kwargs: Additional DslError parameters
+        """
+        full_message = message
+        
+        if intent:
+            full_message += f"\n\n💭 You probably wanted to: {intent}"
+        
+        if why_failed:
+            full_message += f"\n\n❌ Why this failed: {why_failed}"
+        
+        if examples:
+            full_message += "\n\n✅ Corrected examples:"
+            for i, example in enumerate(examples, 1):
+                full_message += f"\n  {i}. {example}"
+        
+        if pitfall:
+            full_message += f"\n\n⚠️  Common pitfall: {pitfall}"
+        
+        super().__init__(full_message, **kwargs)
 
 
 class DslExecutionError(DslError):
-    """Exception raised for DSL execution errors."""
-    pass
+    """Exception raised for DSL execution errors.
+    
+    Enhanced with pedagogical guidance for runtime issues.
+    """
+    
+    def __init__(self, message: str, intent: Optional[str] = None,
+                 why_failed: Optional[str] = None,
+                 examples: Optional[List[str]] = None,
+                 pitfall: Optional[str] = None,
+                 **kwargs):
+        """Initialize with pedagogical context.
+        
+        Args:
+            message: Base error message
+            intent: What the user likely intended
+            why_failed: Explanation in DSL or multilayer terms
+            examples: List of corrected query examples
+            pitfall: Common pitfall note
+            **kwargs: Additional DslError parameters
+        """
+        full_message = message
+        
+        if intent:
+            full_message += f"\n\n💭 You probably wanted to: {intent}"
+        
+        if why_failed:
+            full_message += f"\n\n❌ Why this failed: {why_failed}"
+        
+        if examples:
+            full_message += "\n\n✅ Corrected examples:"
+            for i, example in enumerate(examples, 1):
+                full_message += f"\n  {i}. {example}"
+        
+        if pitfall:
+            full_message += f"\n\n⚠️  Common pitfall: {pitfall}"
+        
+        super().__init__(full_message, **kwargs)
 
 
 class UnknownAttributeError(DslError):
@@ -265,6 +339,46 @@ class GroupingError(DslError):
     def __init__(self, message: str, query: Optional[str] = None,
                  line: Optional[int] = None, column: Optional[int] = None):
         super().__init__(message, query, line, column)
+
+
+class MultilayerSemanticError(DslError):
+    """Exception raised for multilayer-specific semantic issues.
+    
+    This error helps users understand common multilayer network pitfalls:
+    - Node replicas vs physical nodes
+    - Degree meaning ambiguity (intra-layer, inter-layer, aggregate)
+    - Coverage filters removing expected nodes
+    - Global vs per-layer operations
+    """
+    
+    def __init__(self, message: str, 
+                 semantic_issue: str,
+                 multilayer_context: Optional[str] = None,
+                 examples: Optional[List[str]] = None,
+                 **kwargs):
+        """Initialize with multilayer-specific context.
+        
+        Args:
+            message: Base error message
+            semantic_issue: The specific multilayer semantic issue
+            multilayer_context: Explanation of multilayer network semantics
+            examples: Corrected query examples
+            **kwargs: Additional DslError parameters
+        """
+        full_message = message
+        
+        if semantic_issue:
+            full_message += f"\n\n🔍 Multilayer semantic issue: {semantic_issue}"
+        
+        if multilayer_context:
+            full_message += f"\n\n📚 Multilayer concept: {multilayer_context}"
+        
+        if examples:
+            full_message += "\n\n✅ Recommended approach:"
+            for i, example in enumerate(examples, 1):
+                full_message += f"\n  {i}. {example}"
+        
+        super().__init__(full_message, **kwargs)
 
 
 class DslMissingMetricError(DslError):

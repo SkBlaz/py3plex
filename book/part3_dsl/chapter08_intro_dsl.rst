@@ -98,6 +98,138 @@ Py3plex provides two DSL interfaces:
 
 This chapter focuses on the **Builder API (v2)** as it provides a better development experience. The string DSL is covered briefly for reference.
 
+Which Interface When? — The Decision Guide
+-------------------------------------------
+
+Py3plex provides **four primary interfaces** for network analysis. This opinionated guide helps you choose the right one for your task.
+
+.. list-table:: Interface Decision Matrix
+   :header-rows: 1
+   :widths: 20 20 30 30
+
+   * - **Interface**
+     - **Best For**
+     - **Use When...**
+     - **Avoid When...**
+   * - **DSL v2 (Q, L, UQ)**
+     - Exploratory analysis, research notebooks, reproducible workflows
+     - • Complex multilayer queries
+       
+       • Need uncertainty quantification
+       
+       • Want provenance tracking
+       
+       • Building reusable query pipelines
+     - • Simple NetworkX operations suffice
+       
+       • Performance-critical loops
+       
+       • Non-multilayer graphs
+   * - **graph_ops (dplyr)**
+     - Data frame–style manipulation, interactive exploration
+     - • Familiar with R's dplyr
+       
+       • Need data frame output
+       
+       • Iterative filtering/mutation
+       
+       • Working with node/edge attributes
+     - • Need multilayer layer algebra
+       
+       • Want uncertainty analysis
+       
+       • Building production pipelines
+   * - **Pipeline API**
+     - Production workflows, benchmarking, ML integration
+     - • Sklearn-style fit/transform needed
+       
+       • Batch processing networks
+       
+       • Comparing algorithms
+       
+       • Building reproducible experiments
+     - • One-off analyses
+       
+       • Interactive exploration
+       
+       • Complex query logic
+   * - **CLI Tool**
+     - Quick analysis, scripting, CI/CD, non-Python users
+     - • No Python coding needed
+       
+       • Shell script integration
+       
+       • Quick statistics/visualization
+       
+       • Testing network files
+     - • Complex custom logic
+       
+       • Interactive workflows
+       
+       • Advanced UQ/provenance
+
+**Typical User Personas:**
+
+* **Research Scientist**: DSL v2 → reproducible queries with UQ and provenance
+* **Data Analyst**: graph_ops → familiar dplyr-style data manipulation
+* **ML Engineer**: Pipeline API → sklearn-compatible workflows
+* **DevOps/Analyst**: CLI → quick stats and visualization in scripts
+
+**Decision Heuristics:**
+
+1. **Start with DSL v2 (Q)** if working with multilayer networks and need any of:
+   
+   - Layer filtering (``L["social"] + L["work"]``)
+   - Uncertainty quantification (``uq()``)
+   - Grouping (``per_layer()``, ``per_layer_pair()``)
+   - Provenance tracking
+
+2. **Use graph_ops** if:
+   
+   - Your workflow is "select → filter → mutate → export to CSV"
+   - You're comfortable with dplyr and want similar ergonomics
+   - You don't need multilayer-specific operations
+
+3. **Use Pipeline API** if:
+   
+   - You're building sklearn-style workflows (``fit/transform``)
+   - Benchmarking multiple algorithms systematically
+   - Need reproducible experiment configs
+
+4. **Use CLI** if:
+   
+   - You're not writing Python code
+   - Scripting quick analyses in bash/shell
+   - Need to process multiple network files
+
+**Common Anti-Patterns:**
+
+* ❌ Using string DSL (v1) for new code → **Use DSL v2 builder API instead**
+* ❌ Using DSL for simple single-layer NetworkX operations → **Use NetworkX directly**
+* ❌ Using graph_ops for multilayer grouping → **Use DSL v2's per_layer() instead**
+* ❌ Building custom sklearn pipelines → **Use Pipeline API's built-in steps**
+
+**Interface Interoperability:**
+
+All interfaces work with the same ``multi_layer_network`` objects:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.dsl import Q, L
+    from py3plex.graph_ops import nodes
+    
+    net = multinet.multi_layer_network()
+    # ... load data ...
+    
+    # DSL v2
+    result = Q.nodes().from_layers(L["social"]).execute(net)
+    
+    # graph_ops (on same network)
+    df = nodes(net, layers=["social"]).to_pandas()
+    
+    # Both work on the same network object
+
 Basic Query Structure
 ---------------------
 
