@@ -34,13 +34,14 @@
 18. [CLI Tool](#cli-tool)
 19. [Plugin System](#plugin-system)
 20. [Configuration and Profiling](#configuration-and-profiling)
-21. [Exception Hierarchy](#exception-hierarchy)
-22. [Query Planner and Optimization](#query-planner-and-optimization)
-23. [Performance Guidelines](#performance-guidelines)
-24. [Reproducibility Policy](#reproducibility-policy)
-25. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
-26. [Testing Strategy](#testing-strategy)
-27. [File Locations](#file-locations)
+21. [Diagnostic System and Error Reporting](#diagnostic-system-and-error-reporting)
+22. [Exception Hierarchy](#exception-hierarchy)
+23. [Query Planner and Optimization](#query-planner-and-optimization)
+24. [Performance Guidelines](#performance-guidelines)
+25. [Reproducibility Policy](#reproducibility-policy)
+26. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
+27. [Testing Strategy](#testing-strategy)
+28. [File Locations](#file-locations)
 
 ---
 
@@ -5078,6 +5079,269 @@ def my_analysis(network):
 # Timed sections
 with timed_section("community_detection"):
     communities = louvain(net)
+```
+
+---
+
+---
+
+## Diagnostic System and Error Reporting
+
+### Overview
+
+py3plex v1.1.2+ includes a next-generation diagnostic system that transforms error messages into interactive, actionable guidance for both human researchers and LLMs.
+
+**Key Features**:
+1. **Unified Diagnostic Model**: All errors, warnings, and info messages use a single `Diagnostic` object format
+2. **Stable Error Codes**: Machine-readable codes (e.g., `DSL_SEM_001`, `EXEC_002`) for programmatic handling
+3. **Fuzzy Matching**: "Did you mean?" suggestions for typos in field names, measures, layers, etc.
+4. **JSON Serialization**: LLM-friendly diagnostic export for automated error recovery
+5. **Interactive Help**: `.explain()` and `.debug()` methods on `QueryResult`
+6. **AST-Aware**: Errors reference specific builder methods and query fragments
+
+### Diagnostic Structure
+
+Every diagnostic includes:
+
+```python
+from py3plex.diagnostics import Diagnostic, DiagnosticSeverity, FixSuggestion
+
+diag = Diagnostic(
+    severity=DiagnosticSeverity.ERROR,        # ERROR, WARNING, or INFO
+    code="DSL_SEM_001",                        # Stable error code
+    message="Unknown field 'degreee'",         # Human-readable summary
+    context={                                  # Where it happened
+        "builder_method": "where",
+        "query_fragment": "degreee__gt=3",
+        "ast_node": "WhereClause"
+    },
+    cause="Field name contains a typo",        # Why it happened
+    fixes=[                                    # How to fix it
+        FixSuggestion(
+            description="Did you mean 'degree'?",
+            replacement="degree",
+            example="Q.nodes().where(degree__gt=3)"
+        )
+    ],
+    related=[                                  # What to try next
+        "Q.nodes().compute()",
+        "Available fields: degree, betweenness_centrality"
+    ]
+)
+
+# Export for LLM consumption
+print(diag.to_json())
+
+# Human-readable formatting
+print(diag.format(use_color=True))
+```
+
+### Error Code Taxonomy
+
+All error codes follow the pattern `<CATEGORY>_<SUBCATEGORY>_<NUMBER>`:
+
+**DSL Parsing Errors** (`DSL_PARSE_*`):
+- `DSL_PARSE_001`: Unknown token or keyword
+- `DSL_PARSE_002`: Invalid comparison operator
+- `DSL_PARSE_003`: Malformed layer expression
+- `DSL_PARSE_004`: Invalid aggregation expression
+
+**DSL Semantic Errors** (`DSL_SEM_*`):
+- `DSL_SEM_001`: Unknown field (e.g., `degreee` → suggest `degree`)
+- `DSL_SEM_002`: Field not valid for target (edge field on node query)
+- `DSL_SEM_003`: Measure incompatible with grouping
+- `DSL_SEM_004`: UQ requested on deterministic measure
+- `DSL_SEM_005`: Layer expression resolves to empty set
+
+**Execution Errors** (`EXEC_*`):
+- `EXEC_001`: Measure failed on graph backend
+- `EXEC_002`: Graph too large for algorithm (soft error with alternatives)
+- `EXEC_003`: Graph assumption violated (e.g., disconnected graph)
+- `EXEC_004`: Randomness used without seed (warning)
+
+**Result Interpretation Warnings** (`RES_*`):
+- `RES_001`: Result empty after filters
+- `RES_002`: High variance in UQ result
+- `RES_003`: Aggregation hides node-level variance
+- `RES_004`: Community detection produced degenerate result
+
+**Algorithm Errors** (`ALG_*`):
+- `ALG_001`: Unknown algorithm name
+- `ALG_002`: Algorithm parameter invalid
+- `ALG_003`: Algorithm did not converge
+
+**I/O Errors** (`IO_*`):
+- `IO_001`: File not found
+- `IO_002`: Invalid file format
+- `IO_003`: Missing required column
+
+### Query Result Inspection
+
+Use `.explain()` and `.debug()` to understand query execution:
+
+#### `.explain()` - Human-Readable Summary
+
+```python
+from py3plex.dsl import Q, L
+
+result = (
+    Q.nodes()
+     .from_layers(L["social"])
+     .compute("degree", "betweenness_centrality")
+     .where(degree__gt=5)
+     .execute(net)
+)
+
+print(result.explain())
+```
+
+**Output**:
+```
+Query Explanation
+============================================================
+
+Target: nodes
+Results: 42 items
+
+Layers: social
+
+Computed metrics:
+  - degree
+  - betweenness_centrality
+
+Diagnostics:
+warning[RES_003]: Aggregation may hide variance
+  Cause: Using mean aggregation on heterogeneous data
+  Fix 1: Check per-node results before aggregating
+    .to_pandas().describe()
+
+Suggested next steps:
+  - Group by layer: .per_layer()
+  - Add uncertainty: .uq(method='bootstrap', n_samples=100)
+  - Export to CSV: .to_pandas().to_csv('results.csv')
+```
+
+#### `.debug()` - Technical Details
+
+```python
+print(result.debug())
+```
+
+**Output**:
+```
+Query Debug Information
+============================================================
+
+Target: nodes
+Result count: 42
+
+AST Structure:
+{
+  "target": "nodes",
+  "layer_expr": {"type": "literal", "layers": ["social"]},
+  "where_clause": {"field": "degree", "op": ">", "value": 5}
+}
+
+Timing:
+  parse: 0.001s
+  execute: 0.050s
+  compute_degree: 0.020s
+  compute_betweenness: 0.025s
+  total: 0.051s
+
+Cache Statistics:
+  Hits: 10
+  Misses: 2
+  Hit rate: 83.3%
+
+Random Seeds:
+  bootstrap: 42
+```
+
+### Exception Integration
+
+All DSL errors include diagnostic objects:
+
+```python
+from py3plex.dsl import Q
+from py3plex.dsl.errors import UnknownMeasureError
+
+try:
+    result = Q.nodes().compute("betweennes").execute(net)  # Typo
+except UnknownMeasureError as e:
+    # Access structured diagnostic
+    diag = e.to_diagnostic()
+    print(diag.to_json())
+    
+    # Get "did you mean?" suggestion
+    if e.suggestion:
+        print(f"Did you mean '{e.suggestion}'?")
+    
+    # Auto-correct for LLM
+    correct_measure = e.suggestion
+    result = Q.nodes().compute(correct_measure).execute(net)
+```
+
+### LLM-Friendly Error Recovery
+
+Diagnostics are designed for automated recovery:
+
+```python
+import json
+
+try:
+    result = Q.nodes().compute("unknownmeasure").execute(net)
+except Exception as e:
+    if hasattr(e, 'to_diagnostic'):
+        diag = e.to_diagnostic()
+        
+        # Parse diagnostic JSON
+        diag_dict = json.loads(diag.to_json())
+        
+        # Extract suggestion
+        if diag_dict.get('fixes'):
+            suggested_fix = diag_dict['fixes'][0]
+            replacement = suggested_fix.get('replacement')
+            
+            # Retry with suggested fix
+            if replacement:
+                result = Q.nodes().compute(replacement).execute(net)
+```
+
+### Best Practices
+
+1. **Always check suggestions**: DSL errors include "did you mean?" suggestions - use them
+2. **Export diagnostics for debugging**: Use `.to_json()` for stable, parseable output
+3. **Use `.explain()` early**: Call on first result to understand query behavior
+4. **Enable `.debug()` for performance issues**: Shows timing and cache statistics
+5. **Handle warnings**: `DiagnosticSeverity.WARNING` indicates potential issues, not errors
+
+### Testing Error Messages
+
+Use snapshot tests for stable error messages:
+
+```python
+import pytest
+
+def test_unknown_field_error():
+    from py3plex.dsl.errors import UnknownAttributeError
+    
+    error = UnknownAttributeError(
+        attribute="degreee",
+        known_attributes=["degree", "betweenness_centrality"]
+    )
+    
+    diag = error.to_diagnostic()
+    
+    # Verify stable error code
+    assert diag.code == "DSL_SEM_001"
+    
+    # Verify suggestion
+    assert diag.fixes[0].replacement == "degree"
+    
+    # Snapshot JSON for LLM compatibility
+    snapshot = diag.to_json()
+    # Compare against golden file
 ```
 
 ---
