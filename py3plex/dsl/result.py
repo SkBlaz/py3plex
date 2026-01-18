@@ -1152,3 +1152,209 @@ class QueryResult:
 
         # Create minimal SelectStmt (will be materialized from result data)
         return SelectStmt(target=target)
+    
+    def explain(self) -> str:
+        """Generate human-readable explanation of the query execution.
+        
+        Shows:
+        - Query summary
+        - Resolved layers
+        - Measures computed
+        - Aggregations applied
+        - Diagnostics (warnings + info)
+        - Suggested next queries
+        
+        Returns:
+            Formatted explanation string
+        
+        Example:
+            >>> result = Q.nodes().compute("degree").execute(net)
+            >>> print(result.explain())
+        """
+        from py3plex.errors import Colors
+        
+        lines = []
+        use_color = Colors.supports_color()
+        
+        # Header
+        if use_color:
+            lines.append(f"{Colors.BOLD}{Colors.BLUE}Query Explanation{Colors.RESET}")
+        else:
+            lines.append("Query Explanation")
+        lines.append("=" * 60)
+        lines.append("")
+        
+        # Query summary
+        lines.append(f"Target: {self.target}")
+        lines.append(f"Results: {len(self.items)} items")
+        lines.append("")
+        
+        # Layers
+        if "layers" in self.meta:
+            layers = self.meta["layers"]
+            if layers:
+                lines.append(f"Layers: {', '.join(sorted(layers))}")
+            else:
+                lines.append("Layers: all")
+            lines.append("")
+        
+        # Computed metrics
+        if self.computed_metrics:
+            lines.append("Computed metrics:")
+            for metric in sorted(self.computed_metrics):
+                lines.append(f"  - {metric}")
+            lines.append("")
+        
+        # Grouping
+        if "grouping" in self.meta:
+            grouping = self.meta["grouping"]
+            if grouping:
+                lines.append(f"Grouping: {grouping.get('type', 'unknown')}")
+                if "keys" in grouping:
+                    lines.append(f"  Keys: {', '.join(grouping['keys'])}")
+                lines.append("")
+        
+        # Diagnostics
+        if "diagnostics" in self.meta:
+            from py3plex.diagnostics import DiagnosticResult
+            
+            diag_data = self.meta["diagnostics"]
+            if isinstance(diag_data, DiagnosticResult):
+                diagnostics = diag_data
+            elif isinstance(diag_data, list):
+                from py3plex.diagnostics import Diagnostic, DiagnosticResult
+                diagnostics = DiagnosticResult(diagnostics=[
+                    Diagnostic.from_dict(d) if isinstance(d, dict) else d
+                    for d in diag_data
+                ])
+            else:
+                diagnostics = None
+            
+            if diagnostics and diagnostics.diagnostics:
+                lines.append("Diagnostics:")
+                lines.append("")
+                for diag in diagnostics.diagnostics:
+                    lines.append(diag.format(use_color=use_color))
+                    lines.append("")
+        
+        # Suggested next queries
+        lines.append("Suggested next steps:")
+        if not self.computed_metrics:
+            lines.append("  - Compute centrality: .compute('degree', 'betweenness_centrality')")
+        if "grouping" not in self.meta:
+            lines.append("  - Group by layer: .per_layer()")
+        if not self.meta.get("has_uncertainty", False):
+            lines.append("  - Add uncertainty: .uq(method='bootstrap', n_samples=100)")
+        lines.append("  - Export to CSV: .to_pandas().to_csv('results.csv')")
+        
+        return "\n".join(lines)
+    
+    def debug(self) -> str:
+        """Generate detailed debug information about query execution.
+        
+        Shows:
+        - Full AST structure
+        - Execution plan
+        - Cache hits/misses
+        - Backend calls
+        - Timing per stage
+        - Randomness sources
+        
+        Returns:
+            Formatted debug information
+        
+        Example:
+            >>> result = Q.nodes().compute("degree").execute(net)
+            >>> print(result.debug())
+        """
+        from py3plex.errors import Colors
+        import json
+        
+        lines = []
+        use_color = Colors.supports_color()
+        
+        # Header
+        if use_color:
+            lines.append(f"{Colors.BOLD}{Colors.RED}Query Debug Information{Colors.RESET}")
+        else:
+            lines.append("Query Debug Information")
+        lines.append("=" * 60)
+        lines.append("")
+        
+        # Basic info
+        lines.append(f"Target: {self.target}")
+        lines.append(f"Result count: {len(self.items)}")
+        lines.append("")
+        
+        # AST (if available)
+        if "ast" in self.meta:
+            lines.append("AST Structure:")
+            ast_data = self.meta["ast"]
+            if hasattr(ast_data, "to_dict"):
+                lines.append(json.dumps(ast_data.to_dict(), indent=2))
+            elif isinstance(ast_data, dict):
+                lines.append(json.dumps(ast_data, indent=2))
+            else:
+                lines.append(str(ast_data))
+            lines.append("")
+        
+        # Execution plan
+        if "execution_plan" in self.meta:
+            lines.append("Execution Plan:")
+            plan = self.meta["execution_plan"]
+            if isinstance(plan, dict):
+                lines.append(json.dumps(plan, indent=2))
+            else:
+                lines.append(str(plan))
+            lines.append("")
+        
+        # Timing information
+        if "timing" in self.meta:
+            lines.append("Timing:")
+            timing = self.meta["timing"]
+            for stage, duration in timing.items():
+                lines.append(f"  {stage}: {duration:.3f}s")
+            lines.append("")
+        
+        # Cache information
+        if "cache_stats" in self.meta:
+            lines.append("Cache Statistics:")
+            cache = self.meta["cache_stats"]
+            if isinstance(cache, dict):
+                lines.append(f"  Hits: {cache.get('hits', 0)}")
+                lines.append(f"  Misses: {cache.get('misses', 0)}")
+                lines.append(f"  Hit rate: {cache.get('hit_rate', 0.0):.1%}")
+            lines.append("")
+        
+        # Backend calls
+        if "backend_calls" in self.meta:
+            lines.append("Backend Calls:")
+            calls = self.meta["backend_calls"]
+            for call in calls:
+                if isinstance(call, dict):
+                    lines.append(f"  - {call.get('function', 'unknown')}")
+                    if "duration" in call:
+                        lines.append(f"    Duration: {call['duration']:.3f}s")
+                else:
+                    lines.append(f"  - {call}")
+            lines.append("")
+        
+        # Randomness sources
+        if "random_seeds" in self.meta:
+            lines.append("Random Seeds:")
+            seeds = self.meta["random_seeds"]
+            if isinstance(seeds, dict):
+                for source, seed in seeds.items():
+                    lines.append(f"  {source}: {seed}")
+            lines.append("")
+        
+        # All metadata (fallback)
+        if not any(k in self.meta for k in ["ast", "execution_plan", "timing", "cache_stats", "backend_calls"]):
+            lines.append("Available Metadata:")
+            for key in sorted(self.meta.keys()):
+                if not key.startswith("_"):  # Skip internal keys
+                    lines.append(f"  - {key}")
+            lines.append("")
+            lines.append("(Use .meta[key] to access specific metadata)")
+        
+        return "\n".join(lines)
