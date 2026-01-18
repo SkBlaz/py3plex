@@ -167,7 +167,7 @@ INFOMAP_REQS = AlgoRequirements(
 
 # Centrality
 PAGERANK_REQS = AlgoRequirements(
-    allowed_modes=("multilayer", "multiplex"),
+    allowed_modes=("single", "multilayer", "multiplex"),
     replica_model=("none", "partial", "strict"),
     interlayer_coupling=("none", "identity", "explicit_edges", "both"),
     requires_edge_weights=False,

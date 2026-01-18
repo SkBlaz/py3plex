@@ -674,6 +674,21 @@ class MultilayerCentrality:
             shortest path computation. If your edge weights already represent
             distances, use them directly without this function's weight inversion.
         
+        Examples:
+            >>> # For connected networks, standard closeness works well
+            >>> closeness = calc.multilayer_closeness_centrality(variant='standard')
+
+            >>> # For potentially disconnected networks, use harmonic
+            >>> closeness = calc.multilayer_closeness_centrality(variant='harmonic')
+
+            >>> # Let the algorithm decide based on connectivity
+            >>> closeness = calc.multilayer_closeness_centrality(variant='auto')
+        
+        References:
+            - Wasserman, S., & Faust, K. (1994). Social Network Analysis.
+            - Boldi, P., & Vigna, S. (2014). Axioms for Centrality. Internet Math.
+            - De Domenico, M., et al. (2015). Structural reducibility of multilayer networks.
+        
         Raises:
             AlgorithmCompatibilityError: If network is incompatible with algorithm requirements
         """
@@ -686,22 +701,6 @@ class MultilayerCentrality:
             if errors:
                 raise AlgorithmCompatibilityError(diagnostics, algo_name='multilayer_closeness_centrality')
         
-
-        Examples:
-            >>> # For connected networks, standard closeness works well
-            >>> closeness = calc.multilayer_closeness_centrality(variant='standard')
-
-            >>> # For potentially disconnected networks, use harmonic
-            >>> closeness = calc.multilayer_closeness_centrality(variant='harmonic')
-
-            >>> # Let the algorithm decide based on connectivity
-            >>> closeness = calc.multilayer_closeness_centrality(variant='auto')
-
-        References:
-            - Wasserman, S., & Faust, K. (1994). Social Network Analysis.
-            - Boldi, P., & Vigna, S. (2014). Axioms for Centrality. Internet Math.
-            - De Domenico, M., et al. (2015). Structural reducibility of multilayer networks.
-        """
         # Convert supra-adjacency matrix to NetworkX graph
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
