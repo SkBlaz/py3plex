@@ -2595,6 +2595,106 @@ sim = (
 
 Uncertainty Quantification (UQ) in py3plex provides confidence intervals, stability metrics, and distributional information for network analysis results. UQ is integrated into DSL v2 and is essential for robust, reproducible research.
 
+**UQ Compliance Philosophy**: py3plex UQ is designed to be **deterministic**, **fail-fast**, and **fully verifiable**. All UQ configurations are materialized before execution, validated against a canonical schema, and tracked in provenance.
+
+### UQ Resolution Order
+
+UQ configuration follows a strict **priority order** to ensure deterministic, predictable behavior:
+
+1. **Metric-level** (highest priority): Parameters specified in `.compute()` call
+2. **Query-level**: Parameters specified in `.uq()` call
+3. **Global defaults**: Set via `set_global_uq_defaults()`
+4. **Library defaults**: Built-in defaults
+
+**Example**:
+```python
+from py3plex.dsl import Q, set_global_uq_defaults
+
+# Set global defaults
+set_global_uq_defaults(method="bootstrap", n_samples=100, seed=42)
+
+# Query-level overrides global for this query
+result = (
+    Q.nodes()
+     .uq(method="perturbation", n_samples=50)  # Overrides global method and n_samples
+     .compute("degree")  # Uses query-level config
+     .compute("betweenness", n_samples=200)  # Metric-level overrides query-level n_samples
+     .execute(net)
+)
+
+# Final resolution:
+# - degree: method="perturbation", n_samples=50, seed=42 (query + global)
+# - betweenness: method="perturbation", n_samples=200, seed=42 (metric + query + global)
+```
+
+**Resolution Guarantees**:
+- ✅ Exactly one UQ config per metric after resolution
+- ✅ Conflicting configs at same priority level raise `UQResolutionError`
+- ✅ Resolved config is fully materialized before execution
+- ✅ No implicit or silent defaults applied at execution time
+- ✅ Provenance tracks source of each parameter (metric/query/global/library)
+
+### Canonical UQ Schema
+
+All UQ-enabled results conform to a **single canonical schema**. This ensures consistency across all UQ methods, contexts, and export formats.
+
+**Required Fields**:
+```python
+{
+    "value": float,        # or "mean" - the point estimate
+    "std": float,          # standard deviation
+    "ci_low": float,       # lower confidence interval bound
+    "ci_high": float,      # upper confidence interval bound
+    "quantiles": dict,     # {quantile: value} mapping
+    "n_samples": int,      # number of samples used
+    "method": str,         # UQ method used
+    "seed": int,           # random seed (if applicable)
+}
+```
+
+**Optional Fields** (method-specific):
+```python
+{
+    # Bootstrap-specific
+    "bootstrap_unit": str,     # "edges", "nodes", or "layers"
+    "bootstrap_mode": str,     # "resample" or "permute"
+    
+    # Null model-specific
+    "null_model": str,         # "degree_preserving", "erdos_renyi", "configuration"
+    "mean_null": float,        # null model mean
+    "zscore": float,           # z-score
+    "pvalue": float,           # p-value
+    
+    # Legacy
+    "certainty": float,        # certainty metric (deprecated, maintained for compatibility)
+}
+```
+
+**Schema Validation**:
+- ✅ All UQ results are validated before being returned
+- ✅ Invalid schemas raise `UQSchemaValidationError` with detailed diagnostics
+- ✅ Deterministic metrics (std=0) allowed with `allow_degenerate=True`
+
+**Example - Accessing UQ Results**:
+```python
+result = (
+    Q.nodes()
+     .compute("degree")
+     .uq(method="bootstrap", n_samples=100, ci=0.95, seed=42)
+     .execute(net)
+)
+
+# Access UQ information
+degree_uq = result.attributes["degree"]
+for node, uq_dict in degree_uq.items():
+    print(f"Node {node}:")
+    print(f"  Value: {uq_dict['value']}")
+    print(f"  Std: {uq_dict['std']}")
+    print(f"  95% CI: [{uq_dict['ci_low']}, {uq_dict['ci_high']}]")
+    print(f"  Method: {uq_dict['method']}")
+    print(f"  Seed: {uq_dict['seed']}")
+```
+
 ### Correctness Guarantees
 
 **Determinism**:
@@ -2624,9 +2724,43 @@ df2 = result2.to_pandas(expand_uncertainty=True)
 assert df1.equals(df2)  # ✅ Identical
 ```
 
+### Semantic Consistency
+
+UQ semantics are **identical** across all contexts:
+
+**✅ Consistent Across**:
+- Node queries, edge queries, graph-level metrics
+- Per-layer and per-layer-pair groupings
+- Temporal queries (snapshots, windows)
+- All supported UQ methods (bootstrap, perturbation, seed, null_model)
+
+**Example - Grouping Preserves Semantics**:
+```python
+# Global UQ
+result_global = (
+    Q.nodes()
+     .compute("degree")
+     .uq(method="bootstrap", n_samples=100, seed=42)
+     .execute(net)
+)
+
+# Per-layer UQ (same semantics, grouped results)
+result_grouped = (
+    Q.nodes()
+     .compute("degree")
+     .uq(method="bootstrap", n_samples=100, seed=42)
+     .per_layer()
+     .end_grouping()
+     .execute(net)
+)
+
+# Same seed + same method → same distributions per node
+# Grouping only affects result organization, not UQ semantics
+```
+
 py3plex provides first-class uncertainty quantification for network metrics.
 
-### Methods
+### Supported UQ Methods
 
 **Bootstrap Resampling**:
 ```python
@@ -2731,7 +2865,352 @@ result = (
 
 **Fallback**: If stratification is infeasible (e.g., network too small, no meaningful strata), automatically falls back to regular perturbation.
 
-### Bootstrap Units
+### Provenance and Traceability
+
+Every UQ execution is fully auditable through provenance metadata:
+
+**Provenance Contains**:
+```python
+{
+    "method": "bootstrap",             # UQ method used
+    "n_samples": 100,                  # Number of samples
+    "seed": 42,                        # Random seed (if set)
+    "ci": 0.95,                        # Confidence interval level
+    "bootstrap_unit": "edges",         # Method-specific params
+    "resolution": {                    # Source of each parameter
+        "method": "query_level",
+        "n_samples": "metric_level",
+        "seed": "global_default",
+        "ci": "library_default"
+    },
+    "timestamp": "2024-01-18T15:19:03Z",
+    "aggregation_level": "per_node"   # or "per_layer", "per_layer_pair", etc.
+}
+```
+
+**Accessing Provenance**:
+```python
+result = Q.nodes().compute("degree").uq(method="bootstrap", seed=42).execute(net)
+
+# Access provenance
+prov = result.meta["provenance"]
+print(f"UQ method: {prov['randomness']['method']}")
+print(f"Seed: {prov['randomness']['seed']}")
+print(f"Samples: {prov['randomness']['n_samples']}")
+```
+
+**Provenance Guarantees**:
+- ✅ Machine-readable and serializable (JSON-compatible)
+- ✅ Comparable across runs (same structure, deterministic ordering)
+- ✅ Includes resolution source for each parameter (metric/query/global/library)
+- ✅ Results cannot be returned if UQ requested but provenance incomplete
+
+### Fail-Fast Error Handling
+
+py3plex UQ uses **explicit, fail-fast error handling** with no silent fallbacks:
+
+**Error Types**:
+
+1. **`UQResolutionError`** - Configuration issues
+   ```python
+   # Invalid method
+   Q.nodes().compute("degree").uq(method="invalid_method")
+   # → UQResolutionError: Invalid UQ method 'invalid_method'. Valid methods: bootstrap, perturbation, ...
+   
+   # Missing required parameter
+   Q.nodes().compute("degree").uq(method="null_model")  # Missing null_model param
+   # → UQResolutionError: null_model method requires 'null_model' parameter
+   ```
+
+2. **`UQSchemaValidationError`** - Result schema violations
+   ```python
+   # Internal error: metric implementation returns incomplete UQ result
+   # → UQSchemaValidationError: UQ result for 'degree' missing required fields: std, ci_low
+   ```
+
+3. **`UQUnsupportedError`** - Unsupported contexts
+   ```python
+   # UQ on edge queries (not yet fully supported)
+   Q.edges().compute("edge_betweenness").uq(method="bootstrap")
+   # → UQUnsupportedError: UQ for edge queries not yet fully supported
+   ```
+
+**No Silent Fallbacks**:
+- ❌ No default values silently applied
+- ❌ No warnings without errors
+- ❌ No graceful degradation to deterministic
+- ✅ Every configuration issue raises a descriptive error
+- ✅ Errors include location in DSL chain and fix suggestions
+
+**Example - Helpful Error Messages**:
+```python
+try:
+    Q.nodes().compute("degree").uq(n_samples=0).execute(net)
+except UQResolutionError as e:
+    print(e)
+    # → n_samples must be positive, got 0
+    #   At: .uq() call in query chain
+    #   Fix: Set n_samples to a positive integer (e.g., n_samples=50)
+```
+
+### Supported and Unsupported Contexts
+
+**✅ Fully Supported**:
+- Node queries with centrality metrics (degree, betweenness, closeness, pagerank, etc.)
+- Bootstrap resampling (edges, nodes, layers)
+- Perturbation and stratified perturbation
+- Null model comparisons
+- Per-layer and per-layer-pair groupings
+- Temporal snapshots and windows
+
+**⚠️ Partial Support**:
+- Edge queries (bootstrap only, other methods in development)
+- Community detection (via separate ensemble API)
+
+**❌ Not Supported** (raises `UQUnsupportedError`):
+- Graph-level aggregations (use per-node UQ then aggregate)
+- Motif queries (deterministic only)
+
+### Export and Serialization
+
+All exports **preserve full UQ information by default**:
+
+**Pandas Export**:
+```python
+result = Q.nodes().compute("degree").uq(method="bootstrap", n_samples=100, seed=42).execute(net)
+
+# Expanded format (deterministic column names)
+df = result.to_pandas(expand_uncertainty=True)
+# Columns: node, layer, degree_mean, degree_std, degree_ci95_low, degree_ci95_high
+
+# Compact format (UQ dicts in cells)
+df_compact = result.to_pandas(expand_uncertainty=False)
+# Columns: node, layer, degree (dict with UQ info)
+```
+
+**JSON Export**:
+```python
+# Full UQ metadata preserved
+result.to_json("result.json")
+# {
+#   "nodes": [...],
+#   "attributes": {"degree": {"node1": {"mean": 5.0, "std": 0.5, ...}}},
+#   "meta": {"provenance": {"randomness": {...}}}
+# }
+```
+
+**NetworkX Attributes**:
+```python
+# UQ info attached as node attributes
+G = result.to_networkx(attach_attributes=True)
+# G.nodes["node1"]["degree"] = {"mean": 5.0, "std": 0.5, ...}
+```
+
+**Lossy Exports** (require explicit opt-in):
+```python
+# Drop uncertainty info (not yet implemented - will require explicit flag)
+# df = result.to_pandas(drop_uncertainty=True)  # Future API
+# → Records loss in provenance
+```
+
+### Supported UQ Methods
+
+**1. Bootstrap Resampling**
+
+Bootstrap estimates uncertainty by resampling network elements (edges, nodes, or layers) with replacement.
+
+```python
+# Bootstrap with edge resampling (default)
+result = (
+    Q.nodes()
+     .compute("pagerank", "betweenness_centrality")
+     .uq(method="bootstrap", n_samples=100, ci=0.95, seed=42, bootstrap_unit="edges")
+     .execute(net)
+)
+
+# Bootstrap with node resampling
+result = (
+    Q.nodes()
+     .compute("clustering")
+     .uq(method="bootstrap", n_samples=100, bootstrap_unit="nodes", seed=42)
+     .execute(net)
+)
+
+# Bootstrap with layer resampling (for multilayer networks)
+result = (
+    Q.nodes()
+     .compute("degree")
+     .uq(method="bootstrap", n_samples=50, bootstrap_unit="layers", seed=42)
+     .execute(net)
+)
+```
+
+**Bootstrap Modes**:
+- `resample` (default): Sample with replacement
+- `permute`: Shuffle/permute existing elements
+
+```python
+# Permutation test
+result = (
+    Q.nodes()
+     .compute("betweenness")
+     .uq(method="bootstrap", bootstrap_mode="permute", n_samples=100, seed=42)
+     .execute(net)
+)
+```
+
+**2. Perturbation**
+
+Perturbation adds noise to the network structure (drop/add edges) to estimate sensitivity.
+
+```python
+result = (
+    Q.nodes()
+     .compute("degree", "clustering")
+     .uq(method="perturbation", n_samples=50, noise_level=0.1, seed=42)
+     .execute(net)
+)
+```
+
+**3. Stratified Perturbation** (NEW - Variance-Reduced)
+
+Stratified perturbation preserves key network structure during perturbation, reducing variance.
+
+```python
+# Auto-select stratification dimensions
+result = (
+    Q.nodes()
+     .compute("betweenness_centrality")
+     .uq(method="stratified_perturbation", n_samples=100, edge_drop_p=0.1, seed=42)
+     .execute(net)
+)
+
+# Explicit stratification by degree with custom bins
+result = (
+    Q.nodes()
+     .compute("pagerank")
+     .uq(
+         method="stratified_perturbation",
+         n_samples=100,
+         strata=["degree"],
+         bins={"degree": 5},
+         edge_drop_p=0.05,
+         seed=42
+     )
+     .execute(net)
+)
+```
+
+**4. Multi-seed (for Deterministic Algorithms)**
+
+Seed method runs deterministic algorithms with different random seeds.
+
+```python
+result = (
+    Q.nodes()
+     .compute("louvain_community")
+     .uq(method="seed", n_samples=20, seed=42)
+     .execute(net)
+)
+```
+
+**5. Null Model Comparison**
+
+Null model method compares observed values against null model distributions.
+
+```python
+result = (
+    Q.nodes()
+     .compute("betweenness_centrality")
+     .uq(
+         method="null_model",
+         null_model="degree_preserving",
+         n_null=200,
+         seed=42
+     )
+     .execute(net)
+)
+
+# Access null model statistics
+for node, uq_dict in result.attributes["betweenness_centrality"].items():
+    print(f"Node {node}:")
+    print(f"  Observed: {uq_dict['value']}")
+    print(f"  Null mean: {uq_dict['mean_null']}")
+    print(f"  Z-score: {uq_dict['zscore']}")
+    print(f"  P-value: {uq_dict['pvalue']}")
+```
+
+**Supported Null Models**:
+- `degree_preserving`: Configuration model (preserves degree sequence)
+- `erdos_renyi`: Random graph with same edge probability
+- `configuration`: Configuration model (alias for degree_preserving)
+
+### UQ Method Summary Table
+
+| Method | Best For | Pros | Cons |
+|--------|----------|------|------|
+| `bootstrap` | General-purpose UQ | Standard, interpretable CIs | Can be slow for large networks |
+| `perturbation` | Robustness analysis | Fast, tests sensitivity | May not preserve structure |
+| `stratified_perturbation` | Large networks | Variance-reduced, faster convergence | More complex setup |
+| `seed` | Deterministic algorithms | Simple, no resampling | Only for non-deterministic algorithms |
+| `null_model` | Statistical significance | Hypothesis testing, p-values | Requires null model assumption |
+
+### Working with UQ Results
+
+**Accessing UQ Information**:
+```python
+result = Q.nodes().compute("degree").uq(method="bootstrap", n_samples=100, seed=42).execute(net)
+
+# Access raw UQ dictionaries
+degree_uq = result.attributes["degree"]
+for node, uq_dict in degree_uq.items():
+    print(f"Node {node}:")
+    print(f"  Mean: {uq_dict['mean']}")
+    print(f"  Std: {uq_dict['std']}")
+    print(f"  95% CI: [{uq_dict['ci_low']}, {uq_dict['ci_high']}]")
+```
+
+**Exporting with UQ**:
+```python
+# Expanded pandas format (deterministic column names)
+df = result.to_pandas(expand_uncertainty=True)
+# Columns: node, layer, degree_mean, degree_std, degree_ci95_low, degree_ci95_high
+
+# Compact format (UQ in dict columns)
+df_compact = result.to_pandas(expand_uncertainty=False)
+# Columns: node, layer, degree (where degree is a dict)
+
+# JSON export (full UQ preserved)
+result.to_json("results_with_uq.json")
+```
+
+### Global UQ Configuration
+
+Set default UQ parameters for all queries:
+
+```python
+from py3plex.dsl import set_global_uq_defaults, reset_global_uq_defaults
+
+# Set global defaults
+set_global_uq_defaults(
+    method="bootstrap",
+    n_samples=100,
+    ci=0.95,
+    seed=42,
+    bootstrap_unit="edges"
+)
+
+# Now all queries with .uq() or uncertainty=True use these defaults
+result = Q.nodes().compute("pagerank").uq().execute(net)  # Uses global defaults
+
+# Override specific parameters
+result = Q.nodes().compute("degree").uq(n_samples=200).execute(net)  # Overrides only n_samples
+
+# Reset to library defaults
+reset_global_uq_defaults()
+```
+
+### Bootstrap Units (Legacy - kept for compatibility)
 
 ```python
 # Resample edges
