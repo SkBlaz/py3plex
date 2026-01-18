@@ -201,12 +201,31 @@ def resolve_uq_config(
         UQResolutionError: If conflicting configs at same priority level
     """
     # Check if UQ is explicitly disabled at metric level
-    if compute_item.uncertainty is False:
-        return None
+    # Note: uncertainty=False is the default, so we need to distinguish
+    # between explicit False and default False. We do this by checking
+    # if any UQ parameters are set at the metric level.
+    has_metric_uq_params = any([
+        compute_item.method is not None,
+        compute_item.n_samples is not None,
+        compute_item.random_state is not None,
+        compute_item.bootstrap_unit is not None,
+        compute_item.n_null is not None,
+    ])
+    
+    if compute_item.uncertainty is False and not has_metric_uq_params:
+        # uncertainty=False and no UQ params at metric level
+        # Check if query-level UQ should override
+        if query_uq_config is not None and query_uq_config.method is not None:
+            # Query-level UQ is set, so enable UQ
+            pass  # Continue to resolution
+        else:
+            # No UQ at any level
+            return None
     
     # Check if UQ is explicitly enabled at metric or query level
     uq_enabled = (
         compute_item.uncertainty is True
+        or has_metric_uq_params
         or (query_uq_config is not None and query_uq_config.method is not None)
     )
     

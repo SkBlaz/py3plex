@@ -1341,7 +1341,7 @@ def _compute_measure_with_uncertainty(
                     (1 - resolved_config.ci) / 2: float(result["ci_low"][i]),
                     1 - (1 - resolved_config.ci) / 2: float(result["ci_high"][i]),
                 },
-                "n_samples": result["n_boot"],
+                "n_samples": resolved_config.n_samples,  # Use resolved config, not result
                 "method": "bootstrap",
                 "seed": resolved_config.seed,
                 "bootstrap_unit": bootstrap_unit,
@@ -1387,7 +1387,7 @@ def _compute_measure_with_uncertainty(
                 "ci_low": None,  # Null model doesn't provide CI directly
                 "ci_high": None,
                 "quantiles": {},
-                "n_samples": result["n_null"],
+                "n_samples": resolved_config.n_samples,  # Use resolved config
                 "method": "null_model",
                 "seed": resolved_config.seed,
                 "null_model": result["model"],
@@ -1789,6 +1789,9 @@ def _execute_select(
                             )
 
                         attributes[result_name] = values
+                except (UQResolutionError, UQSchemaValidationError):
+                    # UQ errors should propagate (fail-fast)
+                    raise
                 except UnknownMeasureError:
                     # Re-raise unknown measure errors (they have helpful suggestions)
                     raise

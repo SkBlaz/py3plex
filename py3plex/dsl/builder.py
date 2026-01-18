@@ -805,9 +805,9 @@ class QueryBuilder:
 
     def uq(
         self,
-        method: Optional[str] = "perturbation",
-        n_samples: Optional[int] = 50,
-        ci: Optional[float] = 0.95,
+        method: Optional[str] = None,
+        n_samples: Optional[int] = None,
+        ci: Optional[float] = None,
         seed: Optional[int] = None,
         **kwargs,
     ) -> "QueryBuilder":
@@ -815,12 +815,18 @@ class QueryBuilder:
 
         This method establishes uncertainty defaults for all metrics computed
         in this query, unless overridden on a per-metric basis in compute().
+        
+        When parameters are None, they will be resolved from:
+        - Global defaults (set via set_global_uq_defaults())
+        - Library defaults (perturbation, n_samples=50, ci=0.95)
 
         Args:
             method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
-                   Pass None to disable query-level uncertainty.
-            n_samples: Number of samples for uncertainty estimation (default: 50)
-            ci: Confidence interval level (default: 0.95 for 95% CI)
+                   If None, uses global or library default.
+            n_samples: Number of samples for uncertainty estimation
+                      If None, uses global or library default (50).
+            ci: Confidence interval level (e.g., 0.95 for 95% CI)
+               If None, uses global or library default (0.95).
             seed: Random seed for reproducibility (default: None)
             **kwargs: Additional method-specific parameters (e.g., bootstrap_unit='edges',
                      bootstrap_mode='resample', null_model='configuration')
@@ -829,11 +835,18 @@ class QueryBuilder:
             Self for chaining
 
         Example:
-            >>> # Set uncertainty defaults for the query
+            >>> # Set uncertainty with explicit parameters
             >>> (Q.nodes()
             ...   .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
             ...   .compute("betweenness_centrality")
             ...   .where(betweenness_centrality__mean__gt=0.1)
+            ...   .execute(net))
+
+            >>> # Use global defaults
+            >>> set_global_uq_defaults(method="bootstrap", n_samples=200, seed=42)
+            >>> (Q.nodes()
+            ...   .uq()  # Uses global defaults
+            ...   .compute("degree")
             ...   .execute(net))
 
             >>> # Use UQ profile (see UQ class for presets)
@@ -850,13 +863,11 @@ class QueryBuilder:
             self._select.uq_config = method
             return self
 
-        # Create UQConfig or clear it
-        if method is None:
-            self._select.uq_config = None
-        else:
-            self._select.uq_config = UQConfig(
-                method=method, n_samples=n_samples, ci=ci, seed=seed, kwargs=kwargs
-            )
+        # Create UQConfig - None values will be resolved during execution
+        # using the priority order: query > global > library
+        self._select.uq_config = UQConfig(
+            method=method, n_samples=n_samples, ci=ci, seed=seed, kwargs=kwargs
+        )
         return self
 
     def uncertainty(

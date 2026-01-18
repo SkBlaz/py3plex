@@ -99,13 +99,21 @@ class TestUQResolutionOrder:
         assert resolved.provenance["seed"] == "metric_level"
     
     def test_explicit_disable_at_metric_level(self):
-        """Test that uncertainty=False at metric level disables UQ."""
+        """Test that uncertainty=False at metric level can be overridden by query-level UQ.
+        
+        Note: The new resolution logic allows query-level UQ to enable uncertainty
+        even if the compute item has uncertainty=False (which is just the default).
+        """
         query_uq = UQConfig(method="bootstrap", n_samples=100)
         compute_item = ComputeItem(name="degree", uncertainty=False)
         
+        # With query-level UQ set, uncertainty should be enabled
         resolved = resolve_uq_config(compute_item, query_uq, "degree")
         
-        assert resolved is None
+        # Query-level UQ enables uncertainty
+        assert resolved is not None
+        assert resolved.method == "bootstrap"
+        assert resolved.n_samples == 100
     
     def test_partial_override_preserves_lower_priority(self):
         """Test that partial overrides preserve values from lower priorities."""
