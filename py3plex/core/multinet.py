@@ -1276,13 +1276,209 @@ class multi_layer_network:
         )
         node_degree_vector = dict(nx.degree(self.core_network)).values()
         mean_degree = np.mean(list(node_degree_vector))
+        
+        # Include capabilities in summary
+        caps = self.capabilities()
+        
         return {
             "Number of layers": unique_layers,
             "Nodes": nodes,
             "Edges": edges,
             "Mean degree": mean_degree,
             "CC": components,
+            "Mode": caps.mode,
+            "Replica model": caps.replica_model,
+            "Interlayer coupling": caps.interlayer_coupling,
+            "Directed": caps.directed,
+            "Weighted": caps.weighted,
         }
+
+    def capabilities(self, force_recompute: bool = False):
+        """Compute and cache network capabilities for algorithm compatibility checking.
+        
+        This method analyzes the network structure to determine its fundamental
+        characteristics that algorithms may require or constrain. Results are cached
+        for efficiency.
+        
+        Args:
+            force_recompute: If True, recompute capabilities even if cached
+        
+        Returns:
+            NetworkCapabilities: Dataclass with network properties including:
+                - mode: Network mode (single, multilayer, multiplex, temporal)
+                - replica_model: Replica model (none, partial, strict)
+                - interlayer_coupling: Coupling type (none, identity, explicit_edges, both)
+                - directed: Whether network is directed
+                - weighted: Whether network has edge weights
+                - weight_domain: Domain of edge weights
+                - layer_count: Number of layers
+                - base_node_count: Number of distinct base nodes
+                - And more...
+        
+        Examples:
+            >>> net = multi_layer_network()
+            >>> caps = net.capabilities()
+            >>> print(caps.mode)
+            'multilayer'
+            >>> print(caps.layer_count)
+            2
+        
+        Notes:
+            - Results are cached for performance
+            - Cache is invalidated on network mutations (if tracked)
+            - Temporal networks require TemporalMultiLayerNetwork class
+        """
+        # Check cache
+        if not force_recompute and hasattr(self, '_cached_capabilities'):
+            return self._cached_capabilities
+        
+        # Import here to avoid circular dependency
+        from py3plex.requirements import NetworkCapabilities
+        
+        # Initialize with defaults
+        directed = self.directed
+        
+        # Get nodes and edges
+        nodes = list(self.get_nodes())
+        edges = list(self.core_network.edges(data=True)) if self.core_network else []
+        
+        # Analyze layers
+        layers = set()
+        base_nodes = set()
+        node_layer_pairs = set()
+        
+        for node in nodes:
+            if isinstance(node, tuple) and len(node) >= 2:
+                node_id, layer = node[0], node[1]
+                layers.add(layer)
+                base_nodes.add(node_id)
+                node_layer_pairs.add((node_id, layer))
+            else:
+                # Single layer or non-tuple node
+                base_nodes.add(node)
+        
+        layer_count = len(layers) if layers else 1
+        base_node_count = len(base_nodes) if layers else None
+        node_replica_count = len(node_layer_pairs) if layers else None
+        
+        # Determine network mode
+        if layer_count == 1 or not layers:
+            mode = "single"
+        elif self.network_type == "multiplex":
+            mode = "multiplex"
+        else:
+            mode = "multilayer"
+        
+        # Determine replica model
+        if mode == "single":
+            replica_model = "none"
+        elif mode == "multiplex" or mode == "multilayer":
+            # Check if all base nodes appear in all layers
+            if base_nodes and layers:
+                expected_replicas = len(base_nodes) * len(layers)
+                actual_replicas = len(node_layer_pairs)
+                
+                if actual_replicas == expected_replicas:
+                    replica_model = "strict"
+                elif actual_replicas < expected_replicas:
+                    replica_model = "partial"
+                else:
+                    replica_model = "partial"  # fallback
+            else:
+                replica_model = "none"
+        else:
+            replica_model = "none"
+        
+        has_missing_replicas = (replica_model == "partial")
+        
+        # Determine interlayer coupling
+        has_interlayer = False
+        has_identity_coupling = False
+        
+        for u, v, data in edges:
+            if isinstance(u, tuple) and isinstance(v, tuple) and len(u) >= 2 and len(v) >= 2:
+                u_id, u_layer = u[0], u[1]
+                v_id, v_layer = v[0], v[1]
+                
+                if u_layer != v_layer:
+                    has_interlayer = True
+                    # Check if it's identity coupling (same base node, different layers)
+                    if u_id == v_id:
+                        has_identity_coupling = True
+        
+        if has_identity_coupling and has_interlayer:
+            interlayer_coupling = "both"
+        elif has_identity_coupling:
+            interlayer_coupling = "identity"
+        elif has_interlayer:
+            interlayer_coupling = "explicit_edges"
+        else:
+            interlayer_coupling = "none"
+        
+        # Determine if weighted
+        weighted = False
+        weight_values = []
+        
+        for u, v, data in edges:
+            if 'weight' in data:
+                weighted = True
+                weight_values.append(data['weight'])
+        
+        # Determine weight domain
+        weight_domain = None
+        if weighted and weight_values:
+            all_binary = all(w in (0, 1) for w in weight_values)
+            all_positive = all(w > 0 for w in weight_values)
+            all_integer = all(isinstance(w, int) or w == int(w) for w in weight_values)
+            
+            if all_binary:
+                weight_domain = "binary"
+            elif all_positive:
+                if all_integer:
+                    weight_domain = "integer"
+                else:
+                    weight_domain = "positive"
+            else:
+                weight_domain = "real"
+        
+        # Check for self-loops and parallel edges
+        has_self_loops = False
+        has_parallel_edges = False
+        
+        if self.core_network:
+            # Check self-loops
+            has_self_loops = any(u == v for u, v in self.core_network.edges())
+            
+            # Check parallel edges (only relevant for MultiGraph)
+            if isinstance(self.core_network, (nx.MultiGraph, nx.MultiDiGraph)):
+                for u, v in self.core_network.edges():
+                    if self.core_network.number_of_edges(u, v) > 1:
+                        has_parallel_edges = True
+                        break
+        
+        total_edges = len(edges)
+        
+        # Create capabilities object
+        capabilities = NetworkCapabilities(
+            mode=mode,
+            replica_model=replica_model,
+            interlayer_coupling=interlayer_coupling,
+            directed=directed,
+            weighted=weighted,
+            weight_domain=weight_domain,
+            has_missing_replicas=has_missing_replicas,
+            layer_count=layer_count,
+            base_node_count=base_node_count,
+            node_replica_count=node_replica_count,
+            has_self_loops=has_self_loops,
+            has_parallel_edges=has_parallel_edges,
+            total_edges=total_edges,
+        )
+        
+        # Cache the result
+        self._cached_capabilities = capabilities
+        
+        return capabilities
 
     def get_unique_entity_counts(self):
         """Count unique entities in the network.
