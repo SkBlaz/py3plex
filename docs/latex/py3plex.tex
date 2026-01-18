@@ -41206,7 +41206,7 @@ Optional suggested fix
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{DslError}}}
-{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -41214,6 +41214,58 @@ Bases: \sphinxcode{\sphinxupquote{Exception}}
 
 \sphinxAtStartPar
 Base exception for all DSL errors.
+\index{query (py3plex.dsl.DslError attribute)@\spxentry{query}\spxextra{py3plex.dsl.DslError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.DslError.query}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{query}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Query string that caused the error
+
+\end{fulllineitems}\end{savenotes}
+
+\index{line (py3plex.dsl.DslError attribute)@\spxentry{line}\spxextra{py3plex.dsl.DslError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.DslError.line}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{line}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Line number in query (if applicable)
+
+\end{fulllineitems}\end{savenotes}
+
+\index{column (py3plex.dsl.DslError attribute)@\spxentry{column}\spxextra{py3plex.dsl.DslError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.DslError.column}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{column}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Column number in query (if applicable)
+
+\end{fulllineitems}\end{savenotes}
+
+\index{diagnostic (py3plex.dsl.DslError attribute)@\spxentry{diagnostic}\spxextra{py3plex.dsl.DslError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.DslError.diagnostic}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{diagnostic}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Optional Diagnostic object with structured error info
+
+\end{fulllineitems}\end{savenotes}
+
 \index{format\_message() (py3plex.dsl.DslError method)@\spxentry{format\_message()}\spxextra{py3plex.dsl.DslError method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -41229,6 +41281,27 @@ Format the error message with context.
 
 \end{fulllineitems}\end{savenotes}
 
+\index{to\_diagnostic() (py3plex.dsl.DslError method)@\spxentry{to\_diagnostic()}\spxextra{py3plex.dsl.DslError method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.DslError.to_diagnostic}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_diagnostic}}}
+{}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get the diagnostic object for this error.
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Diagnostic object if available, None otherwise
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -41239,7 +41312,7 @@ Format the error message with context.
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{DslExecutionError}}}
-{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -41320,7 +41393,7 @@ Whether autocompute was enabled
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{DslSyntaxError}}}
-{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -52129,7 +52202,7 @@ See uq() for full documentation.
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{uq}}}
-{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}perturbation\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{50}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ci}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.95}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ci}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -52138,20 +52211,27 @@ Set query\sphinxhyphen{}scoped uncertainty quantification configuration.
 \sphinxAtStartPar
 This method establishes uncertainty defaults for all metrics computed
 in this query, unless overridden on a per\sphinxhyphen{}metric basis in compute().
+
+\sphinxAtStartPar
+When parameters are None, they will be resolved from:
+\sphinxhyphen{} Global defaults (set via set\_global\_uq\_defaults())
+\sphinxhyphen{} Library defaults (perturbation, n\_samples=50, ci=0.95)
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{method}} \textendash{} Uncertainty estimation method (‘bootstrap’, ‘perturbation’, ‘seed’, ‘null\_model’)
-Pass None to disable query\sphinxhyphen{}level uncertainty.
+If None, uses global or library default.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{n\_samples}} \textendash{} Number of samples for uncertainty estimation (default: 50)
+\sphinxstyleliteralstrong{\sphinxupquote{n\_samples}} \textendash{} Number of samples for uncertainty estimation
+If None, uses global or library default (50).
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{ci}} \textendash{} Confidence interval level (default: 0.95 for 95\% CI)
+\sphinxstyleliteralstrong{\sphinxupquote{ci}} \textendash{} Confidence interval level (e.g., 0.95 for 95\% CI)
+If None, uses global or library default (0.95).
 
 \item {} 
 \sphinxAtStartPar
@@ -52172,11 +52252,20 @@ Self for chaining
 \subsubsection*{Example}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Set uncertainty defaults for the query}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Set uncertainty with explicit parameters}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{p}{(}\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
 \PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{uq}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{perturbation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{n\PYGZus{}samples}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{ci}\PYG{o}{=}\PYG{l+m+mf}{0.95}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
 \PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{betweenness\PYGZus{}centrality\PYGZus{}\PYGZus{}mean\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+\PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Use global defaults}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{set\PYGZus{}global\PYGZus{}uq\PYGZus{}defaults}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bootstrap}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{n\PYGZus{}samples}\PYG{o}{=}\PYG{l+m+mi}{200}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{p}{(}\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{uq}\PYG{p}{(}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Uses global defaults}
+\PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}\PYG{p}{)}
 \end{sphinxVerbatim}
 
@@ -52684,6 +52773,42 @@ Counterexample object if found, None otherwise
 
 \end{fulllineitems}\end{savenotes}
 
+\index{debug() (py3plex.dsl.QueryResult method)@\spxentry{debug()}\spxextra{py3plex.dsl.QueryResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryResult.debug}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{debug}}}
+{}
+{{ $\rightarrow$ str}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Generate detailed debug information about query execution.
+
+\sphinxAtStartPar
+Shows:
+\sphinxhyphen{} Full AST structure
+\sphinxhyphen{} Execution plan
+\sphinxhyphen{} Cache hits/misses
+\sphinxhyphen{} Backend calls
+\sphinxhyphen{} Timing per stage
+\sphinxhyphen{} Randomness sources
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Formatted debug information
+
+\end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{result}\PYG{o}{.}\PYG{n}{debug}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{edges (py3plex.dsl.QueryResult property)@\spxentry{edges}\spxextra{py3plex.dsl.QueryResult property}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -52694,6 +52819,42 @@ Counterexample object if found, None otherwise
 \pysigstopsignatures
 \sphinxAtStartPar
 Get edges (raises if target is not ‘edges’).
+
+\end{fulllineitems}\end{savenotes}
+
+\index{explain() (py3plex.dsl.QueryResult method)@\spxentry{explain()}\spxextra{py3plex.dsl.QueryResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryResult.explain}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{explain}}}
+{}
+{{ $\rightarrow$ str}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Generate human\sphinxhyphen{}readable explanation of the query execution.
+
+\sphinxAtStartPar
+Shows:
+\sphinxhyphen{} Query summary
+\sphinxhyphen{} Resolved layers
+\sphinxhyphen{} Measures computed
+\sphinxhyphen{} Aggregations applied
+\sphinxhyphen{} Diagnostics (warnings + info)
+\sphinxhyphen{} Suggested next queries
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Formatted explanation string
+
+\end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{result}\PYG{o}{.}\PYG{n}{explain}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -53122,6 +53283,267 @@ pandas.DataFrame with items and computed attributes
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{n}{expand\PYGZus{}explanations}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} df now has explanation columns: community\PYGZus{}id, community\PYGZus{}size, top\PYGZus{}neighbors, etc.}
 \end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{ResolvedUQConfig (class in py3plex.dsl)@\spxentry{ResolvedUQConfig}\spxextra{class in py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{ResolvedUQConfig}}}
+{\sphinxparam{\DUrole{n}{method: str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_samples: int}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ci: float}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed: int | None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{kwargs: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textasciitilde{}typing.Any{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{provenance: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{str{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context: str = \textquotesingle{}unknown\textquotesingle{}}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Fully resolved and materialized UQ configuration.
+
+\sphinxAtStartPar
+This represents the final UQ configuration after applying resolution order.
+It includes provenance information about where each setting came from.
+\index{method (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{method}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.method}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{method}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+UQ method to use
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+str
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{n\_samples (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.n_samples}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{n\_samples}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Number of samples for uncertainty estimation
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+int
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{ci (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{ci}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.ci}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{ci}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Confidence interval level
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+float
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{seed (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{seed}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.seed}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{seed}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Random seed for reproducibility
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+int | None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{kwargs (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{kwargs}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.kwargs}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{kwargs}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Additional method\sphinxhyphen{}specific parameters
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+Dict{[}str, Any{]}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{provenance (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{provenance}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.provenance}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{provenance}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Dict mapping each config key to its source
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+Dict{[}str, str{]}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{context (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{context}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.context}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{context}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Where this config applies (metric name, query, global)
+\begin{quote}\begin{description}
+\sphinxlineitem{Type}
+\sphinxAtStartPar
+str
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{ci (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{ci}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id189}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{ci}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{context (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{context}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id190}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{context}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}unknown\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{kwargs (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{kwargs}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id191}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{kwargs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{method (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{method}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id192}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{method}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{n\_samples (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id193}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{provenance (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{provenance}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id194}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{provenance}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{seed (py3plex.dsl.ResolvedUQConfig attribute)@\spxentry{seed}\spxextra{py3plex.dsl.ResolvedUQConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:id195}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_dict() (py3plex.dsl.ResolvedUQConfig method)@\spxentry{to\_dict()}\spxextra{py3plex.dsl.ResolvedUQConfig method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.to_dict}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_dict}}}
+{}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert to dictionary for storage.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{validate() (py3plex.dsl.ResolvedUQConfig method)@\spxentry{validate()}\spxextra{py3plex.dsl.ResolvedUQConfig method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig.validate}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{validate}}}
+{}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Validate the resolved configuration.
+\begin{quote}\begin{description}
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.dsl.UQResolutionError}]{\sphinxcrossref{\sphinxstyleliteralstrong{\sphinxupquote{UQResolutionError}}}}} \textendash{} If configuration is invalid
+
+\end{description}\end{quote}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -53897,7 +54319,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{aggregate\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{aggregate\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id189}}
+\phantomsection\label{\detokenize{reference/api_index:id196}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{aggregate\_specs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -53917,7 +54339,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{autocompute (py3plex.dsl.SelectStmt attribute)@\spxentry{autocompute}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id190}}
+\phantomsection\label{\detokenize{reference/api_index:id197}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{autocompute}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }True}}}
@@ -53927,7 +54349,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{compute (py3plex.dsl.SelectStmt attribute)@\spxentry{compute}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id191}}
+\phantomsection\label{\detokenize{reference/api_index:id198}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{compute}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ComputeItem}]{\sphinxcrossref{ComputeItem}}}\DUrole{p}{{]}}}}}
@@ -53947,7 +54369,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{counterfactual\_spec (py3plex.dsl.SelectStmt attribute)@\spxentry{counterfactual\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id192}}
+\phantomsection\label{\detokenize{reference/api_index:id199}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{counterfactual\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }CounterfactualSpec\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -53957,7 +54379,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{coverage\_group (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_group}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id193}}
+\phantomsection\label{\detokenize{reference/api_index:id200}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_group}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -53967,7 +54389,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{coverage\_id\_field (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_id\_field}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id194}}
+\phantomsection\label{\detokenize{reference/api_index:id201}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_id\_field}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}id\textquotesingle{}}}}
@@ -53977,7 +54399,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{coverage\_k (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_k}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id195}}
+\phantomsection\label{\detokenize{reference/api_index:id202}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_k}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -53987,7 +54409,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{coverage\_mode (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_mode}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id196}}
+\phantomsection\label{\detokenize{reference/api_index:id203}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -53997,7 +54419,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{coverage\_p (py3plex.dsl.SelectStmt attribute)@\spxentry{coverage\_p}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id197}}
+\phantomsection\label{\detokenize{reference/api_index:id204}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coverage\_p}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54007,7 +54429,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{distinct\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{distinct\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id198}}
+\phantomsection\label{\detokenize{reference/api_index:id205}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{distinct\_cols}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54017,7 +54439,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{drop\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{drop\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id199}}
+\phantomsection\label{\detokenize{reference/api_index:id206}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{drop\_cols}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54037,7 +54459,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{export (py3plex.dsl.SelectStmt attribute)@\spxentry{export}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id200}}
+\phantomsection\label{\detokenize{reference/api_index:id207}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{export}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ExportTarget}]{\sphinxcrossref{ExportTarget}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54047,7 +54469,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{file\_export (py3plex.dsl.SelectStmt attribute)@\spxentry{file\_export}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id201}}
+\phantomsection\label{\detokenize{reference/api_index:id208}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{file\_export}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ExportSpec}]{\sphinxcrossref{ExportSpec}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54057,7 +54479,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{group\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{group\_by}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id202}}
+\phantomsection\label{\detokenize{reference/api_index:id209}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{group\_by}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -54067,7 +54489,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{layer\_expr (py3plex.dsl.SelectStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id203}}
+\phantomsection\label{\detokenize{reference/api_index:id210}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_expr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExpr}]{\sphinxcrossref{LayerExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54087,7 +54509,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{limit (py3plex.dsl.SelectStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id204}}
+\phantomsection\label{\detokenize{reference/api_index:id211}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{limit}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54097,7 +54519,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{limit\_per\_group (py3plex.dsl.SelectStmt attribute)@\spxentry{limit\_per\_group}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id205}}
+\phantomsection\label{\detokenize{reference/api_index:id212}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{limit\_per\_group}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54107,7 +54529,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{mutate\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{mutate\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id206}}
+\phantomsection\label{\detokenize{reference/api_index:id213}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{mutate\_specs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54117,7 +54539,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{order\_by (py3plex.dsl.SelectStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id207}}
+\phantomsection\label{\detokenize{reference/api_index:id214}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{order\_by}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.OrderItem}]{\sphinxcrossref{OrderItem}}}\DUrole{p}{{]}}}}}
@@ -54127,7 +54549,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{post\_filters (py3plex.dsl.SelectStmt attribute)@\spxentry{post\_filters}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id208}}
+\phantomsection\label{\detokenize{reference/api_index:id215}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{post\_filters}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54137,7 +54559,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{rank\_specs (py3plex.dsl.SelectStmt attribute)@\spxentry{rank\_specs}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id209}}
+\phantomsection\label{\detokenize{reference/api_index:id216}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_specs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Tuple\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54147,7 +54569,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{rename\_map (py3plex.dsl.SelectStmt attribute)@\spxentry{rename\_map}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id210}}
+\phantomsection\label{\detokenize{reference/api_index:id217}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rename\_map}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54157,7 +54579,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{select\_cols (py3plex.dsl.SelectStmt attribute)@\spxentry{select\_cols}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id211}}
+\phantomsection\label{\detokenize{reference/api_index:id218}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{select\_cols}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54177,7 +54599,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{summarize\_aggs (py3plex.dsl.SelectStmt attribute)@\spxentry{summarize\_aggs}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id212}}
+\phantomsection\label{\detokenize{reference/api_index:id219}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{summarize\_aggs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54187,7 +54609,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{target (py3plex.dsl.SelectStmt attribute)@\spxentry{target}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id213}}
+\phantomsection\label{\detokenize{reference/api_index:id220}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Target}]{\sphinxcrossref{Target}}}}}}
@@ -54197,7 +54619,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{temporal\_context (py3plex.dsl.SelectStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id214}}
+\phantomsection\label{\detokenize{reference/api_index:id221}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{temporal\_context}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.TemporalContext}]{\sphinxcrossref{TemporalContext}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54207,7 +54629,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{uq\_config (py3plex.dsl.SelectStmt attribute)@\spxentry{uq\_config}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id215}}
+\phantomsection\label{\detokenize{reference/api_index:id222}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{uq\_config}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.UQConfig}]{\sphinxcrossref{UQConfig}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54217,7 +54639,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{where (py3plex.dsl.SelectStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id216}}
+\phantomsection\label{\detokenize{reference/api_index:id223}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{where}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ConditionExpr}]{\sphinxcrossref{ConditionExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54227,7 +54649,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{window\_spec (py3plex.dsl.SelectStmt attribute)@\spxentry{window\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id217}}
+\phantomsection\label{\detokenize{reference/api_index:id224}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{window\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }WindowSpec\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54237,7 +54659,7 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \index{zscore\_attrs (py3plex.dsl.SelectStmt attribute)@\spxentry{zscore\_attrs}\spxextra{py3plex.dsl.SelectStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id218}}
+\phantomsection\label{\detokenize{reference/api_index:id225}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{zscore\_attrs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54626,7 +55048,7 @@ str
 \index{backend (py3plex.dsl.SemiringClosureStmt attribute)@\spxentry{backend}\spxextra{py3plex.dsl.SemiringClosureStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id219}}
+\phantomsection\label{\detokenize{reference/api_index:id226}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{backend}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}graph\textquotesingle{}}}}
@@ -54636,7 +55058,7 @@ str
 \index{crossing\_layers (py3plex.dsl.SemiringClosureStmt attribute)@\spxentry{crossing\_layers}\spxextra{py3plex.dsl.SemiringClosureStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id220}}
+\phantomsection\label{\detokenize{reference/api_index:id227}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{crossing\_layers}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.CrossingLayersSpec}]{\sphinxcrossref{CrossingLayersSpec}}}}}}
@@ -54646,7 +55068,7 @@ str
 \index{layer\_expr (py3plex.dsl.SemiringClosureStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.SemiringClosureStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id221}}
+\phantomsection\label{\detokenize{reference/api_index:id228}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_expr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExpr}]{\sphinxcrossref{LayerExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54656,7 +55078,7 @@ str
 \index{lift\_spec (py3plex.dsl.SemiringClosureStmt attribute)@\spxentry{lift\_spec}\spxextra{py3plex.dsl.SemiringClosureStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id222}}
+\phantomsection\label{\detokenize{reference/api_index:id229}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{lift\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.WeightLiftSpecNode}]{\sphinxcrossref{WeightLiftSpecNode}}}}}}
@@ -54666,7 +55088,7 @@ str
 \index{method (py3plex.dsl.SemiringClosureStmt attribute)@\spxentry{method}\spxextra{py3plex.dsl.SemiringClosureStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id223}}
+\phantomsection\label{\detokenize{reference/api_index:id230}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{method}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}auto\textquotesingle{}}}}
@@ -54676,7 +55098,7 @@ str
 \index{output\_format (py3plex.dsl.SemiringClosureStmt attribute)@\spxentry{output\_format}\spxextra{py3plex.dsl.SemiringClosureStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id224}}
+\phantomsection\label{\detokenize{reference/api_index:id231}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{output\_format}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}sparse\textquotesingle{}}}}
@@ -54686,7 +55108,7 @@ str
 \index{semiring\_spec (py3plex.dsl.SemiringClosureStmt attribute)@\spxentry{semiring\_spec}\spxextra{py3plex.dsl.SemiringClosureStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id225}}
+\phantomsection\label{\detokenize{reference/api_index:id232}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{semiring\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SemiringSpecNode}]{\sphinxcrossref{SemiringSpecNode}}}}}}
@@ -54840,7 +55262,7 @@ float | None
 \index{layer\_expr (py3plex.dsl.SemiringFixedPointStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.SemiringFixedPointStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id226}}
+\phantomsection\label{\detokenize{reference/api_index:id233}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_expr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExpr}]{\sphinxcrossref{LayerExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -54850,7 +55272,7 @@ float | None
 \index{lift\_spec (py3plex.dsl.SemiringFixedPointStmt attribute)@\spxentry{lift\_spec}\spxextra{py3plex.dsl.SemiringFixedPointStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id227}}
+\phantomsection\label{\detokenize{reference/api_index:id234}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{lift\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.WeightLiftSpecNode}]{\sphinxcrossref{WeightLiftSpecNode}}}}}}
@@ -54860,7 +55282,7 @@ float | None
 \index{max\_iters (py3plex.dsl.SemiringFixedPointStmt attribute)@\spxentry{max\_iters}\spxextra{py3plex.dsl.SemiringFixedPointStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id228}}
+\phantomsection\label{\detokenize{reference/api_index:id235}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{max\_iters}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }100}}}
@@ -54870,7 +55292,7 @@ float | None
 \index{operator (py3plex.dsl.SemiringFixedPointStmt attribute)@\spxentry{operator}\spxextra{py3plex.dsl.SemiringFixedPointStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id229}}
+\phantomsection\label{\detokenize{reference/api_index:id236}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{operator}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}closure\textquotesingle{}}}}
@@ -54880,7 +55302,7 @@ float | None
 \index{semiring\_spec (py3plex.dsl.SemiringFixedPointStmt attribute)@\spxentry{semiring\_spec}\spxextra{py3plex.dsl.SemiringFixedPointStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id230}}
+\phantomsection\label{\detokenize{reference/api_index:id237}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{semiring\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SemiringSpecNode}]{\sphinxcrossref{SemiringSpecNode}}}}}}
@@ -54890,7 +55312,7 @@ float | None
 \index{tol (py3plex.dsl.SemiringFixedPointStmt attribute)@\spxentry{tol}\spxextra{py3plex.dsl.SemiringFixedPointStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id231}}
+\phantomsection\label{\detokenize{reference/api_index:id238}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{tol}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55542,7 +55964,7 @@ Optional uncertainty quantification config
 \index{backend (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{backend}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id232}}
+\phantomsection\label{\detokenize{reference/api_index:id239}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{backend}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}graph\textquotesingle{}}}}
@@ -55552,7 +55974,7 @@ Optional uncertainty quantification config
 \index{crossing\_layers (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{crossing\_layers}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id233}}
+\phantomsection\label{\detokenize{reference/api_index:id240}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{crossing\_layers}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.CrossingLayersSpec}]{\sphinxcrossref{CrossingLayersSpec}}}}}}
@@ -55562,7 +55984,7 @@ Optional uncertainty quantification config
 \index{k\_best (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{k\_best}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id234}}
+\phantomsection\label{\detokenize{reference/api_index:id241}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{k\_best}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55572,7 +55994,7 @@ Optional uncertainty quantification config
 \index{layer\_expr (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{layer\_expr}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id235}}
+\phantomsection\label{\detokenize{reference/api_index:id242}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{layer\_expr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExpr}]{\sphinxcrossref{LayerExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55582,7 +56004,7 @@ Optional uncertainty quantification config
 \index{lift\_spec (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{lift\_spec}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id236}}
+\phantomsection\label{\detokenize{reference/api_index:id243}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{lift\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.WeightLiftSpecNode}]{\sphinxcrossref{WeightLiftSpecNode}}}}}}
@@ -55592,7 +56014,7 @@ Optional uncertainty quantification config
 \index{max\_hops (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{max\_hops}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id237}}
+\phantomsection\label{\detokenize{reference/api_index:id244}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{max\_hops}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55602,7 +56024,7 @@ Optional uncertainty quantification config
 \index{semiring\_spec (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{semiring\_spec}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id238}}
+\phantomsection\label{\detokenize{reference/api_index:id245}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{semiring\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SemiringSpecNode}]{\sphinxcrossref{SemiringSpecNode}}}}}}
@@ -55612,7 +56034,7 @@ Optional uncertainty quantification config
 \index{source (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{source}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id239}}
+\phantomsection\label{\detokenize{reference/api_index:id246}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{source}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ParamRef}]{\sphinxcrossref{ParamRef}}}}}}
@@ -55622,7 +56044,7 @@ Optional uncertainty quantification config
 \index{target (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{target}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id240}}
+\phantomsection\label{\detokenize{reference/api_index:id247}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ParamRef}]{\sphinxcrossref{ParamRef}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55632,7 +56054,7 @@ Optional uncertainty quantification config
 \index{uq\_config (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{uq\_config}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id241}}
+\phantomsection\label{\detokenize{reference/api_index:id248}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{uq\_config}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.UQConfig}]{\sphinxcrossref{UQConfig}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55642,7 +56064,7 @@ Optional uncertainty quantification config
 \index{witness (py3plex.dsl.SemiringPathStmt attribute)@\spxentry{witness}\spxextra{py3plex.dsl.SemiringPathStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id242}}
+\phantomsection\label{\detokenize{reference/api_index:id249}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{witness}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }False}}}
@@ -55732,7 +56154,7 @@ str | None
 \index{combine\_strategy (py3plex.dsl.SemiringSpecNode attribute)@\spxentry{combine\_strategy}\spxextra{py3plex.dsl.SemiringSpecNode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id243}}
+\phantomsection\label{\detokenize{reference/api_index:id250}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{combine\_strategy}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55742,7 +56164,7 @@ str | None
 \index{name (py3plex.dsl.SemiringSpecNode attribute)@\spxentry{name}\spxextra{py3plex.dsl.SemiringSpecNode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id244}}
+\phantomsection\label{\detokenize{reference/api_index:id251}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55752,7 +56174,7 @@ str | None
 \index{per\_layer (py3plex.dsl.SemiringSpecNode attribute)@\spxentry{per\_layer}\spxextra{py3plex.dsl.SemiringSpecNode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id245}}
+\phantomsection\label{\detokenize{reference/api_index:id252}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{per\_layer}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55856,7 +56278,7 @@ Fixed\sphinxhyphen{}point statement (if operation == “fixed\_point”)
 \index{closure (py3plex.dsl.SemiringStmt attribute)@\spxentry{closure}\spxextra{py3plex.dsl.SemiringStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id246}}
+\phantomsection\label{\detokenize{reference/api_index:id253}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{closure}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SemiringClosureStmt}]{\sphinxcrossref{SemiringClosureStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55866,7 +56288,7 @@ Fixed\sphinxhyphen{}point statement (if operation == “fixed\_point”)
 \index{fixed\_point (py3plex.dsl.SemiringStmt attribute)@\spxentry{fixed\_point}\spxextra{py3plex.dsl.SemiringStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id247}}
+\phantomsection\label{\detokenize{reference/api_index:id254}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{fixed\_point}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SemiringFixedPointStmt}]{\sphinxcrossref{SemiringFixedPointStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55876,7 +56298,7 @@ Fixed\sphinxhyphen{}point statement (if operation == “fixed\_point”)
 \index{operation (py3plex.dsl.SemiringStmt attribute)@\spxentry{operation}\spxextra{py3plex.dsl.SemiringStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id248}}
+\phantomsection\label{\detokenize{reference/api_index:id255}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{operation}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -55886,7 +56308,7 @@ Fixed\sphinxhyphen{}point statement (if operation == “fixed\_point”)
 \index{paths (py3plex.dsl.SemiringStmt attribute)@\spxentry{paths}\spxextra{py3plex.dsl.SemiringStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id249}}
+\phantomsection\label{\detokenize{reference/api_index:id256}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{paths}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.SemiringPathStmt}]{\sphinxcrossref{SemiringPathStmt}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -55973,7 +56395,7 @@ Dict{[}str, Any{]}
 \index{kind (py3plex.dsl.SpecialPredicate attribute)@\spxentry{kind}\spxextra{py3plex.dsl.SpecialPredicate attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id250}}
+\phantomsection\label{\detokenize{reference/api_index:id257}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{kind}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -55983,7 +56405,7 @@ Dict{[}str, Any{]}
 \index{params (py3plex.dsl.SpecialPredicate attribute)@\spxentry{params}\spxextra{py3plex.dsl.SpecialPredicate attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id251}}
+\phantomsection\label{\detokenize{reference/api_index:id258}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -56125,7 +56547,7 @@ Dict{[}str, Any{]}
 \index{cost\_estimate (py3plex.dsl.Stage attribute)@\spxentry{cost\_estimate}\spxextra{py3plex.dsl.Stage attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id252}}
+\phantomsection\label{\detokenize{reference/api_index:id259}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{cost\_estimate}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }1}}}
@@ -56135,7 +56557,7 @@ Dict{[}str, Any{]}
 \index{name (py3plex.dsl.Stage attribute)@\spxentry{name}\spxextra{py3plex.dsl.Stage attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id253}}
+\phantomsection\label{\detokenize{reference/api_index:id260}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}\textquotesingle{}}}}
@@ -56145,7 +56567,7 @@ Dict{[}str, Any{]}
 \index{params (py3plex.dsl.Stage attribute)@\spxentry{params}\spxextra{py3plex.dsl.Stage attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id254}}
+\phantomsection\label{\detokenize{reference/api_index:id261}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{params}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -56155,7 +56577,7 @@ Dict{[}str, Any{]}
 \index{provides\_fields (py3plex.dsl.Stage attribute)@\spxentry{provides\_fields}\spxextra{py3plex.dsl.Stage attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id255}}
+\phantomsection\label{\detokenize{reference/api_index:id262}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{provides\_fields}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Set\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -56165,7 +56587,7 @@ Dict{[}str, Any{]}
 \index{requires\_fields (py3plex.dsl.Stage attribute)@\spxentry{requires\_fields}\spxextra{py3plex.dsl.Stage attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id256}}
+\phantomsection\label{\detokenize{reference/api_index:id263}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{requires\_fields}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Set\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -56175,7 +56597,7 @@ Dict{[}str, Any{]}
 \index{stage\_type (py3plex.dsl.Stage attribute)@\spxentry{stage\_type}\spxextra{py3plex.dsl.Stage attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id257}}
+\phantomsection\label{\detokenize{reference/api_index:id264}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{stage\_type}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.StageType}]{\sphinxcrossref{StageType}}}}}}
@@ -56369,7 +56791,7 @@ Tuple{[}int, int{]}
 \index{replacement (py3plex.dsl.SuggestedFix attribute)@\spxentry{replacement}\spxextra{py3plex.dsl.SuggestedFix attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id258}}
+\phantomsection\label{\detokenize{reference/api_index:id265}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{replacement}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -56379,7 +56801,7 @@ Tuple{[}int, int{]}
 \index{span (py3plex.dsl.SuggestedFix attribute)@\spxentry{span}\spxextra{py3plex.dsl.SuggestedFix attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id259}}
+\phantomsection\label{\detokenize{reference/api_index:id266}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{span}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Tuple\DUrole{p}{{[}}int\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}}}}
@@ -56550,7 +56972,7 @@ str | None
 \index{kind (py3plex.dsl.TemporalContext attribute)@\spxentry{kind}\spxextra{py3plex.dsl.TemporalContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id260}}
+\phantomsection\label{\detokenize{reference/api_index:id267}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{kind}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -56560,7 +56982,7 @@ str | None
 \index{range\_name (py3plex.dsl.TemporalContext attribute)@\spxentry{range\_name}\spxextra{py3plex.dsl.TemporalContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id261}}
+\phantomsection\label{\detokenize{reference/api_index:id268}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{range\_name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -56570,7 +56992,7 @@ str | None
 \index{t0 (py3plex.dsl.TemporalContext attribute)@\spxentry{t0}\spxextra{py3plex.dsl.TemporalContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id262}}
+\phantomsection\label{\detokenize{reference/api_index:id269}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{t0}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -56580,7 +57002,7 @@ str | None
 \index{t1 (py3plex.dsl.TemporalContext attribute)@\spxentry{t1}\spxextra{py3plex.dsl.TemporalContext attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id263}}
+\phantomsection\label{\detokenize{reference/api_index:id270}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{t1}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57014,7 +57436,7 @@ str | None
 \index{export\_target (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{export\_target}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id264}}
+\phantomsection\label{\detokenize{reference/api_index:id271}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{export\_target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57024,7 +57446,7 @@ str | None
 \index{limit (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{limit}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id265}}
+\phantomsection\label{\detokenize{reference/api_index:id272}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{limit}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57034,7 +57456,7 @@ str | None
 \index{measures (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{measures}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id266}}
+\phantomsection\label{\detokenize{reference/api_index:id273}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{measures}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -57044,7 +57466,7 @@ str | None
 \index{order\_by (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{order\_by}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id267}}
+\phantomsection\label{\detokenize{reference/api_index:id274}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{order\_by}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.dsl.OrderItem}]{\sphinxcrossref{OrderItem}}}\DUrole{p}{{]}}}}}
@@ -57054,7 +57476,7 @@ str | None
 \index{process\_ref (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{process\_ref}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id268}}
+\phantomsection\label{\detokenize{reference/api_index:id275}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{process\_ref}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
@@ -57064,7 +57486,7 @@ str | None
 \index{temporal\_context (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{temporal\_context}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id269}}
+\phantomsection\label{\detokenize{reference/api_index:id276}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{temporal\_context}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.TemporalContext}]{\sphinxcrossref{TemporalContext}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57074,7 +57496,7 @@ str | None
 \index{where (py3plex.dsl.TrajectoriesStmt attribute)@\spxentry{where}\spxextra{py3plex.dsl.TrajectoriesStmt attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id270}}
+\phantomsection\label{\detokenize{reference/api_index:id277}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{where}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ConditionExpr}]{\sphinxcrossref{ConditionExpr}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57525,7 +57947,7 @@ Dict{[}str, Any{]}
 \index{ci (py3plex.dsl.UQConfig attribute)@\spxentry{ci}\spxextra{py3plex.dsl.UQConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id271}}
+\phantomsection\label{\detokenize{reference/api_index:id278}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ci}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57535,7 +57957,7 @@ Dict{[}str, Any{]}
 \index{kwargs (py3plex.dsl.UQConfig attribute)@\spxentry{kwargs}\spxextra{py3plex.dsl.UQConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id272}}
+\phantomsection\label{\detokenize{reference/api_index:id279}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{kwargs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -57545,7 +57967,7 @@ Dict{[}str, Any{]}
 \index{method (py3plex.dsl.UQConfig attribute)@\spxentry{method}\spxextra{py3plex.dsl.UQConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id273}}
+\phantomsection\label{\detokenize{reference/api_index:id280}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{method}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57555,7 +57977,7 @@ Dict{[}str, Any{]}
 \index{n\_samples (py3plex.dsl.UQConfig attribute)@\spxentry{n\_samples}\spxextra{py3plex.dsl.UQConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id274}}
+\phantomsection\label{\detokenize{reference/api_index:id281}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57565,13 +57987,67 @@ Dict{[}str, Any{]}
 \index{seed (py3plex.dsl.UQConfig attribute)@\spxentry{seed}\spxextra{py3plex.dsl.UQConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id275}}
+\phantomsection\label{\detokenize{reference/api_index:id282}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
 \pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
+
+\end{fulllineitems}\end{savenotes}
+
+\index{UQResolutionError@\spxentry{UQResolutionError}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.UQResolutionError}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{UQResolutionError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslExecutionError}}}}}
+
+\sphinxAtStartPar
+Error raised when UQ configuration conflicts or is invalid.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{UQSchemaValidationError@\spxentry{UQSchemaValidationError}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.UQSchemaValidationError}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{UQSchemaValidationError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslExecutionError}}}}}
+
+\sphinxAtStartPar
+Error raised when UQ result doesn’t conform to canonical schema.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{UQUnsupportedError@\spxentry{UQUnsupportedError}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.UQUnsupportedError}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{UQUnsupportedError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslExecutionError}}}}}
+
+\sphinxAtStartPar
+Error raised when UQ is requested for unsupported context.
 
 \end{fulllineitems}\end{savenotes}
 
@@ -57840,7 +58316,7 @@ str
 \index{attr (py3plex.dsl.WeightLiftSpecNode attribute)@\spxentry{attr}\spxextra{py3plex.dsl.WeightLiftSpecNode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id276}}
+\phantomsection\label{\detokenize{reference/api_index:id283}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{attr}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -57850,7 +58326,7 @@ str
 \index{default (py3plex.dsl.WeightLiftSpecNode attribute)@\spxentry{default}\spxextra{py3plex.dsl.WeightLiftSpecNode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id277}}
+\phantomsection\label{\detokenize{reference/api_index:id284}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Any}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }1.0}}}
@@ -57860,7 +58336,7 @@ str
 \index{on\_missing (py3plex.dsl.WeightLiftSpecNode attribute)@\spxentry{on\_missing}\spxextra{py3plex.dsl.WeightLiftSpecNode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id278}}
+\phantomsection\label{\detokenize{reference/api_index:id285}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{on\_missing}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}default\textquotesingle{}}}}
@@ -57870,7 +58346,7 @@ str
 \index{transform (py3plex.dsl.WeightLiftSpecNode attribute)@\spxentry{transform}\spxextra{py3plex.dsl.WeightLiftSpecNode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id279}}
+\phantomsection\label{\detokenize{reference/api_index:id286}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{transform}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -58085,6 +58561,50 @@ Create a deterministic cache key.
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
 Cache key (hex string)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{create\_degenerate\_uq\_result() (in module py3plex.dsl)@\spxentry{create\_degenerate\_uq\_result()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.create_degenerate_uq_result}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{create\_degenerate\_uq\_result}}}
+{\sphinxparam{\DUrole{n}{value}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}}\sphinxparamcomma \sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}deterministic\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Create a degenerate UQ result for deterministic metrics.
+
+\sphinxAtStartPar
+This is used when UQ is requested but the metric is deterministic
+(e.g., degree, which doesn’t vary with random seeds).
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{value}} \textendash{} The deterministic value
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{method}} \textendash{} Method name (default: “deterministic”)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{n\_samples}} \textendash{} Number of samples (default: 1)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{seed}} \textendash{} Random seed (optional)
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Dictionary conforming to canonical UQ schema with std=0
 
 \end{description}\end{quote}
 
@@ -58764,6 +59284,21 @@ Global CacheBackend instance
 
 \end{fulllineitems}\end{savenotes}
 
+\index{get\_global\_uq\_defaults() (in module py3plex.dsl)@\spxentry{get\_global\_uq\_defaults()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.get_global_uq_defaults}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{get\_global\_uq\_defaults}}}
+{}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get current global UQ defaults.
+
+\end{fulllineitems}\end{savenotes}
+
 \index{get\_num\_communities() (in module py3plex.dsl)@\spxentry{get\_num\_communities()}\spxextra{in module py3plex.dsl}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -59089,6 +59624,83 @@ This is a convenience function that delegates to operator\_registry.register().
 
 \end{fulllineitems}\end{savenotes}
 
+\index{reset\_global\_uq\_defaults() (in module py3plex.dsl)@\spxentry{reset\_global\_uq\_defaults()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.reset_global_uq_defaults}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{reset\_global\_uq\_defaults}}}
+{}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Reset global UQ defaults to empty.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{resolve\_uq\_config() (in module py3plex.dsl)@\spxentry{resolve\_uq\_config()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.resolve_uq_config}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{resolve\_uq\_config}}}
+{\sphinxparam{\DUrole{n}{compute\_item}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ComputeItem}]{\sphinxcrossref{ComputeItem}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query\_uq\_config}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.UQConfig}]{\sphinxcrossref{UQConfig}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{metric\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig}]{\sphinxcrossref{ResolvedUQConfig}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Resolve UQ configuration following the priority order.
+\begin{description}
+\sphinxlineitem{Resolution order:}\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+Metric\sphinxhyphen{}level (from compute\_item parameters)
+
+\item {} 
+\sphinxAtStartPar
+Query\sphinxhyphen{}level (from .uq() call)
+
+\item {} 
+\sphinxAtStartPar
+Global defaults (from UQ.defaults())
+
+\item {} 
+\sphinxAtStartPar
+Library defaults
+
+\end{enumerate}
+
+\end{description}
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{compute\_item}} \textendash{} ComputeItem with potential metric\sphinxhyphen{}level config
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{query\_uq\_config}} \textendash{} Query\sphinxhyphen{}level UQConfig (from .uq() call)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{metric\_name}} \textendash{} Name of the metric being computed
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+ResolvedUQConfig if UQ is enabled, None otherwise
+
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.dsl.UQResolutionError}]{\sphinxcrossref{\sphinxstyleliteralstrong{\sphinxupquote{UQResolutionError}}}}} \textendash{} If conflicting configs at same priority level
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{select\_high\_degree\_nodes() (in module py3plex.dsl)@\spxentry{select\_high\_degree\_nodes()}\spxextra{in module py3plex.dsl}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -59178,6 +59790,30 @@ Set the global cache instance.
 
 \end{fulllineitems}\end{savenotes}
 
+\index{set\_global\_uq\_defaults() (in module py3plex.dsl)@\spxentry{set\_global\_uq\_defaults()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.set_global_uq_defaults}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{set\_global\_uq\_defaults}}}
+{\sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Set global UQ defaults.
+
+\sphinxAtStartPar
+These defaults are used when no query\sphinxhyphen{}level or metric\sphinxhyphen{}level config is provided.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{**kwargs}} \textendash{} UQ parameters (method, n\_samples, ci, seed, etc.)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{unregister\_operator() (in module py3plex.dsl)@\spxentry{unregister\_operator()}\spxextra{in module py3plex.dsl}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -59198,6 +59834,77 @@ Primarily useful for testing and cleanup.
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{name}} \textendash{} Operator name (will be normalized)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{validate\_uq\_result\_schema() (in module py3plex.dsl)@\spxentry{validate\_uq\_result\_schema()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.validate_uq_result_schema}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{validate\_uq\_result\_schema}}}
+{\sphinxparam{\DUrole{n}{result}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{metric\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{allow\_degenerate}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Validate that a UQ result conforms to the canonical schema.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{result}} \textendash{} UQ result dictionary to validate
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{metric\_name}} \textendash{} Name of the metric (for error messages)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{allow\_degenerate}} \textendash{} If True, allow degenerate UQ (std=0, no quantiles)
+
+\end{itemize}
+
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.dsl.UQSchemaValidationError}]{\sphinxcrossref{\sphinxstyleliteralstrong{\sphinxupquote{UQSchemaValidationError}}}}} \textendash{} If result doesn’t conform to schema
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{wrap\_deterministic\_as\_uq() (in module py3plex.dsl)@\spxentry{wrap\_deterministic\_as\_uq()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.wrap_deterministic_as_uq}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{wrap\_deterministic\_as\_uq}}}
+{\sphinxparam{\DUrole{n}{value}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{resolved\_config}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.ResolvedUQConfig}]{\sphinxcrossref{ResolvedUQConfig}}}}}}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Wrap a deterministic value with UQ scaffolding.
+
+\sphinxAtStartPar
+This is used when UQ is requested but the computation is deterministic.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{value}} \textendash{} The deterministic value (scalar or dict)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{resolved\_config}} \textendash{} The resolved UQ configuration
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Dictionary conforming to canonical UQ schema
 
 \end{description}\end{quote}
 
@@ -59686,7 +60393,7 @@ np.ndarray
 \index{n\_nodes (py3plex.uncertainty.CommunityDistribution property)@\spxentry{n\_nodes}\spxextra{py3plex.uncertainty.CommunityDistribution property}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id280}}
+\phantomsection\label{\detokenize{reference/api_index:id287}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{n\_nodes}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -59699,7 +60406,7 @@ Number of nodes.
 \index{n\_partitions (py3plex.uncertainty.CommunityDistribution property)@\spxentry{n\_partitions}\spxextra{py3plex.uncertainty.CommunityDistribution property}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id281}}
+\phantomsection\label{\detokenize{reference/api_index:id288}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{n\_partitions}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -61412,7 +62119,7 @@ DO NOT modify algorithms to return PartitionOutput directly
 \index{labels (py3plex.uncertainty.PartitionOutput attribute)@\spxentry{labels}\spxextra{py3plex.uncertainty.PartitionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id282}}
+\phantomsection\label{\detokenize{reference/api_index:id289}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{labels}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -61838,7 +62545,7 @@ list
 \index{coassoc\_matrix (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{coassoc\_matrix}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id283}}
+\phantomsection\label{\detokenize{reference/api_index:id290}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{coassoc\_matrix}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }ndarray\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -61848,7 +62555,7 @@ list
 \index{consensus\_partition (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{consensus\_partition}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id284}}
+\phantomsection\label{\detokenize{reference/api_index:id291}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{consensus\_partition}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }ndarray}}}
@@ -62026,7 +62733,7 @@ PartitionUQ
 \index{membership\_entropy (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{membership\_entropy}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id285}}
+\phantomsection\label{\detokenize{reference/api_index:id292}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{membership\_entropy}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }ndarray}}}
@@ -62036,7 +62743,7 @@ PartitionUQ
 \index{meta (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id286}}
+\phantomsection\label{\detokenize{reference/api_index:id293}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{meta}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -62072,7 +62779,7 @@ Number of nodes.
 \index{n\_samples (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{n\_samples}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id287}}
+\phantomsection\label{\detokenize{reference/api_index:id294}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -62082,7 +62789,7 @@ Number of nodes.
 \index{nmi\_mean (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{nmi\_mean}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id288}}
+\phantomsection\label{\detokenize{reference/api_index:id295}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{nmi\_mean}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }1.0}}}
@@ -62092,7 +62799,7 @@ Number of nodes.
 \index{nmi\_std (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{nmi\_std}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id289}}
+\phantomsection\label{\detokenize{reference/api_index:id296}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{nmi\_std}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }0.0}}}
@@ -62102,7 +62809,7 @@ Number of nodes.
 \index{node\_ids (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{node\_ids}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id290}}
+\phantomsection\label{\detokenize{reference/api_index:id297}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{node\_ids}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
@@ -62145,7 +62852,7 @@ dict
 \index{p\_max\_membership (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{p\_max\_membership}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id291}}
+\phantomsection\label{\detokenize{reference/api_index:id298}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{p\_max\_membership}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }ndarray}}}
@@ -62155,7 +62862,7 @@ dict
 \index{samples (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{samples}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id292}}
+\phantomsection\label{\detokenize{reference/api_index:id299}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}ndarray\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -62196,7 +62903,7 @@ dict
 \index{store\_mode (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{store\_mode}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id293}}
+\phantomsection\label{\detokenize{reference/api_index:id300}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{store\_mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}sketch\textquotesingle{}}}}
@@ -62231,7 +62938,7 @@ dict
 \index{vi\_mean (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{vi\_mean}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id294}}
+\phantomsection\label{\detokenize{reference/api_index:id301}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{vi\_mean}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }0.0}}}
@@ -62241,7 +62948,7 @@ dict
 \index{vi\_std (py3plex.uncertainty.PartitionUQ attribute)@\spxentry{vi\_std}\spxextra{py3plex.uncertainty.PartitionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id295}}
+\phantomsection\label{\detokenize{reference/api_index:id302}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{vi\_std}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }0.0}}}
@@ -62471,7 +63178,7 @@ dict
 \index{is\_deterministic (py3plex.uncertainty.ProbabilisticCommunityResult property)@\spxentry{is\_deterministic}\spxextra{py3plex.uncertainty.ProbabilisticCommunityResult property}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id296}}
+\phantomsection\label{\detokenize{reference/api_index:id303}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{is\_deterministic}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}}
@@ -62556,7 +63263,7 @@ dict
 \index{n\_nodes (py3plex.uncertainty.ProbabilisticCommunityResult property)@\spxentry{n\_nodes}\spxextra{py3plex.uncertainty.ProbabilisticCommunityResult property}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id297}}
+\phantomsection\label{\detokenize{reference/api_index:id304}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{n\_nodes}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -62569,7 +63276,7 @@ Number of nodes.
 \index{n\_partitions (py3plex.uncertainty.ProbabilisticCommunityResult property)@\spxentry{n\_partitions}\spxextra{py3plex.uncertainty.ProbabilisticCommunityResult property}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id298}}
+\phantomsection\label{\detokenize{reference/api_index:id305}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{n\_partitions}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -63187,7 +63894,7 @@ str
 \index{BOOTSTRAP (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id299}}
+\phantomsection\label{\detokenize{reference/api_index:id306}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{BOOTSTRAP}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}bootstrap\textquotesingle{}}}}
@@ -63197,7 +63904,7 @@ str
 \index{JACKKNIFE (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id300}}
+\phantomsection\label{\detokenize{reference/api_index:id307}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{JACKKNIFE}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}jackknife\textquotesingle{}}}}
@@ -63207,7 +63914,7 @@ str
 \index{PERTURBATION (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id301}}
+\phantomsection\label{\detokenize{reference/api_index:id308}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}perturbation\textquotesingle{}}}}
@@ -63217,7 +63924,7 @@ str
 \index{SEED (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id302}}
+\phantomsection\label{\detokenize{reference/api_index:id309}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{SEED}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -63227,7 +63934,7 @@ str
 \index{STRATIFIED\_PERTURBATION (py3plex.uncertainty.ResamplingStrategy attribute)@\spxentry{STRATIFIED\_PERTURBATION}\spxextra{py3plex.uncertainty.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id303}}
+\phantomsection\label{\detokenize{reference/api_index:id310}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{STRATIFIED\_PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}stratified\_perturbation\textquotesingle{}}}}
@@ -63378,7 +64085,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{group\_key (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{group\_key}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id304}}
+\phantomsection\label{\detokenize{reference/api_index:id311}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{group\_key}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Tuple\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -63388,7 +64095,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{items (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{items}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id305}}
+\phantomsection\label{\detokenize{reference/api_index:id312}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{items}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
@@ -63398,7 +64105,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{k (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{k}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id306}}
+\phantomsection\label{\detokenize{reference/api_index:id313}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{k}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -63408,7 +64115,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{ranks (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{ranks}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id307}}
+\phantomsection\label{\detokenize{reference/api_index:id314}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ranks}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -63418,7 +64125,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{scores (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{scores}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id308}}
+\phantomsection\label{\detokenize{reference/api_index:id315}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{scores}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -63428,7 +64135,7 @@ If only filtering (no ordering), scores/ranks may be None.
 \index{target (py3plex.uncertainty.SelectionOutput attribute)@\spxentry{target}\spxextra{py3plex.uncertainty.SelectionOutput attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id309}}
+\phantomsection\label{\detokenize{reference/api_index:id316}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}nodes\textquotesingle{}}}}
@@ -63941,7 +64648,7 @@ dict
 \index{borderline\_items (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{borderline\_items}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id310}}
+\phantomsection\label{\detokenize{reference/api_index:id317}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{borderline\_items}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
@@ -63951,7 +64658,7 @@ dict
 \index{ci\_method (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{ci\_method}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id311}}
+\phantomsection\label{\detokenize{reference/api_index:id318}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ci\_method}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}wilson\textquotesingle{}}}}
@@ -63961,7 +64668,7 @@ dict
 \index{consensus\_items (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{consensus\_items}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id312}}
+\phantomsection\label{\detokenize{reference/api_index:id319}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{consensus\_items}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }set}}}
@@ -64109,7 +64816,7 @@ list of (item, present\_prob)
 \index{items\_universe (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{items\_universe}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id313}}
+\phantomsection\label{\detokenize{reference/api_index:id320}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{items\_universe}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
@@ -64119,7 +64826,7 @@ list of (item, present\_prob)
 \index{k (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{k}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id314}}
+\phantomsection\label{\detokenize{reference/api_index:id321}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{k}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -64129,7 +64836,7 @@ list of (item, present\_prob)
 \index{meta (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{meta}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id315}}
+\phantomsection\label{\detokenize{reference/api_index:id322}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{meta}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -64139,7 +64846,7 @@ list of (item, present\_prob)
 \index{n\_samples (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{n\_samples}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id316}}
+\phantomsection\label{\detokenize{reference/api_index:id323}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -64149,7 +64856,7 @@ list of (item, present\_prob)
 \index{p\_in\_topk (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{p\_in\_topk}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id317}}
+\phantomsection\label{\detokenize{reference/api_index:id324}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{p\_in\_topk}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -64159,7 +64866,7 @@ list of (item, present\_prob)
 \index{present\_ci\_high (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{present\_ci\_high}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id318}}
+\phantomsection\label{\detokenize{reference/api_index:id325}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{present\_ci\_high}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -64169,7 +64876,7 @@ list of (item, present\_prob)
 \index{present\_ci\_low (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{present\_ci\_low}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id319}}
+\phantomsection\label{\detokenize{reference/api_index:id326}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{present\_ci\_low}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -64179,7 +64886,7 @@ list of (item, present\_prob)
 \index{present\_prob (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{present\_prob}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id320}}
+\phantomsection\label{\detokenize{reference/api_index:id327}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{present\_prob}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -64189,7 +64896,7 @@ list of (item, present\_prob)
 \index{rank\_ci\_high (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{rank\_ci\_high}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id321}}
+\phantomsection\label{\detokenize{reference/api_index:id328}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_ci\_high}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -64199,7 +64906,7 @@ list of (item, present\_prob)
 \index{rank\_ci\_low (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{rank\_ci\_low}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id322}}
+\phantomsection\label{\detokenize{reference/api_index:id329}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_ci\_low}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -64209,7 +64916,7 @@ list of (item, present\_prob)
 \index{rank\_mean (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{rank\_mean}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id323}}
+\phantomsection\label{\detokenize{reference/api_index:id330}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_mean}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -64219,7 +64926,7 @@ list of (item, present\_prob)
 \index{rank\_std (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{rank\_std}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id324}}
+\phantomsection\label{\detokenize{reference/api_index:id331}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{rank\_std}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -64229,7 +64936,7 @@ list of (item, present\_prob)
 \index{samples\_seen (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{samples\_seen}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id325}}
+\phantomsection\label{\detokenize{reference/api_index:id332}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{samples\_seen}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -64239,7 +64946,7 @@ list of (item, present\_prob)
 \index{size\_stats (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{size\_stats}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id326}}
+\phantomsection\label{\detokenize{reference/api_index:id333}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{size\_stats}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -64249,7 +64956,7 @@ list of (item, present\_prob)
 \index{stability\_stats (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{stability\_stats}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id327}}
+\phantomsection\label{\detokenize{reference/api_index:id334}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{stability\_stats}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}}
@@ -64259,7 +64966,7 @@ list of (item, present\_prob)
 \index{store\_mode (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{store\_mode}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id328}}
+\phantomsection\label{\detokenize{reference/api_index:id335}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{store\_mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}sketch\textquotesingle{}}}}
@@ -64294,7 +65001,7 @@ dict
 \index{target (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{target}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id329}}
+\phantomsection\label{\detokenize{reference/api_index:id336}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}nodes\textquotesingle{}}}}
@@ -64358,7 +65065,7 @@ pd.DataFrame
 \index{topk\_overlap\_stats (py3plex.uncertainty.SelectionUQ attribute)@\spxentry{topk\_overlap\_stats}\spxextra{py3plex.uncertainty.SelectionUQ attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id330}}
+\phantomsection\label{\detokenize{reference/api_index:id337}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{topk\_overlap\_stats}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -65081,7 +65788,7 @@ Optional{[}int{]}
 \index{bins (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{bins}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id331}}
+\phantomsection\label{\detokenize{reference/api_index:id338}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{bins}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}}}}
@@ -65091,7 +65798,7 @@ Optional{[}int{]}
 \index{seed (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{seed}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id332}}
+\phantomsection\label{\detokenize{reference/api_index:id339}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -65101,7 +65808,7 @@ Optional{[}int{]}
 \index{strata (py3plex.uncertainty.StratificationSpec attribute)@\spxentry{strata}\spxextra{py3plex.uncertainty.StratificationSpec attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id333}}
+\phantomsection\label{\detokenize{reference/api_index:id340}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{strata}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}
@@ -65590,7 +66297,7 @@ Literal{[}“python”, “jax”{]}
 \index{backend (py3plex.uncertainty.UQPlan attribute)@\spxentry{backend}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id334}}
+\phantomsection\label{\detokenize{reference/api_index:id341}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{backend}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}python\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}jax\textquotesingle{}}\DUrole{p}{{]}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}python\textquotesingle{}}}}
@@ -65600,7 +66307,7 @@ Literal{[}“python”, “jax”{]}
 \index{base\_callable (py3plex.uncertainty.UQPlan attribute)@\spxentry{base\_callable}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id335}}
+\phantomsection\label{\detokenize{reference/api_index:id342}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{base\_callable}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Callable\DUrole{p}{{[}}\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}}
@@ -65610,7 +66317,7 @@ Literal{[}“python”, “jax”{]}
 \index{n\_samples (py3plex.uncertainty.UQPlan attribute)@\spxentry{n\_samples}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id336}}
+\phantomsection\label{\detokenize{reference/api_index:id343}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -65620,7 +66327,7 @@ Literal{[}“python”, “jax”{]}
 \index{noise\_model (py3plex.uncertainty.UQPlan attribute)@\spxentry{noise\_model}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id337}}
+\phantomsection\label{\detokenize{reference/api_index:id344}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{noise\_model}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.NoiseModel}]{\sphinxcrossref{NoiseModel}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}}
@@ -65630,7 +66337,7 @@ Literal{[}“python”, “jax”{]}
 \index{reducers (py3plex.uncertainty.UQPlan attribute)@\spxentry{reducers}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id338}}
+\phantomsection\label{\detokenize{reference/api_index:id345}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{reducers}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.Reducer}]{\sphinxcrossref{Reducer}}}\DUrole{p}{{]}}}}}
@@ -65640,7 +66347,7 @@ Literal{[}“python”, “jax”{]}
 \index{seed (py3plex.uncertainty.UQPlan attribute)@\spxentry{seed}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id339}}
+\phantomsection\label{\detokenize{reference/api_index:id346}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -65650,7 +66357,7 @@ Literal{[}“python”, “jax”{]}
 \index{storage\_mode (py3plex.uncertainty.UQPlan attribute)@\spxentry{storage\_mode}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id340}}
+\phantomsection\label{\detokenize{reference/api_index:id347}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{storage\_mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}none\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sketch\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}samples\textquotesingle{}}\DUrole{p}{{]}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}sketch\textquotesingle{}}}}
@@ -65660,7 +66367,7 @@ Literal{[}“python”, “jax”{]}
 \index{strategy (py3plex.uncertainty.UQPlan attribute)@\spxentry{strategy}\spxextra{py3plex.uncertainty.UQPlan attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id341}}
+\phantomsection\label{\detokenize{reference/api_index:id348}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{strategy}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}seed\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}perturbation\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}bootstrap\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}jackknife\textquotesingle{}}\DUrole{p}{{]}}}}}
@@ -65764,7 +66471,7 @@ dict
 \index{n\_samples (py3plex.uncertainty.UQResult attribute)@\spxentry{n\_samples}\spxextra{py3plex.uncertainty.UQResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id342}}
+\phantomsection\label{\detokenize{reference/api_index:id349}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{n\_samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
@@ -65774,7 +66481,7 @@ dict
 \index{provenance (py3plex.uncertainty.UQResult attribute)@\spxentry{provenance}\spxextra{py3plex.uncertainty.UQResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id343}}
+\phantomsection\label{\detokenize{reference/api_index:id350}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{provenance}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }dict}}}
@@ -65784,7 +66491,7 @@ dict
 \index{reducer\_outputs (py3plex.uncertainty.UQResult attribute)@\spxentry{reducer\_outputs}\spxextra{py3plex.uncertainty.UQResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id344}}
+\phantomsection\label{\detokenize{reference/api_index:id351}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{reducer\_outputs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }dict}}}
@@ -65794,7 +66501,7 @@ dict
 \index{samples (py3plex.uncertainty.UQResult attribute)@\spxentry{samples}\spxextra{py3plex.uncertainty.UQResult attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id345}}
+\phantomsection\label{\detokenize{reference/api_index:id352}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{samples}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
@@ -65879,7 +66586,7 @@ Default resampling strategy.
 \index{default\_n\_runs (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id346}}
+\phantomsection\label{\detokenize{reference/api_index:id353}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_n\_runs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }50}}}
@@ -65889,7 +66596,7 @@ Default resampling strategy.
 \index{default\_resampling (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id347}}
+\phantomsection\label{\detokenize{reference/api_index:id354}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_resampling}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.ResamplingStrategy}]{\sphinxcrossref{ResamplingStrategy}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -65899,7 +66606,7 @@ Default resampling strategy.
 \index{mode (py3plex.uncertainty.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id348}}
+\phantomsection\label{\detokenize{reference/api_index:id355}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.UncertaintyMode}]{\sphinxcrossref{UncertaintyMode}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -65984,7 +66691,7 @@ str
 \index{AUTO (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id349}}
+\phantomsection\label{\detokenize{reference/api_index:id356}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{AUTO}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}auto\textquotesingle{}}}}
@@ -65994,7 +66701,7 @@ str
 \index{OFF (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id350}}
+\phantomsection\label{\detokenize{reference/api_index:id357}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{OFF}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -66004,7 +66711,7 @@ str
 \index{ON (py3plex.uncertainty.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id351}}
+\phantomsection\label{\detokenize{reference/api_index:id358}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ON}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}on\textquotesingle{}}}}
@@ -68336,7 +69043,7 @@ str
 \index{BOOTSTRAP (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{BOOTSTRAP}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id352}}
+\phantomsection\label{\detokenize{reference/api_index:id359}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{BOOTSTRAP}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}bootstrap\textquotesingle{}}}}
@@ -68346,7 +69053,7 @@ str
 \index{JACKKNIFE (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{JACKKNIFE}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id353}}
+\phantomsection\label{\detokenize{reference/api_index:id360}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{JACKKNIFE}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}jackknife\textquotesingle{}}}}
@@ -68356,7 +69063,7 @@ str
 \index{PERTURBATION (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id354}}
+\phantomsection\label{\detokenize{reference/api_index:id361}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}perturbation\textquotesingle{}}}}
@@ -68366,7 +69073,7 @@ str
 \index{SEED (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{SEED}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id355}}
+\phantomsection\label{\detokenize{reference/api_index:id362}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{SEED}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -68376,7 +69083,7 @@ str
 \index{STRATIFIED\_PERTURBATION (py3plex.uncertainty.types.ResamplingStrategy attribute)@\spxentry{STRATIFIED\_PERTURBATION}\spxextra{py3plex.uncertainty.types.ResamplingStrategy attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id356}}
+\phantomsection\label{\detokenize{reference/api_index:id363}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{STRATIFIED\_PERTURBATION}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}stratified\_perturbation\textquotesingle{}}}}
@@ -68794,7 +69501,7 @@ Default resampling strategy.
 \index{default\_n\_runs (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_n\_runs}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id357}}
+\phantomsection\label{\detokenize{reference/api_index:id364}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_n\_runs}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }50}}}
@@ -68804,7 +69511,7 @@ Default resampling strategy.
 \index{default\_resampling (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{default\_resampling}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id358}}
+\phantomsection\label{\detokenize{reference/api_index:id365}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{default\_resampling}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.ResamplingStrategy}]{\sphinxcrossref{ResamplingStrategy}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}seed\textquotesingle{}}}}
@@ -68814,7 +69521,7 @@ Default resampling strategy.
 \index{mode (py3plex.uncertainty.types.UncertaintyConfig attribute)@\spxentry{mode}\spxextra{py3plex.uncertainty.types.UncertaintyConfig attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id359}}
+\phantomsection\label{\detokenize{reference/api_index:id366}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{mode}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.uncertainty.types.UncertaintyMode}]{\sphinxcrossref{UncertaintyMode}}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -68899,7 +69606,7 @@ str
 \index{AUTO (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{AUTO}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id360}}
+\phantomsection\label{\detokenize{reference/api_index:id367}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{AUTO}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}auto\textquotesingle{}}}}
@@ -68909,7 +69616,7 @@ str
 \index{OFF (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{OFF}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id361}}
+\phantomsection\label{\detokenize{reference/api_index:id368}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{OFF}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}off\textquotesingle{}}}}
@@ -68919,7 +69626,7 @@ str
 \index{ON (py3plex.uncertainty.types.UncertaintyMode attribute)@\spxentry{ON}\spxextra{py3plex.uncertainty.types.UncertaintyMode attribute}}
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:id362}}
+\phantomsection\label{\detokenize{reference/api_index:id369}}
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{ON}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}on\textquotesingle{}}}}
