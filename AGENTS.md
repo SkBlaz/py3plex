@@ -15,33 +15,322 @@
 ## Table of Contents
 
 1. [Quick Start: Golden Paths](#quick-start-golden-paths)
-2. [DSL v2 (Q / UQ / L) — Complete Reference](#dsl-v2-q-uq-l--complete-reference)
-3. [Decision Guide: Which API When?](#decision-guide-which-api-when)
-4. [Legacy DSL (String-Based)](#legacy-dsl-string-based)
-5. [Dplyr-Style Operations](#dplyr-style-operations)
-6. [Pipeline API (Sklearn-Style)](#pipeline-api-sklearn-style)
-7. [I/O and Data Loading](#io-and-data-loading)
-8. [Dynamics Simulations](#dynamics-simulations)
-9. [Uncertainty Quantification](#uncertainty-quantification)
-10. [Temporal Networks](#temporal-networks)
-11. [Null Models and Statistical Testing](#null-models-and-statistical-testing)
-12. [Counterexample Generation](#counterexample-generation)
-13. [Claim Learning (Hypothesis Discovery)](#claim-learning-hypothesis-discovery)
-14. [Semiring Algebra (Paths, Closure, Fixed-Point)](#semiring-algebra-paths-closure-fixed-point)
-15. [Community Detection and Queries](#community-detection-and-queries)
-16. [Pattern Matching (Cypher-like)](#pattern-matching-cypher-like)
-17. [Network Comparison and Diff](#network-comparison-and-diff)
-18. [CLI Tool](#cli-tool)
-19. [Plugin System](#plugin-system)
-20. [Configuration and Profiling](#configuration-and-profiling)
-21. [Diagnostic System and Error Reporting](#diagnostic-system-and-error-reporting)
-22. [Exception Hierarchy](#exception-hierarchy)
-23. [Query Planner and Optimization](#query-planner-and-optimization)
-24. [Performance Guidelines](#performance-guidelines)
-25. [Reproducibility Policy](#reproducibility-policy)
-26. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
-27. [Testing Strategy](#testing-strategy)
-28. [File Locations](#file-locations)
+2. [NEW: Ergonomics Features (v1.1+)](#new-ergonomics-features-v11)
+3. [DSL v2 (Q / UQ / L) — Complete Reference](#dsl-v2-q-uq-l--complete-reference)
+4. [Decision Guide: Which API When?](#decision-guide-which-api-when)
+5. [Legacy DSL (String-Based)](#legacy-dsl-string-based)
+6. [Dplyr-Style Operations](#dplyr-style-operations)
+7. [Pipeline API (Sklearn-Style)](#pipeline-api-sklearn-style)
+8. [I/O and Data Loading](#io-and-data-loading)
+9. [Dynamics Simulations](#dynamics-simulations)
+10. [Uncertainty Quantification](#uncertainty-quantification)
+11. [Temporal Networks](#temporal-networks)
+12. [Null Models and Statistical Testing](#null-models-and-statistical-testing)
+13. [Counterexample Generation](#counterexample-generation)
+14. [Claim Learning (Hypothesis Discovery)](#claim-learning-hypothesis-discovery)
+15. [Semiring Algebra (Paths, Closure, Fixed-Point)](#semiring-algebra-paths-closure-fixed-point)
+16. [Community Detection and Queries](#community-detection-and-queries)
+17. [Pattern Matching (Cypher-like)](#pattern-matching-cypher-like)
+18. [Network Comparison and Diff](#network-comparison-and-diff)
+19. [CLI Tool](#cli-tool)
+20. [Plugin System](#plugin-system)
+21. [Configuration and Profiling](#configuration-and-profiling)
+22. [Diagnostic System and Error Reporting](#diagnostic-system-and-error-reporting)
+23. [Exception Hierarchy](#exception-hierarchy)
+24. [Query Planner and Optimization](#query-planner-and-optimization)
+25. [Performance Guidelines](#performance-guidelines)
+26. [Reproducibility Policy](#reproducibility-policy)
+27. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
+28. [Multilayer Semantics Guide](#multilayer-semantics-guide)
+29. [Testing Strategy](#testing-strategy)
+30. [File Locations](#file-locations)
+
+---
+
+## NEW: Ergonomics Features (v1.1+)
+
+py3plex v1.1+ includes systematic ergonomics improvements to reduce user friction and cognitive load. These features are designed for both humans and LLM agents.
+
+### Interactive Query Building: `.hint()`
+
+**What it does**: Provides context-aware suggestions for next query-building steps.
+
+```python
+from py3plex.dsl import Q, L
+
+# Start building
+q = Q.nodes().from_layers(L["social"])
+
+# Get hints
+q.hint()
+# Outputs:
+# 📘 Query Builder Hints
+# ==========================================
+# 🔍 Current query state:
+#   ✓ Layers selected
+#
+# 💡 Suggested next steps:
+# 1. → .where(degree__gt=3)  # Filter nodes by attributes
+# 2. → .compute("degree", "betweenness_centrality")  # Compute metrics
+# 3. → .per_layer()  # Group results by layer
+# ...
+
+# Continue building based on hints
+q = q.compute("degree").hint()  # Get new suggestions
+```
+
+**Key features**:
+- Non-invasive (only displays info, doesn't modify query)
+- Context-aware (suggestions adapt to query state)
+- Chainable (returns self for chaining)
+- Educational (includes examples and method signatures)
+
+**When to use**: During interactive development, learning the API, or when unsure what methods are available next.
+
+**LLM agent guidance**: Call `.hint()` when:
+- Building complex queries and unsure of next steps
+- Learning new DSL features
+- Debugging query construction issues
+
+### Enhanced QueryResult Introspection
+
+**What it does**: QueryResult objects now have rich `__repr__` showing full context.
+
+```python
+result = (
+    Q.nodes()
+     .compute("degree", "betweenness_centrality")
+     .per_layer()
+     .uq(method="bootstrap", n_samples=100)
+     .execute(network)
+)
+
+print(result)
+# Outputs:
+# QueryResult(
+#   target='nodes'
+#   count=42
+#   attributes=['degree', 'betweenness_centrality']
+#   computed=['degree', 'betweenness_centrality']
+#   grouping='per_layer' (3 groups)
+#   uncertainty='bootstrap'
+#   provenance='replayable'
+#   replayable=True
+# )
+```
+
+**What to inspect**:
+- `target`: 'nodes', 'edges', or 'communities'
+- `count`: Number of items returned
+- `attributes`: Available computed attributes
+- `computed`: Explicitly computed metrics
+- `grouping`: If grouped, shows type and count
+- `uncertainty`: UQ method if enabled
+- `provenance`: Provenance mode
+- `replayable`: Whether query can be replayed
+
+**LLM agent guidance**: ALWAYS inspect QueryResult before calling `.to_pandas()`:
+```python
+# ✅ Good: Inspect first
+print(result)
+print(f"Got {result.count} {result.target}")
+if result.meta.get("has_uncertainty"):
+    df = result.to_pandas(expand_uncertainty=True)
+else:
+    df = result.to_pandas()
+
+# ❌ Bad: Immediate conversion without inspection
+df = result.to_pandas()  # May miss important context
+```
+
+### Pedagogical Error Messages
+
+**What it does**: DSL errors now include:
+1. What the user likely intended
+2. Why the operation failed
+3. 1-2 corrected query examples
+4. Common pitfall notes
+
+**Example**:
+```python
+try:
+    Q.nodes().execute(net).where(degree__gt=3)  # Execute too early
+except DslSyntaxError as e:
+    print(e)
+# Outputs:
+# DslSyntaxError: Cannot call .where() on QueryResult
+#
+# 💭 You probably wanted to: Filter before executing
+#
+# ❌ Why this failed: .execute() returns a QueryResult object,
+#    which is immutable. Query building methods like .where()
+#    must be called before .execute().
+#
+# ✅ Corrected examples:
+#   1. Q.nodes().where(degree__gt=3).execute(net)
+#   2. result = Q.nodes().execute(net); df = result.to_pandas().query("degree > 3")
+```
+
+**LLM agent guidance**: When you encounter a DSL error:
+1. Read the ENTIRE error message (don't stop at first line)
+2. Apply the suggested fix from "Corrected examples"
+3. Learn the pitfall to avoid repeating the mistake
+4. If examples don't work, consult documentation sections mentioned in error
+
+### Performance and Semantic Warnings
+
+**What it does**: Non-blocking warnings for expensive operations and multilayer semantic issues.
+
+**Performance warnings**:
+```python
+# Expensive centrality on large graphs
+result = Q.nodes().compute("betweenness_centrality").execute(net)
+# ⚠️  Performance Warning: EXPENSIVE operation
+#    Computing 'betweenness_centrality' on ~10,000 node replicas
+#    Estimated time: seconds to minutes
+#
+# 💡 Faster alternatives:
+#   1. Compute per-layer: .per_layer().compute('betweenness_centrality')
+#   2. Filter to specific layers: .from_layers(L['social']).compute(...)
+#   3. Sample nodes: .where(...).compute(...)
+
+# High UQ samples
+result = Q.nodes().compute("degree").uq(n_samples=1000).execute(net)
+# ⚠️  Performance Warning: HIGH UQ cost
+#    Computing 'degree' with n_samples=1000 on 5000 nodes
+#    Computational cost: ~5,000,000 evaluations
+```
+
+**Multilayer semantic warnings**:
+```python
+# Node replica confusion
+result = Q.nodes().execute(multilayer_net)
+# ⚠️  Multilayer Semantic Warning: Node replica vs physical node
+#    Q.nodes() returns node REPLICAS (node + layer pairs)
+#    Physical node 'Alice' appears as ('Alice', 'social'), ('Alice', 'work'), etc.
+
+# Degree ambiguity
+result = Q.nodes().compute("degree").execute(multilayer_net)
+# ⚠️  Multilayer Semantic Warning: Degree ambiguity
+#    'degree' can mean: intra-layer, inter-layer, or aggregate
+#    By default, py3plex computes AGGREGATE degree
+
+# Global community detection
+result = Q.nodes().community(method="leiden").execute(multilayer_net)
+# ⚠️  Multilayer Semantic Warning: Global community detection
+#    Running 'leiden' on 5-layer network globally
+#    Communities will span multiple layers simultaneously
+```
+
+**Suppressing warnings**:
+```python
+from py3plex.dsl.warnings import suppress_warnings
+
+# Suppress specific warning types
+with suppress_warnings("expensive_centrality"):
+    result = Q.nodes().compute("betweenness_centrality").execute(net)
+
+# Suppress multiple types
+with suppress_warnings("degree_ambiguity", "node_replica_confusion"):
+    result = Q.nodes().compute("degree").execute(net)
+```
+
+**LLM agent guidance**:
+- **Development mode**: Let warnings guide you to better query patterns
+- **Production mode**: Suppress warnings only when semantics are clearly understood
+- **React to warnings**: Warnings are actionable — apply suggested alternatives when applicable
+- **Don't ignore**: Warnings indicate potential correctness or performance issues
+
+### Multilayer Semantics Mental Model
+
+**Core concepts LLM agents must understand**:
+
+**1. Node Replicas vs Physical Nodes**:
+- Physical node: A unique entity (e.g., "Alice")
+- Node replica: (physical_node, layer) pair (e.g., ("Alice", "social"))
+- Most operations return **replicas**, not physical nodes
+- To get physical nodes: `set(n[0] for n in result.items)`
+
+**2. Degree Meanings**:
+- Intra-layer degree: Edges within same layer
+- Inter-layer degree: Edges to other layers
+- Aggregate degree: Total (intra + inter) — **default in py3plex**
+
+**3. Coverage Semantics**:
+- `mode="all"`: Intersection (strict — keeps items in ALL groups)
+- `mode="any"`: Union (permissive — keeps items in ANY group)
+- `mode="at_least", k=N`: Items in at least N groups
+- `mode="fraction", p=0.X`: Items in at least X% of groups
+
+**4. Global vs Per-Layer**:
+- **Global operations**: Treat network as unified structure
+- **Per-layer operations**: Independent analysis per layer
+- Use `.per_layer()` when layer structure matters
+
+**LLM agent decision rules**:
+
+```python
+# IF: User asks about "nodes" in multilayer network
+# THEN: Clarify if they mean replicas or physical nodes
+# Default to replicas (standard py3plex semantics)
+
+# IF: User asks to compute "degree"
+# THEN: Clarify if they mean intra-layer, aggregate, or per-layer
+# Default to aggregate, but warn if ambiguous
+
+# IF: User asks for "top-k hubs"
+# THEN: Ask if they want:
+#   - Top-k globally (aggregate metrics)
+#   - Top-k per layer (.per_layer().top_k())
+#   - Top-k across layers (.per_layer().top_k().coverage())
+
+# IF: Network has >1 layer and user doesn't specify layer scope
+# THEN: Issue semantic warning or ask for clarification
+```
+
+### Guided Quickstart Recipes
+
+**Purpose**: Task-oriented minimal recipes demonstrating best practices.
+
+**Recipe 1: Find Hubs Across Layers**
+```python
+result = (
+    Q.nodes()
+     .from_layers(L["*"])
+     .compute("degree", "betweenness_centrality")
+     .per_layer()
+       .top_k(10, "degree")
+     .end_grouping()
+     .coverage(mode="at_least", k=2)  # In ≥2 layers
+     .order_by("-degree")
+     .execute(net)
+)
+```
+
+**Recipe 2: Community Detection with UQ**
+```python
+result = (
+    Q.nodes()
+     .from_layers(L["social"] + L["work"])
+     .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
+     .uq(method="ensemble", n_samples=50, seed=42)
+     .execute(net)
+)
+```
+
+**Recipe 3: Reproducible Results**
+```python
+result = (
+    Q.nodes()
+     .compute("degree", "betweenness_centrality")
+     .uq(method="bootstrap", n_samples=100, seed=42)
+     .provenance(mode="replayable", capture="snapshot")
+     .execute(net)
+)
+result.export_bundle("analysis.bundle.json.gz", compress=True)
+```
+
+**LLM agent guidance**: When user asks "how do I...", search these recipes first. They represent tested, best-practice patterns.
 
 ---
 
@@ -6043,6 +6332,341 @@ net = tiny_two_layer()
 2. **Check certificates**: Recompute modularity, check PageRank normalization, etc.
 3. **Use seeds**: Always set `seed` for reproducible research
 4. **Report violations**: If you find an invariant violation, file an issue with a minimal repro
+
+---
+
+## Multilayer Semantics Guide
+
+This section provides operational guidance on multilayer network semantics for LLM agents. Understanding these concepts is critical for generating correct py3plex code.
+
+### Core Mental Model
+
+**Multilayer Network = Node Replicas + Supra-Adjacency Matrix**
+
+```
+Physical nodes: {Alice, Bob, Carol}
+Layers: {social, work, family}
+
+Node replicas: 
+  (Alice, social), (Alice, work), (Alice, family),
+  (Bob, social), (Bob, work), (Bob, family),
+  (Carol, social), (Carol, work), (Carol, family)
+
+Total: 3 physical nodes × 3 layers = 9 node replicas
+```
+
+**Key insight**: Most py3plex operations work on **node replicas**, not physical nodes.
+
+### Semantic Issue 1: Node Counts
+
+**Problem**: User expects node count to match physical nodes, gets replicas instead.
+
+```python
+# Network: 100 physical nodes across 3 layers
+net = multinet.multi_layer_network()
+# ... load data ...
+
+result = Q.nodes().execute(net)
+print(result.count)  # Returns 300, not 100!
+```
+
+**LLM agent decision rule**:
+```
+IF user asks "how many nodes are in the network?"
+THEN clarify:
+  - Physical nodes: len(set(n[0] for n in network.get_nodes()))
+  - Node replicas: len(network.get_nodes())
+  - Default py3plex operations return replicas
+```
+
+**Correct patterns**:
+```python
+# ✅ Get physical node count
+replicas = Q.nodes().execute(net).items
+physical_nodes = len(set(n[0] for n in replicas))
+
+# ✅ Work per-layer (avoids ambiguity)
+result = Q.nodes().per_layer().execute(net)
+# Now each group is one layer
+
+# ✅ Filter to single layer
+result = Q.nodes().from_layers(L["social"]).execute(net)
+# Now result.count = physical nodes in social layer
+```
+
+### Semantic Issue 2: Degree Ambiguity
+
+**Problem**: "Degree" has three meanings in multilayer networks.
+
+1. **Intra-layer degree**: Edges within the same layer
+2. **Inter-layer degree**: Edges to other layers (coupling)
+3. **Aggregate degree**: Total degree (intra + inter)
+
+**py3plex default**: Aggregate degree (most common use case).
+
+**LLM agent decision rule**:
+```
+IF user asks to compute "degree"
+THEN:
+  1. Check if network is multilayer (>1 layer)
+  2. IF multilayer:
+       Ask: "Which degree do you want?"
+         - Aggregate (default): Q.nodes().compute("degree")
+         - Per-layer: Q.nodes().per_layer().compute("degree")
+         - Specific layer: Q.nodes().from_layers(L["social"]).compute("degree")
+  3. ELSE (single layer):
+       Standard degree: Q.nodes().compute("degree")
+```
+
+**Correct patterns**:
+```python
+# ✅ Explicit aggregate degree (default)
+result = Q.nodes().compute("degree").execute(net)
+# Add comment: "Computing aggregate degree (intra + inter)"
+
+# ✅ Per-layer degree (independent per layer)
+result = Q.nodes().per_layer().compute("degree").execute(net)
+
+# ✅ Specific layer degree
+result = Q.nodes().from_layers(L["social"]).compute("degree").execute(net)
+```
+
+### Semantic Issue 3: Coverage Filters
+
+**Problem**: Coverage filters remove more nodes than expected.
+
+```python
+# 5-layer network, top-10 hubs per layer
+result = (
+    Q.nodes()
+     .per_layer()
+     .top_k(10, "degree")
+     .end_grouping()
+     .coverage(mode="all")  # Keep nodes in ALL 5 layers
+     .execute(net)
+)
+# Might return 0-2 nodes if few nodes are top-10 in ALL layers!
+```
+
+**Coverage mode semantics**:
+- `mode="all"`: Intersection (STRICT — keeps items in ALL groups)
+- `mode="any"`: Union (PERMISSIVE — keeps items in ANY group)
+- `mode="at_least", k=N`: Items in at least N groups
+- `mode="fraction", p=0.X`: Items in at least X% of groups
+
+**LLM agent decision rule**:
+```
+IF user asks for "nodes present across layers"
+THEN clarify:
+  - ALL layers (intersection): coverage(mode="all")
+  - ANY layer (union): coverage(mode="any")
+  - At least N layers: coverage(mode="at_least", k=N)
+  - At least X% of layers: coverage(mode="fraction", p=0.X)
+
+DEFAULT: Use mode="at_least" or mode="fraction" (middle ground)
+AVOID: mode="all" unless user explicitly wants strict intersection
+```
+
+**Correct patterns**:
+```python
+# ✅ Balanced: nodes in at least 60% of layers
+result = (
+    Q.nodes()
+     .per_layer()
+     .top_k(10, "degree")
+     .end_grouping()
+     .coverage(mode="fraction", p=0.6)
+     .execute(net)
+)
+
+# ✅ Moderate: nodes in at least 2 layers
+result = (
+    Q.nodes()
+     .per_layer()
+     .top_k(10, "degree")
+     .end_grouping()
+     .coverage(mode="at_least", k=2)
+     .execute(net)
+)
+
+# ⚠️ Strict: only use if user explicitly wants intersection
+result = (
+    Q.nodes()
+     .per_layer()
+     .top_k(10, "degree")
+     .end_grouping()
+     .coverage(mode="all")  # Very strict!
+     .execute(net)
+)
+```
+
+### Semantic Issue 4: Global vs Per-Layer Operations
+
+**Problem**: User doesn't specify whether operation should span layers or operate per-layer.
+
+**LLM agent decision rule**:
+```
+IF operation is on multilayer network (>1 layer)
+THEN ask:
+  "Should this operate globally (across all layers) or per-layer (independently)?"
+
+Common operations:
+  - Community detection:
+      Global: Q.nodes().community(method="leiden", omega=0.8).execute(net)
+      Per-layer: Q.nodes().per_layer().community(method="leiden").end_grouping().execute(net)
+  
+  - Centrality:
+      Global/Aggregate: Q.nodes().compute("betweenness_centrality").execute(net)
+      Per-layer: Q.nodes().per_layer().compute("betweenness_centrality").execute(net)
+  
+  - Top-k nodes:
+      Global: Q.nodes().compute("degree").order_by("-degree").limit(10).execute(net)
+      Per-layer: Q.nodes().per_layer().top_k(10, "degree").execute(net)
+```
+
+**Correct patterns**:
+```python
+# ✅ Explicit global (aggregate metrics)
+result = (
+    Q.nodes()
+     .compute("betweenness_centrality")  # Aggregate across layers
+     .order_by("-betweenness_centrality")
+     .limit(10)
+     .execute(net)
+)
+
+# ✅ Explicit per-layer (independent analysis)
+result = (
+    Q.nodes()
+     .per_layer()
+     .compute("betweenness_centrality")  # Per-layer betweenness
+     .top_k(10, "betweenness_centrality")
+     .end_grouping()
+     .execute(net)
+)
+
+# ✅ Specific layer (unambiguous)
+result = (
+    Q.nodes()
+     .from_layers(L["social"])
+     .compute("betweenness_centrality")
+     .execute(net)
+)
+```
+
+### Decision Flow for LLM Agents
+
+When user asks to analyze multilayer network:
+
+```
+1. CHECK: Is network multilayer? (>1 layer)
+   ├─ NO → Use standard single-layer patterns
+   └─ YES → Continue to step 2
+
+2. CLARIFY: Operation scope
+   ├─ User specifies layer (e.g., "in social layer") → Use .from_layers(L[...])
+   ├─ User says "across layers" / "global" → Use global operations
+   ├─ User says "per layer" / "each layer" → Use .per_layer()
+   └─ User doesn't specify → ASK or default to per-layer (safer)
+
+3. CHECK: Metric ambiguity
+   ├─ Degree computation → Clarify: aggregate, per-layer, or specific layer?
+   ├─ Community detection → Clarify: global communities or per-layer?
+   └─ Other metrics → Default to aggregate, document assumption
+
+4. VALIDATE: Node count interpretation
+   ├─ If user mentions "N nodes" → Clarify: physical nodes or replicas?
+   ├─ If filtering → Warn about potential replica count surprises
+   └─ Document: "This returns X node replicas (Y physical nodes across Z layers)"
+
+5. COVERAGE: If using .per_layer() with post-grouping filters
+   ├─ Default to mode="at_least" or mode="fraction"
+   ├─ Avoid mode="all" unless explicitly requested
+   └─ Document expected filtering behavior
+```
+
+### Common Multilayer Query Patterns
+
+**Pattern 1: Cross-layer hub identification**
+```python
+# Find nodes that are hubs in multiple layers
+result = (
+    Q.nodes()
+     .from_layers(L["*"])
+     .compute("degree")
+     .per_layer()
+       .top_k(10, "degree")
+     .end_grouping()
+     .coverage(mode="at_least", k=2)  # In ≥2 layers
+     .execute(net)
+)
+```
+
+**Pattern 2: Layer-specific analysis**
+```python
+# Analyze specific layer
+result = (
+    Q.nodes()
+     .from_layers(L["social"])
+     .compute("degree", "betweenness_centrality")
+     .order_by("-betweenness_centrality")
+     .limit(20)
+     .execute(net)
+)
+```
+
+**Pattern 3: Per-layer aggregation**
+```python
+# Compare layers by average metrics
+result = (
+    Q.nodes()
+     .per_layer()
+     .compute("degree", "clustering")
+     .aggregate("mean", "std")
+     .execute(net)
+)
+```
+
+**Pattern 4: Global multilayer community detection**
+```python
+# Communities spanning layers
+result = (
+    Q.nodes()
+     .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
+     .execute(net)
+)
+# omega controls inter-layer coupling strength
+```
+
+**Pattern 5: Per-layer community detection**
+```python
+# Independent communities per layer
+result = (
+    Q.nodes()
+     .per_layer()
+     .community(method="leiden", gamma=1.2, random_state=42)
+     .end_grouping()
+     .execute(net)
+)
+```
+
+### Summary for LLM Agents
+
+**Always clarify**:
+1. Physical nodes vs node replicas
+2. Aggregate vs per-layer metrics
+3. Global vs per-layer operations
+4. Coverage mode for cross-layer filters
+
+**Always document**:
+1. Which degree type is being computed
+2. Whether operation is global or per-layer
+3. Expected node counts (replicas vs physical)
+
+**Always validate**:
+1. User intent matches query semantics
+2. Coverage filters don't over-filter
+3. Metric interpretations are multilayer-aware
 
 ---
 

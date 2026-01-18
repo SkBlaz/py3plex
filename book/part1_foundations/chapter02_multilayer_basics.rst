@@ -390,6 +390,332 @@ Working with Supra-Adjacency Matrices in Py3plex
 
 The supra-adjacency matrix enables tensor-based algorithms and linear algebra operations on the full multilayer structure.
 
+Common Multilayer Semantic Pitfalls
+------------------------------------
+
+Understanding multilayer network semantics is crucial for correct analysis. Here are the most common misunderstandings and how to avoid them:
+
+Pitfall 1: Node Replicas vs Physical Nodes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**The Issue:**
+
+In multilayer networks, a single physical entity (e.g., person "Alice") appears as multiple node replicas across layers:
+
+* Physical node: ``"Alice"`` (the person)
+* Node replicas: ``("Alice", "social")``, ``("Alice", "work")``, ``("Alice", "family")``
+
+Most multilayer operations work on **node replicas**, not physical nodes.
+
+**Common Mistake:**
+
+.. code-block:: python
+
+    # ❌ Wrong: Assuming node count = unique physical nodes
+    result = Q.nodes().execute(multilayer_net)
+    n_people = result.count  # This counts REPLICAS, not people!
+    
+    # If network has 100 people across 3 layers:
+    # result.count = 300 (not 100!)
+
+**Correct Approaches:**
+
+.. code-block:: python
+
+    # ✅ Count physical nodes explicitly
+    result = Q.nodes().execute(multilayer_net)
+    physical_nodes = set(node[0] for node in result.items)
+    n_people = len(physical_nodes)
+    
+    # ✅ Work per-layer (avoids the ambiguity)
+    result = (
+        Q.nodes()
+         .per_layer()
+         .execute(multilayer_net)
+    )
+    # Now each group is one layer
+    
+    # ✅ Filter to single layer
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .execute(multilayer_net)
+    )
+    # Now result.count = physical nodes in social layer
+
+**When py3plex warns:**
+
+The library issues ``MultilayerSemanticWarning`` when operations likely confuse replicas with physical nodes:
+
+.. code-block:: python
+
+    from py3plex.dsl.warnings import suppress_warnings
+    
+    # With warning (recommended for learning)
+    result = Q.nodes().execute(multilayer_net)
+    # Warning: Node replicas vs physical nodes...
+    
+    # Suppress if you understand the semantics
+    with suppress_warnings("node_replica_confusion"):
+        result = Q.nodes().execute(multilayer_net)
+
+Pitfall 2: Degree Meaning Ambiguity
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**The Issue:**
+
+"Degree" has three different meanings in multilayer networks:
+
+1. **Intra-layer degree**: Edges within the same layer
+2. **Inter-layer degree**: Edges to other layers (coupling)
+3. **Aggregate degree**: Total degree (intra + inter)
+
+By default, py3plex computes **aggregate degree** (most common use case).
+
+**Common Mistake:**
+
+.. code-block:: python
+
+    # ❌ Ambiguous: Which degree?
+    result = Q.nodes().compute("degree").execute(multilayer_net)
+    # This computes AGGREGATE degree (most connections)
+
+**Correct Approaches:**
+
+.. code-block:: python
+
+    # ✅ Explicit intra-layer degree
+    result = (
+        Q.nodes()
+         .per_layer()  # Group by layer
+         .compute("degree")  # Now it's per-layer degree
+         .execute(multilayer_net)
+    )
+    
+    # ✅ Degree in specific layer
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree")
+         .execute(multilayer_net)
+    )
+    
+    # ✅ Aggregate degree (explicit)
+    result = (
+        Q.nodes()
+         .compute("degree")  # Aggregate by default
+         .execute(multilayer_net)
+    )
+    # Comment: "Computing aggregate degree (intra + inter)"
+
+**When py3plex warns:**
+
+.. code-block:: python
+
+    from py3plex.dsl.warnings import warn_degree_ambiguity
+    
+    # Library warns when degree computation might be ambiguous
+    result = Q.nodes().compute("degree").execute(multilayer_net)
+    # Warning: Degree ambiguity - specify intra-layer, inter-layer, or aggregate
+
+Pitfall 3: Coverage Filters Removing Expected Nodes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**The Issue:**
+
+Coverage filters (``mode="all"``, ``mode="at_least"``) remove nodes not meeting the criterion **across all groups**. This can remove many nodes unexpectedly.
+
+**Common Mistake:**
+
+.. code-block:: python
+
+    # ❌ Unexpected filtering
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])  # 5 layers
+         .per_layer()
+         .top_k(10, "degree")  # Top 10 per layer
+         .end_grouping()
+         .coverage(mode="all")  # Keep only nodes in ALL 5 layers
+         .execute(multilayer_net)
+    )
+    # Might return 0-2 nodes if few nodes are top-10 in ALL layers!
+
+**Correct Approaches:**
+
+.. code-block:: python
+
+    # ✅ Use less strict mode
+    result = (
+        Q.nodes()
+         .per_layer()
+         .top_k(10, "degree")
+         .end_grouping()
+         .coverage(mode="at_least", k=3)  # In at least 3 layers
+         .execute(multilayer_net)
+    )
+    
+    # ✅ Use fraction-based
+    result = (
+        Q.nodes()
+         .per_layer()
+         .top_k(10, "degree")
+         .end_grouping()
+         .coverage(mode="fraction", p=0.6)  # In at least 60% of layers
+         .execute(multilayer_net)
+    )
+    
+    # ✅ Check counts before filtering
+    result_before = (
+        Q.nodes()
+         .per_layer()
+         .top_k(10, "degree")
+         .end_grouping()
+         .execute(multilayer_net)
+    )
+    print(f"Before coverage: {result_before.count} nodes")
+    
+    result_after = (
+        Q.nodes()
+         .per_layer()
+         .top_k(10, "degree")
+         .end_grouping()
+         .coverage(mode="all")
+         .execute(multilayer_net)
+    )
+    print(f"After coverage: {result_after.count} nodes")
+
+**When py3plex warns:**
+
+.. code-block:: python
+
+    # Library warns if coverage filter removes >50% of items
+    result = (
+        Q.nodes()
+         .per_layer()
+         .top_k(10, "degree")
+         .end_grouping()
+         .coverage(mode="all")
+         .execute(multilayer_net)
+    )
+    # Warning: Coverage filter removed 95% of items (190/200)
+    #          mode='all' is STRICT - consider mode='any' or mode='at_least'
+
+Pitfall 4: Global vs Per-Layer Community Detection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**The Issue:**
+
+Community detection on multilayer networks can operate:
+
+1. **Globally**: Find communities spanning multiple layers
+2. **Per-layer**: Find independent communities in each layer
+
+The choice dramatically affects results and interpretation.
+
+**Common Mistake:**
+
+.. code-block:: python
+
+    # ❌ Unclear intent
+    result = (
+        Q.nodes()
+         .community(method="leiden")
+         .execute(multilayer_net)
+    )
+    # This finds GLOBAL communities (span layers)
+    # Is this what you wanted?
+
+**Correct Approaches:**
+
+.. code-block:: python
+
+    # ✅ Explicit global communities
+    result = (
+        Q.nodes()
+         .community(method="leiden", omega=0.8)  # Explicit coupling
+         .execute(multilayer_net)
+    )
+    # Comment: "Finding global communities with omega=0.8 coupling"
+    
+    # ✅ Per-layer communities
+    result = (
+        Q.nodes()
+         .per_layer()
+         .community(method="leiden")
+         .end_grouping()
+         .execute(multilayer_net)
+    )
+    # Now each layer has independent communities
+    
+    # ✅ Layer-specific community
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .community(method="leiden")
+         .execute(multilayer_net)
+    )
+
+**When py3plex warns:**
+
+.. code-block:: python
+
+    # Library warns about global community detection
+    result = (
+        Q.nodes()
+         .community(method="leiden")  # No omega specified
+         .execute(multilayer_net)
+    )
+    # Warning: Global community detection on 5-layer network
+    #          Communities will span layers. If you want per-layer:
+    #          Use .per_layer().community(...).end_grouping()
+
+Best Practices Summary
+~~~~~~~~~~~~~~~~~~~~~~
+
+**1. Be explicit about layer scope:**
+
+.. code-block:: python
+
+    # Unclear
+    Q.nodes().compute("degree")
+    
+    # Clear
+    Q.nodes().per_layer().compute("degree")  # Per-layer analysis
+    Q.nodes().from_layers(L["social"]).compute("degree")  # Single layer
+    Q.nodes().compute("degree")  # with comment: "aggregate degree"
+
+**2. Understand replica semantics:**
+
+* Most operations return **node replicas** (node, layer) tuples
+* To get physical nodes: extract first element of tuples
+* Use ``per_layer()`` when layer structure matters
+
+**3. Choose coverage modes carefully:**
+
+* ``mode="all"``: Very strict (intersection)
+* ``mode="any"``: Very permissive (union)
+* ``mode="at_least"`` or ``mode="fraction"``: Balanced middle ground
+
+**4. Set coupling parameters explicitly:**
+
+* Community detection: Always specify ``omega`` when using global mode
+* Dynamics: Always specify inter-layer transition rates
+* Centrality: Document whether you want per-layer or aggregate
+
+**5. Use warnings as learning tools:**
+
+.. code-block:: python
+
+    # Let warnings guide you during development
+    result = Q.nodes().compute("degree").execute(net)
+    # Read warning, understand issue, refactor
+    
+    # Suppress warnings in production when semantics are clear
+    from py3plex.dsl.warnings import suppress_warnings
+    with suppress_warnings("degree_ambiguity"):
+        result = Q.nodes().compute("degree").execute(net)
+
 Summary
 -------
 
