@@ -4,7 +4,10 @@ This module provides structured error types with helpful diagnostic information.
 Errors include suggestions like "did you mean?" when applicable.
 """
 
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from py3plex.diagnostics import Diagnostic
 
 
 def _levenshtein_distance(s1: str, s2: str) -> int:
@@ -55,17 +58,38 @@ def _suggest_similar(name: str, known_names: List[str], max_distance: int = 3) -
 
 
 class DslError(Exception):
-    """Base exception for all DSL errors."""
+    """Base exception for all DSL errors.
+    
+    Attributes:
+        query: Query string that caused the error
+        line: Line number in query (if applicable)
+        column: Column number in query (if applicable)
+        diagnostic: Optional Diagnostic object with structured error info
+    """
     
     def __init__(self, message: str, query: Optional[str] = None,
-                 line: Optional[int] = None, column: Optional[int] = None):
+                 line: Optional[int] = None, column: Optional[int] = None,
+                 diagnostic: Optional["Diagnostic"] = None):
         super().__init__(message)
         self.query = query
         self.line = line
         self.column = column
+        self.diagnostic = diagnostic
+    
+    def to_diagnostic(self) -> Optional["Diagnostic"]:
+        """Get the diagnostic object for this error.
+        
+        Returns:
+            Diagnostic object if available, None otherwise
+        """
+        return self.diagnostic
         
     def format_message(self) -> str:
         """Format the error message with context."""
+        # If we have a diagnostic, use its formatting
+        if self.diagnostic:
+            return self.diagnostic.format(use_color=True)
+        
         msg = str(self)
         
         if self.query and self.line is not None and self.column is not None:
@@ -110,7 +134,17 @@ class UnknownAttributeError(DslError):
         if self.known_attributes:
             message += f"\nKnown attributes: {', '.join(sorted(self.known_attributes)[:10])}"
         
-        super().__init__(message, query, line, column)
+        # Create diagnostic object
+        from py3plex.diagnostics import builders as diag_builders
+        diagnostic = diag_builders.unknown_field_error(
+            field=attribute,
+            known_fields=self.known_attributes,
+            target_type="node",
+            builder_method="where",
+            query_fragment=f"{attribute}__gt=3"
+        )
+        
+        super().__init__(message, query, line, column, diagnostic=diagnostic)
 
 
 class UnknownMeasureError(DslError):
@@ -135,7 +169,15 @@ class UnknownMeasureError(DslError):
         if self.known_measures:
             message += f"\nKnown measures: {', '.join(sorted(self.known_measures))}"
         
-        super().__init__(message, query, line, column)
+        # Create diagnostic object
+        from py3plex.diagnostics import builders as diag_builders
+        diagnostic = diag_builders.unknown_measure_error(
+            measure=measure,
+            known_measures=self.known_measures,
+            builder_method="compute"
+        )
+        
+        super().__init__(message, query, line, column, diagnostic=diagnostic)
 
 
 class UnknownLayerError(DslError):
@@ -160,7 +202,15 @@ class UnknownLayerError(DslError):
         if self.known_layers:
             message += f"\nKnown layers: {', '.join(sorted(self.known_layers))}"
         
-        super().__init__(message, query, line, column)
+        # Create diagnostic object
+        from py3plex.diagnostics import builders as diag_builders
+        diagnostic = diag_builders.unknown_layer_error(
+            layer=layer,
+            known_layers=self.known_layers,
+            builder_method="from_layers"
+        )
+        
+        super().__init__(message, query, line, column, diagnostic=diagnostic)
 
 
 class ParameterMissingError(DslError):
