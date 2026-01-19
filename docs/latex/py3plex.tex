@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jan 18, 2026}
+\date{Jan 19, 2026}
 \release{1.1.2}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -30002,6 +30002,106 @@ Displays:
 
 \end{fulllineitems}\end{savenotes}
 
+\index{capabilities() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{capabilities()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network.capabilities}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{capabilities}}}
+{\sphinxparam{\DUrole{n}{force\_recompute}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compute and cache network capabilities for algorithm compatibility checking.
+
+\sphinxAtStartPar
+This method analyzes the network structure to determine its fundamental
+characteristics that algorithms may require or constrain. Results are cached
+for efficiency.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{force\_recompute}} \textendash{} If True, recompute capabilities even if cached
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+\begin{description}
+\sphinxlineitem{Dataclass with network properties including:}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+mode: Network mode (single, multilayer, multiplex, temporal)
+
+\item {} 
+\sphinxAtStartPar
+replica\_model: Replica model (none, partial, strict)
+
+\item {} 
+\sphinxAtStartPar
+interlayer\_coupling: Coupling type (none, identity, explicit\_edges, both)
+
+\item {} 
+\sphinxAtStartPar
+directed: Whether network is directed
+
+\item {} 
+\sphinxAtStartPar
+weighted: Whether network has edge weights
+
+\item {} 
+\sphinxAtStartPar
+weight\_domain: Domain of edge weights
+
+\item {} 
+\sphinxAtStartPar
+layer\_count: Number of layers
+
+\item {} 
+\sphinxAtStartPar
+base\_node\_count: Number of distinct base nodes
+
+\item {} 
+\sphinxAtStartPar
+And more…
+
+\end{itemize}
+
+\end{description}
+
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+NetworkCapabilities
+
+\end{description}\end{quote}
+\subsubsection*{Examples}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net} \PYG{o}{=} \PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{caps} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{capabilities}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{caps}\PYG{o}{.}\PYG{n}{mode}\PYG{p}{)}
+\PYG{g+go}{\PYGZsq{}multilayer\PYGZsq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{caps}\PYG{o}{.}\PYG{n}{layer\PYGZus{}count}\PYG{p}{)}
+\PYG{g+go}{2}
+\end{sphinxVerbatim}
+\subsubsection*{Notes}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Results are cached for performance
+
+\item {} 
+\sphinxAtStartPar
+Cache is invalidated on network mutations (if tracked)
+
+\item {} 
+\sphinxAtStartPar
+Temporal networks require TemporalMultiLayerNetwork class
+
+\end{itemize}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{compute\_ollivier\_ricci() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{compute\_ollivier\_ricci()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -33677,7 +33777,7 @@ tuple
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.core.converters.}}\sphinxbfcode{\sphinxupquote{prepare\_for\_visualization}}}
-{\sphinxparam{\DUrole{n}{multinet}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Graph}}\sphinxparamcomma \sphinxparam{\DUrole{n}{network\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}multilayer\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{compute\_layouts}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}force\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_parameters}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{verbose}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multiplex}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
+{\sphinxparam{\DUrole{n}{multinet}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Graph}}\sphinxparamcomma \sphinxparam{\DUrole{n}{network\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}multilayer\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{compute\_layouts}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}force\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_parameters}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{verbose}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multiplex}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
 {{ $\rightarrow$ Tuple\DUrole{p}{{[}}List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }List\DUrole{p}{{[}}Graph\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -33694,7 +33794,7 @@ This functions takes a multilayer object and returns individual layers, their na
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{compute\_layouts}} \textendash{} Layout algorithm (‘force’, ‘random’, etc.)
+\sphinxstyleliteralstrong{\sphinxupquote{compute\_layouts}} \textendash{} Layout algorithm (‘force’, ‘random’, etc.) or None to skip layout computation
 
 \item {} 
 \sphinxAtStartPar
@@ -41312,7 +41412,7 @@ Diagnostic object if available, None otherwise
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{DslExecutionError}}}
-{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{intent}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{why\_failed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{examples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{pitfall}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -41320,6 +41420,9 @@ Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslError}]{\sphinx
 
 \sphinxAtStartPar
 Exception raised for DSL execution errors.
+
+\sphinxAtStartPar
+Enhanced with pedagogical guidance for runtime issues.
 
 \end{fulllineitems}\end{savenotes}
 
@@ -41393,7 +41496,7 @@ Whether autocompute was enabled
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{DslSyntaxError}}}
-{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{intent}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{why\_failed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{examples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{pitfall}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -41401,6 +41504,13 @@ Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslError}]{\sphinx
 
 \sphinxAtStartPar
 Exception raised for DSL syntax errors.
+
+\sphinxAtStartPar
+Enhanced with pedagogical guidance:
+\sphinxhyphen{} What the user likely intended
+\sphinxhyphen{} Why the syntax is invalid
+\sphinxhyphen{} Corrected query examples
+\sphinxhyphen{} Common pitfall notes
 
 \end{fulllineitems}\end{savenotes}
 
@@ -44384,19 +44494,19 @@ Proxy for creating layer expressions via L{[}“name”{]} syntax.
 \sphinxlineitem{Supports both simple layer names and advanced string expressions:}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-L{[}“social”{]} \(\rightarrow\) single layer (backward compatible)
+L{[}“social”{]} \sphinxhyphen{}\textgreater{} single layer (backward compatible)
 
 \item {} 
 \sphinxAtStartPar
-L{[}“social”, “work”{]} \(\rightarrow\) union of layers (backward compatible)
+L{[}“social”, “work”{]} \sphinxhyphen{}\textgreater{} union of layers (backward compatible)
 
 \item {} 
 \sphinxAtStartPar
-L{[}”* \sphinxhyphen{} coupling”{]} \(\rightarrow\) string expression with algebra (NEW)
+L{[}”* \sphinxhyphen{} coupling”{]} \sphinxhyphen{}\textgreater{} string expression with algebra (NEW)
 
 \item {} 
 \sphinxAtStartPar
-L{[}“(ppi | gene) \& disease”{]} \(\rightarrow\) complex expression (NEW)
+L{[}“(ppi | gene) \& disease”{]} \sphinxhyphen{}\textgreater{} complex expression (NEW)
 
 \end{itemize}
 
@@ -50727,6 +50837,62 @@ Self for chaining
 
 \end{fulllineitems}\end{savenotes}
 
+\index{hint() (py3plex.dsl.QueryBuilder method)@\spxentry{hint()}\spxextra{py3plex.dsl.QueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.hint}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{hint}}}
+{}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Display context\sphinxhyphen{}aware hints for next query\sphinxhyphen{}building steps.
+
+\sphinxAtStartPar
+This non\sphinxhyphen{}invasive discoverability mechanism suggests relevant methods
+based on the current query state. It prints suggestions to stdout
+but does NOT modify query behavior or auto\sphinxhyphen{}execute anything.
+
+\sphinxAtStartPar
+Suggestions adapt to:
+\sphinxhyphen{} Whether layers are selected
+\sphinxhyphen{} Whether filters are applied
+\sphinxhyphen{} Whether computations are added
+\sphinxhyphen{} Whether grouping is active
+\sphinxhyphen{} Whether UQ is enabled
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Self for chaining (unmodified)
+
+\end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} After where() \PYGZhy{}\PYGZgt{} suggests compute(), per\PYGZus{}layer(), uq()}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{o}{.}\PYG{n}{hint}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} After per\PYGZus{}layer() \PYGZhy{}\PYGZgt{} suggests aggregate(), coverage()}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{per\PYGZus{}layer}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{hint}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} After compute() \PYGZhy{}\PYGZgt{} suggests order\PYGZus{}by(), limit(), explain()}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{hint}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+This is purely informational. The query remains unchanged.
+Call .execute() when ready to run the query.
+\end{sphinxadmonition}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{join() (py3plex.dsl.QueryBuilder method)@\spxentry{join()}\spxextra{py3plex.dsl.QueryBuilder method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -52305,19 +52471,19 @@ Supports two styles:
 \sphinxlineitem{Keyword arguments:}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-layer=”social” \(\rightarrow\) equality
+layer=”social” \sphinxhyphen{}\textgreater{} equality
 
 \item {} 
 \sphinxAtStartPar
-degree\_\_gt=5 \(\rightarrow\) comparison (gt, ge, lt, le, eq, ne)
+degree\_\_gt=5 \sphinxhyphen{}\textgreater{} comparison (gt, ge, lt, le, eq, ne)
 
 \item {} 
 \sphinxAtStartPar
-intralayer=True \(\rightarrow\) intralayer predicate
+intralayer=True \sphinxhyphen{}\textgreater{} intralayer predicate
 
 \item {} 
 \sphinxAtStartPar
-interlayer=(“social”,”work”) \(\rightarrow\) interlayer predicate
+interlayer=(“social”,”work”) \sphinxhyphen{}\textgreater{} interlayer predicate
 
 \end{itemize}
 
@@ -58004,7 +58170,7 @@ Dict{[}str, Any{]}
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{UQResolutionError}}}
-{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{intent}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{why\_failed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{examples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{pitfall}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -58022,7 +58188,7 @@ Error raised when UQ configuration conflicts or is invalid.
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{UQSchemaValidationError}}}
-{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{intent}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{why\_failed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{examples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{pitfall}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -58040,7 +58206,7 @@ Error raised when UQ result doesn’t conform to canonical schema.
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{UQUnsupportedError}}}
-{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{query}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{column}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{diagnostic}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Diagnostic}]{\sphinxcrossref{Diagnostic}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{intent}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{why\_failed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{examples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{pitfall}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -74593,6 +74759,12 @@ converted to distances (1/weight) for shortest path computation.
 Weights must be positive (\textgreater{} 0). Zero or negative weights will
 cause undefined behavior.
 \end{sphinxadmonition}
+\begin{quote}\begin{description}
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{AlgorithmCompatibilityError}} \textendash{} If network is incompatible with algorithm requirements
+
+\end{description}\end{quote}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -74737,6 +74909,12 @@ Boldi, P., \& Vigna, S. (2014). Axioms for Centrality. Internet Math.
 De Domenico, M., et al. (2015). Structural reducibility of multilayer networks.
 
 \end{itemize}
+\begin{quote}\begin{description}
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{AlgorithmCompatibilityError}} \textendash{} If network is incompatible with algorithm requirements
+
+\end{description}\end{quote}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -74969,6 +75147,12 @@ Converges for strongly connected components or with teleportation
 \end{itemize}
 
 \end{description}
+\begin{quote}\begin{description}
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{AlgorithmCompatibilityError}} \textendash{} If network is incompatible with algorithm requirements
+
+\end{description}\end{quote}
 
 \end{fulllineitems}\end{savenotes}
 

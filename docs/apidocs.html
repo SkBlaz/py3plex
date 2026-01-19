@@ -506,6 +506,55 @@ partitions and access them later.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.capabilities">
+<span class="sig-name descname"><span class="pre">capabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_recompute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.capabilities" title="Link to this definition"></a></dt>
+<dd><p>Compute and cache network capabilities for algorithm compatibility checking.</p>
+<p>This method analyzes the network structure to determine its fundamental
+characteristics that algorithms may require or constrain. Results are cached
+for efficiency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>force_recompute</strong> – If True, recompute capabilities even if cached</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Dataclass with network properties including:</dt><dd><ul class="simple">
+<li><p>mode: Network mode (single, multilayer, multiplex, temporal)</p></li>
+<li><p>replica_model: Replica model (none, partial, strict)</p></li>
+<li><p>interlayer_coupling: Coupling type (none, identity, explicit_edges, both)</p></li>
+<li><p>directed: Whether network is directed</p></li>
+<li><p>weighted: Whether network has edge weights</p></li>
+<li><p>weight_domain: Domain of edge weights</p></li>
+<li><p>layer_count: Number of layers</p></li>
+<li><p>base_node_count: Number of distinct base nodes</p></li>
+<li><p>And more…</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NetworkCapabilities</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">caps</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">capabilities</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">caps</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+<span class="go">&#39;multilayer&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">caps</span><span class="o">.</span><span class="n">layer_count</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Results are cached for performance</p></li>
+<li><p>Cache is invalidated on network mutations (if tracked)</p></li>
+<li><p>Temporal networks require TemporalMultiLayerNetwork class</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.compute_ollivier_ricci">
 <span class="sig-name descname"><span class="pre">compute_ollivier_ricci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'core'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_attr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'weight'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curvature_attr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ricciCurvature'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ERROR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interlayer_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.compute_ollivier_ricci" title="Link to this definition"></a></dt>
 <dd><p>Compute Ollivier-Ricci curvature on the multilayer network.</p>
@@ -2494,14 +2543,14 @@ Otherwise returns None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.core.converters.prepare_for_visualization">
-<span class="sig-prename descclassname"><span class="pre">py3plex.core.converters.</span></span><span class="sig-name descname"><span class="pre">prepare_for_visualization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multinet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'multilayer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_layouts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'force'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Graph</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.core.converters.prepare_for_visualization" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">py3plex.core.converters.</span></span><span class="sig-name descname"><span class="pre">prepare_for_visualization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multinet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'multilayer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_layouts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'force'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Graph</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.core.converters.prepare_for_visualization" title="Link to this definition"></a></dt>
 <dd><p>This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>multinet</strong> – multilayer network object</p></li>
 <li><p><strong>network_type</strong> – “multilayer” or “multiplex”</p></li>
-<li><p><strong>compute_layouts</strong> – Layout algorithm (‘force’, ‘random’, etc.)</p></li>
+<li><p><strong>compute_layouts</strong> – Layout algorithm (‘force’, ‘random’, etc.) or None to skip layout computation</p></li>
 <li><p><strong>layout_parameters</strong> – Optional layout parameters</p></li>
 <li><p><strong>verbose</strong> – Whether to print progress information</p></li>
 <li><p><strong>multiplex</strong> – Whether to treat as multiplex network</p></li>
@@ -6516,6 +6565,11 @@ converted to distances (1/weight) for shortest path computation.
 Weights must be positive (&gt; 0). Zero or negative weights will
 cause undefined behavior.</p>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AlgorithmCompatibilityError</strong> – If network is incompatible with algorithm requirements</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -6604,6 +6658,11 @@ distances, use them directly without this function’s weight inversion.</p>
 <li><p>Boldi, P., &amp; Vigna, S. (2014). Axioms for Centrality. Internet Math.</p></li>
 <li><p>De Domenico, M., et al. (2015). Structural reducibility of multilayer networks.</p></li>
 </ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AlgorithmCompatibilityError</strong> – If network is incompatible with algorithm requirements</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -6728,6 +6787,11 @@ representing the multilayer network. Properly handles dangling nodes
 <li><p>All values are non-negative</p></li>
 <li><p>Converges for strongly connected components or with teleportation</p></li>
 </ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AlgorithmCompatibilityError</strong> – If network is incompatible with algorithm requirements</p>
 </dd>
 </dl>
 </dd></dl>
