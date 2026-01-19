@@ -5464,6 +5464,329 @@ All error codes follow the pattern `<CATEGORY>_<SUBCATEGORY>_<NUMBER>`:
 - `IO_002`: Invalid file format
 - `IO_003`: Missing required column
 
+**Algorithm Requirements Errors** (`ALGO_REQ_*`):
+- `ALGO_REQ_001`: Network mode incompatible (e.g., single-layer vs multiplex)
+- `ALGO_REQ_002`: Replica model incompatible (strict vs partial)
+- `ALGO_REQ_003`: Interlayer coupling incompatible
+- `ALGO_REQ_004`: Edge weights required but missing
+- `ALGO_REQ_005`: Positive weights required but not satisfied
+- `ALGO_REQ_006`: Directedness incompatible
+- `ALGO_REQ_007`: Random seed missing (warning)
+- `ALGO_REQ_008`: UQ not supported by algorithm
+- `ALGO_REQ_009`: UQ method not supported
+
+### Algorithm Requirements & Compatibility System
+
+**New in v1.1.2**: py3plex now includes a first-class algorithm requirements system that makes multilayer/multiplex assumptions explicit and enforceable.
+
+#### Overview
+
+Algorithms declare their requirements (network mode, replica model, coupling type, etc.) and networks expose capabilities computed from their structure. A compatibility checker produces standardized diagnostics with actionable fixes.
+
+**Key Components:**
+1. `AlgoRequirements`: Dataclass declaring what an algorithm needs
+2. `NetworkCapabilities`: Dataclass describing what a network provides
+3. `check_compat()`: Compatibility checker returning diagnostics
+4. `@requires`: Decorator for attaching requirements to algorithms
+5. `AlgorithmCompatibilityError`: Exception with diagnostic details
+
+#### Network Capabilities
+
+Every network can report its capabilities:
+
+```python
+from py3plex.core import multinet
+
+# Create network
+net = multinet.multi_layer_network(network_type='multiplex', directed=False)
+# ... add nodes/edges ...
+
+# Get capabilities
+caps = net.capabilities()
+
+print(f"Mode: {caps.mode}")                           # "multiplex"
+print(f"Replica model: {caps.replica_model}")         # "strict" or "partial"
+print(f"Coupling: {caps.interlayer_coupling}")        # "identity", "explicit_edges", etc.
+print(f"Directed: {caps.directed}")                   # True/False
+print(f"Weighted: {caps.weighted}")                   # True/False
+print(f"Weight domain: {caps.weight_domain}")         # "positive", "binary", "real"
+print(f"Layers: {caps.layer_count}")                  # Number of layers
+print(f"Base nodes: {caps.base_node_count}")          # Distinct base nodes
+print(f"Node replicas: {caps.node_replica_count}")    # Total node-layer pairs
+
+# Capabilities are cached for performance
+caps2 = net.capabilities()  # Reuses cached result
+caps3 = net.capabilities(force_recompute=True)  # Forces recomputation
+
+# Enhanced summary includes capabilities
+summary = net.summary()
+print(summary['Mode'])  # "multiplex"
+```
+
+**Network Modes:**
+- `"single"`: Single-layer network
+- `"multilayer"`: General multilayer (different nodes per layer)
+- `"multiplex"`: Strict multiplex (same nodes across layers)
+- `"temporal"`: Temporal network (time-stamped edges)
+
+**Replica Models:**
+- `"none"`: Single layer, no replica semantics
+- `"partial"`: Some nodes appear in some layers (not all)
+- `"strict"`: Every base node appears in every layer
+
+**Coupling Types:**
+- `"none"`: No interlayer edges
+- `"identity"`: Identity coupling (node replicas connected across layers)
+- `"explicit_edges"`: Explicit interlayer edges (not identity)
+- `"both"`: Both identity and explicit interlayer edges
+
+#### Algorithm Requirements
+
+Algorithms declare their requirements using `AlgoRequirements`:
+
+```python
+from py3plex.requirements import AlgoRequirements, requires
+
+# Define requirements
+leiden_reqs = AlgoRequirements(
+    allowed_modes=("multiplex",),                    # Only works on multiplex
+    replica_model=("strict",),                       # Requires strict replicas
+    interlayer_coupling=("identity", "both"),        # Needs identity coupling
+    requires_edge_weights=False,                     # Weights optional
+    requires_positive_weights=False,                 # Can handle any weights
+    supports_directed=False,                         # Undirected only
+    supports_undirected=True,
+    uses_randomness=True,                            # Stochastic algorithm
+    requires_seed_for_repro=True,                    # Seed mandatory for reproducibility
+    supports_uq=False,                               # UQ not implemented yet
+    expected_complexity="O(n * m) per iteration",
+    memory_profile="O(n + m) for sparse networks",
+    practical_limits={"max_nodes": 100000},
+)
+
+# Attach to algorithm using decorator
+@requires(leiden_reqs)
+def leiden_multilayer(network, **kwargs):
+    # Implementation
+    pass
+```
+
+**AlgoRequirements Fields:**
+- `allowed_modes`: Tuple of acceptable NetworkMode values
+- `replica_model`: Tuple of acceptable ReplicaModel values
+- `interlayer_coupling`: Tuple of acceptable CouplingType values
+- `requires_edge_weights`: Whether algorithm needs weighted edges
+- `requires_positive_weights`: Whether weights must be positive (> 0)
+- `supports_directed`: Whether algorithm works with directed networks
+- `supports_undirected`: Whether algorithm works with undirected networks
+- `uses_randomness`: Whether algorithm has stochastic components
+- `requires_seed_for_repro`: Whether seed is mandatory for reproducibility
+- `supports_uq`: Whether algorithm supports uncertainty quantification
+- `uq_methods`: Tuple of supported UQ methods (e.g., ("bootstrap", "perturbation"))
+- `expected_complexity`: Time/space complexity hint
+- `memory_profile`: Memory usage profile
+- `practical_limits`: Dict with size limits (e.g., {"max_nodes": 10000})
+
+#### Compatibility Checking
+
+The `check_compat()` function validates network-algorithm compatibility:
+
+```python
+from py3plex.requirements import check_compat
+
+# Manual compatibility check
+net_caps = net.capabilities()
+diagnostics = check_compat(net_caps, leiden_reqs, algorithm_name="leiden")
+
+# Check for errors
+errors = [d for d in diagnostics if d.severity.value == 'error']
+if errors:
+    for error in errors:
+        print(error.format())
+    # Errors include fix suggestions like:
+    # "Convert network: net.to_multiplex(method='intersection')"
+    # "Use compatible algorithm: py3plex.algorithms.list(compatible_with=net)"
+
+# Check for warnings
+warnings = [d for d in diagnostics if d.severity.value == 'warning']
+for warning in warnings:
+    print(warning.format())
+```
+
+**Diagnostic Codes:**
+- `ALGO_REQ_001`: Mode mismatch (e.g., single-layer passed to multiplex algorithm)
+- `ALGO_REQ_002`: Replica model mismatch (e.g., partial replicas when strict required)
+- `ALGO_REQ_003`: Coupling mismatch (e.g., no coupling when identity required)
+- `ALGO_REQ_004`: Weights required but network unweighted
+- `ALGO_REQ_005`: Positive weights required but some are negative/zero
+- `ALGO_REQ_006`: Directedness mismatch
+- `ALGO_REQ_007`: Seed missing (warning when algorithm uses randomness)
+- `ALGO_REQ_008`: UQ requested but algorithm doesn't support it
+- `ALGO_REQ_009`: UQ method not supported by algorithm
+
+#### @requires Decorator
+
+The `@requires` decorator automates compatibility checking:
+
+```python
+from py3plex.requirements import AlgoRequirements, requires
+
+# Define requirements
+pagerank_reqs = AlgoRequirements(
+    allowed_modes=("multilayer", "multiplex"),
+    replica_model=("none", "partial", "strict"),
+    interlayer_coupling=("none", "identity", "explicit_edges", "both"),
+    supports_directed=True,
+    supports_undirected=True,
+    uses_randomness=False,
+)
+
+# Apply decorator
+@requires(pagerank_reqs)
+def multilayer_pagerank(network, damping=0.85, **kwargs):
+    # Implementation...
+    pass
+
+# Usage
+try:
+    result = multilayer_pagerank(net, damping=0.85, seed=42)
+except AlgorithmCompatibilityError as e:
+    # Error contains diagnostics
+    print(e.format_concise())  # Short summary
+    print(e.format_verbose())  # Full diagnostic details
+    print(e.to_dict())         # JSON-serializable dict
+```
+
+**Decorator Behavior:**
+1. Checks `network.capabilities()` exists (falls back gracefully if not)
+2. Validates compatibility using `check_compat()`
+3. Raises `AlgorithmCompatibilityError` if any error diagnostics
+4. Attaches warnings to result metadata if result has `.meta` attribute
+5. Preserves function signature and docstring
+
+#### DSL v2 Integration
+
+Compatibility checks are automatically integrated into DSL queries:
+
+```python
+from py3plex.dsl import Q
+
+# Compatibility checked during execution
+try:
+    result = (
+        Q.communities("leiden")
+         .with_params(resolution=1.0, seed=42)
+         .execute(net)
+    )
+except AlgorithmCompatibilityError as e:
+    # Diagnostic details in exception
+    print(e.format_verbose())
+
+# Warnings attached to result
+result = Q.nodes().compute("pagerank").execute(net)
+if "diagnostics" in result.meta:
+    for diag in result.meta["diagnostics"]:
+        print(f"{diag['severity']}: {diag['message']}")
+
+# Explain shows diagnostics
+print(result.explain())
+# Output includes:
+# Diagnostics:
+#   warning[ALGO_REQ_007]: Algorithm uses randomness but no seed provided
+#     Fix: Pass seed=42 parameter
+```
+
+**DSL Diagnostic Integration:**
+- `QueryResult.meta["diagnostics"]`: List of diagnostic dicts
+- `result.explain()`: Displays diagnostics with colored output
+- Errors prevent execution, warnings allow execution
+
+#### AlgorithmCompatibilityError
+
+Exception for algorithm incompatibilities:
+
+```python
+from py3plex.requirements import AlgorithmCompatibilityError
+
+try:
+    result = leiden_multilayer(single_layer_net)
+except AlgorithmCompatibilityError as e:
+    # Human-readable
+    print(str(e))
+    # "Algorithm 'leiden_multilayer' is incompatible with network: 2 error(s)"
+    
+    # Concise format (for CLI)
+    print(e.format_concise())
+    # Shows top 2 errors + fix suggestions
+    
+    # Verbose format (for --verbose)
+    print(e.format_verbose())
+    # Shows all diagnostics with full details
+    
+    # JSON export (for LLMs)
+    error_dict = e.to_dict()
+    # {
+    #   "error": "AlgorithmCompatibilityError",
+    #   "algorithm": "leiden_multilayer",
+    #   "diagnostics": [...],
+    #   "summary": {"errors": 2, "warnings": 0}
+    # }
+    
+    # Access diagnostics
+    for diag in e.diagnostics:
+        print(f"{diag.code}: {diag.message}")
+        for fix in diag.fixes:
+            print(f"  Fix: {fix.description}")
+```
+
+#### Instrumented Algorithms
+
+**Community Detection:**
+- `leiden_multilayer()`: Requires multiplex with strict replicas
+
+**Centrality:**
+- `MultilayerCentrality.pagerank_centrality()`: Supports multilayer/multiplex
+
+**Dynamics:**
+- `SISDynamics`: Supports single/multilayer/multiplex, requires seed
+
+**More algorithms** will be instrumented in future releases.
+
+#### Best Practices
+
+1. **Always set seeds** for stochastic algorithms:
+   ```python
+   result = leiden_multilayer(net, seed=42)
+   ```
+
+2. **Check capabilities** before running algorithms:
+   ```python
+   caps = net.capabilities()
+   print(f"Network is {caps.mode} with {caps.replica_model} replicas")
+   ```
+
+3. **Handle compatibility errors** gracefully:
+   ```python
+   try:
+       result = algorithm(net)
+   except AlgorithmCompatibilityError as e:
+       # Try suggested fix
+       if "to_multiplex" in e.diagnostics[0].fixes[0].replacement:
+           net_multiplex = net.to_multiplex(method='intersection')
+           result = algorithm(net_multiplex)
+   ```
+
+4. **Use query-level UQ** to propagate requirements:
+   ```python
+   result = Q.nodes().compute("betweenness").uq(method="bootstrap", seed=42).execute(net)
+   ```
+
+5. **Inspect diagnostics** in results:
+   ```python
+   if result.meta.get("diagnostics"):
+       print(result.explain())  # Shows diagnostics
+   ```
+
 ### Query Result Inspection
 
 Use `.explain()` and `.debug()` to understand query execution:

@@ -42,6 +42,24 @@ from py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality i
     katz_centrality,
 )
 
+# Import algorithm requirements system
+from py3plex.requirements import AlgoRequirements, check_compat, AlgorithmCompatibilityError
+from py3plex.algorithms.requirements_registry import (
+    PAGERANK_REQS,
+    BETWEENNESS_REQS,
+    CLOSENESS_REQS,
+    GENERAL_MULTILAYER_REQS,
+)
+
+
+# Define requirements for multilayer PageRank (kept for backward compatibility)
+_PAGERANK_REQUIREMENTS = PAGERANK_REQS
+
+# Define requirements for other centrality measures
+_BETWEENNESS_REQUIREMENTS = BETWEENNESS_REQS
+_CLOSENESS_REQUIREMENTS = CLOSENESS_REQS
+_EIGENVECTOR_REQUIREMENTS = GENERAL_MULTILAYER_REQS
+
 
 class MultilayerCentrality:
     """
@@ -478,7 +496,19 @@ class MultilayerCentrality:
             - PageRank values sum to 1.0 (within tol=1e-6)
             - All values are non-negative
             - Converges for strongly connected components or with teleportation
+        
+        Raises:
+            AlgorithmCompatibilityError: If network is incompatible with algorithm requirements
         """
+        # Check compatibility with network
+        if hasattr(self.network, 'capabilities'):
+            net_caps = self.network.capabilities()
+            diagnostics = check_compat(net_caps, _PAGERANK_REQUIREMENTS, algorithm_name='pagerank_centrality')
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='pagerank_centrality')
+        
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
 
@@ -643,7 +673,7 @@ class MultilayerCentrality:
             connection). They are converted to distances via 1/weight for
             shortest path computation. If your edge weights already represent
             distances, use them directly without this function's weight inversion.
-
+        
         Examples:
             >>> # For connected networks, standard closeness works well
             >>> closeness = calc.multilayer_closeness_centrality(variant='standard')
@@ -653,12 +683,24 @@ class MultilayerCentrality:
 
             >>> # Let the algorithm decide based on connectivity
             >>> closeness = calc.multilayer_closeness_centrality(variant='auto')
-
+        
         References:
             - Wasserman, S., & Faust, K. (1994). Social Network Analysis.
             - Boldi, P., & Vigna, S. (2014). Axioms for Centrality. Internet Math.
             - De Domenico, M., et al. (2015). Structural reducibility of multilayer networks.
+        
+        Raises:
+            AlgorithmCompatibilityError: If network is incompatible with algorithm requirements
         """
+        # Check compatibility with network
+        if hasattr(self.network, 'capabilities'):
+            net_caps = self.network.capabilities()
+            diagnostics = check_compat(net_caps, _CLOSENESS_REQUIREMENTS, algorithm_name='multilayer_closeness_centrality')
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='multilayer_closeness_centrality')
+        
         # Convert supra-adjacency matrix to NetworkX graph
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
@@ -756,7 +798,19 @@ class MultilayerCentrality:
             converted to distances (1/weight) for shortest path computation.
             Weights must be positive (> 0). Zero or negative weights will
             cause undefined behavior.
+        
+        Raises:
+            AlgorithmCompatibilityError: If network is incompatible with algorithm requirements
         """
+        # Check compatibility with network
+        if hasattr(self.network, 'capabilities'):
+            net_caps = self.network.capabilities()
+            diagnostics = check_compat(net_caps, _BETWEENNESS_REQUIREMENTS, algorithm_name='multilayer_betweenness_centrality')
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='multilayer_betweenness_centrality')
+        
         # Convert supra-adjacency matrix to NetworkX graph
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()

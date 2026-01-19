@@ -1265,26 +1265,29 @@ class QueryResult:
         
         # Diagnostics
         if "diagnostics" in self.meta:
-            from py3plex.diagnostics import DiagnosticResult
-            
             diag_data = self.meta["diagnostics"]
-            if isinstance(diag_data, DiagnosticResult):
-                diagnostics = diag_data
-            elif isinstance(diag_data, list):
-                from py3plex.diagnostics import Diagnostic, DiagnosticResult
-                diagnostics = DiagnosticResult(diagnostics=[
-                    Diagnostic.from_dict(d) if isinstance(d, dict) else d
-                    for d in diag_data
-                ])
-            else:
-                diagnostics = None
             
-            if diagnostics and diagnostics.diagnostics:
+            if diag_data:
                 lines.append("Diagnostics:")
                 lines.append("")
-                for diag in diagnostics.diagnostics:
-                    lines.append(diag.format(use_color=use_color))
-                    lines.append("")
+                
+                # Handle different formats
+                if isinstance(diag_data, list):
+                    from py3plex.diagnostics.core import Diagnostic
+                    
+                    for diag_item in diag_data:
+                        if isinstance(diag_item, dict):
+                            # Convert dict to Diagnostic object
+                            try:
+                                diag = Diagnostic.from_dict(diag_item)
+                                lines.append(diag.format(use_color=use_color))
+                            except Exception:
+                                # Fallback to simple dict display
+                                lines.append(f"  {diag_item.get('severity', 'info')}: {diag_item.get('message', 'N/A')}")
+                        else:
+                            # Already a Diagnostic object
+                            lines.append(diag_item.format(use_color=use_color))
+                        lines.append("")
         
         # Suggested next queries
         lines.append("Suggested next steps:")

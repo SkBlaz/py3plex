@@ -21,6 +21,22 @@ from ._utils import (
     count_infected_neighbors,
 )
 
+# Import algorithm requirements system
+from py3plex.requirements import AlgoRequirements, check_compat, AlgorithmCompatibilityError
+from py3plex.algorithms.requirements_registry import (
+    SIS_REQS,
+    SIR_REQS,
+    RANDOM_WALK_REQS,
+)
+
+
+# Define requirements for SIS dynamics (kept for backward compatibility)
+_SIS_REQUIREMENTS = SIS_REQS
+
+# Define requirements for other dynamics
+_RANDOM_WALK_REQUIREMENTS = RANDOM_WALK_REQS
+_SIR_REQUIREMENTS = SIR_REQS
+
 
 class RandomWalkDynamics(DynamicsProcess):
     """Single-walker discrete-time random walk on a (multi)layer network.
@@ -49,6 +65,15 @@ class RandomWalkDynamics(DynamicsProcess):
         super().__init__(graph, seed=seed, **kwargs)
         self.start_node = kwargs.get('start_node', None)
         self.lazy_probability = kwargs.get('lazy_probability', 0.0)
+        
+        # Check compatibility with network
+        if hasattr(graph, 'capabilities'):
+            net_caps = graph.capabilities()
+            diagnostics = check_compat(net_caps, _RANDOM_WALK_REQUIREMENTS, algorithm_name='RandomWalkDynamics', seed=seed)
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='RandomWalkDynamics')
     
     def initialize_state(self, seed: Optional[int] = None) -> Any:
         """Initialize walker position.
@@ -302,6 +327,15 @@ class SISDynamics(DynamicsProcess):
         self._adj_matrix = None
         self._node_to_idx = None
         self._idx_to_node = None
+        
+        # Check compatibility with network
+        if hasattr(graph, 'capabilities'):
+            net_caps = graph.capabilities()
+            diagnostics = check_compat(net_caps, _SIS_REQUIREMENTS, algorithm_name='SISDynamics', seed=seed)
+            
+            errors = [d for d in diagnostics if d.severity.value == 'error']
+            if errors:
+                raise AlgorithmCompatibilityError(diagnostics, algo_name='SISDynamics')
     
     def initialize_state(self, seed: Optional[int] = None) -> Any:
         """Initialize SIS state.

@@ -16,6 +16,27 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 import scipy.sparse as sp
 
+# Import algorithm requirements system
+from py3plex.requirements import AlgoRequirements, requires
+
+
+# Define requirements for Leiden multilayer
+_LEIDEN_REQUIREMENTS = AlgoRequirements(
+    allowed_modes=("single", "multilayer", "multiplex"),  # Works on single-layer too
+    replica_model=("none", "partial", "strict"),  # Allow any replica model
+    interlayer_coupling=("none", "identity", "explicit_edges", "both"),
+    requires_edge_weights=False,
+    requires_positive_weights=False,
+    supports_directed=False,
+    supports_undirected=True,
+    uses_randomness=True,
+    requires_seed_for_repro=True,
+    supports_uq=False,
+    expected_complexity="O(n * m) per iteration",
+    memory_profile="O(n + m) for sparse networks",
+    practical_limits={"max_nodes": 100000, "max_edges": 1000000},
+)
+
 
 class LeidenResult:
     """
@@ -229,6 +250,7 @@ def _refine_partition(
     return refined_communities, improved
 
 
+@requires(_LEIDEN_REQUIREMENTS)
 def leiden_multilayer(
     graph_layers: Union[Any, List[Any], np.ndarray],
     interlayer_coupling: Union[float, np.ndarray] = 1.0,

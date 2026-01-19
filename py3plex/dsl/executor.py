@@ -9,7 +9,7 @@ import copy
 import logging
 import random
 import time
-from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union, Callable
 
 try:
     from typing import TYPE_CHECKING
@@ -53,6 +53,9 @@ from .errors import (
     GroupingError,
 )
 
+# Import requirements system for algorithm compatibility checking
+from py3plex.requirements import check_compat, AlgorithmCompatibilityError
+
 # Import UQ resolution and validation
 from .uq_resolution import (
     resolve_uq_config,
@@ -87,6 +90,83 @@ _RESAMPLING_METHOD_MAP = {
     "seed": ResamplingStrategy.SEED,
     "jackknife": ResamplingStrategy.JACKKNIFE,
 }
+
+
+def _check_algorithm_compatibility(
+    network: Any,
+    measure_fn: Callable,
+    compute_item: Optional['ComputeItem'] = None,
+    seed: Optional[int] = None,
+) -> List[Any]:
+    """Check algorithm compatibility and return diagnostics.
+    
+    This function checks if a measure function has requirements attached and
+    validates them against the network capabilities.
+    
+    Args:
+        network: Network to check against
+        measure_fn: Measure function (may have .requirements attribute)
+        compute_item: Optional ComputeItem with UQ info
+        seed: Optional random seed
+    
+    Returns:
+        List of diagnostics (may be empty if compatible or no requirements)
+    """
+    # Check if function has requirements
+    if not hasattr(measure_fn, 'requirements'):
+        return []
+    
+    # Get network capabilities
+    if not hasattr(network, 'capabilities'):
+        return []
+    
+    net_caps = network.capabilities()
+    requirements = measure_fn.requirements
+    
+    # Determine if UQ is requested
+    uq_requested = False
+    uq_method = None
+    if compute_item:
+        uq_requested = compute_item.uncertainty
+        uq_method = compute_item.method
+    
+    # Get measure name
+    algo_name = getattr(measure_fn, '__name__', 'unknown')
+    
+    # Check compatibility
+    diagnostics = check_compat(
+        net_caps,
+        requirements,
+        algorithm_name=algo_name,
+        seed=seed,
+        uq_requested=uq_requested,
+        uq_method=uq_method,
+    )
+    
+    return diagnostics
+
+
+def _attach_diagnostics_to_result(
+    result: 'QueryResult',
+    diagnostics: List[Any],
+) -> None:
+    """Attach diagnostics to query result metadata.
+    
+    Args:
+        result: QueryResult to modify
+        diagnostics: List of Diagnostic objects
+    """
+    if not diagnostics:
+        return
+    
+    # Convert diagnostics to dict format
+    diag_dicts = [d.to_dict() for d in diagnostics]
+    
+    # Add to meta
+    if 'diagnostics' not in result.meta:
+        result.meta['diagnostics'] = []
+    
+    result.meta['diagnostics'].extend(diag_dicts)
 
 
 def _format_uq_info(compute_item: ComputeItem, for_edges: bool = False) -> str:
@@ -1023,6 +1103,23 @@ def _ensure_attribute(
 
                 # Get measure function
                 measure_fn = measure_registry.get(metric_name)
+                
+                # Check algorithm compatibility
+                diagnostics = _check_algorithm_compatibility(
+                    network,
+                    measure_fn,
+                    compute_item=None if select.uq_config is None else ComputeItem(
+                        name=metric_name,
+                        uncertainty=True,
+                        method=select.uq_config.method,
+                    ),
+                    seed=select.uq_config.seed if select.uq_config else None,
+                )
+                
+                # Handle compatibility errors
+                errors = [d for d in diagnostics if d.severity.value == 'error']
+                if errors:
+                    raise AlgorithmCompatibilityError(diagnostics, algo_name=metric_name)
 
                 # Check if query has UQ config - if so, compute with uncertainty
                 if select.uq_config is not None:

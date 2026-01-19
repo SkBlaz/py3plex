@@ -451,3 +451,70 @@ class TemporalMultiLayerNetwork:
             tnet.add_edge(u, layer_u, v, layer_v, t, weight, **extra)
         
         return tnet
+    
+    def capabilities(self, force_recompute: bool = False):
+        """Compute and cache network capabilities for algorithm compatibility checking.
+        
+        This method returns capabilities with mode set to "temporal" and delegates
+        most capability computation to the underlying base_network.
+        
+        Args:
+            force_recompute: If True, recompute capabilities even if cached
+        
+        Returns:
+            NetworkCapabilities: Dataclass with network properties including temporal mode
+        
+        Examples:
+            >>> tnet = TemporalMultiLayerNetwork()
+            >>> caps = tnet.capabilities()
+            >>> print(caps.mode)
+            'temporal'
+        
+        Notes:
+            - Results are cached for performance
+            - Mode is always "temporal" for TemporalMultiLayerNetwork
+        """
+        # Check cache
+        if not force_recompute and hasattr(self, '_cached_capabilities'):
+            return self._cached_capabilities
+        
+        # Get base network capabilities
+        if self.base_network:
+            base_caps = self.base_network.capabilities(force_recompute=force_recompute)
+            
+            # Override mode to "temporal"
+            from py3plex.requirements import NetworkCapabilities
+            
+            capabilities = NetworkCapabilities(
+                mode="temporal",
+                replica_model=base_caps.replica_model,
+                interlayer_coupling=base_caps.interlayer_coupling,
+                directed=base_caps.directed,
+                weighted=base_caps.weighted,
+                weight_domain=base_caps.weight_domain,
+                has_missing_replicas=base_caps.has_missing_replicas,
+                layer_count=base_caps.layer_count,
+                base_node_count=base_caps.base_node_count,
+                node_replica_count=base_caps.node_replica_count,
+                has_self_loops=base_caps.has_self_loops,
+                has_parallel_edges=base_caps.has_parallel_edges,
+                total_edges=len(self.temporal_edges),
+            )
+        else:
+            # Empty temporal network
+            from py3plex.requirements import NetworkCapabilities
+            
+            capabilities = NetworkCapabilities(
+                mode="temporal",
+                replica_model="none",
+                interlayer_coupling="none",
+                directed=False,
+                weighted=False,
+                layer_count=0,
+                total_edges=0,
+            )
+        
+        # Cache the result
+        self._cached_capabilities = capabilities
+        
+        return capabilities

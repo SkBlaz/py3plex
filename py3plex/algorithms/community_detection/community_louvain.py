@@ -8,6 +8,10 @@ from typing import Dict, List, Optional
 
 import networkx as nx
 
+# Import algorithm requirements
+from py3plex.algorithms.requirements_registry import LOUVAIN_REQS
+from py3plex.requirements import requires
+
 
 
 
@@ -218,6 +222,7 @@ def modularity(partition: Dict, graph: nx.Graph, weight: str = "weight") -> floa
     return res
 
 
+@requires(LOUVAIN_REQS)
 def best_partition(
     graph: nx.Graph,
     partition: Optional[Dict] = None,
