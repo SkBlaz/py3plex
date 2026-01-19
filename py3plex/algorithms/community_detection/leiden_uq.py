@@ -252,7 +252,7 @@ def multilayer_leiden(
     
     # Run Leiden algorithm
     result = leiden_multilayer(
-        graph_layers=network,
+        network,  # First positional arg (gets passed to graph_layers after decorator)
         interlayer_coupling=omega,
         resolution=gamma,
         seed=random_state,

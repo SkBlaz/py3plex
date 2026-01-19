@@ -110,8 +110,8 @@ STOCHASTIC_REQS = AlgoRequirements(
 
 # Community Detection
 LEIDEN_MULTILAYER_REQS = AlgoRequirements(
-    allowed_modes=("multilayer", "multiplex"),
-    replica_model=("partial", "strict"),
+    allowed_modes=("single", "multilayer", "multiplex"),  # Works on single-layer too
+    replica_model=("none", "partial", "strict"),  # Allow any replica model
     interlayer_coupling=("none", "identity", "explicit_edges", "both"),
     requires_edge_weights=False,
     requires_positive_weights=False,
@@ -249,7 +249,7 @@ RANDOM_WALK_REQS = AlgoRequirements(
     supports_directed=True,
     supports_undirected=True,
     uses_randomness=True,
-    requires_seed_for_repro=True,
+    requires_seed_for_repro=False,  # Seed can be set after initialization via set_seed()
     supports_uq=False,
 )
 

@@ -22,8 +22,8 @@ from py3plex.requirements import AlgoRequirements, requires
 
 # Define requirements for Leiden multilayer
 _LEIDEN_REQUIREMENTS = AlgoRequirements(
-    allowed_modes=("multilayer", "multiplex"),
-    replica_model=("partial", "strict"),
+    allowed_modes=("single", "multilayer", "multiplex"),  # Works on single-layer too
+    replica_model=("none", "partial", "strict"),  # Allow any replica model
     interlayer_coupling=("none", "identity", "explicit_edges", "both"),
     requires_edge_weights=False,
     requires_positive_weights=False,
