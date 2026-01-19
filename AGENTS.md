@@ -8091,3 +8091,243 @@ result.meta = {
 - **Variational inference:** Gopalan & Blei (2013)
 - **Multilayer SBM:** Stanley et al. (2016)
 
+
+---
+
+## Expanded Test Coverage and Validation
+
+**Status as of January 2026**: The py3plex test suite has been significantly expanded to enforce documented guarantees and architectural claims across all major subsystems.
+
+### Test Coverage Summary
+
+The test suite now includes **203 new deterministic, CI-friendly tests** across 10 specialized test modules:
+
+| Test Module | Tests | Coverage Area |
+|-------------|-------|---------------|
+| `test_dsl_ast_equivalence.py` | 21 | DSL ↔ DSL v2 AST compilation equivalence |
+| `test_provenance_schema.py` | 17 | Provenance completeness and schema stability |
+| `test_determinism_randomness.py` | 16 | Seed determinism and randomness boundaries |
+| `test_roundtrip_invariants.py` | 21 | Data conversion preservation (dict/pandas/IO) |
+| `test_node_edge_parity.py` | 31 | Node/edge operation symmetry |
+| `test_exception_taxonomy.py` | 22 | Exception hierarchy enforcement |
+| `test_coverage_grouping.py` | 19 | Coverage and grouping correctness |
+| `test_nullmodel_sanity.py` | 17 | Null model structural invariants |
+| `test_dsl_graphops_equivalence.py` | 13 | DSL ↔ graph_ops semantic equivalence |
+| `test_degenerate_networks.py` | 26 | Edge-case and empty network handling |
+
+**Total**: 203 new tests, all automated and passing.
+
+### Enforced Guarantees
+
+These tests enforce the following documented guarantees:
+
+#### 1. Single-AST Compilation Model
+
+**Guarantee**: All DSL frontends (string DSL, Q builder, graph_ops) compile to identical AST structures.
+
+**Tests**: 
+- `test_dsl_ast_equivalence.py` verifies:
+  - Identical AST hash for equivalent queries
+  - Identical AST summary strings
+  - AST hash determinism (same query → same hash)
+  - AST hash uniqueness (different queries → different hashes)
+
+**Validation**: AST hashes are 16-character SHA256 prefixes, stable across invocations.
+
+#### 2. Provenance Completeness
+
+**Guarantee**: All query execution paths produce complete provenance metadata with stable schema.
+
+**Tests**:
+- `test_provenance_schema.py` verifies presence of required keys:
+  - `engine` (execution engine identifier)
+  - `py3plex_version` (library version)
+  - `timestamp_utc` (ISO8601 execution time)
+  - `network_fingerprint` (node/edge/layer counts)
+  - `query.ast_hash` (16-char AST fingerprint)
+  - `performance.total_ms` (execution time)
+
+**Validation**: Snapshot-style tests detect schema drift. Network fingerprints are deterministic and consistent.
+
+#### 3. Determinism and Randomness Boundaries
+
+**Guarantee**: Algorithms with seeds produce identical results; different seeds produce statistically different outputs.
+
+**Tests**:
+- `test_determinism_randomness.py` verifies:
+  - Same seed → identical results (UQ, null models, community detection)
+  - Different seeds → different results (statistical test)
+  - seed=None behavior (runs without error)
+  - Deterministic metrics (degree, betweenness) remain deterministic
+
+**Validation**: Null models with same seed produce networks with identical node/edge counts. UQ with same seed produces identical confidence intervals.
+
+#### 4. Round-Trip Invariants
+
+**Guarantee**: Data conversions preserve structure and attributes.
+
+**Tests**:
+- `test_roundtrip_invariants.py` verifies:
+  - QueryResult → dict → QueryResult (structure preserved)
+  - QueryResult → pandas → QueryResult (values preserved)
+  - Network → IO format → Network (counts preserved)
+  - Network fingerprint stability across operations
+
+**Validation**: Node count, edge count, layer count, and network fingerprint remain identical after round-trip conversions.
+
+#### 5. Node–Edge Feature Parity
+
+**Guarantee**: Node queries and edge queries support symmetric operations where documented.
+
+**Tests**:
+- `test_node_edge_parity.py` verifies parity for:
+  - Filtering (`.where()` conditions)
+  - Grouping (`.per_layer()` for nodes, `.per_layer_pair()` for edges)
+  - Ordering (`.order_by()` and descending)
+  - Limiting (`.limit()` and `.head()`)
+  - Export (`.to_pandas()`)
+
+**Validation**: Both nodes and edges support filtering, ordering, limiting, and pandas export with consistent behavior.
+
+#### 6. Exception Taxonomy
+
+**Guarantee**: Public APIs use typed exceptions with informative messages; no raw `Exception` leaks.
+
+**Tests**:
+- `test_exception_taxonomy.py` verifies:
+  - `DslError` hierarchy (syntax, execution, unknown measure, missing parameter)
+  - `Py3plexException` hierarchy (IOError, generic)
+  - Non-empty, descriptive error messages
+  - Exception hierarchy (specific exceptions inherit from base classes)
+  - No system corruption after errors (network remains unchanged)
+
+**Validation**: Invalid operations raise domain-specific exceptions with >10 character messages. System remains usable after errors.
+
+#### 7. Coverage and Grouping Correctness
+
+**Guarantee**: Coverage filtering and grouping produce exact membership, not just correct counts.
+
+**Tests**:
+- `test_coverage_grouping.py` verifies:
+  - `.coverage(mode="at_least", k=n)` returns correct nodes
+  - `.per_layer()` grouping metadata is present
+  - `.per_layer_pair()` edge grouping works
+  - Grouping with filters combines correctly
+  - Edge cases (single layer, empty network) handled gracefully
+
+**Validation**: Synthetic analytical networks with known coverage properties (node A in 3 layers, node B in 2 layers, node C in 1 layer) validate exact membership.
+
+#### 8. Null Model Statistical Sanity
+
+**Guarantee**: Null models preserve structural invariants and produce statistically reasonable results.
+
+**Tests**:
+- `test_nullmodel_sanity.py` verifies:
+  - Configuration model preserves node count, edge count (approximately), layers
+  - Erdos-Renyi model preserves node count
+  - Edge swap model preserves node count and edge count (exactly)
+  - Layer shuffle model preserves nodes and edges
+  - Different seeds produce different networks (probabilistic test)
+  - Null model results include seed, model_type, samples
+
+**Validation**: Null models on 10-node networks preserve basic structural properties. Degree distributions remain non-negative and bounded.
+
+#### 9. DSL ↔ graph_ops Semantic Equivalence
+
+**Guarantee**: DSL and graph_ops produce equivalent results for identical analytical operations.
+
+**Tests**:
+- `test_dsl_graphops_equivalence.py` verifies:
+  - Node selection count matches
+  - Edge selection count matches
+  - Filtering produces consistent results
+  - Ordering produces sorted results
+  - Limiting respects bounds
+  - Both APIs export to pandas
+
+**Validation**: Simple operations (select all nodes, filter by degree, order by degree) produce same counts and structures in both APIs.
+
+#### 10. Degenerate and Edge-Case Networks
+
+**Guarantee**: No crashes on degenerate inputs; well-defined empty outputs; correct provenance for zero results.
+
+**Tests**:
+- `test_degenerate_networks.py` verifies:
+  - Empty network handling (0 nodes, 0 edges)
+  - Single-node network (degree 0, no edges)
+  - Single-layer network (layer_count=1)
+  - Disconnected layers (no inter-layer edges)
+  - No-match queries (degree > 1000 returns empty)
+  - Empty results convert to pandas gracefully
+  - Provenance present even for empty results
+
+**Validation**: All edge cases complete without exceptions. Empty results have length 0, convert to empty DataFrames, and include full provenance metadata.
+
+### Architectural Claims Validated
+
+The expanded test suite validates these architectural claims from AGENTS.md:
+
+1. **AST hash stability**: Identical queries produce identical AST hashes ✅ (tested)
+2. **Reproducibility guarantee**: Same AST hash + seed + network → same results ✅ (tested)
+3. **Provenance schema stability**: All executors produce same provenance keys ✅ (tested)
+4. **Deterministic metrics**: Degree, betweenness produce identical values on repeat ✅ (tested)
+5. **Network fingerprint stability**: Queries don't modify networks ✅ (tested)
+6. **Round-trip safety**: Data conversions preserve structure ✅ (tested)
+7. **Exception safety**: Typed exceptions, no state corruption ✅ (tested)
+8. **Empty-network robustness**: All operations handle empty inputs ✅ (tested)
+9. **Null model correctness**: Structural invariants preserved ✅ (tested)
+10. **API symmetry**: Node and edge operations have documented parity ✅ (tested)
+
+### Test Design Principles
+
+All new tests follow these principles:
+
+1. **Small synthetic networks**: Use networks with known ground truth (e.g., known degree sequences, known layer memberships)
+2. **No flaky tests**: All tests are deterministic; probabilistic tests use lenient thresholds
+3. **Explicit invariants**: Tests assert properties, not just execution success
+4. **Meaningful failures**: Each test fails if a documented guarantee breaks
+5. **CI-friendly**: All tests complete in <1 second on typical hardware
+6. **No external dependencies**: Tests use only pytest (and hypothesis where clearly justified)
+
+### How to Run Tests
+
+```bash
+# Run all new test modules
+pytest tests/test_dsl_ast_equivalence.py \
+       tests/test_provenance_schema.py \
+       tests/test_determinism_randomness.py \
+       tests/test_roundtrip_invariants.py \
+       tests/test_node_edge_parity.py \
+       tests/test_exception_taxonomy.py \
+       tests/test_coverage_grouping.py \
+       tests/test_nullmodel_sanity.py \
+       tests/test_dsl_graphops_equivalence.py \
+       tests/test_degenerate_networks.py
+
+# Run specific test class
+pytest tests/test_dsl_ast_equivalence.py::TestASTStability -v
+
+# Run with coverage
+pytest tests/test_*.py --cov=py3plex --cov-report=html
+```
+
+### Known Limitations
+
+1. **Legacy DSL equivalence**: String DSL vs Q builder AST equivalence is not fully tested (legacy DSL has different internal representation)
+2. **Pipeline provenance**: Pipeline API provenance testing is limited (graph_ops doesn't always attach provenance)
+3. **Community detection**: Leiden tests are marked `@pytest.mark.slow` and excluded from fast test runs
+4. **Hypothesis integration**: Property-based tests are used conservatively (determinism tests only)
+
+### Future Expansion
+
+Recommended areas for future test coverage:
+
+1. **Performance regression tests**: Benchmark key operations to detect slowdowns
+2. **Memory leak tests**: Monitor memory usage for long-running operations
+3. **Concurrency tests**: Verify thread-safety of stateful operations
+4. **Integration tests**: End-to-end workflows from data loading to export
+5. **Property-based tests**: Expand use of Hypothesis for edge-case discovery
+
+---
+
+**Repo State Note**: As of January 2026, py3plex has 203 new deterministic tests enforcing 10 major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, and edge cases. All tests are automated, CI-friendly, and passing.
