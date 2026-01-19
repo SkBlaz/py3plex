@@ -130,18 +130,18 @@ class DslSyntaxError(DslError):
         full_message = message
         
         if intent:
-            full_message += f"\n\n💭 You probably wanted to: {intent}"
+            full_message += f"\n\n[INTENT] You probably wanted to: {intent}"
         
         if why_failed:
-            full_message += f"\n\n❌ Why this failed: {why_failed}"
+            full_message += f"\n\n[ERROR] Why this failed: {why_failed}"
         
         if examples:
-            full_message += "\n\n✅ Corrected examples:"
+            full_message += "\n\n[CORRECT] Corrected examples:"
             for i, example in enumerate(examples, 1):
                 full_message += f"\n  {i}. {example}"
         
         if pitfall:
-            full_message += f"\n\n⚠️  Common pitfall: {pitfall}"
+            full_message += f"\n\n[WARNING]  Common pitfall: {pitfall}"
         
         super().__init__(full_message, **kwargs)
 
@@ -170,18 +170,18 @@ class DslExecutionError(DslError):
         full_message = message
         
         if intent:
-            full_message += f"\n\n💭 You probably wanted to: {intent}"
+            full_message += f"\n\n[INTENT] You probably wanted to: {intent}"
         
         if why_failed:
-            full_message += f"\n\n❌ Why this failed: {why_failed}"
+            full_message += f"\n\n[ERROR] Why this failed: {why_failed}"
         
         if examples:
-            full_message += "\n\n✅ Corrected examples:"
+            full_message += "\n\n[CORRECT] Corrected examples:"
             for i, example in enumerate(examples, 1):
                 full_message += f"\n  {i}. {example}"
         
         if pitfall:
-            full_message += f"\n\n⚠️  Common pitfall: {pitfall}"
+            full_message += f"\n\n[WARNING]  Common pitfall: {pitfall}"
         
         super().__init__(full_message, **kwargs)
 
@@ -368,13 +368,13 @@ class MultilayerSemanticError(DslError):
         full_message = message
         
         if semantic_issue:
-            full_message += f"\n\n🔍 Multilayer semantic issue: {semantic_issue}"
+            full_message += f"\n\n[STATE] Multilayer semantic issue: {semantic_issue}"
         
         if multilayer_context:
-            full_message += f"\n\n📚 Multilayer concept: {multilayer_context}"
+            full_message += f"\n\n[CONCEPT] Multilayer concept: {multilayer_context}"
         
         if examples:
-            full_message += "\n\n✅ Recommended approach:"
+            full_message += "\n\n[CORRECT] Recommended approach:"
             for i, example in enumerate(examples, 1):
                 full_message += f"\n  {i}. {example}"
         
