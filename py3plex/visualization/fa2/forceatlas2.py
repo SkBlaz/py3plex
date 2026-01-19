@@ -64,7 +64,7 @@ class ForceAtlas2:
         strongGravityMode=False,
         gravity=1.0,
         # Log
-        verbose=True,
+        verbose=False,
     ):
         assert (
             linLogMode == adjustSizes == multiThreaded is False

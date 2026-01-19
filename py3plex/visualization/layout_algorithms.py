@@ -135,7 +135,7 @@ def compute_force_directed_layout(
                 strongGravityMode=False,
                 gravity=gravity,
                 # Log
-                verbose=verbose,
+                verbose=False,
             )
 
             if layout_parameters is not None:
