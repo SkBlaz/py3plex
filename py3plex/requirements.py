@@ -199,19 +199,51 @@ def check_compat(
             cause=f"The algorithm is designed for {req.allowed_modes} networks and cannot handle '{net_caps.mode}' networks.",
             fixes=[
                 FixSuggestion(
-                    description="Convert network to compatible mode",
+                    description=f"Convert from '{net_caps.mode}' to compatible mode",
                     replacement=_suggest_mode_conversion(net_caps.mode, req.allowed_modes),
                 ),
                 FixSuggestion(
-                    description="Use a compatible algorithm",
+                    description="Find algorithms compatible with your network type",
                     replacement="py3plex.algorithms.list(compatible_with=net)",
                 ),
             ],
-            related=["net.capabilities()", "net.summary()"],
+            related=["net.capabilities()", "net.summary()", "net.to_multiplex()", "net.to_multilayer()", "net.flatten_to_monoplex()"],
         ))
     
     # Check replica model
     if net_caps.replica_model not in req.replica_model:
+        # Build context-aware fix suggestions
+        fix_suggestions = []
+        
+        if "strict" in req.replica_model and net_caps.replica_model in ("partial", "none"):
+            fix_suggestions.append(FixSuggestion(
+                description="Convert to strict multiplex (all nodes present in all layers)",
+                replacement="net.to_multiplex(method='intersection')  # Keeps only nodes in all layers",
+            ))
+        
+        if "partial" in req.replica_model and net_caps.replica_model == "none":
+            fix_suggestions.append(FixSuggestion(
+                description="Convert single-layer to multilayer (enables partial replicas)",
+                replacement="net.to_multilayer()  # Convert to multilayer representation",
+            ))
+        elif "partial" in req.replica_model and net_caps.replica_model == "strict":
+            fix_suggestions.append(FixSuggestion(
+                description="Relax from strict to partial replicas",
+                replacement="net.to_multilayer()  # Allows nodes in subset of layers",
+            ))
+        
+        if "none" in req.replica_model and net_caps.replica_model in ("partial", "strict"):
+            fix_suggestions.append(FixSuggestion(
+                description="Flatten to single-layer network",
+                replacement="net.flatten_to_monoplex(method='union')  # Merge all layers",
+            ))
+        
+        if not fix_suggestions:
+            fix_suggestions.append(FixSuggestion(
+                description="Use a compatible algorithm",
+                replacement="py3plex.algorithms.list(compatible_with=net)",
+            ))
+        
         diagnostics.append(Diagnostic(
             severity=DiagnosticSeverity.ERROR,
             code="ALGO_REQ_002",
@@ -224,21 +256,56 @@ def check_compat(
                 }
             ),
             cause=f"The algorithm expects {req.replica_model} replica model but network uses '{net_caps.replica_model}'.",
-            fixes=[
-                FixSuggestion(
-                    description="Convert to strict multiplex (all nodes in all layers)",
-                    replacement="net.to_multiplex(method='intersection')",
-                ) if "strict" in req.replica_model else None,
-                FixSuggestion(
-                    description="Convert to multilayer (allows partial replicas)",
-                    replacement="net.to_multilayer()",
-                ) if "partial" in req.replica_model else None,
-            ],
-            related=["net.capabilities()", "net.to_multiplex()", "net.to_multilayer()"],
+            fixes=fix_suggestions,
+            related=["net.capabilities()", "net.to_multiplex()", "net.to_multilayer()", "net.flatten_to_monoplex()"],
         ))
     
     # Check interlayer coupling
     if net_caps.interlayer_coupling not in req.interlayer_coupling:
+        # Build context-aware fix suggestions  
+        fix_suggestions = []
+        
+        if "identity" in req.interlayer_coupling and net_caps.interlayer_coupling == "none":
+            fix_suggestions.append(FixSuggestion(
+                description="Add identity interlayer edges (connect same nodes across layers)",
+                replacement="net.add_identity_interlayer_edges(weight=1.0)  # Links node replicas",
+            ))
+        
+        if "explicit_edges" in req.interlayer_coupling and net_caps.interlayer_coupling == "none":
+            fix_suggestions.append(FixSuggestion(
+                description="Add explicit interlayer edges",
+                replacement="net.add_edges([{'source': node1, 'target': node2, 'source_type': layer1, 'target_type': layer2}])  # Custom cross-layer edges",
+            ))
+        
+        if "both" in req.interlayer_coupling and net_caps.interlayer_coupling in ("none", "identity", "explicit_edges"):
+            if net_caps.interlayer_coupling == "none":
+                fix_suggestions.append(FixSuggestion(
+                    description="Add both identity and explicit interlayer edges",
+                    replacement="net.add_identity_interlayer_edges(weight=1.0); net.add_edges([...])  # Add both types",
+                ))
+            elif net_caps.interlayer_coupling == "identity":
+                fix_suggestions.append(FixSuggestion(
+                    description="Add explicit interlayer edges (identity edges already present)",
+                    replacement="net.add_edges([{'source': node1, 'target': node2, 'source_type': layer1, 'target_type': layer2}])  # Add custom edges",
+                ))
+            elif net_caps.interlayer_coupling == "explicit_edges":
+                fix_suggestions.append(FixSuggestion(
+                    description="Add identity interlayer edges (explicit edges already present)",
+                    replacement="net.add_identity_interlayer_edges(weight=1.0)  # Add identity edges",
+                ))
+        
+        if "none" in req.interlayer_coupling and net_caps.interlayer_coupling != "none":
+            fix_suggestions.append(FixSuggestion(
+                description="Remove interlayer edges or flatten to single layer",
+                replacement="net.flatten_to_monoplex(method='union')  # Merge layers without interlayer edges",
+            ))
+        
+        if not fix_suggestions:
+            fix_suggestions.append(FixSuggestion(
+                description="Use a compatible algorithm",
+                replacement="py3plex.algorithms.list(compatible_with=net)",
+            ))
+        
         diagnostics.append(Diagnostic(
             severity=DiagnosticSeverity.ERROR,
             code="ALGO_REQ_003",
@@ -251,13 +318,8 @@ def check_compat(
                 }
             ),
             cause=f"The algorithm needs {req.interlayer_coupling} coupling but network has '{net_caps.interlayer_coupling}'.",
-            fixes=[
-                FixSuggestion(
-                    description="Add identity interlayer edges",
-                    replacement="net.add_identity_interlayer_edges(weight=1.0)",
-                ) if "identity" in req.interlayer_coupling else None,
-            ],
-            related=["net.add_identity_interlayer_edges()", "net.capabilities()"],
+            fixes=fix_suggestions,
+            related=["net.add_identity_interlayer_edges()", "net.add_edges()", "net.capabilities()", "net.flatten_to_monoplex()"],
         ))
     
     # Check edge weights requirement
@@ -437,15 +499,43 @@ def check_compat(
 
 
 def _suggest_mode_conversion(current_mode: NetworkMode, allowed_modes: Tuple[NetworkMode, ...]) -> str:
-    """Suggest appropriate conversion based on current and allowed modes."""
-    if "multiplex" in allowed_modes:
-        return "net.to_multiplex(method='intersection')"
-    elif "multilayer" in allowed_modes:
-        return "net.to_multilayer()"
-    elif "single" in allowed_modes:
-        return "net.flatten_to_monoplex(method='union')"
+    """Suggest appropriate conversion based on current and allowed modes.
+    
+    Args:
+        current_mode: Current network mode
+        allowed_modes: Tuple of allowed modes for the algorithm
+    
+    Returns:
+        Code snippet or description for converting network
+    """
+    # Priority order: multiplex > multilayer > single
+    if "multiplex" in allowed_modes and current_mode != "multiplex":
+        if current_mode == "multilayer":
+            return "net.to_multiplex(method='intersection')  # Keep only nodes present in all layers"
+        elif current_mode == "single":
+            return "# Single-layer cannot be converted to multiplex; use multilayer algorithm instead"
+        else:
+            return "net.to_multiplex(method='intersection')"
+    
+    elif "multilayer" in allowed_modes and current_mode != "multilayer":
+        if current_mode == "single":
+            return "net.to_multilayer()  # Convert single-layer to multilayer representation"
+        elif current_mode == "multiplex":
+            return "net.to_multilayer()  # Relax to multilayer (allows partial replicas)"
+        else:
+            return "net.to_multilayer()"
+    
+    elif "single" in allowed_modes and current_mode != "single":
+        if current_mode in ("multilayer", "multiplex"):
+            return "net.flatten_to_monoplex(method='union')  # Merge all layers into single network"
+        else:
+            return "net.flatten_to_monoplex(method='union')"
+    
+    elif "temporal" in allowed_modes:
+        return "# Convert to temporal network representation with time-stamped edges"
+    
     else:
-        return "# Conversion not straightforward; check documentation"
+        return "# No direct conversion available; check py3plex.algorithms.list(compatible_with=net)"
 
 
 class AlgorithmCompatibilityError(Py3plexException):
