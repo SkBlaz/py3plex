@@ -971,6 +971,192 @@ Aggregates return dictionary values with uncertainty:
 * Uncertainty-aware decision making
 * Sensitivity analysis for network metrics
 
+Guided Quickstart Recipes
+--------------------------
+
+These task-oriented recipes demonstrate best practices for common multilayer network analysis tasks. Each recipe is minimal (≤10 lines) and uses DSL v2 with modern practices.
+
+Recipe 1: Find Hubs Across Layers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Identify nodes that are highly central across multiple network layers:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    from py3plex.core import multinet
+    
+    # Load your network
+    net = multinet.multi_layer_network()
+    net.load_network("network.graphml")
+    
+    # Find nodes with high degree in multiple layers
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])  # All layers
+         .compute("degree", "betweenness_centrality")
+         .per_layer()  # Group by layer
+           .top_k(10, "degree")  # Top 10 per layer
+         .end_grouping()
+         .coverage(mode="at_least", k=2)  # Present in ≥2 layers
+         .order_by("-degree")
+         .execute(net)
+    )
+    
+    # Export hub nodes
+    df = result.to_pandas()
+    df.to_csv("cross_layer_hubs.csv", index=False)
+    print(f"Found {result.count} hubs across {len(net.get_layers())} layers")
+
+**Best practices:**
+
+* Use ``per_layer()`` for layer-aware analysis
+* Apply ``coverage()`` to find persistent hubs
+* Always ``end_grouping()`` before applying filters
+
+Recipe 2: Compare Two Multilayer Networks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Systematically compare network structure and metrics across two networks:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, C
+    
+    # Load two networks
+    net1 = multinet.multi_layer_network()
+    net1.load_network("network_v1.graphml")
+    
+    net2 = multinet.multi_layer_network()
+    net2.load_network("network_v2.graphml")
+    
+    # Compare using C (Compare) builder
+    comparison = (
+        C.networks(baseline=net1, treatment=net2)
+         .compare_structure()  # Node/edge counts, density
+         .compare_metrics("degree", "betweenness_centrality")
+         .per_layer()  # Compare layer-by-layer
+         .execute()
+    )
+    
+    # Access comparison results
+    df_structural = comparison.structural_diff()
+    df_metrics = comparison.metric_diff()
+    
+    print(df_structural)
+    print(df_metrics)
+
+**Alternative: Manual comparison with provenance**
+
+.. code-block:: python
+
+    # Query with provenance for reproducibility
+    result1 = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality")
+         .provenance(mode="replayable")
+         .execute(net1)
+    )
+    
+    result2 = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality")
+         .provenance(mode="replayable")
+         .execute(net2)
+    )
+    
+    # Compare DataFrames
+    df1 = result1.to_pandas()
+    df2 = result2.to_pandas()
+    
+    # Compute differences (e.g., degree changes)
+    merged = df1.merge(df2, on=["id", "layer"], suffixes=("_v1", "_v2"))
+    merged["degree_diff"] = merged["degree_v2"] - merged["degree_v1"]
+
+Recipe 3: Run Community Detection with Uncertainty
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Find communities with uncertainty quantification to assess partition stability:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, UQ
+    
+    # Community detection with UQ
+    result = (
+        Q.nodes()
+         .from_layers(L["social"] + L["work"])
+         .community(method="leiden", gamma=1.2, omega=0.8, random_state=42)
+         .uq(method="ensemble", n_samples=50, seed=42)
+         .execute(net)
+    )
+    
+    # Access consensus partition and stability
+    consensus_partition = result.meta["consensus_partition"]
+    score_ci = result.meta["score_ci"]  # Confidence interval for modularity
+    
+    print(f"Consensus modularity: {score_ci['mean']:.3f} ± {score_ci['std']:.3f}")
+    print(f"95% CI: [{score_ci['ci95_low']:.3f}, {score_ci['ci95_high']:.3f}]")
+    
+    # Get community assignments with uncertainty
+    df = result.to_pandas()
+    print(df[["id", "layer", "community_id"]].head())
+
+**Best practices:**
+
+* Use ``random_state`` for reproducibility
+* UQ method ``ensemble`` is best for community detection
+* Check ``score_ci`` to assess partition quality
+
+Recipe 4: Export Reproducible Results
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Create fully reproducible analysis results with provenance tracking:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Query with full provenance
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree", "betweenness_centrality", "clustering")
+         .uq(method="bootstrap", n_samples=100, seed=42)
+         .provenance(mode="replayable", capture="snapshot")
+         .execute(net)
+    )
+    
+    # Export bundle with everything needed for replay
+    result.export_bundle("analysis_results.bundle.json.gz", compress=True)
+    
+    # Also export data tables
+    df = result.to_pandas(expand_uncertainty=True)
+    df.to_csv("metrics_with_uncertainty.csv", index=False)
+    
+    # Later: Replay the analysis
+    from py3plex.provenance.replay import replay_query_from_bundle
+    replayed_result = replay_query_from_bundle("analysis_results.bundle.json.gz")
+    
+    # Results should match exactly
+    assert replayed_result.count == result.count
+
+**Best practices:**
+
+* Always set ``seed`` for UQ to ensure reproducibility
+* Use ``provenance(mode="replayable")`` for full replay capability
+* Export bundle immediately after execution
+* Store bundle with analysis outputs for audit trail
+
+**Provenance bundle contents:**
+
+* Query AST (serialized)
+* Network snapshot or fingerprint
+* Parameter values
+* Random seeds
+* Environment info (py3plex version, Python version)
+* Optionally: Full result data
+
 Summary
 -------
 

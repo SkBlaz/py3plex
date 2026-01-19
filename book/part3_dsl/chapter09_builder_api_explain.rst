@@ -252,6 +252,125 @@ Optimization Tips
 Advanced Builder Features
 -------------------------
 
+Interactive Query Building with Hints
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``hint()`` method provides context-aware suggestions for next steps when building queries. It analyzes the current query state and suggests relevant methods:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Start building a query
+    q = Q.nodes().from_layers(L["social"])
+    
+    # Get hints for what to do next
+    q.hint()
+    # Output:
+    # ==========================================
+    # 📘 Query Builder Hints
+    # ==========================================
+    #
+    # 🔍 Current query state:
+    #   ✓ Layers selected
+    #
+    # 💡 Suggested next steps:
+    #
+    # 1. → .where(degree__gt=3)  # Filter nodes by attributes
+    # 2. → .compute("degree", "betweenness_centrality")  # Compute metrics
+    # 3. → .per_layer()  # Group results by layer
+    # 4. → .execute(network)  # Execute the query
+    
+    # Continue building
+    q = q.where(degree__gt=3)
+    q.hint()  # Will suggest different options based on new state
+
+**Hints adapt to your query context:**
+
+* After ``where()``: Suggests ``compute()``, ``per_layer()``, ``uq()``
+* After ``compute()``: Suggests ``order_by()``, ``limit()``, ``explain()``
+* After ``per_layer()``: Suggests ``aggregate()``, ``coverage()``, ``end_grouping()``
+* After grouping: Suggests ``top_k()``, ``coverage()``
+
+**Key features:**
+
+* **Non-invasive**: Only displays information, doesn't modify query
+* **Context-aware**: Suggestions change based on current state
+* **Educational**: Includes examples and method signatures
+* **Chainable**: Returns self, so you can chain ``.hint().execute(net)``
+
+Understanding QueryResult Objects
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you execute a query, py3plex returns a ``QueryResult`` object with rich metadata:
+
+.. code-block:: python
+
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree", "betweenness_centrality")
+         .per_layer()
+         .uq(method="bootstrap", n_samples=100)
+         .execute(network)
+    )
+    
+    # Rich representation shows full context
+    print(result)
+    # Output:
+    # QueryResult(
+    #   target='nodes'
+    #   count=42
+    #   attributes=['degree', 'betweenness_centrality']
+    #   computed=['degree', 'betweenness_centrality']
+    #   grouping='per_layer' (3 groups)
+    #   uncertainty='bootstrap'
+    #   provenance='replayable'
+    #   replayable=True
+    # )
+
+**Reading a QueryResult:**
+
+1. **target**: What was queried ('nodes', 'edges', 'communities')
+2. **count**: Number of items returned
+3. **attributes**: Computed attributes/metrics available
+4. **computed**: Metrics explicitly computed (vs. pre-existing)
+5. **grouping**: If grouped (per_layer, per_layer_pair), shows type and count
+6. **uncertainty**: UQ method if enabled (bootstrap, perturbation, etc.)
+7. **provenance**: Provenance mode (none, tracked, replayable)
+8. **replayable**: Whether query can be replayed deterministically
+
+**Before calling .to_pandas():**
+
+Always inspect the QueryResult to understand what you have:
+
+.. code-block:: python
+
+    # ❌ Don't immediately convert without inspecting
+    df = result.to_pandas()
+    
+    # ✅ Inspect first to understand the data
+    print(result)  # See what's in the result
+    print(f"Got {result.count} {result.target}")
+    print(f"Computed: {', '.join(result.computed_metrics)}")
+    
+    # Then convert with appropriate options
+    if result.meta.get("has_uncertainty"):
+        df = result.to_pandas(expand_uncertainty=True)
+    else:
+        df = result.to_pandas()
+
+**QueryResult introspection methods:**
+
+* ``.count`` / ``len(result)``: Number of items
+* ``.computed_metrics``: Set of computed metrics
+* ``.provenance``: Provenance dictionary
+* ``.is_replayable``: Whether result can be replayed
+* ``.has_sensitivity``: Whether sensitivity analysis was run
+* ``.group_summary()``: Summary DataFrame for grouped results
+* ``.explain()``: Human-readable query explanation
+* ``.debug()``: Detailed debug information
+
 Parameterized Queries
 ~~~~~~~~~~~~~~~~~~~~~
 

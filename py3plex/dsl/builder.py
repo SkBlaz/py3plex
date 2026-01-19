@@ -102,12 +102,12 @@ def build_condition_from_kwargs(kwargs: Dict[str, Any]) -> ConditionExpr:
     """Build ConditionExpr from keyword arguments.
 
     Supported patterns:
-        - layer="social" → Comparison("layer", "=", "social")
-        - degree__gt=5 → Comparison("degree", ">", 5)
-        - intralayer=True → SpecialPredicate("intralayer", {})
-        - interlayer=("social","work") → SpecialPredicate("interlayer", {...})
-        - t__between=(100, 200) → SpecialPredicate("temporal_range", {...})
-        - t__gte=100 → Comparison("t", ">=", 100)
+        - layer="social" -> Comparison("layer", "=", "social")
+        - degree__gt=5 -> Comparison("degree", ">", 5)
+        - intralayer=True -> SpecialPredicate("intralayer", {})
+        - interlayer=("social","work") -> SpecialPredicate("interlayer", {...})
+        - t__between=(100, 200) -> SpecialPredicate("temporal_range", {...})
+        - t__gte=100 -> Comparison("t", ">=", 100)
 
     Args:
         kwargs: Keyword arguments representing conditions
@@ -244,10 +244,10 @@ class LayerProxy:
     """Proxy for creating layer expressions via L["name"] syntax.
 
     Supports both simple layer names and advanced string expressions:
-        - L["social"] → single layer (backward compatible)
-        - L["social", "work"] → union of layers (backward compatible)
-        - L["* - coupling"] → string expression with algebra (NEW)
-        - L["(ppi | gene) & disease"] → complex expression (NEW)
+        - L["social"] -> single layer (backward compatible)
+        - L["social", "work"] -> union of layers (backward compatible)
+        - L["* - coupling"] -> string expression with algebra (NEW)
+        - L["(ppi | gene) & disease"] -> complex expression (NEW)
 
     The proxy automatically detects whether to use the old LayerExprBuilder
     (for simple names) or the new LayerSet (for expressions with operators).
@@ -518,10 +518,10 @@ class QueryBuilder:
         Supports two styles:
 
         1. Keyword arguments:
-            - layer="social" → equality
-            - degree__gt=5 → comparison (gt, ge, lt, le, eq, ne)
-            - intralayer=True → intralayer predicate
-            - interlayer=("social","work") → interlayer predicate
+            - layer="social" -> equality
+            - degree__gt=5 -> comparison (gt, ge, lt, le, eq, ne)
+            - intralayer=True -> intralayer predicate
+            - interlayer=("social","work") -> interlayer predicate
 
         2. Expression objects (using F):
             - where(F.degree > 5)
@@ -2927,6 +2927,184 @@ class QueryBuilder:
         from py3plex.dsl.program import GraphProgram
         ast = Query(explain=False, select=self._select)
         return GraphProgram.from_ast(ast)
+
+    def hint(self) -> "QueryBuilder":
+        """Display context-aware hints for next query-building steps.
+        
+        This non-invasive discoverability mechanism suggests relevant methods
+        based on the current query state. It prints suggestions to stdout
+        but does NOT modify query behavior or auto-execute anything.
+        
+        Suggestions adapt to:
+        - Whether layers are selected
+        - Whether filters are applied
+        - Whether computations are added
+        - Whether grouping is active
+        - Whether UQ is enabled
+        
+        Returns:
+            Self for chaining (unmodified)
+            
+        Example:
+            >>> # After where() -> suggests compute(), per_layer(), uq()
+            >>> Q.nodes().where(degree__gt=3).hint()
+            
+            >>> # After per_layer() -> suggests aggregate(), coverage()
+            >>> Q.nodes().per_layer().hint()
+            
+            >>> # After compute() -> suggests order_by(), limit(), explain()
+            >>> Q.nodes().compute("degree").hint()
+        
+        Note:
+            This is purely informational. The query remains unchanged.
+            Call .execute() when ready to run the query.
+        """
+        # Collect current query state
+        has_layers = (self._select.layer_expr is not None or 
+                      (hasattr(self._select, 'layer_set') and self._select.layer_set is not None))
+        has_filters = self._select.where is not None
+        has_compute = bool(self._select.compute)
+        has_grouping = bool(self._select.group_by)
+        has_uq = self._select.uq_config is not None
+        has_ordering = bool(self._select.order_by)
+        has_limit = self._select.limit is not None
+        has_explain = self._select.explain_spec is not None
+        is_coverage_filtered = (hasattr(self._select, 'coverage_mode') and 
+                               self._select.coverage_mode is not None)
+        
+        print("\n" + "="*60)
+        print("[HINT] Query Builder Hints")
+        print("="*60)
+        
+        # Show current state
+        print("\n[STATE] Current query state:")
+        state_items = []
+        if has_layers:
+            state_items.append("✓ Layers selected")
+        if has_filters:
+            state_items.append("✓ Filters applied")
+        if has_compute:
+            metrics = [c.name for c in self._select.compute]
+            state_items.append(f"✓ Computing: {', '.join(metrics)}")
+        if has_grouping:
+            group_keys = ', '.join(self._select.group_by)
+            state_items.append(f"✓ Grouped by: {group_keys}")
+        if has_uq:
+            state_items.append("✓ Uncertainty enabled")
+        if has_ordering:
+            state_items.append("✓ Ordering specified")
+        if has_limit:
+            state_items.append(f"✓ Limited to {self._select.limit} results")
+        if has_explain:
+            state_items.append("✓ Explanations enabled")
+        
+        if state_items:
+            for item in state_items:
+                print(f"  {item}")
+        else:
+            print("  (empty query - start building!)")
+        
+        # Suggest next steps based on state
+        print("\n[TIP] Suggested next steps:\n")
+        
+        suggestions = []
+        
+        # Layer selection suggestions
+        if not has_layers:
+            suggestions.append(
+                "  -> .from_layers(L[\"social\"])  # Filter to specific layers\n"
+                "    Example: L[\"social\"] + L[\"work\"] for multiple layers"
+            )
+        
+        # Filter suggestions
+        if not has_filters and not has_grouping:
+            suggestions.append(
+                "  -> .where(degree__gt=3)  # Filter nodes/edges by attributes\n"
+                "    Example: .where(layer=\"social\", degree__gt=5)"
+            )
+        
+        # Compute suggestions
+        if not has_compute:
+            suggestions.append(
+                "  -> .compute(\"degree\", \"betweenness_centrality\")  # Compute metrics\n"
+                "    Available: degree, betweenness_centrality, pagerank, clustering, ..."
+            )
+        
+        # Grouping suggestions
+        if not has_grouping and has_layers:
+            suggestions.append(
+                "  -> .per_layer()  # Group results by layer for per-layer analysis\n"
+                "    Then use: .top_k(), .aggregate(), .coverage()"
+            )
+        
+        if not has_grouping and self._select.target == Target.EDGES:
+            suggestions.append(
+                "  -> .per_layer_pair()  # Group edges by source-target layer pairs"
+            )
+        
+        # UQ suggestions
+        if has_compute and not has_uq:
+            suggestions.append(
+                "  -> .uq(method=\"bootstrap\", n_samples=100)  # Add uncertainty quantification\n"
+                "    Methods: bootstrap, perturbation, seed, stratified_perturbation"
+            )
+        
+        # Grouping-specific suggestions
+        if has_grouping and not is_coverage_filtered:
+            suggestions.append(
+                "  -> .aggregate(\"mean\", \"std\")  # Aggregate metrics within groups"
+            )
+            suggestions.append(
+                "  -> .coverage(mode=\"all\")  # Filter items present across groups\n"
+                "    Modes: all, any, at_least, exact, fraction"
+            )
+            suggestions.append(
+                "  -> .end_grouping()  # Return to ungrouped context"
+            )
+        
+        # Ordering suggestions
+        if has_compute and not has_ordering:
+            suggestions.append(
+                "  -> .order_by(\"-degree\")  # Sort results (use '-' for descending)\n"
+                "    Example: .order_by(\"-betweenness_centrality\", \"node_id\")"
+            )
+        
+        # Limiting suggestions
+        if has_ordering and not has_limit:
+            suggestions.append(
+                "  -> .limit(10)  # Keep only top N results\n"
+                "    Alias: .head(10) for dplyr-style syntax"
+            )
+        
+        if has_grouping:
+            suggestions.append(
+                "  -> .top_k(10, \"degree\")  # Get top-k items per group"
+            )
+        
+        # Explanation suggestions
+        if has_compute and not has_explain:
+            suggestions.append(
+                "  -> .explain()  # Add explanatory context (community, neighbors, layers)\n"
+                "    Options: neighbors_top=5, include_community=True"
+            )
+        
+        # Always suggest execute
+        suggestions.append(
+            "  -> .execute(network)  # Execute the query and get results"
+        )
+        
+        # Display suggestions
+        for i, suggestion in enumerate(suggestions, 1):
+            print(f"{i}. {suggestion}")
+            if i < len(suggestions):
+                print()
+        
+        print("\n" + "="*60)
+        print("[TIP] Tip: Chain methods together for complex queries!")
+        print("   Example: Q.nodes().where(...).compute(...).order_by(...).limit(...).execute(net)")
+        print("="*60 + "\n")
+        
+        return self
 
     def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, **params) -> QueryResult:
         """Execute the query.

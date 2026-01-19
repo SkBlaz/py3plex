@@ -1086,7 +1086,56 @@ class QueryResult:
         )
 
     def __repr__(self) -> str:
-        return f"QueryResult(target='{self.target}', count={len(self.items)}, attributes={list(self.attributes.keys())})"
+        """Enhanced representation showing full query context."""
+        parts = [f"QueryResult("]
+        parts.append(f"  target='{self.target}'")
+        parts.append(f"  count={len(self.items)}")
+        
+        # Show computed attributes if any
+        if self.attributes:
+            attr_names = list(self.attributes.keys())
+            if len(attr_names) <= 3:
+                parts.append(f"  attributes=[{', '.join(repr(a) for a in attr_names)}]")
+            else:
+                parts.append(f"  attributes=[{', '.join(repr(a) for a in attr_names[:3])}, ... +{len(attr_names)-3} more]")
+        
+        # Show computed metrics if tracked
+        if self.computed_metrics:
+            metrics = sorted(self.computed_metrics)
+            if len(metrics) <= 3:
+                parts.append(f"  computed=[{', '.join(repr(m) for m in metrics)}]")
+            else:
+                parts.append(f"  computed=[{', '.join(repr(m) for m in metrics[:3])}, ... +{len(metrics)-3} more]")
+        
+        # Show grouping status
+        if "grouping" in self.meta:
+            grouping_info = self.meta["grouping"]
+            if grouping_info:
+                group_type = grouping_info.get("type", "unknown")
+                n_groups = len(grouping_info.get("groups", []))
+                parts.append(f"  grouping='{group_type}' ({n_groups} groups)")
+        
+        # Show uncertainty status
+        if self.meta.get("has_uncertainty"):
+            uq_method = self.meta.get("uq_method", "unknown")
+            parts.append(f"  uncertainty='{uq_method}'")
+        
+        # Show provenance status
+        if self.provenance:
+            mode = self.provenance.get("mode", "unknown")
+            parts.append(f"  provenance='{mode}'")
+            if self.is_replayable:
+                parts.append(f"  replayable=True")
+        
+        parts.append(")")
+        
+        # If single line, use compact format
+        result = "\n".join(parts) if len(parts) > 4 else (
+            f"QueryResult(target='{self.target}', count={len(self.items)}, "
+            f"attributes={list(self.attributes.keys())[:3]}{'...' if len(self.attributes) > 3 else ''})"
+        )
+        
+        return result
 
     def join(
         self,
