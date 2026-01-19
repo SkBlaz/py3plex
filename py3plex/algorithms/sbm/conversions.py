@@ -46,8 +46,8 @@ def extract_layer_adjacencies(
     node_to_idx = {node: idx for idx, node in enumerate(all_nodes)}
     n_nodes = len(all_nodes)
     
-    # Get layers information
-    layers_tuple = network.get_layers()
+    # Get layers information without computing layouts (SBM doesn't need layout positions)
+    layers_tuple = network.get_layers(compute_layouts=None)
     # get_layers() returns (layer_names, layer_graphs, other_info)
     layer_names = layers_tuple[0] if isinstance(layers_tuple, tuple) else list(layers_tuple)
     layer_graphs = layers_tuple[1] if isinstance(layers_tuple, tuple) and len(layers_tuple) > 1 else None
@@ -131,7 +131,8 @@ def build_node_alignment(
     """
     alignment = {}
     
-    layers_tuple = network.get_layers()
+    # Get layers information without computing layouts
+    layers_tuple = network.get_layers(compute_layouts=None)
     # get_layers() returns (layer_names, layer_graphs, other_info)
     layer_names = layers_tuple[0] if isinstance(layers_tuple, tuple) else list(layers_tuple)
     layer_graphs = layers_tuple[1] if isinstance(layers_tuple, tuple) and len(layers_tuple) > 1 else None

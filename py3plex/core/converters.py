@@ -130,7 +130,7 @@ def compute_layout(
 def prepare_for_visualization(
     multinet: nx.Graph,
     network_type: str = "multilayer",
-    compute_layouts: str = "force",
+    compute_layouts: Optional[str] = "force",
     layout_parameters: Optional[Dict[str, Any]] = None,
     verbose: bool = True,
     multiplex: bool = False,
@@ -141,7 +141,7 @@ def prepare_for_visualization(
     Args:
         multinet: multilayer network object
         network_type: "multilayer" or "multiplex"
-        compute_layouts: Layout algorithm ('force', 'random', etc.)
+        compute_layouts: Layout algorithm ('force', 'random', etc.) or None to skip layout computation
         layout_parameters: Optional layout parameters
         verbose: Whether to print progress information
         multiplex: Whether to treat as multiplex network
@@ -168,14 +168,16 @@ def prepare_for_visualization(
 
     networks = {layer_name: multinet.subgraph(v) for layer_name, v in layers.items()}
 
-    if multiplex:
-        compute_layout(multinet, compute_layouts, layout_parameters, verbose)
-    else:
-        for _layer, network in networks.items():
-            compute_layout(network, compute_layouts, layout_parameters, verbose)
+    # Only compute layouts if compute_layouts is not None
+    if compute_layouts is not None:
+        if multiplex:
+            compute_layout(multinet, compute_layouts, layout_parameters, verbose)
+        else:
+            for _layer, network in networks.items():
+                compute_layout(network, compute_layouts, layout_parameters, verbose)
 
-    if verbose:
-        logger.info("Finished with layout..")
+        if verbose:
+            logger.info("Finished with layout..")
     inverse_mapping = {}
 
     # construct the inverse mapping
