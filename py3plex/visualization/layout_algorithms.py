@@ -135,6 +135,8 @@ def compute_force_directed_layout(
                 strongGravityMode=False,
                 gravity=gravity,
                 # Log
+                # Always False to suppress internal timing logs (BarnesHut, Repulsion, etc.)
+                # High-level warnings are still shown via logger above
                 verbose=False,
             )
 
