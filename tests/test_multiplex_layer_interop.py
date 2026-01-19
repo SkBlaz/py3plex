@@ -421,7 +421,19 @@ class TestRoundtripConversions:
         # Check edges preserved (excluding coupling)
         original_edges = set(net.get_edges())
         final_edges = set(back_to_multilayer.get_edges())
-        assert original_edges == final_edges
+        
+        # For undirected networks, edges can be in either order
+        # Normalize edge tuples to handle this
+        def normalize_edge(edge):
+            """Normalize edge tuple for undirected comparison."""
+            u, v = edge[0], edge[1]
+            if u > v:
+                return (v, u)
+            return (u, v)
+        
+        original_normalized = {normalize_edge(e) for e in original_edges}
+        final_normalized = {normalize_edge(e) for e in final_edges}
+        assert original_normalized == final_normalized
 
     def test_multiplex_to_multilayer_to_multiplex_loses_coupling(self):
         """Roundtrip from multiplex loses coupling edges if removed."""
