@@ -34,7 +34,7 @@ network = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
 
 # Find key regulator candidates with integrated community detection and uncertainty quantification
 master_regulators = (
-    Q.communities(                           # Automated community detection (NEW!)
+    Q.communities(                           # Automated community detection
         mode="pareto",                       # Multi-objective Pareto selection
         uq=True,                             # Uncertainty quantification enabled
         uq_n_samples=30,                     # Robustness via 30 perturbed runs
