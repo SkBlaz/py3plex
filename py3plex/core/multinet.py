@@ -1644,6 +1644,293 @@ class multi_layer_network:
 
         return net
 
+    def to_multiplex(self, method: str = "intersection") -> "multi_layer_network":
+        """Convert a multilayer network to a multiplex network.
+
+        A multiplex network requires that all layers share the same node set
+        (strict replica model). This method converts a general multilayer network
+        to multiplex by aligning the node sets across layers.
+
+        Args:
+            method: Method for aligning node sets across layers:
+                - 'intersection': Keep only nodes present in ALL layers (strict)
+                - 'union': Keep all nodes, add missing nodes to layers (lenient)
+
+        Returns:
+            multi_layer_network: A new multiplex network with aligned node sets
+                and automatic coupling edges
+
+        Raises:
+            ValueError: If the network is already multiplex type
+
+        Examples:
+            >>> net = multi_layer_network(network_type='multilayer', directed=False)
+            >>> _ = net.add_nodes([
+            ...     {'source': 'A', 'type': 'L1'},
+            ...     {'source': 'B', 'type': 'L1'},
+            ...     {'source': 'A', 'type': 'L2'},
+            ... ])
+            >>> multiplex = net.to_multiplex(method='intersection')
+            >>> print(multiplex.network_type)
+            multiplex
+            >>> # Only node 'A' is in all layers, so only 'A' remains
+            >>> sorted(multiplex.get_nodes())
+            [('A', 'L1'), ('A', 'L2')]
+
+        Notes:
+            - 'intersection' method may result in empty network if no nodes are shared
+            - 'union' method preserves all nodes but may add isolated nodes to layers
+            - Coupling edges are automatically created between layers
+        """
+        if self.network_type == "multiplex":
+            raise ValueError("Network is already multiplex type")
+
+        # Validate method parameter first
+        if method not in ("intersection", "union"):
+            raise ValueError(f"Unknown method: {method}. Use 'intersection' or 'union'")
+
+        # Handle empty network
+        if self.core_network is None:
+            # Create empty multiplex network with initialized core_network
+            multiplex_net = multi_layer_network(
+                network_type="multiplex",
+                directed=self.directed,
+                verbose=False,
+                coupling_weight=self.coupling_weight
+            )
+            multiplex_net._initiate_network()
+            return multiplex_net
+
+        # Get all unique layers
+        layers = set()
+        nodes_by_layer = defaultdict(set)
+        
+        for node in self.get_nodes():
+            node_id, layer = node
+            layers.add(layer)
+            nodes_by_layer[layer].add(node_id)
+
+        # Determine aligned node set based on method
+        if method == "intersection":
+            # Keep only nodes present in ALL layers
+            if not layers:
+                aligned_nodes = set()
+            else:
+                aligned_nodes = set.intersection(*[nodes_by_layer[l] for l in layers])
+        else:  # method == "union"
+            # Keep all nodes, will add missing ones to each layer
+            aligned_nodes = set.union(*[nodes_by_layer[l] for l in layers]) if layers else set()
+
+        # Create new multiplex network
+        multiplex_net = multi_layer_network(
+            network_type="multiplex",
+            directed=self.directed,
+            verbose=False,
+            coupling_weight=self.coupling_weight
+        )
+        
+        # Initialize the core network
+        multiplex_net._initiate_network()
+
+        # Add aligned nodes to all layers
+        for node_id in aligned_nodes:
+            for layer in layers:
+                multiplex_net.core_network.add_node((node_id, layer))
+
+        # Copy edges that connect nodes in the aligned set
+        for edge in self.get_edges(data=True):
+            u, v, attr = edge
+            u_id, u_layer = u
+            v_id, v_layer = v
+            
+            # Only copy edge if both nodes are in aligned set
+            if u_id in aligned_nodes and v_id in aligned_nodes:
+                multiplex_net.core_network.add_edge(u, v, **attr)
+
+        # Create coupling edges
+        multiplex_net._couple_all_edges()
+
+        return multiplex_net
+
+    def to_multilayer(self, remove_coupling: bool = True) -> "multi_layer_network":
+        """Convert a multiplex network to a multilayer network.
+
+        Converts from strict multiplex (same nodes in all layers with automatic
+        coupling) to general multilayer (layers can have different node sets).
+
+        Args:
+            remove_coupling: If True, removes automatic coupling edges.
+                If False, keeps coupling edges as regular inter-layer edges.
+
+        Returns:
+            multi_layer_network: A new multilayer network
+
+        Raises:
+            ValueError: If the network is already multilayer type
+
+        Examples:
+            >>> net = multi_layer_network(network_type='multiplex', directed=False)
+            >>> _ = net.add_nodes([
+            ...     {'source': 'A', 'type': 'L1'},
+            ...     {'source': 'A', 'type': 'L2'},
+            ... ])
+            >>> _ = net.add_edges([
+            ...     {'source': 'A', 'target': 'A',
+            ...      'source_type': 'L1', 'target_type': 'L1'}
+            ... ])
+            >>> multilayer = net.to_multilayer(remove_coupling=True)
+            >>> print(multilayer.network_type)
+            multilayer
+
+        Notes:
+            - Node sets remain the same but coupling constraint is relaxed
+            - Coupling edges can be preserved or removed
+            - After conversion, layers can independently add/remove nodes
+        """
+        if self.network_type == "multilayer":
+            raise ValueError("Network is already multilayer type")
+
+        # Handle empty network
+        if self.core_network is None:
+            multilayer_net = multi_layer_network(
+                network_type="multilayer",
+                directed=self.directed,
+                verbose=False
+            )
+            multilayer_net._initiate_network()
+            return multilayer_net
+
+        # Create new multilayer network
+        multilayer_net = multi_layer_network(
+            network_type="multilayer",
+            directed=self.directed,
+            verbose=False
+        )
+        
+        # Initialize the core network
+        multilayer_net._initiate_network()
+
+        # Copy all nodes
+        for node in self.get_nodes():
+            multilayer_net.core_network.add_node(node)
+
+        # Copy edges, optionally filtering coupling edges
+        # For multiplex, get_edges with multiplex_edges=True returns (u, v, key, attr) 
+        for edge_data in self.get_edges(data=True, multiplex_edges=True):
+            if len(edge_data) == 4:
+                # Multiplex network with keys
+                u, v, key, attr = edge_data
+            else:
+                # Shouldn't happen, but handle 3-tuple case
+                u, v, attr = edge_data
+                key = 0
+            
+            # Skip coupling edges if requested
+            if remove_coupling and attr.get("type") == "coupling":
+                continue
+                
+            multilayer_net.core_network.add_edge(u, v, **attr)
+
+        return multilayer_net
+
+    def flatten_to_monoplex(self, method: str = "union") -> nx.Graph:
+        """Flatten a multilayer/multiplex network to a single-layer graph.
+
+        Aggregates all layers into a single NetworkX graph, merging nodes with
+        the same ID across different layers into single nodes.
+
+        Args:
+            method: Method for aggregating edges:
+                - 'union': Sum edge weights across layers (default)
+                - 'first': Keep only the first occurrence of each edge
+                - 'count': Count number of times each edge appears
+
+        Returns:
+            nx.Graph: A single-layer NetworkX graph (Graph or DiGraph based on
+                network directionality)
+
+        Examples:
+            >>> net = multi_layer_network(network_type='multilayer', directed=False)
+            >>> _ = net.add_edges([
+            ...     {'source': 'A', 'target': 'B',
+            ...      'source_type': 'L1', 'target_type': 'L1'},
+            ...     {'source': 'A', 'target': 'B',
+            ...      'source_type': 'L2', 'target_type': 'L2'},
+            ... ])
+            >>> flat = net.flatten_to_monoplex(method='count')
+            >>> flat.edges[('A', 'B')]['weight']
+            2
+
+        Notes:
+            - Node IDs are extracted from (node_id, layer) tuples
+            - Duplicate edges across layers are aggregated
+            - Inter-layer edges are excluded (only intra-layer edges are kept)
+            - Edge attributes other than weight are taken from first occurrence
+        """
+        # Validate method parameter first
+        if method not in ("union", "first", "count"):
+            raise ValueError(f"Unknown method: {method}. Use 'union', 'first', or 'count'")
+            
+        # Create output graph
+        if self.directed:
+            flat_graph = nx.DiGraph()
+        else:
+            flat_graph = nx.Graph()
+
+        # Handle empty network
+        if self.core_network is None:
+            return flat_graph
+
+        # Collect unique nodes (strip layer info)
+        unique_nodes = set()
+        for node in self.get_nodes():
+            node_id, layer = node
+            unique_nodes.add(node_id)
+        
+        flat_graph.add_nodes_from(unique_nodes)
+
+        # Aggregate edges
+        edge_data = defaultdict(lambda: {'weight': 0, 'count': 0, 'attrs': None})
+        
+        for edge in self.get_edges(data=True):
+            u, v, attr = edge
+            u_id, u_layer = u
+            v_id, v_layer = v
+            
+            # Skip inter-layer edges (only aggregate intra-layer edges)
+            if u_layer != v_layer:
+                continue
+            
+            edge_key = (u_id, v_id)
+            
+            # Store attributes from first occurrence
+            if edge_data[edge_key]['attrs'] is None:
+                edge_data[edge_key]['attrs'] = dict(attr)
+            
+            # Accumulate based on method
+            if method == "union":
+                # Sum weights
+                weight = attr.get('weight', 1)
+                edge_data[edge_key]['weight'] += weight
+                edge_data[edge_key]['count'] += 1
+            elif method == "first":
+                # Keep first occurrence only
+                if edge_data[edge_key]['count'] == 0:
+                    edge_data[edge_key]['weight'] = attr.get('weight', 1)
+                edge_data[edge_key]['count'] += 1
+            elif method == "count":
+                # Count occurrences
+                edge_data[edge_key]['weight'] += 1
+                edge_data[edge_key]['count'] += 1
+
+        # Add aggregated edges to graph
+        for (u, v), data in edge_data.items():
+            attrs = data['attrs'] if data['attrs'] else {}
+            attrs['weight'] = data['weight']
+            flat_graph.add_edge(u, v, **attrs)
+
+        return flat_graph
+
     def get_edges(self, data: bool = False, multiplex_edges: bool = False) -> Any:
         """Iterate over edges in the network.
 

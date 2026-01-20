@@ -22,28 +22,29 @@
 6. [Dplyr-Style Operations](#dplyr-style-operations)
 7. [Pipeline API (Sklearn-Style)](#pipeline-api-sklearn-style)
 8. [I/O and Data Loading](#io-and-data-loading)
-9. [Dynamics Simulations](#dynamics-simulations)
-10. [Uncertainty Quantification](#uncertainty-quantification)
-11. [Temporal Networks](#temporal-networks)
-12. [Null Models and Statistical Testing](#null-models-and-statistical-testing)
-13. [Counterexample Generation](#counterexample-generation)
-14. [Claim Learning (Hypothesis Discovery)](#claim-learning-hypothesis-discovery)
-15. [Semiring Algebra (Paths, Closure, Fixed-Point)](#semiring-algebra-paths-closure-fixed-point)
-16. [Community Detection and Queries](#community-detection-and-queries)
-17. [Pattern Matching (Cypher-like)](#pattern-matching-cypher-like)
-18. [Network Comparison and Diff](#network-comparison-and-diff)
-19. [CLI Tool](#cli-tool)
-20. [Plugin System](#plugin-system)
-21. [Configuration and Profiling](#configuration-and-profiling)
-22. [Diagnostic System and Error Reporting](#diagnostic-system-and-error-reporting)
-23. [Exception Hierarchy](#exception-hierarchy)
-24. [Query Planner and Optimization](#query-planner-and-optimization)
-25. [Performance Guidelines](#performance-guidelines)
-26. [Reproducibility Policy](#reproducibility-policy)
-27. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
-28. [Multilayer Semantics Guide](#multilayer-semantics-guide)
-29. [Testing Strategy](#testing-strategy)
-30. [File Locations](#file-locations)
+9. [Network Type Conversions](#network-type-conversions)
+10. [Dynamics Simulations](#dynamics-simulations)
+11. [Uncertainty Quantification](#uncertainty-quantification)
+12. [Temporal Networks](#temporal-networks)
+13. [Null Models and Statistical Testing](#null-models-and-statistical-testing)
+14. [Counterexample Generation](#counterexample-generation)
+15. [Claim Learning (Hypothesis Discovery)](#claim-learning-hypothesis-discovery)
+16. [Semiring Algebra (Paths, Closure, Fixed-Point)](#semiring-algebra-paths-closure-fixed-point)
+17. [Community Detection and Queries](#community-detection-and-queries)
+18. [Pattern Matching (Cypher-like)](#pattern-matching-cypher-like)
+19. [Network Comparison and Diff](#network-comparison-and-diff)
+20. [CLI Tool](#cli-tool)
+21. [Plugin System](#plugin-system)
+22. [Configuration and Profiling](#configuration-and-profiling)
+23. [Diagnostic System and Error Reporting](#diagnostic-system-and-error-reporting)
+24. [Exception Hierarchy](#exception-hierarchy)
+25. [Query Planner and Optimization](#query-planner-and-optimization)
+26. [Performance Guidelines](#performance-guidelines)
+27. [Reproducibility Policy](#reproducibility-policy)
+28. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
+29. [Multilayer Semantics Guide](#multilayer-semantics-guide)
+30. [Testing Strategy](#testing-strategy)
+31. [File Locations](#file-locations)
 
 ---
 
@@ -3087,6 +3088,155 @@ net = make_random_multilayer(
     seed=42
 )
 ```
+
+### Network Type Conversions
+
+py3plex supports conversions between different network types: multilayer, multiplex, and single-layer (monoplex).
+
+#### Multilayer vs Multiplex Networks
+
+**Multilayer Networks**:
+- General case: Each layer can have a different set of nodes
+- Edges can connect any nodes within or across layers
+- No automatic coupling edges
+- Best for heterogeneous networks (e.g., author-paper-venue)
+
+**Multiplex Networks**:
+- Special case: All layers share the same node set (strict replica model)
+- Automatic coupling edges between same node across layers
+- Best for same entities with multiple relationship types (e.g., social networks with friend/colleague/family layers)
+
+#### Convert Multilayer → Multiplex
+
+Use `to_multiplex()` to convert a multilayer network to multiplex by aligning node sets across layers.
+
+```python
+from py3plex.core import multinet
+
+# Create multilayer with partial node overlap
+net = multinet.multi_layer_network(network_type='multilayer', directed=False)
+net.add_nodes([
+    {'source': 'Alice', 'type': 'friends'},
+    {'source': 'Bob', 'type': 'friends'},
+    {'source': 'Alice', 'type': 'colleagues'},
+    {'source': 'Charlie', 'type': 'colleagues'},
+])
+
+# Convert using intersection method (only nodes in ALL layers)
+multiplex_strict = net.to_multiplex(method='intersection')
+# Result: Only 'Alice' remains (present in both layers)
+
+# Convert using union method (add missing nodes to each layer)
+multiplex_complete = net.to_multiplex(method='union')
+# Result: All nodes (Alice, Bob, Charlie) now in both layers
+```
+
+**Methods**:
+- `'intersection'`: Keep only nodes present in ALL layers (strict multiplex)
+- `'union'`: Add missing nodes to all layers (lenient multiplex)
+
+**Automatic Coupling**:
+After conversion, coupling edges are automatically created between each node and its counterparts in other layers (bidirectional, `type='coupling'`, weight=coupling_weight).
+
+#### Convert Multiplex → Multilayer
+
+Use `to_multilayer()` to convert a multiplex network to multilayer, relaxing the strict replica constraint.
+
+```python
+# Create multiplex network
+multiplex = multinet.multi_layer_network(network_type='multiplex', directed=False)
+multiplex.add_nodes([
+    {'source': 'Alice', 'type': 'friends'},
+    {'source': 'Alice', 'type': 'colleagues'},
+])
+multiplex._couple_all_edges()  # Creates coupling edges
+
+# Convert to multilayer, removing coupling edges
+multilayer = multiplex.to_multilayer(remove_coupling=True)
+# Result: Multilayer network without automatic coupling
+
+# Convert preserving coupling edges as regular inter-layer edges
+multilayer_with_coupling = multiplex.to_multilayer(remove_coupling=False)
+# Result: Coupling edges preserved as regular edges
+```
+
+**Parameters**:
+- `remove_coupling=True` (default): Remove automatic coupling edges
+- `remove_coupling=False`: Keep coupling edges as regular inter-layer edges
+
+#### Flatten to Single-Layer Graph
+
+Use `flatten_to_monoplex()` to aggregate all layers into a single NetworkX graph.
+
+```python
+# Create multilayer network
+net = multinet.multi_layer_network(network_type='multilayer', directed=False)
+net.add_edges([
+    {'source': 'Alice', 'target': 'Bob', 'source_type': 'friends', 'target_type': 'friends', 'weight': 2},
+    {'source': 'Alice', 'target': 'Bob', 'source_type': 'colleagues', 'target_type': 'colleagues', 'weight': 3},
+    {'source': 'Alice', 'target': 'Charlie', 'source_type': 'friends', 'target_type': 'friends'},
+])
+
+# Method 1: Count edge occurrences
+flat_count = net.flatten_to_monoplex(method='count')
+# Alice-Bob edge: weight=2 (appears in 2 layers)
+
+# Method 2: Sum weights across layers
+flat_sum = net.flatten_to_monoplex(method='union')
+# Alice-Bob edge: weight=5 (2+3 from two layers)
+
+# Method 3: Keep first occurrence only
+flat_first = net.flatten_to_monoplex(method='first')
+# Alice-Bob edge: weight=2 (from first layer encountered)
+```
+
+**Methods**:
+- `'count'`: Count number of times each edge appears across layers
+- `'union'`: Sum edge weights across layers (default)
+- `'first'`: Keep weight from first occurrence
+
+**Key Behaviors**:
+- Node IDs extracted from `(node_id, layer)` tuples → single nodes
+- Only intra-layer edges aggregated (inter-layer edges excluded)
+- Returns standard NetworkX Graph or DiGraph
+- Edge attributes from first occurrence preserved
+
+#### Roundtrip Conversions
+
+```python
+# Multilayer → Multiplex → Multilayer
+original = multinet.multi_layer_network(network_type='multilayer')
+# ... add nodes present in all layers ...
+multiplex = original.to_multiplex(method='intersection')
+restored = multiplex.to_multilayer(remove_coupling=True)
+# Node sets and edges preserved (coupling excluded)
+
+# Multiplex → Multilayer → Multiplex
+original_multiplex = multinet.multi_layer_network(network_type='multiplex')
+# ... add nodes ...
+multilayer = original_multiplex.to_multilayer(remove_coupling=True)
+back_to_multiplex = multilayer.to_multiplex(method='intersection')
+# Nodes preserved, coupling recreated
+```
+
+**Warning**: Flattening to monoplex loses layer information and cannot be reversed.
+
+#### Use Cases
+
+**When to use `to_multiplex()`**:
+- Algorithm requires strict replica model (e.g., multiplex centrality)
+- Need automatic coupling between layers
+- Want to ensure all layers have same nodes
+
+**When to use `to_multilayer()`**:
+- Need flexibility in node sets per layer
+- Want to remove automatic coupling constraint
+- Converting from external multiplex format
+
+**When to use `flatten_to_monoplex()`**:
+- Need single-layer graph for standard NetworkX algorithms
+- Want to aggregate information across layers
+- Comparing multilayer network to monoplex baseline
 
 ---
 
