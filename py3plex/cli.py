@@ -655,8 +655,6 @@ Examples:
         action="store_true",
         help="Validate query without executing (returns validation report)",
     )
-        help="Output format (default: json)",
-    )
     query_parser.add_argument(
         "--input-format",
         choices=["auto", "multiedgelist", "edgelist", "json"],
