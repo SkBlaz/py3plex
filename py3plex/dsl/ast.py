@@ -18,6 +18,14 @@ class Target(Enum):
     COMMUNITIES = "communities"
 
 
+class GroupingMode(Enum):
+    """Grouping mode for query results."""
+
+    PER_LAYER = "per_layer"
+    PER_LAYER_PAIR = "per_layer_pair"
+    NONE = "none"
+
+
 class ExportTarget(Enum):
     """Export target for query results."""
 
@@ -274,6 +282,23 @@ class OrderItem:
 
     key: str
     desc: bool = False
+
+
+@dataclass
+class AggregationItem:
+    """Aggregation specification for aggregate operations.
+
+    Attributes:
+        name: Output name for the aggregated value
+        function: Aggregation function (e.g., "mean", "sum", "count")
+        column: Column/field to aggregate (None for count-only operations)
+        params: Optional parameters for the aggregation function (e.g., p for quantile)
+    """
+
+    name: str
+    function: str
+    column: Optional[str] = None
+    params: Optional[Dict[str, Any]] = None
 
 
 @dataclass
