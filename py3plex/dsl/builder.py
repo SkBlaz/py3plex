@@ -3106,7 +3106,45 @@ class QueryBuilder:
         
         return self
 
-    def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, **params) -> QueryResult:
+    def validate(self, network: Any = None, strict: bool = True) -> "ValidationResult":
+        """Validate the query without executing it.
+        
+        Performs compile-time validation to catch errors before execution.
+        Returns a ValidationResult with any errors or warnings.
+        
+        Args:
+            network: Optional network instance for schema-aware validation
+            strict: If True, treat certain warnings as errors
+            
+        Returns:
+            ValidationResult with errors and warnings
+            
+        Example:
+            >>> q = Q.nodes().where(unknownfield__gt=5)
+            >>> result = q.validate(network)
+            >>> if not result.ok:
+            ...     print(result.errors)
+            
+            >>> # Or use in validation-only mode
+            >>> result = q.validate(network)
+            >>> result.raise_if_errors()  # Raises DSLValidationError if errors
+        """
+        from .validation import validate_ast, infer_schema, get_default_capabilities
+        
+        ast = self.to_ast()
+        
+        # Infer schema if network provided
+        schema = None
+        if network is not None:
+            schema = infer_schema(network)
+        
+        # Get capabilities
+        capabilities = get_default_capabilities()
+        
+        # Perform validation
+        return validate_ast(ast, schema=schema, capabilities=capabilities, network=network)
+
+    def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, validate: bool = True, **params) -> QueryResult:
         """Execute the query.
 
         Args:
@@ -3114,11 +3152,24 @@ class QueryBuilder:
             progress: If True, log progress messages during query execution (default: True)
             explain_plan: If True, populate result.meta["plan"] with execution plan (default: False)
             planner: Optional planner configuration dict (compute_policy, enable_cache, etc.)
+            validate: If True, validate query before execution (default: True)
             **params: Parameter bindings
 
         Returns:
             QueryResult with results and metadata
+            
+        Raises:
+            DSLValidationError: If validation is enabled and the query is invalid
         """
+        # Validate query if requested
+        if validate:
+            from .validation import ValidationResult
+            
+            validation_result = self.validate(network, strict=True)
+            if not validation_result.ok:
+                validation_result.raise_if_errors()
+        
+        # Continue with normal execution
         from .executor import execute_ast
         
         # Check if auto-detection is configured

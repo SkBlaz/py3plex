@@ -206,6 +206,30 @@ from .errors import (
     InvalidGroupAggregateError,
 )
 
+# Import validation components
+from .validation import (
+    ValidationIssue,
+    ValidationResult,
+    DSLValidationError,
+    NetworkSchema,
+    EngineCapabilities,
+    validate_ast,
+    infer_schema,
+    get_default_capabilities,
+    format_validation_report,
+    # Error codes
+    DSLVAL_FIELD_UNKNOWN,
+    DSLVAL_FIELD_TARGET_MISMATCH,
+    DSLVAL_RESERVED_FIELD_UNSUPPORTED,
+    DSLVAL_GROUPING_INVALID,
+    DSLVAL_AGGREGATION_MISSING_FIELD,
+    DSLVAL_AGGREGATION_INVALID_PARAMS,
+    DSLVAL_UQ_INVALID_PARAMS,
+    DSLVAL_ORDER_FIELD_MISSING,
+    DSLVAL_LAYER_UNKNOWN,
+    DSLVAL_LAYER_EMPTY,
+)
+
 # Import UQ resolution and validation
 from .uq_resolution import (
     ResolvedUQConfig,
@@ -426,6 +450,26 @@ __all__ = [
     "InvalidJoinKeyError",
     "ComputedFieldMisuseError",
     "InvalidGroupAggregateError",
+    # Validation
+    "ValidationIssue",
+    "ValidationResult",
+    "DSLValidationError",
+    "NetworkSchema",
+    "EngineCapabilities",
+    "validate_ast",
+    "infer_schema",
+    "get_default_capabilities",
+    "format_validation_report",
+    "DSLVAL_FIELD_UNKNOWN",
+    "DSLVAL_FIELD_TARGET_MISMATCH",
+    "DSLVAL_RESERVED_FIELD_UNSUPPORTED",
+    "DSLVAL_GROUPING_INVALID",
+    "DSLVAL_AGGREGATION_MISSING_FIELD",
+    "DSLVAL_AGGREGATION_INVALID_PARAMS",
+    "DSLVAL_UQ_INVALID_PARAMS",
+    "DSLVAL_ORDER_FIELD_MISSING",
+    "DSLVAL_LAYER_UNKNOWN",
+    "DSLVAL_LAYER_EMPTY",
     # UQ Resolution
     "ResolvedUQConfig",
     "UQResolutionError",
