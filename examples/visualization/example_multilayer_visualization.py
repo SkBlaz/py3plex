@@ -404,7 +404,7 @@ try:
             directed=False,
             label_delimiter="---",
             input_type="gpickle_biomine")
-        network_colors, graph = multilayer_network.get_layers(style="hairball")
+        network_colors, graph, _ = multilayer_network.get_layers(style="hairball")
     else:
         print("\n[X] Skipping basic string layout demo (epigenetics dataset not available)")
 except Py3plexIOError:
@@ -497,7 +497,7 @@ try:
         # custom layouts are part of the custom coordinate option
         layout_parameters = {}
         layout_parameters['pos'] = output_positions  # assign parameters
-        network_colors, graph = multilayer_network.get_layers(style="hairball")
+        network_colors, graph, _ = multilayer_network.get_layers(style="hairball")
         hairball_plot(graph,
                       network_colors,
                       layout_algorithm="custom_coordinates",

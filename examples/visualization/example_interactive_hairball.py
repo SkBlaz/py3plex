@@ -71,7 +71,7 @@ def main() -> int:
     multilayer_net.basic_stats()
 
     print("\nStep 2: Converting to NetworkX graph...")
-    _, graph = multilayer_net.get_layers(style="hairball")
+    _, graph, _ = multilayer_net.get_layers(style="hairball")
 
     print("\nStep 3: Computing layout with spring algorithm...")
     pos = compute_layout(graph)

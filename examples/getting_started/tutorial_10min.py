@@ -285,7 +285,7 @@ def example_7_visualization(network, partition=None):
         from py3plex.visualization.colors import colors_default
 
         # Get network for visualization
-        network_colors, graph = network.get_layers(style="hairball")
+        network_colors, graph, _ = network.get_layers(style="hairball")
 
         # Create output directory
         EXAMPLE_IMAGES_DIR.mkdir(exist_ok=True)
@@ -399,7 +399,7 @@ def complete_example():
             from py3plex.visualization.multilayer import hairball_plot
             from py3plex.visualization.colors import colors_default
 
-            network_colors, graph = network.get_layers(style="hairball")
+            network_colors, graph, _ = network.get_layers(style="hairball")
             top_n = min(3, len(set(partition.values())))
             community_counts = Counter(partition.values())
             top_communities = [c for c, _ in community_counts.most_common(top_n)]

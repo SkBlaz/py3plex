@@ -33,7 +33,7 @@ output_positions = embedding_tools.get_2d_coordinates_tsne(
 # custom layouts are part of the custom coordinate option
 layout_parameters = {"iterations": 200}
 layout_parameters['pos'] = output_positions  # assign parameters
-network_colors, graph = multilayer_network.get_layers(style="hairball")
+network_colors, graph, _ = multilayer_network.get_layers(style="hairball")
 
 partition = cw.louvain_communities(multilayer_network)
 

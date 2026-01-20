@@ -93,7 +93,7 @@ def plot_intact_embedding(num_it):
     # Custom layouts use embedding positions with force-directed refinement
     layout_parameters = {"iterations": num_it}
     layout_parameters['pos'] = output_positions  # Assign embedding positions
-    network_colors, graph = multilayer_network.get_layers(style="hairball")
+    network_colors, graph, _ = multilayer_network.get_layers(style="hairball")
     partition = cw.louvain_communities(multilayer_network)
     print(f"Found {len(set(partition.values()))} communities")
     
@@ -172,7 +172,7 @@ def plot_intact_basic(num_it=10):
     multilayer_network = multinet.multi_layer_network().load_network(
         get_dataset_path("intact02.gpickle"), input_type="gpickle",
         directed=False).add_dummy_layers()
-    network_colors, graph = multilayer_network.get_layers(style="hairball")
+    network_colors, graph, _ = multilayer_network.get_layers(style="hairball")
     partition = cw.louvain_communities(multilayer_network)
 
     # select top n communities by size
@@ -208,7 +208,7 @@ def plot_intact_BH(num_it=10):
     multilayer_network = multinet.multi_layer_network().load_network(
         get_dataset_path("intact02.gpickle"), input_type="gpickle",
         directed=False).add_dummy_layers()
-    network_colors, graph = multilayer_network.get_layers(style="hairball")
+    network_colors, graph, _ = multilayer_network.get_layers(style="hairball")
     partition = cw.louvain_communities(multilayer_network)
 
     # select top n communities by size

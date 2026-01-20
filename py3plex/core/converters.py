@@ -207,7 +207,10 @@ def prepare_for_visualization_hairball(multinet, compute_layouts=False):
         param1 (obj): multilayer object
 
     Returns:
-        tuple: (names, prepared network)
+        tuple: (names, prepared network, multiedges)
+            - names: List of layer indices for each node
+            - prepared network: The network with computed layout
+            - multiedges: Empty dict (hairball has no inter-layer edges)
 
     """
 
@@ -225,8 +228,8 @@ def prepare_for_visualization_hairball(multinet, compute_layouts=False):
         for x in v:
             inverse_mapping[x] = enumerated_layers[k]
     ordered_names = [inverse_mapping[x] for x in multinet.nodes()]
-    [x[1] for x in multinet.nodes()]
-    return (ordered_names, multinet)
+    # Return 3 values to match prepare_for_visualization() signature
+    return (ordered_names, multinet, {})
 
 
 def prepare_for_parsing(multinet):
