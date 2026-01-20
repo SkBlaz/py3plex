@@ -6559,11 +6559,14 @@ py3plex employs **metamorphic testing**, **differential testing**, and **certifi
 3. **Cross-implementation agreement**: Comparing equivalent operations across APIs
 4. **Determinism enforcement**: All stochastic algorithms are seedable and reproducible
 
-**Current Coverage** (as of v1.1.2):
-- [CORRECT] Centrality measures: Metamorphic invariance tests
-- [CORRECT] Community detection: Certificate-based validation
-- [CORRECT] DSL v2: Provenance and metadata checks
-- [WARNING] Null models: Partial coverage (degree sequence preservation)
+**Current Coverage** (as of v1.1.2 + comprehensive verification):
+- [CORRECT] **Provenance-as-Oracle**: AST hash stability, network fingerprinting, performance tracking (26 tests)
+- [CORRECT] **Differential Testing**: Legacy DSL vs DSL v2 vs graph_ops equivalence (22 tests)
+- [CORRECT] **Metamorphic Harness**: Relabeling, layer permutation, edge order, weight scaling, isolated nodes (19 tests)
+- [CORRECT] **Determinism & Parallelism**: UQ, null models, seed propagation, n_jobs invariance (16 tests)
+- [CORRECT] **Centrality measures**: Full metamorphic invariance tests (17 tests)
+- [CORRECT] **Community detection**: Certificate-based validation (7 tests)
+- [CORRECT] **DSL v2**: Provenance and metadata checks
 - [WARNING] Path algorithms: Basic tests (not yet comprehensive)
 - [WARNING] Dynamics simulations: Determinism tests (not yet metamorphic)
 
@@ -6807,6 +6810,191 @@ net = tiny_two_layer()
 4. **Report violations**: If you find an invariant violation, file an issue with a minimal repro
 
 ---
+
+### Comprehensive Verification Test Suite (v1.1.2+)
+
+py3plex now includes a comprehensive verification test framework spanning 105+ tests across 4 dedicated verification modules. This framework implements the principles of **provenance-as-oracle**, **differential testing**, **metamorphic transformation**, and **determinism enforcement**.
+
+#### Test Module Overview
+
+**test_verification_provenance_oracles.py** (26 tests):
+Foundational provenance-based verification:
+- **AST Hash Stability**: Identical queries → identical AST hashes across multiple executions
+- **Network Fingerprinting**: Network mutations detected via fingerprint changes
+- **Performance Tracking**: Timing metadata present and within reasonable bounds
+- **Randomness Metadata**: Seed tracking, provenance warnings for non-deterministic ops
+- **Versioning**: py3plex version, engine type, timestamps recorded
+
+**test_verification_api_differential.py** (22 tests):
+Cross-API equivalence testing:
+- **Legacy DSL vs DSL v2**: Node/edge selection, metric computation (degree, betweenness, pagerank)
+- **DSL v2 vs graph_ops**: Node selection, filtering, metric computation
+- **Aggregation Consistency**: Mean, median, quantile produce correct values
+- **Grouping Logic**: per_layer(), per_layer_pair() metadata correct
+- **Ordering & Limiting**: order_by(), limit() semantics consistent
+
+**test_verification_metamorphic_harness.py** (19 tests):
+Reusable transformation framework:
+- **Relabeling Invariance**: Degree, betweenness, pagerank, DSL queries preserve multisets
+- **Layer Permutation Invariance**: Global distributions preserved, per-layer groups permute correctly
+- **Edge Order Invariance**: Results identical regardless of edge insertion order
+- **Weight Scaling**: Unweighted metrics invariant, weighted metrics predictable
+- **Isolated Nodes**: Adding isolated nodes doesn't affect existing node metrics
+- **Transformation Composition**: Composing transformations preserves invariants
+
+**test_verification_determinism_parallelism.py** (16 tests):
+Stochastic algorithm reproducibility:
+- **UQ Determinism**: Same seed → identical bootstrap results, different seeds → different results
+- **Parallelism Invariance**: n_jobs ∈ {1, 2} produces identical results with fixed seed
+- **Null Models**: Same seed → identical structure, different seeds → different graphs
+- **Community Detection**: Leiden/Louvain deterministic with random_state
+- **Seed Propagation**: Seeds correctly propagated through call stacks
+- **No Global RNG**: Results independent of numpy's global random state
+
+#### Verification Principles for AI Agents
+
+When working with py3plex, AI agents should reason about correctness using these principles:
+
+**1. Provenance-as-Oracle**:
+```python
+# Always check provenance after query execution
+result = Q.nodes().compute("degree").execute(net)
+prov = result.meta["provenance"]
+
+# Verify AST hash stability for reproducibility
+assert prov["query"]["ast_hash"] is not None
+
+# Check network fingerprint for debugging
+assert prov["network_fingerprint"]["node_count"] > 0
+
+# Use performance timings for optimization
+assert prov["performance"]["total_ms"] >= 0
+```
+
+**2. Differential Validation**:
+```python
+# When in doubt, compare across APIs
+legacy_result = execute_query(net, "SELECT nodes COMPUTE degree")
+v2_result = Q.nodes().compute("degree").execute(net)
+
+# Extract and compare sorted values
+legacy_degrees = sorted(legacy_result["computed"]["degree"].values())
+v2_degrees = sorted(v2_result.to_pandas()["degree"].tolist())
+assert legacy_degrees == v2_degrees  # Should match
+```
+
+**3. Metamorphic Validation**:
+```python
+# Test your own code using transformations
+from tests.fixtures import relabel_nodes
+
+# Original computation
+original_centrality = net.monoplex_nx_wrapper("degree_centrality")
+original_values = sorted(original_centrality.values())
+
+# Relabel and recompute
+mapping = {node: f"renamed_{node}" for node in net.get_nodes()}
+relabeled_net = relabel_nodes(net, mapping)
+relabeled_centrality = relabeled_net.monoplex_nx_wrapper("degree_centrality")
+relabeled_values = sorted(relabeled_centrality.values())
+
+# Should be identical (multiset equality)
+assert original_values == relabeled_values
+```
+
+**4. Determinism Enforcement**:
+```python
+# Always use seeds for stochastic operations
+result1 = Q.nodes().compute("degree").uq(
+    method="bootstrap", n_samples=100, seed=42, n_jobs=1
+).execute(net)
+
+result2 = Q.nodes().compute("degree").uq(
+    method="bootstrap", n_samples=100, seed=42, n_jobs=2  # Different n_jobs
+).execute(net)
+
+# Results should be identical despite different n_jobs
+df1 = result1.to_pandas()
+df2 = result2.to_pandas()
+assert (df1["degree_mean"] - df2["degree_mean"]).abs().max() < 1e-6
+```
+
+#### Verified Invariants Reference
+
+**Centrality Invariants**:
+- Relabel invariance: Node naming doesn't affect value distributions
+- Layer permutation invariance: Layer ordering doesn't affect global results
+- Edge order invariance: Edge insertion order irrelevant
+- Finiteness: All values are finite (no NaN/inf)
+- PageRank normalization: Sum to 1.0 ± 1e-6
+
+**Community Detection Invariants**:
+- Partition validity: All nodes assigned exactly once
+- No empty communities
+- Modularity bounds: -0.5 ≤ Q ≤ 1.0
+- Determinism: Same seed → identical partition
+- Relabel equivalence: Relabeling preserves modularity
+
+**UQ Invariants**:
+- Seed determinism: Same seed → identical CI/std/mean
+- Parallelism invariance: n_jobs doesn't affect seeded results
+- Statistical distinguishability: Different seeds → different estimates
+
+**Null Model Invariants**:
+- Degree sequence preservation (configuration model)
+- Layer preservation
+- Node count preservation per layer
+- Determinism under fixed seed
+
+#### Coverage Map (Subsystem-by-Subsystem)
+
+| Subsystem | Unit Tests | Integration Tests | Metamorphic Tests | Differential Tests |
+|-----------|------------|-------------------|-------------------|-------------------|
+| **DSL v2** | ✓ Extensive | ✓ Yes | ✓ Yes | ✓ vs Legacy DSL |
+| **Legacy DSL** | ✓ Basic | ✓ Yes | ✗ No | ✓ vs DSL v2 |
+| **graph_ops** | ✓ Basic | ✓ Yes | ✗ No | ✓ vs DSL v2 |
+| **Centrality** | ✓ Extensive | ✓ Yes | ✓ Comprehensive | ✗ No (planned vs NetworkX) |
+| **Community Detection** | ✓ Extensive | ✓ Yes | ✓ Yes | ✗ No |
+| **Null Models** | ✓ Yes | ✓ Yes | ✓ Basic | ✗ No |
+| **UQ/Bootstrap** | ✓ Yes | ✓ Yes | ✗ No | ✗ No |
+| **Dynamics** | ✓ Yes | ✓ Yes | ✗ No (planned) | ✗ No |
+| **Temporal** | ✓ Basic | ✓ Yes | ✗ No (planned) | ✗ No |
+| **I/O** | ✓ Yes | ✓ Roundtrip tests | ✗ No | ✗ No |
+| **CLI** | ✓ Yes | ✓ Yes | ✗ No | ✗ No |
+| **Pipeline** | ✓ Yes | ✓ Yes | ✗ No | ✗ No |
+
+**Legend**:
+- ✓ = Implemented
+- ✗ = Not yet implemented
+- "Extensive" = >20 tests
+- "Yes" = 5-20 tests
+- "Basic" = <5 tests
+
+#### When to Add Verification Tests
+
+**Add metamorphic tests when**:
+- Implementing new centrality measures
+- Adding new community detection algorithms
+- Implementing new graph transformations
+- Adding new aggregation functions
+
+**Add differential tests when**:
+- Implementing functionality that has equivalent across APIs (DSL v2, Legacy DSL, graph_ops)
+- Wrapping external libraries (NetworkX, igraph, etc.)
+- Implementing alternative backends for same operation
+
+**Add determinism tests when**:
+- Adding stochastic algorithms (community detection, sampling, UQ)
+- Implementing parallel execution paths
+- Using random number generators
+
+**Add provenance tests when**:
+- Modifying query execution engines
+- Changing AST representation
+- Adding new metadata fields
+
+---
+
 
 ## Multilayer Semantics Guide
 
@@ -7280,8 +7468,14 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 ### Test Organization
 
 - **Unit Tests**: Fast tests in `tests/test_*.py`
+- **Verification Tests**: Comprehensive correctness tests in `tests/test_verification_*.py`
+  - Provenance oracles (26 tests)
+  - API differential testing (22 tests)
+  - Metamorphic transformation harness (19 tests)
+  - Determinism & parallelism (16 tests)
 - **Property Tests**: Hypothesis-based, marked `@pytest.mark.property`
 - **Integration Tests**: Multi-component, marked `@pytest.mark.integration`
+- **Metamorphic Tests**: Invariant-based, marked `@pytest.mark.metamorphic`
 - **Slow Tests**: Marked `@pytest.mark.slow` - skip during development
 
 ### Running Tests
@@ -7293,6 +7487,9 @@ pytest tests/
 # Specific file
 pytest tests/test_dsl_v2.py
 
+# All verification tests
+pytest tests/test_verification_*.py
+
 # With coverage
 pytest tests/ --cov=py3plex
 
@@ -7302,6 +7499,12 @@ pytest tests/ -m "not slow"
 # Only property tests
 pytest tests/ -m property
 
+# Only metamorphic tests
+pytest tests/ -m metamorphic
+
+# Only verification tests (comprehensive)
+pytest tests/test_verification_*.py -v
+
 # Targeted test
 pytest tests/test_dsl_v2.py::test_query_builder_basic
 ```
@@ -7310,8 +7513,10 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 - `@pytest.mark.property` - Property-based (Hypothesis)
 - `@pytest.mark.integration` - Integration tests
+- `@pytest.mark.metamorphic` - Metamorphic invariant tests
 - `@pytest.mark.slow` - Slow tests (>1 second)
 - `@pytest.mark.unit` - Fast unit tests
+- `@pytest.mark.verification` - Correctness verification tests
 
 ---
 
