@@ -45,6 +45,7 @@
 29. [Multilayer Semantics Guide](#multilayer-semantics-guide)
 30. [Testing Strategy](#testing-strategy)
 31. [File Locations](#file-locations)
+32. [**AST-Level Validation System**](#ast-level-validation-system)
 
 ---
 
@@ -8685,4 +8686,418 @@ Recommended areas for future test coverage:
 
 ---
 
-**Repo State Note**: As of January 2026, py3plex has 203 new deterministic tests enforcing 10 major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, and edge cases. All tests are automated, CI-friendly, and passing.
+## AST-Level Validation System
+
+**New in v1.1.2+**: py3plex includes a comprehensive compile-time validation system for DSL v2 queries, catching errors before execution with precise diagnostics and stable error codes.
+
+### Overview
+
+The validation system operates at the Abstract Syntax Tree (AST) level, validating queries after compilation but before execution. This provides:
+
+1. **Compile-time error detection**: Catch invalid queries before expensive execution
+2. **Structured diagnostics**: Machine-readable error codes with actionable hints
+3. **Schema-aware validation**: Leverage network metadata for precise field validation
+4. **Performance**: Fast validation with minimal overhead
+
+### Core Components
+
+#### ValidationIssue
+
+Structured representation of validation errors and warnings:
+
+```python
+from py3plex.dsl import ValidationIssue
+
+issue = ValidationIssue(
+    code="DSLVAL_FIELD_UNKNOWN",       # Stable machine code
+    severity="error",                   # "error" or "warning"
+    message="Unknown field 'degreee'",  # Human-readable
+    path="where.conditions[0]",         # AST location
+    hint="Did you mean 'degree'?",      # Fix suggestion
+    context={"field": "degreee", "similar": ["degree"]},  # Extra data
+)
+```
+
+#### ValidationResult
+
+Container for validation results:
+
+```python
+from py3plex.dsl import ValidationResult
+
+result = ValidationResult()
+result.ok          # True if no errors
+result.errors      # List of ValidationIssue (severity="error")
+result.warnings    # List of ValidationIssue (severity="warning")
+
+# Convert to dict (JSON-serializable)
+result.to_dict()
+
+# Raise exception if errors present
+result.raise_if_errors()  # Raises DSLValidationError
+```
+
+#### DSLValidationError
+
+Exception raised on validation failure:
+
+```python
+from py3plex.dsl import DSLValidationError
+
+try:
+    result = query.execute(network)
+except DSLValidationError as e:
+    print(f"Validation failed: {e}")
+    print(f"Issues: {e.issues}")  # List of ValidationIssue
+```
+
+### Validation Rules
+
+The validation system enforces the following rules:
+
+#### 1. Field Validation
+
+**Unknown fields**: Detects references to non-existent fields in `.where()`, `.order_by()`, `.compute()`, etc.
+
+```python
+# ✗ Invalid: unknown field
+Q.nodes().where(unknownfield__gt=5).validate(network)
+# Error: DSLVAL_FIELD_UNKNOWN - Unknown field 'unknownfield'
+# Hint: Did you mean 'degree'? Available fields: degree, layer, betweenness_centrality
+
+# ✓ Valid: known field
+Q.nodes().where(degree__gt=5).validate(network)
+```
+
+**Reserved fields**: Validates use of reserved fields (degree, layer, src_degree, etc.).
+
+#### 2. Target-Specific Validation
+
+**Node-only fields in edge queries**: Prevents using node-specific fields on edges.
+
+```python
+# ✗ Invalid: 'degree' is node-only
+Q.edges().where(degree__gt=5).validate(network)
+# Error: DSLVAL_FIELD_TARGET_MISMATCH - Field 'degree' not valid for edge queries
+# Hint: Use 'src_degree' or 'dst_degree' instead
+
+# ✓ Valid: edge-specific field
+Q.edges().where(src_degree__gt=5).validate(network)
+```
+
+**Edge-only fields in node queries**: Prevents using edge-specific fields on nodes.
+
+#### 3. Grouping and Aggregation
+
+**Invalid grouping**: Detects incorrect grouping operations.
+
+```python
+# ✗ Invalid: per_layer_pair() only valid for edges
+Q.nodes().per_layer_pair().validate(network)
+# Error: DSLVAL_GROUPING_INVALID - per_layer_pair() only valid for edge queries
+```
+
+**Missing computed fields**: Ensures aggregated fields are available.
+
+```python
+# ✗ Invalid: aggregating non-existent field
+Q.nodes().per_layer().aggregate(avg_missing="mean(missingfield)").validate(network)
+# Error: DSLVAL_AGGREGATION_MISSING_FIELD - Field 'missingfield' not available
+# Hint: Add .compute('missingfield') before aggregation
+```
+
+#### 4. UQ Parameter Validation
+
+Validates uncertainty quantification parameters:
+
+```python
+# ✗ Invalid: n_samples must be positive
+Q.nodes().compute("degree").uq(n_samples=0).validate(network)
+# Error: DSLVAL_UQ_INVALID_PARAMS - n_samples must be positive
+
+# ✗ Invalid: ci must be in (0,1)
+Q.nodes().compute("degree").uq(ci=1.5).validate(network)
+# Error: DSLVAL_UQ_INVALID_PARAMS - ci must be in range (0, 1)
+
+# ✓ Valid
+Q.nodes().compute("degree").uq(method="bootstrap", n_samples=100, ci=0.95).validate(network)
+```
+
+#### 5. Ordering and Limiting
+
+Ensures order_by references existing fields:
+
+```python
+# ✗ Invalid: unknown field
+Q.nodes().order_by("unknownfield").validate(network)
+# Error: DSLVAL_ORDER_FIELD_MISSING - Cannot order by 'unknownfield'
+```
+
+#### 6. Layer Validation
+
+Validates layer expressions when network is provided:
+
+```python
+# ✗ Invalid: unknown layer
+Q.nodes().from_layers(L["unknownlayer"]).validate(network)
+# Error: DSLVAL_LAYER_UNKNOWN - Layer 'unknownlayer' not found
+# Hint: Available layers: social, work, family
+```
+
+### Integration Points
+
+#### DSL v2 Builder
+
+**`.validate()` method**: Validate without execution
+
+```python
+from py3plex.dsl import Q
+
+q = Q.nodes().where(degree__gt=5)
+result = q.validate(network)
+
+if not result.ok:
+    print("Validation failed:")
+    for error in result.errors:
+        print(f"  - {error.message}")
+else:
+    print("✓ Query is valid")
+```
+
+**`.execute()` with automatic validation**:
+
+```python
+# Validates by default
+result = Q.nodes().where(degree__gt=5).execute(network)
+
+# Disable validation (advanced use)
+result = Q.nodes().execute(network, validate=False)
+```
+
+#### Legacy DSL
+
+**`validate_only` parameter**:
+
+```python
+from py3plex.dsl import execute_query
+
+# Validate without executing
+result = execute_query(
+    network,
+    'SELECT nodes WHERE layer="unknown"',
+    validate_only=True
+)
+
+print(result['ok'])       # False if validation failed
+print(result['errors'])   # List of error dicts
+```
+
+#### CLI Tool
+
+**`--validate-only` flag**:
+
+```bash
+# Human-readable output
+py3plex query network.edgelist --validate-only \
+  "SELECT nodes WHERE unknownfield > 5"
+
+# Output:
+# ✗ Validation failed:
+#   - DSLVAL_FIELD_UNKNOWN: Unknown field 'unknownfield'
+#     Hint: Did you mean 'degree'?
+
+# JSON output
+py3plex query network.edgelist --validate-only --format json \
+  "SELECT nodes WHERE degree > 5"
+
+# Output:
+# {
+#   "ok": true,
+#   "errors": [],
+#   "warnings": []
+# }
+```
+
+**DSL v2 validation**:
+
+```bash
+py3plex query network.edgelist --validate-only --dsl \
+  "Q.nodes().where(degree__gt=5).compute('betweenness')"
+```
+
+### Error Codes
+
+All validation errors have stable, machine-readable codes:
+
+| Code | Description |
+|------|-------------|
+| `DSLVAL_FIELD_UNKNOWN` | Referenced field does not exist |
+| `DSLVAL_FIELD_TARGET_MISMATCH` | Field not valid for target (node/edge) |
+| `DSLVAL_GROUPING_INVALID` | Invalid grouping operation |
+| `DSLVAL_AGGREGATION_MISSING_FIELD` | Aggregated field not available |
+| `DSLVAL_AGGREGATION_INVALID_PARAMS` | Invalid aggregation parameters |
+| `DSLVAL_UQ_INVALID_PARAMS` | Invalid UQ parameters |
+| `DSLVAL_ORDER_FIELD_MISSING` | Order-by field not available |
+| `DSLVAL_LAYER_UNKNOWN` | Referenced layer does not exist |
+
+### Schema Inference
+
+The validation system infers network schema automatically:
+
+```python
+from py3plex.dsl.validation import infer_schema
+
+schema = infer_schema(network)
+
+schema.layers            # List of layer names
+schema.node_attributes   # Set of node attribute keys
+schema.edge_attributes   # Set of edge attribute keys
+schema.reserved_node_fields  # Reserved fields (degree, layer, etc.)
+schema.reserved_edge_fields  # Reserved fields (src_degree, weight, etc.)
+```
+
+Schema inference is **fast** and uses:
+- Layer enumeration from network metadata
+- Sampling of node/edge attributes (O(1) or O(log N))
+- Cached reserved field definitions
+
+### Performance
+
+Validation is designed to be fast:
+
+- **Typical overhead**: < 1ms for simple queries
+- **Schema caching**: Schemas are cached by network fingerprint
+- **Lazy validation**: Only validates when explicitly requested or before execution
+- **No side effects**: Validation never modifies the network
+
+### Testing
+
+Comprehensive test suite in `tests/test_dsl_validation.py`:
+
+```bash
+# Run validation tests
+pytest tests/test_dsl_validation.py -v
+
+# Test coverage areas:
+# - Unknown field detection
+# - Target-specific field rules (node vs edge)
+# - Grouping and aggregation validation
+# - UQ parameter validation
+# - Order-by/limit validation
+# - Layer validation
+# - validate_only mode
+# - CLI --validate-only
+# - Error message formatting
+```
+
+Test suite includes:
+- 20+ test cases covering all validation rules
+- Snapshot tests for error message stability
+- Integration tests for DSL v2, legacy DSL, and CLI
+- Edge case coverage (empty networks, missing fields, invalid parameters)
+
+### Best Practices
+
+1. **Validate early**: Call `.validate()` during development to catch errors before execution
+2. **Use in CI**: Add `--validate-only` checks in CI pipelines to catch query errors
+3. **Handle validation errors**: Catch `DSLValidationError` and inspect issues for debugging
+4. **Provide network**: Pass network to `.validate()` for schema-aware validation
+5. **Check error codes**: Use stable error codes for programmatic error handling
+
+### Example Workflows
+
+**Development workflow**:
+
+```python
+# 1. Build query
+q = Q.nodes().where(degree__gt=5).compute("betweenness")
+
+# 2. Validate before execution
+result = q.validate(network)
+if not result.ok:
+    print("Fix these errors:")
+    for error in result.errors:
+        print(f"  - {error.code}: {error.message}")
+        if error.hint:
+            print(f"    Hint: {error.hint}")
+    sys.exit(1)
+
+# 3. Execute with confidence
+result = q.execute(network)
+```
+
+**CI validation**:
+
+```bash
+#!/bin/bash
+# validate_queries.sh
+
+# Validate all queries in query library
+for query_file in queries/*.dsl; do
+    echo "Validating $query_file..."
+    query=$(cat "$query_file")
+    
+    if ! py3plex query network.edgelist --validate-only --format json "$query" | jq -e '.ok'; then
+        echo "✗ Validation failed for $query_file"
+        exit 1
+    fi
+done
+
+echo "✓ All queries validated"
+```
+
+**Programmatic validation**:
+
+```python
+from py3plex.dsl import Q, ValidationResult
+
+def validate_user_query(query_string: str, network) -> ValidationResult:
+    """Validate a user-submitted query."""
+    try:
+        # Parse query (would need actual parser)
+        query = eval(query_string)  # In production, use safe parser
+        
+        # Validate
+        result = query.validate(network)
+        
+        return result
+        
+    except Exception as e:
+        # Return error result
+        from py3plex.dsl import ValidationIssue
+        result = ValidationResult()
+        result.add_error(ValidationIssue(
+            code="PARSE_ERROR",
+            severity="error",
+            message=f"Failed to parse query: {e}",
+        ))
+        return result
+```
+
+### Provenance Integration
+
+Validation status is tracked in query result provenance:
+
+```python
+result = Q.nodes().compute("degree").execute(network)
+
+prov = result.meta["provenance"]
+print(prov["validation"]["validated"])  # True if validation ran
+print(prov["validation"]["ok"])         # True if no errors
+print(prov["validation"]["error_count"])  # Number of errors
+print(prov["validation"]["warning_count"])  # Number of warnings
+```
+
+### Future Enhancements
+
+Planned improvements for validation system:
+
+1. **Type checking**: Validate that filter values match field types
+2. **Cardinality analysis**: Detect queries that may return empty results
+3. **Performance hints**: Warn about expensive operations on large networks
+4. **Custom validators**: Plugin system for domain-specific validation rules
+5. **IDE integration**: Validation-as-you-type for notebook environments
+
+---
+
+**Repo State Note**: As of January 2026, py3plex has 203 new deterministic tests enforcing 10 major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, and edge cases. All tests are automated, CI-friendly, and passing. **NEW**: AST-level validation system integrated with DSL v2, legacy DSL, and CLI, with comprehensive test coverage (20+ validation tests) and stable error codes for compile-time query verification.
