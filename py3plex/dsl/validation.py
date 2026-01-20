@@ -15,7 +15,7 @@ Stable error codes (DSLVAL_*) enable programmatic error handling.
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Literal, Optional, Set, Tuple
+from typing import Any, Dict, List, Literal, Optional, Set, Tuple, Union
 import difflib
 
 from .ast import (
@@ -65,7 +65,7 @@ class ValidationIssue:
     code: str
     severity: Literal["error", "warning"]
     message: str
-    path: str | List[str] = ""
+    path: Union[str, List[str]] = ""
     hint: Optional[str] = None
     span: Optional[Tuple[int, int]] = None
     context: Optional[Dict[str, Any]] = None
