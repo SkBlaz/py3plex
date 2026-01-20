@@ -651,6 +651,13 @@ Examples:
         help="Output format (default: json)",
     )
     query_parser.add_argument(
+        "--validate-only",
+        action="store_true",
+        help="Validate query without executing (returns validation report)",
+    )
+        help="Output format (default: json)",
+    )
+    query_parser.add_argument(
         "--input-format",
         choices=["auto", "multiedgelist", "edgelist", "json"],
         default="auto",
@@ -1516,7 +1523,62 @@ def cmd_query(args: argparse.Namespace) -> int:
             logger.info(f"Loading network from {args.input}...")
             network = _load_network(args.input)
         
-        # Execute query
+        # Validate-only mode
+        if args.validate_only:
+            if args.dsl:
+                # DSL v2 validation
+                from py3plex.dsl import Q, L, Param
+                
+                namespace = {
+                    "Q": Q,
+                    "L": L,
+                    "Param": Param,
+                    "__builtins__": {},
+                }
+                
+                try:
+                    query_builder = eval(query_str, namespace)  # noqa: S307
+                    validation_result = query_builder.validate(network)
+                    
+                    if args.format == "json":
+                        output_data = validation_result.to_dict()
+                        print(json.dumps(output_data, indent=2))
+                    else:
+                        from py3plex.dsl.validation import format_validation_report
+                        report = format_validation_report(validation_result)
+                        print(report)
+                    
+                    return 0 if validation_result.ok else 1
+                    
+                except Exception as e:
+                    logger.error(f"Validation failed: {e}")
+                    if args.format == "json":
+                        print(json.dumps({
+                            "ok": False,
+                            "errors": [{"code": "VALIDATION_ERROR", "message": str(e)}],
+                            "warnings": []
+                        }))
+                    else:
+                        print(f"✗ Validation failed: {e}")
+                    return 1
+            else:
+                # Legacy DSL validation
+                from py3plex.dsl import execute_query
+                result = execute_query(network, query_str, validate_only=True)
+                
+                if args.format == "json":
+                    print(json.dumps(result, indent=2))
+                else:
+                    if result.get("ok"):
+                        print("✓ Validation passed")
+                    else:
+                        print("✗ Validation failed:")
+                        for error in result.get("errors", []):
+                            print(f"  - {error.get('message', str(error))}")
+                
+                return 0 if result.get("ok") else 1
+        
+        # Normal execution path
         if args.dsl:
             # Interpret as Python DSL builder syntax
             from py3plex.dsl import Q, L, Param
