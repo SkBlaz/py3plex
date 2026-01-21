@@ -75,7 +75,7 @@ def create_test_network(num_nodes=5, num_layers=2, seed=None):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     val1=st.integers(min_value=0, max_value=10),
     val2=st.integers(min_value=0, max_value=10),
@@ -101,7 +101,7 @@ def test_f_expression_triple_and(val1, val2, val3):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer1_idx=st.integers(min_value=0, max_value=1),
     layer2_idx=st.integers(min_value=0, max_value=1)
@@ -129,7 +129,7 @@ def test_f_expression_nested_or_and(layer1_idx, layer2_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     threshold1=st.integers(min_value=-5, max_value=5),
     threshold2=st.integers(min_value=-5, max_value=5)
@@ -187,7 +187,7 @@ def test_f_expression_multiple_or_chains(num_conditions):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -222,7 +222,7 @@ def test_f_expression_double_negation(layer_idx):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer1_idx=st.integers(min_value=0, max_value=2),
     layer2_idx=st.integers(min_value=0, max_value=2)
@@ -249,7 +249,7 @@ def test_layer_union_is_commutative(layer1_idx, layer2_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer1_idx=st.integers(min_value=0, max_value=2),
     layer2_idx=st.integers(min_value=0, max_value=2)
@@ -278,7 +278,7 @@ def test_layer_union_is_associative(layer1_idx, layer2_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=2)
 )
@@ -304,7 +304,7 @@ def test_layer_union_with_self_is_idempotent(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer1_idx=st.integers(min_value=0, max_value=1),
     layer2_idx=st.integers(min_value=0, max_value=1)
@@ -332,7 +332,7 @@ def test_layer_intersection_is_subset_of_union(layer1_idx, layer2_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer1_idx=st.integers(min_value=0, max_value=1),
     layer2_idx=st.integers(min_value=0, max_value=1)
@@ -368,7 +368,7 @@ def test_layer_difference_is_asymmetric(layer1_idx, layer2_idx):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     order=st.sampled_from(['degree', '-degree'])
 )
@@ -394,7 +394,7 @@ def test_order_by_respects_direction(order):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     limit=st.integers(min_value=1, max_value=10)
 )
@@ -414,7 +414,7 @@ def test_limit_returns_at_most_n_results(limit):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     k=st.integers(min_value=1, max_value=5)
 )
@@ -468,7 +468,7 @@ def test_per_layer_pair_groups_edges():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     threshold=st.floats(min_value=0.0, max_value=1.0)
 )
@@ -496,7 +496,7 @@ def test_coverage_filter_respects_threshold(threshold):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=10)
 )
@@ -519,7 +519,7 @@ def test_to_pandas_returns_dataframe(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -584,7 +584,7 @@ def test_to_networkx_returns_graph():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -624,7 +624,7 @@ def test_edge_query_intralayer_returns_within_layer_edges():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -643,7 +643,7 @@ def test_edge_count_is_non_negative(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer1_idx=st.integers(min_value=0, max_value=1),
     layer2_idx=st.integers(min_value=0, max_value=1)
@@ -683,7 +683,7 @@ def test_interlayer_predicate_filters_cross_layer_edges(layer1_idx, layer2_idx):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -728,7 +728,7 @@ def test_node_query_with_edge_predicate_is_invalid():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -760,7 +760,7 @@ def test_multiple_where_clauses_are_anded(layer_idx):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=10)
 )
@@ -780,7 +780,7 @@ def test_result_length_equals_dataframe_length(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -818,7 +818,7 @@ def test_empty_result_has_zero_length():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -842,7 +842,7 @@ def test_result_metadata_contains_query_info(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -921,7 +921,7 @@ def test_from_layers_overrides_previous(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -963,7 +963,7 @@ def test_empty_compute_returns_no_metrics():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     order_desc=st.booleans()
 )

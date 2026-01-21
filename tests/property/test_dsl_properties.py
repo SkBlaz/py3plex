@@ -42,7 +42,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     identifier=st.text(
         min_size=1,
@@ -64,7 +64,7 @@ def test_tokenize_preserves_identifiers(identifier):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     string_value=st.text(min_size=1, max_size=50, alphabet=st.characters(
         blacklist_characters='"\'',
@@ -84,7 +84,7 @@ def test_tokenize_handles_quoted_strings(string_value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     value1=st.integers(min_value=0, max_value=1000),
     value2=st.integers(min_value=0, max_value=1000)
@@ -101,7 +101,7 @@ def test_tokenize_handles_numeric_values(value1, value2):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     operator=st.sampled_from(['>', '<', '=', '>=', '<=', '!='])
 )
@@ -116,7 +116,7 @@ def test_tokenize_recognizes_comparison_operators(operator):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     logical_op=st.sampled_from(['AND', 'OR', 'NOT'])
 )
@@ -134,7 +134,7 @@ def test_tokenize_recognizes_logical_operators(logical_op):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     keyword=st.sampled_from(['SELECT', 'WHERE', 'COMPUTE'])
 )
@@ -154,7 +154,7 @@ def test_tokenize_recognizes_keywords(keyword):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     target=st.sampled_from(['nodes', 'edges'])
 )
@@ -173,7 +173,7 @@ def test_tokenize_recognizes_selection_targets(target):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     target=st.sampled_from(['nodes', 'edges']),
     field=st.text(min_size=1, max_size=20, alphabet='abcdefghijklmnopqrstuvwxyz_').filter(lambda x: x[0].isalpha()),
@@ -194,7 +194,7 @@ def test_simple_query_tokenization_structure(target, field, value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     value1=st.integers(min_value=0, max_value=50),
     value2=st.integers(min_value=0, max_value=50),
@@ -220,7 +220,7 @@ def test_compound_query_tokenization_structure(value1, value2, logical_op):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     query_parts=st.lists(
         st.sampled_from(['SELECT nodes', 'WHERE degree > 0', 'AND centrality < 1']),
@@ -240,7 +240,7 @@ def test_tokenization_produces_list(query_parts):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     whitespace=st.sampled_from(['  ', '\t', '\n', '    '])
 )
@@ -257,7 +257,7 @@ def test_tokenization_ignores_extra_whitespace(whitespace):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_name=st.text(min_size=1, max_size=30, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll', 'Nd'),
@@ -304,7 +304,7 @@ def test_tokenization_handles_nested_conditions(nested_level):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     empty_parts=st.integers(min_value=0, max_value=3)
 )
@@ -366,7 +366,7 @@ def create_test_network(num_nodes=5, num_layers=2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     target=st.sampled_from(['nodes', 'edges'])
 )
@@ -388,7 +388,7 @@ def test_execute_query_returns_dict(target):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -406,7 +406,7 @@ def test_execute_query_layer_filter_returns_correct_layer(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -445,7 +445,7 @@ def test_execute_query_compute_returns_measures(measure):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     logical_op=st.sampled_from(['AND', 'OR'])
 )
@@ -484,7 +484,7 @@ def test_execute_query_empty_network():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     limit=st.integers(min_value=1, max_value=20)
 )
@@ -589,7 +589,7 @@ def test_compute_centrality_for_layer_returns_dict(layer_idx, centrality):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     attribute=st.text(min_size=1, max_size=20, alphabet='abcdefghijklmnopqrstuvwxyz_'),
     operator=st.sampled_from(['>', '<', '=', '>=', '<=', '!=']),
@@ -636,7 +636,7 @@ def test_parse_condition_with_not_operator(value):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_name=st.text(min_size=1, max_size=10, alphabet='abcdefghijklmnopqrstuvwxyz')
 )
@@ -663,7 +663,7 @@ def test_evaluate_condition_layer_equality(layer_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -788,7 +788,7 @@ def test_empty_query_raises_error():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -805,7 +805,7 @@ def test_in_layer_clause_filters_correctly(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )

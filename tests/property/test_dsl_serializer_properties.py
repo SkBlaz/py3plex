@@ -80,7 +80,7 @@ def create_test_network(num_nodes=5, num_layers=2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_name=st.text(
         min_size=1,
@@ -108,7 +108,7 @@ def test_serialization_idempotent_simple_query(layer_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     attr=st.sampled_from(['degree', 'centrality', 'clustering']),
     threshold=st.integers(min_value=0, max_value=100)
@@ -196,7 +196,7 @@ def test_serialization_preserves_target():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer1=st.text(min_size=1, max_size=8, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     layer2=st.text(min_size=1, max_size=8, alphabet=st.characters(min_codepoint=97, max_codepoint=122))

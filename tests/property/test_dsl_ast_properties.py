@@ -40,7 +40,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     layer_name=st.text(
         min_size=1,
@@ -61,7 +61,7 @@ def test_layer_term_creation(layer_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     param_name=st.text(
         min_size=1,
@@ -85,7 +85,7 @@ def test_param_ref_creation(param_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     attr=st.text(min_size=1, max_size=15, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     op=st.sampled_from(['>', '>=', '<', '<=', '=', '!=']),

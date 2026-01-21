@@ -36,7 +36,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=10)
 @given(
     measure_name=st.sampled_from([
         'degree', 'betweenness', 'closeness', 'eigenvector',

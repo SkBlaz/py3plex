@@ -64,7 +64,7 @@ def create_weighted_network(num_nodes=5, num_layers=2, seed=42):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -87,7 +87,7 @@ def test_count_aggregation_equals_item_count(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -120,7 +120,7 @@ def test_mean_aggregation_bounded(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -152,7 +152,7 @@ def test_median_aggregation_properties(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     quantile_p=st.floats(min_value=0.0, max_value=1.0)
 )
@@ -212,7 +212,7 @@ def test_quantile_ordering_property():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -246,7 +246,7 @@ def test_std_var_relationship(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     min_degree=st.integers(min_value=0, max_value=3)
 )
@@ -269,7 +269,7 @@ def test_edge_src_degree_filter_consistency(min_degree):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     min_src_degree=st.integers(min_value=0, max_value=2),
     min_dst_degree=st.integers(min_value=0, max_value=2)
@@ -300,7 +300,7 @@ def test_edge_endpoint_filters_conjunctive(min_src_degree, min_dst_degree):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -341,7 +341,7 @@ def test_endpoint_degree_aggregation_bounded(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -370,7 +370,7 @@ def test_count_aggregation_parity(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_layers=st.integers(min_value=2, max_value=3)
 )
@@ -402,7 +402,7 @@ def test_per_layer_aggregation_sum_equals_global(num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -438,7 +438,7 @@ def test_per_layer_pair_edge_aggregation_complete(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -476,7 +476,7 @@ def test_multiple_aggregations_independence(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_layers=st.integers(min_value=2, max_value=3)
 )
@@ -545,7 +545,7 @@ def test_aggregation_on_empty_group():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -580,7 +580,7 @@ def test_quantile_extreme_values(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=10)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )

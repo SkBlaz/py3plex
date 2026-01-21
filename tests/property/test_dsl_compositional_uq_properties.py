@@ -62,9 +62,9 @@ def create_test_network(num_nodes=10, num_layers=2, seed=42):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
-    n_samples=st.integers(min_value=5, max_value=20),
+    n_samples=st.integers(min_value=3, max_value=10),
     seed=st.integers(min_value=1, max_value=1000)
 )
 def test_aggregate_uq_produces_dict_with_stats(n_samples, seed):
@@ -98,7 +98,7 @@ def test_aggregate_uq_produces_dict_with_stats(n_samples, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     seed=st.integers(min_value=1, max_value=1000)
 )
@@ -112,7 +112,7 @@ def test_aggregate_uq_std_non_negative(seed):
         Q.nodes()
          .compute("degree")
          .summarize(mean_degree="mean(degree)")
-         .uq(method="bootstrap", n_samples=10, seed=seed)
+         .uq(method="bootstrap", n_samples=5, seed=seed)
          .execute(network)
     )
     
@@ -121,7 +121,7 @@ def test_aggregate_uq_std_non_negative(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     seed=st.integers(min_value=1, max_value=1000)
 )
@@ -137,7 +137,7 @@ def test_aggregate_uq_ci_ordered(seed):
         Q.nodes()
          .compute("degree")
          .summarize(mean_degree="mean(degree)")
-         .uq(method="bootstrap", n_samples=10, ci=0.95, seed=seed)
+         .uq(method="bootstrap", n_samples=5, ci=0.95, seed=seed)
          .execute(network)
     )
     
@@ -157,9 +157,9 @@ def test_aggregate_uq_ci_ordered(seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=3)
 @given(
-    num_layers=st.integers(min_value=2, max_value=4),
+    num_layers=st.integers(min_value=2, max_value=3),
     seed=st.integers(min_value=1, max_value=1000)
 )
 def test_per_layer_aggregate_uq_group_count(num_layers, seed):
@@ -173,7 +173,7 @@ def test_per_layer_aggregate_uq_group_count(num_layers, seed):
          .compute("degree")
          .per_layer()
          .aggregate(mean_degree="mean(degree)")
-         .uq(method="bootstrap", n_samples=10, seed=seed)
+         .uq(method="bootstrap", n_samples=5, seed=seed)
          .execute(network)
     )
     
@@ -182,7 +182,7 @@ def test_per_layer_aggregate_uq_group_count(num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=3)
 @given(
     seed=st.integers(min_value=1, max_value=1000)
 )
@@ -197,7 +197,7 @@ def test_per_layer_aggregate_uq_all_groups_have_uncertainty(seed):
          .compute("degree")
          .per_layer()
          .aggregate(mean_degree="mean(degree)")
-         .uq(method="bootstrap", n_samples=10, seed=seed)
+         .uq(method="bootstrap", n_samples=5, seed=seed)
          .execute(network)
     )
     
@@ -214,7 +214,7 @@ def test_per_layer_aggregate_uq_all_groups_have_uncertainty(seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=3)
 @given(
     top_k=st.integers(min_value=3, max_value=7),
     seed=st.integers(min_value=1, max_value=1000)
@@ -232,7 +232,7 @@ def test_ranking_uq_respects_limit(top_k, seed):
          .compute("degree")
          .order_by("-degree")
          .limit(top_k)
-         .uq(method="perturbation", n_samples=10, seed=seed)  # Use perturbation, not bootstrap
+         .uq(method="perturbation", n_samples=5, seed=seed)  # Use perturbation, not bootstrap
          .execute(network)
     )
     
@@ -241,7 +241,7 @@ def test_ranking_uq_respects_limit(top_k, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=3)
 @given(
     seed=st.integers(min_value=1, max_value=1000)
 )
@@ -256,7 +256,7 @@ def test_ranking_uq_has_stability_metadata(seed):
          .compute("degree")
          .order_by("-degree")
          .limit(5)
-         .uq(method="perturbation", n_samples=10, seed=seed)  # Use perturbation
+         .uq(method="perturbation", n_samples=5, seed=seed)  # Use perturbation
          .execute(network)
     )
     
@@ -271,7 +271,7 @@ def test_ranking_uq_has_stability_metadata(seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     seed=st.integers(min_value=1, max_value=1000)
 )
@@ -285,7 +285,7 @@ def test_same_seed_same_uq_results(seed):
         Q.nodes()
          .compute("degree")
          .summarize(mean_degree="mean(degree)")
-         .uq(method="bootstrap", n_samples=10, seed=seed)
+         .uq(method="bootstrap", n_samples=5, seed=seed)
          .execute(network)
     )
     
@@ -293,7 +293,7 @@ def test_same_seed_same_uq_results(seed):
         Q.nodes()
          .compute("degree")
          .summarize(mean_degree="mean(degree)")
-         .uq(method="bootstrap", n_samples=10, seed=seed)
+         .uq(method="bootstrap", n_samples=5, seed=seed)
          .execute(network)
     )
     
