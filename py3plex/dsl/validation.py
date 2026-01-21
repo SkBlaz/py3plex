@@ -368,8 +368,8 @@ def validate_ast(
         capabilities = get_default_capabilities()
     
     # Validate based on query type
-    if isinstance(query.stmt, SelectStmt):
-        _validate_select_stmt(query.stmt, result, schema, capabilities)
+    if isinstance(query.select, SelectStmt):
+        _validate_select_stmt(query.select, result, schema, capabilities)
     
     return result
 
