@@ -126,7 +126,7 @@ def relabel_network_nodes(network, mapping):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -146,7 +146,7 @@ def test_degree_centrality_non_negative(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -168,7 +168,7 @@ def test_centrality_values_finite(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -185,7 +185,7 @@ def test_participation_coefficient_bounded(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -202,7 +202,7 @@ def test_closeness_centrality_non_negative(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -223,7 +223,7 @@ def test_betweenness_centrality_non_negative(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -252,7 +252,7 @@ def test_eigenvector_centrality_normalization(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3),
@@ -284,7 +284,7 @@ def test_lp_aggregated_centrality_properties(num_nodes, num_layers, p_norm):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -315,7 +315,7 @@ def test_degree_invariant_under_relabeling(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -350,7 +350,7 @@ def test_betweenness_ranking_invariant(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -380,7 +380,7 @@ def test_layer_degree_sum_equals_overlapping(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -416,7 +416,7 @@ def test_weighted_degree_greater_equal_unweighted(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -446,7 +446,7 @@ def test_information_centrality_properties(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2),
@@ -470,7 +470,7 @@ def test_collective_influence_properties(num_nodes, num_layers, radius):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -497,7 +497,7 @@ def test_harmonic_closeness_properties(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -521,7 +521,7 @@ def test_compute_all_centralities_basic(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=8, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2)

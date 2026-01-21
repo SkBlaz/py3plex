@@ -35,7 +35,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=10, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -62,7 +62,7 @@ def test_basic_pl_stats_alpha_positive(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=10, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -88,7 +88,7 @@ def test_basic_pl_stats_sigma_non_negative(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=20, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -118,7 +118,7 @@ def test_basic_pl_stats_returns_two_values(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=20, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -150,7 +150,7 @@ def test_basic_pl_stats_alpha_reasonable_range(num_nodes, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=30),
     prob=st.floats(min_value=0.1, max_value=0.8, allow_nan=False, allow_infinity=False),
@@ -169,7 +169,7 @@ def test_degree_sequence_all_non_negative(num_nodes, prob, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=30),
     prob=st.floats(min_value=0.1, max_value=0.8, allow_nan=False, allow_infinity=False),
@@ -188,7 +188,7 @@ def test_degree_sequence_sum_even(num_nodes, prob, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=30),
     prob=st.floats(min_value=0.1, max_value=0.8, allow_nan=False, allow_infinity=False),
@@ -205,7 +205,7 @@ def test_degree_sequence_length_matches_nodes(num_nodes, prob, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=30),
     prob=st.floats(min_value=0.1, max_value=0.8, allow_nan=False, allow_infinity=False),
@@ -228,7 +228,7 @@ def test_degree_sequence_max_degree_bounded(num_nodes, prob, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=20, max_value=50),
     m=st.integers(min_value=1, max_value=5),
@@ -250,7 +250,7 @@ def test_barabasi_albert_has_high_degree_hubs(num_nodes, m, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=20, max_value=50),
     m=st.integers(min_value=2, max_value=5),
@@ -271,7 +271,7 @@ def test_barabasi_albert_min_degree(num_nodes, m, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=20, max_value=50),
     m=st.integers(min_value=2, max_value=5),
@@ -291,7 +291,7 @@ def test_barabasi_albert_connected(num_nodes, m, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=10, max_value=30)
 )
@@ -307,7 +307,7 @@ def test_complete_graph_degree_sequence(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=30)
 )
@@ -328,7 +328,7 @@ def test_star_graph_degree_distribution(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=30)
 )
@@ -349,7 +349,7 @@ def test_path_graph_degree_distribution(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=30)
 )

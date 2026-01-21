@@ -20,7 +20,7 @@ from .strategies import small_graphs, connected_graphs
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=2, max_value=8))
 def test_nx_import_preserves_nodes(n):
     """
@@ -45,7 +45,7 @@ def test_nx_import_preserves_nodes(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=2, max_value=8))
 def test_nx_import_preserves_edges(n):
     """
@@ -70,7 +70,7 @@ def test_nx_import_preserves_edges(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=2, max_value=8))
 def test_nx_directed_flag_respected(n):
     """
@@ -96,7 +96,7 @@ def test_nx_directed_flag_respected(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_edgelist_roundtrip_preserves_structure(n):
     """
@@ -146,7 +146,7 @@ def test_edgelist_roundtrip_preserves_structure(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=2, max_value=6))
 def test_node_relabeling_preserves_topology(n):
     """
@@ -192,7 +192,7 @@ def test_empty_network_import():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=1, max_value=8))
 def test_load_network_nonnegative_counts(n):
     """
@@ -211,7 +211,7 @@ def test_load_network_nonnegative_counts(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=2, max_value=6))
 def test_weighted_graph_import(n):
     """

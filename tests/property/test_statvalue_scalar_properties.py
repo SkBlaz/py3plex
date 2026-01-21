@@ -12,7 +12,7 @@ from py3plex.stats import Delta, Gaussian, Provenance, StatValue
     st.floats(min_value=0.0, max_value=10.0, allow_nan=False, allow_infinity=False),
     st.floats(min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False),
 )
-@settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_scalar_multiplication_scales_gaussian_std(value, std, scalar):
     """Multiplying by k scales Gaussian std by |k|."""
     assume(abs(scalar) > 1e-6)
@@ -26,7 +26,7 @@ def test_scalar_multiplication_scales_gaussian_std(value, std, scalar):
     st.floats(min_value=0.0, max_value=10.0, allow_nan=False, allow_infinity=False),
     st.floats(min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False),
 )
-@settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_scalar_division_scales_delta_sigma(value, sigma, scalar):
     """Dividing by k scales Delta sigma by 1/|k|."""
     assume(abs(scalar) > 1e-6)

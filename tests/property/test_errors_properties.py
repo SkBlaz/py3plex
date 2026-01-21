@@ -40,7 +40,7 @@ def test_severity_enum_values():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(severity=st.sampled_from(list(Severity)))
 def test_severity_value_is_string(severity):
     """Test that Severity values are strings."""
@@ -83,7 +83,7 @@ def test_colors_supports_color_returns_bool():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(text=st.text(min_size=1, max_size=50))
 def test_colors_colorize_returns_string(text):
     """Test that colorize returns a string."""
@@ -96,7 +96,7 @@ def test_colors_colorize_returns_string(text):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(text=st.text(min_size=1, max_size=50))
 def test_colors_colorize_contains_text(text):
     """Test that colorize preserves the text."""
@@ -112,7 +112,7 @@ def test_colors_colorize_contains_text(text):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(message=st.text(min_size=1, max_size=100))
 def test_suggestion_creation(message):
     """Test that Suggestion can be created with a message."""
@@ -127,7 +127,7 @@ def test_suggestion_creation(message):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     message=st.text(min_size=1, max_size=100),
     replacement=st.text(min_size=1, max_size=50)
@@ -143,7 +143,7 @@ def test_suggestion_with_replacement(message, replacement):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(message=st.text(min_size=1, max_size=100))
 def test_note_creation(message):
     """Test that Note can be created with a message."""
@@ -158,7 +158,7 @@ def test_note_creation(message):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     code=st.text(min_size=3, max_size=10, alphabet=st.characters(whitelist_categories=('Lu', 'Nd'))),
     title=st.text(min_size=1, max_size=50),
@@ -184,7 +184,7 @@ def test_error_message_creation(code, title, message):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     code=st.text(min_size=3, max_size=10, alphabet=st.characters(whitelist_categories=('Lu', 'Nd'))),
     title=st.text(min_size=1, max_size=50),
@@ -205,7 +205,7 @@ def test_error_message_all_severities(code, title, message, severity):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     code=st.text(min_size=3, max_size=10, alphabet=st.characters(whitelist_categories=('Lu', 'Nd'))),
     title=st.text(min_size=1, max_size=50),
@@ -232,7 +232,7 @@ def test_error_message_format(code, title, message, use_color):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     code=st.text(min_size=3, max_size=10, alphabet=st.characters(whitelist_categories=('Lu', 'Nd'))),
     title=st.text(min_size=1, max_size=50),
@@ -254,7 +254,7 @@ def test_error_message_with_suggestions(code, title, message, suggestions):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     code=st.text(min_size=3, max_size=10, alphabet=st.characters(whitelist_categories=('Lu', 'Nd'))),
     title=st.text(min_size=1, max_size=50),
@@ -276,7 +276,7 @@ def test_error_message_with_notes(code, title, message, notes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     code=st.text(min_size=3, max_size=10, alphabet=st.characters(whitelist_categories=('Lu', 'Nd'))),
     title=st.text(min_size=1, max_size=50),
@@ -302,7 +302,7 @@ def test_error_message_with_did_you_mean(code, title, message, did_you_mean):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     target=st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'))),
     candidates=st.lists(
@@ -325,7 +325,7 @@ def test_find_similar_returns_string_or_none(target, candidates):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     target=st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'))),
 )

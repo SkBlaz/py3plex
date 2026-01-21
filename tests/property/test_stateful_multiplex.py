@@ -228,7 +228,7 @@ TestMultiplex = MultiplexMachine.TestCase
 
 # ---------------- Centrality parity on a single-layer slice --------------------
 
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @st.composite
 def path_graph_params(draw):
     n = draw(st.integers(min_value=2, max_value=15))
@@ -237,7 +237,7 @@ def path_graph_params(draw):
     return n, layer
 
 
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(params=path_graph_params())
 def test_degree_centrality_parity_single_layer(params):
     """

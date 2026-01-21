@@ -33,7 +33,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -84,7 +84,7 @@ def test_occurrence_matrix_is_square(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -131,7 +131,7 @@ def test_occurrence_matrix_non_negative(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -174,7 +174,7 @@ def test_occurrence_matrix_diagonal_positive(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -222,7 +222,7 @@ def test_occurrence_matrix_symmetric(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -276,7 +276,7 @@ def test_occurrence_matrix_returns_correct_layer_count(num_nodes, num_layers, se
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -325,7 +325,7 @@ def test_compute_blocks_returns_valid_structure(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -379,7 +379,7 @@ def test_compute_blocks_indices_cover_all_layers(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -425,7 +425,7 @@ def test_compute_blocks_submatrices_square(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4),

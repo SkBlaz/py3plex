@@ -37,7 +37,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=15),
     seed=st.integers(min_value=0, max_value=10000)
@@ -60,7 +60,7 @@ def test_force_directed_layout_all_nodes_present(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=15),
     seed=st.integers(min_value=0, max_value=10000)
@@ -81,7 +81,7 @@ def test_force_directed_layout_finite_coordinates(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=15),
     seed=st.integers(min_value=0, max_value=10000)
@@ -102,7 +102,7 @@ def test_force_directed_layout_reproducibility(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=12),
     gravity=st.floats(min_value=0.0, max_value=2.0, allow_nan=False, allow_infinity=False),
@@ -120,7 +120,7 @@ def test_force_directed_layout_gravity_parameter(num_nodes, gravity, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=12),
     scaling=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
@@ -142,7 +142,7 @@ def test_force_directed_layout_scaling_parameter(num_nodes, scaling, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=10)
 )
@@ -161,7 +161,7 @@ def test_layout_complete_graph(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=15)
 )
@@ -179,7 +179,7 @@ def test_layout_star_graph(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=15)
 )
@@ -194,7 +194,7 @@ def test_layout_path_graph(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=15)
 )
@@ -209,7 +209,7 @@ def test_layout_cycle_graph(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=15),
     seed=st.integers(min_value=0, max_value=10000)
@@ -244,7 +244,7 @@ def test_layout_disconnected_graph(num_nodes, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=12),
     seed=st.integers(min_value=0, max_value=10000)

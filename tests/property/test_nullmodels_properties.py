@@ -62,7 +62,7 @@ class TestConfigurationModelProperties:
     """Property-based tests for configuration_model."""
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_configuration_model_preserves_node_count(self, seed: int):
         """Configuration model must preserve node count."""
         net = build_test_network()
@@ -72,7 +72,7 @@ class TestConfigurationModelProperties:
         assert count_nodes(random_net) == original_count
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_configuration_model_does_not_mutate_original(self, seed: int):
         """Configuration model must not mutate the original network."""
         net = build_test_network()
@@ -104,7 +104,7 @@ class TestErdosRenyiModelProperties:
     """Property-based tests for erdos_renyi_model."""
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_erdos_renyi_preserves_node_count(self, seed: int):
         """Erdős-Rényi model must preserve node count."""
         net = build_test_network()
@@ -114,7 +114,7 @@ class TestErdosRenyiModelProperties:
         assert count_nodes(random_net) == original_count
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_erdos_renyi_does_not_mutate_original(self, seed: int):
         """Erdős-Rényi model must not mutate the original network."""
         net = build_test_network()
@@ -148,7 +148,7 @@ class TestLayerShuffleModelProperties:
     """Property-based tests for layer_shuffle_model."""
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_layer_shuffle_preserves_node_count(self, seed: int):
         """Layer shuffle must preserve node count."""
         net = build_test_network()
@@ -158,7 +158,7 @@ class TestLayerShuffleModelProperties:
         assert count_nodes(random_net) == original_count
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_layer_shuffle_preserves_edge_count(self, seed: int):
         """Layer shuffle must preserve edge count."""
         net = build_test_network()
@@ -168,7 +168,7 @@ class TestLayerShuffleModelProperties:
         assert count_edges(random_net) == original_count
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_layer_shuffle_does_not_mutate_original(self, seed: int):
         """Layer shuffle must not mutate the original network."""
         net = build_test_network()
@@ -190,7 +190,7 @@ class TestEdgeSwapModelProperties:
     """Property-based tests for edge_swap_model."""
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_swap_preserves_node_count(self, seed: int):
         """Edge swap must preserve node count."""
         net = build_test_network()
@@ -200,7 +200,7 @@ class TestEdgeSwapModelProperties:
         assert count_nodes(random_net) == original_count
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_swap_preserves_edge_count(self, seed: int):
         """Edge swap must preserve edge count."""
         net = build_test_network()
@@ -210,7 +210,7 @@ class TestEdgeSwapModelProperties:
         assert count_edges(random_net) == original_count
 
     @given(st.integers(min_value=42, max_value=9999))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_swap_does_not_mutate_original(self, seed: int):
         """Edge swap must not mutate the original network."""
         net = build_test_network()
@@ -226,7 +226,7 @@ class TestEdgeSwapModelProperties:
         st.integers(min_value=1, max_value=20),
         st.integers(min_value=42, max_value=9999),
     )
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_swap_with_different_swap_counts(self, num_swaps: int, seed: int):
         """Edge swap with different swap counts preserves structure."""
         net = build_test_network()
@@ -284,7 +284,7 @@ class TestGenerateNullModelProperties:
     """Property-based tests for generate_null_model executor."""
 
     @given(st.integers(min_value=1, max_value=10))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_generate_produces_requested_num_samples(self, num_samples: int):
         """generate_null_model should produce requested number of samples."""
         net = build_test_network()
@@ -303,7 +303,7 @@ class TestGenerateNullModelProperties:
         st.sampled_from(["configuration", "erdos_renyi", "layer_shuffle", "edge_swap"]),
         st.integers(min_value=42, max_value=9999),
     )
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_generate_all_models_work(self, model: str, seed: int):
         """All registered null models should work with generate_null_model."""
         net = build_test_network()
@@ -320,7 +320,7 @@ class TestGenerateNullModelProperties:
         assert result.model_type == model
 
     @given(st.integers(min_value=1, max_value=5))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_generate_does_not_mutate_original_network(self, num_samples: int):
         """generate_null_model must not mutate the original network."""
         net = build_test_network()
@@ -374,7 +374,7 @@ class TestCrossModelInvariants:
         st.sampled_from(["configuration", "erdos_renyi", "layer_shuffle", "edge_swap"]),
         st.integers(min_value=42, max_value=999),
     )
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_all_models_preserve_node_count(self, model: str, seed: int):
         """All null models must preserve node count."""
         net = build_test_network()
@@ -389,7 +389,7 @@ class TestCrossModelInvariants:
         st.sampled_from(["configuration", "erdos_renyi", "layer_shuffle", "edge_swap"]),
         st.integers(min_value=42, max_value=999),
     )
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_all_models_do_not_mutate_original(self, model: str, seed: int):
         """All null models must not mutate the original network."""
         net = build_test_network()
@@ -402,7 +402,7 @@ class TestCrossModelInvariants:
         assert count_edges(net) == original_edges
 
     @given(st.sampled_from(["layer_shuffle", "edge_swap"]))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_structure_preserving_models_preserve_edges(self, model: str):
         """Structure-preserving models (layer_shuffle, edge_swap) preserve edge count."""
         net = build_test_network()

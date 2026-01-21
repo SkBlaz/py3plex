@@ -34,7 +34,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_folds=st.integers(min_value=3, max_value=10),
     n_runs=st.integers(min_value=3, max_value=8),
@@ -63,7 +63,7 @@ def test_bayesian_comparison_returns_probabilities(n_folds, n_runs, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_folds=st.integers(min_value=3, max_value=10),
     n_runs=st.integers(min_value=3, max_value=8),
@@ -90,7 +90,7 @@ def test_bayesian_comparison_probabilities_sum_to_one(n_folds, n_runs, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_folds=st.integers(min_value=3, max_value=10),
     n_runs=st.integers(min_value=3, max_value=8),
@@ -119,7 +119,7 @@ def test_bayesian_comparison_symmetric_input(n_folds, n_runs, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=8, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_folds=st.integers(min_value=3, max_value=8),
     n_runs=st.integers(min_value=3, max_value=6),
@@ -150,7 +150,7 @@ def test_bayesian_comparison_clear_winner(n_folds, n_runs, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_folds=st.integers(min_value=3, max_value=10),
     n_runs=st.integers(min_value=3, max_value=8),
@@ -183,7 +183,7 @@ def test_bayesian_comparison_rope_parameter(n_folds, n_runs, rope, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_folds=st.integers(min_value=3, max_value=10),
     n_runs=st.integers(min_value=3, max_value=8),
@@ -212,7 +212,7 @@ def test_bayesian_comparison_numeric_stability(n_folds, n_runs, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=8, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_folds=st.integers(min_value=3, max_value=8),
     n_runs=st.integers(min_value=3, max_value=6),

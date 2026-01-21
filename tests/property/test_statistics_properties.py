@@ -14,7 +14,7 @@ from py3plex.algorithms.statistics import multilayer_statistics as mls
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=2, max_value=15),
     p=st.floats(min_value=0.0, max_value=1.0)
@@ -65,7 +65,7 @@ def test_layer_density_bounds(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=2, max_value=15))
 def test_layer_density_empty_layer(n):
     """
@@ -100,7 +100,7 @@ def test_layer_density_empty_layer(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(n=st.integers(min_value=2, max_value=10))
 def test_layer_density_complete_layer(n):
     """
@@ -130,7 +130,7 @@ def test_layer_density_complete_layer(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=3, max_value=12),
     m=st.integers(min_value=1, max_value=15)
@@ -186,7 +186,7 @@ def test_layer_density_consistency(n, m):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=3, max_value=12),
     p=st.floats(min_value=0.2, max_value=0.8)

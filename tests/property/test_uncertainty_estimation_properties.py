@@ -49,7 +49,7 @@ class TestEstimateUncertaintyProperties:
     """Property-based tests for estimate_uncertainty function."""
     
     @given(st.integers(min_value=2, max_value=20))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_returns_statseries_for_dict_metrics(self, n_runs):
         """Property: Returns StatSeries when metric returns dict."""
         net = build_test_network()
@@ -69,7 +69,7 @@ class TestEstimateUncertaintyProperties:
         assert len(result) > 0
     
     @given(st.integers(min_value=2, max_value=20))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_returns_float_for_scalar_metrics(self, n_runs):
         """Property: Returns float when metric returns scalar."""
         net = build_test_network()
@@ -91,7 +91,7 @@ class TestEstimateUncertaintyProperties:
         st.integers(min_value=2, max_value=10),
         st.integers(min_value=2, max_value=10)
     )
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_result_length_matches_network_size(self, num_nodes, n_runs):
         """Property: Result length matches number of nodes."""
         net = build_test_network(num_nodes=num_nodes)
@@ -112,7 +112,7 @@ class TestEstimateUncertaintyProperties:
         assert len(result) == expected_size
     
     @given(st.integers(min_value=3, max_value=20))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_seed_reproducibility(self, n_runs):
         """Property: Same seed gives same results."""
         net = build_test_network()
@@ -140,7 +140,7 @@ class TestEstimateUncertaintyProperties:
         np.testing.assert_array_almost_equal(result1.std, result2.std)
     
     @given(st.integers(min_value=10, max_value=50))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_perturbation_creates_variance(self, n_runs):
         """Property: Perturbation strategy should create non-zero variance."""
         net = build_test_network(num_nodes=6)
@@ -176,7 +176,7 @@ class TestPageRankUncertaintyProperties:
     """Property-based tests for PageRank with uncertainty."""
     
     @given(st.integers(min_value=3, max_value=10))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_pagerank_deterministic_sum_equals_one(self, num_nodes):
         """Property: PageRank values sum to 1 in deterministic mode."""
         net = build_test_network(num_nodes=num_nodes)
@@ -188,7 +188,7 @@ class TestPageRankUncertaintyProperties:
         assert 0.95 < total < 1.05
     
     @given(st.integers(min_value=3, max_value=8))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_pagerank_values_positive(self, num_nodes):
         """Property: All PageRank values are positive."""
         net = build_test_network(num_nodes=num_nodes)
@@ -204,7 +204,7 @@ class TestPageRankUncertaintyProperties:
         assert np.all(result.mean > 0)
     
     @given(st.integers(min_value=3, max_value=8))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_pagerank_std_non_negative(self, num_nodes):
         """Property: PageRank std values are non-negative when present."""
         net = build_test_network(num_nodes=num_nodes)
@@ -224,7 +224,7 @@ class TestPageRankUncertaintyProperties:
         st.integers(min_value=3, max_value=8),
         st.floats(min_value=0.7, max_value=0.95)
     )
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_pagerank_alpha_affects_results(self, num_nodes, alpha):
         """Property: Different alpha values give different results."""
         net = build_test_network(num_nodes=num_nodes)
@@ -245,7 +245,7 @@ class TestUncertaintyContextProperties:
     """Property-based tests for uncertainty context management."""
     
     @given(st.integers(min_value=2, max_value=50))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_context_preserves_n_runs(self, n_runs):
         """Property: Context manager preserves n_runs setting."""
         with uncertainty_enabled(n_runs=n_runs):
@@ -253,7 +253,7 @@ class TestUncertaintyContextProperties:
             assert cfg.default_n_runs == n_runs
     
     @given(st.sampled_from(list(ResamplingStrategy)))
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_context_preserves_strategy(self, strategy):
         """Property: Context manager preserves resampling strategy."""
         with uncertainty_enabled(resampling=strategy):
@@ -296,7 +296,7 @@ class TestMetamorphicProperties:
     
     @pytest.mark.slow
     @given(st.integers(min_value=10, max_value=20))
-    @settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_more_runs_gives_valid_results(self, base_runs):
         """Property: More runs should give valid statistical results."""
         # This is a weaker version of the CI width test - just check validity

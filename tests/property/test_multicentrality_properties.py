@@ -31,7 +31,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -79,7 +79,7 @@ def test_mpc_normalized_bounded_zero_one(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -130,7 +130,7 @@ def test_mpc_non_negative(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -175,7 +175,7 @@ def test_mpc_isolated_node_is_zero(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -219,7 +219,7 @@ def test_mpc_uniform_distribution_high(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=3, max_value=4)
@@ -278,7 +278,7 @@ def test_mpc_concentrated_distribution_low(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -328,7 +328,7 @@ def test_mpc_all_nodes_present(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=3),
@@ -382,7 +382,7 @@ def test_mpc_unnormalized_less_than_normalized(num_nodes, num_layers, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )

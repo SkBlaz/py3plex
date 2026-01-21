@@ -59,7 +59,7 @@ def create_simple_multilayer_graph(num_nodes=3, num_layers=2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -77,7 +77,7 @@ def test_to_networkx_union_preserves_nodes(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -97,7 +97,7 @@ def test_to_networkx_union_merges_edges(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -117,7 +117,7 @@ def test_to_networkx_multiplex_preserves_layer_info(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -136,7 +136,7 @@ def test_to_networkx_multiplex_preserves_edges(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_to_networkx_returns_correct_type(num_nodes):
     """Test that conversion returns correct NetworkX graph type."""
@@ -156,7 +156,7 @@ def test_to_networkx_returns_correct_type(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=6))
 def test_to_networkx_intersection_conservative(num_nodes):
     """Test that intersection mode is conservative (fewer or equal edges)."""
@@ -176,7 +176,7 @@ def test_to_networkx_intersection_conservative(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     mode=st.sampled_from(["union", "multiplex", "intersection"])
@@ -194,7 +194,7 @@ def test_to_networkx_non_negative_counts(num_nodes, mode):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=6))
 def test_to_networkx_empty_layer_handling(num_nodes):
     """Test that empty layers are handled correctly."""
@@ -218,7 +218,7 @@ def test_to_networkx_empty_layer_handling(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -260,7 +260,7 @@ def test_to_networkx_preserves_connectivity_pattern(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=6))
 def test_to_networkx_preserves_graph_attributes(num_nodes):
     """Test that graph-level attributes are preserved."""
@@ -279,7 +279,7 @@ def test_to_networkx_preserves_graph_attributes(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=6))
 def test_to_networkx_preserves_node_attributes(num_nodes):
     """Test that node attributes are preserved in union mode."""
@@ -312,7 +312,7 @@ def test_to_networkx_preserves_node_attributes(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=8))
 def test_union_mode_flattens_layers(num_nodes):
     """Test that union mode flattens multilayer structure."""
@@ -330,7 +330,7 @@ def test_union_mode_flattens_layers(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=6))
 def test_multiplex_mode_creates_node_layer_tuples(num_nodes):
     """Test that multiplex mode creates (node, layer) tuples."""

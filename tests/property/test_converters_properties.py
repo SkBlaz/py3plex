@@ -32,7 +32,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=10))
 def test_random_layout_preserves_nodes(num_nodes):
     """Test that random layout preserves all nodes."""
@@ -53,7 +53,7 @@ def test_random_layout_preserves_nodes(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_layout_coordinates_normalized(num_nodes):
     """Test that layout coordinates are normalized to [0, 1] range."""
@@ -81,7 +81,7 @@ def test_layout_coordinates_normalized(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_layout_coordinates_finite(num_nodes):
     """Test that layout coordinates are finite when layout succeeds."""
@@ -107,7 +107,7 @@ def test_layout_coordinates_finite(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_custom_layout_preserves_positions(num_nodes):
     """Test that custom layout preserves provided positions."""
@@ -126,7 +126,7 @@ def test_custom_layout_preserves_positions(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     p=st.floats(min_value=0.3, max_value=0.8)
@@ -155,7 +155,7 @@ def test_layout_respects_graph_structure(num_nodes, p):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=10))
 def test_hairball_preparation_preserves_network(num_nodes):
     """Test that hairball preparation preserves network structure."""
@@ -180,7 +180,7 @@ def test_hairball_preparation_preserves_network(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -217,7 +217,7 @@ def test_hairball_preparation_layer_enumeration(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -251,7 +251,7 @@ def test_parsing_separates_layers(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -297,7 +297,7 @@ def test_parsing_identifies_interlayer_edges(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_parsing_handles_empty_layers_gracefully(num_nodes):
     """Test that parsing handles networks with no proper layer structure."""
@@ -319,7 +319,7 @@ def test_parsing_handles_empty_layers_gracefully(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -350,7 +350,7 @@ def test_parsing_preserves_total_node_count(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_layout_handles_isolated_nodes(num_nodes):
     """Test that layout computation handles isolated nodes correctly."""

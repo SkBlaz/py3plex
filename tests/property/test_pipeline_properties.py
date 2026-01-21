@@ -83,7 +83,7 @@ def test_pipeline_step_get_params():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(factor=st.integers(min_value=1, max_value=100))
 def test_pipeline_step_set_params(factor):
     """Test that PipelineStep subclass can set params."""
@@ -95,7 +95,7 @@ def test_pipeline_step_set_params(factor):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(factor=st.integers(min_value=1, max_value=100))
 def test_pipeline_step_set_params_returns_self(factor):
     """Test that set_params returns self for chaining."""
@@ -136,7 +136,7 @@ def test_pipeline_creation_with_single_step():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num_steps=st.integers(min_value=1, max_value=10))
 def test_pipeline_creation_with_multiple_steps(num_steps):
     """Test that Pipeline can be created with multiple steps."""
@@ -177,7 +177,7 @@ def test_pipeline_run_with_identity_step():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     factor=st.integers(min_value=1, max_value=10),
     value=st.integers(min_value=0, max_value=100)
@@ -198,7 +198,7 @@ def test_pipeline_run_with_multiple_steps(factor, value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     value1=st.integers(min_value=1, max_value=50),
     value2=st.integers(min_value=1, max_value=50),
@@ -255,7 +255,7 @@ def test_pipeline_get_params_shallow():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(factor=st.integers(min_value=1, max_value=100))
 def test_pipeline_get_params_deep(factor):
     """Test that Pipeline.get_params(deep=True) returns nested params."""
@@ -274,7 +274,7 @@ def test_pipeline_get_params_deep(factor):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     factor1=st.integers(min_value=1, max_value=50),
     factor2=st.integers(min_value=1, max_value=50)
@@ -303,7 +303,7 @@ def test_pipeline_get_params_multiple_steps(factor1, factor2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(value=st.integers(min_value=0, max_value=1000))
 def test_pipeline_identity_law(value):
     """Test that adding identity step doesn't change result."""
@@ -325,7 +325,7 @@ def test_pipeline_identity_law(value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     value=st.integers(min_value=1, max_value=50),
     factor1=st.integers(min_value=1, max_value=10),

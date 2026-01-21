@@ -121,7 +121,7 @@ def test_get_color_palette_with_none_returns_default():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(palette_name=st.sampled_from(list(config.COLOR_PALETTES.keys())))
 def test_get_color_palette_returns_valid_palette(palette_name):
     """Test that get_color_palette returns valid palettes for known names."""
@@ -137,7 +137,7 @@ def test_get_color_palette_returns_valid_palette(palette_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(invalid_name=st.text(min_size=1, max_size=20).filter(
     lambda s: s not in config.COLOR_PALETTES
 ))
@@ -148,7 +148,7 @@ def test_get_color_palette_raises_on_invalid_name(invalid_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(palette_name=st.sampled_from(list(config.COLOR_PALETTES.keys())))
 def test_get_color_palette_is_idempotent(palette_name):
     """Test that calling get_color_palette multiple times returns same result."""

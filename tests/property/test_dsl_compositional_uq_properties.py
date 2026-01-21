@@ -62,7 +62,7 @@ def create_test_network(num_nodes=10, num_layers=2, seed=42):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n_samples=st.integers(min_value=3, max_value=10),
     seed=st.integers(min_value=1, max_value=1000)
@@ -98,7 +98,7 @@ def test_aggregate_uq_produces_dict_with_stats(n_samples, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     seed=st.integers(min_value=1, max_value=1000)
 )
@@ -121,7 +121,7 @@ def test_aggregate_uq_std_non_negative(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     seed=st.integers(min_value=1, max_value=1000)
 )

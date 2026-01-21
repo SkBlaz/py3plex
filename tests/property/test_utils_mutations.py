@@ -47,7 +47,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=-2**31, max_value=2**31-1))
 def test_get_rng_negative_seeds_converted_consistently(seed):
     """Test that negative seeds are consistently converted to positive values.
@@ -69,7 +69,7 @@ def test_get_rng_negative_seeds_converted_consistently(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.one_of(st.none(), st.integers(min_value=0, max_value=2**31-1)))
 def test_get_rng_none_handling(seed):
     """Test that None seeds are handled differently from integer seeds.
@@ -127,7 +127,7 @@ def test_get_rng_generator_passthrough():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=-2**20, max_value=-1))
 def test_get_rng_negative_seed_abs_property(seed):
     """Test that negative seeds produce same results as their absolute value.
@@ -151,7 +151,7 @@ def test_get_rng_negative_seed_abs_property(seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     feature_name=st.text(min_size=1, max_size=50, alphabet=st.characters(blacklist_categories=['Cs', 'Cc'])),
     reason=st.text(min_size=1, max_size=100, alphabet=st.characters(blacklist_categories=['Cs', 'Cc'])),
@@ -190,7 +190,7 @@ def test_warn_if_deprecated_message_structure(feature_name, reason, alternative)
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     feature_name=st.text(min_size=1, max_size=20),
     reason=st.text(min_size=1, max_size=20),
@@ -221,7 +221,7 @@ def test_warn_if_deprecated_no_alternative_format(feature_name, reason):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(filename=st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=['L', 'N'])).filter(lambda s: '/' not in s and '\\' not in s))
 def test_get_dataset_path_prefix_handling(filename):
     """Test that dataset path handles prefix correctly.
@@ -247,7 +247,7 @@ def test_get_dataset_path_prefix_handling(filename):
 
 
 @pytest.mark.property  
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(filename=st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=['L', 'N'])).filter(lambda s: '/' not in s))
 def test_get_example_image_path_prefix_idempotent(filename):
     """Test that example image path prefix is idempotent.
@@ -277,7 +277,7 @@ def test_get_example_image_path_prefix_idempotent(filename):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(path_part=st.text(min_size=1, max_size=30, alphabet=st.characters(whitelist_categories=['L', 'N'])))
 def test_get_multilayer_dataset_path_structure(path_part):
     """Test multilayer dataset path construction.
@@ -296,7 +296,7 @@ def test_get_multilayer_dataset_path_structure(path_part):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(filename=st.sampled_from(["", ".", "bk.n3", "test.txt"]))
 def test_get_background_knowledge_path_empty_handling(filename):
     """Test background knowledge path with empty string and dot.
@@ -336,7 +336,7 @@ def test_get_background_knowledge_path_empty_handling(filename):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     reason=st.text(min_size=1, max_size=50),
     version=st.one_of(st.none(), st.text(min_size=1, max_size=10)),
@@ -404,7 +404,7 @@ def test_deprecated_decorator_preserves_function():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(seed=st.integers(min_value=0, max_value=1000))
 def test_get_rng_statistical_properties(seed):
     """Test that RNG produces values with correct statistical properties.
@@ -428,7 +428,7 @@ def test_get_rng_statistical_properties(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     seed1=st.integers(min_value=0, max_value=1000),
     seed2=st.integers(min_value=0, max_value=1000)

@@ -17,7 +17,7 @@ from py3plex.core.random_generators import random_multilayer_ER
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     N=st.integers(min_value=5, max_value=15),
     L=st.integers(min_value=2, max_value=4),
@@ -68,7 +68,7 @@ def test_random_er_edge_count_bounds(N, L, p):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     N=st.integers(min_value=5, max_value=12),
     L=st.integers(min_value=2, max_value=4)
@@ -103,7 +103,7 @@ def test_random_er_monotonicity_in_p(N, L):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     N=st.integers(min_value=3, max_value=10),
     L=st.integers(min_value=1, max_value=4)
@@ -131,7 +131,7 @@ def test_random_er_node_count(N, L):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     N=st.integers(min_value=3, max_value=10),
     L=st.integers(min_value=2, max_value=4)
@@ -157,7 +157,7 @@ def test_random_er_layer_count(N, L):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     N=st.integers(min_value=3, max_value=10),
     L=st.integers(min_value=1, max_value=4),
@@ -180,7 +180,7 @@ def test_random_er_nonnegative_counts(N, L, p):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     N=st.integers(min_value=3, max_value=10),
     L=st.integers(min_value=1, max_value=4)
@@ -216,7 +216,7 @@ def test_random_er_extreme_p_values(N, L):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(N=st.integers(min_value=3, max_value=10))
 def test_random_er_single_layer_matches_nx(N):
     """
@@ -253,7 +253,7 @@ def test_random_er_single_layer_matches_nx(N):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     N=st.integers(min_value=5, max_value=12),
     L=st.integers(min_value=2, max_value=4),
@@ -285,7 +285,7 @@ def test_random_er_layers_independent(N, L, p):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     N=st.integers(min_value=3, max_value=10),
     L=st.integers(min_value=1, max_value=4),

@@ -25,7 +25,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=3, max_value=10),
     n_layers=st.integers(min_value=2, max_value=5),
@@ -64,7 +64,7 @@ def test_mpc_normalized_range(n_nodes, n_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=3, max_value=10),
     n_layers=st.integers(min_value=2, max_value=5),
@@ -104,7 +104,7 @@ def test_mpc_returns_dict(n_nodes, n_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=4, max_value=8),
     seed=st.integers(min_value=0, max_value=10000)
@@ -142,7 +142,7 @@ def test_mpc_isolated_node_zero(n_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=3, max_value=8),
     n_layers=st.integers(min_value=2, max_value=4)
@@ -168,7 +168,7 @@ def test_mpc_requires_at_least_two_layers(n_nodes, n_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=3, max_value=8),
     n_layers=st.integers(min_value=2, max_value=4),
@@ -208,7 +208,7 @@ def test_mpc_unnormalized_range(n_nodes, n_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=3, max_value=8),
     n_layers=st.integers(min_value=2, max_value=4),

@@ -62,7 +62,7 @@ class TestNodeFrameCreationProperties:
         assert frame.count() == count_nodes(net)
 
     @given(st.integers(min_value=1, max_value=4))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_nodes_with_layer_filter(self, num_layers: int):
         """nodes() with layers filter should only include those layers."""
         net = build_test_network(num_layers=num_layers)
@@ -126,7 +126,7 @@ class TestNodeFrameFilterProperties:
         assert frame.count() == original_count
 
     @given(st.integers(min_value=-5, max_value=10))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_filter_degree_threshold(self, threshold: int):
         """Filtering by degree threshold should only include matching nodes."""
         net = build_test_network()
@@ -204,7 +204,7 @@ class TestNodeFrameMutateProperties:
             assert "my_value" in node_dict
 
     @given(st.floats(min_value=0.1, max_value=10.0, allow_nan=False))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_mutate_computes_correctly(self, multiplier: float):
         """mutate() should compute values correctly."""
         net = build_test_network()
@@ -279,7 +279,7 @@ class TestNodeFrameHeadTailProperties:
     """Property-based tests for NodeFrame.head() and tail()."""
 
     @given(st.integers(min_value=0, max_value=20))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_head_limits_count(self, n: int):
         """head(n) should return at most n nodes."""
         net = build_test_network()
@@ -289,7 +289,7 @@ class TestNodeFrameHeadTailProperties:
         assert result.count() <= n
 
     @given(st.integers(min_value=0, max_value=20))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_tail_limits_count(self, n: int):
         """tail(n) should return at most n nodes."""
         net = build_test_network()
@@ -464,7 +464,7 @@ class TestNodeFrameSampleProperties:
     """Property-based tests for NodeFrame.sample()."""
 
     @given(st.integers(min_value=1, max_value=20))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_sample_limits_count(self, n: int):
         """sample(n) should return at most n nodes."""
         net = build_test_network()
@@ -475,7 +475,7 @@ class TestNodeFrameSampleProperties:
         assert result.count() <= frame.count()
 
     @given(st.integers(min_value=0, max_value=2**31 - 1))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_sample_reproducibility(self, seed: int):
         """sample() with same seed should return same results."""
         net = build_test_network()

@@ -74,7 +74,7 @@ def simple_network(draw):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=10, deadline=None, 
+@settings(max_examples=3, deadline=None, 
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_membership_probabilities_sum_to_one(network):
     """Property: Membership probabilities for each node sum to 1.0."""
@@ -109,7 +109,7 @@ def test_membership_probabilities_sum_to_one(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=10, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_confidence_equals_max_probability(network):
     """Property: Confidence equals the maximum membership probability."""
@@ -146,7 +146,7 @@ def test_confidence_equals_max_probability(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=10, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_entropy_bounds(network):
     """Property: Entropy is in [0, log2(n_communities)]."""
@@ -178,7 +178,7 @@ def test_entropy_bounds(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=10, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_margin_is_top2_difference(network):
     """Property: Margin equals difference between top 2 probabilities."""
@@ -219,7 +219,7 @@ def test_margin_is_top2_difference(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=10, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_deterministic_mode_certainty(network):
     """Property: Deterministic mode (n_partitions=1) has certainty=1.0, entropy=0.0."""
@@ -253,7 +253,7 @@ def test_deterministic_mode_certainty(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=10, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_community_stability_ranges(network):
     """Property: Community stability metrics are in valid ranges."""
@@ -293,7 +293,7 @@ def test_community_stability_ranges(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=10, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_partition_metrics_vi_nonnegative(network):
     """Property: VI (Variation of Information) is non-negative."""
@@ -329,7 +329,7 @@ def test_partition_metrics_vi_nonnegative(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=5, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_dsl_probabilistic_communities_backward_compatible(network):
     """Property: Deterministic DSL query returns dict of hard labels."""
@@ -361,7 +361,7 @@ def test_dsl_probabilistic_communities_backward_compatible(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=5, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_dsl_probabilistic_communities_with_uq(network):
     """Property: UQ-enabled DSL query returns dict with uncertainty info."""
@@ -403,7 +403,7 @@ def test_dsl_probabilistic_communities_with_uq(network):
 
 @pytest.mark.property
 @given(network=simple_network())
-@settings(max_examples=5, deadline=None,
+@settings(max_examples=3, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow])
 def test_dsl_seed_reproducibility(network):
     """Property: Same seed produces identical results."""

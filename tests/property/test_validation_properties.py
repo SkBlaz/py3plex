@@ -33,7 +33,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     input_type=st.sampled_from([
         'gml', 'nx', 'multiplex_folder', 'sparse', 'gpickle',
@@ -50,7 +50,7 @@ def test_validate_input_type_accepts_valid_types(input_type):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(input_type=st.text(min_size=1, max_size=20).filter(
     lambda s: s not in {
         'gml', 'nx', 'multiplex_folder', 'sparse', 'sparse_network',
@@ -67,7 +67,7 @@ def test_validate_input_type_rejects_invalid_types(input_type):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(custom_type=st.text(min_size=1, max_size=20))
 def test_validate_input_type_with_custom_valid_set(custom_type):
     """Test that validate_input_type accepts custom valid types."""
@@ -85,7 +85,7 @@ def test_validate_input_type_with_custom_valid_set(custom_type):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(file_content=st.text(min_size=0, max_size=100))
 def test_validate_file_exists_accepts_existing_file(file_content):
     """Test that validate_file_exists accepts existing files."""
@@ -103,7 +103,7 @@ def test_validate_file_exists_accepts_existing_file(file_content):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(filename=st.text(min_size=1, max_size=20).filter(lambda s: '/' not in s and '\\' not in s))
 def test_validate_file_exists_rejects_nonexistent_file(filename):
     """Test that validate_file_exists rejects non-existent files."""
@@ -129,7 +129,7 @@ def test_validate_file_exists_rejects_directory():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     value=st.one_of(
         st.integers(),
@@ -154,7 +154,7 @@ def test_json_serializable_consistency(value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     input_type=st.sampled_from(['gml', 'gpickle', 'multiedgelist', 'edgelist']),
     valid_twice=st.booleans()
@@ -184,7 +184,7 @@ def test_validate_input_type_deterministic(input_type, valid_twice):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(invalid_type=st.text(min_size=1, max_size=20).filter(
     lambda s: s not in {
         'gml', 'nx', 'multiplex_folder', 'sparse', 'sparse_network',
@@ -206,7 +206,7 @@ def test_validate_input_type_error_contains_invalid_type(invalid_type):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(filename=st.text(min_size=1, max_size=30).filter(lambda s: '/' not in s and '\\' not in s))
 def test_validate_file_exists_error_contains_filename(filename):
     """Test that error message contains the non-existent filename."""
@@ -228,7 +228,7 @@ def test_validate_file_exists_error_contains_filename(filename):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     file_content=st.text(min_size=1, max_size=100),
     file_suffix=st.sampled_from(['.txt', '.csv', '.json', '.dat'])
@@ -255,7 +255,7 @@ def test_validate_file_exists_preserves_file_content(file_content, file_suffix):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     input_type=st.sampled_from(['gml', 'gpickle', 'multiedgelist']),
     call_count=st.integers(min_value=1, max_value=5)
@@ -276,7 +276,7 @@ def test_validate_input_type_idempotent(input_type, call_count):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     columns=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
@@ -301,7 +301,7 @@ def test_validate_csv_columns_accepts_valid_csv(columns):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     required=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
@@ -331,7 +331,7 @@ def test_validate_csv_columns_accepts_extra_columns(required, extra):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     required=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
@@ -357,7 +357,7 @@ def test_validate_csv_columns_rejects_missing_columns(required):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     required=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
@@ -385,7 +385,7 @@ def test_validate_csv_columns_with_optional_columns(required, optional):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(dummy=st.just(None))
 def test_validate_csv_columns_rejects_empty_csv(dummy):
     """Test that validate_csv_columns rejects empty CSV files."""

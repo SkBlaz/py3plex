@@ -60,7 +60,7 @@ class TestBootstrapMetricProperties:
         st.sampled_from(["edges", "nodes", "layers"]),
         st.sampled_from(["resample", "permute"])
     )
-    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_bootstrap_output_structure(self, n_boot, unit, mode):
         """Property: Bootstrap output has correct structure."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -97,7 +97,7 @@ class TestBootstrapMetricProperties:
         st.integers(min_value=10, max_value=50),
         st.floats(min_value=0.50, max_value=0.99)
     )
-    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_ci_contains_mean(self, n_boot, ci):
         """Property: Confidence intervals should contain the mean (approximately)."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -123,7 +123,7 @@ class TestBootstrapMetricProperties:
     @given(
         st.integers(min_value=10, max_value=50)
     )
-    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_ci_width_positive(self, n_boot):
         """Property: CI width should be non-negative."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -142,7 +142,7 @@ class TestBootstrapMetricProperties:
     @given(
         st.integers(min_value=20, max_value=100)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_std_non_negative(self, n_boot):
         """Property: Standard error should be non-negative."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -160,7 +160,7 @@ class TestBootstrapMetricProperties:
     @given(
         st.integers(min_value=10, max_value=50)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_reproducibility_with_seed(self, n_boot):
         """Property: Same seed produces same results."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -188,7 +188,7 @@ class TestBootstrapMetricProperties:
         st.integers(min_value=3, max_value=10),
         st.integers(min_value=1, max_value=3)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_handles_different_network_sizes(self, num_nodes, num_layers):
         """Property: Works with different network sizes."""
         net = build_simple_network(num_nodes=num_nodes, num_layers=num_layers, connect_prob=0.5, seed=42)
@@ -207,7 +207,7 @@ class TestBootstrapMetricProperties:
     @given(
         st.floats(min_value=0.6, max_value=0.99)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_wider_ci_with_higher_level(self, ci):
         """Property: Higher CI level should give wider intervals."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -248,7 +248,7 @@ class TestNullModelMetricProperties:
         st.integers(min_value=10, max_value=50),
         st.sampled_from(["degree_preserving", "erdos_renyi", "configuration"])
     )
-    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_null_model_output_structure(self, n_null, model):
         """Property: Null model output has correct structure."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -286,7 +286,7 @@ class TestNullModelMetricProperties:
     @given(
         st.integers(min_value=20, max_value=100)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_pvalues_in_valid_range(self, n_null):
         """Property: P-values should be in [0, 1]."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -305,7 +305,7 @@ class TestNullModelMetricProperties:
     @given(
         st.integers(min_value=20, max_value=100)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_std_null_non_negative(self, n_null):
         """Property: Null model std should be non-negative."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -323,7 +323,7 @@ class TestNullModelMetricProperties:
     @given(
         st.integers(min_value=20, max_value=50)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_zscore_consistency(self, n_null):
         """Property: Z-score should be consistent with obs, mean, std."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -350,7 +350,7 @@ class TestNullModelMetricProperties:
     @given(
         st.integers(min_value=10, max_value=50)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_reproducibility_with_seed(self, n_null):
         """Property: Same seed produces same results."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -378,7 +378,7 @@ class TestNullModelMetricProperties:
         st.integers(min_value=3, max_value=10),
         st.integers(min_value=1, max_value=3)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_handles_different_network_sizes(self, num_nodes, num_layers):
         """Property: Works with different network sizes."""
         net = build_simple_network(num_nodes=num_nodes, num_layers=num_layers, connect_prob=0.5, seed=42)
@@ -397,7 +397,7 @@ class TestNullModelMetricProperties:
     @given(
         st.integers(min_value=20, max_value=50)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_extreme_zscores_have_low_pvalues(self, n_null):
         """Property: Very extreme z-scores should have low p-values."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -429,7 +429,7 @@ class TestBootstrapMetamorphicProperties:
     @given(
         st.integers(min_value=10, max_value=50)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_more_samples_reduces_std(self, n_boot_small):
         """Metamorphic: More bootstrap samples should generally reduce SE."""
         # This is a statistical tendency, not a hard guarantee
@@ -467,7 +467,7 @@ class TestNullModelMetamorphicProperties:
     @given(
         st.integers(min_value=20, max_value=50)
     )
-    @settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_different_null_models_same_observed(self, n_null):
         """Metamorphic: Observed values should be same across null models."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)

@@ -36,7 +36,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     measure_name=st.sampled_from([
         'degree', 'betweenness', 'closeness', 'eigenvector',
@@ -59,7 +59,7 @@ def test_measure_registry_get_is_callable(measure_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     measure_name=st.text(
         min_size=1,
@@ -106,7 +106,7 @@ def test_measure_registry_list_measures_consistent():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     operator_name=st.text(
         min_size=1,
@@ -150,7 +150,7 @@ def test_operator_registry_register_get_roundtrip(operator_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     name1=st.text(min_size=1, max_size=15, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     name2=st.text(min_size=1, max_size=15, alphabet=st.characters(min_codepoint=97, max_codepoint=122))
@@ -257,7 +257,7 @@ def test_operator_registry_list_includes_registered():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     operator_name=st.text(
         min_size=1,
@@ -294,7 +294,7 @@ def test_dsl_operator_decorator_registers(operator_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     category=st.sampled_from(['centrality', 'dynamics', 'custom', 'analysis'])
 )

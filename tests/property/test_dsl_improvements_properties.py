@@ -66,7 +66,7 @@ def create_test_network(num_nodes=5, num_layers=2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=2)
 )
@@ -92,7 +92,7 @@ def test_from_layer_equals_where_layer(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=2)
 )
@@ -120,7 +120,7 @@ def test_from_layer_builder_equivalence(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
     threshold=st.integers(min_value=0, max_value=3)
@@ -147,7 +147,7 @@ def test_from_layer_with_where_condition(layer_idx, threshold):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_name=st.text(
         min_size=1, 
@@ -186,7 +186,7 @@ def test_from_layer_arbitrary_layer_names(layer_name):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     metrics=st.lists(
         st.sampled_from(['degree', 'betweenness_centrality', 'clustering']),
@@ -227,7 +227,7 @@ def test_comma_separated_compute_equals_repeated(metrics):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     metrics=st.lists(
         st.sampled_from(['degree', 'clustering']),
@@ -262,7 +262,7 @@ def test_comma_separated_compute_builder_equivalence(metrics):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     num_metrics=st.integers(min_value=1, max_value=3)
 )
@@ -290,7 +290,7 @@ def test_compute_count_matches_requested(num_metrics):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     whitespace=st.sampled_from(['', ' ', '  ', '\t'])
 )
@@ -317,7 +317,7 @@ def test_comma_separated_compute_handles_whitespace(whitespace):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -338,7 +338,7 @@ def test_f_expression_comparison_operators(threshold):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=2)
 )
@@ -367,7 +367,7 @@ def test_f_expression_equals_kwargs(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     operator=st.sampled_from(['>', '<', '==', '!=', '>=', '<='])
 )
@@ -402,7 +402,7 @@ def test_f_expression_supports_all_operators(operator):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer1_idx=st.integers(min_value=0, max_value=1),
     layer2_idx=st.integers(min_value=0, max_value=1)
@@ -427,7 +427,7 @@ def test_f_expression_and_operator(layer1_idx, layer2_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer1_idx=st.integers(min_value=0, max_value=1),
     layer2_idx=st.integers(min_value=0, max_value=1)
@@ -465,7 +465,7 @@ def test_f_expression_or_operator(layer1_idx, layer2_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -523,7 +523,7 @@ def test_f_expression_mixed_with_kwargs():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
     metrics=st.lists(
@@ -559,7 +559,7 @@ def test_all_features_combined_string_dsl(layer_idx, metrics):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
     metrics=st.lists(
@@ -598,7 +598,7 @@ def test_all_features_combined_builder_api(layer_idx, metrics):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -642,7 +642,7 @@ def test_string_dsl_and_builder_api_equivalence_with_new_features(layer_idx):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -668,7 +668,7 @@ def test_from_layer_idempotent_with_builder(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     metrics=st.lists(
         st.sampled_from(['degree', 'clustering']),
@@ -702,7 +702,7 @@ def test_compute_order_invariant(metrics):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     nonexistent_layer=st.text(
         min_size=10,

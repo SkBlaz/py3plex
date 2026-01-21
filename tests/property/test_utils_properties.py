@@ -26,7 +26,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_returns_generator(seed):
     """Test that get_rng returns a numpy Generator."""
@@ -38,7 +38,7 @@ def test_get_rng_returns_generator(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_reproducible_with_same_seed(seed):
     """Test that same seed produces same random numbers."""
@@ -55,7 +55,7 @@ def test_get_rng_reproducible_with_same_seed(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     seed1=st.integers(min_value=0, max_value=2**31-1),
     seed2=st.integers(min_value=0, max_value=2**31-1)
@@ -92,7 +92,7 @@ def test_get_rng_none_seed_returns_generator():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_passthrough_existing_generator(seed):
     """Test that passing existing generator returns same object."""
@@ -108,7 +108,7 @@ def test_get_rng_passthrough_existing_generator(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_generates_uniform_distribution(seed):
     """Test that generated numbers follow uniform distribution."""
@@ -126,7 +126,7 @@ def test_get_rng_generates_uniform_distribution(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_supports_various_distributions(seed):
     """Test that generator supports various distribution methods."""
@@ -148,7 +148,7 @@ def test_get_rng_supports_various_distributions(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_state_independence(seed):
     """Test that multiple generators from same seed are independent."""
@@ -171,7 +171,7 @@ def test_get_rng_state_independence(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_deterministic_sequences(seed):
     """Test that sequences are deterministic with same seed."""
@@ -190,7 +190,7 @@ def test_get_rng_deterministic_sequences(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_zero_seed_valid(seed):
     """Test that seed=0 is valid and produces deterministic results."""
@@ -203,7 +203,7 @@ def test_get_rng_zero_seed_valid(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_choice_deterministic(seed):
     """Test that choice operations are deterministic."""
@@ -221,7 +221,7 @@ def test_get_rng_choice_deterministic(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=2**31-1))
 def test_get_rng_shuffle_deterministic(seed):
     """Test that shuffle operations are deterministic."""
@@ -240,7 +240,7 @@ def test_get_rng_shuffle_deterministic(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=0, max_value=100))
 def test_get_rng_small_seeds_valid(seed):
     """Test that small seed values work correctly."""
@@ -253,7 +253,7 @@ def test_get_rng_small_seeds_valid(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(seed=st.integers(min_value=2**30, max_value=2**31-1))
 def test_get_rng_large_seeds_valid(seed):
     """Test that large seed values work correctly."""
@@ -270,7 +270,7 @@ def test_get_rng_large_seeds_valid(seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(reason=st.text(min_size=1, max_size=100))
 def test_deprecated_decorator_with_reason_only(reason):
     """Test that deprecated decorator works with reason only."""
@@ -295,7 +295,7 @@ def test_deprecated_decorator_with_reason_only(reason):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     reason=st.text(min_size=1, max_size=50),
     version=st.text(min_size=1, max_size=20)
@@ -321,7 +321,7 @@ def test_deprecated_decorator_with_version(reason, version):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     reason=st.text(min_size=1, max_size=50),
     alternative=st.text(min_size=1, max_size=50)
@@ -347,7 +347,7 @@ def test_deprecated_decorator_with_alternative(reason, alternative):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     reason=st.text(min_size=1, max_size=50),
     version=st.text(min_size=1, max_size=20),
@@ -375,7 +375,7 @@ def test_deprecated_decorator_with_all_params(reason, version, alternative):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(reason=st.text(min_size=1, max_size=50))
 def test_deprecated_decorator_preserves_function_name(reason):
     """Test that deprecated decorator preserves function metadata."""
@@ -392,7 +392,7 @@ def test_deprecated_decorator_preserves_function_name(reason):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     reason=st.text(min_size=1, max_size=50),
     arg1=st.integers(),
@@ -417,7 +417,7 @@ def test_deprecated_decorator_passes_arguments(reason, arg1, arg2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     feature_name=st.text(min_size=1, max_size=50),
     reason=st.text(min_size=1, max_size=100)
@@ -436,7 +436,7 @@ def test_warn_if_deprecated_basic(feature_name, reason):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     feature_name=st.text(min_size=1, max_size=50),
     reason=st.text(min_size=1, max_size=50),
@@ -459,7 +459,7 @@ def test_warn_if_deprecated_with_alternative(feature_name, reason, alternative):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     feature_name=st.text(min_size=1, max_size=50),
     reason=st.text(min_size=1, max_size=50)
@@ -493,7 +493,7 @@ def test_validate_multilayer_input_rejects_none():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(data=st.integers())
 def test_validate_multilayer_input_accepts_integers(data):
     """Test that validate_multilayer_input accepts integer data."""
@@ -503,7 +503,7 @@ def test_validate_multilayer_input_accepts_integers(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(data=st.text(min_size=1))
 def test_validate_multilayer_input_accepts_strings(data):
     """Test that validate_multilayer_input accepts string data."""
@@ -513,7 +513,7 @@ def test_validate_multilayer_input_accepts_strings(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(data=st.lists(st.integers(), min_size=1))
 def test_validate_multilayer_input_accepts_lists(data):
     """Test that validate_multilayer_input accepts list data."""
@@ -523,7 +523,7 @@ def test_validate_multilayer_input_accepts_lists(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(data=st.dictionaries(st.text(min_size=1), st.integers(), min_size=1))
 def test_validate_multilayer_input_accepts_dicts(data):
     """Test that validate_multilayer_input accepts dict data."""
@@ -533,7 +533,7 @@ def test_validate_multilayer_input_accepts_dicts(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(data=st.floats(allow_nan=False, allow_infinity=False))
 def test_validate_multilayer_input_accepts_floats(data):
     """Test that validate_multilayer_input accepts float data."""

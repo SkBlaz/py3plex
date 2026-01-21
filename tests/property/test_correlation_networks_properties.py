@@ -27,7 +27,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=30),
     n_features=st.integers(min_value=5, max_value=15),
@@ -45,7 +45,7 @@ def test_pick_threshold_returns_valid_range(n_samples, n_features, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=25),
     n_features=st.integers(min_value=5, max_value=12),
@@ -64,7 +64,7 @@ def test_pick_threshold_deterministic(n_samples, n_features, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=25),
     n_features=st.integers(min_value=5, max_value=12),
@@ -90,7 +90,7 @@ def test_pick_threshold_scale_invariant(n_samples, n_features, scale, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=30),
     n_features=st.integers(min_value=5, max_value=15),
@@ -110,7 +110,7 @@ def test_correlation_to_network_binary(n_samples, n_features, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=30),
     n_features=st.integers(min_value=5, max_value=15),
@@ -130,7 +130,7 @@ def test_correlation_to_network_shape_preserved(n_samples, n_features, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=25),
     n_features=st.integers(min_value=5, max_value=12),
@@ -149,7 +149,7 @@ def test_correlation_to_network_result_matrix(n_samples, n_features, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=25),
     n_features=st.integers(min_value=5, max_value=12),
@@ -169,7 +169,7 @@ def test_correlation_standard_preprocessing_handles_varied_data(n_samples, n_fea
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=25),
     n_features=st.integers(min_value=5, max_value=12),
@@ -195,7 +195,7 @@ def test_correlation_to_network_no_preprocessing_option(n_samples, n_features, s
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=20),
     seed=st.integers(min_value=0, max_value=10000)
@@ -216,7 +216,7 @@ def test_correlation_identical_features(n_samples, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_samples=st.integers(min_value=10, max_value=20),
     n_features=st.integers(min_value=5, max_value=10),

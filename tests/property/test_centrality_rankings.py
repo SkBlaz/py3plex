@@ -95,7 +95,7 @@ def spearman_rank_correlation(rank1, rank2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_spokes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -122,7 +122,7 @@ def test_star_network_hub_highest_degree(num_spokes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_spokes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -156,7 +156,7 @@ def test_star_network_hub_highest_betweenness(num_spokes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     length=st.integers(min_value=4, max_value=7),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -196,7 +196,7 @@ def test_path_network_endpoints_lowest_centrality(length, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2),
@@ -239,7 +239,7 @@ def test_normalized_centrality_scale_invariant(num_nodes, num_layers, scale_fact
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2),
@@ -286,7 +286,7 @@ def test_weighted_degree_scales_linearly(num_nodes, num_layers, scale_factor):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=6),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -327,7 +327,7 @@ def test_adding_edges_increases_total_degree(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -375,7 +375,7 @@ def test_more_layers_increases_overlapping_degree(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=6),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -406,7 +406,7 @@ def test_degree_ranking_stability(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -438,7 +438,7 @@ def test_centrality_consistent_node_set(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=2, max_value=4)

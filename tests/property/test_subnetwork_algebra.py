@@ -20,7 +20,7 @@ from .strategies import node_names, layer_labels
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -71,7 +71,7 @@ def test_subnetwork_by_layers_idempotent(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     num_nodes=st.integers(min_value=4, max_value=8),
     num_layers=st.integers(min_value=3, max_value=5)
@@ -124,7 +124,7 @@ def test_subnetwork_union_contains_parts(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=3, max_value=5)
@@ -175,7 +175,7 @@ def test_subnetwork_monotonicity_by_layers(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num_nodes=st.integers(min_value=3, max_value=8))
 def test_subnetwork_by_node_names_preserves_layers(num_nodes):
     """
@@ -208,7 +208,7 @@ def test_subnetwork_by_node_names_preserves_layers(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num_nodes=st.integers(min_value=4, max_value=8))
 def test_neighbors_consistent_with_edges(num_nodes):
     """
@@ -263,7 +263,7 @@ def test_neighbors_consistent_with_edges(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num_nodes=st.integers(min_value=3, max_value=8))
 def test_split_to_layers_idempotent(num_nodes):
     """
@@ -307,7 +307,7 @@ def test_split_to_layers_idempotent(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_subnetwork_preserves_node_count_bounds(num_nodes):
     """

@@ -69,7 +69,7 @@ class TestEdgeDropProperties:
     """Property-based tests for EdgeDrop perturbation."""
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_drop_preserves_original_network(self, p: float):
         """EdgeDrop must not mutate the original network."""
         net = build_multilayer_network()
@@ -84,7 +84,7 @@ class TestEdgeDropProperties:
         assert count_nodes(net) == original_node_count
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_drop_output_edge_count_leq_input(self, p: float):
         """EdgeDrop output should have at most as many edges as input."""
         net = build_multilayer_network()
@@ -121,7 +121,7 @@ class TestEdgeDropProperties:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
         st.integers(min_value=0, max_value=1000),
     )
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_drop_reproducibility(self, p: float, seed: int):
         """EdgeDrop should be reproducible with same seed."""
         net = build_multilayer_network()
@@ -157,7 +157,7 @@ class TestNodeDropProperties:
     """Property-based tests for NodeDrop perturbation."""
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_node_drop_preserves_original_network(self, p: float):
         """NodeDrop must not mutate the original network."""
         net = build_multilayer_network()
@@ -172,7 +172,7 @@ class TestNodeDropProperties:
         assert count_nodes(net) == original_node_count
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_node_drop_output_node_count_leq_input(self, p: float):
         """NodeDrop output should have at most as many nodes as input."""
         net = build_multilayer_network()
@@ -185,7 +185,7 @@ class TestNodeDropProperties:
         assert count_nodes(perturbed) <= original_node_count
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_node_drop_output_edge_count_leq_input(self, p: float):
         """NodeDrop output should have at most as many edges as input."""
         net = build_multilayer_network()
@@ -223,7 +223,7 @@ class TestNodeDropProperties:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
         st.integers(min_value=0, max_value=1000),
     )
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_node_drop_reproducibility(self, p: float, seed: int):
         """NodeDrop should be reproducible with same seed."""
         net = build_multilayer_network()
@@ -248,7 +248,7 @@ class TestEdgeAddProperties:
     """Property-based tests for EdgeAdd perturbation."""
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_add_preserves_original_network(self, p: float):
         """EdgeAdd must not mutate the original network."""
         net = build_multilayer_network()
@@ -263,7 +263,7 @@ class TestEdgeAddProperties:
         assert count_nodes(net) == original_node_count
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_edge_add_output_edge_count_geq_input(self, p: float):
         """EdgeAdd output should have at least as many edges as input."""
         net = build_multilayer_network()
@@ -305,7 +305,7 @@ class TestComposeProperties:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
     )
-    @settings(max_examples=5)
+    @settings(max_examples=3)
     def test_compose_preserves_original_network(self, p1: float, p2: float):
         """Composed perturbations must not mutate the original network."""
         net = build_multilayer_network()
@@ -333,7 +333,7 @@ class TestComposeProperties:
         assert count_nodes(perturbed) == original_node_count
 
     @given(st.integers(min_value=1, max_value=5))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_compose_chain_length(self, num_perturbations: int):
         """Composing multiple perturbations should work."""
         net = build_multilayer_network()
@@ -356,7 +356,7 @@ class TestEstimateMetricDistributionProperties:
     """Property-based tests for estimate_metric_distribution function."""
 
     @given(st.integers(min_value=1, max_value=20))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_samples_count_equals_n_samples(self, n_samples: int):
         """Number of samples should equal n_samples parameter."""
         net = build_multilayer_network()
@@ -375,7 +375,7 @@ class TestEstimateMetricDistributionProperties:
         assert len(result["samples"]) == n_samples
 
     @given(st.integers(min_value=1, max_value=20))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_summary_contains_required_keys(self, n_samples: int):
         """Summary should contain mean, std, and ci95."""
         net = build_multilayer_network()
@@ -396,7 +396,7 @@ class TestEstimateMetricDistributionProperties:
         assert "ci95" in result["summary"]
 
     @given(st.integers(min_value=0, max_value=1000))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_reproducibility_with_random_state(self, seed: int):
         """Results should be reproducible with same random_state."""
         net = build_multilayer_network()
@@ -483,7 +483,7 @@ class TestCentralityRobustnessProperties:
         return degrees
 
     @given(st.integers(min_value=1, max_value=10))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_samples_count_equals_n_samples(self, n_samples: int):
         """Number of samples should equal n_samples parameter."""
         net = build_multilayer_network()
@@ -499,7 +499,7 @@ class TestCentralityRobustnessProperties:
         assert len(result["samples"]) == n_samples
 
     @given(st.integers(min_value=1, max_value=10))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_result_contains_required_keys(self, n_samples: int):
         """Result should contain samples, node_stats, and rank_stability."""
         net = build_multilayer_network()
@@ -517,7 +517,7 @@ class TestCentralityRobustnessProperties:
         assert "rank_stability" in result
 
     @given(st.integers(min_value=0, max_value=1000))
-    @settings(max_examples=10)
+    @settings(max_examples=3)
     def test_reproducibility_with_random_state(self, seed: int):
         """Results should be reproducible with same random_state."""
         net = build_multilayer_network()

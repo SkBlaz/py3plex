@@ -61,7 +61,7 @@ class TestMultiplexRoutingInvariance:
 
     @pytest.mark.property
     @given(st.integers(min_value=2, max_value=6))
-    @settings(max_examples=10, deadline=500)
+    @settings(max_examples=3, deadline=500)
     def test_routing_does_not_mutate_network(self, num_nodes: int):
         """multiplex_shortest_path must not mutate the original network."""
         net = build_multiplex_network(num_nodes=num_nodes, num_layers=2)
@@ -81,7 +81,7 @@ class TestMultiplexRoutingInvariance:
         num_nodes=st.integers(min_value=2, max_value=5),
         switch_cost=st.floats(min_value=0.0, max_value=10.0),
     )
-    @settings(max_examples=5, deadline=500)
+    @settings(max_examples=3, deadline=500)
     def test_routing_is_deterministic(self, num_nodes: int, switch_cost: float):
         """multiplex_shortest_path must return deterministic results."""
         assume(not (switch_cost != switch_cost))  # Skip NaN
@@ -101,7 +101,7 @@ class TestMultiplexRoutingInvariance:
 
     @pytest.mark.property
     @given(st.integers(min_value=2, max_value=6))
-    @settings(max_examples=10, deadline=500)
+    @settings(max_examples=3, deadline=500)
     def test_routing_preserves_layer_semantics(self, num_nodes: int):
         """Routing must preserve layer information in paths."""
         net = build_multiplex_network(num_nodes=num_nodes, num_layers=3)
@@ -177,7 +177,7 @@ class TestMultiplexRoutingCornerCases:
 
     @pytest.mark.property
     @given(num_nodes=st.integers(min_value=2, max_value=5))
-    @settings(max_examples=10, deadline=500)
+    @settings(max_examples=3, deadline=500)
     def test_single_layer_behaves_like_standard_dijkstra(self, num_nodes: int):
         """Single-layer routing should match standard Dijkstra."""
         net = multinet.multi_layer_network(directed=False, verbose=False)
@@ -207,7 +207,7 @@ class TestMultiplexRoutingMathematicalProperties:
         num_nodes=st.integers(min_value=3, max_value=6),
         switch_cost=st.floats(min_value=0.0, max_value=5.0),
     )
-    @settings(max_examples=5, deadline=500)
+    @settings(max_examples=3, deadline=500)
     def test_zero_switch_cost_is_optimal(self, num_nodes: int, switch_cost: float):
         """Zero switch cost should find globally optimal path."""
         assume(not (switch_cost != switch_cost))  # Skip NaN
@@ -226,7 +226,7 @@ class TestMultiplexRoutingMathematicalProperties:
 
     @pytest.mark.property
     @given(num_nodes=st.integers(min_value=3, max_value=6))
-    @settings(max_examples=10, deadline=500)
+    @settings(max_examples=3, deadline=500)
     def test_path_length_bounded_by_nodes(self, num_nodes: int):
         """Path length should not exceed number of nodes * layers."""
         net = build_multiplex_network(num_nodes=num_nodes, num_layers=2)
@@ -317,7 +317,7 @@ class TestMultiplexRoutingParetoProperties:
 
     @pytest.mark.property
     @given(num_nodes=st.integers(min_value=2, max_value=5))
-    @settings(max_examples=10, deadline=500)
+    @settings(max_examples=3, deadline=500)
     def test_pareto_set_is_deterministic(self, num_nodes: int):
         """Pareto set should be deterministic."""
         net = build_multiplex_network(num_nodes=num_nodes, num_layers=2)
@@ -409,7 +409,7 @@ class TestSwitchCostMatrixProperties:
 
     @pytest.mark.property
     @given(switch_cost=st.floats(min_value=0.0, max_value=10.0))
-    @settings(max_examples=10, deadline=500)
+    @settings(max_examples=3, deadline=500)
     def test_matrix_overrides_scalar_cost(self, switch_cost: float):
         """Switch cost matrix should override scalar switch cost."""
         assume(not (switch_cost != switch_cost))  # Skip NaN

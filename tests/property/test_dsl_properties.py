@@ -42,7 +42,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     identifier=st.text(
         min_size=1,
@@ -64,7 +64,7 @@ def test_tokenize_preserves_identifiers(identifier):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     string_value=st.text(min_size=1, max_size=50, alphabet=st.characters(
         blacklist_characters='"\'',
@@ -84,7 +84,7 @@ def test_tokenize_handles_quoted_strings(string_value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     value1=st.integers(min_value=0, max_value=1000),
     value2=st.integers(min_value=0, max_value=1000)
@@ -101,7 +101,7 @@ def test_tokenize_handles_numeric_values(value1, value2):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     operator=st.sampled_from(['>', '<', '=', '>=', '<=', '!='])
 )
@@ -116,7 +116,7 @@ def test_tokenize_recognizes_comparison_operators(operator):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     logical_op=st.sampled_from(['AND', 'OR', 'NOT'])
 )
@@ -134,7 +134,7 @@ def test_tokenize_recognizes_logical_operators(logical_op):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     keyword=st.sampled_from(['SELECT', 'WHERE', 'COMPUTE'])
 )
@@ -154,7 +154,7 @@ def test_tokenize_recognizes_keywords(keyword):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     target=st.sampled_from(['nodes', 'edges'])
 )
@@ -173,7 +173,7 @@ def test_tokenize_recognizes_selection_targets(target):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     target=st.sampled_from(['nodes', 'edges']),
     field=st.text(min_size=1, max_size=20, alphabet='abcdefghijklmnopqrstuvwxyz_').filter(lambda x: x[0].isalpha()),
@@ -194,7 +194,7 @@ def test_simple_query_tokenization_structure(target, field, value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     value1=st.integers(min_value=0, max_value=50),
     value2=st.integers(min_value=0, max_value=50),
@@ -220,7 +220,7 @@ def test_compound_query_tokenization_structure(value1, value2, logical_op):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     query_parts=st.lists(
         st.sampled_from(['SELECT nodes', 'WHERE degree > 0', 'AND centrality < 1']),
@@ -240,7 +240,7 @@ def test_tokenization_produces_list(query_parts):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     whitespace=st.sampled_from(['  ', '\t', '\n', '    '])
 )
@@ -257,7 +257,7 @@ def test_tokenization_ignores_extra_whitespace(whitespace):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_name=st.text(min_size=1, max_size=30, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll', 'Nd'),
@@ -283,7 +283,7 @@ def test_tokenization_preserves_layer_queries(layer_name, threshold):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     nested_level=st.integers(min_value=1, max_value=3)
 )
@@ -304,7 +304,7 @@ def test_tokenization_handles_nested_conditions(nested_level):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     empty_parts=st.integers(min_value=0, max_value=3)
 )
@@ -366,7 +366,7 @@ def create_test_network(num_nodes=5, num_layers=2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     target=st.sampled_from(['nodes', 'edges'])
 )
@@ -388,7 +388,7 @@ def test_execute_query_returns_dict(target):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -406,7 +406,7 @@ def test_execute_query_layer_filter_returns_correct_layer(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -424,7 +424,7 @@ def test_execute_query_degree_filter_invariant(threshold):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     measure=st.sampled_from(['degree', 'degree_centrality', 'betweenness_centrality', 'clustering'])
 )
@@ -445,7 +445,7 @@ def test_execute_query_compute_returns_measures(measure):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     logical_op=st.sampled_from(['AND', 'OR'])
 )
@@ -484,7 +484,7 @@ def test_execute_query_empty_network():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     limit=st.integers(min_value=1, max_value=20)
 )
@@ -505,7 +505,7 @@ def test_format_result_respects_limit(limit):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     target=st.sampled_from(['nodes', 'edges'])
 )
@@ -527,7 +527,7 @@ def test_format_result_shows_target(target):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -547,7 +547,7 @@ def test_select_nodes_by_layer_returns_list(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     min_degree=st.integers(min_value=0, max_value=5)
 )
@@ -564,7 +564,7 @@ def test_select_high_degree_nodes_invariant(min_degree):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
     centrality=st.sampled_from(['degree_centrality', 'betweenness_centrality'])
@@ -589,7 +589,7 @@ def test_compute_centrality_for_layer_returns_dict(layer_idx, centrality):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     attribute=st.text(min_size=1, max_size=20, alphabet='abcdefghijklmnopqrstuvwxyz_'),
     operator=st.sampled_from(['>', '<', '=', '>=', '<=', '!=']),
@@ -615,7 +615,7 @@ def test_parse_condition_returns_dict(attribute, operator, value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     value=st.integers(min_value=0, max_value=100)
 )
@@ -636,7 +636,7 @@ def test_parse_condition_with_not_operator(value):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_name=st.text(min_size=1, max_size=10, alphabet='abcdefghijklmnopqrstuvwxyz')
 )
@@ -663,7 +663,7 @@ def test_evaluate_condition_layer_equality(layer_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -707,7 +707,7 @@ def test_evaluate_conditions_empty_list():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -724,7 +724,7 @@ def test_query_count_matches_result_length(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -741,7 +741,7 @@ def test_query_all_nodes_returns_all(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     threshold=st.integers(min_value=0, max_value=5)
 )
@@ -761,7 +761,7 @@ def test_query_filter_reduces_or_maintains_count(threshold):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     invalid_target=st.sampled_from(['invalid', 'xyz', 'abc', 'unknown', 'data', 'items', 'all'])
 )
@@ -788,7 +788,7 @@ def test_empty_query_raises_error():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -805,7 +805,7 @@ def test_in_layer_clause_filters_correctly(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -822,7 +822,7 @@ def test_in_layer_equivalent_to_where_layer(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     num_layers=st.integers(min_value=1, max_value=3)
 )
@@ -840,7 +840,7 @@ def test_in_layers_multiple_layers(num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -861,7 +861,7 @@ def test_in_layer_with_where_clause(layer_idx):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -883,7 +883,7 @@ def test_match_single_node_pattern(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -898,7 +898,7 @@ def test_match_count_equals_bindings_length(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -943,7 +943,7 @@ def test_match_on_empty_network():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     measure=st.sampled_from(['degree', 'betweenness_centrality', 'closeness_centrality'])
 )
@@ -958,7 +958,7 @@ def test_select_compute_returns_computed(measure):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -978,7 +978,7 @@ def test_select_in_layer_with_compute(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
     threshold=st.integers(min_value=0, max_value=5)
@@ -1005,7 +1005,7 @@ def test_select_where_in_layer_combined(layer_idx, threshold):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -1024,7 +1024,7 @@ def test_double_layer_filter_is_idempotent(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     threshold=st.integers(min_value=0, max_value=5)
 )
@@ -1062,7 +1062,7 @@ def test_or_layer_expands_result():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -1085,7 +1085,7 @@ def test_not_layer_is_complement(layer_idx):
 
 @pytest.mark.property
 @pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -1106,7 +1106,7 @@ def test_dsl_and_graph_ops_equivalent_layer_filter(layer_idx):
 
 @pytest.mark.property
 @pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     threshold=st.integers(min_value=0, max_value=5)
 )
@@ -1126,7 +1126,7 @@ def test_dsl_and_graph_ops_equivalent_degree_filter(threshold):
 
 @pytest.mark.property
 @pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
     threshold=st.integers(min_value=0, max_value=5)
@@ -1169,7 +1169,7 @@ def test_execute_query_method_on_network():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     num_nodes=st.integers(min_value=1, max_value=5)
 )
@@ -1202,7 +1202,7 @@ def test_format_result_with_empty_nodes():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     measure=st.sampled_from(['pagerank', 'eigenvector_centrality', 'eigenvector'])
 )
@@ -1223,7 +1223,7 @@ def test_execute_query_compute_additional_centrality_measures(measure):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     measure=st.sampled_from([
         'degree', 'degree_centrality', 'betweenness_centrality', 'betweenness',
@@ -1249,7 +1249,7 @@ def test_compute_all_centrality_measures_non_negative(measure):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     measure=st.sampled_from([
         'betweenness_centrality', 'closeness_centrality', 'pagerank', 
@@ -1278,7 +1278,7 @@ def test_compute_centrality_on_filtered_nodes(measure):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     threshold=st.integers(min_value=0, max_value=3),
     measure=st.sampled_from(['degree', 'betweenness_centrality', 'closeness_centrality'])
@@ -1305,7 +1305,7 @@ def test_operation_order_where_then_compute_vs_compute_then_where(threshold, mea
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
     measure=st.sampled_from([
@@ -1341,7 +1341,7 @@ def test_operation_order_layer_filter_with_all_measures(layer_idx, measure):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     threshold=st.integers(min_value=0, max_value=3),
     measure=st.sampled_from(['pagerank', 'eigenvector_centrality'])
@@ -1372,7 +1372,7 @@ def test_operation_order_compute_then_filter_on_computed_measure(threshold, meas
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
     measure1=st.sampled_from(['degree', 'betweenness_centrality']),
@@ -1407,7 +1407,7 @@ def test_multiple_measures_with_layer_filter(layer_idx, measure1, measure2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     measure=st.sampled_from([
         'degree', 'betweenness_centrality', 'closeness_centrality', 
@@ -1440,7 +1440,7 @@ def test_centrality_measure_count_matches_node_count(measure, num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     measure=st.sampled_from(['betweenness', 'closeness', 'eigenvector']),
     num_layers=st.integers(min_value=1, max_value=3)

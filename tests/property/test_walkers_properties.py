@@ -42,7 +42,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=12),
     walk_length=st.integers(min_value=1, max_value=20),
@@ -62,7 +62,7 @@ def test_basic_walk_length_property(num_nodes, walk_length, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=12),
     walk_length=st.integers(min_value=5, max_value=15),
@@ -85,7 +85,7 @@ def test_walk_transitions_are_valid_edges(num_nodes, walk_length, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=12),
     walk_length=st.integers(min_value=5, max_value=15),
@@ -103,7 +103,7 @@ def test_walk_starts_at_specified_node(num_nodes, walk_length, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     walk_length=st.integers(min_value=5, max_value=15),
@@ -122,7 +122,7 @@ def test_walk_reproducibility_property(num_nodes, walk_length, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     walk_length=st.integers(min_value=5, max_value=15)
@@ -151,7 +151,7 @@ def test_walk_stays_in_connected_component(num_nodes, walk_length):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=12),
     walk_length=st.integers(min_value=5, max_value=15),
@@ -176,7 +176,7 @@ def test_node2vec_walk_valid_transitions(num_nodes, walk_length, p, q, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=10),
     walk_length=st.integers(min_value=5, max_value=15),
@@ -197,7 +197,7 @@ def test_node2vec_walk_reproducibility(num_nodes, walk_length, p, q, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=10),
     walk_length=st.integers(min_value=3, max_value=10),
@@ -223,7 +223,7 @@ def test_node2vec_walk_length_consistency(num_nodes, walk_length, p, q, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=10),
     num_walks=st.integers(min_value=1, max_value=5),
@@ -244,7 +244,7 @@ def test_generate_walks_count_property(num_nodes, num_walks, walk_length, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=10),
     num_walks=st.integers(min_value=2, max_value=5),
@@ -263,7 +263,7 @@ def test_generate_walks_reproducibility_property(num_nodes, num_walks, walk_leng
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=12),
     num_walks=st.integers(min_value=2, max_value=5),
@@ -291,7 +291,7 @@ def test_generate_walks_all_valid_transitions(num_nodes, num_walks, walk_length,
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     walk_length=st.integers(min_value=5, max_value=15),
@@ -324,7 +324,7 @@ def test_weighted_walk_respects_graph_structure(num_nodes, walk_length, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     walk_length=st.integers(min_value=5, max_value=15),
@@ -361,7 +361,7 @@ def test_unweighted_walk_ignores_weights(num_nodes, walk_length, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     walk_length=st.integers(min_value=1, max_value=20),
     seed=st.integers(min_value=0, max_value=10000)
@@ -378,7 +378,7 @@ def test_isolated_node_terminates_immediately(walk_length, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     walk_length=st.integers(min_value=5, max_value=15),

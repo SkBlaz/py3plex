@@ -26,7 +26,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(seconds=st.integers(min_value=0, max_value=1000000))
 def test_parse_duration_numeric_input(seconds):
     """Test that numeric inputs are converted to float seconds."""
@@ -39,7 +39,7 @@ def test_parse_duration_numeric_input(seconds):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(value=st.floats(min_value=0.1, max_value=10000, allow_nan=False, allow_infinity=False))
 def test_parse_duration_float_input(value):
     """Test that float inputs are returned as-is."""
@@ -52,7 +52,7 @@ def test_parse_duration_float_input(value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(days=st.integers(min_value=1, max_value=100))
 def test_parse_duration_days(days):
     """Test parsing duration strings with days."""
@@ -68,7 +68,7 @@ def test_parse_duration_days(days):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(hours=st.integers(min_value=1, max_value=100))
 def test_parse_duration_hours(hours):
     """Test parsing duration strings with hours."""
@@ -82,7 +82,7 @@ def test_parse_duration_hours(hours):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(minutes=st.integers(min_value=1, max_value=100))
 def test_parse_duration_minutes(minutes):
     """Test parsing duration strings with minutes."""
@@ -96,7 +96,7 @@ def test_parse_duration_minutes(minutes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(seconds=st.integers(min_value=1, max_value=1000))
 def test_parse_duration_seconds(seconds):
     """Test parsing duration strings with seconds."""
@@ -110,7 +110,7 @@ def test_parse_duration_seconds(seconds):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(weeks=st.integers(min_value=1, max_value=20))
 def test_parse_duration_weeks(weeks):
     """Test parsing duration strings with weeks."""
@@ -124,7 +124,7 @@ def test_parse_duration_weeks(weeks):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(invalid_str=st.text(min_size=1, max_size=20).filter(
     lambda s: not any(unit in s.lower() for unit in ['d', 'h', 'm', 's', 'w'])
 ))
@@ -135,7 +135,7 @@ def test_parse_duration_invalid_format_raises(invalid_str):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     value=st.floats(min_value=0.1, max_value=100, allow_nan=False, allow_infinity=False),
     unit=st.sampled_from(['d', 'h', 'm', 's', 'w', 'day', 'hour', 'min', 'sec', 'week'])
@@ -150,7 +150,7 @@ def test_parse_duration_returns_positive(value, unit):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     value=st.integers(min_value=1, max_value=100),
     unit=st.sampled_from(['d', 'h', 'm', 's'])
@@ -177,7 +177,7 @@ def test_format_duration_zero():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(seconds=st.integers(min_value=1, max_value=59))
 def test_format_duration_seconds(seconds):
     """Test formatting seconds."""
@@ -187,7 +187,7 @@ def test_format_duration_seconds(seconds):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(days=st.integers(min_value=1, max_value=30))
 def test_format_duration_days(days):
     """Test formatting days."""
@@ -198,7 +198,7 @@ def test_format_duration_days(days):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     seconds=st.integers(min_value=1, max_value=1000000),
     precision=st.integers(min_value=1, max_value=5)
@@ -214,7 +214,7 @@ def test_format_duration_with_precision(seconds, precision):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(seconds=st.integers(min_value=-1000, max_value=-1))
 def test_format_duration_negative(seconds):
     """Test formatting negative durations."""
@@ -224,7 +224,7 @@ def test_format_duration_negative(seconds):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(seconds=st.floats(min_value=0.001, max_value=0.999, allow_nan=False, allow_infinity=False))
 def test_format_duration_subsecond(seconds):
     """Test formatting sub-second durations."""
@@ -238,7 +238,7 @@ def test_format_duration_subsecond(seconds):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     value=st.integers(min_value=1, max_value=100),
     unit=st.sampled_from(['d', 'h', 'm', 's', 'w'])

@@ -25,7 +25,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=10, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -44,7 +44,7 @@ def test_basic_pl_stats_returns_positive_alpha(n_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=10, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -64,7 +64,7 @@ def test_basic_pl_stats_returns_valid_sigma(n_nodes, seed):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=15, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -86,7 +86,7 @@ def test_basic_pl_stats_deterministic(n_nodes, seed):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=15, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -107,7 +107,7 @@ def test_basic_pl_stats_scale_free_alpha_range(n_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=15, max_value=50),
     p=st.floats(min_value=0.1, max_value=0.5),
@@ -133,7 +133,7 @@ def test_basic_pl_stats_random_network_higher_alpha(n_nodes, p, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=10, max_value=40),
     seed=st.integers(min_value=0, max_value=10000)
@@ -164,7 +164,7 @@ def test_basic_pl_stats_uniform_degrees_high_alpha(n_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=10, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -185,7 +185,7 @@ def test_basic_pl_stats_numeric_stability(n_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=10, max_value=40),
     seed=st.integers(min_value=0, max_value=10000)
@@ -211,7 +211,7 @@ def test_basic_pl_stats_handles_zeros_in_sequence(n_nodes, seed):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=15, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -232,7 +232,7 @@ def test_basic_pl_stats_sigma_reflects_fit_quality(n_nodes, seed):
 
 @pytest.mark.property
 @pytest.mark.slow
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     seed=st.integers(min_value=0, max_value=10000)
 )

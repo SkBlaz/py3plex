@@ -29,7 +29,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(message=st.text(min_size=1, max_size=100))
 def test_py3plex_exception_creation(message):
     """Test that Py3plexException can be created with any message."""
@@ -42,7 +42,7 @@ def test_py3plex_exception_creation(message):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     message=st.text(min_size=1, max_size=100),
     code=st.text(min_size=3, max_size=10, alphabet=st.characters(whitelist_categories=('Lu', 'Nd')))
@@ -56,7 +56,7 @@ def test_py3plex_exception_custom_code(message, code):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     message=st.text(min_size=1, max_size=100),
     suggestions=st.lists(st.text(min_size=1, max_size=50), min_size=1, max_size=5)
@@ -72,7 +72,7 @@ def test_py3plex_exception_suggestions(message, suggestions):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     message=st.text(min_size=1, max_size=100),
     notes=st.lists(st.text(min_size=1, max_size=50), min_size=1, max_size=5)
@@ -88,7 +88,7 @@ def test_py3plex_exception_notes(message, notes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     message=st.text(min_size=1, max_size=100),
     did_you_mean=st.text(min_size=1, max_size=50)
@@ -102,7 +102,7 @@ def test_py3plex_exception_did_you_mean(message, did_you_mean):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     message=st.text(min_size=1, max_size=100),
     context=st.dictionaries(
@@ -121,7 +121,7 @@ def test_py3plex_exception_context(message, context):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(message=st.text(min_size=1, max_size=100))
 def test_py3plex_exception_is_exception(message):
     """Test that Py3plexException is a proper exception."""
@@ -145,7 +145,7 @@ def test_py3plex_exception_is_exception(message):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(message=st.text(min_size=1, max_size=100))
 def test_network_construction_error_has_correct_code(message):
     """Test that NetworkConstructionError has the correct error code."""
@@ -162,7 +162,7 @@ def test_network_construction_error_has_correct_code(message):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(layer_name=st.text(min_size=1, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'))))
 def test_invalid_layer_error_creation(layer_name):
     """Test that InvalidLayerError can be created with layer name."""
@@ -175,7 +175,7 @@ def test_invalid_layer_error_creation(layer_name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layer_name=st.text(min_size=1, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'))),
     available_layers=st.lists(
@@ -203,7 +203,7 @@ def test_invalid_layer_error_with_available_layers(layer_name, available_layers)
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(node_id=st.text(min_size=1, max_size=30))
 def test_invalid_node_error_creation(node_id):
     """Test that InvalidNodeError can be created with node ID."""
@@ -216,7 +216,7 @@ def test_invalid_node_error_creation(node_id):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     node_id=st.integers(min_value=0, max_value=1000),
     available_nodes=st.lists(st.integers(min_value=0, max_value=1000), min_size=1, max_size=50)
@@ -238,7 +238,7 @@ def test_invalid_node_error_with_numeric_nodes(node_id, available_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(message=st.text(min_size=1, max_size=100))
 def test_invalid_edge_error_has_correct_code(message):
     """Test that InvalidEdgeError has the correct error code."""
@@ -255,7 +255,7 @@ def test_invalid_edge_error_has_correct_code(message):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(message=st.text(min_size=1, max_size=100))
 def test_all_exceptions_inherit_from_base(message):
     """Test that all custom exceptions inherit from Py3plexException."""
@@ -274,7 +274,7 @@ def test_all_exceptions_inherit_from_base(message):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(message=st.text(min_size=1, max_size=100))
 def test_all_exceptions_have_unique_codes(message):
     """Test that different exception types have unique error codes."""

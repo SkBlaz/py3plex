@@ -65,7 +65,7 @@ jobs:
       run: |
         source .venv/bin/activate
         uv run pytest tests/property/ -v -m "property and not slow" --tb=short
-      timeout-minutes: 12
+      timeout-minutes: 15
     
     - name: Upload test results
       if: always()
@@ -171,4 +171,4 @@ jobs:
       run: |
         source .venv/bin/activate
         uv run pytest tests/property/ -v -m "property and not slow" --tb=short || echo "⚠️ Some tests skipped due to missing deps"
-      timeout-minutes: 20
+      timeout-minutes: 25

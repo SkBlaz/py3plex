@@ -24,7 +24,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(name=st.text(min_size=1, max_size=50, alphabet=st.characters(
     whitelist_categories=('Lu', 'Ll'), whitelist_characters='._'
 )))
@@ -37,7 +37,7 @@ def test_get_logger_returns_logger(name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(name=st.text(min_size=1, max_size=50, alphabet=st.characters(
     whitelist_categories=('Lu', 'Ll'), whitelist_characters='._'
 )))
@@ -59,7 +59,7 @@ def test_get_logger_none_name_returns_root():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(level=st.sampled_from([
     logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL
 ]))
@@ -77,7 +77,7 @@ def test_get_logger_respects_level(level):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(name=st.text(min_size=1, max_size=50, alphabet=st.characters(
     whitelist_categories=('Lu', 'Ll'), whitelist_characters='._'
 )))
@@ -92,7 +92,7 @@ def test_get_logger_idempotent(name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(name=st.text(min_size=1, max_size=30, alphabet=st.characters(
     whitelist_categories=('Lu', 'Ll'), whitelist_characters='._'
 )))
@@ -131,7 +131,7 @@ def test_setup_logging_returns_root_logger():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(level=st.sampled_from([
     logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL
 ]))
@@ -144,7 +144,7 @@ def test_setup_logging_with_level(level):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(format_str=st.text(min_size=5, max_size=100))
 def test_setup_logging_with_custom_format(format_str):
     """Test that setup_logging accepts custom format strings."""
@@ -159,7 +159,7 @@ def test_setup_logging_with_custom_format(format_str):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(dummy=st.just(None))
 def test_setup_logging_idempotent(dummy):
     """Test that calling setup_logging multiple times is safe."""

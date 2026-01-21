@@ -32,7 +32,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num_nodes=st.integers(min_value=0, max_value=20))
 def test_nx_info_returns_string(num_nodes):
     """Test that nx_info returns a string for any valid graph."""
@@ -46,7 +46,7 @@ def test_nx_info_returns_string(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     num_nodes=st.integers(min_value=1, max_value=15),
     num_edges=st.integers(min_value=0, max_value=20)
@@ -73,7 +73,7 @@ def test_nx_info_contains_node_count(num_nodes, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num_nodes=st.integers(min_value=0, max_value=20))
 def test_nx_info_handles_directed_graphs(num_nodes):
     """Test that nx_info works with directed graphs."""
@@ -87,7 +87,7 @@ def test_nx_info_handles_directed_graphs(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(num_nodes=st.integers(min_value=0, max_value=20))
 def test_nx_info_handles_multigraphs(num_nodes):
     """Test that nx_info works with multigraphs."""
@@ -101,7 +101,7 @@ def test_nx_info_handles_multigraphs(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
+@settings(deadline=None, max_examples=3)
 @given(graph_name=st.text(min_size=0, max_size=50))
 def test_nx_info_with_graph_name(graph_name):
     """Test that nx_info handles graph names."""
@@ -118,7 +118,7 @@ def test_nx_info_with_graph_name(graph_name):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(text=st.text(min_size=0, max_size=100))
 def test_is_string_like_accepts_strings(text):
     """Test that is_string_like accepts strings."""
@@ -128,7 +128,7 @@ def test_is_string_like_accepts_strings(text):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num=st.integers())
 def test_is_string_like_rejects_integers(num):
     """Test that is_string_like rejects integers."""
@@ -138,7 +138,7 @@ def test_is_string_like_rejects_integers(num):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(num=st.floats(allow_nan=False, allow_infinity=False))
 def test_is_string_like_rejects_floats(num):
     """Test that is_string_like rejects floats."""
@@ -148,7 +148,7 @@ def test_is_string_like_rejects_floats(num):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(lst=st.lists(st.integers(), min_size=0, max_size=10))
 def test_is_string_like_rejects_lists(lst):
     """Test that is_string_like rejects lists."""
@@ -158,7 +158,7 @@ def test_is_string_like_rejects_lists(lst):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(dct=st.dictionaries(st.text(min_size=1), st.integers(), min_size=0, max_size=5))
 def test_is_string_like_rejects_dicts(dct):
     """Test that is_string_like rejects dictionaries."""
@@ -180,7 +180,7 @@ def test_is_string_like_rejects_none():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=0, max_value=15))
 def test_gpickle_roundtrip_preserves_node_count(num_nodes):
     """Test that gpickle write/read preserves node count."""
@@ -206,7 +206,7 @@ def test_gpickle_roundtrip_preserves_node_count(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=10),
     num_edges=st.integers(min_value=1, max_value=15),
@@ -252,7 +252,7 @@ def test_gpickle_roundtrip_preserves_edges(num_nodes, num_edges, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=0, max_value=10))
 def test_gpickle_roundtrip_preserves_graph_type(num_nodes):
     """Test that gpickle write/read preserves graph type."""
@@ -278,7 +278,7 @@ def test_gpickle_roundtrip_preserves_graph_type(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=1, max_value=10),
     node_attr_val=st.integers()

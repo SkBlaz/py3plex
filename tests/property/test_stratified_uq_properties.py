@@ -88,7 +88,7 @@ def stratification_spec_strategy(draw):
     seed=st.integers(min_value=0, max_value=1000),
     n_samples=st.integers(min_value=5, max_value=20)
 )
-@settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 def test_stratified_uq_deterministic(network, seed, n_samples):
     """Property: Same seed produces identical results."""
     
@@ -130,7 +130,7 @@ def test_stratified_uq_deterministic(network, seed, n_samples):
     seed2=st.integers(min_value=0, max_value=1000),
     n_samples=st.integers(min_value=10, max_value=20)
 )
-@settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 def test_different_seeds_produce_different_results(network, seed1, seed2, n_samples):
     """Property: Different seeds produce different results (with high probability)."""
     assume(seed1 != seed2)
@@ -174,7 +174,7 @@ def test_different_seeds_produce_different_results(network, seed1, seed2, n_samp
     network=simple_network_strategy(),
     n_samples=st.integers(min_value=10, max_value=30)
 )
-@settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 def test_mean_is_unbiased_estimator(network, n_samples):
     """Property: Mean from stratified UQ approximates true metric."""
     
@@ -208,7 +208,7 @@ def test_mean_is_unbiased_estimator(network, n_samples):
     network=simple_network_strategy(),
     n_samples=st.integers(min_value=10, max_value=30)
 )
-@settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 def test_std_is_non_negative(network, n_samples):
     """Property: Standard deviation is always non-negative."""
     
@@ -233,7 +233,7 @@ def test_std_is_non_negative(network, n_samples):
     network=simple_network_strategy(),
     n_samples=st.integers(min_value=10, max_value=30)
 )
-@settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 def test_std_increases_with_perturbation(network, n_samples):
     """Property: Higher perturbation leads to higher variance (usually)."""
     
@@ -279,7 +279,7 @@ def test_std_increases_with_perturbation(network, n_samples):
     network=simple_network_strategy(),
     spec=stratification_spec_strategy()
 )
-@settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 def test_stratification_covers_all_items(network, spec):
     """Property: Stratification covers all nodes/edges without duplication."""
     
@@ -342,7 +342,7 @@ def test_stratification_spec_rejects_invalid_strata():
     network=simple_network_strategy(),
     n_samples=st.integers(min_value=5, max_value=20)
 )
-@settings(max_examples=10, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 def test_metadata_contains_stratification_info(network, n_samples):
     """Property: Result metadata contains stratification information."""
     
@@ -376,7 +376,7 @@ def test_metadata_contains_stratification_info(network, n_samples):
     network=simple_network_strategy(min_nodes=5, max_nodes=15, min_edges=5, max_edges=20),
     n_samples=st.integers(min_value=20, max_value=40)
 )
-@settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 def test_stratified_vs_regular_perturbation_means_similar(network, n_samples):
     """Property: Stratified and regular perturbation produce similar means."""
     

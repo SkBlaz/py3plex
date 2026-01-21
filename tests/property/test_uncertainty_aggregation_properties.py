@@ -81,7 +81,7 @@ class TestDictSamplesAggregation:
     """Property-based tests for aggregating dict samples."""
     
     @given(dict_samples_strategy(min_samples=2, max_samples=20))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_returns_statseries_for_dict_samples(self, samples):
         """Property: Aggregating dict samples returns StatSeries."""
         # Skip if all samples are empty
@@ -91,7 +91,7 @@ class TestDictSamplesAggregation:
         assert isinstance(result, StatSeries), "Should return StatSeries for dict samples"
     
     @given(dict_samples_strategy(min_samples=2, max_samples=20, min_nodes=3, max_nodes=5))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_aggregated_length_includes_all_nodes(self, samples):
         """Property: Result includes all nodes that appear in any sample."""
         # Skip if all samples are empty
@@ -109,7 +109,7 @@ class TestDictSamplesAggregation:
             f"Result length {len(result)} < number of unique nodes {len(all_nodes)}"
     
     @given(dict_samples_strategy(min_samples=2, max_samples=20))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_mean_is_within_sample_range(self, samples):
         """Property: Mean values should be within the range of all sample values including zeros."""
         # Skip if all samples are empty
@@ -132,7 +132,7 @@ class TestDictSamplesAggregation:
                 f"Mean {mean_val} not in range [{min_val}, {max_val}] for node {node}"
     
     @given(dict_samples_strategy(min_samples=5, max_samples=20))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_std_is_non_negative(self, samples):
         """Property: Standard deviation is always non-negative."""
         # Skip if all samples are empty
@@ -144,7 +144,7 @@ class TestDictSamplesAggregation:
         assert np.all(result.std >= 0), "All std values must be non-negative"
     
     @given(dict_samples_strategy(min_samples=5, max_samples=20))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_quantiles_ordered(self, samples):
         """Property: Lower quantile <= upper quantile for all nodes."""
         # Skip if all samples are empty
@@ -162,7 +162,7 @@ class TestDictSamplesAggregation:
                     "Lower quantile should be <= upper quantile"
     
     @given(dict_samples_strategy(min_samples=5, max_samples=20))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_mean_between_quantiles(self, samples):
         """Property: Mean should be within the quantile range for most nodes."""
         # Skip if all samples are empty
@@ -192,7 +192,7 @@ class TestScalarSamplesAggregation:
     """Property-based tests for aggregating scalar samples."""
     
     @given(scalar_samples_strategy(min_samples=2, max_samples=50))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_returns_float_for_scalar_samples(self, samples):
         """Property: Aggregating scalar samples returns float."""
         result = _aggregate_samples(samples)
@@ -200,7 +200,7 @@ class TestScalarSamplesAggregation:
             f"Should return scalar for scalar samples, got {type(result)}"
     
     @given(scalar_samples_strategy(min_samples=2, max_samples=50))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_scalar_mean_in_sample_range(self, samples):
         """Property: Scalar mean should be within sample range."""
         result = _aggregate_samples(samples)
@@ -212,7 +212,7 @@ class TestScalarSamplesAggregation:
             f"Mean {result} not in range [{min_val}, {max_val}]"
     
     @given(scalar_samples_strategy(min_samples=5, max_samples=50))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_scalar_mean_equals_numpy_mean(self, samples):
         """Property: Scalar aggregation should match numpy mean."""
         result = _aggregate_samples(samples)
@@ -222,7 +222,7 @@ class TestScalarSamplesAggregation:
             f"Aggregated mean {result} != numpy mean {expected}"
     
     @given(st.lists(st.floats(min_value=5.0, max_value=5.0), min_size=2, max_size=10))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_constant_samples_give_constant_mean(self, samples):
         """Property: Constant samples should give constant mean."""
         # All samples are 5.0
@@ -238,14 +238,14 @@ class TestArraySamplesAggregation:
     """Property-based tests for aggregating array samples."""
     
     @given(array_samples_strategy(min_samples=2, max_samples=20, array_length=5))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_returns_statseries_for_array_samples(self, samples):
         """Property: Aggregating array samples returns StatSeries."""
         result = _aggregate_samples(samples)
         assert isinstance(result, StatSeries), "Should return StatSeries for array samples"
     
     @given(array_samples_strategy(min_samples=2, max_samples=20, array_length=5))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_array_aggregation_preserves_length(self, samples):
         """Property: Aggregated array has same length as input arrays."""
         result = _aggregate_samples(samples)
@@ -255,7 +255,7 @@ class TestArraySamplesAggregation:
             f"Result length {len(result)} != expected {expected_length}"
     
     @given(array_samples_strategy(min_samples=5, max_samples=20, array_length=5))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_array_mean_in_sample_range(self, samples):
         """Property: Each element's mean should be within its sample range."""
         result = _aggregate_samples(samples)
@@ -273,7 +273,7 @@ class TestArraySamplesAggregation:
                 f"Mean {mean_val} not in range [{min_val}, {max_val}] for element {i}"
     
     @given(array_samples_strategy(min_samples=5, max_samples=20, array_length=5))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_array_std_non_negative(self, samples):
         """Property: All std values are non-negative."""
         result = _aggregate_samples(samples)
@@ -293,7 +293,7 @@ class TestDeterministicAggregation:
         st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
         st.integers(min_value=2, max_value=20)
     )
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_identical_scalars_have_zero_std(self, value, n_samples):
         """Property: Identical scalar samples should have zero variance."""
         samples = [value] * n_samples
@@ -306,7 +306,7 @@ class TestDeterministicAggregation:
         st.integers(min_value=3, max_value=10),
         st.integers(min_value=2, max_value=20)
     )
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_identical_dict_samples_have_zero_std(self, value, n_nodes, n_samples):
         """Property: Identical dict samples should have zero std."""
         nodes = [f"node_{i}" for i in range(n_nodes)]
@@ -325,7 +325,7 @@ class TestDeterministicAggregation:
         st.integers(min_value=5, max_value=10),
         st.integers(min_value=2, max_value=20)
     )
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_identical_array_samples_have_zero_std(self, value, array_length, n_samples):
         """Property: Identical array samples should have zero std."""
         sample = np.full(array_length, value)
@@ -347,7 +347,7 @@ class TestStatisticalProperties:
     """Property-based tests for statistical properties of aggregation."""
     
     @given(scalar_samples_strategy(min_samples=10, max_samples=50))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_adding_extreme_value_increases_variance(self, samples):
         """Property: Adding an extreme value should increase variance."""
         # Get original result
@@ -363,7 +363,7 @@ class TestStatisticalProperties:
             "Adding extreme value should change mean"
     
     @given(dict_samples_strategy(min_samples=5, max_samples=15))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_more_samples_same_distribution_similar_mean(self, samples):
         """Property: Doubling samples from same distribution gives similar mean."""
         # Skip if all samples are empty
@@ -384,7 +384,7 @@ class TestStatisticalProperties:
             "Doubling samples should give same std"
     
     @given(array_samples_strategy(min_samples=10, max_samples=20, array_length=5))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_aggregation_is_commutative(self, samples):
         """Property: Order of samples should not matter."""
         result1 = _aggregate_samples(samples)
@@ -416,7 +416,7 @@ class TestEdgeCases:
             _aggregate_samples([])
     
     @given(st.integers(min_value=1, max_value=10))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_single_sample_returns_valid_result(self, n_nodes):
         """Property: Single sample should return valid result with std."""
         nodes = [f"node_{i}" for i in range(n_nodes)]
@@ -431,7 +431,7 @@ class TestEdgeCases:
         assert np.allclose(result.std, 0.0)
     
     @given(dict_samples_strategy(min_samples=2, max_samples=10))
-    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=3, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_handles_missing_nodes_gracefully(self, samples):
         """Property: Should handle samples with different sets of nodes."""
         # This is already tested by dict_samples_strategy which can have

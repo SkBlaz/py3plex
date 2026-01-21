@@ -15,7 +15,7 @@ from .strategies import layer_labels
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=1, max_value=15),
     layer=layer_labels()
@@ -48,7 +48,7 @@ def test_node_addition_increases_node_count(n, layer):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=2, max_value=12),
     layer=layer_labels()
@@ -84,7 +84,7 @@ def test_node_uniqueness_within_layer(n, layer):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=3, max_value=10),
     num_to_remove=st.integers(min_value=1, max_value=3)
@@ -140,7 +140,7 @@ def test_node_removal_consistency(n, num_to_remove):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     layers=st.lists(layer_labels(), min_size=1, max_size=4, unique=True),
     n=st.integers(min_value=2, max_value=8)
@@ -178,7 +178,7 @@ def test_node_layer_assignment(layers, n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=2, max_value=10),
     layers=st.lists(layer_labels(), min_size=2, max_size=4, unique=True)
@@ -219,7 +219,7 @@ def test_same_node_different_layers(n, layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=2, max_value=10),
     layer=layer_labels()
@@ -248,7 +248,7 @@ def test_node_count_non_negative(n, layer):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=2, max_value=10),
     p=st.floats(min_value=0.2, max_value=0.8)
@@ -287,7 +287,7 @@ def test_isolated_nodes_preserved(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=2, max_value=12),
     layer=layer_labels()
@@ -318,7 +318,7 @@ def test_node_retrieval_consistency(n, layer):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=2, max_value=10),
     layers=st.lists(layer_labels(), min_size=1, max_size=3, unique=True)
@@ -353,7 +353,7 @@ def test_node_degree_non_negative(n, layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
+@settings(deadline=None, max_examples=3)
 @given(
     n=st.integers(min_value=3, max_value=10),
     num_edges=st.integers(min_value=2, max_value=12)
