@@ -44,6 +44,7 @@ def build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.5, seed=None)
 class TestDSLBootstrapProperties:
     """Property-based tests for DSL bootstrap integration."""
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30),
@@ -73,6 +74,7 @@ class TestDSLBootstrapProperties:
         df = result.to_pandas()
         assert "degree" in df.columns
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30)
@@ -97,6 +99,7 @@ class TestDSLBootstrapProperties:
         
         assert len(result) >= 0
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30),
@@ -122,6 +125,7 @@ class TestDSLBootstrapProperties:
         
         assert len(result) <= limit
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30)
@@ -168,6 +172,7 @@ class TestDSLBootstrapProperties:
 class TestDSLNullModelProperties:
     """Property-based tests for DSL null model integration."""
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=10, max_value=40),
@@ -195,6 +200,7 @@ class TestDSLNullModelProperties:
         df = result.to_pandas()
         assert "degree" in df.columns
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=10, max_value=40)
@@ -219,6 +225,7 @@ class TestDSLNullModelProperties:
         
         assert len(result) >= 0
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=10, max_value=40)
@@ -273,6 +280,7 @@ class TestGlobalDefaultsProperties:
         """Reset defaults after each test."""
         Q.uncertainty.reset()
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=100),
@@ -286,6 +294,7 @@ class TestGlobalDefaultsProperties:
         assert Q.uncertainty.get("n_boot") == n_boot
         assert Q.uncertainty.get("ci") == ci
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=100)
@@ -301,6 +310,7 @@ class TestGlobalDefaultsProperties:
         Q.uncertainty.reset()
         assert Q.uncertainty.get("n_boot") == initial_n_boot
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=50)
@@ -322,6 +332,7 @@ class TestGlobalDefaultsProperties:
         # Should complete successfully using defaults
         assert len(result) >= 0
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=50),
@@ -354,6 +365,7 @@ class TestGlobalDefaultsProperties:
 class TestDSLMetamorphicProperties:
     """Metamorphic properties for DSL uncertainty integration."""
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30)
@@ -392,6 +404,7 @@ class TestDSLMetamorphicProperties:
         assert len(bootstrap_result) >= 0
         assert len(null_result) >= 0
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=5, max_value=30)
@@ -433,6 +446,7 @@ class TestDSLMetamorphicProperties:
 class TestDSLUncertaintyEdgeCases:
     """Edge case tests for DSL uncertainty."""
     
+    @pytest.mark.slow
     @pytest.mark.property
     def test_empty_network_bootstrap(self):
         """Edge case: Empty network with bootstrap."""
@@ -451,6 +465,7 @@ class TestDSLUncertaintyEdgeCases:
         
         assert len(result) == 0
     
+    @pytest.mark.slow
     @pytest.mark.property
     def test_empty_network_null_model(self):
         """Edge case: Empty network with null model."""
@@ -469,6 +484,7 @@ class TestDSLUncertaintyEdgeCases:
         
         assert len(result) == 0
     
+    @pytest.mark.slow
     @pytest.mark.property
     @given(
         st.integers(min_value=2, max_value=8)
