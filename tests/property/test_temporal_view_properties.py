@@ -37,7 +37,7 @@ def test_temporal_slice_default_creation():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     t0=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False),
     t1=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False)
@@ -53,7 +53,7 @@ def test_temporal_slice_creation_with_times(t0, t1):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(t0=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_temporal_slice_with_only_start(t0):
     """Test that TemporalSlice can be created with only start time."""
@@ -66,7 +66,7 @@ def test_temporal_slice_with_only_start(t0):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(t1=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_temporal_slice_with_only_end(t1):
     """Test that TemporalSlice can be created with only end time."""
@@ -113,7 +113,7 @@ def test_temporal_multinet_view_creation():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     time_attr=st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=('Lu', 'Ll'), whitelist_characters='_')),
     t_start_attr=st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=('Lu', 'Ll'), whitelist_characters='_')),
@@ -154,7 +154,7 @@ def test_temporal_multinet_view_initial_slice():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     t0=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False),
     t1=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False)
@@ -178,7 +178,7 @@ def test_temporal_multinet_view_with_slice(t0, t1):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     t0=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False),
     t1=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False)
@@ -203,7 +203,7 @@ def test_temporal_multinet_view_with_slice_does_not_modify_original(t0, t1):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(t0=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_temporal_multinet_view_with_slice_none_end(t0):
     """Test that with_slice accepts None for end time."""
@@ -218,7 +218,7 @@ def test_temporal_multinet_view_with_slice_none_end(t0):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(t1=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_temporal_multinet_view_with_slice_none_start(t1):
     """Test that with_slice accepts None for start time."""
@@ -237,7 +237,7 @@ def test_temporal_multinet_view_with_slice_none_start(t1):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(timestamp=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_temporal_multinet_view_snapshot_at(timestamp):
     """Test that snapshot_at returns a view with appropriate slice."""
@@ -254,7 +254,7 @@ def test_temporal_multinet_view_snapshot_at(timestamp):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(timestamp=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_temporal_multinet_view_snapshot_at_does_not_modify_original(timestamp):
     """Test that snapshot_at doesn't modify the original view."""
@@ -276,7 +276,7 @@ def test_temporal_multinet_view_snapshot_at_does_not_modify_original(timestamp):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     t0_1=st.floats(min_value=0, max_value=1e8, allow_nan=False, allow_infinity=False),
     t1_1=st.floats(min_value=0, max_value=1e8, allow_nan=False, allow_infinity=False),

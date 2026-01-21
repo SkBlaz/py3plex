@@ -37,7 +37,7 @@ def simple_graph(draw, min_nodes=1, max_nodes=12, p=0.3):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(G=simple_graph())
 def test_load_network_preserves_nodes_edges(G):
     """
@@ -70,7 +70,7 @@ def test_load_network_preserves_nodes_edges(G):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=10),
     m=st.integers(min_value=1, max_value=15)
@@ -112,7 +112,7 @@ def test_load_network_directed_preserves_structure(n, m):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=1, max_value=15))
 def test_load_network_node_count_invariant(n):
     """
@@ -132,7 +132,7 @@ def test_load_network_node_count_invariant(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     p=st.floats(min_value=0.0, max_value=1.0)

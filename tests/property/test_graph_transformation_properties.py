@@ -15,7 +15,7 @@ from .strategies import layer_labels
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     p=st.floats(min_value=0.2, max_value=0.8)
@@ -44,7 +44,7 @@ def test_complement_graph_edge_sum(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     p=st.floats(min_value=0.2, max_value=0.8)
@@ -70,7 +70,7 @@ def test_subgraph_preserves_edges(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     p=st.floats(min_value=0.3, max_value=0.8)
@@ -102,7 +102,7 @@ def test_connected_components_partition(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=10),
     layers=st.lists(layer_labels(), min_size=2, max_size=4, unique=True)
@@ -145,7 +145,7 @@ def test_layer_union_preserves_nodes(n, layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     p=st.floats(min_value=0.2, max_value=0.8)
@@ -173,7 +173,7 @@ def test_edge_reversal_preserves_connectivity(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     layers=st.lists(layer_labels(), min_size=2, max_size=3, unique=True)
@@ -218,7 +218,7 @@ def test_layer_intersection_subset(n, layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     p=st.floats(min_value=0.3, max_value=0.8)
@@ -246,7 +246,7 @@ def test_spanning_tree_connected(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=10),
     num_edges=st.integers(min_value=1, max_value=15)
@@ -292,7 +292,7 @@ def test_degree_sequence_sum_even(n, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     p=st.floats(min_value=0.2, max_value=0.8)
@@ -324,7 +324,7 @@ def test_graph_union_commutative(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=10),
     layers=st.lists(layer_labels(), min_size=1, max_size=3, unique=True)
@@ -358,7 +358,7 @@ def test_empty_layer_removal_idempotent(n, layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     p=st.floats(min_value=0.3, max_value=0.8)

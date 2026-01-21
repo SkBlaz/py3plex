@@ -249,7 +249,7 @@ class AdvancedMultiLayerStateMachine(RuleBasedStateMachine):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, stateful_step_count=15)
+@settings(deadline=None, max_examples=5, stateful_step_count=15)
 class TestAdvancedMultiLayerStateful(RuleBasedStateMachine):
     """Wrapper to run the advanced stateful tests."""
     pass

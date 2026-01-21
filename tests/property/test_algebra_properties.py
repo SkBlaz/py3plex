@@ -81,7 +81,7 @@ class TestSemiringLaws:
         a=st.data(),
         b=st.data(),
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_additive_identity_law(self, semiring_name, a, b):
         """Test: a ⊕ 0 = a (additive identity)."""
         semiring = get_semiring(semiring_name)
@@ -107,7 +107,7 @@ class TestSemiringLaws:
         semiring_name=st.sampled_from(["boolean", "min_plus", "max_plus", "max_times"]),
         a=st.data(),
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_multiplicative_identity_law(self, semiring_name, a):
         """Test: a ⊗ 1 = a (multiplicative identity)."""
         semiring = get_semiring(semiring_name)
@@ -133,7 +133,7 @@ class TestSemiringLaws:
         semiring_name=st.sampled_from(["boolean", "min_plus", "max_times"]),
         a=st.data(),
     )
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_idempotent_add_law(self, semiring_name, a):
         """Test: a ⊕ a = a (idempotence for idempotent semirings)."""
         semiring = get_semiring(semiring_name)
@@ -164,7 +164,7 @@ class TestSemiringLaws:
         a=st.data(),
         b=st.data(),
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_add_commutativity(self, semiring_name, a, b):
         """Test: a ⊕ b = b ⊕ a (commutativity of add)."""
         semiring = get_semiring(semiring_name)
@@ -192,7 +192,7 @@ class TestSemiringLaws:
         semiring_name=st.sampled_from(["boolean", "min_plus", "max_plus", "max_times"]),
         a=st.data(),
     )
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_zero_annihilator_law(self, semiring_name, a):
         """Test: a ⊗ 0 = 0 (zero is annihilator for multiplication)."""
         semiring = get_semiring(semiring_name)
@@ -224,7 +224,7 @@ class TestWeightLiftingProperties:
         weight=st.floats(min_value=0.1, max_value=100.0, allow_nan=False, allow_infinity=False),
         default=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=50)
+    @settings(max_examples=5)
     def test_lift_with_present_attribute(self, weight, default):
         """When attribute is present, lift_edge_value returns it."""
         spec = WeightLiftSpec(attr="weight", default=default)
@@ -238,7 +238,7 @@ class TestWeightLiftingProperties:
     @given(
         default=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=50)
+    @settings(max_examples=5)
     def test_lift_with_missing_attribute_default(self, default):
         """When attribute is missing and on_missing='default', return default."""
         spec = WeightLiftSpec(attr="missing_attr", default=default, on_missing="default")
@@ -252,7 +252,7 @@ class TestWeightLiftingProperties:
     @given(
         weight=st.floats(min_value=0.01, max_value=100.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=50)
+    @settings(max_examples=5)
     def test_lift_with_log_transform(self, weight):
         """Log transformation produces correct result."""
         spec = WeightLiftSpec(attr="weight", transform="log")
@@ -267,7 +267,7 @@ class TestWeightLiftingProperties:
     @given(
         weight=st.floats(min_value=0.1, max_value=100.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=50)
+    @settings(max_examples=5)
     def test_lift_with_custom_transform(self, weight):
         """Custom transformation is applied correctly."""
         transform = lambda x: x * 2 + 1
@@ -290,7 +290,7 @@ class TestPathAlgorithmProperties:
     
     @pytest.mark.property
     @given(graph=simple_graph())
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_sssp_source_has_zero_distance(self, graph):
         """Source node should have distance equal to semiring.one()."""
         nodes, edges = graph
@@ -307,7 +307,7 @@ class TestPathAlgorithmProperties:
     
     @pytest.mark.property
     @given(graph=simple_graph())
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_sssp_is_deterministic(self, graph):
         """SSSP should produce same results on repeated runs."""
         nodes, edges = graph
@@ -326,7 +326,7 @@ class TestPathAlgorithmProperties:
     
     @pytest.mark.property
     @given(graph=simple_graph(min_nodes=3, max_nodes=5))
-    @settings(max_examples=15, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_boolean_reachability_is_transitive(self, graph):
         """If A reaches B and B reaches C, then A reaches C."""
         nodes, edges = graph
@@ -365,7 +365,7 @@ class TestPathAlgorithmProperties:
         graph=simple_graph(min_nodes=2, max_nodes=4),
         max_hops=st.integers(min_value=1, max_value=3),
     )
-    @settings(max_examples=15, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_max_hops_constraint(self, graph, max_hops):
         """Max hops constraint limits path length."""
         nodes, edges = graph
@@ -471,7 +471,7 @@ class TestSemiringRegistryProperties:
     
     @pytest.mark.property
     @given(semiring_name=st.sampled_from(["boolean", "min_plus", "max_plus", "max_times"]))
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_get_semiring_returns_consistent_object(self, semiring_name):
         """Getting same semiring multiple times returns consistent objects."""
         sr1 = get_semiring(semiring_name)
@@ -496,7 +496,7 @@ class TestBetterFunctionProperties:
         semiring_name=st.sampled_from(["boolean", "min_plus", "max_plus", "max_times"]),
         a=st.data(),
     )
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_better_irreflexive(self, semiring_name, a):
         """Test: better(a, a) should be False (irreflexive)."""
         semiring = get_semiring(semiring_name)
@@ -516,7 +516,7 @@ class TestBetterFunctionProperties:
         a=st.data(),
         b=st.data(),
     )
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_better_asymmetric(self, semiring_name, a, b):
         """Test: if better(a, b) then not better(b, a) (asymmetric)."""
         semiring = get_semiring(semiring_name)

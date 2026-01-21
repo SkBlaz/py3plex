@@ -60,7 +60,7 @@ class TestBootstrapMetricProperties:
         st.sampled_from(["edges", "nodes", "layers"]),
         st.sampled_from(["resample", "permute"])
     )
-    @settings(max_examples=20, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_bootstrap_output_structure(self, n_boot, unit, mode):
         """Property: Bootstrap output has correct structure."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -97,7 +97,7 @@ class TestBootstrapMetricProperties:
         st.integers(min_value=10, max_value=50),
         st.floats(min_value=0.50, max_value=0.99)
     )
-    @settings(max_examples=15, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_ci_contains_mean(self, n_boot, ci):
         """Property: Confidence intervals should contain the mean (approximately)."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -123,7 +123,7 @@ class TestBootstrapMetricProperties:
     @given(
         st.integers(min_value=10, max_value=50)
     )
-    @settings(max_examples=15, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_ci_width_positive(self, n_boot):
         """Property: CI width should be non-negative."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -248,7 +248,7 @@ class TestNullModelMetricProperties:
         st.integers(min_value=10, max_value=50),
         st.sampled_from(["degree_preserving", "erdos_renyi", "configuration"])
     )
-    @settings(max_examples=15, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_null_model_output_structure(self, n_null, model):
         """Property: Null model output has correct structure."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)

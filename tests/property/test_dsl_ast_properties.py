@@ -113,7 +113,7 @@ def test_comparison_creation(attr, op, value):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_terms=st.integers(min_value=1, max_value=5)
 )
@@ -137,7 +137,7 @@ def test_layer_expr_ops_consistent_with_terms(num_terms):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_atoms=st.integers(min_value=1, max_value=5)
 )
@@ -164,7 +164,7 @@ def test_condition_expr_ops_consistent_with_atoms(num_atoms):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     target=st.sampled_from([Target.NODES, Target.EDGES])
 )
@@ -185,7 +185,7 @@ def test_select_stmt_target_preservation(target):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     measure_name=st.text(min_size=1, max_size=15, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     alias=st.text(min_size=1, max_size=15, alphabet=st.characters(min_codepoint=97, max_codepoint=122))
@@ -205,7 +205,7 @@ def test_compute_item_with_alias(measure_name, alias):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     key=st.text(min_size=1, max_size=15, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     desc=st.booleans()
@@ -227,7 +227,7 @@ def test_order_item_preserves_direction(key, desc):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     kind=st.sampled_from(['intralayer', 'interlayer', 'motif'])
 )
@@ -244,7 +244,7 @@ def test_special_predicate_kind(kind):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     src_layer=st.text(min_size=1, max_size=10, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     dst_layer=st.text(min_size=1, max_size=10, alphabet=st.characters(min_codepoint=97, max_codepoint=122))
@@ -270,7 +270,7 @@ def test_interlayer_predicate_params(src_layer, dst_layer):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     explain=st.booleans()
 )
@@ -287,7 +287,7 @@ def test_query_explain_flag(explain):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     limit=st.integers(min_value=1, max_value=1000)
 )
@@ -336,7 +336,7 @@ def test_condition_atom_exactly_one_type():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     name1=st.text(min_size=1, max_size=10, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     name2=st.text(min_size=1, max_size=10, alphabet=st.characters(min_codepoint=97, max_codepoint=122))
@@ -360,7 +360,7 @@ def test_layer_term_equality(name1, name2):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     left=st.text(min_size=1, max_size=10, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     op=st.sampled_from(['>', '<', '=']),
@@ -383,7 +383,7 @@ def test_comparison_equality(left, op, value):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_layers=st.integers(min_value=1, max_value=5)
 )

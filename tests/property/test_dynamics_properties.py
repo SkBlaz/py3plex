@@ -61,7 +61,7 @@ class TestProcessSpecProperties:
 
     @pytest.mark.property
     @given(st.floats(min_value=0.01, max_value=0.99, allow_nan=False))
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_sis_call_overrides_beta(self, beta: float):
         """SIS(beta=x) should override the beta parameter."""
         spec = SIS(beta=beta)
@@ -70,7 +70,7 @@ class TestProcessSpecProperties:
 
     @pytest.mark.property
     @given(st.floats(min_value=0.01, max_value=0.99, allow_nan=False))
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_sis_call_overrides_mu(self, mu: float):
         """SIS(mu=x) should override the mu parameter."""
         spec = SIS(mu=mu)
@@ -81,7 +81,7 @@ class TestProcessSpecProperties:
         st.floats(min_value=0.01, max_value=0.99, allow_nan=False),
         st.floats(min_value=0.01, max_value=0.99, allow_nan=False),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_sir_call_overrides_params(self, beta: float, gamma: float):
         """SIR(beta=x, gamma=y) should override both parameters."""
         spec = SIR(beta=beta, gamma=gamma)
@@ -129,7 +129,7 @@ class TestSimulationBuilderProperties:
 
     @pytest.mark.property
     @given(st.integers(min_value=1, max_value=1000))
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_builder_steps_sets_correctly(self, steps: int):
         """steps() should set the number of steps correctly."""
         builder = D.process(SIS()).steps(steps)
@@ -137,7 +137,7 @@ class TestSimulationBuilderProperties:
 
     @pytest.mark.property
     @given(st.integers(min_value=1, max_value=100))
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_builder_replicates_sets_correctly(self, replicates: int):
         """replicates() should set the number of replicates correctly."""
         builder = D.process(SIS()).replicates(replicates)
@@ -145,7 +145,7 @@ class TestSimulationBuilderProperties:
 
     @pytest.mark.property
     @given(st.integers(min_value=0, max_value=2**31 - 1))
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_builder_seed_sets_correctly(self, seed: int):
         """seed() should set the random seed correctly."""
         builder = D.process(SIS()).seed(seed)

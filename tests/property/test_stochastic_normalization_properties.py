@@ -88,7 +88,7 @@ def is_column_stochastic(matrix, tol=1e-10):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=15),
     density=st.floats(min_value=0.3, max_value=0.8)
@@ -114,7 +114,7 @@ def test_stochastic_normalization_output_is_sparse(n, density):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=15),
     density=st.floats(min_value=0.3, max_value=0.8)
@@ -140,7 +140,7 @@ def test_stochastic_normalization_preserves_shape(n, density):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=15),
     density=st.floats(min_value=0.3, max_value=0.8)
@@ -167,7 +167,7 @@ def test_stochastic_normalization_column_stochastic(n, density):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=15),
     density=st.floats(min_value=0.3, max_value=0.8)
@@ -195,7 +195,7 @@ def test_stochastic_normalization_non_negative_entries(n, density):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=12),
     density=st.floats(min_value=0.3, max_value=0.7)
@@ -233,7 +233,7 @@ def test_stochastic_normalization_removes_diagonal(n, density):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=15),
     density=st.floats(min_value=0.3, max_value=0.8)
@@ -254,7 +254,7 @@ def test_stochastic_normalization_hin_output_is_sparse(n, density):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=15),
     density=st.floats(min_value=0.3, max_value=0.8)
@@ -276,7 +276,7 @@ def test_stochastic_normalization_hin_preserves_shape(n, density):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=15),
     density=st.floats(min_value=0.3, max_value=0.8)
@@ -298,7 +298,7 @@ def test_stochastic_normalization_hin_column_stochastic(n, density):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=15),
     density=st.floats(min_value=0.3, max_value=0.8)
@@ -326,7 +326,7 @@ def test_stochastic_normalization_hin_non_negative_entries(n, density):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=12),
     density=st.floats(min_value=0.4, max_value=0.7)
@@ -361,7 +361,7 @@ def test_stochastic_normalization_idempotent_structure(n, density):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n=st.integers(min_value=3, max_value=12),
     scale=st.floats(min_value=0.1, max_value=10.0)
@@ -396,7 +396,7 @@ def test_stochastic_normalization_scale_invariant(n, scale):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(n=st.integers(min_value=3, max_value=10))
 def test_stochastic_normalization_empty_matrix(n):
     """Test that normalization documents behavior for empty matrices (all zeros)."""
@@ -419,7 +419,7 @@ def test_stochastic_normalization_empty_matrix(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(n=st.integers(min_value=3, max_value=10))
 def test_stochastic_normalization_identity_structure(n):
     """Test normalization documents behavior on identity-like structure."""

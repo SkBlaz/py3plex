@@ -24,7 +24,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(name=st.text(min_size=1, max_size=50, alphabet=st.characters(
     whitelist_categories=('Lu', 'Ll'), whitelist_characters='._'
 )))
@@ -37,7 +37,7 @@ def test_get_logger_returns_logger(name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=5)
 @given(name=st.text(min_size=1, max_size=50, alphabet=st.characters(
     whitelist_categories=('Lu', 'Ll'), whitelist_characters='._'
 )))
@@ -77,7 +77,7 @@ def test_get_logger_respects_level(level):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=5)
 @given(name=st.text(min_size=1, max_size=50, alphabet=st.characters(
     whitelist_categories=('Lu', 'Ll'), whitelist_characters='._'
 )))

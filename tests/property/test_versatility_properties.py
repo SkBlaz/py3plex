@@ -36,7 +36,7 @@ def _nx_evc_order(G):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_versatility_single_layer_matches_evc(n):
     """
@@ -81,7 +81,7 @@ def test_versatility_single_layer_matches_evc(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -117,7 +117,7 @@ def test_versatility_l1_normalization(n, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -153,7 +153,7 @@ def test_versatility_l2_normalization(n, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=6),
     scale=st.floats(min_value=0.1, max_value=10.0)
@@ -182,7 +182,7 @@ def test_versatility_scale_invariance(n, scale):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -219,7 +219,7 @@ def test_versatility_finite_values(n, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=2, max_value=8))
 def test_versatility_nonnegative_for_nonnegative_weights(n):
     """

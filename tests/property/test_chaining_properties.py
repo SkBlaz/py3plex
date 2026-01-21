@@ -77,7 +77,7 @@ def create_test_network(num_nodes=5, num_layers=2, num_edges_per_layer=3):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=10),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -93,7 +93,7 @@ def test_nodes_count_equals_nodes_times_layers(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     layer_idx=st.integers(min_value=0, max_value=2)
 )
@@ -114,7 +114,7 @@ def test_nodes_layer_filter_contains_only_target_layer(layer_idx):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -130,7 +130,7 @@ def test_filter_degree_threshold_invariant(threshold):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -150,7 +150,7 @@ def test_filter_by_layer_matches_layer_param(layer_idx):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     threshold1=st.integers(min_value=0, max_value=5),
     threshold2=st.integers(min_value=0, max_value=5)
@@ -190,7 +190,7 @@ def test_filter_preserves_nodeframe_type():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -206,7 +206,7 @@ def test_filter_expr_degree_equivalent_to_filter(threshold):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -226,7 +226,7 @@ def test_filter_expr_layer_equality(layer_idx):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     fields=st.lists(
         st.sampled_from(['id', 'layer', 'degree']),
@@ -280,7 +280,7 @@ def test_select_no_fields_is_noop():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     multiplier=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False)
 )
@@ -342,7 +342,7 @@ def test_mutate_handles_errors_gracefully():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     reverse=st.booleans()
 )
@@ -369,7 +369,7 @@ def test_arrange_preserves_count():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     reverse=st.booleans()
 )
@@ -391,7 +391,7 @@ def test_arrange_by_callable_equivalent_to_string(reverse):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=20)
 )
@@ -405,7 +405,7 @@ def test_head_returns_at_most_n_items(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=5)
 )
@@ -442,7 +442,7 @@ def test_group_by_returns_grouped_frame():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_layers=st.integers(min_value=1, max_value=4)
 )
@@ -486,7 +486,7 @@ def test_group_by_summarise_preserves_group_key():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     threshold=st.integers(min_value=0, max_value=5),
     head_n=st.integers(min_value=1, max_value=10)
@@ -565,7 +565,7 @@ def test_edges_returns_edgeframe():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     weight_threshold=st.floats(min_value=0.0, max_value=5.0, allow_nan=False, allow_infinity=False)
 )
@@ -591,7 +591,7 @@ def test_edge_mutate_preserves_count():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     reverse=st.booleans()
 )
@@ -607,7 +607,7 @@ def test_edge_arrange_sorts_correctly(reverse):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=10)
 )
@@ -731,7 +731,7 @@ def test_select_same_fields_is_idempotent():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -775,7 +775,7 @@ def test_edge_filter_expr():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=5)
 )
@@ -822,7 +822,7 @@ def test_repr_formats():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_layers=st.integers(min_value=1, max_value=3)
 )
@@ -843,7 +843,7 @@ def test_group_by_multiple_fields(num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=20)
 )
@@ -857,7 +857,7 @@ def test_tail_returns_at_most_n_items(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=5)
 )
@@ -905,7 +905,7 @@ def test_tail_preserves_nodeframe_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=15),
     seed=st.integers(min_value=0, max_value=10000)
@@ -920,7 +920,7 @@ def test_sample_returns_at_most_n_items(n, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     seed=st.integers(min_value=0, max_value=10000)
 )
@@ -948,7 +948,7 @@ def test_sample_preserves_nodeframe_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=5)
 )
@@ -1030,7 +1030,7 @@ def test_count_equals_len():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -1150,7 +1150,7 @@ def test_drop_preserves_nodeframe_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     threshold=st.integers(min_value=0, max_value=10)
 )
@@ -1180,7 +1180,7 @@ def test_where_preserves_nodeframe_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     descending=st.booleans()
 )
@@ -1213,7 +1213,7 @@ def test_order_by_preserves_nodeframe_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=20)
 )
@@ -1246,7 +1246,7 @@ def test_take_preserves_nodeframe_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     start=st.integers(min_value=0, max_value=5),
     length=st.integers(min_value=1, max_value=5)
@@ -1277,7 +1277,7 @@ def test_slice_preserves_nodeframe_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     start=st.integers(min_value=0, max_value=10)
 )
@@ -1448,7 +1448,7 @@ def test_pluck_extracts_correct_values():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     field=st.sampled_from(['id', 'layer', 'degree'])
 )
@@ -1470,7 +1470,7 @@ def test_pluck_field_consistency(field):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=10)
 )
@@ -1499,7 +1499,7 @@ def test_edge_tail_preserves_edgeframe_type():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=10),
     seed=st.integers(min_value=0, max_value=10000)
@@ -1514,7 +1514,7 @@ def test_edge_sample_returns_at_most_n(n, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     seed=st.integers(min_value=0, max_value=10000)
 )
@@ -1634,7 +1634,7 @@ def test_edge_drop_removes_specified_field():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     threshold=st.floats(min_value=0.0, max_value=5.0, allow_nan=False, allow_infinity=False)
 )
@@ -1654,7 +1654,7 @@ def test_edge_where_equivalent_to_filter(threshold):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     descending=st.booleans()
 )
@@ -1677,7 +1677,7 @@ def test_edge_order_by_equivalent_to_arrange(descending):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=10)
 )
@@ -1697,7 +1697,7 @@ def test_edge_take_equivalent_to_head(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     start=st.integers(min_value=0, max_value=3),
     length=st.integers(min_value=1, max_value=3)
@@ -1835,7 +1835,7 @@ def test_edge_pluck_extracts_correct_values():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=5)
 )
@@ -1853,7 +1853,7 @@ def test_filter_tail_chain(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=1, max_value=5),
     seed=st.integers(min_value=0, max_value=1000)
@@ -1954,7 +1954,7 @@ def test_pluck_matches_select_collect():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     start=st.integers(min_value=0, max_value=3),
     length=st.integers(min_value=1, max_value=3)

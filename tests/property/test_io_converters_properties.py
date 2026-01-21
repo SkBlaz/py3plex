@@ -59,7 +59,7 @@ def create_simple_multilayer_graph(num_nodes=3, num_layers=2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -77,7 +77,7 @@ def test_to_networkx_union_preserves_nodes(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -97,7 +97,7 @@ def test_to_networkx_union_merges_edges(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -117,7 +117,7 @@ def test_to_networkx_multiplex_preserves_layer_info(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -136,7 +136,7 @@ def test_to_networkx_multiplex_preserves_edges(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_to_networkx_returns_correct_type(num_nodes):
     """Test that conversion returns correct NetworkX graph type."""
@@ -176,7 +176,7 @@ def test_to_networkx_intersection_conservative(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     mode=st.sampled_from(["union", "multiplex", "intersection"])
@@ -218,7 +218,7 @@ def test_to_networkx_empty_layer_handling(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)

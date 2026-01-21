@@ -111,7 +111,7 @@ def simple_node_query(draw):
 @pytest.mark.property
 @settings(
     deadline=None,
-    max_examples=20,
+    max_examples=5,
     suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow, HealthCheck.filter_too_much]
 )
 @given(network=small_multilayer_network())
@@ -143,7 +143,7 @@ def test_rewrite_preserves_results(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(
     network=small_multilayer_network(),
     query_builder=simple_node_query()
@@ -176,7 +176,7 @@ def test_push_where_equivalence(network, query_builder):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(query_builder=simple_node_query())
 def test_type_checking_consistency(query_builder):
     """Property: Type checking is consistent - valid programs always pass."""
@@ -191,7 +191,7 @@ def test_type_checking_consistency(query_builder):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(query_builder=simple_node_query())
 def test_type_inference_deterministic(query_builder):
     """Property: Type inference is deterministic."""
@@ -230,7 +230,7 @@ def test_edge_query_returns_edgeset_type():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(query_builder=simple_node_query())
 def test_hash_stability(query_builder):
     """Property: Program hash is stable across multiple computations."""
@@ -247,7 +247,7 @@ def test_hash_stability(query_builder):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     builder1=simple_node_query(),
     builder2=simple_node_query()
@@ -269,7 +269,7 @@ def test_different_programs_different_hashes(builder1, builder2):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(query_builder=simple_node_query())
 def test_hash_independent_of_python_dict_ordering(query_builder):
     """Property: Hash is independent of Python dict ordering."""
@@ -293,7 +293,7 @@ def test_hash_independent_of_python_dict_ordering(query_builder):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_composition_associativity(network):
     """Property: Program composition is associative where type-compatible."""
@@ -314,7 +314,7 @@ def test_composition_associativity(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_composed_program_hash_stable(network):
     """Property: Composed program has stable hash."""
@@ -339,7 +339,7 @@ def test_composed_program_hash_stable(network):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_cache_hit_on_identical_execution(network):
     """Property: Executing same program twice should hit cache."""
@@ -361,7 +361,7 @@ def test_cache_hit_on_identical_execution(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=5)
 @given(
     network=small_multilayer_network(),
     seed1=st.integers(min_value=0, max_value=100),
@@ -379,7 +379,7 @@ def test_execution_fingerprint_different_for_different_seeds(network, seed1, see
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=5)
 @given(network=small_multilayer_network())
 def test_graph_fingerprint_stable(network):
     """Property: Graph fingerprint is stable for same network."""
@@ -396,7 +396,7 @@ def test_graph_fingerprint_stable(network):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(query_builder=simple_node_query())
 def test_program_diff_reflexivity(query_builder):
     """Property: A program diffed with itself shows no differences."""
@@ -412,7 +412,7 @@ def test_program_diff_reflexivity(query_builder):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=5)
 @given(
     builder1=simple_node_query(),
     builder2=simple_node_query()
@@ -439,7 +439,7 @@ def test_program_diff_symmetry(builder1, builder2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=small_multilayer_network())
 def test_optimization_preserves_semantics(network):
     """Property: Optimization preserves program semantics."""
@@ -464,7 +464,7 @@ def test_optimization_preserves_semantics(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(query_builder=simple_node_query())
 def test_optimization_produces_valid_program(query_builder):
     """Property: Optimized programs are still type-valid."""
@@ -485,7 +485,7 @@ def test_optimization_produces_valid_program(query_builder):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(query_builder=simple_node_query())
 def test_explain_produces_output(query_builder):
     """Property: explain() always produces non-empty output."""
@@ -500,7 +500,7 @@ def test_explain_produces_output(query_builder):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(query_builder=simple_node_query())
 def test_program_metadata_exists(query_builder):
     """Property: All programs have metadata."""

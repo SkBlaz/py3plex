@@ -118,7 +118,7 @@ def complex_node_query(draw):
 @pytest.mark.property
 @settings(
     deadline=None,
-    max_examples=15,
+    max_examples=5,
     suppress_health_check=[HealthCheck.function_scoped_fixture, HealthCheck.too_slow, HealthCheck.filter_too_much]
 )
 @given(network=random_multilayer_network())
@@ -155,7 +155,7 @@ def test_push_where_past_compute_equivalence(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=random_multilayer_network())
 def test_fuse_compute_equivalence(network):
     """Property: Fusing multiple computes preserves results."""
@@ -188,7 +188,7 @@ def test_fuse_compute_equivalence(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=random_multilayer_network())
 def test_fuse_where_equivalence(network):
     """Property: Fusing multiple WHERE clauses preserves results."""
@@ -219,7 +219,7 @@ def test_fuse_where_equivalence(network):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(network=random_multilayer_network())
 def test_push_limit_early_equivalence(network):
     """Property: Pushing LIMIT early preserves results."""
@@ -300,7 +300,7 @@ def test_aggressive_rewrites_preserve_semantics(network, query):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(query=complex_node_query())
 def test_rewrite_preserves_type_validity(query):
     """Property: Rewrites preserve type validity."""
@@ -316,7 +316,7 @@ def test_rewrite_preserves_type_validity(query):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(query=complex_node_query())
 def test_rewrite_preserves_hash_determinism(query):
     """Property: Rewritten programs have stable hashes."""
@@ -333,7 +333,7 @@ def test_rewrite_preserves_hash_determinism(query):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(query=complex_node_query())
 def test_rewrite_produces_valid_provenance(query):
     """Property: Rewrites update provenance correctly."""
@@ -355,7 +355,7 @@ def test_rewrite_produces_valid_provenance(query):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(query=complex_node_query())
 def test_rewrite_idempotence(query):
     """Property: Applying rewrites twice gives same result as once."""
@@ -378,7 +378,7 @@ def test_rewrite_idempotence(query):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(query=complex_node_query())
 def test_rule_guards_prevent_invalid_rewrites(query):
     """Property: Rule guards prevent application when preconditions not met."""

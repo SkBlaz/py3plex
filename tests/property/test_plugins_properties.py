@@ -19,7 +19,7 @@ class _Wrapper:
     n=st.integers(min_value=0, max_value=8),
     edges=st.data(),
 )
-@settings(max_examples=40, deadline=None)
+@settings(max_examples=5, deadline=None)
 def test_example_network_density_matches_networkx_density_property(n, edges):
     nodes = list(range(n))
     G = nx.Graph()

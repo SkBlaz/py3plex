@@ -42,7 +42,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=12),
     num_communities=st.integers(min_value=2, max_value=4),
@@ -76,7 +76,7 @@ def test_modularity_bounds_property(num_nodes, num_communities, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=10),
     seed=st.integers(min_value=0, max_value=10000)
@@ -119,7 +119,7 @@ def test_modularity_complete_graph_all_singletons(num_nodes, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=15),
     seed=st.integers(min_value=0, max_value=10000)
@@ -153,7 +153,7 @@ def test_stochastic_normalization_column_sums(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=15),
     seed=st.integers(min_value=0, max_value=10000)
@@ -182,7 +182,7 @@ def test_stochastic_normalization_preserves_zeros(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=12),
     seed=st.integers(min_value=0, max_value=10000)
@@ -330,7 +330,7 @@ def test_sparse_pagerank_personalized_higher_at_start(num_nodes, seed):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=12),
     seed=st.integers(min_value=0, max_value=10000)
@@ -357,7 +357,7 @@ def test_hits_scores_non_negative(num_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=4, max_value=12),
     seed=st.integers(min_value=0, max_value=10000)

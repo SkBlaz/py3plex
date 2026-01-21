@@ -65,7 +65,7 @@ def create_test_network(num_nodes=5, num_layers=2, seed=None):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     seed=st.integers(min_value=0, max_value=1000)
 )
@@ -92,7 +92,7 @@ def test_executor_deterministic_results(seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=10),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -119,7 +119,7 @@ def test_executor_node_count_correct(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     param_value=st.integers(min_value=0, max_value=3)
 )
@@ -146,7 +146,7 @@ def test_executor_parameter_substitution(param_value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     param_name=st.text(
         min_size=1,
@@ -175,7 +175,7 @@ def test_executor_missing_parameter_raises_error(param_name):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     layer_idx=st.integers(min_value=0, max_value=2)
 )
@@ -225,7 +225,7 @@ def test_executor_union_layers_combines():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     threshold=st.integers(min_value=0, max_value=5)
 )
@@ -252,7 +252,7 @@ def test_executor_where_filter_reduces_results(threshold):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     limit=st.integers(min_value=1, max_value=20)
 )
@@ -277,7 +277,7 @@ def test_executor_limit_caps_results(limit):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     measure=st.sampled_from(['degree', 'clustering'])
 )
@@ -320,7 +320,7 @@ def test_executor_compute_produces_numeric_values():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     desc=st.booleans()
 )

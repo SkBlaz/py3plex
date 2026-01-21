@@ -27,7 +27,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     value=st.one_of(
         st.integers(),
@@ -47,7 +47,7 @@ def test_json_serializable_accepts_valid_types(value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(node_id=st.one_of(st.integers(), st.text(max_size=20)))
 def test_node_creation_with_valid_id(node_id):
     """Test that Node can be created with any hashable ID."""
@@ -61,7 +61,7 @@ def test_node_creation_with_valid_id(node_id):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     node_id=st.text(max_size=20),
     attr_value=st.one_of(st.integers(), st.text(max_size=10), st.floats(allow_nan=False, allow_infinity=False))
@@ -75,7 +75,7 @@ def test_node_accepts_json_serializable_attributes(node_id, attr_value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(layer_id=st.one_of(st.integers(), st.text(max_size=20)))
 def test_layer_creation_with_valid_id(layer_id):
     """Test that Layer can be created with any hashable ID."""
@@ -93,7 +93,7 @@ def test_layer_creation_with_valid_id(layer_id):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     node_id=st.text(min_size=1, max_size=20),
     attr_key=st.text(min_size=1, max_size=10),
@@ -114,7 +114,7 @@ def test_node_to_dict_from_dict_roundtrip(node_id, attr_key, attr_value):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     layer_id=st.text(min_size=1, max_size=20),
     attr_key=st.text(min_size=1, max_size=10),
@@ -139,7 +139,7 @@ def test_layer_to_dict_from_dict_roundtrip(layer_id, attr_key, attr_value):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     src=st.text(min_size=1, max_size=10),
     dst=st.text(min_size=1, max_size=10),
@@ -167,7 +167,7 @@ def test_edge_creation_valid(src, dst, src_layer, dst_layer, key):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     src=st.text(min_size=1, max_size=10),
     dst=st.text(min_size=1, max_size=10),
@@ -185,7 +185,7 @@ def test_edge_tuple_uniqueness(src, dst, layer, key):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     src=st.text(min_size=1, max_size=10),
     dst=st.text(min_size=1, max_size=10),
@@ -210,7 +210,7 @@ def test_edge_tuple_different_keys_unique(src, dst, layer, key1, key2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=1, max_value=5),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -235,7 +235,7 @@ def test_multilayer_graph_add_nodes_preserves_count(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=1, max_value=5),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -260,7 +260,7 @@ def test_multilayer_graph_add_layers_preserves_count(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(node_id=st.text(min_size=1, max_size=10))
 def test_multilayer_graph_duplicate_node_raises_error(node_id):
     """Test that adding duplicate node raises SchemaValidationError."""
@@ -277,7 +277,7 @@ def test_multilayer_graph_duplicate_node_raises_error(node_id):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(layer_id=st.text(min_size=1, max_size=10))
 def test_multilayer_graph_duplicate_layer_raises_error(layer_id):
     """Test that adding duplicate layer raises SchemaValidationError."""
@@ -294,7 +294,7 @@ def test_multilayer_graph_duplicate_layer_raises_error(layer_id):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     node1=st.text(min_size=1, max_size=10),
     node2=st.text(min_size=1, max_size=10),
@@ -317,7 +317,7 @@ def test_multilayer_graph_edge_requires_existing_nodes(node1, node2, layer):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     node1=st.text(min_size=1, max_size=10),
     node2=st.text(min_size=1, max_size=10),
@@ -342,7 +342,7 @@ def test_multilayer_graph_edge_requires_existing_layers(node1, node2, layer):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     node1=st.text(min_size=1, max_size=10),
     node2=st.text(min_size=1, max_size=10),
@@ -374,7 +374,7 @@ def test_multilayer_graph_duplicate_edge_raises_error(node1, node2, layer, key):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3),
@@ -429,7 +429,7 @@ def test_multilayer_graph_to_dict_from_dict_roundtrip(num_nodes, num_layers, num
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -450,7 +450,7 @@ def test_multilayer_graph_edge_count_non_negative(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)

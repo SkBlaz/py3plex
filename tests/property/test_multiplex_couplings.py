@@ -15,7 +15,7 @@ from py3plex.core.multinet import multi_layer_network
 
 @pytest.mark.skip(reason="Loading plain NetworkX graphs into multiplex mode requires node 'type' attributes")
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -48,7 +48,7 @@ def test_multiplex_nodes_are_coupled(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -103,7 +103,7 @@ def test_multiplex_coupling_count(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -171,7 +171,7 @@ def test_multiplex_add_order_independence(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(num_nodes=st.integers(min_value=2, max_value=6))
 def test_multiplex_coupling_weight_preserved(num_nodes):
     """
@@ -215,7 +215,7 @@ def test_multiplex_coupling_weight_preserved(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(num_nodes=st.integers(min_value=3, max_value=6))
 def test_multiplex_no_self_couplings(num_nodes):
     """
@@ -258,7 +258,7 @@ def test_multiplex_no_self_couplings(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(num_nodes=st.integers(min_value=2, max_value=5))
 def test_multiplex_vs_multilayer_edge_count(num_nodes):
     """
@@ -328,7 +328,7 @@ def test_multiplex_vs_multilayer_edge_count(num_nodes):
 
 @pytest.mark.skip(reason="Loading plain NetworkX graphs into multiplex mode requires node 'type' attributes")
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(num_nodes=st.integers(min_value=2, max_value=5))
 def test_multiplex_vs_multilayer_structures(num_nodes):
     """

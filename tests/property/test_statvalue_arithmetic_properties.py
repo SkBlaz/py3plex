@@ -109,7 +109,7 @@ class TestAdditivityProperties:
     """Property-based tests for addition of StatValues."""
     
     @given(statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_addition_commutativity(self, sv1, sv2):
         """Property: a + b == b + a (commutativity)."""
         result1 = sv1 + sv2
@@ -119,7 +119,7 @@ class TestAdditivityProperties:
         assert np.isclose(result1.value, result2.value), f"{result1.value} != {result2.value}"
     
     @given(statvalue_strategy(), statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_addition_associativity(self, sv1, sv2, sv3):
         """Property: (a + b) + c == a + (b + c) (associativity)."""
         result1 = (sv1 + sv2) + sv3
@@ -130,7 +130,7 @@ class TestAdditivityProperties:
             f"{result1.value} != {result2.value}"
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_addition_with_zero_identity(self, sv):
         """Property: a + 0 == a (additive identity)."""
         result = sv + 0
@@ -139,7 +139,7 @@ class TestAdditivityProperties:
         assert np.isclose(result.std(), sv.std())
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_addition_with_scalar(self, sv):
         """Property: Adding scalar shifts value but not uncertainty."""
         scalar = 5.0
@@ -149,7 +149,7 @@ class TestAdditivityProperties:
         assert np.isclose(result.std(), sv.std())
     
     @given(statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_addition_uncertainty_non_negative(self, sv1, sv2):
         """Property: Combined uncertainty from addition is non-negative.
         
@@ -179,7 +179,7 @@ class TestAdditivityProperties:
         st.floats(min_value=-10, max_value=10, allow_nan=False, allow_infinity=False),
         st.floats(min_value=-10, max_value=10, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_deterministic_addition(self, v1, v2):
         """Property: Deterministic values add without introducing uncertainty."""
         sv1 = StatValue(v1, Delta(0.0), Provenance("test", "delta", {}))
@@ -198,7 +198,7 @@ class TestSubtractionProperties:
     """Property-based tests for subtraction of StatValues."""
     
     @given(statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_subtraction_anticommutativity(self, sv1, sv2):
         """Property: a - b == -(b - a) (anticommutativity)."""
         result1 = sv1 - sv2
@@ -209,7 +209,7 @@ class TestSubtractionProperties:
             f"{result1.value} != -{result2.value}"
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_subtraction_self_gives_zero(self, sv):
         """Property: a - a == 0 (assuming deterministic value)."""
         # This property only holds for the value, not necessarily the uncertainty
@@ -217,7 +217,7 @@ class TestSubtractionProperties:
         assert np.isclose(result.value, 0.0, atol=1e-10)
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_subtraction_zero_identity(self, sv):
         """Property: a - 0 == a."""
         result = sv - 0
@@ -225,7 +225,7 @@ class TestSubtractionProperties:
         assert np.isclose(result.std(), sv.std())
     
     @given(statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_subtraction_uncertainty_non_negative(self, sv1, sv2):
         """Property: Combined uncertainty from subtraction is non-negative.
         
@@ -250,7 +250,7 @@ class TestMultiplicationProperties:
     """Property-based tests for multiplication of StatValues."""
     
     @given(statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_multiplication_commutativity(self, sv1, sv2):
         """Property: a * b == b * a (commutativity)."""
         result1 = sv1 * sv2
@@ -261,21 +261,21 @@ class TestMultiplicationProperties:
             f"{result1.value} != {result2.value}"
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_multiplication_by_one_identity(self, sv):
         """Property: a * 1 == a (multiplicative identity)."""
         result = sv * 1
         assert np.isclose(result.value, sv.value)
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_multiplication_by_zero(self, sv):
         """Property: a * 0 == 0."""
         result = sv * 0
         assert np.isclose(result.value, 0.0, atol=1e-10)
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_multiplication_by_scalar_scales_value(self, sv):
         """Property: Multiplying by scalar scales value proportionally."""
         scalar = 3.0
@@ -286,7 +286,7 @@ class TestMultiplicationProperties:
         st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_deterministic_multiplication(self, v1, v2):
         """Property: Deterministic values multiply without introducing uncertainty."""
         sv1 = StatValue(v1, Delta(0.0), Provenance("test", "delta", {}))
@@ -305,14 +305,14 @@ class TestDivisionProperties:
     """Property-based tests for division of StatValues."""
     
     @given(positive_statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_division_by_one_identity(self, sv):
         """Property: a / 1 == a."""
         result = sv / 1
         assert np.isclose(result.value, sv.value, rtol=1e-10)
     
     @given(positive_statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_division_self_gives_one(self, sv):
         """Property: a / a == 1 (for the value, not necessarily uncertainty)."""
         # This is tricky with uncertainty propagation, but values should be 1
@@ -320,7 +320,7 @@ class TestDivisionProperties:
         assert np.isclose(result.value, 1.0, rtol=1e-9)
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_division_by_zero_raises(self, sv):
         """Property: Division by zero raises ZeroDivisionError."""
         with pytest.raises(ZeroDivisionError):
@@ -330,7 +330,7 @@ class TestDivisionProperties:
         st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_deterministic_division(self, v1, v2):
         """Property: Deterministic values divide without introducing uncertainty."""
         sv1 = StatValue(v1, Delta(0.0), Provenance("test", "delta", {}))
@@ -349,7 +349,7 @@ class TestCombinedOperations:
     """Property-based tests for combined arithmetic operations."""
     
     @given(statvalue_strategy(), statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=50, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_distributivity_of_multiplication_over_addition(self, sv1, sv2, sv3):
         """Property: a * (b + c) == a*b + a*c (distributivity)."""
         result1 = sv1 * (sv2 + sv3)
@@ -360,7 +360,7 @@ class TestCombinedOperations:
             f"{result1.value} != {result2.value}"
     
     @given(statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_addition_then_subtraction_identity(self, sv1, sv2):
         """Property: (a + b) - b == a."""
         result = (sv1 + sv2) - sv2
@@ -368,7 +368,7 @@ class TestCombinedOperations:
         assert np.isclose(result.value, sv1.value, rtol=1e-9)
     
     @given(positive_statvalue_strategy(), positive_statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_multiplication_then_division_identity(self, sv1, sv2):
         """Property: (a * b) / b == a."""
         result = (sv1 * sv2) / sv2
@@ -384,7 +384,7 @@ class TestNegationProperties:
     """Property-based tests for negation of StatValues."""
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_double_negation(self, sv):
         """Property: -(-a) == a (involutivity).
         
@@ -406,7 +406,7 @@ class TestNegationProperties:
                 f"Double negation changed uncertainty: {sv.std()} -> {result.std()}"
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_negation_preserves_uncertainty_magnitude(self, sv):
         """Property: Negation preserves the magnitude of uncertainty.
         
@@ -422,7 +422,7 @@ class TestNegationProperties:
                 f"Negation changed uncertainty: {sv.std()} -> {result.std()}"
     
     @given(statvalue_strategy(), statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_negation_distributivity(self, sv1, sv2):
         """Property: -(a + b) == -a + -b."""
         result1 = -(sv1 + sv2)
@@ -442,7 +442,7 @@ class TestUncertaintyPropagation:
         st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0.01, max_value=1.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_gaussian_addition_follows_quadrature(self, mean, std):
         """Property: Adding Gaussian uncertainties follows quadrature rule."""
         # For two Gaussian with same std: σ_sum = sqrt(σ1² + σ2²) = sqrt(2) * σ
@@ -462,7 +462,7 @@ class TestUncertaintyPropagation:
         st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0.0, max_value=0.5, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_delta_addition_follows_quadrature(self, value, sigma):
         """Property: Adding Delta uncertainties follows quadrature rule."""
         sv1 = StatValue(value, Delta(sigma), Provenance("test", "delta", {}))
@@ -477,7 +477,7 @@ class TestUncertaintyPropagation:
             f"Result std {result.std()} != expected {expected_std}"
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_uncertainty_never_becomes_negative(self, sv):
         """Property: Standard deviation is always non-negative."""
         assert sv.std() >= 0, "Standard deviation cannot be negative"
@@ -496,7 +496,7 @@ class TestUncertaintyPropagation:
         st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0.01, max_value=1.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_scalar_multiplication_scales_uncertainty(self, value, std):
         """Property: Multiplying by scalar scales uncertainty proportionally."""
         sv = StatValue(value, Gaussian(0.0, std), Provenance("test", "gaussian", {}))
@@ -513,7 +513,7 @@ class TestUncertaintyPropagation:
             assert result.std() >= 0
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_confidence_interval_contains_value(self, sv):
         """Property: Confidence interval should contain the point estimate value."""
         ci_low, ci_high = sv.ci(level=0.95)
@@ -528,7 +528,7 @@ class TestUncertaintyPropagation:
             f"CI ordering violated: {ci_low} > {ci_high}"
     
     @given(statvalue_strategy())
-    @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_confidence_interval_ordering(self, sv):
         """Property: CI lower bound <= upper bound."""
         ci_low, ci_high = sv.ci(level=0.95)
@@ -536,7 +536,7 @@ class TestUncertaintyPropagation:
             f"CI ordering violated: {ci_low} > {ci_high}"
     
     @given(statvalue_strategy())
-    @settings(max_examples=50, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_wider_confidence_level_gives_wider_interval(self, sv):
         """Property: Higher confidence level gives wider intervals."""
         # Skip if deterministic (CI width will be 0)

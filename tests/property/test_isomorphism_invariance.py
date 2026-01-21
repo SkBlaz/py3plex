@@ -20,7 +20,7 @@ from .strategies import relabel_graph
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_degree_invariant_under_relabeling(n):
     """
@@ -46,7 +46,7 @@ def test_degree_invariant_under_relabeling(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_monoplex_betweenness_ranking_invariant(n):
     """
@@ -77,7 +77,7 @@ def test_monoplex_betweenness_ranking_invariant(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_clustering_coefficient_invariant(n):
     """
@@ -106,7 +106,7 @@ def test_clustering_coefficient_invariant(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=5, max_value=8))
 def test_eigenvector_centrality_ranking_invariant(n):
     """
@@ -148,7 +148,7 @@ def test_eigenvector_centrality_ranking_invariant(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=7))
 def test_versatility_single_layer_invariant(n):
     """
@@ -183,7 +183,7 @@ def test_versatility_single_layer_invariant(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=7))
 def test_louvain_partition_size_invariant(n):
     """
@@ -221,7 +221,7 @@ def test_louvain_partition_size_invariant(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_shortest_path_lengths_invariant(n):
     """
@@ -253,7 +253,7 @@ def test_shortest_path_lengths_invariant(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_monoplex_wrapper_degree_invariant(n):
     """

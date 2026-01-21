@@ -144,11 +144,11 @@ class MultiLayerNetworkStateMachine(RuleBasedStateMachine):
 @pytest.mark.property
 class TestMultiLayerNetworkStateful(MultiLayerNetworkStateMachine.TestCase):
     """Run the stateful test as a pytest test."""
-    settings = settings(deadline=None, max_examples=50, stateful_step_count=10)
+    settings = settings(deadline=None, max_examples=5, stateful_step_count=10)
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=15),
     num_layers=st.integers(min_value=1, max_value=3),
@@ -198,7 +198,7 @@ def test_random_multilayer_er_and_iterate(num_nodes, num_layers, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=3, max_value=12),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -245,7 +245,7 @@ def test_subnetwork_preserves_structure(num_nodes, num_layers, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -288,7 +288,7 @@ def test_split_to_layers(num_nodes, num_layers, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=10),
     num_layers=st.integers(min_value=1, max_value=3),

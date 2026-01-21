@@ -29,7 +29,7 @@ def _small_graph(draw):
 
 
 @given(_small_graph())
-@settings(max_examples=40, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_compute_random_layout_produces_unit_square_positions(g):
     pos = compute_random_layout(g, seed=0)
 

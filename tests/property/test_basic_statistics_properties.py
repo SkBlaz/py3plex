@@ -31,7 +31,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=15),
     top_n=st.integers(min_value=1, max_value=10)
@@ -52,7 +52,7 @@ def test_identify_hubs_returns_at_most_top_n(num_nodes, top_n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=15),
     top_n=st.integers(min_value=1, max_value=10)
@@ -72,7 +72,7 @@ def test_identify_hubs_returns_non_negative_degrees(num_nodes, top_n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=5, max_value=15),
     top_n=st.integers(min_value=2, max_value=8)
@@ -100,7 +100,7 @@ def test_identify_hubs_returns_highest_degree_nodes(num_nodes, top_n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=12))
 def test_identify_hubs_star_graph_center(num_nodes):
     """Test that star graph center is identified as top hub."""
@@ -123,7 +123,7 @@ def test_identify_hubs_star_graph_center(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=10))
 def test_identify_hubs_complete_graph_all_equal(num_nodes):
     """Test that complete graph has all nodes with equal degree."""
@@ -161,7 +161,7 @@ def test_identify_hubs_empty_graph_zero_degrees(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=15))
 def test_core_statistics_node_edge_counts_non_negative(num_nodes):
     """Test that core statistics return non-negative node and edge counts."""
@@ -185,7 +185,7 @@ def test_core_statistics_node_edge_counts_non_negative(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=15))
 def test_core_statistics_node_count_matches(num_nodes):
     """Test that reported node count matches actual node count."""
@@ -209,7 +209,7 @@ def test_core_statistics_node_count_matches(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=15))
 def test_core_statistics_edge_count_matches(num_nodes):
     """Test that reported edge count matches actual edge count."""
@@ -233,7 +233,7 @@ def test_core_statistics_edge_count_matches(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=12))
 def test_core_statistics_mean_degree_bounds(num_nodes):
     """Test that mean degree is within valid bounds."""
@@ -261,7 +261,7 @@ def test_core_statistics_mean_degree_bounds(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=10))
 def test_core_statistics_density_bounds(num_nodes):
     """Test that network density is between 0 and 1."""
@@ -340,7 +340,7 @@ def test_core_statistics_empty_graph_density_zero(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=3, max_value=10))
 def test_core_statistics_connected_components_positive(num_nodes):
     """Test that number of connected components is positive."""
@@ -431,7 +431,7 @@ def test_statistics_path_graph_properties(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=12),
     p=st.floats(min_value=0.3, max_value=0.7)

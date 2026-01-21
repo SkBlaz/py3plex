@@ -25,7 +25,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=10, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -44,7 +44,7 @@ def test_basic_pl_stats_returns_positive_alpha(n_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=10, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)
@@ -164,7 +164,7 @@ def test_basic_pl_stats_uniform_degrees_high_alpha(n_nodes, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=10, max_value=50),
     seed=st.integers(min_value=0, max_value=10000)

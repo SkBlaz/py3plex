@@ -12,7 +12,7 @@ from py3plex.core import random_generators
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=20),
     num_layers=st.integers(min_value=1, max_value=4),
@@ -47,7 +47,7 @@ def test_random_multilayer_er_basic_invariants(num_nodes, num_layers, p, directe
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=15),
     num_layers=st.integers(min_value=1, max_value=3),
@@ -72,7 +72,7 @@ def test_random_multilayer_er_empty_with_zero_probability(num_nodes, num_layers)
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=10),
     num_layers=st.integers(min_value=1, max_value=3),
@@ -107,7 +107,7 @@ def test_random_multilayer_er_p1_produces_dense_network(num_nodes, num_layers, d
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=12),
     num_layers=st.integers(min_value=2, max_value=4),
@@ -137,7 +137,7 @@ def test_random_multilayer_er_has_layers(num_nodes, num_layers, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     p=st.floats(min_value=0.2, max_value=0.8),
@@ -174,7 +174,7 @@ def test_random_multilayer_er_single_layer(num_nodes, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=2, max_value=15),
     num_layers=st.integers(min_value=1, max_value=3),

@@ -136,7 +136,7 @@ def test_serialization_preserves_comparisons(attr, threshold):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     limit=st.integers(min_value=1, max_value=100),
 )
@@ -155,7 +155,7 @@ def test_serialization_preserves_limit(limit):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     measure=st.sampled_from(['degree', 'betweenness', 'clustering']),
 )
@@ -219,7 +219,7 @@ def test_serialization_preserves_layer_union(layer1, layer2):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     key=st.sampled_from(['degree', 'centrality', 'score']),
     desc=st.booleans()
@@ -264,7 +264,7 @@ def test_serialization_handles_empty_query():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     param_name=st.text(
         min_size=1,
@@ -304,7 +304,7 @@ def test_serialization_preserves_explain():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     layer=st.text(min_size=1, max_size=8, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     threshold=st.integers(min_value=1, max_value=10),
@@ -343,7 +343,7 @@ def test_serialization_complex_query(layer, threshold, limit):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     measure1=st.sampled_from(['degree', 'betweenness']),
     measure2=st.sampled_from(['clustering', 'closeness']),

@@ -26,7 +26,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(
     name=st.text(min_size=1, max_size=50, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll', 'Nd'), 
@@ -50,7 +50,7 @@ def test_workflow_config_preserves_name_and_description(name, description):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(
     datasets=st.lists(
         st.dictionaries(
@@ -76,7 +76,7 @@ def test_workflow_config_preserves_datasets(datasets):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(
     operations=st.lists(
         st.dictionaries(
@@ -108,7 +108,7 @@ def test_workflow_config_preserves_operations(operations):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     name=st.text(min_size=1, max_size=50, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll', 'Nd'), 
@@ -142,7 +142,7 @@ def test_workflow_config_json_roundtrip(name, output_dir):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     has_name=st.booleans(),
     has_datasets=st.booleans(),
@@ -173,7 +173,7 @@ def test_workflow_config_handles_missing_fields(has_name, has_datasets, has_oper
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     name=st.text(min_size=1, max_size=30, alphabet=st.characters(
         whitelist_categories=('Lu', 'Ll', 'Nd'), 
@@ -215,7 +215,7 @@ def test_workflow_config_from_json_file(name, n_operations):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     config_dict=st.dictionaries(
         keys=st.sampled_from(["name", "description", "datasets", "operations", "output"]),

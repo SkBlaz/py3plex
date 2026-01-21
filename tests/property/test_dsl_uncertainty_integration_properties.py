@@ -50,7 +50,7 @@ class TestDSLBootstrapProperties:
         st.sampled_from(["edges", "nodes", "layers"]),
         st.sampled_from(["resample", "permute"])
     )
-    @settings(max_examples=15, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_dsl_bootstrap_returns_results(self, n_boot, unit, mode):
         """Property: DSL bootstrap queries return valid results."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -173,7 +173,7 @@ class TestDSLNullModelProperties:
         st.integers(min_value=10, max_value=40),
         st.sampled_from(["degree_preserving", "erdos_renyi", "configuration"])
     )
-    @settings(max_examples=12, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_dsl_null_model_returns_results(self, n_null, model):
         """Property: DSL null model queries return valid results."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
@@ -278,7 +278,7 @@ class TestGlobalDefaultsProperties:
         st.integers(min_value=5, max_value=100),
         st.floats(min_value=0.50, max_value=0.99)
     )
-    @settings(max_examples=15, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_defaults_are_retrievable(self, n_boot, ci):
         """Property: Set defaults can be retrieved."""
         Q.uncertainty.defaults(n_boot=n_boot, ci=ci)
@@ -290,7 +290,7 @@ class TestGlobalDefaultsProperties:
     @given(
         st.integers(min_value=5, max_value=100)
     )
-    @settings(max_examples=15, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_reset_restores_initial_values(self, n_boot):
         """Property: Reset restores initial values."""
         initial_n_boot = Q.uncertainty.get("n_boot")

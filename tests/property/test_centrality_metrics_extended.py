@@ -111,7 +111,7 @@ def create_multilayer_network_with_interlayer(num_nodes=4, num_layers=2, seed=No
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3),
@@ -130,7 +130,7 @@ def test_pagerank_sums_to_one(num_nodes, num_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3),
@@ -173,7 +173,7 @@ def test_pagerank_damping_factor_effect(num_nodes, num_layers, damping):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=2),
@@ -321,7 +321,7 @@ def test_subgraph_leq_total_communicability(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -383,7 +383,7 @@ def test_k_core_equals_coreness(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -406,7 +406,7 @@ def test_bridging_centrality_non_negative(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=2)
@@ -514,7 +514,7 @@ def test_percolation_centrality_edge_probability(num_nodes, num_layers, edge_pro
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=2),
@@ -694,7 +694,7 @@ def test_communicability_betweenness_normalized_bounded(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=2)

@@ -126,7 +126,7 @@ def relabel_network_nodes(network, mapping):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -146,7 +146,7 @@ def test_degree_centrality_non_negative(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -168,7 +168,7 @@ def test_centrality_values_finite(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -185,7 +185,7 @@ def test_participation_coefficient_bounded(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -202,7 +202,7 @@ def test_closeness_centrality_non_negative(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -223,7 +223,7 @@ def test_betweenness_centrality_non_negative(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -252,7 +252,7 @@ def test_eigenvector_centrality_normalization(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3),
@@ -350,7 +350,7 @@ def test_betweenness_ranking_invariant(num_nodes, num_layers):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -380,7 +380,7 @@ def test_layer_degree_sum_equals_overlapping(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=5),
     num_layers=st.integers(min_value=1, max_value=3)

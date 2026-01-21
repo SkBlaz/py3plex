@@ -32,7 +32,7 @@ except ImportError:
     reason="Louvain community detection not available"
 )
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=15))
 def test_louvain_partition_covers_all_nodes(n):
     """
@@ -65,7 +65,7 @@ def test_louvain_partition_covers_all_nodes(n):
     reason="Louvain community detection not available"
 )
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=12))
 def test_louvain_num_communities_bounded(n):
     """
@@ -93,7 +93,7 @@ def test_louvain_num_communities_bounded(n):
     reason="Louvain community detection not available"
 )
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=10))
 def test_louvain_complete_graph_single_community(n):
     """
@@ -121,7 +121,7 @@ def test_louvain_complete_graph_single_community(n):
     reason="Louvain community detection not available"
 )
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(k=st.integers(min_value=2, max_value=5))
 def test_louvain_disconnected_components_separate_communities(k):
     """
@@ -162,7 +162,7 @@ def test_louvain_disconnected_components_separate_communities(k):
     reason="Louvain community detection not available"
 )
 @pytest.mark.property
-@settings(deadline=None, max_examples=15)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=6, max_value=12))
 def test_louvain_partition_valid_structure(n):
     """

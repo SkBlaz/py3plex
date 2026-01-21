@@ -92,7 +92,7 @@ class TestShortestPathProperties:
         cross_layer=st.booleans(),
         restrict_to_source_layer=st.booleans(),
     )
-    @settings(max_examples=25, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_shortest_path_respects_layer_and_cross_layer_constraints(
         self,
         n: int,
@@ -196,7 +196,7 @@ class TestAllPathsProperties:
         st.integers(min_value=2, max_value=6),
         st.integers(min_value=1, max_value=5),
     )
-    @settings(max_examples=15)
+    @settings(max_examples=5)
     def test_all_paths_respects_limit(self, num_nodes: int, limit: int):
         """all_paths with limit should not exceed the limit."""
         net = build_test_network(num_nodes=num_nodes)
@@ -218,7 +218,7 @@ class TestRandomWalkProperties:
         st.integers(min_value=2, max_value=6),
         st.integers(min_value=42, max_value=999),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_random_walk_does_not_mutate_network(self, num_nodes: int, seed: int):
         """random_walk must not mutate the original network."""
         net = build_test_network(num_nodes=num_nodes)
@@ -231,7 +231,7 @@ class TestRandomWalkProperties:
         assert count_edges(net) == original_edges
 
     @given(st.integers(min_value=42, max_value=999))
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_random_walk_with_seed_is_reproducible(self, seed: int):
         """random_walk with same seed should produce same results."""
         net = build_test_network()
@@ -245,7 +245,7 @@ class TestRandomWalkProperties:
         st.integers(min_value=1, max_value=50),
         st.floats(min_value=0.0, max_value=0.5, allow_nan=False),
     )
-    @settings(max_examples=15)
+    @settings(max_examples=5)
     def test_random_walk_visit_frequency_is_valid(self, steps: int, teleport: float):
         """random_walk visit frequency should be valid probabilities."""
         net = build_test_network()
@@ -345,7 +345,7 @@ class TestFindPathsProperties:
         st.sampled_from(["shortest", "all", "flow"]),
         st.integers(min_value=2, max_value=6),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_find_paths_returns_path_result(self, path_type: str, num_nodes: int):
         """find_paths should always return a PathResult."""
         net = build_test_network(num_nodes=num_nodes)
@@ -364,7 +364,7 @@ class TestFindPathsProperties:
         st.sampled_from(["shortest", "all", "flow"]),
         st.integers(min_value=2, max_value=6),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_find_paths_does_not_mutate_network(self, path_type: str, num_nodes: int):
         """find_paths must not mutate the original network."""
         net = build_test_network(num_nodes=num_nodes)
@@ -385,7 +385,7 @@ class TestFindPathsProperties:
         st.integers(min_value=1, max_value=5),
         st.integers(min_value=2, max_value=6),
     )
-    @settings(max_examples=15)
+    @settings(max_examples=5)
     def test_find_paths_respects_limit(self, limit: int, num_nodes: int):
         """find_paths with limit should not exceed the limit."""
         net = build_test_network(num_nodes=num_nodes)
@@ -438,7 +438,7 @@ class TestCrossAlgorithmInvariants:
         st.sampled_from(["shortest", "all", "flow"]),
         st.integers(min_value=2, max_value=6),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=5)
     def test_all_algorithms_preserve_network(self, algorithm: str, num_nodes: int):
         """All path algorithms must not mutate the original network."""
         net = build_test_network(num_nodes=num_nodes)

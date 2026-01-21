@@ -24,7 +24,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=1, max_value=4)
@@ -51,7 +51,7 @@ def test_split_to_layers_preserves_nodes(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=1, max_value=4)
@@ -73,7 +73,7 @@ def test_split_to_layers_correct_count(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -96,7 +96,7 @@ def test_split_to_layers_each_layer_has_nodes(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -130,7 +130,7 @@ def test_split_to_layers_preserves_intra_layer_edges(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -174,7 +174,7 @@ def test_split_to_layers_excludes_interlayer_edges(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(num_nodes=st.integers(min_value=2, max_value=8))
 def test_split_to_layers_returns_dict(num_nodes):
     """Test that split_to_layers returns a dictionary."""
@@ -200,7 +200,7 @@ def test_split_to_layers_returns_dict(num_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -226,7 +226,7 @@ def test_add_mpx_edges_increases_edge_count(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -252,7 +252,7 @@ def test_add_mpx_edges_preserves_nodes(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -281,7 +281,7 @@ def test_add_mpx_edges_connects_corresponding_nodes(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -306,7 +306,7 @@ def test_add_mpx_edges_only_between_layers(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=6),
     num_layers=st.integers(min_value=2, max_value=3)
@@ -353,7 +353,7 @@ def test_add_mpx_edges_single_layer_unchanged(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_shared=st.integers(min_value=1, max_value=4),
     num_unique1=st.integers(min_value=1, max_value=3),

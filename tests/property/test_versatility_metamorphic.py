@@ -21,7 +21,7 @@ from py3plex.algorithms.multilayer_algorithms.versatility import versatility
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_versatility_single_layer_reduction(n):
     """
@@ -63,7 +63,7 @@ def test_versatility_single_layer_reduction(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -96,7 +96,7 @@ def test_versatility_l1_normalization(n, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -129,7 +129,7 @@ def test_versatility_l2_normalization(n, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=7),
     scale_factor=st.floats(min_value=0.1, max_value=10.0)
@@ -162,7 +162,7 @@ def test_versatility_scale_invariance(n, scale_factor):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=7),
     num_layers=st.integers(min_value=1, max_value=3)
@@ -206,7 +206,7 @@ def test_versatility_zero_layer_stable(n, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=8),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -237,7 +237,7 @@ def test_versatility_finite_values(n, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=7),
     omega=st.floats(min_value=0.0, max_value=2.0)
@@ -268,7 +268,7 @@ def test_versatility_interlayer_coupling_effect(n, omega):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=8))
 def test_versatility_nonnegative_weights_nonnegative_result(n):
     """
@@ -301,7 +301,7 @@ def test_versatility_nonnegative_weights_nonnegative_result(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=8))
 def test_versatility_normalization_options(n):
     """

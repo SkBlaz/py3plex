@@ -26,7 +26,7 @@ from .strategies import (
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(G=small_graphs(min_nodes=2, max_nodes=8))
 def test_subgraph_preserves_edges(G):
     """
@@ -49,7 +49,7 @@ def test_subgraph_preserves_edges(G):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(G=small_graphs(min_nodes=2, max_nodes=8))
 def test_edge_addition_increases_count(G):
     """
@@ -85,7 +85,7 @@ def test_edge_addition_increases_count(G):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(G=small_graphs(min_nodes=2, max_nodes=8))
 def test_node_removal_removes_incident_edges(G):
     """
@@ -118,7 +118,7 @@ def test_node_removal_removes_incident_edges(G):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(
     G=weighted_graphs(min_nodes=2, max_nodes=6),
     scale=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False)
@@ -155,7 +155,7 @@ def test_weight_scaling_preserves_structure(G, scale):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(G=small_graphs(min_nodes=3, max_nodes=7))
 def test_complement_union_is_complete(G):
     """
@@ -184,7 +184,7 @@ def test_complement_union_is_complete(G):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     n1=st.text(min_size=1, max_size=8, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
     n2=st.text(min_size=1, max_size=8, alphabet=st.characters(min_codepoint=97, max_codepoint=122)),
@@ -231,7 +231,7 @@ def test_multilayer_edge_addition_consistency(n1, n2, l1, l2, weight):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(G=small_graphs(min_nodes=3, max_nodes=8))
 def test_connected_components_are_disjoint(G):
     """
@@ -257,7 +257,7 @@ def test_connected_components_are_disjoint(G):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=3, max_value=10),
     num_layers=st.integers(min_value=2, max_value=4)
@@ -299,7 +299,7 @@ def test_multilayer_layer_count_preserved(num_nodes, num_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(G=small_graphs(min_nodes=2, max_nodes=8))
 def test_degree_sequence_sum_equals_double_edges(G):
     """

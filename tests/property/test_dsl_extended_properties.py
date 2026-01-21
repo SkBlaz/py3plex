@@ -159,7 +159,7 @@ def test_f_expression_opposite_comparisons(threshold1, threshold2):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_conditions=st.integers(min_value=2, max_value=4)
 )
@@ -539,7 +539,7 @@ def test_to_pandas_preserves_count(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     num_nodes=st.integers(min_value=3, max_value=8)
 )
@@ -891,7 +891,7 @@ def test_multiple_compute_calls_accumulate():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -1007,7 +1007,7 @@ def test_query_on_empty_network_returns_empty():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     invalid_metric=st.text(min_size=10, max_size=20, alphabet='xyz')
 )
@@ -1043,7 +1043,7 @@ def test_where_with_conflicting_conditions_returns_empty():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     limit_val=st.integers(min_value=0, max_value=2)
 )

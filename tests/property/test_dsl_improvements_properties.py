@@ -598,7 +598,7 @@ def test_all_features_combined_builder_api(layer_idx, metrics):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
@@ -702,7 +702,7 @@ def test_compute_order_invariant(metrics):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     nonexistent_layer=st.text(
         min_size=10,

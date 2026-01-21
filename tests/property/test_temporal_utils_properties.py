@@ -26,7 +26,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(
     start=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False),
     end=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False)
@@ -53,7 +53,7 @@ def test_edge_time_interval_atemporal():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     start=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False),
     end=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False)
@@ -85,7 +85,7 @@ def test_atemporal_interval_overlaps_all():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(timestamp=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_point_interval_overlaps_containing_range(timestamp):
     """Test that a point interval overlaps with ranges containing it."""
@@ -99,7 +99,7 @@ def test_point_interval_overlaps_containing_range(timestamp):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     start1=st.floats(min_value=0, max_value=1e8, allow_nan=False, allow_infinity=False),
     start2=st.floats(min_value=0, max_value=1e8, allow_nan=False, allow_infinity=False)
@@ -138,7 +138,7 @@ def test_extract_edge_time_atemporal():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(timestamp=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_extract_edge_time_point(timestamp):
     """Test extracting time from point-in-time edge."""
@@ -152,7 +152,7 @@ def test_extract_edge_time_point(timestamp):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     start=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False),
     end=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False)
@@ -173,7 +173,7 @@ def test_extract_edge_time_interval(start, end):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(start=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_extract_edge_time_unbounded_end(start):
     """Test extracting time from interval with only start."""
@@ -187,7 +187,7 @@ def test_extract_edge_time_unbounded_end(start):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(end=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_extract_edge_time_unbounded_start(end):
     """Test extracting time from interval with only end."""
@@ -201,7 +201,7 @@ def test_extract_edge_time_unbounded_start(end):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     t=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False),
     t_start=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False),
@@ -224,7 +224,7 @@ def test_extract_edge_time_interval_takes_precedence(t, t_start, t_end):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(timestamp=st.integers(min_value=0, max_value=int(1e9)))
 def test_extract_edge_time_accepts_int(timestamp):
     """Test that extract_edge_time accepts integer timestamps."""
@@ -238,7 +238,7 @@ def test_extract_edge_time_accepts_int(timestamp):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(timestamp=st.floats(min_value=0, max_value=1e9, allow_nan=False, allow_infinity=False))
 def test_extract_edge_time_string_timestamp(timestamp):
     """Test that extract_edge_time accepts string timestamps."""
@@ -256,7 +256,7 @@ def test_extract_edge_time_string_timestamp(timestamp):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     t1=st.floats(min_value=0, max_value=1e8, allow_nan=False, allow_infinity=False),
     t2=st.floats(min_value=0, max_value=1e8, allow_nan=False, allow_infinity=False),

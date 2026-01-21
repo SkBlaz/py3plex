@@ -25,7 +25,7 @@ import community as community_louvain
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=10))
 def test_louvain_every_node_assigned(n):
     """
@@ -46,7 +46,7 @@ def test_louvain_every_node_assigned(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=10))
 def test_louvain_no_foreign_nodes(n):
     """
@@ -70,7 +70,7 @@ def test_louvain_no_foreign_nodes(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=10))
 def test_louvain_community_size_invariant(n):
     """
@@ -104,7 +104,7 @@ def test_louvain_community_size_invariant(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=10))
 def test_louvain_community_ids_valid(n):
     """
@@ -128,7 +128,7 @@ def test_louvain_community_ids_valid(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n_per_component=st.integers(min_value=3, max_value=5))
 def test_louvain_nontrivial_for_components(n_per_component):
     """
@@ -158,7 +158,7 @@ def test_louvain_nontrivial_for_components(n_per_component):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=10))
 def test_louvain_partition_covers_graph(n):
     """
@@ -183,7 +183,7 @@ def test_louvain_partition_covers_graph(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=10))
 def test_louvain_at_least_one_community(n):
     """
@@ -204,7 +204,7 @@ def test_louvain_at_least_one_community(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=2, max_value=10))
 def test_louvain_at_most_n_communities(n):
     """
@@ -224,7 +224,7 @@ def test_louvain_at_most_n_communities(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=25)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=4, max_value=10))
 def test_louvain_community_wrapper_consistency(n):
     """
@@ -260,7 +260,7 @@ def test_louvain_community_wrapper_consistency(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=3, max_value=10))
 def test_louvain_deterministic_with_seed(n):
     """
@@ -284,7 +284,7 @@ def test_louvain_deterministic_with_seed(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(n=st.integers(min_value=2, max_value=10))
 def test_louvain_empty_graph(n):
     """

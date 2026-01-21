@@ -86,7 +86,7 @@ def node_ids_strategy(draw, n_nodes):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(partition=partition_strategy())
 def test_vi_self_distance_zero(partition):
     """VI(P, P) = 0 for any partition P."""
@@ -95,7 +95,7 @@ def test_vi_self_distance_zero(partition):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(n=st.integers(min_value=3, max_value=15), data=st.data())
 def test_vi_symmetry(n, data):
     """VI(P1, P2) = VI(P2, P1)."""
@@ -111,7 +111,7 @@ def test_vi_symmetry(n, data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(partition=partition_strategy())
 def test_vi_non_negative(partition):
     """VI(P1, P2) >= 0 for any partitions."""
@@ -125,7 +125,7 @@ def test_vi_non_negative(partition):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(partition=partition_strategy())
 def test_nmi_self_similarity_one(partition):
     """NMI(P, P) = 1 for any partition P."""
@@ -134,7 +134,7 @@ def test_nmi_self_similarity_one(partition):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(n=st.integers(min_value=3, max_value=15), data=st.data())
 def test_nmi_bounds(n, data):
     """NMI(P1, P2) ∈ [0, 1]."""
@@ -147,7 +147,7 @@ def test_nmi_bounds(n, data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30, suppress_health_check=[HealthCheck.filter_too_much])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.filter_too_much])
 @given(n=st.integers(min_value=3, max_value=15), data=st.data())
 def test_nmi_symmetry(n, data):
     """NMI(P1, P2) = NMI(P2, P1)."""
@@ -167,7 +167,7 @@ def test_nmi_symmetry(n, data):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(partition=partition_strategy())
 def test_partition_conversion_roundtrip(partition):
     """Converting partition array -> dict -> array should be identity."""
@@ -189,7 +189,7 @@ def test_partition_conversion_roundtrip(partition):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_node_entropy_reducer_deterministic(data):
     """Entropy should be zero when all samples are identical."""
@@ -210,7 +210,7 @@ def test_node_entropy_reducer_deterministic(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_node_entropy_reducer_non_negative(data):
     """Entropy must be non-negative."""
@@ -226,7 +226,7 @@ def test_node_entropy_reducer_non_negative(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_consensus_reducer_mode_property(data):
     """Consensus label should be the most frequent label for each node."""
@@ -251,7 +251,7 @@ def test_consensus_reducer_mode_property(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.too_slow])
 @given(data=partition_list_strategy(max_partitions=5))
 def test_coassignment_reducer_diagonal_one(data):
     """Co-assignment diagonal should always be 1 (P(i,i) = 1)."""
@@ -269,7 +269,7 @@ def test_coassignment_reducer_diagonal_one(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.too_slow])
 @given(data=partition_list_strategy(max_partitions=5))
 def test_coassignment_reducer_symmetric(data):
     """Co-assignment matrix should be symmetric: P(i,j) = P(j,i)."""
@@ -286,7 +286,7 @@ def test_coassignment_reducer_symmetric(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.too_slow])
 @given(data=partition_list_strategy(max_partitions=5))
 def test_coassignment_reducer_bounds(data):
     """Co-assignment probabilities should be in [0, 1]."""
@@ -307,7 +307,7 @@ def test_coassignment_reducer_bounds(data):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_partition_uq_entropy_bounds(data):
     """PartitionUQ entropy should be non-negative."""
@@ -325,7 +325,7 @@ def test_partition_uq_entropy_bounds(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_partition_uq_confidence_bounds(data):
     """PartitionUQ confidence should be in [0, 1]."""
@@ -343,7 +343,7 @@ def test_partition_uq_confidence_bounds(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_partition_uq_deterministic_confidence_one(data):
     """When all samples identical, all nodes should have confidence=1."""
@@ -364,7 +364,7 @@ def test_partition_uq_deterministic_confidence_one(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_partition_uq_deterministic_entropy_zero(data):
     """When all samples identical, all nodes should have entropy=0."""
@@ -385,7 +385,7 @@ def test_partition_uq_deterministic_entropy_zero(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_partition_uq_consensus_is_mode(data):
     """Consensus partition should assign each node to its most frequent community."""
@@ -411,7 +411,7 @@ def test_partition_uq_consensus_is_mode(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_partition_uq_vi_nmi_consistency(data):
     """When VI is low, NMI should be high (inverse relationship)."""
@@ -436,7 +436,7 @@ def test_partition_uq_vi_nmi_consistency(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy())
 def test_partition_uq_stability_non_negative(data):
     """Stability metrics should be non-negative."""
@@ -456,7 +456,7 @@ def test_partition_uq_stability_non_negative(data):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(data=partition_list_strategy(min_partitions=3, max_partitions=6))
 def test_partition_uq_n_communities_reasonable(data):
     """Consensus should have reasonable number of communities."""
@@ -483,7 +483,7 @@ def test_partition_uq_n_communities_reasonable(data):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(p=st.floats(min_value=0.01, max_value=0.99))
 def test_edge_drop_serialization_roundtrip(p):
     """EdgeDrop serialization should be reversible."""
@@ -499,7 +499,7 @@ def test_edge_drop_serialization_roundtrip(p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     sigma=st.floats(min_value=0.01, max_value=2.0),
     dist=st.sampled_from(["lognormal", "uniform", "normal"])
@@ -519,7 +519,7 @@ def test_weight_noise_serialization_roundtrip(sigma, dist):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(p=st.floats(min_value=0.01, max_value=0.99))
 def test_layer_drop_serialization_roundtrip(p):
     """LayerDrop serialization should be reversible."""

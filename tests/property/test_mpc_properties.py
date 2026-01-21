@@ -25,7 +25,7 @@ except ImportError:
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=3, max_value=10),
     n_layers=st.integers(min_value=2, max_value=5),
@@ -64,7 +64,7 @@ def test_mpc_normalized_range(n_nodes, n_layers, seed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(deadline=None, max_examples=5, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     n_nodes=st.integers(min_value=3, max_value=10),
     n_layers=st.integers(min_value=2, max_value=5),

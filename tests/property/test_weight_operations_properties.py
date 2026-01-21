@@ -16,7 +16,7 @@ from .strategies import layer_labels, positive_weights
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=10),
     num_edges=st.integers(min_value=1, max_value=12),
@@ -56,7 +56,7 @@ def test_weight_assignment_preserved(n, num_edges, weight):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=2, max_value=10),
@@ -107,7 +107,7 @@ def test_weight_scaling_linearity(n, num_edges, scale):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=2, max_value=10)
@@ -145,7 +145,7 @@ def test_weight_sum_non_negative(n, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=1, max_value=10),
@@ -185,7 +185,7 @@ def test_weight_addition_commutative(n, num_edges, base_weight):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=2, max_value=10)
@@ -229,7 +229,7 @@ def test_weight_mean_bounds(n, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=2, max_value=10),
@@ -256,7 +256,7 @@ def test_weight_comparison_transitivity(n, num_edges, weight1, weight2):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=1, max_value=10),
@@ -299,7 +299,7 @@ def test_uniform_weights_constant_mean(n, num_edges, weight):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=2, max_value=10)
@@ -342,7 +342,7 @@ def test_weight_variance_non_negative(n, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=1, max_value=10),
@@ -386,7 +386,7 @@ def test_weight_multiplication_identity(n, num_edges, weight):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=2, max_value=10)

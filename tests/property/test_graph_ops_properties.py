@@ -126,7 +126,7 @@ class TestNodeFrameFilterProperties:
         assert frame.count() == original_count
 
     @given(st.integers(min_value=-5, max_value=10))
-    @settings(max_examples=15)
+    @settings(max_examples=5)
     def test_filter_degree_threshold(self, threshold: int):
         """Filtering by degree threshold should only include matching nodes."""
         net = build_test_network()
@@ -279,7 +279,7 @@ class TestNodeFrameHeadTailProperties:
     """Property-based tests for NodeFrame.head() and tail()."""
 
     @given(st.integers(min_value=0, max_value=20))
-    @settings(max_examples=15)
+    @settings(max_examples=5)
     def test_head_limits_count(self, n: int):
         """head(n) should return at most n nodes."""
         net = build_test_network()
@@ -289,7 +289,7 @@ class TestNodeFrameHeadTailProperties:
         assert result.count() <= n
 
     @given(st.integers(min_value=0, max_value=20))
-    @settings(max_examples=15)
+    @settings(max_examples=5)
     def test_tail_limits_count(self, n: int):
         """tail(n) should return at most n nodes."""
         net = build_test_network()

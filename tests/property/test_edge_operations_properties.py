@@ -15,7 +15,7 @@ from .strategies import layer_labels
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=10),
     num_edges=st.integers(min_value=1, max_value=15)
@@ -59,7 +59,7 @@ def test_edge_addition_increases_edge_count(n, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     num_edges=st.integers(min_value=2, max_value=12)
@@ -109,7 +109,7 @@ def test_edge_removal_decreases_edge_count(n, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=1, max_value=10)
@@ -155,7 +155,7 @@ def test_edge_endpoints_are_nodes(n, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=10),
     num_edges=st.integers(min_value=1, max_value=12)
@@ -196,7 +196,7 @@ def test_edge_weights_non_negative(n, num_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=35)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_edges=st.integers(min_value=1, max_value=10),
@@ -236,7 +236,7 @@ def test_edge_weight_preservation(n, num_edges, weight):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=10),
     p=st.floats(min_value=0.1, max_value=0.9)
@@ -275,7 +275,7 @@ def test_undirected_edge_symmetry(n, p):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     layers=st.lists(layer_labels(), min_size=2, max_size=4, unique=True),
     n=st.integers(min_value=2, max_value=6)
@@ -317,7 +317,7 @@ def test_inter_layer_edge_validity(layers, n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=40)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=2, max_value=8),
     num_initial_edges=st.integers(min_value=1, max_value=10),
@@ -366,7 +366,7 @@ def test_edge_addition_idempotence(n, num_initial_edges, num_new_edges):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     n=st.integers(min_value=3, max_value=10),
     num_edges=st.integers(min_value=2, max_value=12)

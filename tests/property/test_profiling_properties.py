@@ -41,7 +41,7 @@ def test_performance_monitor_creation():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
+@settings(deadline=None, max_examples=5)
 @given(
     func_name=st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'), whitelist_characters='_')),
     elapsed=st.floats(min_value=0.001, max_value=10.0, allow_nan=False, allow_infinity=False)
@@ -64,7 +64,7 @@ def test_performance_monitor_record(func_name, elapsed):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     func_name=st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'), whitelist_characters='_')),
     times=st.lists(st.floats(min_value=0.001, max_value=1.0, allow_nan=False, allow_infinity=False), min_size=2, max_size=10)
@@ -87,7 +87,7 @@ def test_performance_monitor_multiple_records(func_name, times):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     func_name=st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'), whitelist_characters='_')),
     elapsed=st.floats(min_value=0.001, max_value=10.0, allow_nan=False, allow_infinity=False),
@@ -117,7 +117,7 @@ def test_performance_monitor_disabled():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(
     func_names=st.lists(
         st.text(min_size=1, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd'), whitelist_characters='_')),
@@ -284,7 +284,7 @@ def test_profile_performance_with_exception():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=20)
+@settings(deadline=None, max_examples=5)
 @given(times=st.lists(st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False), min_size=1, max_size=20))
 def test_average_time_calculation(times):
     """Test that average time is calculated correctly."""

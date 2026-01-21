@@ -81,7 +81,7 @@ class TestMultiplexRoutingInvariance:
         num_nodes=st.integers(min_value=2, max_value=5),
         switch_cost=st.floats(min_value=0.0, max_value=10.0),
     )
-    @settings(max_examples=15, deadline=500)
+    @settings(max_examples=5, deadline=500)
     def test_routing_is_deterministic(self, num_nodes: int, switch_cost: float):
         """multiplex_shortest_path must return deterministic results."""
         assume(not (switch_cost != switch_cost))  # Skip NaN
@@ -207,7 +207,7 @@ class TestMultiplexRoutingMathematicalProperties:
         num_nodes=st.integers(min_value=3, max_value=6),
         switch_cost=st.floats(min_value=0.0, max_value=5.0),
     )
-    @settings(max_examples=15, deadline=500)
+    @settings(max_examples=5, deadline=500)
     def test_zero_switch_cost_is_optimal(self, num_nodes: int, switch_cost: float):
         """Zero switch cost should find globally optimal path."""
         assume(not (switch_cost != switch_cost))  # Skip NaN

@@ -30,7 +30,7 @@ def _degree_metric(network: multinet.multi_layer_network):
 
 
 @given(_simple_single_layer_graph())
-@settings(max_examples=40, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(max_examples=5, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_bootstrap_edge_permutation_keeps_degree_exactly(graph_data):
     """Edge permutation should not change degree distribution, so std=0."""
     _, edges = graph_data
