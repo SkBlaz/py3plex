@@ -629,6 +629,7 @@ class SelectStmt:
         temporal_context: Optional temporal context for time-based queries
         window_spec: Optional window specification for sliding window analysis
         group_by: List of attribute names to group by (e.g., ["layer"])
+        aggregations: List of aggregation operations to perform (e.g., mean, sum, count)
         limit_per_group: Optional per-group limit for top-k filtering
         coverage_mode: Coverage filtering mode ("all", "any", "at_least", "exact", "fraction")
         coverage_k: Threshold for "at_least" or "exact" coverage modes
@@ -662,6 +663,7 @@ class SelectStmt:
     temporal_context: Optional["TemporalContext"] = None
     window_spec: Optional["WindowSpec"] = None
     group_by: List[str] = field(default_factory=list)
+    aggregations: List["AggregationItem"] = field(default_factory=list)
     limit_per_group: Optional[int] = None
     coverage_mode: Optional[str] = None
     coverage_k: Optional[int] = None
