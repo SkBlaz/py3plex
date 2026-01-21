@@ -133,6 +133,16 @@ class MeasureRegistry:
         """
         return list(self._measures.keys()) + list(self._aliases.keys())
     
+    def keys(self) -> List[str]:
+        """List all registered measure names (including aliases).
+        
+        Alias for list_measures() to provide dict-like interface.
+        
+        Returns:
+            List of measure names
+        """
+        return self.list_measures()
+    
     def get_description(self, name: str) -> Optional[str]:
         """Get description for a measure.
         
