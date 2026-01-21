@@ -7465,6 +7465,42 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 
 ## Testing Strategy
 
+### Current Test Coverage State (Updated: January 2026)
+
+**Overall Coverage**: ~8% (30,595 of 33,254 statements uncovered)
+
+**Note**: This low overall coverage reflects that py3plex is a mature library with extensive functionality, but test coverage has historically focused on core algorithms and DSL functionality. Many utility modules, visualization features, and specialized algorithms have limited or no test coverage.
+
+#### Modules with High Coverage (>70%):
+- `__init__.py` - 100%
+- `config.py` - 84.2%
+- `logging_config.py` - 66.7%
+
+#### Modules with Moderate Coverage (20-70%):
+- `exceptions.py` - 40.9% (exception hierarchy)
+- `errors.py` - 31.8% (error handling)
+- `dsl` - 23.5% (DSL queries, 3,465/4,531 statements uncovered)
+- `graph_ops.py` - 22.6% (graph operations)
+- `pipeline.py` - 21.7% (pipeline API)
+- `uncertainty` - 21.3% (UQ framework)
+- `plugins` - 20.7% (plugin system)
+
+#### Critical Gaps (0% coverage, high-value modules):
+- `cli.py` - 0% (1,618 statements) - Command-line interface
+- `io/` module - 0% (854 statements) - I/O operations
+- `utils.py` - 0% (124 statements) - Core utilities (but has test files)
+- `validation.py` - 0% (121 statements) - Input validation (but has test files)
+- `nullmodels` - 0% (192 statements) - Statistical null models
+- `paths` - 0% (238 statements) - Path algorithms
+- `stats` - 0% (411 statements) - Statistics module
+- `temporal_utils.py` - 0% (62 statements) - Temporal utilities
+- `visualization` - 6.7% (2,241/2,401 statements) - Visualization utilities
+- `algorithms` - 1.1% (12,123/12,262 statements) - Algorithm implementations
+
+**Coverage Reporting Files**:
+- `coverage_full.json` - Complete coverage data
+- `coverage_broader.json` - Alternative coverage report
+
 ### Test Organization
 
 - **Unit Tests**: Fast tests in `tests/test_*.py`
