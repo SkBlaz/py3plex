@@ -52,7 +52,7 @@ class TestDSLBootstrapProperties:
         st.sampled_from(["resample", "permute"])
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_dsl_bootstrap_returns_results(self, n_boot, unit, mode):
+    def test_dsl_bootstrap_returns_results(self, n_samples, unit, mode):
         """Property: DSL bootstrap queries return valid results."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
         
@@ -62,7 +62,7 @@ class TestDSLBootstrapProperties:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=n_boot,
+                n_samples=n_samples,
                 bootstrap_unit=unit,
                 bootstrap_mode=mode,
                 random_state=42
@@ -80,7 +80,7 @@ class TestDSLBootstrapProperties:
         st.integers(min_value=5, max_value=30)
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_dsl_bootstrap_with_order_by(self, n_boot):
+    def test_dsl_bootstrap_with_order_by(self, n_samples):
         """Property: Bootstrap works with order_by."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
         
@@ -90,7 +90,7 @@ class TestDSLBootstrapProperties:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=n_boot,
+                n_samples=n_samples,
                 random_state=42
             )
             .order_by("-degree")
@@ -106,7 +106,7 @@ class TestDSLBootstrapProperties:
         st.integers(min_value=1, max_value=5)
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_dsl_bootstrap_with_limit(self, n_boot, limit):
+    def test_dsl_bootstrap_with_limit(self, n_samples, limit):
         """Property: Bootstrap works with limit."""
         net = build_simple_network(num_nodes=6, num_layers=2, connect_prob=0.6, seed=42)
         
@@ -116,7 +116,7 @@ class TestDSLBootstrapProperties:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=n_boot,
+                n_samples=n_samples,
                 random_state=42
             )
             .limit(limit)
@@ -131,7 +131,7 @@ class TestDSLBootstrapProperties:
         st.integers(min_value=5, max_value=30)
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_dsl_bootstrap_reproducibility(self, n_boot):
+    def test_dsl_bootstrap_reproducibility(self, n_samples):
         """Property: Same seed gives same results."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
         
@@ -141,7 +141,7 @@ class TestDSLBootstrapProperties:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=n_boot,
+                n_samples=n_samples,
                 random_state=999
             )
             .execute(net)
@@ -153,7 +153,7 @@ class TestDSLBootstrapProperties:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=n_boot,
+                n_samples=n_samples,
                 random_state=999
             )
             .execute(net)
@@ -179,7 +179,7 @@ class TestDSLNullModelProperties:
         st.sampled_from(["degree_preserving", "erdos_renyi", "configuration"])
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_dsl_null_model_returns_results(self, n_null, model):
+    def test_dsl_null_model_returns_results(self, n_samples, model):
         """Property: DSL null model queries return valid results."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
         
@@ -189,7 +189,7 @@ class TestDSLNullModelProperties:
                 "degree",
                 uncertainty=True,
                 method="null_model",
-                n_null=n_null,
+                n_samples=n_samples,
                 null_model=model,
                 random_state=42
             )
@@ -206,7 +206,7 @@ class TestDSLNullModelProperties:
         st.integers(min_value=10, max_value=40)
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_dsl_null_model_with_order_by(self, n_null):
+    def test_dsl_null_model_with_order_by(self, n_samples):
         """Property: Null model works with order_by."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
         
@@ -216,7 +216,7 @@ class TestDSLNullModelProperties:
                 "degree",
                 uncertainty=True,
                 method="null_model",
-                n_null=n_null,
+                n_samples=n_samples,
                 random_state=42
             )
             .order_by("-degree")
@@ -231,7 +231,7 @@ class TestDSLNullModelProperties:
         st.integers(min_value=10, max_value=40)
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_dsl_null_model_reproducibility(self, n_null):
+    def test_dsl_null_model_reproducibility(self, n_samples):
         """Property: Same seed gives same results."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
         
@@ -241,7 +241,7 @@ class TestDSLNullModelProperties:
                 "degree",
                 uncertainty=True,
                 method="null_model",
-                n_null=n_null,
+                n_samples=n_samples,
                 random_state=888
             )
             .execute(net)
@@ -253,7 +253,7 @@ class TestDSLNullModelProperties:
                 "degree",
                 uncertainty=True,
                 method="null_model",
-                n_null=n_null,
+                n_samples=n_samples,
                 random_state=888
             )
             .execute(net)
@@ -287,11 +287,11 @@ class TestGlobalDefaultsProperties:
         st.floats(min_value=0.50, max_value=0.99)
     )
     @settings(max_examples=3, deadline=None)
-    def test_defaults_are_retrievable(self, n_boot, ci):
+    def test_defaults_are_retrievable(self, n_samples, ci):
         """Property: Set defaults can be retrieved."""
-        Q.uncertainty.defaults(n_boot=n_boot, ci=ci)
+        Q.uncertainty.defaults(n_samples=n_samples, ci=ci)
         
-        assert Q.uncertainty.get("n_boot") == n_boot
+        assert Q.uncertainty.get("n_samples") == n_samples
         assert Q.uncertainty.get("ci") == ci
     
     @pytest.mark.slow
@@ -300,15 +300,15 @@ class TestGlobalDefaultsProperties:
         st.integers(min_value=5, max_value=100)
     )
     @settings(max_examples=3, deadline=None)
-    def test_reset_restores_initial_values(self, n_boot):
+    def test_reset_restores_initial_values(self, n_samples):
         """Property: Reset restores initial values."""
-        initial_n_boot = Q.uncertainty.get("n_boot")
+        initial_n_samples = Q.uncertainty.get("n_samples")
         
-        Q.uncertainty.defaults(n_boot=n_boot)
-        assert Q.uncertainty.get("n_boot") == n_boot
+        Q.uncertainty.defaults(n_samples=n_samples)
+        assert Q.uncertainty.get("n_samples") == n_samples
         
         Q.uncertainty.reset()
-        assert Q.uncertainty.get("n_boot") == initial_n_boot
+        assert Q.uncertainty.get("n_samples") == initial_n_samples
     
     @pytest.mark.slow
     @pytest.mark.property
@@ -316,13 +316,13 @@ class TestGlobalDefaultsProperties:
         st.integers(min_value=5, max_value=50)
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_defaults_used_when_not_specified(self, n_boot):
+    def test_defaults_used_when_not_specified(self, n_samples):
         """Property: Defaults are used when parameters not specified."""
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
         
-        Q.uncertainty.defaults(method="bootstrap", n_boot=n_boot)
+        Q.uncertainty.defaults(method="bootstrap", n_samples=n_samples)
         
-        # Don't specify n_boot in query
+        # Don't specify n_samples in query
         result = (
             Q.nodes()
             .compute("degree", uncertainty=True)
@@ -339,18 +339,18 @@ class TestGlobalDefaultsProperties:
         st.integers(min_value=51, max_value=100)
     )
     @settings(max_examples=3, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_explicit_params_override_defaults(self, default_n_boot, explicit_n_boot):
+    def test_explicit_params_override_defaults(self, default_n_samples, explicit_n_samples):
         """Property: Explicit parameters override defaults."""
-        assume(default_n_boot != explicit_n_boot)
+        assume(default_n_samples != explicit_n_samples)
         
         net = build_simple_network(num_nodes=5, num_layers=2, connect_prob=0.6, seed=42)
         
-        Q.uncertainty.defaults(method="bootstrap", n_boot=default_n_boot)
+        Q.uncertainty.defaults(method="bootstrap", n_samples=default_n_samples)
         
-        # Specify different n_boot in query
+        # Specify different n_samples in query
         result = (
             Q.nodes()
-            .compute("degree", uncertainty=True, n_boot=explicit_n_boot)
+            .compute("degree", uncertainty=True, n_samples=explicit_n_samples)
             .execute(net)
         )
         
@@ -382,7 +382,7 @@ class TestDSLMetamorphicProperties:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=n_samples,
+                n_samples=n_samples,
                 random_state=42
             )
             .execute(net)
@@ -394,7 +394,7 @@ class TestDSLMetamorphicProperties:
                 "degree",
                 uncertainty=True,
                 method="null_model",
-                n_null=n_samples,
+                n_samples=n_samples,
                 random_state=42
             )
             .execute(net)
@@ -428,7 +428,7 @@ class TestDSLMetamorphicProperties:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=n_samples,
+                n_samples=n_samples,
                 random_state=42
             )
             .execute(net)
@@ -458,7 +458,7 @@ class TestDSLUncertaintyEdgeCases:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=10
+                n_samples=10
             )
             .execute(net)
         )
@@ -477,7 +477,7 @@ class TestDSLUncertaintyEdgeCases:
                 "degree",
                 uncertainty=True,
                 method="null_model",
-                n_null=10
+                n_samples=10
             )
             .execute(net)
         )
@@ -500,7 +500,7 @@ class TestDSLUncertaintyEdgeCases:
                 "degree",
                 uncertainty=True,
                 method="bootstrap",
-                n_boot=10,
+                n_samples=10,
                 random_state=42
             )
             .execute(net)
