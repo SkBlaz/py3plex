@@ -284,11 +284,12 @@ def infer_schema(network: Any, sample_size: int = 100) -> NetworkSchema:
             # Try to get node attributes from first few nodes
             if hasattr(network, 'core_network'):
                 G = network.core_network
-                for node in sample:
-                    if G.has_node(node):
-                        attrs = G.nodes[node]
-                        schema.node_attributes.update(attrs.keys())
-                        break  # Just need one to know the schema
+                if G is not None:
+                    for node in sample:
+                        if G.has_node(node):
+                            attrs = G.nodes[node]
+                            schema.node_attributes.update(attrs.keys())
+                            break  # Just need one to know the schema
     
     # Sample edges to infer attributes
     if hasattr(network, 'get_edges'):
@@ -299,27 +300,28 @@ def infer_schema(network: Any, sample_size: int = 100) -> NetworkSchema:
             # Try to get edge attributes
             if hasattr(network, 'core_network'):
                 G = network.core_network
-                for edge in sample:
-                    if len(edge) >= 2:
-                        src, dst = edge[0], edge[1]
-                        if G.has_edge(src, dst):
-                            # Handle both Graph and MultiGraph
-                            try:
-                                import networkx as nx
-                                if isinstance(G, nx.MultiGraph) or isinstance(G, nx.MultiDiGraph):
-                                    # For MultiGraph, get first edge key
-                                    edge_keys = list(G[src][dst].keys())
-                                    if edge_keys:
-                                        attrs = G.edges[src, dst, edge_keys[0]]
+                if G is not None:
+                    for edge in sample:
+                        if len(edge) >= 2:
+                            src, dst = edge[0], edge[1]
+                            if G.has_edge(src, dst):
+                                # Handle both Graph and MultiGraph
+                                try:
+                                    import networkx as nx
+                                    if isinstance(G, nx.MultiGraph) or isinstance(G, nx.MultiDiGraph):
+                                        # For MultiGraph, get first edge key
+                                        edge_keys = list(G[src][dst].keys())
+                                        if edge_keys:
+                                            attrs = G.edges[src, dst, edge_keys[0]]
+                                            schema.edge_attributes.update(attrs.keys())
+                                    else:
+                                        # For simple Graph/DiGraph
+                                        attrs = G.edges[src, dst]
                                         schema.edge_attributes.update(attrs.keys())
-                                else:
-                                    # For simple Graph/DiGraph
-                                    attrs = G.edges[src, dst]
-                                    schema.edge_attributes.update(attrs.keys())
-                            except (KeyError, IndexError, ImportError):
-                                # If we can't access edge attributes, skip
-                                pass
-                            break
+                                except (KeyError, IndexError, ImportError):
+                                    # If we can't access edge attributes, skip
+                                    pass
+                                break
     
     return schema
 
