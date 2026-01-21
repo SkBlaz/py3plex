@@ -414,15 +414,15 @@ def _validate_select_stmt(
             _validate_compute_item(
                 item, stmt.target, result, capabilities, computed_fields
             )
-            computed_fields.add(item.alias or item.measure)
+            computed_fields.add(item.alias or item.name)
     
     # Update available fields with computed ones
     if available_fields is not None:
         available_fields = available_fields | computed_fields
     
     # Validate grouping
-    if stmt.grouping:
-        _validate_grouping(stmt.grouping, stmt.target, result)
+    if stmt.group_by:
+        _validate_grouping(stmt.group_by, stmt.target, result)
     
     # Validate aggregations
     if stmt.aggregations:
@@ -546,19 +546,19 @@ def _validate_compute_item(
 ):
     """Validate a COMPUTE item."""
     # Check if measure is supported
-    if item.measure not in capabilities.supported_measures:
+    if item.name not in capabilities.supported_measures:
         suggestion = _suggest_similar(
-            item.measure, list(capabilities.supported_measures)
+            item.name, list(capabilities.supported_measures)
         )
         hint = f"Did you mean '{suggestion}'?" if suggestion else None
         
         result.add_error(ValidationIssue(
             code=DSLVAL_FIELD_UNKNOWN,
             severity="error",
-            message=f"Unknown measure '{item.measure}'",
+            message=f"Unknown measure '{item.name}'",
             path="compute",
             hint=hint,
-            context={"measure": item.measure}
+            context={"measure": item.name}
         ))
     
     # Validate UQ parameters if present
