@@ -333,7 +333,7 @@ def get_default_capabilities() -> EngineCapabilities:
     from .registry import measure_registry
     
     # Get supported measures from registry
-    supported_measures = set(measure_registry.keys())
+    supported_measures = set(measure_registry.list_measures())
     
     return EngineCapabilities(supported_measures=supported_measures)
 

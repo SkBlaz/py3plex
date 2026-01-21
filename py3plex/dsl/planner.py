@@ -638,7 +638,7 @@ class QueryPlanner:
                     # Get known measures from registry if available
                     try:
                         from .registry import measure_registry
-                        known_measures = list(measure_registry.keys())
+                        known_measures = list(measure_registry.list_measures())
                     except Exception:
                         # Fallback to common measures if registry unavailable
                         known_measures = ["degree", "betweenness_centrality", 
@@ -700,7 +700,7 @@ class QueryPlanner:
                 # Check if missing fields look like known measures
                 try:
                     from .registry import measure_registry
-                    known_measures = list(measure_registry.keys())
+                    known_measures = list(measure_registry.list_measures())
                 except Exception:
                     # Fallback to common measures if registry unavailable
                     known_measures = ["degree", "betweenness_centrality", 
