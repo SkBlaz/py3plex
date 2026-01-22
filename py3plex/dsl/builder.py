@@ -3253,6 +3253,241 @@ class QueryBuilder:
         # Not a predicate pattern, raise AttributeError as usual
         raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
     
+    def name(self, query_name: str) -> "QueryBuilder":
+        """Assign a name to this query for provenance tracking.
+        
+        Named queries appear in provenance metadata and explanations,
+        making it easier to understand complex composed queries.
+        
+        Args:
+            query_name: Descriptive name for this query
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> hubs = Q.nodes().where(degree__gt=5).name("hubs")
+            >>> stable = Q.nodes().uq().name("stable_nodes")
+            >>> combined = hubs & stable
+        """
+        # Store name in metadata
+        if not hasattr(self._select, 'metadata'):
+            self._select.metadata = {}
+        self._select.metadata['name'] = query_name
+        return self
+    
+    def resolve(self, 
+                identity: Optional[str] = None,
+                conflicts: Optional[str] = None) -> "QueryBuilder":
+        """Configure algebra resolution strategies for this query.
+        
+        This method sets strategies for:
+        - Identity comparison (by_id vs by_replica)
+        - Attribute conflict resolution
+        
+        Args:
+            identity: Identity strategy - "by_id" or "by_replica"
+            conflicts: Conflict resolution - "prefer_left", "prefer_right", 
+                      "mean", "max", "min", "keep_both", "error"
+                      
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> q1 = Q.nodes().compute("degree")
+            >>> q2 = Q.nodes().compute("pagerank")
+            >>> combined = (q1 & q2).resolve(identity="by_id", conflicts="mean")
+        """
+        from .algebra import IdentityStrategy, ConflictResolution
+        
+        if not hasattr(self._select, 'metadata'):
+            self._select.metadata = {}
+        
+        if identity is not None:
+            try:
+                strategy = IdentityStrategy(identity)
+                self._select.metadata['identity_strategy'] = strategy
+            except ValueError:
+                raise ValueError(
+                    f"Invalid identity strategy: {identity}. "
+                    f"Must be 'by_id' or 'by_replica'"
+                )
+        
+        if conflicts is not None:
+            try:
+                resolution = ConflictResolution(conflicts)
+                self._select.metadata['conflict_resolution'] = resolution
+            except ValueError:
+                raise ValueError(
+                    f"Invalid conflict resolution: {conflicts}. "
+                    f"Valid options: prefer_left, prefer_right, mean, max, min, keep_both, error"
+                )
+        
+        return self
+    
+    def __or__(self, other: "QueryBuilder") -> "QueryBuilder":
+        """Union operator: q1 | q2
+        
+        Combines two queries, keeping items that appear in either query.
+        For pre-compute queries (not yet executed), creates a logical OR composition.
+        
+        Args:
+            other: Another QueryBuilder instance
+            
+        Returns:
+            New QueryBuilder representing the union
+            
+        Raises:
+            IncompatibleQueryError: If queries have different targets
+            
+        Example:
+            >>> social_hubs = Q.nodes().from_layers(L["social"]).where(degree__gt=5)
+            >>> work_hubs = Q.nodes().from_layers(L["work"]).where(degree__gt=5)
+            >>> all_hubs = social_hubs | work_hubs
+        """
+        from .algebra import check_query_compatibility, AlgebraError
+        from copy import deepcopy
+        
+        check_query_compatibility(self, other)
+        
+        # Create new builder with combined logic
+        result = QueryBuilder(self._select.target, autocompute=self._select.autocompute)
+        
+        # Store algebra operation in metadata
+        if not hasattr(result._select, 'metadata'):
+            result._select.metadata = {}
+        result._select.metadata['algebra_op'] = {
+            'operation': 'union',
+            'left': getattr(self._select, 'metadata', {}).get('name', 'unnamed_left'),
+            'right': getattr(other._select, 'metadata', {}).get('name', 'unnamed_right'),
+        }
+        
+        # For now, mark as algebra composition (execution will handle merging)
+        result._select.metadata['is_algebra_composition'] = True
+        result._select.metadata['algebra_operands'] = (deepcopy(self._select), deepcopy(other._select))
+        
+        return result
+    
+    def __and__(self, other: "QueryBuilder") -> "QueryBuilder":
+        """Intersection operator: q1 & q2
+        
+        Combines two queries, keeping only items that appear in both queries.
+        For pre-compute queries (not yet executed), creates a logical AND composition.
+        
+        Args:
+            other: Another QueryBuilder instance
+            
+        Returns:
+            New QueryBuilder representing the intersection
+            
+        Raises:
+            IncompatibleQueryError: If queries have different targets
+            
+        Example:
+            >>> high_degree = Q.nodes().where(degree__gt=5)
+            >>> high_betweenness = Q.nodes().where(betweenness_centrality__gt=0.1)
+            >>> hubs = high_degree & high_betweenness
+        """
+        from .algebra import check_query_compatibility
+        from copy import deepcopy
+        
+        check_query_compatibility(self, other)
+        
+        result = QueryBuilder(self._select.target, autocompute=self._select.autocompute)
+        
+        if not hasattr(result._select, 'metadata'):
+            result._select.metadata = {}
+        result._select.metadata['algebra_op'] = {
+            'operation': 'intersection',
+            'left': getattr(self._select, 'metadata', {}).get('name', 'unnamed_left'),
+            'right': getattr(other._select, 'metadata', {}).get('name', 'unnamed_right'),
+        }
+        
+        result._select.metadata['is_algebra_composition'] = True
+        result._select.metadata['algebra_operands'] = (deepcopy(self._select), deepcopy(other._select))
+        
+        return result
+    
+    def __sub__(self, other: "QueryBuilder") -> "QueryBuilder":
+        """Difference operator: q1 - q2
+        
+        Keeps items from first query that are not in second query.
+        For pre-compute queries (not yet executed), creates a logical difference.
+        
+        Args:
+            other: Another QueryBuilder instance
+            
+        Returns:
+            New QueryBuilder representing the difference
+            
+        Raises:
+            IncompatibleQueryError: If queries have different targets
+            
+        Example:
+            >>> all_nodes = Q.nodes()
+            >>> outliers = Q.nodes().where(degree__gt=10)
+            >>> normal_nodes = all_nodes - outliers
+        """
+        from .algebra import check_query_compatibility
+        from copy import deepcopy
+        
+        check_query_compatibility(self, other)
+        
+        result = QueryBuilder(self._select.target, autocompute=self._select.autocompute)
+        
+        if not hasattr(result._select, 'metadata'):
+            result._select.metadata = {}
+        result._select.metadata['algebra_op'] = {
+            'operation': 'difference',
+            'left': getattr(self._select, 'metadata', {}).get('name', 'unnamed_left'),
+            'right': getattr(other._select, 'metadata', {}).get('name', 'unnamed_right'),
+        }
+        
+        result._select.metadata['is_algebra_composition'] = True
+        result._select.metadata['algebra_operands'] = (deepcopy(self._select), deepcopy(other._select))
+        
+        return result
+    
+    def __xor__(self, other: "QueryBuilder") -> "QueryBuilder":
+        """Symmetric difference operator: q1 ^ q2
+        
+        Keeps items that appear in exactly one of the queries (not both).
+        For pre-compute queries (not yet executed), creates a logical XOR.
+        
+        Args:
+            other: Another QueryBuilder instance
+            
+        Returns:
+            New QueryBuilder representing the symmetric difference
+            
+        Raises:
+            IncompatibleQueryError: If queries have different targets
+            
+        Example:
+            >>> social_only = Q.nodes().from_layers(L["social"])
+            >>> work_only = Q.nodes().from_layers(L["work"])
+            >>> exclusive = social_only ^ work_only  # In one layer, not both
+        """
+        from .algebra import check_query_compatibility
+        from copy import deepcopy
+        
+        check_query_compatibility(self, other)
+        
+        result = QueryBuilder(self._select.target, autocompute=self._select.autocompute)
+        
+        if not hasattr(result._select, 'metadata'):
+            result._select.metadata = {}
+        result._select.metadata['algebra_op'] = {
+            'operation': 'symmetric_difference',
+            'left': getattr(self._select, 'metadata', {}).get('name', 'unnamed_left'),
+            'right': getattr(other._select, 'metadata', {}).get('name', 'unnamed_right'),
+        }
+        
+        result._select.metadata['is_algebra_composition'] = True
+        result._select.metadata['algebra_operands'] = (deepcopy(self._select), deepcopy(other._select))
+        
+        return result
+    
     def __repr__(self) -> str:
         return f"QueryBuilder(target={self._select.target.value})"
 
