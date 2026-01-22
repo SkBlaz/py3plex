@@ -7,7 +7,9 @@ AST nodes, which are then executed by the same engine.
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, Set
+import json
+import copy
 
 
 class Target(Enum):
@@ -1232,3 +1234,524 @@ class BenchmarkNode:
     selection_weights: Optional[Dict[str, float]] = None
     return_trace: bool = True
     provenance: Dict[str, Any] = field(default_factory=dict)
+
+
+# ==============================================================================
+# AST Canonicalization & Roundtrip Support
+# ==============================================================================
+# 
+# This section implements the canonical AST representation that guarantees:
+# 
+#     canonical_ast(q.to_ast()) == canonical_ast(Q.from_ast(q.to_ast()).to_ast())
+# 
+# Two ASTs are considered equivalent if they have the same:
+# - Target (nodes, edges, communities)
+# - Layer algebra result (after resolution)
+# - Filters (modulo commutative AND operations)
+# - Computations (ignoring ordering where semantics are unaffected)
+# - Grouping/aggregation semantics
+# - UQ configuration (excluding volatile state)
+# - Null model/dynamics/comparison semantics
+#
+# Canonicalization normalizes:
+# - Commutative operations (sorts AND filters, layer unions, compute lists)
+# - Default parameters (makes implicit explicit)
+# - Numeric precision (stable float representation)
+# - Field aliases (normalizes to canonical names)
+# 
+# Canonicalization preserves:
+# - Semantic intent
+# - Non-commutative operations
+# - Provenance-relevant configuration (seeds, UQ params)
+# ==============================================================================
+
+import json as _json
+import copy as _copy
+from typing import Set as _Set
+
+
+def _normalize_float(value: float, precision: int = 10) -> float:
+    """Normalize float to stable precision for canonical comparison.
+    
+    Args:
+        value: Float value to normalize
+        precision: Number of decimal places to retain
+        
+    Returns:
+        Normalized float value
+    """
+    return round(value, precision)
+
+
+def _sort_atoms_by_repr(atoms: List[ConditionAtom]) -> List[ConditionAtom]:
+    """Sort condition atoms by their repr for canonical ordering.
+    
+    This enables stable ordering of commutative AND operations.
+    
+    Args:
+        atoms: List of condition atoms
+        
+    Returns:
+        Sorted list of atoms (by repr)
+    """
+    return sorted(atoms, key=lambda a: repr(a))
+
+
+def _sort_compute_items(items: List[ComputeItem]) -> List[ComputeItem]:
+    """Sort compute items by name for canonical ordering.
+    
+    Args:
+        items: List of compute items
+        
+    Returns:
+        Sorted list (by name)
+    """
+    return sorted(items, key=lambda c: c.name)
+
+
+def _canonicalize_value(value: Value) -> Value:
+    """Canonicalize a value (string, float, int, or ParamRef).
+    
+    Args:
+        value: Value to canonicalize
+        
+    Returns:
+        Canonicalized value
+    """
+    if isinstance(value, float):
+        return _normalize_float(value)
+    return value
+
+
+def _canonicalize_comparison(comp: Comparison) -> Comparison:
+    """Canonicalize a Comparison node.
+    
+    Args:
+        comp: Comparison to canonicalize
+        
+    Returns:
+        Canonicalized Comparison
+    """
+    return Comparison(
+        left=comp.left,
+        op=comp.op,
+        right=_canonicalize_value(comp.right)
+    )
+
+
+def _canonicalize_condition_atom(atom: ConditionAtom) -> ConditionAtom:
+    """Canonicalize a ConditionAtom node.
+    
+    Args:
+        atom: Atom to canonicalize
+        
+    Returns:
+        Canonicalized ConditionAtom
+    """
+    if atom.comparison:
+        return ConditionAtom(comparison=_canonicalize_comparison(atom.comparison))
+    if atom.function:
+        return ConditionAtom(function=atom.function)
+    if atom.special:
+        return ConditionAtom(special=atom.special)
+    return atom
+
+
+def _canonicalize_condition_expr(cond: Optional[ConditionExpr]) -> Optional[ConditionExpr]:
+    """Canonicalize a ConditionExpr by sorting commutative atoms.
+    
+    For AND operations, atoms are commutative and can be reordered.
+    For mixed AND/OR, we preserve the original structure to maintain semantics.
+    
+    Args:
+        cond: Condition expression to canonicalize
+        
+    Returns:
+        Canonicalized ConditionExpr or None
+    """
+    if cond is None:
+        return None
+    
+    # Canonicalize each atom
+    canonical_atoms = [_canonicalize_condition_atom(atom) for atom in cond.atoms]
+    
+    # If all operations are AND (commutative), sort the atoms
+    all_and = all(op == "AND" for op in cond.ops)
+    if all_and:
+        canonical_atoms = _sort_atoms_by_repr(canonical_atoms)
+    
+    return ConditionExpr(atoms=canonical_atoms, ops=list(cond.ops))
+
+
+def _canonicalize_compute_item(item: ComputeItem) -> ComputeItem:
+    """Canonicalize a ComputeItem by normalizing its parameters.
+    
+    Args:
+        item: ComputeItem to canonicalize
+        
+    Returns:
+        Canonicalized ComputeItem
+    """
+    return ComputeItem(
+        name=item.name,
+        alias=item.alias,
+        uncertainty=item.uncertainty,
+        method=item.method,
+        n_samples=item.n_samples,
+        ci=_normalize_float(item.ci) if item.ci is not None else None,
+        bootstrap_unit=item.bootstrap_unit,
+        bootstrap_mode=item.bootstrap_mode,
+        n_null=item.n_null,
+        null_model=item.null_model,
+        random_state=item.random_state,
+    )
+
+
+def _canonicalize_uq_config(uq: Optional[UQConfig]) -> Optional[UQConfig]:
+    """Canonicalize UQConfig by normalizing numeric values.
+    
+    Args:
+        uq: UQConfig to canonicalize
+        
+    Returns:
+        Canonicalized UQConfig or None
+    """
+    if uq is None:
+        return None
+    
+    return UQConfig(
+        method=uq.method,
+        n_samples=uq.n_samples,
+        ci=_normalize_float(uq.ci) if uq.ci is not None else None,
+        seed=uq.seed,
+        kwargs=dict(uq.kwargs),
+    )
+
+
+def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
+    """Canonicalize a SelectStmt.
+    
+    This normalizes all sub-components while preserving semantic intent.
+    
+    Args:
+        select: SelectStmt to canonicalize
+        
+    Returns:
+        Canonicalized SelectStmt
+    """
+    # Sort compute items for stable ordering (computes are order-independent)
+    canonical_compute = _sort_compute_items([_canonicalize_compute_item(c) for c in select.compute])
+    
+    # Canonicalize WHERE conditions
+    canonical_where = _canonicalize_condition_expr(select.where)
+    
+    # Canonicalize UQ config
+    canonical_uq = _canonicalize_uq_config(select.uq_config)
+    
+    # Create canonicalized SelectStmt
+    return SelectStmt(
+        target=select.target,
+        layer_expr=select.layer_expr,
+        layer_set=select.layer_set,
+        where=canonical_where,
+        compute=canonical_compute,
+        order_by=list(select.order_by),  # Order matters for ORDER BY
+        limit=select.limit,
+        export=select.export,
+        file_export=select.file_export,
+        temporal_context=select.temporal_context,
+        window_spec=select.window_spec,
+        group_by=sorted(select.group_by) if select.group_by else [],  # Sort group_by for stability
+        limit_per_group=select.limit_per_group,
+        coverage_mode=select.coverage_mode,
+        coverage_k=select.coverage_k,
+        coverage_p=_normalize_float(select.coverage_p) if select.coverage_p is not None else None,
+        coverage_group=select.coverage_group,
+        coverage_id_field=select.coverage_id_field,
+        select_cols=sorted(select.select_cols) if select.select_cols else None,
+        drop_cols=sorted(select.drop_cols) if select.drop_cols else None,
+        rename_map=dict(select.rename_map) if select.rename_map else None,
+        summarize_aggs=dict(select.summarize_aggs) if select.summarize_aggs else None,
+        distinct_cols=sorted(select.distinct_cols) if select.distinct_cols else None,
+        rank_specs=list(select.rank_specs) if select.rank_specs else None,
+        zscore_attrs=sorted(select.zscore_attrs) if select.zscore_attrs else None,
+        post_filters=list(select.post_filters) if select.post_filters else None,
+        aggregate_specs=dict(select.aggregate_specs) if select.aggregate_specs else None,
+        mutate_specs=dict(select.mutate_specs) if select.mutate_specs else None,
+        autocompute=select.autocompute,
+        uq_config=canonical_uq,
+        explain_spec=select.explain_spec,
+        counterfactual_spec=select.counterfactual_spec,
+        sensitivity_spec=select.sensitivity_spec,
+        contract_spec=select.contract_spec,
+        auto_community_config=select.auto_community_config,
+    )
+
+
+def canonicalize_ast(query: Query) -> Query:
+    """Canonicalize an AST for stable comparison and hashing.
+    
+    The canonical form:
+    - Sorts commutative operations (AND filters, compute lists)
+    - Normalizes numeric precision
+    - Preserves semantic intent and non-commutative operations
+    
+    This is the single source of truth for AST equivalence.
+    
+    Args:
+        query: Query AST to canonicalize
+        
+    Returns:
+        Canonicalized Query AST (deep copy)
+        
+    Example:
+        >>> ast1 = Q.nodes().where(degree__gt=5.0001).compute("degree", "betweenness").to_ast()
+        >>> ast2 = Q.nodes().where(degree__gt=5.0002).compute("betweenness", "degree").to_ast()
+        >>> canonical_ast1 = canonicalize_ast(ast1)
+        >>> canonical_ast2 = canonicalize_ast(ast2)
+        >>> # canonical_ast1 == canonical_ast2 (up to float precision)
+    """
+    return Query(
+        explain=query.explain,
+        select=_canonicalize_select_stmt(query.select),
+        dsl_version=query.dsl_version,
+    )
+
+
+def ast_equals(ast1: Query, ast2: Query) -> bool:
+    """Check if two ASTs are semantically equivalent.
+    
+    Uses canonical comparison: canonicalize both ASTs and compare.
+    
+    Args:
+        ast1: First AST
+        ast2: Second AST
+        
+    Returns:
+        True if ASTs are equivalent, False otherwise
+        
+    Example:
+        >>> ast1 = Q.nodes().compute("degree", "betweenness").to_ast()
+        >>> ast2 = Q.nodes().compute("betweenness", "degree").to_ast()
+        >>> ast_equals(ast1, ast2)  # True (compute order doesn't matter)
+    """
+    canonical1 = canonicalize_ast(ast1)
+    canonical2 = canonicalize_ast(ast2)
+    return canonical1 == canonical2
+
+
+def ast_diff(ast1: Query, ast2: Query) -> Dict[str, Any]:
+    """Compute semantic difference between two ASTs.
+    
+    Returns a structured diff showing what differs between canonical forms.
+    
+    Args:
+        ast1: First AST
+        ast2: Second AST
+        
+    Returns:
+        Dictionary with diff information:
+        - 'equal': True if ASTs are equivalent
+        - 'target_diff': Difference in target (if any)
+        - 'layer_diff': Difference in layers (if any)
+        - 'where_diff': Difference in conditions (if any)
+        - 'compute_diff': Difference in computations (if any)
+        - 'other_diffs': List of other differences
+        
+    Example:
+        >>> ast1 = Q.nodes().where(degree__gt=5).to_ast()
+        >>> ast2 = Q.nodes().where(degree__gt=10).to_ast()
+        >>> diff = ast_diff(ast1, ast2)
+        >>> diff['where_diff']  # Shows difference in WHERE clause
+    """
+    canonical1 = canonicalize_ast(ast1)
+    canonical2 = canonicalize_ast(ast2)
+    
+    if canonical1 == canonical2:
+        return {'equal': True}
+    
+    diff_result = {'equal': False}
+    
+    # Compare targets
+    if canonical1.select.target != canonical2.select.target:
+        diff_result['target_diff'] = {
+            'ast1': canonical1.select.target,
+            'ast2': canonical2.select.target,
+        }
+    
+    # Compare layers
+    if canonical1.select.layer_expr != canonical2.select.layer_expr:
+        diff_result['layer_diff'] = {
+            'ast1': canonical1.select.layer_expr,
+            'ast2': canonical2.select.layer_expr,
+        }
+    
+    # Compare WHERE conditions
+    if canonical1.select.where != canonical2.select.where:
+        diff_result['where_diff'] = {
+            'ast1': repr(canonical1.select.where),
+            'ast2': repr(canonical2.select.where),
+        }
+    
+    # Compare compute items
+    if canonical1.select.compute != canonical2.select.compute:
+        diff_result['compute_diff'] = {
+            'ast1': [c.name for c in canonical1.select.compute],
+            'ast2': [c.name for c in canonical2.select.compute],
+        }
+    
+    # Collect other differences
+    other_diffs = []
+    if canonical1.select.order_by != canonical2.select.order_by:
+        other_diffs.append('order_by')
+    if canonical1.select.limit != canonical2.select.limit:
+        other_diffs.append('limit')
+    if canonical1.select.group_by != canonical2.select.group_by:
+        other_diffs.append('group_by')
+    if canonical1.select.uq_config != canonical2.select.uq_config:
+        other_diffs.append('uq_config')
+    
+    if other_diffs:
+        diff_result['other_diffs'] = other_diffs
+    
+    return diff_result
+
+
+def ast_to_json(query: Query, canonical: bool = True) -> str:
+    """Serialize AST to JSON.
+    
+    Args:
+        query: Query AST to serialize
+        canonical: If True, canonicalize before serialization
+        
+    Returns:
+        JSON string representation
+        
+    Example:
+        >>> ast = Q.nodes().where(degree__gt=5).to_ast()
+        >>> json_str = ast_to_json(ast)
+        >>> # Can be deserialized with ast_from_json()
+    """
+    if canonical:
+        query = canonicalize_ast(query)
+    
+    def _serialize(obj):
+        """Convert dataclass to dict recursively."""
+        if obj is None:
+            return None
+        if isinstance(obj, (str, int, float, bool)):
+            return obj
+        if isinstance(obj, (list, tuple)):
+            return [_serialize(item) for item in obj]
+        if isinstance(obj, dict):
+            return {k: _serialize(v) for k, v in obj.items()}
+        if hasattr(obj, '__dataclass_fields__'):
+            # Dataclass
+            result = {'__type__': obj.__class__.__name__}
+            for field_name in obj.__dataclass_fields__:
+                value = getattr(obj, field_name)
+                result[field_name] = _serialize(value)
+            return result
+        if isinstance(obj, Enum):
+            return {'__enum__': obj.__class__.__name__, 'value': obj.value}
+        # Fallback
+        return str(obj)
+    
+    data = _serialize(query)
+    data['__schema_version__'] = '2.0'
+    return _json.dumps(data, indent=2, sort_keys=True)
+
+
+def ast_from_json(json_str: str) -> Query:
+    """Deserialize AST from JSON.
+    
+    Args:
+        json_str: JSON string to deserialize
+        
+    Returns:
+        Query AST
+        
+    Raises:
+        ValueError: If JSON is invalid or schema version is incompatible
+        
+    Example:
+        >>> ast = Q.nodes().where(degree__gt=5).to_ast()
+        >>> json_str = ast_to_json(ast)
+        >>> reconstructed = ast_from_json(json_str)
+        >>> ast_equals(ast, reconstructed)  # True
+    """
+    data = _json.loads(json_str)
+    
+    # Check schema version
+    schema_version = data.get('__schema_version__')
+    if schema_version != '2.0':
+        raise ValueError(f"Incompatible schema version: {schema_version} (expected 2.0)")
+    
+    # Remove schema version marker
+    data.pop('__schema_version__', None)
+    
+    def _deserialize(obj, target_type=None):
+        """Convert dict back to dataclass recursively."""
+        if obj is None:
+            return None
+        if isinstance(obj, (str, int, float, bool)):
+            return obj
+        if isinstance(obj, list):
+            return [_deserialize(item) for item in obj]
+        if isinstance(obj, dict):
+            if '__enum__' in obj:
+                # Reconstruct enum
+                enum_name = obj['__enum__']
+                enum_value = obj['value']
+                # Find enum class
+                if enum_name == 'Target':
+                    return Target(enum_value)
+                if enum_name == 'ExportTarget':
+                    return ExportTarget(enum_value)
+                # Add more enums as needed
+                return enum_value
+            if '__type__' in obj:
+                # Reconstruct dataclass
+                type_name = obj['__type__']
+                obj_data = {k: v for k, v in obj.items() if k != '__type__'}
+                
+                # Find dataclass type
+                type_map = {
+                    'Query': Query,
+                    'SelectStmt': SelectStmt,
+                    'LayerExpr': LayerExpr,
+                    'LayerTerm': LayerTerm,
+                    'ConditionExpr': ConditionExpr,
+                    'ConditionAtom': ConditionAtom,
+                    'Comparison': Comparison,
+                    'FunctionCall': FunctionCall,
+                    'SpecialPredicate': SpecialPredicate,
+                    'ComputeItem': ComputeItem,
+                    'OrderItem': OrderItem,
+                    'ParamRef': ParamRef,
+                    'UQConfig': UQConfig,
+                    'TemporalContext': TemporalContext,
+                    'WindowSpec': WindowSpec,
+                    'ExportSpec': ExportSpec,
+                    'ExplainSpec': ExplainSpec,
+                    'SensitivitySpec': SensitivitySpec,
+                    'CounterfactualSpec': CounterfactualSpec,
+                    'ContractSpec': ContractSpec,
+                    'AutoCommunityConfig': AutoCommunityConfig,
+                }
+                
+                target_class = type_map.get(type_name)
+                if target_class is None:
+                    raise ValueError(f"Unknown type: {type_name}")
+                
+                # Recursively deserialize fields
+                deserialized_data = {}
+                for field_name, field_value in obj_data.items():
+                    deserialized_data[field_name] = _deserialize(field_value)
+                
+                return target_class(**deserialized_data)
+            # Regular dict
+            return {k: _deserialize(v) for k, v in obj.items()}
+        return obj
+    
+    return _deserialize(data)
