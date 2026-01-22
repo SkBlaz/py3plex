@@ -7465,6 +7465,66 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 
 ## Testing Strategy
 
+### Current Test Coverage State (Updated: January 2026)
+
+**Overall Coverage**: ~8% (30,595 of 33,254 statements uncovered)
+
+**Note**: This low overall coverage reflects that py3plex is a mature library with extensive functionality, but test coverage has historically focused on core algorithms and DSL functionality. Many utility modules, visualization features, and specialized algorithms have limited or no test coverage.
+
+**Recent Test Improvements** (This PR):
+- **203 new comprehensive tests added** for previously untested modules:
+  - `test_core_schema_validation.py` - 16 tests for FieldValidator and ValidationError
+  - `test_core_lazy_evaluation.py` - 15 tests for LazyProperty and CacheManager  
+  - `test_core_immutable.py` - 15 tests for ImmutableNetworkView
+  - `test_compat_exceptions.py` - 19 tests for CompatibilityError, SchemaError, ConversionNotSupportedError
+  - `test_parallel.py` - 19 tests for spawn_seeds, parallel_map, deterministic execution
+  - `test_temporal_utils_extended.py` - 40 tests for duration parsing and formatting
+  - `test_algorithms_random_generators.py` - 21 tests for BA, ER, and SBM multilayer generators
+  - `test_algorithms_attribute_correlation.py` - 23 tests for attribute-centrality correlation
+  - `test_visualization_benchmark.py` - 35 tests added/enhanced for benchmark plotting
+
+#### Modules with High Coverage (>70%):
+- `__init__.py` - 100%
+- `config.py` - 84.2%
+- `logging_config.py` - 66.7%
+
+#### Modules with Moderate Coverage (20-70%):
+- `exceptions.py` - 40.9% (exception hierarchy)
+- `errors.py` - 31.8% (error handling)
+- `dsl` - 23.5% (DSL queries, 3,465/4,531 statements uncovered)
+- `graph_ops.py` - 22.6% (graph operations)
+- `pipeline.py` - 21.7% (pipeline API)
+- `uncertainty` - 21.3% (UQ framework)
+- `plugins` - 20.7% (plugin system)
+
+#### Modules Previously at 0% Now with Comprehensive Tests:
+- ✅ `core/schema_validation.py` - 16 tests added (field validation)
+- ✅ `core/lazy_evaluation.py` - 15 tests added (lazy properties & caching)
+- ✅ `core/immutable.py` - 15 tests added (immutable network views)
+- ✅ `compat/exceptions.py` - 19 tests added (compatibility exceptions)
+- ✅ `_parallel.py` - 19 tests added (parallel execution & seed spawning)
+- ✅ `temporal_utils_extended.py` - 40 tests added (duration parsing & formatting)
+- ✅ `algorithms/advanced_random_generators.py` - 21 tests added (BA, ER, SBM generators)
+- ✅ `algorithms/attribute_correlation.py` - 23 tests added (attribute-centrality correlation)
+
+#### Remaining Gaps (modules with tests but reported 0% in partial coverage run):
+- `cli.py` - 0% (1,618 statements) - **Has 79 comprehensive tests** in test_cli.py
+- `io/` module - 0% (854 statements) - **Has 8 test files** covering I/O operations
+- `utils.py` - 0% (124 statements) - **Has 4 test files** covering utilities
+- `validation.py` - 0% (121 statements) - **Has 2 test files** covering validation
+- `nullmodels` - 0% (192 statements) - **Has 6 test files** covering null models
+- `dsl_legacy.py` - 8.5% (860 statements) - **Has tests** in test_dsl_legacy_edges.py
+- `paths` - 0% (238 statements) - Path algorithms (lower priority)
+- `stats` - 0% (411 statements) - Statistics module (lower priority)
+- `temporal_utils.py` - 0% (62 statements) - Basic temporal utilities (has tests)
+- `visualization` - 6.7% → **improved** with 35 new/enhanced tests - Visualization utilities (large module)
+- `algorithms` - 1.1% → **improved** with 44 new tests - Algorithm implementations (many specialized)
+- `dynamics` - 19.0% (1,366 statements) - **Has extensive tests** (39+ test functions across multiple files)
+
+**Coverage Reporting Files**:
+- `coverage_full.json` - Complete coverage data (appears to be from partial test run)
+- `coverage_broader.json` - Alternative coverage report
+
 ### Test Organization
 
 - **Unit Tests**: Fast tests in `tests/test_*.py`
