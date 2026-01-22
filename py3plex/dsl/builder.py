@@ -3939,6 +3939,149 @@ class Q:
 
         return PatternQueryBuilder()
 
+    @staticmethod
+    def from_ast(query_ast: "Query") -> QueryBuilder:
+        """Reconstruct a QueryBuilder from an AST.
+        
+        This is the inverse of QueryBuilder.to_ast(). It enables:
+        - AST round-trip: builder → ast → builder → ast
+        - Query replay from stored AST
+        - AST-based query transformations
+        
+        Args:
+            query_ast: Query AST to reconstruct from
+            
+        Returns:
+            QueryBuilder that will produce an equivalent AST
+            
+        Raises:
+            ValueError: If AST schema version is incompatible
+            ValueError: If AST is invalid or incomplete
+            TypeError: If required AST fields are missing
+            
+        Example:
+            >>> # Round-trip a query
+            >>> original = Q.nodes().where(degree__gt=5).compute("betweenness")
+            >>> ast = original.to_ast()
+            >>> reconstructed = Q.from_ast(ast)
+            >>> # reconstructed produces equivalent AST
+            >>> from py3plex.dsl.ast import ast_equals
+            >>> ast_equals(original.to_ast(), reconstructed.to_ast())  # True
+        """
+        from .ast import Query, SelectStmt, Target
+        
+        # Validate AST
+        if not isinstance(query_ast, Query):
+            raise TypeError(f"Expected Query AST, got {type(query_ast)}")
+        
+        # Check schema version
+        if query_ast.dsl_version != "2.0":
+            raise ValueError(
+                f"Incompatible DSL version: {query_ast.dsl_version} (expected 2.0)"
+            )
+        
+        select = query_ast.select
+        if not isinstance(select, SelectStmt):
+            raise TypeError(f"Expected SelectStmt, got {type(select)}")
+        
+        # Create builder with target
+        if select.target == Target.NODES:
+            builder = Q.nodes(autocompute=select.autocompute)
+        elif select.target == Target.EDGES:
+            builder = Q.edges(autocompute=select.autocompute)
+        elif select.target == Target.COMMUNITIES:
+            builder = QueryBuilder(Target.COMMUNITIES, autocompute=select.autocompute)
+        else:
+            raise ValueError(f"Unknown target: {select.target}")
+        
+        # Reconstruct layer selection
+        if select.layer_expr is not None:
+            builder._select.layer_expr = select.layer_expr
+        if select.layer_set is not None:
+            builder._select.layer_set = select.layer_set
+        
+        # Reconstruct WHERE conditions
+        if select.where is not None:
+            builder._select.where = select.where
+        
+        # Reconstruct COMPUTE
+        if select.compute:
+            builder._select.compute = list(select.compute)
+        
+        # Reconstruct ORDER BY
+        if select.order_by:
+            builder._select.order_by = list(select.order_by)
+        
+        # Reconstruct LIMIT
+        if select.limit is not None:
+            builder._select.limit = select.limit
+        
+        # Reconstruct grouping
+        if select.group_by:
+            builder._select.group_by = list(select.group_by)
+        
+        # Reconstruct per-group limit
+        if select.limit_per_group is not None:
+            builder._select.limit_per_group = select.limit_per_group
+        
+        # Reconstruct coverage
+        if select.coverage_mode is not None:
+            builder._select.coverage_mode = select.coverage_mode
+            builder._select.coverage_k = select.coverage_k
+            builder._select.coverage_p = select.coverage_p
+            builder._select.coverage_group = select.coverage_group
+            builder._select.coverage_id_field = select.coverage_id_field
+        
+        # Reconstruct UQ config
+        if select.uq_config is not None:
+            builder._select.uq_config = select.uq_config
+        
+        # Reconstruct temporal context
+        if select.temporal_context is not None:
+            builder._select.temporal_context = select.temporal_context
+        
+        # Reconstruct window spec
+        if select.window_spec is not None:
+            builder._select.window_spec = select.window_spec
+        
+        # Reconstruct aggregations
+        if select.aggregate_specs:
+            builder._select.aggregate_specs = dict(select.aggregate_specs)
+        
+        # Reconstruct mutations
+        if select.mutate_specs:
+            builder._select.mutate_specs = dict(select.mutate_specs)
+        
+        # Reconstruct column operations
+        if select.select_cols is not None:
+            builder._select.select_cols = list(select.select_cols)
+        if select.drop_cols is not None:
+            builder._select.drop_cols = list(select.drop_cols)
+        if select.rename_map:
+            builder._select.rename_map = dict(select.rename_map)
+        if select.distinct_cols is not None:
+            builder._select.distinct_cols = list(select.distinct_cols)
+        
+        # Reconstruct advanced features
+        if select.explain_spec is not None:
+            builder._select.explain_spec = select.explain_spec
+        if select.sensitivity_spec is not None:
+            builder._select.sensitivity_spec = select.sensitivity_spec
+        if select.counterfactual_spec is not None:
+            builder._select.counterfactual_spec = select.counterfactual_spec
+        if select.contract_spec is not None:
+            builder._select.contract_spec = select.contract_spec
+        if select.auto_community_config is not None:
+            builder._select.auto_community_config = select.auto_community_config
+        
+        # Reconstruct export specs
+        if select.export is not None:
+            builder._select.export = select.export
+        if select.file_export is not None:
+            builder._select.file_export = select.file_export
+        
+        return builder
+
     # Nested class for uncertainty defaults
     class uncertainty:
         """Global defaults for uncertainty estimation.

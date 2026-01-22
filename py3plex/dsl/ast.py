@@ -1265,10 +1265,6 @@ class BenchmarkNode:
 # - Provenance-relevant configuration (seeds, UQ params)
 # ==============================================================================
 
-import json as _json
-import copy as _copy
-from typing import Set as _Set
-
 
 def _normalize_float(value: float, precision: int = 10) -> float:
     """Normalize float to stable precision for canonical comparison.
@@ -1659,7 +1655,7 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
     
     data = _serialize(query)
     data['__schema_version__'] = '2.0'
-    return _json.dumps(data, indent=2, sort_keys=True)
+    return json.dumps(data, indent=2, sort_keys=True)
 
 
 def ast_from_json(json_str: str) -> Query:
@@ -1680,7 +1676,7 @@ def ast_from_json(json_str: str) -> Query:
         >>> reconstructed = ast_from_json(json_str)
         >>> ast_equals(ast, reconstructed)  # True
     """
-    data = _json.loads(json_str)
+    data = json.loads(json_str)
     
     # Check schema version
     schema_version = data.get('__schema_version__')
