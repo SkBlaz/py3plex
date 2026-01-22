@@ -7471,6 +7471,15 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 
 **Note**: This low overall coverage reflects that py3plex is a mature library with extensive functionality, but test coverage has historically focused on core algorithms and DSL functionality. Many utility modules, visualization features, and specialized algorithms have limited or no test coverage.
 
+**Recent Test Improvements** (This PR):
+- **124 new comprehensive tests added** for previously untested core modules:
+  - `test_core_schema_validation.py` - 16 tests for FieldValidator and ValidationError
+  - `test_core_lazy_evaluation.py` - 15 tests for LazyProperty and CacheManager  
+  - `test_core_immutable.py` - 15 tests for ImmutableNetworkView
+  - `test_compat_exceptions.py` - 19 tests for CompatibilityError, SchemaError, ConversionNotSupportedError
+  - `test_parallel.py` - 19 tests for spawn_seeds, parallel_map, deterministic execution
+  - `test_temporal_utils_extended.py` - 40 tests for duration parsing and formatting
+
 #### Modules with High Coverage (>70%):
 - `__init__.py` - 100%
 - `config.py` - 84.2%
@@ -7485,20 +7494,29 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 - `uncertainty` - 21.3% (UQ framework)
 - `plugins` - 20.7% (plugin system)
 
-#### Critical Gaps (0% coverage, high-value modules):
-- `cli.py` - 0% (1,618 statements) - Command-line interface
-- `io/` module - 0% (854 statements) - I/O operations
-- `utils.py` - 0% (124 statements) - Core utilities (but has test files)
-- `validation.py` - 0% (121 statements) - Input validation (but has test files)
-- `nullmodels` - 0% (192 statements) - Statistical null models
-- `paths` - 0% (238 statements) - Path algorithms
-- `stats` - 0% (411 statements) - Statistics module
-- `temporal_utils.py` - 0% (62 statements) - Temporal utilities
-- `visualization` - 6.7% (2,241/2,401 statements) - Visualization utilities
-- `algorithms` - 1.1% (12,123/12,262 statements) - Algorithm implementations
+#### Modules Previously at 0% Now with Comprehensive Tests:
+- ✅ `core/schema_validation.py` - 16 tests added (field validation)
+- ✅ `core/lazy_evaluation.py` - 15 tests added (lazy properties & caching)
+- ✅ `core/immutable.py` - 15 tests added (immutable network views)
+- ✅ `compat/exceptions.py` - 19 tests added (compatibility exceptions)
+- ✅ `_parallel.py` - 19 tests added (parallel execution & seed spawning)
+- ✅ `temporal_utils_extended.py` - 40 tests added (duration parsing & formatting)
+
+#### Remaining Gaps (modules with tests but reported 0% in partial coverage run):
+- `cli.py` - 0% (1,618 statements) - **Has 79 comprehensive tests** in test_cli.py
+- `io/` module - 0% (854 statements) - **Has 8 test files** covering I/O operations
+- `utils.py` - 0% (124 statements) - **Has 4 test files** covering utilities
+- `validation.py` - 0% (121 statements) - **Has 2 test files** covering validation
+- `nullmodels` - 0% (192 statements) - **Has 6 test files** covering null models
+- `dsl_legacy.py` - 8.5% (860 statements) - **Has tests** in test_dsl_legacy_edges.py
+- `paths` - 0% (238 statements) - Path algorithms (lower priority)
+- `stats` - 0% (411 statements) - Statistics module (lower priority)
+- `temporal_utils.py` - 0% (62 statements) - Basic temporal utilities (has tests)
+- `visualization` - 6.7% (2,241/2,401 statements) - Visualization utilities (large, lower priority)
+- `algorithms` - 1.1% (12,123/12,262 statements) - Algorithm implementations (many specialized)
 
 **Coverage Reporting Files**:
-- `coverage_full.json` - Complete coverage data
+- `coverage_full.json` - Complete coverage data (appears to be from partial test run)
 - `coverage_broader.json` - Alternative coverage report
 
 ### Test Organization
