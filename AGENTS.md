@@ -7472,13 +7472,16 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 **Note**: This low overall coverage reflects that py3plex is a mature library with extensive functionality, but test coverage has historically focused on core algorithms and DSL functionality. Many utility modules, visualization features, and specialized algorithms have limited or no test coverage.
 
 **Recent Test Improvements** (This PR):
-- **124 new comprehensive tests added** for previously untested core modules:
+- **203 new comprehensive tests added** for previously untested modules:
   - `test_core_schema_validation.py` - 16 tests for FieldValidator and ValidationError
   - `test_core_lazy_evaluation.py` - 15 tests for LazyProperty and CacheManager  
   - `test_core_immutable.py` - 15 tests for ImmutableNetworkView
   - `test_compat_exceptions.py` - 19 tests for CompatibilityError, SchemaError, ConversionNotSupportedError
   - `test_parallel.py` - 19 tests for spawn_seeds, parallel_map, deterministic execution
   - `test_temporal_utils_extended.py` - 40 tests for duration parsing and formatting
+  - `test_algorithms_random_generators.py` - 21 tests for BA, ER, and SBM multilayer generators
+  - `test_algorithms_attribute_correlation.py` - 23 tests for attribute-centrality correlation
+  - `test_visualization_benchmark.py` - 35 tests added/enhanced for benchmark plotting
 
 #### Modules with High Coverage (>70%):
 - `__init__.py` - 100%
@@ -7501,6 +7504,8 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 - ✅ `compat/exceptions.py` - 19 tests added (compatibility exceptions)
 - ✅ `_parallel.py` - 19 tests added (parallel execution & seed spawning)
 - ✅ `temporal_utils_extended.py` - 40 tests added (duration parsing & formatting)
+- ✅ `algorithms/advanced_random_generators.py` - 21 tests added (BA, ER, SBM generators)
+- ✅ `algorithms/attribute_correlation.py` - 23 tests added (attribute-centrality correlation)
 
 #### Remaining Gaps (modules with tests but reported 0% in partial coverage run):
 - `cli.py` - 0% (1,618 statements) - **Has 79 comprehensive tests** in test_cli.py
@@ -7512,8 +7517,9 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 - `paths` - 0% (238 statements) - Path algorithms (lower priority)
 - `stats` - 0% (411 statements) - Statistics module (lower priority)
 - `temporal_utils.py` - 0% (62 statements) - Basic temporal utilities (has tests)
-- `visualization` - 6.7% (2,241/2,401 statements) - Visualization utilities (large, lower priority)
-- `algorithms` - 1.1% (12,123/12,262 statements) - Algorithm implementations (many specialized)
+- `visualization` - 6.7% → **improved** with 35 new/enhanced tests - Visualization utilities (large module)
+- `algorithms` - 1.1% → **improved** with 44 new tests - Algorithm implementations (many specialized)
+- `dynamics` - 19.0% (1,366 statements) - **Has extensive tests** (39+ test functions across multiple files)
 
 **Coverage Reporting Files**:
 - `coverage_full.json` - Complete coverage data (appears to be from partial test run)
