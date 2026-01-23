@@ -45,7 +45,7 @@ net.add_edges([
     {'source': 'Bob', 'target': 'Eve', 'source_type': 'work', 'target_type': 'work'},
 ])
 
-print(f"   Network: {len(net.get_nodes())} nodes, {len(net.get_layers())} layers")
+print(f"   Network: {len(list(net.get_nodes()))} nodes, {len(list(net.get_layers()))} layers")
 print()
 
 # Example 1: Computing metrics with UQ

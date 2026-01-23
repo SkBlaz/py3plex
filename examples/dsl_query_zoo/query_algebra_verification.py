@@ -42,7 +42,7 @@ net.add_edges([
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
 ])
 
-print(f"   Network: {len(net.get_nodes())} nodes (replicas), {len(net.get_layers())} layers")
+print(f"   Network: {len(list(net.get_nodes()))} nodes (replicas), {len(list(net.get_layers()))} layers")
 print()
 
 # Example 1: Monotonicity verification - Filtering reduces results

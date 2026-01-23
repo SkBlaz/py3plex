@@ -42,7 +42,7 @@ net.add_edges([
     {'source': 'Bob', 'target': 'David', 'source_type': 'work', 'target_type': 'work'},
 ])
 
-print(f"   Network: {len(net.get_nodes())} nodes (replicas), {len(net.get_layers())} layers")
+print(f"   Network: {len(list(net.get_nodes()))} nodes (replicas), {len(list(net.get_layers()))} layers")
 print()
 
 # Example 1: Union - Combine results from different layers
