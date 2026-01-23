@@ -1526,8 +1526,8 @@ class QueryResult:
             'algebra_operation': 'union',
             'operand_counts': [len(self.items), len(other.items)],
             'result_count': len(result_items),
-            'identity_strategy': config.identity_strategy.value,
-            'conflict_resolution': config.conflict_resolution.value,
+            'identity_strategy': config.identity_strategy.value if hasattr(config.identity_strategy, 'value') else config.identity_strategy,
+            'conflict_resolution': config.conflict_resolution.value if hasattr(config.conflict_resolution, 'value') else config.conflict_resolution,
         }
         
         # Merge uncertainty info
@@ -1640,7 +1640,7 @@ class QueryResult:
             'algebra_operation': 'intersection',
             'operand_counts': [len(self.items), len(other.items)],
             'result_count': len(result_items),
-            'identity_strategy': config.identity_strategy.value,
+            'identity_strategy': config.identity_strategy.value if hasattr(config.identity_strategy, 'value') else config.identity_strategy,
         }
         
         # Merge uncertainty info
@@ -1725,7 +1725,7 @@ class QueryResult:
             'algebra_operation': 'difference',
             'operand_counts': [len(self.items), len(other.items)],
             'result_count': len(result_items),
-            'identity_strategy': config.identity_strategy.value,
+            'identity_strategy': config.identity_strategy.value if hasattr(config.identity_strategy, 'value') else config.identity_strategy,
         }
         
         return QueryResult(
@@ -1817,7 +1817,7 @@ class QueryResult:
             'algebra_operation': 'symmetric_difference',
             'operand_counts': [len(self.items), len(other.items)],
             'result_count': len(result_items),
-            'identity_strategy': config.identity_strategy.value,
+            'identity_strategy': config.identity_strategy.value if hasattr(config.identity_strategy, 'value') else config.identity_strategy,
         }
         
         return QueryResult(
