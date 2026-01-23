@@ -1334,7 +1334,7 @@ def _compute_communities_with_uncertainty(
         return output
 
 
-def _get_measure_function(compute_item: ComputeItem, target: str = "nodes") -> Tuple[Callable, Optional[Dict]]:
+def _get_measure_function(compute_item: ComputeItem, target: str = "nodes") -> Tuple[Callable, Optional[Dict], bool]:
     """Get the appropriate measure function (exact or approximate).
     
     This is the centralized dispatcher that selects between exact and approximate
@@ -1345,9 +1345,10 @@ def _get_measure_function(compute_item: ComputeItem, target: str = "nodes") -> T
         target: Target type ("nodes" or "edges")
         
     Returns:
-        Tuple of (measure_function, approx_metadata or None)
+        Tuple of (measure_function, approx_metadata or None, is_fast_path)
         - measure_function: The function to call for computing the measure
         - approx_metadata: Dict with approximation metadata if approx is used, else None
+        - is_fast_path: True if approximation is used (fast path)
         
     Raises:
         DslExecutionError: If approximation is requested but not available
@@ -1357,7 +1358,7 @@ def _get_measure_function(compute_item: ComputeItem, target: str = "nodes") -> T
     # If no approximation requested, return exact measure
     if approx_spec is None or not approx_spec.enabled:
         measure_fn = measure_registry.get(compute_item.name, target=target)
-        return measure_fn, None
+        return measure_fn, None, False
     
     # Approximation requested - check if available
     method = approx_spec.method
@@ -1371,13 +1372,14 @@ def _get_measure_function(compute_item: ComputeItem, target: str = "nodes") -> T
     
     # Build approx metadata for provenance
     approx_metadata = {
+        "measure": compute_item.name,
         "algorithm": f"{method}_{compute_item.name}",
         "method": method,
         "parameters": dict(approx_spec.params),
         "diagnostics_enabled": approx_spec.diagnostics,
     }
     
-    return approx_fn, approx_metadata
+    return approx_fn, approx_metadata, True
 
 
 def _list_approx_methods(measure_name: str) -> str:
@@ -1898,6 +1900,10 @@ def _execute_select(
                 params={},
             )
 
+            # Track approximation usage for provenance
+            approx_used = []
+            fast_path_enabled = False
+            
             for i, compute_item in enumerate(select.compute):
                 if progress:
                     uq_info = _format_uq_info(compute_item)
@@ -1930,8 +1936,15 @@ def _execute_select(
                     else:
                         # Fall back to measure registry (built-in measures)
                         # Use dispatcher to get exact or approximate implementation
-                        measure_fn, approx_metadata = _get_measure_function(compute_item, target="nodes")
+                        measure_fn, approx_metadata, is_fast_path = _get_measure_function(compute_item, target="nodes")
                         result_name = compute_item.result_name
+
+                        # Track approximation usage
+                        if approx_metadata is not None:
+                            approx_used.append(approx_metadata)
+                        if is_fast_path:
+                            fast_path_enabled = True
+
 
                         
                         # Special handling for community detection with UQ
@@ -2097,6 +2110,20 @@ def _execute_select(
         meta_dict["grouping"] = grouping_metadata
 
     # Don't add provenance yet - will be added by caller
+
+    # Add approximation metadata if any approx was used
+    if approx_used:
+        meta_dict["approximation"] = {
+            "enabled": True,
+            "measures": approx_used,
+            "fast_path": fast_path_enabled,
+        }
+
+
+    # Set fast_path in provenance if approximation was used
+    if fast_path_enabled and provenance_builder is not None:
+        provenance_builder.backend_info["fast_path"] = True
+
     result = QueryResult(
         target=select.target.value, items=items, attributes=attributes, meta=meta_dict
     )
