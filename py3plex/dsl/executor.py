@@ -1334,6 +1334,60 @@ def _compute_communities_with_uncertainty(
         return output
 
 
+def _get_measure_function(compute_item: ComputeItem, target: str = "nodes") -> Tuple[Callable, Optional[Dict]]:
+    """Get the appropriate measure function (exact or approximate).
+    
+    This is the centralized dispatcher that selects between exact and approximate
+    implementations based on the ComputeItem's approximation spec.
+    
+    Args:
+        compute_item: ComputeItem with measure name and optional approximation spec
+        target: Target type ("nodes" or "edges")
+        
+    Returns:
+        Tuple of (measure_function, approx_metadata or None)
+        - measure_function: The function to call for computing the measure
+        - approx_metadata: Dict with approximation metadata if approx is used, else None
+        
+    Raises:
+        DslExecutionError: If approximation is requested but not available
+    """
+    approx_spec = compute_item.approx
+    
+    # If no approximation requested, return exact measure
+    if approx_spec is None or not approx_spec.enabled:
+        measure_fn = measure_registry.get(compute_item.name, target=target)
+        return measure_fn, None
+    
+    # Approximation requested - check if available
+    method = approx_spec.method
+    if not measure_registry.has_approx(compute_item.name, method):
+        raise DslExecutionError(
+            f"Approximate method '{method}' not available for measure '{compute_item.name}'. "
+            f"Available approximation methods: {_list_approx_methods(compute_item.name)}"
+        )
+    
+    approx_fn = measure_registry.get_approx(compute_item.name, method)
+    
+    # Build approx metadata for provenance
+    approx_metadata = {
+        "algorithm": f"{method}_{compute_item.name}",
+        "method": method,
+        "parameters": dict(approx_spec.params),
+        "diagnostics_enabled": approx_spec.diagnostics,
+    }
+    
+    return approx_fn, approx_metadata
+
+
+def _list_approx_methods(measure_name: str) -> str:
+    """Helper to list available approximation methods for a measure."""
+    if hasattr(measure_registry, '_approx_methods') and measure_name in measure_registry._approx_methods:
+        methods = list(measure_registry._approx_methods[measure_name].keys())
+        return ", ".join(methods) if methods else "none"
+    return "none"
+
+
 def _compute_measure_with_uncertainty(
     network: Any,
     compute_item: ComputeItem,
@@ -1375,7 +1429,15 @@ def _compute_measure_with_uncertainty(
     
     # If UQ is not enabled, return deterministic results
     if resolved_config is None:
-        return measure_fn(subgraph, items)
+        result = measure_fn(subgraph, items)
+        # Handle tuple return from approximate methods (values, diagnostics)
+        if isinstance(result, tuple) and len(result) == 2:
+            values, diagnostics = result
+            # Store diagnostics if requested (TODO: attach to metadata)
+            # For now, just return the values
+            return values
+        else:
+            return result
     
     # Log resolved configuration for debugging
     logger = logging.getLogger(__name__)
@@ -1405,7 +1467,11 @@ def _compute_measure_with_uncertainty(
             return {}
         
         sub = g.subgraph(valid_items).copy()
-        return measure_fn(sub, valid_items)
+        result = measure_fn(sub, valid_items)
+        # Handle tuple return from approximate methods
+        if isinstance(result, tuple) and len(result) == 2:
+            return result[0]  # Return only values for UQ, ignore diagnostics
+        return result
     
     # Step 2: Choose the appropriate uncertainty estimation method
     method = resolved_config.method.lower()
@@ -1863,7 +1929,8 @@ def _execute_select(
                             )
                     else:
                         # Fall back to measure registry (built-in measures)
-                        measure_fn = measure_registry.get(compute_item.name)
+                        # Use dispatcher to get exact or approximate implementation
+                        measure_fn, approx_metadata = _get_measure_function(compute_item, target="nodes")
                         result_name = compute_item.result_name
 
                         

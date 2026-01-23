@@ -6493,3 +6493,107 @@ class ClaimLearnerBuilder:
             names.append(layer_ast.name)
         return names
 
+
+
+# =============================================================================
+# Approximation Helper Functions
+# =============================================================================
+
+def _get_default_approx_method(measure_name: str) -> str:
+    """Get default approximation method for a measure.
+    
+    Args:
+        measure_name: Name of the measure
+        
+    Returns:
+        Default approximation method name
+        
+    Raises:
+        DslExecutionError: If measure doesn't have a default approx method
+    """
+    from .errors import DslExecutionError
+    
+    defaults = {
+        "betweenness_centrality": "sampling",
+        "betweenness": "sampling",
+        "closeness_centrality": "landmarks",
+        "closeness": "landmarks",
+        "pagerank": "power_iteration",
+    }
+    
+    method = defaults.get(measure_name)
+    if method is None:
+        raise DslExecutionError(
+            f"No default approximation method for measure '{measure_name}'. "
+            f"Please specify approx_method explicitly. "
+            f"Available measures with default approx: {list(defaults.keys())}"
+        )
+    return method
+
+
+def _validate_approx_params(measure_name: str, method: str, params: Dict[str, Any]) -> None:
+    """Validate approximation parameters for a measure and method.
+    
+    Args:
+        measure_name: Name of the measure
+        method: Approximation method
+        params: Approximation parameters
+        
+    Raises:
+        DslExecutionError: If parameters are invalid
+    """
+    from .errors import DslExecutionError
+    
+    # Validate common parameters
+    if "n_samples" in params:
+        if not isinstance(params["n_samples"], int) or params["n_samples"] <= 0:
+            raise DslExecutionError(
+                f"Parameter 'n_samples' must be a positive integer, got {params['n_samples']}"
+            )
+    
+    if "n_landmarks" in params:
+        if not isinstance(params["n_landmarks"], int) or params["n_landmarks"] <= 0:
+            raise DslExecutionError(
+                f"Parameter 'n_landmarks' must be a positive integer, got {params['n_landmarks']}"
+            )
+    
+    if "tol" in params:
+        if not isinstance(params["tol"], (int, float)) or params["tol"] <= 0:
+            raise DslExecutionError(
+                f"Parameter 'tol' must be a positive number, got {params['tol']}"
+            )
+    
+    if "max_iter" in params:
+        if not isinstance(params["max_iter"], int) or params["max_iter"] <= 0:
+            raise DslExecutionError(
+                f"Parameter 'max_iter' must be a positive integer, got {params['max_iter']}"
+            )
+    
+    if "sample_fraction" in params:
+        frac = params["sample_fraction"]
+        if not isinstance(frac, (int, float)) or frac <= 0 or frac > 1:
+            raise DslExecutionError(
+                f"Parameter 'sample_fraction' must be in (0, 1], got {frac}"
+            )
+    
+    # Validate method-specific parameters
+    if method == "sampling":
+        # Betweenness sampling
+        if measure_name in ["betweenness_centrality", "betweenness"]:
+            if "n_samples" not in params:
+                # This is OK - will use default
+                pass
+    
+    elif method == "landmarks":
+        # Closeness landmarks
+        if measure_name in ["closeness_centrality", "closeness"]:
+            if "n_landmarks" not in params:
+                # This is OK - will use default
+                pass
+    
+    elif method == "power_iteration":
+        # PageRank power iteration
+        if measure_name == "pagerank":
+            if "tol" not in params and "max_iter" not in params:
+                # This is OK - will use defaults
+                pass

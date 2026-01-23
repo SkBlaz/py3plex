@@ -42,8 +42,8 @@ class MeasureRegistry:
     """Registry for network measures.
     
     Allows registration of measure computation functions and retrieval
-    by name. Supports aliases for common alternative names and target validation
-    (node measures vs edge measures).
+    by name. Supports aliases for common alternative names, target validation
+    (node measures vs edge measures), and approximate implementations.
     """
     
     def __init__(self):
@@ -51,6 +51,7 @@ class MeasureRegistry:
         self._aliases: Dict[str, str] = {}
         self._descriptions: Dict[str, str] = {}
         self._targets: Dict[str, str] = {}  # Measure name -> target (nodes/edges/both)
+        self._approx_methods: Dict[str, Dict[str, Callable]] = {}  # measure -> {method: fn}
     
     def register(self, name: str, aliases: Optional[List[str]] = None,
                  description: Optional[str] = None, target: str = "nodes"):
@@ -73,6 +74,29 @@ class MeasureRegistry:
             if aliases:
                 for alias in aliases:
                     self._aliases[alias] = name
+            return fn
+        return decorator
+    
+    def register_approx(self, measure_name: str, method_name: str):
+        """Decorator to register an approximate implementation for a measure.
+        
+        Args:
+            measure_name: Name of the measure (must be already registered)
+            method_name: Name of the approximation method (e.g., "sampling", "landmarks")
+            
+        Returns:
+            Decorator function
+            
+        Example:
+            >>> @measure_registry.register_approx("betweenness_centrality", "sampling")
+            >>> def approx_betweenness_sampling(G, n_samples=100, seed=None, **kwargs):
+            ...     # implementation
+            ...     pass
+        """
+        def decorator(fn: Callable) -> Callable:
+            if measure_name not in self._approx_methods:
+                self._approx_methods[measure_name] = {}
+            self._approx_methods[measure_name][method_name] = fn
             return fn
         return decorator
     
@@ -99,6 +123,59 @@ class MeasureRegistry:
         else:
             # Raise error with suggestions
             raise UnknownMeasureError(name, list(self.list_measures()))
+        
+        # Validate target if specified
+        if target is not None:
+            measure_target = self._targets.get(actual_name, "nodes")
+            if measure_target != "both" and measure_target != target:
+                from .errors import DslExecutionError
+                target_desc = "edge queries" if target == "edges" else "node queries"
+                raise DslExecutionError(
+                    f"Measure '{name}' is only supported for {measure_target} queries, "
+                    f"not for {target_desc}. "
+                    f"Use a {measure_target}-specific measure instead."
+                )
+        
+        return self._measures[actual_name]
+    
+    def get_approx(self, name: str, method: str) -> Optional[Callable]:
+        """Get an approximate implementation for a measure.
+        
+        Args:
+            name: Measure name or alias
+            method: Approximation method name
+            
+        Returns:
+            The approximate measure function or None if not available
+        """
+        # Resolve alias
+        actual_name = name
+        if name in self._aliases:
+            actual_name = self._aliases[name]
+        
+        if actual_name not in self._approx_methods:
+            return None
+        
+        return self._approx_methods[actual_name].get(method)
+    
+    def has_approx(self, name: str, method: str) -> bool:
+        """Check if an approximate implementation exists for a measure.
+        
+        Args:
+            name: Measure name or alias
+            method: Approximation method name
+            
+        Returns:
+            True if approximate implementation exists
+        """
+        actual_name = name
+        if name in self._aliases:
+            actual_name = self._aliases[name]
+        
+        if actual_name not in self._approx_methods:
+            return False
+        
+        return method in self._approx_methods[actual_name]
         
         # Validate target if specified
         if target is not None:
@@ -396,4 +473,115 @@ register_operator(
     description="Count number of layers each node appears in",
     category="multilayer",
 )
+
+
+# =============================================================================
+# Approximate Implementations
+# =============================================================================
+
+# Import approximate algorithms
+try:
+    from py3plex.algorithms.centrality.approx_betweenness import approximate_betweenness_sampling
+    from py3plex.algorithms.centrality.approx_closeness import approximate_closeness_landmarks
+    from py3plex.algorithms.centrality.approx_pagerank import approximate_pagerank_power_iteration
+    
+    _APPROX_AVAILABLE = True
+except ImportError:
+    _APPROX_AVAILABLE = False
+
+
+if _APPROX_AVAILABLE:
+    # Register approximate betweenness (sampling method)
+    @measure_registry.register_approx("betweenness_centrality", "sampling")
+    def _approx_betweenness_sampling(G: nx.Graph, nodes: Optional[List] = None,
+                                      n_samples: int = 100, seed: Optional[int] = None,
+                                      normalized: bool = True, weight: Optional[str] = None,
+                                      diagnostics: bool = False) -> Tuple[Dict[Any, float], Optional[Dict[Any, float]]]:
+        """Compute approximate betweenness centrality using sampling.
+        
+        Args:
+            G: NetworkX graph
+            nodes: Optional list of nodes to compute for (filters result if provided)
+            n_samples: Number of source samples
+            seed: Random seed for reproducibility
+            normalized: Whether to normalize values
+            weight: Edge weight attribute name
+            diagnostics: Whether to compute per-node stderr
+            
+        Returns:
+            Tuple of (values_dict, stderr_dict or None)
+        """
+        betw, stderr = approximate_betweenness_sampling(
+            G, n_samples=n_samples, seed=seed, normalized=normalized,
+            weight=weight, diagnostics=diagnostics
+        )
+        
+        if nodes is not None:
+            betw = {node: betw.get(node, 0) for node in nodes}
+            if stderr:
+                stderr = {node: stderr.get(node, 0) for node in nodes}
+        
+        return betw, stderr
+    
+    # Register approximate closeness (landmarks method)
+    @measure_registry.register_approx("closeness_centrality", "landmarks")
+    def _approx_closeness_landmarks(G: nx.Graph, nodes: Optional[List] = None,
+                                     n_landmarks: int = 64, seed: Optional[int] = None,
+                                     weight: Optional[str] = None,
+                                     diagnostics: bool = False) -> Tuple[Dict[Any, float], Optional[Dict[Any, float]]]:
+        """Compute approximate closeness centrality using landmarks.
+        
+        Args:
+            G: NetworkX graph
+            nodes: Optional list of nodes to compute for
+            n_landmarks: Number of landmark nodes
+            seed: Random seed for reproducibility
+            weight: Edge weight attribute name
+            diagnostics: Whether to compute per-node stderr
+            
+        Returns:
+            Tuple of (values_dict, stderr_dict or None)
+        """
+        close, stderr = approximate_closeness_landmarks(
+            G, n_landmarks=n_landmarks, seed=seed, weight=weight, diagnostics=diagnostics
+        )
+        
+        if nodes is not None:
+            close = {node: close.get(node, 0) for node in nodes}
+            if stderr:
+                stderr = {node: stderr.get(node, 0) for node in nodes}
+        
+        return close, stderr
+    
+    # Register approximate pagerank (power iteration with explicit stopping)
+    @measure_registry.register_approx("pagerank", "power_iteration")
+    def _approx_pagerank_power(G: nx.Graph, nodes: Optional[List] = None,
+                                alpha: float = 0.85, tol: float = 1e-6,
+                                max_iter: int = 100,
+                                personalization: Optional[Dict] = None,
+                                diagnostics: bool = False) -> Tuple[Dict[Any, float], Optional[Dict]]:
+        """Compute approximate PageRank using power iteration.
+        
+        Args:
+            G: NetworkX graph
+            nodes: Optional list of nodes to compute for
+            alpha: Damping parameter
+            tol: Convergence tolerance
+            max_iter: Maximum iterations
+            personalization: Personalization vector
+            diagnostics: Whether to include convergence info
+            
+        Returns:
+            Tuple of (values_dict, convergence_info_dict or None)
+        """
+        pr, conv = approximate_pagerank_power_iteration(
+            G, alpha=alpha, tol=tol, max_iter=max_iter, personalization=personalization
+        )
+        
+        if nodes is not None:
+            pr = {node: pr.get(node, 0) for node in nodes}
+        
+        # Return convergence info as second element if diagnostics enabled
+        return pr, (conv if diagnostics else None)
+
 
