@@ -3509,9 +3509,9 @@ def _top_k_stream(
         value = key_fn(item)
         tie_breaker = tie_breaker_fn(item) if tie_breaker_fn else item
         if desc:
-            return (-value, tie_breaker)
+            return (-value, tie_breaker)  # Descending: negate for sorting
         else:
-            return (value, tie_breaker)
+            return (value, tie_breaker)  # Ascending: positive for sorting
     
     return sorted(selected, key=final_sort_key)
 
