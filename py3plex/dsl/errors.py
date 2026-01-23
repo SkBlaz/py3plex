@@ -567,3 +567,90 @@ class InvalidGroupAggregateError(DSLCompileError):
             ast_summary=ast_summary,
         )
 
+
+# ==============================================================================
+# AST Validation Errors
+# ==============================================================================
+
+
+class ASTValidationError(DslError):
+    """Base class for AST validation errors.
+    
+    Raised when AST structure is invalid, incomplete, or incompatible.
+    """
+    pass
+
+
+class ASTSchemaVersionError(ASTValidationError):
+    """Exception raised when AST schema version is incompatible.
+    
+    Attributes:
+        found_version: The schema version found in the AST
+        expected_version: The expected schema version
+    """
+    
+    def __init__(self, found_version: str, expected_version: str = "2.0"):
+        self.found_version = found_version
+        self.expected_version = expected_version
+        message = (
+            f"Incompatible AST schema version: {found_version} "
+            f"(expected {expected_version})"
+        )
+        super().__init__(message)
+
+
+class ASTInvalidStructureError(ASTValidationError):
+    """Exception raised when AST structure is invalid.
+    
+    Attributes:
+        issue: Description of the structural issue
+        ast_fragment: Fragment of AST causing the issue
+    """
+    
+    def __init__(self, issue: str, ast_fragment: Optional[str] = None):
+        self.issue = issue
+        self.ast_fragment = ast_fragment
+        message = f"Invalid AST structure: {issue}"
+        if ast_fragment:
+            message += f"\nAST fragment: {ast_fragment}"
+        super().__init__(message)
+
+
+class ASTMissingFieldError(ASTValidationError):
+    """Exception raised when required AST field is missing.
+    
+    Attributes:
+        field: The missing field name
+        ast_type: The AST node type missing the field
+    """
+    
+    def __init__(self, field: str, ast_type: str):
+        self.field = field
+        self.ast_type = ast_type
+        message = f"Required field '{field}' missing from {ast_type} AST node"
+        super().__init__(message)
+
+
+class ASTIllegalPlacementError(ASTValidationError):
+    """Exception raised when AST element is placed illegally.
+    
+    Examples:
+    - UQ config on incompatible measure
+    - Coverage without prior grouping
+    - Aggregation without grouping
+    
+    Attributes:
+        element: The illegally placed element
+        reason: Why the placement is illegal
+        suggestion: How to fix it
+    """
+    
+    def __init__(self, element: str, reason: str, suggestion: Optional[str] = None):
+        self.element = element
+        self.reason = reason
+        self.suggestion = suggestion
+        message = f"Illegal placement of {element}: {reason}"
+        if suggestion:
+            message += f"\nSuggestion: {suggestion}"
+        super().__init__(message)
+

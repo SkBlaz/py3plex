@@ -139,12 +139,14 @@ def network_fingerprint(network: Any) -> Dict[str, Any]:
 
 
 def ast_fingerprint(ast: Union['Query', 'SelectStmt', Any]) -> str:
-    """Compute a stable hash of an AST.
+    """Compute a stable hash of an AST using canonical representation.
     
-    The hash is computed from normalized AST structure, excluding:
-    - Object IDs
-    - Timestamps
-    - Mutable state
+    The hash is computed from the canonical AST, which normalizes:
+    - Commutative operations (sorted AND filters, sorted computes)
+    - Numeric precision (floats to 10 decimal places)
+    - Field aliases
+    
+    This ensures that semantically equivalent ASTs produce identical hashes.
     
     Args:
         ast: Query or SelectStmt AST
@@ -152,13 +154,66 @@ def ast_fingerprint(ast: Union['Query', 'SelectStmt', Any]) -> str:
     Returns:
         Hex string of SHA256 hash (first 16 chars)
     """
-    # Create a canonical representation of the AST
-    canonical = _canonicalize_ast(ast)
+    # Import here to avoid circular dependency
+    from .ast import canonicalize_ast as canonical_ast_transform
     
-    # Hash the canonical representation
+    # For Query AST, use canonical transformation
+    if hasattr(ast, '__class__') and ast.__class__.__name__ == 'Query':
+        canonical = canonical_ast_transform(ast)
+        # Use the repr-based canonicalization for hashing
+        canonical_repr = _ast_repr(canonical)
+        hasher = hashlib.sha256()
+        hasher.update(canonical_repr.encode('utf-8'))
+        return hasher.hexdigest()[:16]
+    
+    # Fallback to old canonicalization for other types
+    canonical = _canonicalize_ast(ast)
     hasher = hashlib.sha256()
     hasher.update(canonical.encode('utf-8'))
     return hasher.hexdigest()[:16]
+
+
+def _ast_repr(obj: Any, depth: int = 0) -> str:
+    """Create a canonical string representation of AST for hashing.
+    
+    This is similar to _canonicalize_ast but works on already-canonical ASTs.
+    
+    Args:
+        obj: AST node or value
+        depth: Current recursion depth
+        
+    Returns:
+        Canonical string representation
+    """
+    if depth > 20:
+        return "..."
+    
+    if obj is None:
+        return "null"
+    
+    if isinstance(obj, (str, int, float, bool)):
+        return repr(obj)
+    
+    if isinstance(obj, (list, tuple)):
+        items = [_ast_repr(item, depth + 1) for item in obj]
+        return f"[{','.join(items)}]"
+    
+    if isinstance(obj, dict):
+        items = sorted((k, _ast_repr(v, depth + 1)) for k, v in obj.items())
+        pairs = [f"{k}:{v}" for k, v in items]
+        return f"{{{','.join(pairs)}}}"
+    
+    if hasattr(obj, '__dict__'):
+        cls_name = obj.__class__.__name__
+        attrs = {}
+        for k, v in obj.__dict__.items():
+            if not k.startswith('_'):
+                attrs[k] = _ast_repr(v, depth + 1)
+        items = sorted((k, v) for k, v in attrs.items())
+        pairs = [f"{k}:{v}" for k, v in items]
+        return f"{cls_name}({','.join(pairs)})"
+    
+    return repr(obj)
 
 
 def _canonicalize_ast(obj: Any, depth: int = 0) -> str:
