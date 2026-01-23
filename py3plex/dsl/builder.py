@@ -45,6 +45,7 @@ from .ast import (
     Comparison,
     SpecialPredicate,
     ComputeItem,
+    ApproximationSpec,
     OrderItem,
     ParamRef,
     ExecutionPlan,
@@ -832,10 +833,38 @@ class QueryBuilder:
                 else:
                     random_state = Q.uncertainty.get("random_state")
 
+        # Handle approximation parameters
+        approx_spec = None
+        if approx:
+            # Extract approximation-specific params from kwargs
+            approx_params = {}
+            
+            # Collect known approximation parameters
+            for param_name in ["n_samples", "n_landmarks", "tol", "max_iter", "alpha", 
+                               "seed", "normalized", "weight", "personalization", "sample_fraction"]:
+                if param_name in kwargs:
+                    approx_params[param_name] = kwargs[param_name]
+            
+            # Determine approximation method for each measure
+            # We'll validate and create ApproximationSpec per measure in the loop below
+            pass
+        
         items: List[ComputeItem] = []
 
         if aliases:
             for name, al in aliases.items():
+                # Build approximation spec for this measure
+                measure_approx_spec = None
+                if approx:
+                    method_for_measure = approx_method or _get_default_approx_method(name)
+                    _validate_approx_params(name, method_for_measure, approx_params)
+                    measure_approx_spec = ApproximationSpec(
+                        enabled=True,
+                        method=method_for_measure,
+                        params=dict(approx_params),  # Copy to avoid mutation
+                        diagnostics=approx_diagnostics
+                    )
+                
                 items.append(
                     ComputeItem(
                         name=name,
@@ -849,9 +878,22 @@ class QueryBuilder:
                         n_null=n_null,
                         null_model=null_model,
                         random_state=random_state,
+                        approx=measure_approx_spec,
                     )
                 )
         elif alias and len(measures) == 1:
+            # Build approximation spec for this measure
+            measure_approx_spec = None
+            if approx:
+                method_for_measure = approx_method or _get_default_approx_method(measures[0])
+                _validate_approx_params(measures[0], method_for_measure, approx_params)
+                measure_approx_spec = ApproximationSpec(
+                    enabled=True,
+                    method=method_for_measure,
+                    params=dict(approx_params),
+                    diagnostics=approx_diagnostics
+                )
+            
             items.append(
                 ComputeItem(
                     name=measures[0],
@@ -865,24 +907,38 @@ class QueryBuilder:
                     n_null=n_null,
                     null_model=null_model,
                     random_state=random_state,
+                    approx=measure_approx_spec,
                 )
             )
         else:
-            items.extend(
-                ComputeItem(
-                    name=m,
-                    uncertainty=uncertainty_flag,
-                    method=method,
-                    n_samples=n_samples,
-                    ci=ci,
-                    bootstrap_unit=bootstrap_unit,
-                    bootstrap_mode=bootstrap_mode,
-                    n_null=n_null,
-                    null_model=null_model,
-                    random_state=random_state,
+            for m in measures:
+                # Build approximation spec for this measure
+                measure_approx_spec = None
+                if approx:
+                    method_for_measure = approx_method or _get_default_approx_method(m)
+                    _validate_approx_params(m, method_for_measure, approx_params)
+                    measure_approx_spec = ApproximationSpec(
+                        enabled=True,
+                        method=method_for_measure,
+                        params=dict(approx_params),
+                        diagnostics=approx_diagnostics
+                    )
+                
+                items.append(
+                    ComputeItem(
+                        name=m,
+                        uncertainty=uncertainty_flag,
+                        method=method,
+                        n_samples=n_samples,
+                        ci=ci,
+                        bootstrap_unit=bootstrap_unit,
+                        bootstrap_mode=bootstrap_mode,
+                        n_null=n_null,
+                        null_model=null_model,
+                        random_state=random_state,
+                        approx=measure_approx_spec,
+                    )
                 )
-                for m in measures
-            )
 
         self._select.compute.extend(items)
         return self
