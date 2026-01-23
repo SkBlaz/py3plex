@@ -195,7 +195,7 @@ def _tokenize_query(query: str) -> List[str]:
         r'\*',  # Asterisk (for SELECT * or RETURN *)
         r';',  # Semicolon (statement terminator)
         r'\bAND\b|\bOR\b|\bNOT\b',  # Logical operators
-        r'\bSELECT\b|\bWHERE\b|\bCOMPUTE\b',  # Original keywords
+        r'\bSELECT\b|\bWHERE\b|\bCOMPUTE\b|\bAPPROXIMATE\b',  # Original keywords + APPROXIMATE
         r'\bMATCH\b|\bRETURN\b|\bFROM\b',  # New keywords
         r'\bIN\b|\bLAYER\b|\bLAYERS\b',  # Layer clause keywords
         r'\bnodes\b|\bedges\b',  # Selection targets
@@ -956,13 +956,66 @@ def _compute_communities(G: nx.Graph) -> Dict[Any, int]:
         raise DSLExecutionError(f"Error computing communities: {str(e)}")
 
 
-def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -> Dict[Any, float]:
+def _parse_approx_kwargs(tokens: List[str]) -> Dict[str, Any]:
+    """Parse kwargs from APPROXIMATE(...) clause.
+    
+    Supports:
+        method="sampling", n_samples=512, seed=42
+        method='landmarks', n_landmarks=64
+    
+    Args:
+        tokens: List of tokens inside APPROXIMATE(...)
+        
+    Returns:
+        Dictionary of parsed kwargs
+    """
+    kwargs = {}
+    i = 0
+    
+    while i < len(tokens):
+        token = tokens[i]
+        
+        # Skip commas
+        if token == ',':
+            i += 1
+            continue
+        
+        # Look for key=value pattern
+        if i + 2 < len(tokens) and tokens[i + 1] == '=':
+            key = token
+            value_token = tokens[i + 2]
+            
+            # Strip quotes from string values
+            if value_token.startswith('"') and value_token.endswith('"'):
+                value = value_token[1:-1]
+            elif value_token.startswith("'") and value_token.endswith("'"):
+                value = value_token[1:-1]
+            else:
+                # Try to parse as number
+                try:
+                    if '.' in value_token or 'e' in value_token.lower():
+                        value = float(value_token)
+                    else:
+                        value = int(value_token)
+                except ValueError:
+                    value = value_token
+            
+            kwargs[key] = value
+            i += 3
+        else:
+            i += 1
+    
+    return kwargs
+
+
+def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None, approx_spec: Optional[Dict[str, Any]] = None) -> Dict[Any, float]:
     """Compute a network measure for nodes.
     
     Args:
         network: Multilayer network object
         measure: Name of measure to compute (e.g., 'degree', 'betweenness_centrality', 'communities')
         nodes: Optional list of nodes to compute for (None = all nodes)
+        approx_spec: Optional approximation specification dict with 'enabled', 'method', 'params'
         
     Returns:
         Dictionary mapping nodes to measure values
@@ -982,6 +1035,37 @@ def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -
     # Handle community detection separately
     if measure in ('communities', 'community'):
         return _compute_communities(G)
+    
+    # Check if approximation is requested
+    if approx_spec and approx_spec.get('enabled'):
+        from py3plex.dsl.registry import measure_registry
+        
+        method = approx_spec.get('method')
+        params = approx_spec.get('params', {})
+        
+        # Infer default method if not specified
+        if not method:
+            default_methods = {
+                'betweenness_centrality': 'sampling',
+                'betweenness': 'sampling',
+                'closeness_centrality': 'landmarks',
+                'closeness': 'landmarks',
+                'pagerank': 'power_iteration',
+            }
+            method = default_methods.get(measure)
+        
+        if method and measure_registry.has_approx(measure, method):
+            try:
+                approx_fn = measure_registry.get_approx(measure, method)
+                result_tuple = approx_fn(G, **params)
+                
+                # Handle tuple return (values, diagnostics)
+                if isinstance(result_tuple, tuple):
+                    return result_tuple[0]  # Return just values
+                return result_tuple
+            except Exception as e:
+                logger.warning(f"Approximation failed for {measure}, falling back to exact: {e}")
+                # Fall through to exact computation
     
     # Helper function for clustering that handles MultiGraphs
     def _clustering_with_multigraph_support(g):
@@ -1208,7 +1292,10 @@ def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[s
         conditions = _parse_where_clause(tokens, where_idx)
     
     # Parse COMPUTE measures (support both repeated and comma-separated)
+    # Each measure can have: measure_name [APPROXIMATE[(kwargs)]]
     measures = []
+    approx_specs = {}  # Map measure -> approx spec dict
+    
     if compute_indices:
         # Collect all tokens after each COMPUTE keyword
         for i, compute_idx in enumerate(compute_indices):
@@ -1223,10 +1310,51 @@ def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[s
             # Extract measures between this COMPUTE and the next marker
             measure_tokens = tokens[start:end]
             
-            # Filter out commas and semicolons, add valid measure names
-            for token in measure_tokens:
-                if token not in [',', ';', 'WHERE']:
-                    measures.append(token)
+            # Parse measures with optional APPROXIMATE
+            j = 0
+            while j < len(measure_tokens):
+                token = measure_tokens[j]
+                
+                # Skip commas, semicolons, WHERE
+                if token in [',', ';', 'WHERE']:
+                    j += 1
+                    continue
+                
+                # This should be a measure name
+                measure_name = token
+                measures.append(measure_name)
+                j += 1
+                
+                # Check for APPROXIMATE keyword
+                if j < len(measure_tokens) and measure_tokens[j].upper() == 'APPROXIMATE':
+                    j += 1
+                    approx_spec = {'enabled': True, 'method': None, 'params': {}}
+                    
+                    # Check for parenthesized kwargs: APPROXIMATE(method="sampling", n_samples=512)
+                    if j < len(measure_tokens) and measure_tokens[j] == '(':
+                        j += 1  # skip '('
+                        kwargs_tokens = []
+                        # Collect tokens until ')'
+                        paren_depth = 1
+                        while j < len(measure_tokens) and paren_depth > 0:
+                            if measure_tokens[j] == '(':
+                                paren_depth += 1
+                            elif measure_tokens[j] == ')':
+                                paren_depth -= 1
+                                if paren_depth == 0:
+                                    break
+                            kwargs_tokens.append(measure_tokens[j])
+                            j += 1
+                        j += 1  # skip closing ')'
+                        
+                        # Parse kwargs: key="value" or key=value
+                        approx_spec['params'] = _parse_approx_kwargs(kwargs_tokens)
+                        
+                        # Extract 'method' from params if present
+                        if 'method' in approx_spec['params']:
+                            approx_spec['method'] = approx_spec['params'].pop('method')
+                    
+                    approx_specs[measure_name] = approx_spec
     
     # Execute query
     result = {
@@ -1284,6 +1412,9 @@ def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[s
         result['computed'] = {}
         for measure in measures:
             try:
+                # Get approximation spec for this measure if any
+                approx_spec = approx_specs.get(measure)
+                
                 # Determine if this is an edge or node measure
                 if target == 'edges':
                     # For edge measures, use DSL v2 measure registry
@@ -1291,8 +1422,8 @@ def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[s
                     measure_fn = measure_registry.get(measure, target="edges")
                     computed_values = measure_fn(network.core_network, filtered_items)
                 else:
-                    # For node measures, use legacy compute function
-                    computed_values = _compute_measure(network, measure, filtered_items)
+                    # For node measures, use legacy compute function with approx support
+                    computed_values = _compute_measure(network, measure, filtered_items, approx_spec=approx_spec)
                 result['computed'][measure] = computed_values
             except Exception as e:
                 logger.error(f"Error computing {measure}: {e}")
