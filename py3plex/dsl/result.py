@@ -1410,3 +1410,420 @@ class QueryResult:
             lines.append("(Use .meta[key] to access specific metadata)")
         
         return "\n".join(lines)
+    
+    def __or__(self, other: "QueryResult") -> "QueryResult":
+        """Union operator: r1 | r2
+        
+        Combines two results, keeping items that appear in either result.
+        This is post-compute algebra (operating on executed results with attributes).
+        
+        Args:
+            other: Another QueryResult instance
+            
+        Returns:
+            New QueryResult with union of items
+            
+        Raises:
+            IncompatibleQueryError: If results have different targets
+            AmbiguousIdentityError: If identity strategy is ambiguous
+            AttributeConflictError: If attribute conflicts exist
+            
+        Example:
+            >>> result1 = Q.nodes().from_layers(L["social"]).execute(net)
+            >>> result2 = Q.nodes().from_layers(L["work"]).execute(net)
+            >>> combined = result1 | result2
+        """
+        from .algebra import (
+            check_result_compatibility,
+            detect_identity_ambiguity,
+            extract_item_identity,
+            detect_attribute_conflicts,
+            resolve_attribute_conflict,
+            merge_uncertainty_info,
+            IdentityStrategy,
+            ConflictResolution,
+            AlgebraConfig,
+            AmbiguousIdentityError,
+            AttributeConflictError,
+        )
+        
+        check_result_compatibility(self, other)
+        
+        # Get or infer identity strategy
+        config = AlgebraConfig()
+        if 'identity_strategy' in self.meta:
+            config.identity_strategy = self.meta['identity_strategy']
+        elif 'identity_strategy' in other.meta:
+            config.identity_strategy = other.meta['identity_strategy']
+        elif detect_identity_ambiguity(self, other):
+            raise AmbiguousIdentityError(
+                "Identity strategy is ambiguous for multilayer results. "
+                "Specify explicitly: result.resolve(identity='by_id') or result.resolve(identity='by_replica')"
+            )
+        
+        # Get conflict resolution strategy
+        if 'conflict_resolution' in self.meta:
+            config.conflict_resolution = self.meta['conflict_resolution']
+        elif 'conflict_resolution' in other.meta:
+            config.conflict_resolution = other.meta['conflict_resolution']
+        
+        # Build identity map
+        id_to_item1 = {extract_item_identity(item, config.identity_strategy): item for item in self.items}
+        id_to_item2 = {extract_item_identity(item, config.identity_strategy): item for item in other.items}
+        
+        # Union of identities
+        all_ids = set(id_to_item1.keys()) | set(id_to_item2.keys())
+        shared_ids = set(id_to_item1.keys()) & set(id_to_item2.keys())
+        
+        # Merge items (prefer full item from first result for shared IDs)
+        result_items = []
+        for item_id in all_ids:
+            if item_id in id_to_item1:
+                result_items.append(id_to_item1[item_id])
+            else:
+                result_items.append(id_to_item2[item_id])
+        
+        # Merge attributes
+        result_attributes = {}
+        
+        # Detect conflicts
+        conflicts = detect_attribute_conflicts(self.attributes, other.attributes, shared_ids)
+        
+        # Merge each attribute
+        for attr in set(self.attributes.keys()) | set(other.attributes.keys()):
+            values1 = self.attributes.get(attr, {})
+            values2 = other.attributes.get(attr, {})
+            
+            merged_values = {}
+            for item_id in all_ids:
+                item1 = id_to_item1.get(item_id)
+                item2 = id_to_item2.get(item_id)
+                
+                val1 = values1.get(item1) if isinstance(values1, dict) and item1 else None
+                val2 = values2.get(item2) if isinstance(values2, dict) and item2 else None
+                
+                if val1 is not None and val2 is not None:
+                    # Both have value - resolve conflict
+                    if attr in conflicts:
+                        merged_val = resolve_attribute_conflict(attr, val1, val2, config.conflict_resolution)
+                    else:
+                        merged_val = val1  # No conflict, use first
+                elif val1 is not None:
+                    merged_val = val1
+                elif val2 is not None:
+                    merged_val = val2
+                else:
+                    continue
+                
+                # Use the actual item from result_items
+                actual_item = id_to_item1.get(item_id) or id_to_item2.get(item_id)
+                merged_values[actual_item] = merged_val
+            
+            result_attributes[attr] = merged_values
+        
+        # Merge metadata
+        result_meta = {
+            'algebra_operation': 'union',
+            'operand_counts': [len(self.items), len(other.items)],
+            'result_count': len(result_items),
+            'identity_strategy': config.identity_strategy.value if hasattr(config.identity_strategy, 'value') else config.identity_strategy,
+            'conflict_resolution': config.conflict_resolution.value if hasattr(config.conflict_resolution, 'value') else config.conflict_resolution,
+        }
+        
+        # Merge uncertainty info
+        uq1 = self.meta.get('uncertainty')
+        uq2 = other.meta.get('uncertainty')
+        merged_uq = merge_uncertainty_info(uq1, uq2)
+        if merged_uq:
+            result_meta['uncertainty'] = merged_uq
+        
+        return QueryResult(
+            target=self.target,
+            items=result_items,
+            attributes=result_attributes,
+            meta=result_meta,
+            computed_metrics=self.computed_metrics | other.computed_metrics
+        )
+    
+    def __and__(self, other: "QueryResult") -> "QueryResult":
+        """Intersection operator: r1 & r2
+        
+        Combines two results, keeping only items that appear in both results.
+        
+        Args:
+            other: Another QueryResult instance
+            
+        Returns:
+            New QueryResult with intersection of items
+            
+        Example:
+            >>> high_degree = Q.nodes().where(degree__gt=5).execute(net)
+            >>> high_betweenness = Q.nodes().where(betweenness__gt=0.1).execute(net)
+            >>> hubs = high_degree & high_betweenness
+        """
+        from .algebra import (
+            check_result_compatibility,
+            detect_identity_ambiguity,
+            extract_item_identity,
+            detect_attribute_conflicts,
+            resolve_attribute_conflict,
+            merge_uncertainty_info,
+            IdentityStrategy,
+            ConflictResolution,
+            AlgebraConfig,
+            AmbiguousIdentityError,
+        )
+        
+        check_result_compatibility(self, other)
+        
+        # Get or infer identity strategy
+        config = AlgebraConfig()
+        if 'identity_strategy' in self.meta:
+            config.identity_strategy = self.meta['identity_strategy']
+        elif 'identity_strategy' in other.meta:
+            config.identity_strategy = other.meta['identity_strategy']
+        elif detect_identity_ambiguity(self, other):
+            raise AmbiguousIdentityError(
+                "Identity strategy is ambiguous for multilayer results. "
+                "Specify explicitly: result.resolve(identity='by_id') or result.resolve(identity='by_replica')"
+            )
+        
+        # Get conflict resolution strategy
+        if 'conflict_resolution' in self.meta:
+            config.conflict_resolution = self.meta['conflict_resolution']
+        elif 'conflict_resolution' in other.meta:
+            config.conflict_resolution = other.meta['conflict_resolution']
+        
+        # Build identity map
+        id_to_item1 = {extract_item_identity(item, config.identity_strategy): item for item in self.items}
+        id_to_item2 = {extract_item_identity(item, config.identity_strategy): item for item in other.items}
+        
+        # Intersection of identities
+        shared_ids = set(id_to_item1.keys()) & set(id_to_item2.keys())
+        
+        # Keep items from first result
+        result_items = [id_to_item1[item_id] for item_id in shared_ids]
+        
+        # Merge attributes (only for shared items)
+        result_attributes = {}
+        conflicts = detect_attribute_conflicts(self.attributes, other.attributes, shared_ids)
+        
+        for attr in set(self.attributes.keys()) | set(other.attributes.keys()):
+            values1 = self.attributes.get(attr, {})
+            values2 = other.attributes.get(attr, {})
+            
+            merged_values = {}
+            for item_id in shared_ids:
+                item = id_to_item1[item_id]
+                
+                val1 = values1.get(item) if isinstance(values1, dict) else None
+                val2 = values2.get(id_to_item2[item_id]) if isinstance(values2, dict) else None
+                
+                if val1 is not None and val2 is not None:
+                    if attr in conflicts:
+                        merged_val = resolve_attribute_conflict(attr, val1, val2, config.conflict_resolution)
+                    else:
+                        merged_val = val1
+                elif val1 is not None:
+                    merged_val = val1
+                elif val2 is not None:
+                    merged_val = val2
+                else:
+                    continue
+                
+                merged_values[item] = merged_val
+            
+            result_attributes[attr] = merged_values
+        
+        # Merge metadata
+        result_meta = {
+            'algebra_operation': 'intersection',
+            'operand_counts': [len(self.items), len(other.items)],
+            'result_count': len(result_items),
+            'identity_strategy': config.identity_strategy.value if hasattr(config.identity_strategy, 'value') else config.identity_strategy,
+        }
+        
+        # Merge uncertainty info
+        merged_uq = merge_uncertainty_info(
+            self.meta.get('uncertainty'),
+            other.meta.get('uncertainty')
+        )
+        if merged_uq:
+            result_meta['uncertainty'] = merged_uq
+        
+        return QueryResult(
+            target=self.target,
+            items=result_items,
+            attributes=result_attributes,
+            meta=result_meta,
+            computed_metrics=self.computed_metrics | other.computed_metrics
+        )
+    
+    def __sub__(self, other: "QueryResult") -> "QueryResult":
+        """Difference operator: r1 - r2
+        
+        Keeps items from first result that are not in second result.
+        
+        Args:
+            other: Another QueryResult instance
+            
+        Returns:
+            New QueryResult with difference
+            
+        Example:
+            >>> all_nodes = Q.nodes().execute(net)
+            >>> outliers = Q.nodes().where(degree__gt=10).execute(net)
+            >>> normal = all_nodes - outliers
+        """
+        from .algebra import (
+            check_result_compatibility,
+            detect_identity_ambiguity,
+            extract_item_identity,
+            IdentityStrategy,
+            AlgebraConfig,
+            AmbiguousIdentityError,
+        )
+        
+        check_result_compatibility(self, other)
+        
+        # Get identity strategy
+        config = AlgebraConfig()
+        if 'identity_strategy' in self.meta:
+            config.identity_strategy = self.meta['identity_strategy']
+        elif 'identity_strategy' in other.meta:
+            config.identity_strategy = other.meta['identity_strategy']
+        elif detect_identity_ambiguity(self, other):
+            raise AmbiguousIdentityError(
+                "Identity strategy is ambiguous for multilayer results. "
+                "Specify explicitly: result.resolve(identity='by_id') or result.resolve(identity='by_replica')"
+            )
+        
+        # Build identity sets
+        ids1 = {extract_item_identity(item, config.identity_strategy) for item in self.items}
+        ids2 = {extract_item_identity(item, config.identity_strategy) for item in other.items}
+        
+        # Difference
+        diff_ids = ids1 - ids2
+        
+        # Keep items from first result that are in difference
+        id_to_item1 = {extract_item_identity(item, config.identity_strategy): item for item in self.items}
+        result_items = [id_to_item1[item_id] for item_id in diff_ids]
+        
+        # Keep only attributes for result items
+        result_attributes = {}
+        for attr, values in self.attributes.items():
+            if isinstance(values, dict):
+                result_attributes[attr] = {
+                    item: values[item] 
+                    for item in result_items 
+                    if item in values
+                }
+            else:
+                result_attributes[attr] = values
+        
+        result_meta = {
+            'algebra_operation': 'difference',
+            'operand_counts': [len(self.items), len(other.items)],
+            'result_count': len(result_items),
+            'identity_strategy': config.identity_strategy.value if hasattr(config.identity_strategy, 'value') else config.identity_strategy,
+        }
+        
+        return QueryResult(
+            target=self.target,
+            items=result_items,
+            attributes=result_attributes,
+            meta=result_meta,
+            computed_metrics=self.computed_metrics.copy()
+        )
+    
+    def __xor__(self, other: "QueryResult") -> "QueryResult":
+        """Symmetric difference operator: r1 ^ r2
+        
+        Keeps items that appear in exactly one result (not both).
+        
+        Args:
+            other: Another QueryResult instance
+            
+        Returns:
+            New QueryResult with symmetric difference
+            
+        Example:
+            >>> social = Q.nodes().from_layers(L["social"]).execute(net)
+            >>> work = Q.nodes().from_layers(L["work"]).execute(net)
+            >>> exclusive = social ^ work  # In one layer, not both
+        """
+        from .algebra import (
+            check_result_compatibility,
+            detect_identity_ambiguity,
+            extract_item_identity,
+            IdentityStrategy,
+            AlgebraConfig,
+            AmbiguousIdentityError,
+        )
+        
+        check_result_compatibility(self, other)
+        
+        # Get identity strategy
+        config = AlgebraConfig()
+        if 'identity_strategy' in self.meta:
+            config.identity_strategy = self.meta['identity_strategy']
+        elif 'identity_strategy' in other.meta:
+            config.identity_strategy = other.meta['identity_strategy']
+        elif detect_identity_ambiguity(self, other):
+            raise AmbiguousIdentityError(
+                "Identity strategy is ambiguous for multilayer results. "
+                "Specify explicitly"
+            )
+        
+        # Build identity maps
+        id_to_item1 = {extract_item_identity(item, config.identity_strategy): item for item in self.items}
+        id_to_item2 = {extract_item_identity(item, config.identity_strategy): item for item in other.items}
+        
+        # Symmetric difference
+        ids1 = set(id_to_item1.keys())
+        ids2 = set(id_to_item2.keys())
+        sym_diff_ids = ids1 ^ ids2
+        
+        # Build result items
+        result_items = []
+        result_attributes = {}
+        
+        for item_id in sym_diff_ids:
+            if item_id in id_to_item1:
+                result_items.append(id_to_item1[item_id])
+            else:
+                result_items.append(id_to_item2[item_id])
+        
+        # Merge attributes from both sources
+        for attr in set(self.attributes.keys()) | set(other.attributes.keys()):
+            values1 = self.attributes.get(attr, {})
+            values2 = other.attributes.get(attr, {})
+            
+            merged_values = {}
+            for item in result_items:
+                item_id = extract_item_identity(item, config.identity_strategy)
+                
+                if item_id in id_to_item1:
+                    val = values1.get(item) if isinstance(values1, dict) else None
+                else:
+                    val = values2.get(item) if isinstance(values2, dict) else None
+                
+                if val is not None:
+                    merged_values[item] = val
+            
+            result_attributes[attr] = merged_values
+        
+        result_meta = {
+            'algebra_operation': 'symmetric_difference',
+            'operand_counts': [len(self.items), len(other.items)],
+            'result_count': len(result_items),
+            'identity_strategy': config.identity_strategy.value if hasattr(config.identity_strategy, 'value') else config.identity_strategy,
+        }
+        
+        return QueryResult(
+            target=self.target,
+            items=result_items,
+            attributes=result_attributes,
+            meta=result_meta,
+            computed_metrics=self.computed_metrics | other.computed_metrics
+        )
