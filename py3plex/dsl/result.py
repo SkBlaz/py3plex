@@ -1451,9 +1451,9 @@ class QueryResult:
         
         # Get or infer identity strategy
         config = AlgebraConfig()
-        if hasattr(self.meta, 'identity_strategy'):
+        if 'identity_strategy' in self.meta:
             config.identity_strategy = self.meta['identity_strategy']
-        elif hasattr(other.meta, 'identity_strategy'):
+        elif 'identity_strategy' in other.meta:
             config.identity_strategy = other.meta['identity_strategy']
         elif detect_identity_ambiguity(self, other):
             raise AmbiguousIdentityError(
@@ -1462,9 +1462,9 @@ class QueryResult:
             )
         
         # Get conflict resolution strategy
-        if hasattr(self.meta, 'conflict_resolution'):
+        if 'conflict_resolution' in self.meta:
             config.conflict_resolution = self.meta['conflict_resolution']
-        elif hasattr(other.meta, 'conflict_resolution'):
+        elif 'conflict_resolution' in other.meta:
             config.conflict_resolution = other.meta['conflict_resolution']
         
         # Build identity map
@@ -1578,9 +1578,9 @@ class QueryResult:
         
         # Get or infer identity strategy
         config = AlgebraConfig()
-        if hasattr(self.meta, 'identity_strategy'):
+        if 'identity_strategy' in self.meta:
             config.identity_strategy = self.meta['identity_strategy']
-        elif hasattr(other.meta, 'identity_strategy'):
+        elif 'identity_strategy' in other.meta:
             config.identity_strategy = other.meta['identity_strategy']
         elif detect_identity_ambiguity(self, other):
             raise AmbiguousIdentityError(
@@ -1589,9 +1589,9 @@ class QueryResult:
             )
         
         # Get conflict resolution strategy
-        if hasattr(self.meta, 'conflict_resolution'):
+        if 'conflict_resolution' in self.meta:
             config.conflict_resolution = self.meta['conflict_resolution']
-        elif hasattr(other.meta, 'conflict_resolution'):
+        elif 'conflict_resolution' in other.meta:
             config.conflict_resolution = other.meta['conflict_resolution']
         
         # Build identity map
@@ -1688,9 +1688,9 @@ class QueryResult:
         
         # Get identity strategy
         config = AlgebraConfig()
-        if hasattr(self.meta, 'identity_strategy'):
+        if 'identity_strategy' in self.meta:
             config.identity_strategy = self.meta['identity_strategy']
-        elif hasattr(other.meta, 'identity_strategy'):
+        elif 'identity_strategy' in other.meta:
             config.identity_strategy = other.meta['identity_strategy']
         elif detect_identity_ambiguity(self, other):
             raise AmbiguousIdentityError(
@@ -1765,9 +1765,9 @@ class QueryResult:
         
         # Get identity strategy
         config = AlgebraConfig()
-        if hasattr(self.meta, 'identity_strategy'):
+        if 'identity_strategy' in self.meta:
             config.identity_strategy = self.meta['identity_strategy']
-        elif hasattr(other.meta, 'identity_strategy'):
+        elif 'identity_strategy' in other.meta:
             config.identity_strategy = other.meta['identity_strategy']
         elif detect_identity_ambiguity(self, other):
             raise AmbiguousIdentityError(
