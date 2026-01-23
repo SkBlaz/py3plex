@@ -803,6 +803,98 @@ class QueryBuilder:
         self._select.limit = n
         return self
 
+    def name(self, query_name: str) -> "QueryBuilder":
+        """Assign a name to this query for provenance tracking.
+        
+        Named queries are easier to debug and their names appear in:
+        - Provenance metadata
+        - Debug output
+        - Explanations
+        - Algebra operation tracking
+        
+        Args:
+            query_name: Descriptive name for this query
+            
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Name subqueries for better tracking
+            >>> hubs = Q.nodes().where(degree__gt=5).name("high_degree_hubs")
+            >>> stable = Q.nodes().uq(method="bootstrap", n_samples=100).name("stable_nodes")
+            >>> 
+            >>> # Compose named queries
+            >>> robust_hubs = hubs & stable
+            >>> robust_hubs = robust_hubs.name("robust_hubs")
+            >>> 
+            >>> # Execute and check provenance
+            >>> result = robust_hubs.execute(network)
+            >>> print(result.meta.get('query_name'))  # "robust_hubs"
+            >>> print(result.meta.get('algebra_op'))   # Shows operand names
+        """
+        if not hasattr(self._select, '_query_name'):
+            self._select._query_name = query_name
+        else:
+            self._select._query_name = query_name
+        return self
+
+    def resolve(
+        self, 
+        identity: Optional[str] = None,
+        conflicts: Optional[str] = None
+    ) -> "QueryBuilder":
+        """Configure resolution strategies for algebra operations.
+        
+        This method sets strategies for handling ambiguities when combining
+        queries or results through algebraic operators.
+        
+        Args:
+            identity: Identity strategy for multilayer comparisons
+                - "by_id": Compare nodes by ID only (ignore layer)
+                - "by_replica": Compare by (node_id, layer) tuple
+            conflicts: Conflict resolution strategy for attributes
+                - "error": Raise error on conflicts (default)
+                - "prefer_left": Use value from left operand
+                - "prefer_right": Use value from right operand
+                - "mean": Average numeric values
+                - "max": Take maximum value
+                - "min": Take minimum value
+                - "keep_both": Store both with namespaced keys
+                
+        Returns:
+            Self for chaining
+            
+        Example:
+            >>> # Specify identity for multilayer algebra
+            >>> q1 = Q.nodes().from_layers(L["social"]).resolve(identity="by_id")
+            >>> q2 = Q.nodes().from_layers(L["work"]).resolve(identity="by_id")
+            >>> union = q1 | q2  # Merges by node ID
+            >>> 
+            >>> # Handle attribute conflicts
+            >>> q1 = Q.nodes().compute("degree")
+            >>> q2 = Q.nodes().compute("pagerank")
+            >>> combined = (q1 & q2).resolve(conflicts="mean")
+            >>> 
+            >>> # Set both strategies
+            >>> query = (
+            ...     Q.nodes()
+            ...      .compute("degree")
+            ...      .resolve(identity="by_replica", conflicts="prefer_left")
+            ... )
+        """
+        if identity is not None:
+            # Store in metadata for use during algebra
+            if not hasattr(self._select, '_resolution_config'):
+                self._select._resolution_config = {}
+            self._select._resolution_config['identity'] = identity
+            
+        if conflicts is not None:
+            if not hasattr(self._select, '_resolution_config'):
+                self._select._resolution_config = {}
+            self._select._resolution_config['conflicts'] = conflicts
+            
+        return self
+
     def uq(
         self,
         method: Optional[str] = None,
@@ -4071,6 +4163,214 @@ class Q:
             write_attrs=write_attrs,
             **kwargs
         )
+
+    @staticmethod
+    def assert_subset(subset_query, superset_query, network=None, identity: str = "by_replica") -> bool:
+        """Assert that one query result is a subset of another.
+        
+        This verification method checks algebraic subset relationships between queries.
+        Can be used for:
+        - Regression testing (ensuring query results remain consistent)
+        - Monotonicity checks (verifying that filtering reduces results)
+        - Scientific claims validation
+        
+        Args:
+            subset_query: Query or QueryResult that should be subset
+            superset_query: Query or QueryResult that should be superset
+            network: Network to execute queries on (required if queries not executed)
+            identity: Identity strategy - "by_id" or "by_replica" (default: "by_replica")
+            
+        Returns:
+            True if subset_query ⊆ superset_query, False otherwise
+            
+        Raises:
+            AssertionError: If subset condition is violated
+            IncompatibleQueryError: If queries have incompatible targets
+            
+        Example:
+            >>> # Verify that high-degree nodes are subset of all nodes
+            >>> all_nodes = Q.nodes()
+            >>> high_degree = Q.nodes().where(degree__gt=5)
+            >>> Q.assert_subset(high_degree, all_nodes, network)
+            True
+            
+            >>> # Regression test: ensure filtering doesn't add nodes
+            >>> filtered = Q.nodes().where(layer="social")
+            >>> unfiltered = Q.nodes()
+            >>> assert Q.assert_subset(filtered, unfiltered, network)
+        """
+        from .algebra import check_query_compatibility, extract_item_identity, IdentityStrategy
+        from .result import QueryResult
+        
+        # Execute queries if needed
+        if not isinstance(subset_query, QueryResult):
+            if network is None:
+                raise ValueError("network parameter required when queries are not executed")
+            subset_result = subset_query.execute(network)
+        else:
+            subset_result = subset_query
+            
+        if not isinstance(superset_query, QueryResult):
+            if network is None:
+                raise ValueError("network parameter required when queries are not executed")
+            superset_result = superset_query.execute(network)
+        else:
+            superset_result = superset_query
+        
+        # Check compatibility
+        if subset_result.target != superset_result.target:
+            from .algebra import IncompatibleQueryError
+            raise IncompatibleQueryError(
+                f"Cannot compare queries with different targets: "
+                f"{subset_result.target} vs {superset_result.target}"
+            )
+        
+        # Get identity strategy
+        try:
+            strategy = IdentityStrategy(identity)
+        except ValueError:
+            raise ValueError(f"Invalid identity strategy: {identity}. Must be 'by_id' or 'by_replica'")
+        
+        # Extract identities
+        subset_ids = {extract_item_identity(item, strategy) for item in subset_result.items}
+        superset_ids = {extract_item_identity(item, strategy) for item in superset_result.items}
+        
+        # Check subset relationship
+        is_subset = subset_ids.issubset(superset_ids)
+        
+        if not is_subset:
+            missing = subset_ids - superset_ids
+            raise AssertionError(
+                f"Subset assertion failed: {len(missing)} items in subset_query are not in superset_query. "
+                f"First few missing items: {list(missing)[:5]}"
+            )
+        
+        return True
+
+    @staticmethod
+    def assert_nonempty(query, network=None, message: Optional[str] = None) -> bool:
+        """Assert that a query returns non-empty results.
+        
+        This verification method ensures that queries produce at least one result.
+        Useful for:
+        - Validating that intersections are meaningful
+        - Ensuring filters don't eliminate all items
+        - Regression testing
+        
+        Args:
+            query: Query or QueryResult to check
+            network: Network to execute query on (required if query not executed)
+            message: Custom error message
+            
+        Returns:
+            True if query produces non-empty results
+            
+        Raises:
+            AssertionError: If query returns empty results
+            
+        Example:
+            >>> # Verify that intersection is meaningful
+            >>> social = Q.nodes().from_layers(L["social"])
+            >>> high_degree = Q.nodes().where(degree__gt=5)
+            >>> intersection = social & high_degree
+            >>> Q.assert_nonempty(intersection, network)
+            True
+            
+            >>> # Ensure filters don't eliminate everything
+            >>> filtered = Q.nodes().where(degree__gt=5, betweenness__gt=0.1)
+            >>> assert Q.assert_nonempty(filtered, network)
+        """
+        from .result import QueryResult
+        
+        # Execute query if needed
+        if not isinstance(query, QueryResult):
+            if network is None:
+                raise ValueError("network parameter required when query is not executed")
+            result = query.execute(network)
+        else:
+            result = query
+        
+        is_nonempty = len(result.items) > 0
+        
+        if not is_nonempty:
+            error_msg = message or "Query returned empty results"
+            raise AssertionError(f"Non-empty assertion failed: {error_msg}")
+        
+        return True
+
+    @staticmethod
+    def assert_disjoint(query1, query2, network=None, identity: str = "by_replica") -> bool:
+        """Assert that two queries have no overlapping results.
+        
+        This verification method checks that query results are disjoint (no shared items).
+        Useful for validating partitioning and exclusive filtering.
+        
+        Args:
+            query1: First query or QueryResult
+            query2: Second query or QueryResult
+            network: Network to execute queries on (required if queries not executed)
+            identity: Identity strategy - "by_id" or "by_replica" (default: "by_replica")
+            
+        Returns:
+            True if results are disjoint
+            
+        Raises:
+            AssertionError: If results overlap
+            IncompatibleQueryError: If queries have incompatible targets
+            
+        Example:
+            >>> # Verify that layer filters are exclusive
+            >>> social = Q.nodes().from_layers(L["social"])
+            >>> work = Q.nodes().from_layers(L["work"])
+            >>> Q.assert_disjoint(social, work, network, identity="by_replica")
+            True
+        """
+        from .algebra import check_query_compatibility, extract_item_identity, IdentityStrategy
+        from .result import QueryResult
+        
+        # Execute queries if needed
+        if not isinstance(query1, QueryResult):
+            if network is None:
+                raise ValueError("network parameter required when queries are not executed")
+            result1 = query1.execute(network)
+        else:
+            result1 = query1
+            
+        if not isinstance(query2, QueryResult):
+            if network is None:
+                raise ValueError("network parameter required when queries are not executed")
+            result2 = query2.execute(network)
+        else:
+            result2 = query2
+        
+        # Check compatibility
+        if result1.target != result2.target:
+            from .algebra import IncompatibleQueryError
+            raise IncompatibleQueryError(
+                f"Cannot compare queries with different targets: "
+                f"{result1.target} vs {result2.target}"
+            )
+        
+        # Get identity strategy
+        try:
+            strategy = IdentityStrategy(identity)
+        except ValueError:
+            raise ValueError(f"Invalid identity strategy: {identity}. Must be 'by_id' or 'by_replica'")
+        
+        # Extract identities
+        ids1 = {extract_item_identity(item, strategy) for item in result1.items}
+        ids2 = {extract_item_identity(item, strategy) for item in result2.items}
+        
+        # Check disjoint
+        overlap = ids1 & ids2
+        
+        if overlap:
+            raise AssertionError(
+                f"Disjoint assertion failed: {len(overlap)} items found in both queries. "
+                f"First few overlapping items: {list(overlap)[:5]}"
+            )
+        
+        return True
 
     @staticmethod
     def dynamics(process_name: str, **params) -> "DynamicsBuilder":
