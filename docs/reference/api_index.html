@@ -1446,6 +1446,52 @@ edges_from_temporal_table: Convert DataFrame to edge list</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.flatten_to_monoplex">
+<span class="sig-name descname"><span class="pre">flatten_to_monoplex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'union'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Graph</span></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.flatten_to_monoplex" title="Link to this definition"></a></dt>
+<dd><p>Flatten a multilayer/multiplex network to a single-layer graph.</p>
+<p>Aggregates all layers into a single NetworkX graph, merging nodes with
+the same ID across different layers into single nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>method</strong> – Method for aggregating edges:
+- ‘union’: Sum edge weights across layers (default)
+- ‘first’: Keep only the first occurrence of each edge
+- ‘count’: Count number of times each edge appears</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A single-layer NetworkX graph (Graph or DiGraph based on</dt><dd><p>network directionality)</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>nx.Graph</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flat</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">flatten_to_monoplex</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flat</span><span class="o">.</span><span class="n">edges</span><span class="p">[(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">)][</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Node IDs are extracted from (node_id, layer) tuples</p></li>
+<li><p>Duplicate edges across layers are aggregated</p></li>
+<li><p>Inter-layer edges are excluded (only intra-layer edges are kept)</p></li>
+<li><p>Edge attributes other than weight are taken from first occurrence</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.from_edges">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'multilayer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dict'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.from_edges" title="Link to this definition"></a></dt>
 <dd><p>Create a multilayer network directly from a list of edges.</p>
@@ -2420,6 +2466,100 @@ its endpoints and a cycle of length prime-1 that encodes the layer.</p>
 <dd><p>A method for exporting the graph to a json file</p>
 <p>Args:
 self</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.to_multilayer">
+<span class="sig-name descname"><span class="pre">to_multilayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remove_coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.to_multilayer" title="Link to this definition"></a></dt>
+<dd><p>Convert a multiplex network to a multilayer network.</p>
+<p>Converts from strict multiplex (same nodes in all layers with automatic
+coupling) to general multilayer (layers can have different node sets).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>remove_coupling</strong> – If True, removes automatic coupling edges.
+If False, keeps coupling edges as regular inter-layer edges.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new multilayer network</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network">multi_layer_network</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the network is already multilayer type</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multilayer</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">to_multilayer</span><span class="p">(</span><span class="n">remove_coupling</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">multilayer</span><span class="o">.</span><span class="n">network_type</span><span class="p">)</span>
+<span class="go">multilayer</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Node sets remain the same but coupling constraint is relaxed</p></li>
+<li><p>Coupling edges can be preserved or removed</p></li>
+<li><p>After conversion, layers can independently add/remove nodes</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.to_multiplex">
+<span class="sig-name descname"><span class="pre">to_multiplex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'intersection'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.to_multiplex" title="Link to this definition"></a></dt>
+<dd><p>Convert a multilayer network to a multiplex network.</p>
+<p>A multiplex network requires that all layers share the same node set
+(strict replica model). This method converts a general multilayer network
+to multiplex by aligning the node sets across layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>method</strong> – Method for aligning node sets across layers:
+- ‘intersection’: Keep only nodes present in ALL layers (strict)
+- ‘union’: Keep all nodes, add missing nodes to layers (lenient)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A new multiplex network with aligned node sets</dt><dd><p>and automatic coupling edges</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network">multi_layer_network</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the network is already multiplex type</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multiplex</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">to_multiplex</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;intersection&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">multiplex</span><span class="o">.</span><span class="n">network_type</span><span class="p">)</span>
+<span class="go">multiplex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Only node &#39;A&#39; is in all layers, so only &#39;A&#39; remains</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">multiplex</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="go">[(&#39;A&#39;, &#39;L1&#39;), (&#39;A&#39;, &#39;L2&#39;)]</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>‘intersection’ method may result in empty network if no nodes are shared</p></li>
+<li><p>‘union’ method preserves all nodes but may add isolated nodes to layers</p></li>
+<li><p>Coupling edges are automatically created between layers</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -10898,6 +11038,41 @@ If False, return single subgraph with all matched nodes</p></li>
 <dd class="field-even"><p>QueryBuilder for edges</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.Q.from_ast">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_ast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_ast</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py3plex.dsl.Query" title="py3plex.dsl.ast.Query"><span class="pre">Query</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.builder.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.Q.from_ast" title="Link to this definition"></a></dt>
+<dd><p>Reconstruct a QueryBuilder from an AST.</p>
+<p>This is the inverse of QueryBuilder.to_ast(). It enables:
+- AST round-trip: builder → ast → builder → ast
+- Query replay from stored AST
+- AST-based query transformations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query_ast</strong> – Query AST to reconstruct from</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>QueryBuilder that will produce an equivalent AST</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If AST schema version is incompatible</p></li>
+<li><p><strong>ValueError</strong> – If AST is invalid or incomplete</p></li>
+<li><p><strong>TypeError</strong> – If required AST fields are missing</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Round-trip a query</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">original</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ast</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="n">to_ast</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">from_ast</span><span class="p">(</span><span class="n">ast</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># reconstructed produces equivalent AST</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.ast</span><span class="w"> </span><span class="kn">import</span> <span class="n">ast_equals</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ast_equals</span><span class="p">(</span><span class="n">original</span><span class="o">.</span><span class="n">to_ast</span><span class="p">(),</span> <span class="n">reconstructed</span><span class="o">.</span><span class="n">to_ast</span><span class="p">())</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

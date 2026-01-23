@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jan 19, 2026}
+\date{Jan 23, 2026}
 \release{1.1.2}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -30631,6 +30631,81 @@ edges\_from\_temporal\_table: Convert DataFrame to edge list
 
 \end{fulllineitems}\end{savenotes}
 
+\index{flatten\_to\_monoplex() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{flatten\_to\_monoplex()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network.flatten_to_monoplex}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{flatten\_to\_monoplex}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}union\textquotesingle{}}}}
+{{ $\rightarrow$ Graph}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Flatten a multilayer/multiplex network to a single\sphinxhyphen{}layer graph.
+
+\sphinxAtStartPar
+Aggregates all layers into a single NetworkX graph, merging nodes with
+the same ID across different layers into single nodes.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{method}} \textendash{} Method for aggregating edges:
+\sphinxhyphen{} ‘union’: Sum edge weights across layers (default)
+\sphinxhyphen{} ‘first’: Keep only the first occurrence of each edge
+\sphinxhyphen{} ‘count’: Count number of times each edge appears
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+\begin{description}
+\sphinxlineitem{A single\sphinxhyphen{}layer NetworkX graph (Graph or DiGraph based on}
+\sphinxAtStartPar
+network directionality)
+
+\end{description}
+
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+nx.Graph
+
+\end{description}\end{quote}
+\subsubsection*{Examples}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net} \PYG{o}{=} \PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{network\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{multilayer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+\PYG{g+gp}{... }     \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+\PYG{g+gp}{... }     \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{g+gp}{... }\PYG{p}{]}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{flat} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{flatten\PYGZus{}to\PYGZus{}monoplex}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{flat}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{]}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{weight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+\PYG{g+go}{2}
+\end{sphinxVerbatim}
+\subsubsection*{Notes}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Node IDs are extracted from (node\_id, layer) tuples
+
+\item {} 
+\sphinxAtStartPar
+Duplicate edges across layers are aggregated
+
+\item {} 
+\sphinxAtStartPar
+Inter\sphinxhyphen{}layer edges are excluded (only intra\sphinxhyphen{}layer edges are kept)
+
+\item {} 
+\sphinxAtStartPar
+Edge attributes other than weight are taken from first occurrence
+
+\end{itemize}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{from\_edges() (py3plex.core.multinet.multi\_layer\_network class method)@\spxentry{from\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network class method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -32375,6 +32450,152 @@ A method for exporting the graph to a json file
 \sphinxAtStartPar
 Args:
 self
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_multilayer() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{to\_multilayer()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network.to_multilayer}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_multilayer}}}
+{\sphinxparam{\DUrole{n}{remove\_coupling}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network}]{\sphinxcrossref{multi\_layer\_network}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert a multiplex network to a multilayer network.
+
+\sphinxAtStartPar
+Converts from strict multiplex (same nodes in all layers with automatic
+coupling) to general multilayer (layers can have different node sets).
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{remove\_coupling}} \textendash{} If True, removes automatic coupling edges.
+If False, keeps coupling edges as regular inter\sphinxhyphen{}layer edges.
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+A new multilayer network
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network}]{\sphinxcrossref{multi\_layer\_network}}}
+
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ValueError}} \textendash{} If the network is already multilayer type
+
+\end{description}\end{quote}
+\subsubsection*{Examples}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net} \PYG{o}{=} \PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{network\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{multiplex}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{g+gp}{... }\PYG{p}{]}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+\PYG{g+gp}{... }     \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+\PYG{g+gp}{... }\PYG{p}{]}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{multilayer} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{to\PYGZus{}multilayer}\PYG{p}{(}\PYG{n}{remove\PYGZus{}coupling}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{multilayer}\PYG{o}{.}\PYG{n}{network\PYGZus{}type}\PYG{p}{)}
+\PYG{g+go}{multilayer}
+\end{sphinxVerbatim}
+\subsubsection*{Notes}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Node sets remain the same but coupling constraint is relaxed
+
+\item {} 
+\sphinxAtStartPar
+Coupling edges can be preserved or removed
+
+\item {} 
+\sphinxAtStartPar
+After conversion, layers can independently add/remove nodes
+
+\end{itemize}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_multiplex() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{to\_multiplex()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network.to_multiplex}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_multiplex}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}intersection\textquotesingle{}}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network}]{\sphinxcrossref{multi\_layer\_network}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert a multilayer network to a multiplex network.
+
+\sphinxAtStartPar
+A multiplex network requires that all layers share the same node set
+(strict replica model). This method converts a general multilayer network
+to multiplex by aligning the node sets across layers.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{method}} \textendash{} Method for aligning node sets across layers:
+\sphinxhyphen{} ‘intersection’: Keep only nodes present in ALL layers (strict)
+\sphinxhyphen{} ‘union’: Keep all nodes, add missing nodes to layers (lenient)
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+\begin{description}
+\sphinxlineitem{A new multiplex network with aligned node sets}
+\sphinxAtStartPar
+and automatic coupling edges
+
+\end{description}
+
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network}]{\sphinxcrossref{multi\_layer\_network}}}
+
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ValueError}} \textendash{} If the network is already multiplex type
+
+\end{description}\end{quote}
+\subsubsection*{Examples}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net} \PYG{o}{=} \PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{network\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{multilayer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{g+gp}{... }\PYG{p}{]}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{multiplex} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{to\PYGZus{}multiplex}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{intersection}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{multiplex}\PYG{o}{.}\PYG{n}{network\PYGZus{}type}\PYG{p}{)}
+\PYG{g+go}{multiplex}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Only node \PYGZsq{}A\PYGZsq{} is in all layers, so only \PYGZsq{}A\PYGZsq{} remains}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{multiplex}\PYG{o}{.}\PYG{n}{get\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\PYG{g+go}{[(\PYGZsq{}A\PYGZsq{}, \PYGZsq{}L1\PYGZsq{}), (\PYGZsq{}A\PYGZsq{}, \PYGZsq{}L2\PYGZsq{})]}
+\end{sphinxVerbatim}
+\subsubsection*{Notes}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+‘intersection’ method may result in empty network if no nodes are shared
+
+\item {} 
+\sphinxAtStartPar
+‘union’ method preserves all nodes but may add isolated nodes to layers
+
+\item {} 
+\sphinxAtStartPar
+Coupling edges are automatically created between layers
+
+\end{itemize}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -48693,6 +48914,63 @@ Create a query builder for edges.
 QueryBuilder for edges
 
 \end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{from\_ast() (py3plex.dsl.Q static method)@\spxentry{from\_ast()}\spxextra{py3plex.dsl.Q static method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.Q.from_ast}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{static\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{from\_ast}}}
+{\sphinxparam{\DUrole{n}{query\_ast}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.Query}]{\sphinxcrossref{Query}}}}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Reconstruct a QueryBuilder from an AST.
+
+\sphinxAtStartPar
+This is the inverse of QueryBuilder.to\_ast(). It enables:
+\sphinxhyphen{} AST round\sphinxhyphen{}trip: builder \(\rightarrow\) ast \(\rightarrow\) builder \(\rightarrow\) ast
+\sphinxhyphen{} Query replay from stored AST
+\sphinxhyphen{} AST\sphinxhyphen{}based query transformations
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{query\_ast}} \textendash{} Query AST to reconstruct from
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+QueryBuilder that will produce an equivalent AST
+
+\sphinxlineitem{Raises}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ValueError}} \textendash{} If AST schema version is incompatible
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ValueError}} \textendash{} If AST is invalid or incomplete
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{TypeError}} \textendash{} If required AST fields are missing
+
+\end{itemize}
+
+\end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Round\PYGZhy{}trip a query}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{original} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{ast} \PYG{o}{=} \PYG{n}{original}\PYG{o}{.}\PYG{n}{to\PYGZus{}ast}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{reconstructed} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{from\PYGZus{}ast}\PYG{p}{(}\PYG{n}{ast}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} reconstructed produces equivalent AST}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{n+nn}{.}\PYG{n+nn}{ast}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{ast\PYGZus{}equals}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{ast\PYGZus{}equals}\PYG{p}{(}\PYG{n}{original}\PYG{o}{.}\PYG{n}{to\PYGZus{}ast}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,} \PYG{n}{reconstructed}\PYG{o}{.}\PYG{n}{to\PYGZus{}ast}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} True}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
