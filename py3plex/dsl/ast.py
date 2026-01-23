@@ -230,6 +230,25 @@ class UQConfig:
 
 
 @dataclass
+class ApproximationSpec:
+    """Specification for approximate computation of a measure.
+    
+    This allows fast, approximate versions of expensive centrality algorithms.
+    
+    Attributes:
+        enabled: Whether approximation is enabled
+        method: Approximation method name (e.g., "sampling", "landmarks", "power_iteration")
+        params: Method-specific parameters (e.g., n_samples, n_landmarks, tol, max_iter, seed)
+        diagnostics: Whether to compute per-node diagnostic information (e.g., stderr)
+    """
+    
+    enabled: bool = False
+    method: Optional[str] = None
+    params: Dict[str, Any] = field(default_factory=dict)
+    diagnostics: bool = False
+
+
+@dataclass
 class ComputeItem:
     """A measure to compute.
 
@@ -245,6 +264,7 @@ class ComputeItem:
         n_null: Number of null model replicates
         null_model: Null model type: "degree_preserving", "erdos_renyi", "configuration"
         random_state: Random seed for reproducibility
+        approx: Optional approximation specification for fast approximate computation
     """
 
     name: str
@@ -258,6 +278,7 @@ class ComputeItem:
     n_null: Optional[int] = None
     null_model: Optional[str] = None
     random_state: Optional[int] = None
+    approx: Optional["ApproximationSpec"] = None
 
     @property
     def result_name(self) -> str:
