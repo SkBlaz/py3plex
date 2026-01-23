@@ -10,7 +10,7 @@ This script demonstrates the key features of GraphProgram:
 7. Serialization
 
 Run with:
-    python examples/example_graph_program.py
+    python examples/advanced/example_graph_program.py
 """
 
 import json
