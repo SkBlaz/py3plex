@@ -365,15 +365,16 @@ class ExplainSpec:
     """Specification for attaching explanations to query results.
 
     Explanations provide additional context for each result row (typically nodes),
-    such as community membership, top neighbors, and layer footprint.
+    such as community membership, top neighbors, layer footprint, and attribution.
 
     Attributes:
-        include: List of explanation blocks to compute (e.g., ["community", "top_neighbors"])
+        include: List of explanation blocks to compute (e.g., ["community", "top_neighbors", "attribution"])
         exclude: List of explanation blocks to exclude from defaults
         neighbors_top: Maximum number of neighbors to include in top_neighbors
         neighbors_cfg: Configuration for neighbor selection (metric, scope, direction)
         community_cfg: Configuration for community explanations
         layer_footprint_cfg: Configuration for layer footprint explanations
+        attribution_cfg: Configuration for attribution explanations (Shapley values)
         cache: Whether to cache intermediate computations (default: True)
         as_columns: Store explanations as top-level columns (default: True)
         prefix: Optional prefix for explanation column names (default: "")
@@ -385,11 +386,10 @@ class ExplainSpec:
         >>> # Custom neighbor count
         >>> ExplainSpec(include=["top_neighbors"], neighbors_top=5)
 
-        >>> # With custom configuration
+        >>> # With attribution
         >>> ExplainSpec(
-        ...     include=["community", "top_neighbors", "layer_footprint"],
-        ...     neighbors_top=10,
-        ...     neighbors_cfg={"scope": "layer", "metric": "weight"}
+        ...     include=["attribution"],
+        ...     attribution_cfg={"metric": "pagerank", "levels": ["layer"], "seed": 42}
         ... )
     """
 
@@ -401,6 +401,7 @@ class ExplainSpec:
     neighbors_cfg: Dict[str, Any] = field(default_factory=dict)
     community_cfg: Dict[str, Any] = field(default_factory=dict)
     layer_footprint_cfg: Dict[str, Any] = field(default_factory=dict)
+    attribution_cfg: Dict[str, Any] = field(default_factory=dict)
     cache: bool = True
     as_columns: bool = True
     prefix: str = ""
