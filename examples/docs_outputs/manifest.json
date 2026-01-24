@@ -1,0 +1,16 @@
+{
+  "examples": {
+    "01_basic_query": {
+      "has_stderr": false,
+      "output_file": "01_basic_query.txt",
+      "success": true
+    },
+    "02_community_detection": {
+      "has_stderr": false,
+      "output_file": "02_community_detection.txt",
+      "success": true
+    }
+  },
+  "generated": "CI",
+  "version": "1.0"
+}
