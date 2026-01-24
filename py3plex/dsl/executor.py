@@ -2976,6 +2976,8 @@ def _apply_explanations(
     """
     from .explain import explain_rows
     from .ast import ExplainSpec
+    
+    logger = logging.getLogger(__name__)
 
     # Only support node explanations in Phase 1
     if target != Target.NODES:
@@ -3007,6 +3009,7 @@ def _apply_explanations(
             neighbors_cfg=explain_spec.neighbors_cfg,
             community_cfg=explain_spec.community_cfg,
             layer_footprint_cfg=explain_spec.layer_footprint_cfg,
+            attribution_cfg=explain_spec.attribution_cfg,
             cache=explain_spec.cache,
         )
     except Exception as e:
