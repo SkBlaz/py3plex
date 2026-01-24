@@ -45,6 +45,7 @@ from .ast import (
     Comparison,
     SpecialPredicate,
     ComputeItem,
+    ApproximationSpec,
     OrderItem,
     ParamRef,
     ExecutionPlan,
@@ -87,6 +88,93 @@ _RESAMPLING_TO_METHOD = {
     ResamplingStrategy.JACKKNIFE: "seed",
 }
 _METHOD_TO_RESAMPLING = {v: k for k, v in _RESAMPLING_TO_METHOD.items()}
+
+
+# Default approximation methods for each measure
+_DEFAULT_APPROX_METHODS = {
+    "betweenness_centrality": "sampling",
+    "betweenness": "sampling",
+    "closeness_centrality": "landmarks",
+    "closeness": "landmarks",
+    "pagerank": "power_iteration",
+}
+
+
+def _get_default_approx_method(measure_name: str) -> str:
+    """Get default approximation method for a measure.
+    
+    Args:
+        measure_name: Measure name
+        
+    Returns:
+        Default approximation method name
+        
+    Raises:
+        ValueError: If measure doesn't have a default approximation method
+    """
+    method = _DEFAULT_APPROX_METHODS.get(measure_name)
+    if method is None:
+        raise ValueError(
+            f"No default approximation method for measure '{measure_name}'. "
+            f"Supported measures: {', '.join(_DEFAULT_APPROX_METHODS.keys())}. "
+            f"Either specify approx_method explicitly or use a supported measure."
+        )
+    return method
+
+
+def _validate_approx_params(measure_name: str, approx_method: str, params: Dict[str, Any]) -> None:
+    """Validate approximation parameters for a method.
+    
+    Args:
+        measure_name: Measure name
+        approx_method: Approximation method
+        params: Method parameters to validate
+        
+    Raises:
+        ValueError: If parameters are invalid
+    """
+    # Check method is supported for this measure
+    if approx_method not in ["sampling", "landmarks", "power_iteration"]:
+        raise ValueError(
+            f"Unknown approximation method '{approx_method}'. "
+            f"Supported: sampling, landmarks, power_iteration"
+        )
+    
+    # Validate parameter ranges
+    if "n_samples" in params:
+        if not isinstance(params["n_samples"], int) or params["n_samples"] <= 0:
+            raise ValueError(f"n_samples must be a positive integer, got {params['n_samples']}")
+    
+    if "sample_fraction" in params:
+        frac = params["sample_fraction"]
+        if not isinstance(frac, (int, float)) or not (0 < frac <= 1):
+            raise ValueError(f"sample_fraction must be in (0, 1], got {frac}")
+    
+    if "n_landmarks" in params:
+        if not isinstance(params["n_landmarks"], int) or params["n_landmarks"] <= 0:
+            raise ValueError(f"n_landmarks must be a positive integer, got {params['n_landmarks']}")
+    
+    if "tol" in params:
+        if not isinstance(params["tol"], (int, float)) or params["tol"] <= 0:
+            raise ValueError(f"tol must be positive, got {params['tol']}")
+    
+    if "max_iter" in params:
+        if not isinstance(params["max_iter"], int) or params["max_iter"] <= 0:
+            raise ValueError(f"max_iter must be a positive integer, got {params['max_iter']}")
+    
+    # Check for irrelevant params (warn or error)
+    # For now, we'll be lenient and just ignore them, but could add warnings
+    relevant_params = {
+        "sampling": {"n_samples", "seed", "normalized", "weight"},
+        "landmarks": {"n_landmarks", "seed", "weight"},
+        "power_iteration": {"tol", "max_iter", "alpha", "personalization"},
+    }
+    
+    if approx_method in relevant_params:
+        for param in params:
+            if param not in relevant_params[approx_method]:
+                # For now, just silently ignore (could add warning later)
+                pass
 
 
 def _wrap_value(v: Any) -> Union[str, float, int, ParamRef]:
@@ -588,8 +676,13 @@ class QueryBuilder:
         n_null: Optional[int] = None,
         null_model: Optional[str] = None,
         random_state: Optional[int] = None,
+        approx: Optional[bool] = None,
+        approx_method: Optional[str] = None,
+        approx_diagnostics: bool = False,
+        # Approximation-specific parameters (collected via **kwargs)
+        **kwargs
     ) -> "QueryBuilder":
-        """Add measures to compute with optional uncertainty estimation.
+        """Add measures to compute with optional uncertainty estimation and/or approximation.
 
         Args:
             *measures: Measure names to compute
@@ -606,12 +699,20 @@ class QueryBuilder:
             n_null: Number of null model replicates (default: from Q.uncertainty.defaults)
             null_model: Null model type - "degree_preserving", "erdos_renyi", "configuration" (default: from Q.uncertainty.defaults)
             random_state: Random seed for reproducibility (default: from Q.uncertainty.defaults)
+            approx: Whether to use fast approximate computation (default: False)
+            approx_method: Approximation method name ("sampling", "landmarks", "power_iteration")
+                If approx=True and approx_method=None, defaults are:
+                - betweenness_centrality -> "sampling"
+                - closeness_centrality -> "landmarks"
+                - pagerank -> "power_iteration"
+            approx_diagnostics: Whether to compute per-node diagnostic info (e.g., stderr)
+            **kwargs: Additional approximation parameters (e.g., n_samples, n_landmarks, tol, max_iter, seed)
 
         Returns:
             Self for chaining
 
         Example:
-            >>> # Without uncertainty
+            >>> # Without uncertainty or approximation
             >>> Q.nodes().compute("degree", "betweenness_centrality")
 
             >>> # With uncertainty using explicit parameters
@@ -623,9 +724,22 @@ class QueryBuilder:
             ...     ci=0.95
             ... )
 
-            >>> # With uncertainty using global defaults
-            >>> Q.uncertainty.defaults(n_boot=500, ci=0.95)
-            >>> Q.nodes().compute("degree", uncertainty=True)
+            >>> # With approximation
+            >>> Q.nodes().compute(
+            ...     "betweenness_centrality",
+            ...     approx=True,
+            ...     approx_method="sampling",
+            ...     n_samples=512,
+            ...     seed=42
+            ... )
+
+            >>> # With both UQ and approximation
+            >>> Q.nodes().compute(
+            ...     "betweenness_centrality",
+            ...     approx=True,
+            ...     n_samples=256,
+            ...     seed=42
+            ... ).uq(method="bootstrap", n_samples=50, seed=42).execute(net)
         """
         # Determine whether to compute uncertainty:
         # Priority order:
@@ -719,10 +833,38 @@ class QueryBuilder:
                 else:
                     random_state = Q.uncertainty.get("random_state")
 
+        # Handle approximation parameters
+        approx_spec = None
+        if approx:
+            # Extract approximation-specific params from kwargs
+            approx_params = {}
+            
+            # Collect known approximation parameters
+            for param_name in ["n_samples", "n_landmarks", "tol", "max_iter", "alpha", 
+                               "seed", "normalized", "weight", "personalization", "sample_fraction"]:
+                if param_name in kwargs:
+                    approx_params[param_name] = kwargs[param_name]
+            
+            # Determine approximation method for each measure
+            # We'll validate and create ApproximationSpec per measure in the loop below
+            pass
+        
         items: List[ComputeItem] = []
 
         if aliases:
             for name, al in aliases.items():
+                # Build approximation spec for this measure
+                measure_approx_spec = None
+                if approx:
+                    method_for_measure = approx_method or _get_default_approx_method(name)
+                    _validate_approx_params(name, method_for_measure, approx_params)
+                    measure_approx_spec = ApproximationSpec(
+                        enabled=True,
+                        method=method_for_measure,
+                        params=dict(approx_params),  # Copy to avoid mutation
+                        diagnostics=approx_diagnostics
+                    )
+                
                 items.append(
                     ComputeItem(
                         name=name,
@@ -736,9 +878,22 @@ class QueryBuilder:
                         n_null=n_null,
                         null_model=null_model,
                         random_state=random_state,
+                        approx=measure_approx_spec,
                     )
                 )
         elif alias and len(measures) == 1:
+            # Build approximation spec for this measure
+            measure_approx_spec = None
+            if approx:
+                method_for_measure = approx_method or _get_default_approx_method(measures[0])
+                _validate_approx_params(measures[0], method_for_measure, approx_params)
+                measure_approx_spec = ApproximationSpec(
+                    enabled=True,
+                    method=method_for_measure,
+                    params=dict(approx_params),
+                    diagnostics=approx_diagnostics
+                )
+            
             items.append(
                 ComputeItem(
                     name=measures[0],
@@ -752,24 +907,38 @@ class QueryBuilder:
                     n_null=n_null,
                     null_model=null_model,
                     random_state=random_state,
+                    approx=measure_approx_spec,
                 )
             )
         else:
-            items.extend(
-                ComputeItem(
-                    name=m,
-                    uncertainty=uncertainty_flag,
-                    method=method,
-                    n_samples=n_samples,
-                    ci=ci,
-                    bootstrap_unit=bootstrap_unit,
-                    bootstrap_mode=bootstrap_mode,
-                    n_null=n_null,
-                    null_model=null_model,
-                    random_state=random_state,
+            for m in measures:
+                # Build approximation spec for this measure
+                measure_approx_spec = None
+                if approx:
+                    method_for_measure = approx_method or _get_default_approx_method(m)
+                    _validate_approx_params(m, method_for_measure, approx_params)
+                    measure_approx_spec = ApproximationSpec(
+                        enabled=True,
+                        method=method_for_measure,
+                        params=dict(approx_params),
+                        diagnostics=approx_diagnostics
+                    )
+                
+                items.append(
+                    ComputeItem(
+                        name=m,
+                        uncertainty=uncertainty_flag,
+                        method=method,
+                        n_samples=n_samples,
+                        ci=ci,
+                        bootstrap_unit=bootstrap_unit,
+                        bootstrap_mode=bootstrap_mode,
+                        n_null=n_null,
+                        null_model=null_model,
+                        random_state=random_state,
+                        approx=measure_approx_spec,
+                    )
                 )
-                for m in measures
-            )
 
         self._select.compute.extend(items)
         return self
@@ -6324,3 +6493,107 @@ class ClaimLearnerBuilder:
             names.append(layer_ast.name)
         return names
 
+
+
+# =============================================================================
+# Approximation Helper Functions
+# =============================================================================
+
+def _get_default_approx_method(measure_name: str) -> str:
+    """Get default approximation method for a measure.
+    
+    Args:
+        measure_name: Name of the measure
+        
+    Returns:
+        Default approximation method name
+        
+    Raises:
+        DslExecutionError: If measure doesn't have a default approx method
+    """
+    from .errors import DslExecutionError
+    
+    defaults = {
+        "betweenness_centrality": "sampling",
+        "betweenness": "sampling",
+        "closeness_centrality": "landmarks",
+        "closeness": "landmarks",
+        "pagerank": "power_iteration",
+    }
+    
+    method = defaults.get(measure_name)
+    if method is None:
+        raise DslExecutionError(
+            f"No default approximation method for measure '{measure_name}'. "
+            f"Please specify approx_method explicitly. "
+            f"Available measures with default approx: {list(defaults.keys())}"
+        )
+    return method
+
+
+def _validate_approx_params(measure_name: str, method: str, params: Dict[str, Any]) -> None:
+    """Validate approximation parameters for a measure and method.
+    
+    Args:
+        measure_name: Name of the measure
+        method: Approximation method
+        params: Approximation parameters
+        
+    Raises:
+        DslExecutionError: If parameters are invalid
+    """
+    from .errors import DslExecutionError
+    
+    # Validate common parameters
+    if "n_samples" in params:
+        if not isinstance(params["n_samples"], int) or params["n_samples"] <= 0:
+            raise DslExecutionError(
+                f"Parameter 'n_samples' must be a positive integer, got {params['n_samples']}"
+            )
+    
+    if "n_landmarks" in params:
+        if not isinstance(params["n_landmarks"], int) or params["n_landmarks"] <= 0:
+            raise DslExecutionError(
+                f"Parameter 'n_landmarks' must be a positive integer, got {params['n_landmarks']}"
+            )
+    
+    if "tol" in params:
+        if not isinstance(params["tol"], (int, float)) or params["tol"] <= 0:
+            raise DslExecutionError(
+                f"Parameter 'tol' must be a positive number, got {params['tol']}"
+            )
+    
+    if "max_iter" in params:
+        if not isinstance(params["max_iter"], int) or params["max_iter"] <= 0:
+            raise DslExecutionError(
+                f"Parameter 'max_iter' must be a positive integer, got {params['max_iter']}"
+            )
+    
+    if "sample_fraction" in params:
+        frac = params["sample_fraction"]
+        if not isinstance(frac, (int, float)) or frac <= 0 or frac > 1:
+            raise DslExecutionError(
+                f"Parameter 'sample_fraction' must be in (0, 1], got {frac}"
+            )
+    
+    # Validate method-specific parameters
+    if method == "sampling":
+        # Betweenness sampling
+        if measure_name in ["betweenness_centrality", "betweenness"]:
+            if "n_samples" not in params:
+                # This is OK - will use default
+                pass
+    
+    elif method == "landmarks":
+        # Closeness landmarks
+        if measure_name in ["closeness_centrality", "closeness"]:
+            if "n_landmarks" not in params:
+                # This is OK - will use default
+                pass
+    
+    elif method == "power_iteration":
+        # PageRank power iteration
+        if measure_name == "pagerank":
+            if "tol" not in params and "max_iter" not in params:
+                # This is OK - will use defaults
+                pass

@@ -257,6 +257,86 @@ Calculates network measures for filtered nodes::
 
     COMPUTE degree betweenness_centrality closeness_centrality
 
+Approximate Centrality (Fast Path)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For large networks, centrality computation can be slow. Py3plex provides **fast approximate algorithms** as first-class citizens in both DSL syntaxes.
+
+**String DSL with APPROXIMATE keyword:**
+
+.. code-block:: python
+
+    # Use default approximation method
+    execute_query(net, 'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE')
+    
+    # Specify method and parameters
+    execute_query(net, 
+        'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE(method="sampling", n_samples=512, seed=42)'
+    )
+
+**Builder API with approx parameters:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    # Approximate betweenness (sampling-based)
+    result = Q.nodes().compute(
+        "betweenness_centrality",
+        approx=True,
+        n_samples=512,
+        seed=42
+    ).execute(net)
+    
+    # Approximate closeness (landmark-based)
+    result = Q.nodes().compute(
+        "closeness_centrality",
+        approx=True,
+        n_landmarks=64,
+        seed=42
+    ).execute(net)
+    
+    # Approximate PageRank (power iteration)
+    result = Q.nodes().compute(
+        "pagerank",
+        approx=True,
+        tol=1e-6,
+        max_iter=100
+    ).execute(net)
+
+**Supported approximation methods:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 30 40
+
+   * - Measure
+     - Default Method
+     - Parameters
+   * - ``betweenness_centrality``
+     - ``sampling``
+     - ``n_samples`` (int), ``seed`` (int)
+   * - ``closeness_centrality``
+     - ``landmarks``
+     - ``n_landmarks`` (int), ``seed`` (int)
+   * - ``pagerank``
+     - ``power_iteration``
+     - ``tol`` (float), ``max_iter`` (int)
+
+**Approximation guarantees:**
+
+- **Determinism**: Same ``seed`` produces identical results
+- **Accuracy**: Approximate values are close to exact on small graphs
+- **Provenance**: Approximation parameters recorded in ``result.meta["approximation"]``
+- **Fast path**: ``fast_path=True`` set in provenance when approximation is used
+
+**When to use approximation:**
+
+- Networks with >1000 nodes where exact computation is slow
+- Exploratory analysis where approximate values are sufficient
+- Production pipelines requiring predictable execution time
+- Sensitivity analysis with multiple runs (use different seeds)
+
 DSL Syntax Comparison: String vs Builder API
 ---------------------------------------------
 

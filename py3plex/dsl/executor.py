@@ -1334,6 +1334,62 @@ def _compute_communities_with_uncertainty(
         return output
 
 
+def _get_measure_function(compute_item: ComputeItem, target: str = "nodes") -> Tuple[Callable, Optional[Dict], bool]:
+    """Get the appropriate measure function (exact or approximate).
+    
+    This is the centralized dispatcher that selects between exact and approximate
+    implementations based on the ComputeItem's approximation spec.
+    
+    Args:
+        compute_item: ComputeItem with measure name and optional approximation spec
+        target: Target type ("nodes" or "edges")
+        
+    Returns:
+        Tuple of (measure_function, approx_metadata or None, is_fast_path)
+        - measure_function: The function to call for computing the measure
+        - approx_metadata: Dict with approximation metadata if approx is used, else None
+        - is_fast_path: True if approximation is used (fast path)
+        
+    Raises:
+        DslExecutionError: If approximation is requested but not available
+    """
+    approx_spec = compute_item.approx
+    
+    # If no approximation requested, return exact measure
+    if approx_spec is None or not approx_spec.enabled:
+        measure_fn = measure_registry.get(compute_item.name, target=target)
+        return measure_fn, None, False
+    
+    # Approximation requested - check if available
+    method = approx_spec.method
+    if not measure_registry.has_approx(compute_item.name, method):
+        raise DslExecutionError(
+            f"Approximate method '{method}' not available for measure '{compute_item.name}'. "
+            f"Available approximation methods: {_list_approx_methods(compute_item.name)}"
+        )
+    
+    approx_fn = measure_registry.get_approx(compute_item.name, method)
+    
+    # Build approx metadata for provenance
+    approx_metadata = {
+        "measure": compute_item.name,
+        "algorithm": f"{method}_{compute_item.name}",
+        "method": method,
+        "parameters": dict(approx_spec.params),
+        "diagnostics_enabled": approx_spec.diagnostics,
+    }
+    
+    return approx_fn, approx_metadata, True
+
+
+def _list_approx_methods(measure_name: str) -> str:
+    """Helper to list available approximation methods for a measure."""
+    if hasattr(measure_registry, '_approx_methods') and measure_name in measure_registry._approx_methods:
+        methods = list(measure_registry._approx_methods[measure_name].keys())
+        return ", ".join(methods) if methods else "none"
+    return "none"
+
+
 def _compute_measure_with_uncertainty(
     network: Any,
     compute_item: ComputeItem,
@@ -1375,7 +1431,15 @@ def _compute_measure_with_uncertainty(
     
     # If UQ is not enabled, return deterministic results
     if resolved_config is None:
-        return measure_fn(subgraph, items)
+        result = measure_fn(subgraph, items)
+        # Handle tuple return from approximate methods (values, diagnostics)
+        if isinstance(result, tuple) and len(result) == 2:
+            values, diagnostics = result
+            # Store diagnostics if requested (TODO: attach to metadata)
+            # For now, just return the values
+            return values
+        else:
+            return result
     
     # Log resolved configuration for debugging
     logger = logging.getLogger(__name__)
@@ -1405,7 +1469,11 @@ def _compute_measure_with_uncertainty(
             return {}
         
         sub = g.subgraph(valid_items).copy()
-        return measure_fn(sub, valid_items)
+        result = measure_fn(sub, valid_items)
+        # Handle tuple return from approximate methods
+        if isinstance(result, tuple) and len(result) == 2:
+            return result[0]  # Return only values for UQ, ignore diagnostics
+        return result
     
     # Step 2: Choose the appropriate uncertainty estimation method
     method = resolved_config.method.lower()
@@ -1806,6 +1874,11 @@ def _execute_select(
     # Step 4: Compute measures
     stage_start = time.monotonic()
     attributes: Dict[str, Dict] = {}
+    
+    # Track approximation usage for provenance (initialize before compute block)
+    approx_used = []
+    fast_path_enabled = False
+    
     if select.compute:
         if progress:
             logger.info(f"Step 3.4: Computing {len(select.compute)} measure(s)")
@@ -1831,7 +1904,7 @@ def _execute_select(
                 current_nodes=items,
                 params={},
             )
-
+            
             for i, compute_item in enumerate(select.compute):
                 if progress:
                     uq_info = _format_uq_info(compute_item)
@@ -1863,8 +1936,16 @@ def _execute_select(
                             )
                     else:
                         # Fall back to measure registry (built-in measures)
-                        measure_fn = measure_registry.get(compute_item.name)
+                        # Use dispatcher to get exact or approximate implementation
+                        measure_fn, approx_metadata, is_fast_path = _get_measure_function(compute_item, target="nodes")
                         result_name = compute_item.result_name
+
+                        # Track approximation usage
+                        if approx_metadata is not None:
+                            approx_used.append(approx_metadata)
+                        if is_fast_path:
+                            fast_path_enabled = True
+
 
                         
                         # Special handling for community detection with UQ
@@ -2030,6 +2111,20 @@ def _execute_select(
         meta_dict["grouping"] = grouping_metadata
 
     # Don't add provenance yet - will be added by caller
+
+    # Add approximation metadata if any approx was used
+    if approx_used:
+        meta_dict["approximation"] = {
+            "enabled": True,
+            "measures": approx_used,
+            "fast_path": fast_path_enabled,
+        }
+
+
+    # Set fast_path in provenance if approximation was used
+    if fast_path_enabled and provenance_builder is not None:
+        provenance_builder.backend_info["fast_path"] = True
+
     result = QueryResult(
         target=select.target.value, items=items, attributes=attributes, meta=meta_dict
     )

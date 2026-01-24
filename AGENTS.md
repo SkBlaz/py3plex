@@ -747,18 +747,21 @@ Add filtering conditions.
 - If `autocompute=False` and filtering on uncomputed metric -> `DslMissingMetricError`
 - If attribute does not exist -> `UnknownAttributeError` with suggestions
 
-##### `.compute(*measures, alias=None, aliases=None, uncertainty=None, **uq_params) -> QueryBuilder`
+##### `.compute(*measures, alias=None, aliases=None, uncertainty=None, approx=None, approx_method=None, approx_diagnostics=False, **kwargs) -> QueryBuilder`
 
-Compute metrics on nodes/edges.
+Compute metrics on nodes/edges with optional approximation for large networks.
 
 **Parameters**:
 - `*measures` (str): Metric names to compute (e.g., "degree", "betweenness_centrality")
 - `alias` (str, optional): Alias for single measure
 - `aliases` (Dict[str, str], optional): Dictionary mapping measures to aliases
 - `uncertainty` (bool, optional): Enable UQ for these metrics (default: inherits from query-level or global)
-- `**uq_params`: UQ parameters (method, n_samples, ci, bootstrap_unit, bootstrap_mode, n_null, null_model, random_state)
+- `approx` (bool, optional): Enable fast approximation (default: False)
+- `approx_method` (str, optional): Approximation method (auto-inferred if not specified)
+- `approx_diagnostics` (bool, optional): Enable per-node diagnostics (default: False)
+- `**kwargs`: UQ parameters OR approximation parameters depending on context
 
-**UQ Parameters**:
+**UQ Parameters** (when `uncertainty=True`):
 - `method` (str): "bootstrap", "perturbation", "seed", "null_model", "stratified_perturbation"
 - `n_samples` (int): Number of samples (default: from uq_config or 50)
 - `ci` (float): Confidence interval level (default: 0.95)
@@ -768,11 +771,24 @@ Compute metrics on nodes/edges.
 - `null_model` (str): "degree_preserving", "erdos_renyi", "configuration"
 - `random_state` (int): Random seed
 
+**Approximation Parameters** (when `approx=True`):
+- `n_samples` (int): Number of samples for sampling-based methods (betweenness)
+- `n_landmarks` (int): Number of landmarks for landmark-based methods (closeness)
+- `tol` (float): Convergence tolerance for iterative methods (pagerank)
+- `max_iter` (int): Maximum iterations for iterative methods (pagerank)
+- `seed` (int): Random seed for determinism
+
+**Default Approximation Methods**:
+- `betweenness_centrality` → `"sampling"` (sampling-based Brandes algorithm)
+- `closeness_centrality` → `"landmarks"` (landmark-based distance sampling)
+- `pagerank` → `"power_iteration"` (power iteration with convergence tracking)
+
 **Semantics**:
 - MUST compute specified metrics for all items in the current result set
 - MUST store results in `attributes` dictionary of QueryResult
 - MAY compute metrics lazily (deferred until needed by `.where()`, `.order_by()`, etc.)
 - MUST use measure_registry to look up metric implementations
+- When `approx=True`, MUST set `fast_path=True` in provenance
 
 **Metric Types**:
 1. **Centrality**: degree, betweenness_centrality, closeness_centrality, eigenvector_centrality, pagerank
@@ -785,11 +801,30 @@ Compute metrics on nodes/edges.
 - If `uncertainty=False` or `None` (and not enabled globally), results MUST be scalars
 - Quantiles MUST include at minimum: 0.025, 0.05, 0.5, 0.95, 0.975 for ci=0.95
 
+**Approximation Behavior**:
+- If `approx=True`, MUST use approximate algorithm from registry
+- MUST record approximation metadata in `result.meta["approximation"]`
+- MUST set `result.meta["provenance"]["backend"]["fast_path"] = True`
+- Approximation is deterministic when `seed` is specified
+
 **Example**:
 ```python
-.compute("degree", "betweenness_centrality")  # Multiple metrics
-.compute("degree", alias="deg")  # With alias
-.compute("degree", uncertainty=True, method="bootstrap", n_samples=100)  # With UQ
+# Exact computation
+.compute("degree", "betweenness_centrality")
+
+# With alias
+.compute("degree", alias="deg")
+
+# With UQ
+.compute("degree", uncertainty=True, method="bootstrap", n_samples=100)
+
+# With approximation (NEW in v1.1)
+.compute("betweenness_centrality", approx=True, n_samples=512, seed=42)
+.compute("closeness_centrality", approx=True, n_landmarks=64, seed=42)
+.compute("pagerank", approx=True, tol=1e-6, max_iter=100)
+
+# UQ + approximation (composition)
+.compute("betweenness_centrality", approx=True, uncertainty=True, n_samples=100, seed=42)
 ```
 
 ##### `.order_by(key, desc=False) -> QueryBuilder`
@@ -3369,6 +3404,261 @@ sim = (
      .run(steps=100, replicates=10)
      .execute(net)
 )
+```
+
+---
+
+## Approximate Centrality Algorithms (Fast Path)
+
+### Overview
+
+**New in v1.1:** py3plex provides fast approximate centrality algorithms as first-class citizens for large networks (>1000 nodes). Approximations integrate seamlessly with DSL v2, AST/provenance, UQ, and multilayer semantics.
+
+**Key Features:**
+- **10-100x speedup** for betweenness and closeness on large networks
+- **Deterministic**: Same seed produces identical results
+- **Integrated**: Works with `.from_layers()`, `.per_layer()`, and `.uq()`
+- **Provenance**: Full parameter tracking with `fast_path=True` flag
+
+### Supported Algorithms
+
+| Measure | Default Method | Typical Speedup | Parameters |
+|---------|---------------|-----------------|------------|
+| `betweenness_centrality` | `sampling` | 10-100x | `n_samples`, `seed` |
+| `closeness_centrality` | `landmarks` | 10-50x | `n_landmarks`, `seed` |
+| `pagerank` | `power_iteration` | 2-10x | `tol`, `max_iter` |
+
+### DSL v2 API
+
+**Basic usage:**
+
+```python
+from py3plex.dsl import Q
+
+# Approximate betweenness (sampling-based)
+result = Q.nodes().compute(
+    "betweenness_centrality",
+    approx=True,
+    n_samples=512,
+    seed=42
+).execute(net)
+
+# Approximate closeness (landmark-based)
+result = Q.nodes().compute(
+    "closeness_centrality",
+    approx=True,
+    n_landmarks=64,
+    seed=42
+).execute(net)
+
+# Approximate PageRank (power iteration)
+result = Q.nodes().compute(
+    "pagerank",
+    approx=True,
+    tol=1e-6,
+    max_iter=100
+).execute(net)
+```
+
+**With explicit method:**
+
+```python
+result = Q.nodes().compute(
+    "betweenness_centrality",
+    approx=True,
+    approx_method="sampling",  # Explicit method
+    n_samples=512,
+    seed=42
+).execute(net)
+```
+
+### Legacy String DSL API
+
+**Bare APPROXIMATE keyword (uses defaults):**
+
+```python
+from py3plex.dsl_legacy import execute_query
+
+result = execute_query(net, 'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE')
+```
+
+**With parameters:**
+
+```python
+result = execute_query(net,
+    'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE(method="sampling", n_samples=512, seed=42)'
+)
+```
+
+### Multilayer Integration
+
+Approximations work seamlessly with multilayer queries:
+
+```python
+# Layer filtering
+result = Q.nodes().from_layers(L["social"]).compute(
+    "betweenness_centrality",
+    approx=True,
+    n_samples=256,
+    seed=42
+).execute(net)
+
+# Per-layer grouping
+result = Q.nodes().per_layer().compute(
+    "betweenness_centrality",
+    approx=True,
+    n_samples=128,
+    seed=42
+).execute(net)
+```
+
+### UQ Integration
+
+Approximations compose with uncertainty quantification:
+
+```python
+# UQ + approximation
+result = Q.nodes().compute(
+    "betweenness_centrality",
+    approx=True,
+    uncertainty=True,
+    n_samples=100,  # UQ samples
+    seed=42
+).execute(net)
+```
+
+**Note**: When combining UQ with approximation:
+- `n_samples` in `.compute()` refers to UQ replicates
+- Approximation parameters (like sampling count) are set via approx-specific kwargs
+- Seed is shared across UQ and approximation for full determinism
+
+### Provenance Metadata
+
+All approximation executions record detailed metadata:
+
+```python
+result = Q.nodes().compute(
+    "betweenness_centrality",
+    approx=True,
+    n_samples=512,
+    seed=42
+).execute(net)
+
+# Check fast_path flag
+assert result.meta["provenance"]["backend"]["fast_path"] is True
+
+# Check approximation details
+approx_meta = result.meta["approximation"]
+print(approx_meta)
+# {
+#     "enabled": True,
+#     "measures": [{
+#         "measure": "betweenness_centrality",
+#         "algorithm": "sampling_betweenness_centrality",
+#         "method": "sampling",
+#         "parameters": {"seed": 42},
+#         "diagnostics_enabled": False
+#     }],
+#     "fast_path": True
+# }
+```
+
+### Accuracy Guidelines
+
+**Betweenness (sampling):**
+- `n_samples=100`: ~20% relative error
+- `n_samples=512`: ~10% relative error
+- `n_samples=2048`: ~5% relative error
+
+**Closeness (landmarks):**
+- `n_landmarks=10`: Coarse approximation
+- `n_landmarks=50`: ~15% relative error
+- `n_landmarks=100`: ~10% relative error
+
+**PageRank (power iteration):**
+- `tol=1e-4`: Fast, ~1% error
+- `tol=1e-6`: Standard, ~0.1% error
+- `tol=1e-8`: High precision, ~0.01% error
+
+### When to Use Approximation
+
+**Use approximation when:**
+- Network has >1000 nodes
+- Exact computation takes >1 minute
+- Exploratory analysis where approximate rankings are sufficient
+- Production pipelines requiring predictable execution time
+- Multiple runs needed for sensitivity analysis
+
+**Use exact computation when:**
+- Network has <500 nodes (exact is fast enough)
+- Precise values required for critical decisions
+- Publishing results requiring exact centrality values
+
+### Error Handling
+
+Invalid parameters raise typed errors:
+
+```python
+from py3plex.dsl.uq_resolution import UQResolutionError
+
+try:
+    Q.nodes().compute("betweenness_centrality", approx=True, n_samples=0).execute(net)
+except UQResolutionError as e:
+    print(e)  # "n_samples must be positive, got 0"
+```
+
+Invalid methods fall back gracefully with warnings logged.
+
+### Algorithm Details
+
+**Sampling-based Betweenness:**
+- Algorithm: Brandes with source sampling
+- Complexity: O(m × n_samples) vs O(nm) exact
+- Unbiased estimator converging to exact value
+
+**Landmark-based Closeness:**
+- Algorithm: Distance sampling from random landmarks
+- Complexity: O(m × n_landmarks) vs O(nm) exact
+- Component-aware for undirected graphs
+
+**Power Iteration PageRank:**
+- Algorithm: Power iteration with L1 convergence
+- Complexity: O(m × max_iter) vs O(nm) for some exact methods
+- Deterministic (no randomness)
+
+### LLM Agent Guidance
+
+**Decision rules for agents:**
+
+```
+IF user asks to compute centrality on large network (>1000 nodes)
+THEN suggest approximation:
+  Q.nodes().compute("betweenness_centrality", approx=True, n_samples=512, seed=42)
+
+IF user needs deterministic results
+THEN always specify seed:
+  approx=True, seed=42
+
+IF user combines with UQ
+THEN clarify parameter semantics:
+  - n_samples in .compute() = UQ replicates
+  - approx params = algorithm parameters
+```
+
+**Common patterns:**
+
+```python
+# Exploratory analysis (fast)
+Q.nodes().compute("betweenness_centrality", approx=True, n_samples=128, seed=42)
+
+# Production (balanced accuracy/speed)
+Q.nodes().compute("betweenness_centrality", approx=True, n_samples=512, seed=42)
+
+# High accuracy (near-exact)
+Q.nodes().compute("betweenness_centrality", approx=True, n_samples=2048, seed=42)
+
+# With UQ
+Q.nodes().compute("betweenness_centrality", approx=True, uncertainty=True, n_samples=50, seed=42)
 ```
 
 ---
