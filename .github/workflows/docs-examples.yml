@@ -1,0 +1,75 @@
+name: Documentation Examples Validation
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  validate-docs-examples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    permissions:
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      timeout-minutes: 2
+
+    - name: Install dependencies
+      run: |
+        uv venv .venv
+        source .venv/bin/activate
+        uv pip install numpy scipy
+        uv pip install -e .
+      timeout-minutes: 10
+
+    - name: Generate documentation outputs
+      run: |
+        source .venv/bin/activate
+        python scripts/generate_docs_outputs.py
+        echo "✓ Documentation outputs generated"
+      timeout-minutes: 5
+      env:
+        MPLBACKEND: Agg
+
+    - name: Validate documentation outputs
+      run: |
+        source .venv/bin/activate
+        python scripts/validate_docs_outputs.py --verbose
+        echo "✓ Documentation outputs validated"
+      timeout-minutes: 2
+
+    - name: Upload outputs artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: docs-outputs
+        path: examples/docs_outputs/
+        retention-days: 7
+      timeout-minutes: 2
+
+    - name: Check for output divergence
+      if: github.event_name == 'pull_request'
+      run: |
+        # Check if any output files have changed
+        git diff --exit-code examples/docs_outputs/ || {
+          echo "❌ Documentation outputs have diverged!"
+          echo "Please run 'python scripts/generate_docs_outputs.py' locally and commit the changes."
+          exit 1
+        }
+      timeout-minutes: 1
