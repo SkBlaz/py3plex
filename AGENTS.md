@@ -8149,6 +8149,9 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
   - `test_algorithms_random_generators.py` - 21 tests for BA, ER, and SBM multilayer generators
   - `test_algorithms_attribute_correlation.py` - 23 tests for attribute-centrality correlation
   - `test_visualization_benchmark.py` - 35 tests added/enhanced for benchmark plotting
+- **NEW: AGENTS.md Validation Tests** (This PR):
+  - `test_agents_golden_paths.py` - Validates 5 Golden Path examples from AGENTS.md (8 tests)
+  - `test_agents_ergonomics_features.py` - Tests v1.1+ ergonomics features (.hint(), introspection, warnings) (14 tests)
 
 #### Modules with High Coverage (>70%):
 - `__init__.py` - 100%
@@ -8229,7 +8232,11 @@ Core DSL v2 functionality, query building, execution, and exports:
 - `test_dsl_patterns.py` - Pattern matching
 - `test_dsl_documentation_examples.py` - Documentation code snippets
 
-See `tests/` directory for complete list of 65 DSL test files.
+**NEW: AGENTS.md Documentation Validation**:
+- `test_agents_golden_paths.py` - Validates 5 Golden Path examples from AGENTS.md
+- `test_agents_ergonomics_features.py` - Tests v1.1+ ergonomics features
+
+See `tests/` directory for complete list of 67 DSL test files.
 
 #### 2. Verification Tests (7 files in tests/verification/)
 Formal correctness guarantees with metamorphic and differential testing:
