@@ -4980,7 +4980,7 @@ class D:
     """
 
     @staticmethod
-    def simulate(model_or_name: Union[str, Any], **params) -> DynamicsBuilder:
+    def simulate(model_or_name: Union[str, Any], **params) -> "DynamicsBuilder":
         """Create a dynamics simulation builder.
 
         Args:
