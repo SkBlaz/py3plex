@@ -7870,17 +7870,122 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 ---
 
+## Repository State
+
+### Overview Statistics
+
+**Version**: py3plex 1.1.2  
+**Python Support**: 3.8+  
+**Repository Size**: 187.8K lines of code  
+**Test Coverage**: 7.7K tests across 366 test files (~8% statement coverage)  
+**Key Modules**: 239 Python files across core, algorithms, DSL, and utilities  
+
+### Major Subsystems
+
+**Core Infrastructure** (13 modules):
+- Network representations (multinet, temporal_multinet, immutable views)
+- I/O and data loading (parsers, converters, supporting)
+- Network generation (random_generators, advanced_random_generators)
+- Schema validation and lazy evaluation
+
+**DSL Subsystem** (26 modules):
+- Query builder (builder.py - 223KB, most complex module)
+- AST representation and execution (ast.py, executor.py, executor_semiring.py)
+- Result handling (result.py - 72KB)
+- Layer algebra and expressions (layers.py, expressions.py)
+- Query planning and optimization (planner.py)
+- Uncertainty quantification integration (uq_algebra.py, uq_resolution.py)
+- Provenance tracking (provenance.py)
+
+**Algorithms** (110+ modules across 16 categories):
+- Community detection (16 modules, 6 algorithms)
+- Centrality measures (multilayer, supra-matrix, versatility)
+- Statistical analysis (11 modules)
+- Temporal networks (community, centrality evolution)
+- Multilayer-specific algorithms (entanglement, multirank, multixrank)
+- Specialized methods (curvature, routing, classification)
+
+**Uncertainty Quantification** (26 modules):
+- Bootstrap and resampling methods
+- Partition UQ and community ensemble
+- Noise models and null model comparison
+- Stratified perturbation for variance reduction
+- Selection UQ and confidence intervals
+
+**Dynamics** (14 modules):
+- Compartmental models (SIS, SIR, SEIR)
+- Custom process definitions
+- Trajectory simulation and analysis
+- DSL integration for dynamics queries
+
+**Advanced Features**:
+- Counterexample generation (8 modules)
+- Claim learning and hypothesis discovery (6 modules)
+- Semiring algebra for path analysis (10 modules)
+- Network comparison and benchmarking (5 modules)
+
+### Module Distribution by Category
+
+| Category | Modules | Lines of Code | Purpose |
+|----------|---------|---------------|---------|
+| Core | 13 | ~50K | Network data structures and I/O |
+| DSL | 26 | ~80K | Query language and execution |
+| Algorithms | 110+ | ~70K | Network analysis algorithms |
+| Uncertainty | 26 | ~25K | UQ and robustness analysis |
+| Dynamics | 14 | ~15K | Spreading processes |
+| Utilities | 50+ | ~30K | CLI, validation, profiling, visualization |
+
+### Test Infrastructure
+
+**Test Organization**:
+- **366 test files** with **7,700+ individual tests**
+- **83 verification tests** across 4 specialized modules (provenance, differential, metamorphic, determinism)
+- **203 new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization)
+- Property-based tests using Hypothesis
+- Metamorphic tests for invariant checking
+- Integration tests for end-to-end workflows
+
+**Coverage Areas**:
+- Core functionality: 40-85% coverage
+- DSL: 23.5% coverage (high complexity, extensive functionality)
+- Algorithms: 1.1% → improved with 44 new tests
+- Uncertainty: 21.3% coverage
+- Dynamics: 19.0% coverage with 39+ test functions
+
+### Repository Growth
+
+**Recent Additions** (v1.1.x):
+- Successive Halving for algorithm racing
+- SBM (Stochastic Block Model) integration
+- Partition UQ with entropy and stability metrics
+- Stratified perturbation for variance-reduced UQ
+- AutoCommunity with Pareto-optimal selection
+- Ergonomics features (hint(), enhanced repr, pedagogical errors)
+- Algorithm requirements and compatibility system
+- Enhanced provenance tracking
+
+---
+
 ## File Locations
 
 ### Core Modules
 
-- `py3plex/core/multinet.py` - Main multi_layer_network class
-- `py3plex/core/temporal_multinet.py` - Temporal networks
+- `py3plex/core/multinet.py` (167KB) - Main `multi_layer_network` class with 200+ methods
+- `py3plex/core/temporal_multinet.py` (19KB) - Temporal network support with time-stamped edges
+- `py3plex/core/parsers.py` (30KB) - Network format parsers (edgelist, GML, GraphML, JSON)
+- `py3plex/core/random_generators.py` (14KB) - Random network generation (ER, BA, SBM)
+- `py3plex/core/converters.py` (8KB) - Format conversion utilities
+- `py3plex/core/schema_validation.py` (13KB) - Field validation and schema enforcement
+- `py3plex/core/lazy_evaluation.py` (8KB) - LazyProperty and CacheManager
+- `py3plex/core/immutable.py` (8KB) - ImmutableNetworkView for safe read-only access
+- `py3plex/core/nx_compat.py` (7KB) - NetworkX compatibility layer
+- `py3plex/core/supporting.py` (5KB) - Supporting utilities
+- `py3plex/core/types.py` (1KB) - Type definitions
 - `py3plex/dsl/` - DSL v2 (builder API, AST, executor)
-- `py3plex/dsl_legacy.py` - Legacy string-based DSL
-- `py3plex/graph_ops.py` - Dplyr-style chainable API
-- `py3plex/pipeline.py` - Sklearn-style pipeline
-- `py3plex/workflows.py` - Config-driven workflows
+- `py3plex/dsl_legacy.py` (70KB) - Legacy string-based DSL
+- `py3plex/graph_ops.py` (50KB) - Dplyr-style chainable API
+- `py3plex/pipeline.py` (19KB) - Sklearn-style pipeline
+- `py3plex/workflows.py` (21KB) - Config-driven workflows
 - `py3plex_mcp/` - MCP server for AI agent integration
 
 ### MCP Server
@@ -7891,64 +7996,540 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `py3plex_mcp/errors.py` - Typed error handling
 - `py3plex_mcp/safe_paths.py` - Path validation and safety
 
-### DSL v2 Internals
+### DSL v2 Internals (26 modules, ~80K lines)
 
-- `py3plex/dsl/__init__.py` - Public API exports
-- `py3plex/dsl/builder.py` - Q, L, UQ, Param builders (4600+ lines)
-- `py3plex/dsl/ast.py` - AST node definitions
-- `py3plex/dsl/executor.py` - Query execution engine
-- `py3plex/dsl/result.py` - QueryResult class
-- `py3plex/dsl/layers.py` - Layer algebra (LayerSet)
-- `py3plex/dsl/expressions.py` - F field expressions
-- `py3plex/dsl/errors.py` - DSL-specific exceptions
+**Core Builder API**:
+- `py3plex/dsl/__init__.py` (14KB) - Public API exports (Q, L, UQ, Param, F, C, N, P, D, S)
+- `py3plex/dsl/builder.py` (223KB) - Q, L, UQ, Param builders - **largest module in repo**
+  - QueryBuilder (nodes, edges, communities)
+  - LayerExprBuilder and LayerSet for layer algebra
+  - UQBuilder for uncertainty quantification
+  - ParamRef for parameterized queries
+  - SemiringBuilder for path algebra
+  - CompareBuilder, NullModelBuilder, PathBuilder, DynamicsBuilder
+
+**AST and Execution**:
+- `py3plex/dsl/ast.py` (59KB) - AST node definitions (SelectStmt, CompareStmt, PathStmt, etc.)
+- `py3plex/dsl/executor.py` (221KB) - Query execution engine with measure registry
+- `py3plex/dsl/executor_semiring.py` (10KB) - Semiring path query executor
+- `py3plex/dsl/planner.py` (29KB) - Query optimization and stage reordering
+- `py3plex/dsl/cache.py` (7KB) - Query result caching
+
+**Results and Export**:
+- `py3plex/dsl/result.py` (72KB) - QueryResult class with export methods
+- `py3plex/dsl/export.py` (10KB) - Export utilities (pandas, NetworkX, Arrow)
+- `py3plex/dsl/serializer.py` (9KB) - AST serialization
+
+**Query Components**:
+- `py3plex/dsl/layers.py` (20KB) - Layer algebra (LayerSet) with set operations
+- `py3plex/dsl/expressions.py` (9KB) - F field expressions for filtering
+- `py3plex/dsl/communities.py` (8KB) - Community query handling
+- `py3plex/dsl/patterns/` - Cypher-like pattern matching (experimental)
+
+**Uncertainty and Provenance**:
+- `py3plex/dsl/uq_algebra.py` (32KB) - UQValue algebra with formal guarantees
+- `py3plex/dsl/uq_resolution.py` (17KB) - UQ configuration resolution
+- `py3plex/dsl/community_uq.py` (14KB) - Community detection UQ
+- `py3plex/dsl/selection_uq.py` (11KB) - Algorithm selection UQ
+- `py3plex/dsl/compositional_uq.py` (11KB) - Compositional UQ operations
+- `py3plex/dsl/provenance.py` (17KB) - Provenance tracking and replay
+
+**Diagnostics and Optimization**:
+- `py3plex/dsl/errors.py` (22KB) - DSL-specific exceptions with pedagogical messages
+- `py3plex/dsl/warnings.py` (12KB) - Performance and semantic warnings
+- `py3plex/dsl/explain.py` (15KB) - Query explanation and debugging
+- `py3plex/dsl/benchmark.py` (10KB) - DSL query benchmarking
+- `py3plex/dsl/benchmark_result.py` (4KB) - Benchmark result handling
+
+**Supporting Infrastructure**:
+- `py3plex/dsl/registry.py` (14KB) - Operator and measure registry
+- `py3plex/dsl/operator_registry.py` (5KB) - DSL operator registration
+- `py3plex/dsl/algebra.py` (11KB) - Algebraic operations
+- `py3plex/dsl/context.py` (1KB) - Execution context
+
+### Algorithms - Complete Inventory
+
+#### Community Detection (16 modules, 6+ algorithms)
+
+**Core Algorithms**:
+- `py3plex/algorithms/community_detection/community_louvain.py` - Multilayer Louvain optimization
+- `py3plex/algorithms/community_detection/leiden_multilayer.py` - Multilayer Leiden with CPM
+- `py3plex/algorithms/community_detection/leiden_uq.py` - Leiden with uncertainty quantification
+- `py3plex/algorithms/community_detection/label_propagation.py` - Supra-graph and consensus label propagation
+- `py3plex/algorithms/community_detection/spectral_multilayer.py` - Spectral clustering on supra-adjacency
+- `py3plex/algorithms/community_detection/sbm_wrapper.py` - Stochastic Block Model integration
+
+**Algorithm Selection and Benchmarking**:
+- `py3plex/algorithms/community_detection/auto_select.py` - Legacy auto-selection with "most wins" logic
+- `py3plex/algorithms/community_detection/autocommunity.py` (AutoCommunity) - Pareto-optimal multi-objective selection
+- `py3plex/algorithms/community_detection/autocommunity_executor.py` - Execution engine for AutoCommunity
+- `py3plex/algorithms/community_detection/successive_halving.py` - Progressive algorithm elimination
+- `py3plex/algorithms/community_detection/runner.py` - Unified algorithm runner with BudgetSpec
+- `py3plex/algorithms/community_detection/budget.py` - Budget specification for algorithm racing
+
+**Quality Metrics and Evaluation**:
+- `py3plex/algorithms/community_detection/multilayer_modularity.py` - Multilayer modularity computation
+- `py3plex/algorithms/community_detection/multilayer_quality_metrics.py` - Coverage, cut ratio, replica consistency, layer entropy
+- `py3plex/algorithms/community_detection/sbm_metrics.py` - SBM-specific metrics (log-likelihood, MDL, BIC)
+- `py3plex/algorithms/community_detection/community_measures.py` - Community-level measures
+- `py3plex/algorithms/community_detection/community_ranking.py` - Ranking communities by quality
+- `py3plex/algorithms/community_detection/node_ranking.py` - Node importance within communities
+
+**Benchmark Generation**:
+- `py3plex/algorithms/community_detection/multilayer_benchmark.py` - LFR, SBM, and coupled ER benchmarks
+- `py3plex/algorithms/community_detection/distributional.py` - Distributional community detection
+
+**Supporting Infrastructure**:
+- `py3plex/algorithms/community_detection/community_wrapper.py` - Unified wrapper interface
+- `py3plex/algorithms/community_detection/NoRC.py` - NoRC algorithm implementation
+- `py3plex/algorithms/community_detection/flow_hierarchy.py` - Flow-based hierarchy detection
+
+#### Centrality Measures (7 modules)
+
+**Multilayer Centrality**:
+- `py3plex/algorithms/multilayer_algorithms/centrality.py` (93KB) - **Largest algorithm module**
+  - PageRank, HITS, Katz centrality
+  - Betweenness, closeness, degree centrality
+  - Eigenvector centrality
+  - Multilayer adaptations with interlayer coupling
+- `py3plex/algorithms/multilayer_algorithms/supra_matrix_function_centrality.py` (9KB) - Matrix function centrality
+- `py3plex/algorithms/multicentrality.py` - Multiple centrality computation
+- `py3plex/algorithms/centrality_toolkit.py` - Centrality computation toolkit
+
+**Specialized Multilayer Measures**:
+- `py3plex/algorithms/multilayer_algorithms/versatility.py` (16KB) - Node versatility across layers
+- `py3plex/algorithms/multilayer_algorithms/entanglement.py` (6KB) - Layer entanglement measures
+- `py3plex/algorithms/multilayer_algorithms/multirank.py` (13KB) - MultiRank centrality
+- `py3plex/algorithms/multilayer_algorithms/multixrank.py` (22KB) - MultiXRank for heterogeneous networks
+
+**Centrality Analysis**:
+- `py3plex/algorithms/centrality/explain.py` - Centrality explanation utilities
+- `py3plex/algorithms/attribute_correlation.py` - Attribute-centrality correlation analysis
+
+#### Statistical Analysis (11 modules)
+
+**Basic Statistics**:
+- `py3plex/algorithms/statistics/basic_statistics.py` (4KB) - Degree distribution, clustering coefficient
+- `py3plex/algorithms/statistics/multilayer_statistics.py` (76KB) - Comprehensive multilayer statistics
+- `py3plex/algorithms/statistics/topology.py` (5KB) - Topological properties
+
+**Advanced Statistical Methods**:
+- `py3plex/algorithms/statistics/correlation_networks.py` (2KB) - Correlation network construction
+- `py3plex/algorithms/statistics/enrichment_modules.py` (9KB) - Enrichment analysis
+- `py3plex/algorithms/statistics/powerlaw.py` (109KB) - Power-law distribution fitting
+- `py3plex/algorithms/statistics/stats_comparison.py` (21KB) - Statistical comparison methods
+
+**Bayesian Methods**:
+- `py3plex/algorithms/statistics/bayesiantests.py` (22KB) - Bayesian hypothesis testing
+- `py3plex/algorithms/statistics/bayesian_distances.py` (1KB) - Bayesian distance measures
+- `py3plex/algorithms/statistics/critical_distances.py` (13KB) - Critical distance diagrams
+
+#### Temporal Network Algorithms (3 modules)
+
+- `py3plex/algorithms/temporal/centrality.py` - Temporal centrality evolution
+- `py3plex/algorithms/temporal/community.py` - Temporal community detection
+- `py3plex/algorithms/temporal_multiplex/` - Temporal multiplex analysis
+
+#### Specialized Algorithms
+
+**Curvature**:
+- `py3plex/algorithms/curvature/ollivier_ricci_multilayer.py` - Ollivier-Ricci curvature for multilayer
+
+**Network Classification**:
+- `py3plex/algorithms/network_classification/PPR.py` - Personalized PageRank for classification
+- `py3plex/algorithms/network_classification/label_propagation.py` - Label propagation classifier
+
+**Routing and Paths**:
+- `py3plex/algorithms/routing/multiplex_paths.py` - Path finding in multiplex networks
+
+**Graph Summarization and Embedding**:
+- `py3plex/algorithms/graph_summarization.py` - Network summarization methods
+- `py3plex/algorithms/layer_similarity.py` - Inter-layer similarity computation
+- `py3plex/algorithms/multilayer_clustering.py` - Multilayer clustering
+
+**Robustness and Testing**:
+- `py3plex/algorithms/robustness_testing.py` - Network robustness analysis
+- `py3plex/algorithms/community_comparison.py` - Community structure comparison
+- `py3plex/algorithms/statistical_report.py` - Statistical reporting
+- `py3plex/algorithms/meta_flow_report.py` - Meta-analysis flow reporting
+
+**Specialized Methods**:
+- `py3plex/algorithms/sir_multiplex.py` - SIR epidemic on multiplex networks
+- `py3plex/algorithms/advanced_random_generators.py` - Advanced random graph generators (BA, ER, SBM)
+- `py3plex/algorithms/requirements_registry.py` - Algorithm requirements tracking
+
+**Rule Learning (Hedwig)**:
+- `py3plex/algorithms/hedwig/` (12 modules) - Rule learning and inductive logic programming
+  - Core: KB, rules, predicates, examples
+  - Learners: Bottom-up, optimal
+  - Stats: Significance, adjustment, validation
+
+**General Algorithms**:
+- `py3plex/algorithms/general/walkers.py` - Random walkers and diffusion
+- `py3plex/algorithms/general/benchmark_classification.py` - Classification benchmarks
+
+**Node Ranking**:
+- `py3plex/algorithms/node_ranking/node_ranking.py` - Various node ranking algorithms
+
+**SBM (Stochastic Block Model)** (8 modules):
+- `py3plex/algorithms/sbm/multilayer_sbm.py` - Multilayer SBM implementation
+- `py3plex/algorithms/sbm/inference_vi.py` - Variational inference for SBM
+- `py3plex/algorithms/sbm/model_selection.py` - Model selection (K selection)
+- `py3plex/algorithms/sbm/objectives.py` - ELBO, MDL, BIC objectives
+- `py3plex/algorithms/sbm/uq.py` - Uncertainty quantification for SBM
+- `py3plex/algorithms/sbm/diagnostics.py` - SBM diagnostics
+- `py3plex/algorithms/sbm/conversions.py` - Format conversions
+- `py3plex/algorithms/sbm/utils.py` - SBM utilities
+
+### Dynamics Simulation (14 modules, ~15K lines)
+
+**Core Dynamics Engine**:
+- `py3plex/dynamics/core.py` (23KB) - DynamicsSimulator base class
+- `py3plex/dynamics/executor.py` (12KB) - Dynamics query executor
+- `py3plex/dynamics/result.py` (9KB) - DynamicsResult with trajectory analysis
+
+**Compartmental Models**:
+- `py3plex/dynamics/models.py` (24KB) - SIS, SIR, SEIR, SIRS models
+- `py3plex/dynamics/compartmental.py` (14KB) - Compartmental model framework
+- `py3plex/dynamics/processes.py` (9KB) - Custom process definitions
+
+**Configuration and Building**:
+- `py3plex/dynamics/builder.py` (7KB) - DynamicsBuilder for DSL integration
+- `py3plex/dynamics/config.py` (11KB) - Configuration management
+- `py3plex/dynamics/registry.py` (8KB) - Model registry
+
+**Supporting Infrastructure**:
+- `py3plex/dynamics/ast.py` (3KB) - Dynamics AST nodes
+- `py3plex/dynamics/errors.py` (5KB) - Dynamics-specific errors
+- `py3plex/dynamics/serializer.py` (3KB) - Serialization utilities
+- `py3plex/dynamics/_utils.py` (5KB) - Internal utilities
+- `py3plex/dynamics/__init__.py` (3KB) - Public API exports
+
+### Uncertainty Quantification (26 modules, ~25K lines)
+
+**Bootstrap and Resampling**:
+- `py3plex/uncertainty/bootstrap.py` (13KB) - Bootstrap resampling methods
+- `py3plex/uncertainty/resampling_graph.py` (8KB) - Graph resampling utilities
+- `py3plex/uncertainty/stratification.py` (11KB) - Stratified sampling for variance reduction
+
+**Partition and Community UQ**:
+- `py3plex/uncertainty/partition_uq.py` (19KB) - Partition uncertainty quantification
+- `py3plex/uncertainty/partition.py` (36KB) - Partition representation and operations
+- `py3plex/uncertainty/partition_reducers.py` (28KB) - Partition aggregation methods
+- `py3plex/uncertainty/partition_metrics.py` (9KB) - Partition stability metrics
+- `py3plex/uncertainty/partition_types.py` (1KB) - Partition type definitions
+- `py3plex/uncertainty/community_ensemble.py` (18KB) - Community ensemble methods
+- `py3plex/uncertainty/community_result.py` (25KB) - Community UQ result handling
+
+**Selection and Algorithm UQ**:
+- `py3plex/uncertainty/selection_uq.py` (13KB) - Algorithm selection UQ
+- `py3plex/uncertainty/selection_execution.py` (9KB) - Selection execution
+- `py3plex/uncertainty/selection_reducers.py` (16KB) - Selection result aggregation
+- `py3plex/uncertainty/selection_types.py` (2KB) - Selection type definitions
+
+**Noise Models and Perturbation**:
+- `py3plex/uncertainty/noise_models.py` (15KB) - Edge drop, weight noise, layer drop
+- `py3plex/uncertainty/null_models.py` (17KB) - Null model integration for UQ
+
+**Estimation and Confidence**:
+- `py3plex/uncertainty/estimation.py` (18KB) - Parameter estimation with UQ
+- `py3plex/uncertainty/ci_utils.py` (5KB) - Confidence interval utilities
+
+**Infrastructure**:
+- `py3plex/uncertainty/runner.py` (5KB) - UQ execution runner
+- `py3plex/uncertainty/plan.py` (6KB) - UQ execution planning
+- `py3plex/uncertainty/context.py` (4KB) - UQ context management
+- `py3plex/uncertainty/types.py` (12KB) - Type definitions
+- `py3plex/uncertainty/__init__.py` (5KB) - Public API exports
+- `py3plex/uncertainty/README.md` (9KB) - UQ documentation
+
+**Reducers** (subdirectory):
+- Multiple reducer implementations for aggregating UQ results
 
 ### Advanced Features
 
-- `py3plex/dynamics/` - Dynamics simulations
-- `py3plex/uncertainty/` - Uncertainty quantification
-- `py3plex/temporal_utils.py` - Temporal utilities
-- `py3plex/nullmodels/` - Null model implementations
-- `py3plex/counterexamples/` - Counterexample engine
-- `py3plex/claims/` - Claim learning
-- `py3plex/algebra/` - Semiring algebra
+**Counterexample Generation**:
+- `py3plex/counterexamples/` (8 modules) - Automated counterexample finding for network claims
+  - Claim language parsing and evaluation
+  - Witness subgraph extraction
+  - Minimization strategies
 
-### Algorithms
+**Claim Learning**:
+- `py3plex/claims/` (6 modules) - Hypothesis discovery from network data
+  - Inductive rule learning
+  - Support and coverage metrics
+  - Integration with counterexample engine
 
-- `py3plex/algorithms/centrality/` - Centrality measures
-- `py3plex/algorithms/community_detection/` - Community detection
-- `py3plex/algorithms/temporal/` - Temporal algorithms
+**Semiring Algebra**:
+- `py3plex/semiring/` (10 modules) - Formal semiring path algebra
+  - Shortest paths, most reliable paths, reachability
+  - Fixed-point iteration and closure
+  - Custom semiring definitions
+  - Pareto frontier for multi-objective paths
+
+**Network Comparison**:
+- `py3plex/comparison/` (5 modules) - Network similarity and comparison
+  - Multiplex Jaccard, edit distance
+  - Structural comparison metrics
+
+**Provenance System**:
+- `py3plex/provenance/` - Query provenance tracking
+  - Replay and reproducibility
+  - Snapshot and delta capture
+
+**Null Models**:
+- `py3plex/nullmodels/` - Configuration model, ER, edge swapping
+  - Statistical significance testing
+  - Null model integration with UQ
+
+**Temporal Utilities**:
+- `py3plex/temporal_utils.py` (7KB) - Basic temporal network utilities
+- `py3plex/temporal_utils_extended.py` (4KB) - Duration parsing and formatting
+- `py3plex/temporal_view.py` (10KB) - Temporal network views
+
+**Other Specialized Modules**:
+- `py3plex/paths/` - Path finding algorithms
+- `py3plex/stats/` - Statistical utilities
+- `py3plex/sensitivity/` - Sensitivity analysis
+- `py3plex/selection/` - Algorithm selection utilities
+- `py3plex/robustness/` - Robustness analysis
+- `py3plex/counterfactual/` - Counterfactual analysis
+- `py3plex/contracts/` - Design by contract
+- `py3plex/alignment/` - Network alignment
+- `py3plex/benchmarks/` - Benchmarking utilities
+- `py3plex/lab/` - Experimental features
 
 ### I/O and Data
 
-- `py3plex/io/` - I/O handlers
-- `py3plex/datasets/` - Built-in datasets
+**I/O Handlers**:
+- `py3plex/io/` (8 modules) - Input/output format handlers
+  - Edgelist, GraphML, GML, JSON formats
+  - Apache Arrow support for high-performance I/O
+  - Multilayer network serialization
+  - Format conversion utilities
 
-### Utilities
+**Built-in Datasets**:
+- `py3plex/datasets/` - Curated multilayer networks
+  - Biological networks (PPI, gene-disease-drug)
+  - Social networks (Facebook, Twitter multiplex)
+  - Infrastructure networks (transportation, utilities)
+  - Benchmark networks (LFR, SBM-generated)
 
-- `py3plex/cli.py` - CLI entry point
-- `py3plex/config.py` - Configuration constants
-- `py3plex/exceptions.py` - Exception hierarchy
-- `py3plex/validation.py` - Input validation
-- `py3plex/profiling.py` - Performance profiling
+### Utilities and Supporting Infrastructure
+
+**Command-Line Interface**:
+- `py3plex/cli.py` (128KB) - **Comprehensive CLI tool**
+  - Network creation, statistics, querying
+  - Community detection, centrality computation
+  - Format conversion
+  - Uncertainty quantification integration
+  - 79 comprehensive tests in test_cli.py
+
+**Configuration and Validation**:
+- `py3plex/config.py` (10KB) - Configuration constants and defaults
+- `py3plex/validation.py` (13KB) - Input validation (2 test files)
+- `py3plex/errors.py` (23KB) - Error handling utilities
+- `py3plex/exceptions.py` (13KB) - Exception hierarchy
+
+**Parallel Execution**:
+- `py3plex/_parallel.py` (9KB) - Parallel execution utilities
+  - Deterministic seed spawning
+  - Parallel map with n_jobs support
+  - 19 tests for spawn_seeds and parallel_map
+
+**Performance and Analysis**:
+- `py3plex/profiling.py` (11KB) - Performance profiling tools
+- `py3plex/linter.py` (27KB) - Code quality checking
+- `py3plex/diagnostics/` - Diagnostic system with actionable messages
+
+**Visualization**:
+- `py3plex/visualization/` (4 modules) - Network visualization
+  - Multilayer layout algorithms
+  - Layer-aware visualization
+  - Benchmark plotting (35 tests added)
+  - Export to various formats
+
+**Plugin System**:
+- `py3plex/plugins/` - Extensible plugin architecture
+  - Custom operators and measures
+  - DSL operator registration
+  - 20.7% test coverage
+
+**Supporting Modules**:
+- `py3plex/utils.py` (14KB) - General utilities (4 test files)
+- `py3plex/requirements.py` (35KB) - Algorithm requirements and compatibility system
+- `py3plex/logging_config.py` (1KB) - Logging configuration
+- `py3plex/wrappers/` - NetworkX and igraph wrappers
+- `py3plex/multinet/` - Legacy multinet support
+- `py3plex/compat/` - Compatibility layer (3 modules, 19 tests for exceptions)
+
+### MCP Server (Model Context Protocol)
+
+**MCP Integration** (py3plex_mcp/):
+- `py3plex_mcp/server.py` - FastMCP server implementation
+- `py3plex_mcp/registry.py` - In-memory network handle storage
+- `py3plex_mcp/schemas.py` - Response schema utilities
+- `py3plex_mcp/errors.py` - Typed error handling
+- `py3plex_mcp/safe_paths.py` - Path validation and safety
+
+**Features**:
+- 7 tools (load_network, run_query, community_detect, export, etc.)
+- 3 resources (AGENTS.md, DSL reference, tool schemas)
+- Security-first design (safe file access, output sandboxing)
+- Python 3.10+ required (MCP SDK dependency)
 
 ### Documentation
 
-- `AGENTS.md` - AI agent documentation (this file)
-- `README.md` - Quick start
-- `docfiles/` - Documentation source
-- `examples/` - 170+ example scripts
+- `AGENTS.md` (8,900+ lines) - **This file** - Comprehensive AI agent documentation
+- `README.md` - Quick start and project overview
+- `docfiles/` - Documentation source files
+- `examples/` - **170+ example scripts** demonstrating all features
+- `docs/py3plex_book.pdf` (106 pages) - Technical documentation
+- `CHANGELOG.md` - Version history
+- `CONTRIBUTING.md` - Contribution guidelines
+- `CITATION.cff` - Citation information
 
-### Tests
+### Test Suite
 
-- `tests/test_dsl_v2.py` - DSL v2 tests
+**Test Files** (366 files, 7,700+ tests):
+
+**DSL Tests**:
+- `tests/test_dsl_v2.py` - DSL v2 core functionality
 - `tests/test_dsl_extensions.py` - DSL extensions
-- `tests/test_graph_ops.py` - Dplyr-style tests
-- `tests/test_pipeline.py` - Pipeline tests
-- `tests/test_dynamics.py` - Dynamics tests
-- `tests/test_uncertainty.py` - UQ tests
-- `tests/test_temporal.py` - Temporal tests
-- `tests/test_counterexamples.py` - Counterexample tests
-- `tests/test_claim_learning.py` - Claim learning tests
+- `tests/test_dsl_legacy_edges.py` - Legacy DSL edge queries
+- `tests/test_graph_ops.py` - Dplyr-style operations
+
+**Algorithm Tests**:
+- `tests/test_community_detection/` - Community detection algorithms
+- `tests/test_algorithms_random_generators.py` (21 tests) - BA, ER, SBM generators
+- `tests/test_algorithms_attribute_correlation.py` (23 tests) - Attribute-centrality correlation
+
+**Infrastructure Tests**:
+- `tests/test_pipeline.py` - Pipeline API
+- `tests/test_cli.py` (79 tests) - CLI functionality
+- `tests/test_parallel.py` (19 tests) - Parallel execution
+- `tests/test_core_*.py` - Core module tests (schema validation, lazy evaluation, immutable views)
+
+**UQ and Robustness Tests**:
+- `tests/test_uncertainty.py` - Uncertainty quantification
+- `tests/test_dynamics.py` - Dynamics simulations (39+ test functions)
+- `tests/test_temporal.py` - Temporal networks
+- `tests/test_temporal_utils_extended.py` (40 tests) - Duration parsing/formatting
+
+**Specialized Tests**:
+- `tests/test_counterexamples.py` - Counterexample generation
+- `tests/test_claim_learning.py` - Claim learning
+- `tests/test_verification_*.py` (83 tests across 4 modules) - Correctness verification
+- `tests/test_visualization_benchmark.py` (35 tests) - Benchmark plotting
+
+**Test Markers**:
+- `@pytest.mark.unit` - Fast unit tests
+- `@pytest.mark.integration` - Integration tests
+- `@pytest.mark.property` - Property-based (Hypothesis)
+- `@pytest.mark.metamorphic` - Metamorphic invariant tests
+- `@pytest.mark.slow` - Slow tests (>1 second)
+- `@pytest.mark.verification` - Correctness verification tests
+
+### Development Tools
+
+**Configuration**:
+- `pyproject.toml` - Project metadata, dependencies, tool configuration
+- `setup.py` - Legacy setup script
+- `MANIFEST.in` - Package manifest
+- `Makefile` - Build and development tasks
+
+**Quality Assurance**:
+- `.pre-commit-config.yaml` - Pre-commit hooks
+- `.github/workflows/` - CI/CD pipelines (tests, examples, benchmarks, docs, fuzzing)
+- `conftest.py` - Pytest configuration
+- `verify_rewrite_engine.py` - Rewrite engine verification
+
+**Docker Support**:
+- `Dockerfile` - Container image
+- `docker-compose.yml` - Multi-container setup
+- `.dockerignore` - Docker build exclusions
+
+**Notebooks and Scripts**:
+- `notebooks/` - Jupyter notebooks for interactive analysis
+- `scripts/` - Development and maintenance scripts
+- `create_mosaic_banner.py` - Banner generation
+- `create_showcase_flow.py` - Showcase visualization
+
+**Other Resources**:
+- `background_knowledge/` - Domain knowledge and references
+- `multilayer_datasets/` - Additional dataset files
+- `example_images/` - Example visualizations
+- `book/` - Book source files
+- `fuzzing/` - Fuzzing harness
+- `gui/` - Web GUI (FastAPI + SvelteKit)
+
+---
+
+## Algorithm Quick Reference
+
+### By Use Case
+
+**Community Detection**:
+- **Fast, scalable**: Louvain (`louvain_multilayer`)
+- **High quality**: Leiden (`leiden_multilayer`)
+- **With UQ**: Leiden with ensemble (`leiden_uq`)
+- **Auto-selection**: AutoCommunity with Pareto optimization
+- **Model-based**: SBM with model selection
+- **Label-based**: Supra-graph or consensus label propagation
+
+**Centrality**:
+- **Degree centrality**: Built-in to DSL (`Q.nodes().compute("degree")`)
+- **Betweenness**: Multilayer betweenness (`compute("betweenness_centrality")`)
+- **PageRank**: Multilayer PageRank with interlayer coupling
+- **Versatility**: Cross-layer node versatility
+- **MultiRank/MultiXRank**: Heterogeneous network ranking
+
+**Statistical Analysis**:
+- **Basic stats**: Degree distribution, clustering coefficient
+- **Power-law fitting**: Powerlaw module with goodness-of-fit
+- **Correlation**: Attribute-centrality correlation
+- **Enrichment**: Network enrichment analysis
+- **Bayesian testing**: Hypothesis testing with Bayesian methods
+
+**Temporal Analysis**:
+- **Centrality evolution**: Temporal centrality tracking
+- **Community evolution**: Temporal community detection
+- **Snapshot analysis**: Time-slice queries with `.at()` and `.during()`
+
+**Dynamics**:
+- **Epidemic models**: SIS, SIR, SEIR on multilayer networks
+- **Custom processes**: Define custom spreading dynamics
+- **Trajectory analysis**: Multi-replicate simulations with UQ
+
+### Algorithm Selection Guide
+
+| Task | Small Networks (<1K nodes) | Large Networks (>10K nodes) | Multilayer-Specific | UQ Support |
+|------|----------------------------|-----------------------------|--------------------|------------|
+| **Communities** | Leiden, SBM | Louvain, Label Propagation | Leiden (omega) | Yes (ensemble, seed) |
+| **Centrality** | All measures | Degree, PageRank | Versatility, Entanglement | Yes (bootstrap, perturbation) |
+| **Paths** | Semiring algebra | — | Layer-aware routing | No |
+| **Dynamics** | All models | SIS, SIR | Multilayer SIS/SIR | Yes (replicates) |
+| **Statistics** | All methods | Basic stats, power-law | Multilayer statistics | Partial |
+
+### Performance Considerations
+
+**Computational Complexity**:
+- **O(n)**: Degree, layer statistics
+- **O(m)**: Single-pass edge operations, label propagation
+- **O(n·m)**: PageRank (iterative), betweenness centrality
+- **O(n²·m)**: Closeness centrality, SBM inference
+- **O(n³)**: All-pairs shortest paths, supra-matrix operations
+
+**Memory Requirements**:
+- **Low (O(n+m))**: Sparse algorithms, degree-based measures
+- **Medium (O(n²))**: Supra-adjacency matrix (stored sparse)
+- **High (O(n²·L²))**: Full supra-matrix construction (L = layers)
+
+**Scaling Recommendations**:
+- **<1K nodes**: All algorithms work well
+- **1K-10K nodes**: Avoid closeness, use sparse betweenness
+- **>10K nodes**: Use fast algorithms (Louvain, degree, PageRank), enable caching
+- **>100K nodes**: Consider NetworkX backend optimizations, graph-tool for centrality
 
 ---
 
