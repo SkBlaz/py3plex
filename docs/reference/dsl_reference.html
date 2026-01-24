@@ -127,6 +127,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#explaining-results">Explaining Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#execution-plan-mode">Execution Plan Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#explanations-mode">Explanations Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-explanation-blocks">Available Explanation Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#attribution-block">Attribution Block</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#working-with-results">Working with Results</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#result-object">Result Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#convert-to-pandas">Convert to Pandas</a></li>
@@ -645,6 +652,262 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <li><p>Edge queries with coverage will raise a clear <code class="docutils literal notranslate"><span class="pre">DslExecutionError</span></code></p></li>
 <li><p>Grouping requires computed attributes or inherent node properties (like layer)</p></li>
 </ul>
+</section>
+</section>
+<section id="explaining-results">
+<h2>Explaining Results<a class="headerlink" href="#explaining-results" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">.explain()</span></code> method adds interpretable explanations to query results or displays execution plans.</p>
+<section id="execution-plan-mode">
+<h3>Execution Plan Mode<a class="headerlink" href="#execution-plan-mode" title="Link to this heading"></a></h3>
+<p>Call <code class="docutils literal notranslate"><span class="pre">.explain()</span></code> with no arguments to get the query execution plan:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">plan</span><span class="p">)</span>  <span class="c1"># Shows query stages and optimization</span>
+</pre></div>
+</div>
+<p>This mode does NOT execute the query or attach explanations.</p>
+</section>
+<section id="explanations-mode">
+<h3>Explanations Mode<a class="headerlink" href="#explanations-mode" title="Link to this heading"></a></h3>
+<p>Call <code class="docutils literal notranslate"><span class="pre">.explain()</span></code> with arguments to attach explanations to each result row:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
+         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;community&quot;</span><span class="p">,</span> <span class="s2">&quot;top_neighbors&quot;</span><span class="p">,</span> <span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
+         <span class="n">attribution</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span> <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Access explanations</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_explanations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># df now has explanation columns with JSON-serialized dicts</span>
+</pre></div>
+</div>
+</section>
+<section id="available-explanation-blocks">
+<h3>Available Explanation Blocks<a class="headerlink" href="#available-explanation-blocks" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;community&quot;</span></code> — Community membership and size</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;top_neighbors&quot;</span></code> — Top neighbors by weight/degree</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;layer_footprint&quot;</span></code> — Layers where node/edge appears</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;attribution&quot;</span></code> — Shapley-based attribution explanations (see below)</p></li>
+</ul>
+<p>Default blocks: <code class="docutils literal notranslate"><span class="pre">[&quot;community&quot;,</span> <span class="pre">&quot;top_neighbors&quot;,</span> <span class="pre">&quot;layer_footprint&quot;]</span></code></p>
+</section>
+<section id="attribution-block">
+<h3>Attribution Block<a class="headerlink" href="#attribution-block" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">&quot;attribution&quot;</span></code> block provides Shapley value-based explanations for why nodes/edges have high metric values or rankings.</p>
+<p><strong>Purpose</strong>: Decompose metric contributions across layers and/or edges using game-theoretic attribution.</p>
+<p><strong>Basic Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
+         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
+         <span class="n">attribution</span><span class="o">=</span><span class="p">{</span>
+             <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;shapley_mc&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span>
+         <span class="p">}</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Configuration Parameters</strong>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metric</span></code></p></td>
+<td><p>str | None</p></td>
+<td><p>Auto-infer</p></td>
+<td><p>Which computed metric to explain (required if multiple metrics)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">objective</span></code></p></td>
+<td><p>str</p></td>
+<td><p>“value”</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;value&quot;</span></code> explains metric score, <code class="docutils literal notranslate"><span class="pre">&quot;rank&quot;</span></code> explains ranking position</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">levels</span></code></p></td>
+<td><p>List[str]</p></td>
+<td><p>[“layer”]</p></td>
+<td><p>Attribution levels: <code class="docutils literal notranslate"><span class="pre">[&quot;layer&quot;]</span></code>, <code class="docutils literal notranslate"><span class="pre">[&quot;edge&quot;]</span></code>, or both</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">method</span></code></p></td>
+<td><p>str</p></td>
+<td><p>“shapley_mc”</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;shapley&quot;</span></code> (exact), <code class="docutils literal notranslate"><span class="pre">&quot;shapley_mc&quot;</span></code> (Monte Carlo), <code class="docutils literal notranslate"><span class="pre">&quot;influence&quot;</span></code> (approx)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">feature_space</span></code></p></td>
+<td><p>str</p></td>
+<td><p>“layers”</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;layers&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;layer_pairs&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;coupling_types&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">n_permutations</span></code></p></td>
+<td><p>int</p></td>
+<td><p>128</p></td>
+<td><p>Monte Carlo sample count (≥16)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_exact_features</span></code></p></td>
+<td><p>int</p></td>
+<td><p>8</p></td>
+<td><p>Switch from exact to MC Shapley at this threshold</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">seed</span></code></p></td>
+<td><p>int | None</p></td>
+<td><p>None</p></td>
+<td><p>Random seed for determinism (strongly recommended)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">edge_scope</span></code></p></td>
+<td><p>str</p></td>
+<td><p>“incident”</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;incident&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ego_k_hop&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;shortest_path_sample&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;global_top_m&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">k_hop</span></code></p></td>
+<td><p>int</p></td>
+<td><p>2</p></td>
+<td><p>Ego network radius (for <code class="docutils literal notranslate"><span class="pre">edge_scope=&quot;ego_k_hop&quot;</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_edges</span></code></p></td>
+<td><p>int</p></td>
+<td><p>40</p></td>
+<td><p>Maximum candidate edges to consider</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">top_k_layers</span></code></p></td>
+<td><p>int</p></td>
+<td><p>10</p></td>
+<td><p>Number of top layer contributions to return</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">top_k_edges</span></code></p></td>
+<td><p>int</p></td>
+<td><p>20</p></td>
+<td><p>Number of top edge contributions to return</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_negative</span></code></p></td>
+<td><p>bool</p></td>
+<td><p>True</p></td>
+<td><p>Include negative contributions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cache</span></code></p></td>
+<td><p>bool</p></td>
+<td><p>True</p></td>
+<td><p>Cache subset computations for performance</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">uq</span></code></p></td>
+<td><p>str</p></td>
+<td><p>“off”</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;off&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;propagate&quot;</span></code> (compute per UQ replicate), <code class="docutils literal notranslate"><span class="pre">&quot;summarize_only&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ci_level</span></code></p></td>
+<td><p>float</p></td>
+<td><p>0.95</p></td>
+<td><p>Confidence interval level for UQ propagation</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Output Structure</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;objective&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utility_def&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># or &quot;margin_to_cutoff(k=10)&quot; for rank</span>
+    <span class="s2">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;shapley_mc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="s2">&quot;n_permutations&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
+    <span class="s2">&quot;feature_space&quot;</span><span class="p">:</span> <span class="s2">&quot;layers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;full_value&quot;</span><span class="p">:</span> <span class="mf">0.1186</span><span class="p">,</span>
+    <span class="s2">&quot;baseline_value&quot;</span><span class="p">:</span> <span class="mf">0.0500</span><span class="p">,</span>
+    <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0686</span><span class="p">,</span>
+    <span class="s2">&quot;residual&quot;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>  <span class="c1"># sum(phi) ≈ delta</span>
+    <span class="s2">&quot;layer_contrib&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0401</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0285</span><span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;edge_contrib&quot;</span><span class="p">:</span> <span class="p">[],</span>  <span class="c1"># populated if levels includes &quot;edge&quot;</span>
+    <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s2">&quot;cache_hit_rate&quot;</span><span class="p">:</span> <span class="mf">0.73</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Advanced Examples</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edge attribution for betweenness</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
+         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
+         <span class="n">attribution</span><span class="o">=</span><span class="p">{</span>
+             <span class="s2">&quot;objective&quot;</span><span class="p">:</span> <span class="s2">&quot;rank&quot;</span><span class="p">,</span>  <span class="c1"># Explain ranking position</span>
+             <span class="s2">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;edge_scope&quot;</span><span class="p">:</span> <span class="s2">&quot;ego_k_hop&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;k_hop&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+             <span class="s2">&quot;max_edges&quot;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+             <span class="s2">&quot;n_permutations&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
+             <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span>
+         <span class="p">}</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># With UQ propagation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;perturbation&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
+         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
+         <span class="n">attribution</span><span class="o">=</span><span class="p">{</span>
+             <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;uq&quot;</span><span class="p">:</span> <span class="s2">&quot;propagate&quot;</span><span class="p">,</span>  <span class="c1"># Compute attribution per UQ replicate</span>
+             <span class="s2">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span>
+         <span class="p">}</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Determinism</strong>:</p>
+<ul class="simple">
+<li><p>Setting <code class="docutils literal notranslate"><span class="pre">seed</span></code> ensures reproducible Shapley values across runs</p></li>
+<li><p>Same seed produces identical attributions regardless of parallel execution settings</p></li>
+<li><p>Different seeds produce statistically different but valid attributions</p></li>
+</ul>
+<p><strong>Performance Notes</strong>:</p>
+<ul class="simple">
+<li><p><strong>Exact Shapley</strong>: Only feasible for ≤ <code class="docutils literal notranslate"><span class="pre">max_exact_features</span></code> layers (default 8)</p></li>
+<li><p><strong>Monte Carlo Shapley</strong>: Scales to larger feature sets via sampling</p></li>
+<li><p><strong>Edge Attribution</strong>: More expensive than layer attribution; bounded by <code class="docutils literal notranslate"><span class="pre">max_edges</span></code></p></li>
+<li><p><strong>Caching</strong>: Enabled by default to reuse subset metric computations</p></li>
+</ul>
+<p><strong>UQ Integration</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">uq=&quot;off&quot;</span></code>: No UQ (default), deterministic scalar Shapley values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uq=&quot;propagate&quot;</span></code>: Compute attribution per UQ replicate, aggregate mean/std/CI</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uq=&quot;summarize_only&quot;</span></code>: Compute once on base network, wrap in UQ-like structure</p></li>
+</ul>
+<p><strong>Export</strong>:</p>
+<p>Attribution data serializes to JSON strings when using <code class="docutils literal notranslate"><span class="pre">expand_explanations=True</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_explanations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># df[&quot;attribution&quot;] contains JSON-serialized attribution dicts</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="working-with-results">

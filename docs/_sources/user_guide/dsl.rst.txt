@@ -5,6 +5,18 @@ SQL-like DSL for Multilayer Networks
    :local:
    :depth: 2
 
+.. note::
+
+   **For AI Agents and Advanced Users**: See ``AGENTS.md`` in the repository root for:
+   
+   - Formal DSL v2 specification with RFC 2119 keywords
+   - Complete decision guide (when to use DSL vs graph_ops vs pipeline API)
+   - Multilayer semantics guide (node replicas, degree ambiguity, coverage modes)
+   - Comprehensive testing strategy and correctness guarantees
+   - 30+ advanced topics (UQ, dynamics, temporal, semiring algebra, etc.)
+   
+   This RST guide covers basic usage and quick start. AGENTS.md provides the complete reference.
+
 Overview
 --------
 
@@ -2874,9 +2886,9 @@ Query Algebra provides:
 
 For more examples, see:
 
-- ``examples/dsl/query_algebra_basic.py``
-- ``examples/dsl/query_algebra_uncertainty.py``
-- ``examples/dsl/query_algebra_verification.py``
+- ``examples/dsl_query_zoo/query_algebra_basic.py``
+- ``examples/dsl_query_zoo/query_algebra_uncertainty.py``
+- ``examples/dsl_query_zoo/query_algebra_verification.py``
 
 Semiring Algebra (S builder)
 -----------------------------
@@ -3118,3 +3130,295 @@ See also:
 - ``examples/network_analysis/semiring_boolean.py`` - Boolean reachability
 - ``examples/network_analysis/semiring_tropical_lex.py`` - Multiobjective optimization
 - ``examples/network_analysis/semiring_pareto.py`` - Pareto frontier example
+
+Cross-Network Meta-Analysis
+============================
+
+Overview
+--------
+
+The **M (Meta-analysis)** builder enables statistical pooling of network statistics across multiple networks using fixed-effect and random-effects models. This is useful for:
+
+- **Comparing networks across conditions**: Pool effects from control vs treatment networks
+- **Multi-study synthesis**: Combine results from multiple network studies
+- **Robustness analysis**: Test if findings generalize across different network samples
+- **Node-level pooling**: Meta-analyze node-level statistics (e.g., PageRank across shared genes)
+
+Meta-analysis is not visualization sugar—it's statistical infrastructure with full provenance tracking and determinism guarantees.
+
+Basic Usage
+-----------
+
+**Network-Level Meta-Analysis:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, M
+    
+    # Compute average degree across three networks
+    meta = (
+        M.meta("avg_degree_meta")
+         .on_networks({"net1": net1, "net2": net2, "net3": net3})
+         .run(
+             Q.nodes().compute("degree").summarize(avg_degree="mean(degree)"),
+             effect="avg_degree",
+         )
+         .model("random")  # Default is random-effects
+         .execute()
+    )
+    
+    # Access results
+    df = meta.to_pandas()
+    print(f"Pooled effect: {df['pooled_effect'].iloc[0]:.3f}")
+    print(f"I² heterogeneity: {df['I2'].iloc[0]:.1f}%")
+
+Statistical Models
+------------------
+
+**Fixed-Effect Model** (Inverse Variance Weighting):
+
+Uses inverse variance weighting where studies with lower standard errors receive more weight:
+
+.. math::
+
+    w_i = \frac{1}{se_i^2}
+    
+    \text{pooled\_effect} = \frac{\sum(w_i \cdot y_i)}{\sum(w_i)}
+    
+    \text{pooled\_se} = \sqrt{\frac{1}{\sum(w_i)}}
+
+**Random-Effects Model** (DerSimonian-Laird):
+
+Accounts for between-study heterogeneity by estimating τ² (tau-squared):
+
+.. math::
+
+    Q = \sum w_i (y_i - \mu_{\text{fixed}})^2
+    
+    \tau^2 = \max\left(0, \frac{Q - df}{C}\right)
+    
+    w_i^* = \frac{1}{se_i^2 + \tau^2}
+
+Where C = Σ(w_i) - Σ(w_i²) / Σ(w_i).
+
+**Heterogeneity Metrics**:
+
+- **Q**: Cochran's Q statistic (tests for heterogeneity)
+- **τ²**: Between-study variance
+- **I²**: Percentage of variation due to heterogeneity (0-100%)
+- **H**: Ratio of observed to expected variation
+
+Node-Level Pooling
+-------------------
+
+Pool node-level statistics across networks with shared node IDs:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, M, UQ
+    
+    # Pool PageRank for genes across treatment conditions
+    meta = (
+        M.meta("pagerank_gene_meta")
+         .on_networks({"ctrl": netA, "trt1": netB, "trt2": netC})
+         .run(
+             Q.nodes()
+              .node_type("gene")
+              .uq(UQ.standard(seed=42))  # UQ provides SE
+              .compute("pagerank")
+              .select("node", "pagerank", "pagerank_std"),
+             effect="pagerank",
+             se="pagerank_std",
+             group_by=["node"],  # Pool per gene
+         )
+         .model("fixed")
+         .execute()
+    )
+    
+    # Results: one pooled effect per gene
+
+Effect and SE Resolution
+-------------------------
+
+**Effect Extraction Rules**:
+
+1. If query returns >1 row and ``group_by`` not provided → ERROR
+2. If ``group_by`` provided: pooling is independent per group
+3. If query returns exactly 1 row: ``group_by`` is ignored
+
+**SE Resolution Priority** (STRICT ORDER):
+
+1. Explicit ``se="column_name"`` if column exists
+2. Expression ``se="se(effect_col)"`` if variance available
+3. Auto-infer from ``.uq()`` if UQ was used (uses ``effect_std``)
+4. ERROR unless ``.allow_unweighted(True)`` is set
+
+**Unweighted Pooling** (explicit opt-in only):
+
+.. code-block:: python
+
+    meta = (
+        M.meta()
+         .on_networks(networks)
+         .run(query, effect="metric")
+         .allow_unweighted(True)  # Enables sample mean + SD
+         .execute()
+    )
+    
+    # Uses: pooled_mean = arithmetic mean, SE = sample SD / sqrt(k)
+
+Subgroup Meta-Analysis
+-----------------------
+
+Partition networks by metadata and pool per subgroup:
+
+.. code-block:: python
+
+    meta = (
+        M.meta()
+         .on_networks({"a": net1, "b": net2, "c": net3})
+         .with_network_meta({
+             "a": {"condition": "ctrl"},
+             "b": {"condition": "trt"},
+             "c": {"condition": "trt"},
+         })
+         .run(
+             Q.nodes().compute("degree").summarize(avg_degree="mean(degree)"),
+             effect="avg_degree",
+         )
+         .subgroup(by="condition")  # Partition by condition
+         .model("random")
+         .execute()
+    )
+    
+    # Results include both per-subgroup and overall pooled effects
+
+Meta-Regression
+---------------
+
+**Constrained v1 Scope**: Network-level effects only, numeric covariates only.
+
+.. code-block:: python
+
+    # Regress network-level effects on network characteristics
+    meta = (
+        M.meta()
+         .on_networks(nets)
+         .with_network_meta({
+             "net1": {"node_count": 100, "edge_count": 450},
+             "net2": {"node_count": 150, "edge_count": 680},
+             # ...
+         })
+         .run(
+             Q.nodes().compute("degree").summarize(avg_degree="mean(degree)"),
+             effect="avg_degree",
+         )
+         .meta_regress(formula="avg_degree ~ node_count + edge_count")
+         .model("random")
+         .execute()
+    )
+    
+    # Coefficients in meta.meta_provenance["meta_regression"]["coefficients"]
+
+**Limitations**:
+
+- Network-level effects only (no ``group_by``)
+- Numeric covariates only
+- No interactions (raise ``NotImplementedError``)
+- Categorical variables must be pre-encoded
+
+Provenance and Determinism
+---------------------------
+
+**Provenance Aggregation**:
+
+Meta-analysis aggregates provenance from all networks:
+
+.. code-block:: python
+
+    result = meta.execute()
+    prov = result.meta_provenance
+    
+    # Contains:
+    # - Per-network provenance (query AST hash, randomness, performance)
+    # - Meta-model type and parameters
+    # - Network fingerprints (node/edge/layer counts)
+    # - Warnings and diagnostics
+
+**Determinism Guarantees**:
+
+- Same networks + same query + same seeds → identical results
+- Network order is stable (sorted by key unless ``.preserve_order(True)``)
+- Explicit query seeds are always honored
+- Meta-level ``.seed()`` fills missing seeds only
+
+**Example**:
+
+.. code-block:: python
+
+    # Deterministic meta-analysis
+    meta1 = (
+        M.meta()
+         .on_networks(nets)
+         .run(Q.nodes().uq(seed=42).compute("pagerank"), effect="pagerank", se="pagerank_std")
+         .seed(42)  # Fills missing seeds only
+         .execute()
+    )
+    
+    meta2 = (/* same config */).execute()
+    
+    # meta1 and meta2 produce identical results
+
+Error Handling
+--------------
+
+All meta-analysis errors use ``MetaAnalysisError`` with actionable hints:
+
+.. code-block:: python
+
+    from py3plex.exceptions import MetaAnalysisError
+    
+    try:
+        meta = M.meta().on_networks(nets).run(query, effect="missing_col").execute()
+    except MetaAnalysisError as e:
+        print(e)  # "Effect column 'missing_col' not found in query results"
+        print(e.hint)  # "Available columns: node, degree, betweenness"
+
+**Common Errors**:
+
+- Missing effect column
+- Missing SE without ``.allow_unweighted(True)``
+- ``group_by`` mismatch across networks
+- Missing network metadata for subgroup/regression
+
+Edge Cases
+----------
+
+**k=1 (Single Network)**:
+
+.. code-block:: python
+
+    # Single network: no pooling needed
+    meta = M.meta().on_networks({"net1": net1}).run(query, effect="metric").execute()
+    
+    # Results: pooled_effect = y₁, pooled_se = se₁, τ² = NaN, Q = NaN, I² = NaN
+
+**All Effects Equal** (No Heterogeneity):
+
+.. code-block:: python
+
+    # If all y_i are identical:
+    # τ² = 0, I² = 0, pooled_effect = y_i (exact)
+
+**Numerical Stability**:
+
+- C ≤ 0 in DL estimation → τ² = 0 with provenance warning
+- Q ≤ df → I² = 0 (no heterogeneity)
+- All divisions are guarded against overflow/underflow
+
+See Also
+--------
+
+- AGENTS.md section 3.11 for complete M builder specification
+- ``tests/test_meta_analysis.py`` for comprehensive test examples
+- ``py3plex/meta/`` module for implementation details
