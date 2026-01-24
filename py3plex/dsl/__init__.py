@@ -148,6 +148,9 @@ from .benchmark import (
     BenchmarkProxy,
 )
 
+# Import meta-analysis builder
+from py3plex.meta import M, MetaBuilder, MetaResult
+
 from .layers import (
     LayerSet,
     LayerExpr as LayerSetExpr,
@@ -383,6 +386,10 @@ __all__ = [
     "B",
     "CommunityBenchmarkBuilder",
     "BenchmarkProxy",
+    # Meta-analysis Builder
+    "M",
+    "MetaBuilder",
+    "MetaResult",
     # Pattern Matching
     "PatternNode",
     "PatternEdge",
