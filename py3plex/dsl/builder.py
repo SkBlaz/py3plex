@@ -1503,6 +1503,7 @@ class QueryBuilder:
         neighbors: Optional[Dict[str, Any]] = None,
         community: Optional[Dict[str, Any]] = None,
         layer_footprint: Optional[Dict[str, Any]] = None,
+        attribution: Optional[Dict[str, Any]] = None,
         cache: bool = True,
         as_columns: bool = True,
         prefix: str = "",
@@ -1521,13 +1522,14 @@ class QueryBuilder:
            - Community membership and size
            - Top neighbors by weight/degree
            - Layer footprint (which layers the node appears in)
+           - Attribution (Shapley value explanations for why items are ranked/scored highly)
 
         Args:
             neighbors_top: Maximum number of neighbors to include in top_neighbors (default: 10).
                          If None and no other args, returns execution plan (mode 1).
             include: List of explanation blocks to compute. If None, uses defaults:
                     ["community", "top_neighbors", "layer_footprint"]
-                    Community info is included by default when available.
+                    To include attribution, explicitly add "attribution" to the list.
             exclude: List of explanation blocks to exclude from include list
             neighbors: Optional configuration for neighbor selection:
                       - "metric": "weight" or "degree" (default: "weight")
@@ -1535,6 +1537,15 @@ class QueryBuilder:
                       - "direction": "out", "in", or "both" (default: "both")
             community: Optional configuration for community explanations (reserved)
             layer_footprint: Optional configuration for layer footprint (reserved)
+            attribution: Optional configuration for attribution explanations (Shapley values):
+                        - "metric": str (which metric to explain, auto-detected if None)
+                        - "objective": "value" or "rank" (default: "value")
+                        - "levels": ["layer", "edge"] (default: ["layer"])
+                        - "method": "shapley", "shapley_mc", or "influence" (default: "shapley_mc")
+                        - "seed": int (random seed for reproducibility)
+                        - "n_permutations": int (Monte Carlo samples, default: 128)
+                        - "max_edges": int (max candidate edges, default: 40)
+                        - See AttributionConfig for full options
             cache: Whether to cache neighbor lookups (default: True)
             as_columns: Store explanations as top-level columns in result (default: True)
             prefix: Optional prefix for explanation column names (default: "")
@@ -1555,20 +1566,20 @@ class QueryBuilder:
             >>> plan = Q.nodes().compute("degree").explain().execute(network)
             >>> print(plan.steps)
 
-            >>> # Explanations mode (with arguments)
-            >>> # Community info is included by default when available
+            >>> # Explanations mode with attribution
             >>> result = (
             ...     Q.nodes()
-            ...      .from_layers(L["social"])
-            ...      .compute("degree", "betweenness")
-            ...      .limit(20)
-            ...      .explain(neighbors_top=10)
+            ...      .compute("pagerank")
+            ...      .order_by("-pagerank")
+            ...      .limit(10)
+            ...      .explain(
+            ...          include=["attribution"],
+            ...          attribution={"metric": "pagerank", "levels": ["layer"], "seed": 42}
+            ...      )
             ...      .execute(network)
             ... )
             >>> df = result.to_pandas(expand_explanations=True)
-            >>> # df now has columns: id, layer, degree, betweenness,
-            >>> #                      community_id, community_size, top_neighbors,
-            >>> #                      layers_present, n_layers_present
+            >>> # df now has attribution column with layer contributions
 
             >>> # Explicitly exclude community info if not needed
             >>> result = (
@@ -1587,6 +1598,7 @@ class QueryBuilder:
                 neighbors is not None,
                 community is not None,
                 layer_footprint is not None,
+                attribution is not None,
                 not cache,  # cache defaults to True, so False means it was set
                 not as_columns,  # as_columns defaults to True, so False means it was set
                 prefix != "",  # prefix defaults to "", so non-empty means it was set
@@ -1627,7 +1639,7 @@ class QueryBuilder:
                 final_include = [b for b in final_include if b != "community"]
 
         # Validate include list
-        supported_blocks = {"community", "top_neighbors", "layer_footprint"}
+        supported_blocks = {"community", "top_neighbors", "layer_footprint", "attribution"}
         unknown = set(final_include) - supported_blocks
         if unknown:
             raise ValueError(
@@ -1655,6 +1667,7 @@ class QueryBuilder:
                 neighbors_cfg=neighbors or existing.neighbors_cfg,
                 community_cfg=community or existing.community_cfg,
                 layer_footprint_cfg=layer_footprint or existing.layer_footprint_cfg,
+                attribution_cfg=attribution or existing.attribution_cfg,
                 cache=cache,
                 as_columns=as_columns,
                 prefix=prefix,
@@ -1668,6 +1681,7 @@ class QueryBuilder:
                 neighbors_cfg=neighbors or {},
                 community_cfg=community or {},
                 layer_footprint_cfg=layer_footprint or {},
+                attribution_cfg=attribution or {},
                 cache=cache,
                 as_columns=as_columns,
                 prefix=prefix,

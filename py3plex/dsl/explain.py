@@ -23,6 +23,9 @@ def explain_rows(
     neighbors_cfg: Dict[str, Any],
     community_cfg: Dict[str, Any],
     layer_footprint_cfg: Dict[str, Any],
+    attribution_cfg: Dict[str, Any],
+    metric_values: Optional[Dict[str, Dict[Any, Any]]] = None,
+    context: Optional[Dict[str, Any]] = None,
     cache: bool = True,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     """Attach explanations to result rows.
@@ -39,6 +42,9 @@ def explain_rows(
         neighbors_cfg: Configuration for neighbor selection
         community_cfg: Configuration for community explanations
         layer_footprint_cfg: Configuration for layer footprint
+        attribution_cfg: Configuration for attribution explanations
+        metric_values: Dictionary of computed metric values (for attribution)
+        context: Query context (for attribution)
         cache: Whether to enable caching (currently unused, reserved for future)
         
     Returns:
@@ -55,6 +61,7 @@ def explain_rows(
         ...     neighbors_cfg={},
         ...     community_cfg={},
         ...     layer_footprint_cfg={},
+        ...     attribution_cfg={},
         ...     cache=True,
         ... )
     """
@@ -73,6 +80,13 @@ def explain_rows(
     layer_footprint_data = None
     if "layer_footprint" in include:
         layer_footprint_data = _precompute_layer_footprint(network, rows, layer_footprint_cfg)
+    
+    # Precompute attribution if needed
+    attribution_data = None
+    if "attribution" in include:
+        attribution_data = _precompute_attribution(
+            network, rows, attribution_cfg, metric_values, context
+        )
     
     # Process each row
     enriched_rows = []
@@ -104,6 +118,12 @@ def explain_rows(
         if "layer_footprint" in include and layer_footprint_data is not None:
             footprint_exp = _explain_layer_footprint(node_id, layer_footprint_data)
             explanations.update(footprint_exp)
+        
+        # Attribution explanation
+        if "attribution" in include and attribution_data is not None:
+            key = (node_id, layer) if layer else node_id
+            if key in attribution_data:
+                explanations["attribution"] = attribution_data[key]
         
         # Attach explanations to row
         enriched_row = dict(row)
@@ -465,3 +485,65 @@ def _explain_layer_footprint(
         "layers_present": layers,
         "n_layers_present": len(layers),
     }
+
+
+def _precompute_attribution(
+    network: Any,
+    rows: List[Dict[str, Any]],
+    attribution_cfg: Dict[str, Any],
+    metric_values: Optional[Dict[str, Dict[Any, Any]]],
+    context: Optional[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Precompute attribution explanations for all rows.
+    
+    This function integrates with the attribution module to compute
+    Shapley-based explanations.
+    
+    Args:
+        network: Multilayer network instance
+        rows: Result rows
+        attribution_cfg: Attribution configuration dict
+        metric_values: Dictionary of computed metric values
+        context: Query context (for inferring metric, limit, etc.)
+        
+    Returns:
+        Dictionary mapping item identifiers to attribution results
+    """
+    from py3plex.dsl.attribution import AttributionConfig, compute_attribution_for_rows
+    
+    # Skip if no configuration provided
+    if not attribution_cfg:
+        return {}
+    
+    # Skip if no metric values available
+    if not metric_values:
+        logger.warning("No metric values available for attribution")
+        return {}
+    
+    # Build AttributionConfig from dict
+    config = AttributionConfig(**attribution_cfg)
+    
+    # Prepare context with query metadata
+    if context is None:
+        context = {}
+    
+    # Compute attributions for all rows
+    try:
+        enriched_rows, metadata = compute_attribution_for_rows(
+            network, rows, metric_values, config, context
+        )
+        
+        # Extract attribution results into a map
+        attribution_map = {}
+        for row in enriched_rows:
+            if "attribution" in row:
+                # Key by node identifier
+                node_id = row.get("id")
+                layer = row.get("layer")
+                key = (node_id, layer) if layer else node_id
+                attribution_map[key] = row["attribution"]
+        
+        return attribution_map
+    except Exception as e:
+        logger.error(f"Failed to compute attributions: {e}")
+        return {}
