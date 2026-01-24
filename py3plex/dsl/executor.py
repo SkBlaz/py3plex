@@ -1874,6 +1874,11 @@ def _execute_select(
     # Step 4: Compute measures
     stage_start = time.monotonic()
     attributes: Dict[str, Dict] = {}
+    
+    # Track approximation usage for provenance (initialize before compute block)
+    approx_used = []
+    fast_path_enabled = False
+    
     if select.compute:
         if progress:
             logger.info(f"Step 3.4: Computing {len(select.compute)} measure(s)")
@@ -1899,10 +1904,6 @@ def _execute_select(
                 current_nodes=items,
                 params={},
             )
-
-            # Track approximation usage for provenance
-            approx_used = []
-            fast_path_enabled = False
             
             for i, compute_item in enumerate(select.compute):
                 if progress:
