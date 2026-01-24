@@ -478,3 +478,38 @@ class SemiringExecutionError(SemiringError):
     """
 
     default_code = "PX603"
+
+
+class MetaAnalysisError(Py3plexException):
+    """Exception raised during meta-analysis operations.
+
+    Error code: PX701
+
+    Examples of meta-analysis errors:
+    - Missing effect column in query results
+    - Missing standard error without unweighted opt-in
+    - Group-by mismatch across networks
+    - Missing network metadata for subgroup/regression
+    """
+
+    default_code = "PX701"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        hint: Optional[str] = None,
+        **kwargs,
+    ):
+        """Initialize MetaAnalysisError with actionable hint.
+
+        Args:
+            message: The error message
+            hint: Actionable hint for fixing the error
+            **kwargs: Additional arguments for Py3plexException
+        """
+        suggestions = kwargs.pop("suggestions", [])
+        if hint:
+            suggestions.insert(0, hint)
+
+        super().__init__(message, suggestions=suggestions, **kwargs)
