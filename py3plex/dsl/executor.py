@@ -3401,6 +3401,121 @@ def _resolve_selector(value: Any, selector: str) -> float:
     return float(value) if isinstance(value, (int, float)) else 0.0
 
 
+def _top_k_stream(
+    items: List[Any],
+    key_fn: Callable[[Any], float],
+    k: int,
+    *,
+    desc: bool = True,
+    tie_breaker_fn: Optional[Callable[[Any], Any]] = None
+) -> List[Any]:
+    """Select top-k items using streaming algorithm (O(n log k) instead of O(n log n)).
+    
+    This function efficiently selects the top k items from a list without fully sorting.
+    Uses a min-heap to maintain only the k largest elements, resulting in O(n log k)
+    time complexity instead of O(n log n) for full sorting.
+    
+    Args:
+        items: List of items to select from
+        key_fn: Function to extract comparison value from item
+        k: Number of items to select (top k)
+        desc: If True (default), return highest values first (descending order)
+              If False, return lowest values first (ascending order)
+        tie_breaker_fn: Optional function to produce stable tie-breaking key
+                       Should return a comparable value (e.g., node_id, tuple)
+    
+    Returns:
+        List of top k items, ordered by value (descending if desc=True)
+        If k <= 0, returns empty list
+        If len(items) <= k, returns all items sorted by value
+    
+    Examples:
+        >>> items = [('A', 10), ('B', 20), ('C', 15)]
+        >>> key_fn = lambda x: x[1]
+        >>> tie_breaker = lambda x: x[0]
+        >>> result = _top_k_stream(items, key_fn, 2, desc=True, tie_breaker_fn=tie_breaker)
+        >>> result  # [('B', 20), ('C', 15)]
+    
+    Implementation Notes:
+        - Uses heapq with fixed-size min-heap for efficiency
+        - Heap elements: (value, tie_breaker, index, item) for proper ordering
+        - For descending (desc=True): inverts values to use min-heap as max-heap
+        - For ascending (desc=False): uses values directly in min-heap
+        - Tie-breaking ensures deterministic results for equal values
+        - After selection, returns items sorted from best to worst
+    """
+    import heapq
+    
+    # Edge case: k <= 0
+    if k <= 0:
+        return []
+    
+    # Edge case: items is empty
+    if not items:
+        return []
+    
+    # Edge case: k >= len(items), just sort and return
+    if k >= len(items):
+        # Build sort key with tie-breaking
+        def sort_key(item):
+            value = key_fn(item)
+            tie_breaker = tie_breaker_fn(item) if tie_breaker_fn else item
+            # For descending, negate value; for ascending, use as-is
+            # Tie-breaker is always ascending (lower is better for stability)
+            if desc:
+                return (-value, tie_breaker)
+            else:
+                return (value, tie_breaker)
+        
+        return sorted(items, key=sort_key)
+    
+    # Main algorithm: maintain a min-heap of size k
+    # For descending order (get largest k): use min-heap with original values
+    #   heap[0] = minimum of k items = worst of the k largest
+    # For ascending order (get smallest k): use min-heap with negated values
+    #   heap[0] = minimum negated = maximum original = worst of the k smallest
+    heap = []
+    
+    for idx, item in enumerate(items):
+        value = key_fn(item)
+        tie_breaker = tie_breaker_fn(item) if tie_breaker_fn else idx
+        
+        # For descending (want largest k), use value directly
+        # For ascending (want smallest k), negate value
+        if desc:
+            heap_value = value  # Keep largest, so use min-heap with actual values
+        else:
+            heap_value = -value  # Keep smallest, so negate for min-heap
+        
+        # Heap element: (heap_value, tie_breaker, idx, item)
+        heap_element = (heap_value, tie_breaker, idx, item)
+        
+        if len(heap) < k:
+            heapq.heappush(heap, heap_element)
+        else:
+            # Replace if current item is better than worst in heap
+            # For desc=True: heap[0] = min = worst of k largest, replace if new > min
+            # For desc=False: heap[0] = min negated = max original = worst of k smallest, replace if new negated < min negated
+            # In both cases: replace if heap_element > heap[0]
+            if heap_element > heap[0]:
+                heapq.heapreplace(heap, heap_element)
+    
+    # Extract items from heap and sort them properly
+    # Heap is in min-heap order, so we need to sort to get proper output order
+    selected = [item for _, _, _, item in heap]
+    
+    # Sort selected items by their actual values (best to worst)
+    def final_sort_key(item):
+        value = key_fn(item)
+        tie_breaker = tie_breaker_fn(item) if tie_breaker_fn else item
+        if desc:
+            return (-value, tie_breaker)  # Descending: negate for sorting
+        else:
+            return (value, tie_breaker)  # Ascending: positive for sorting
+    
+    return sorted(selected, key=final_sort_key)
+
+
 def _apply_ordering(
     items: List[Any], order_by: List[OrderItem], attributes: Dict[str, Dict]
 ) -> List[Any]:
@@ -3467,6 +3582,128 @@ def _apply_ordering(
         return tuple(values)
 
     return sorted(items, key=sort_key)
+
+
+def _coverage_bitmask(
+    groups: Dict[Any, List[Any]],
+    select: SelectStmt,
+    network: Any,
+    G: nx.Graph,
+    num_groups: int,
+) -> Set[Any]:
+    """Apply coverage filtering using bitmask for fast membership testing.
+    
+    This function uses integer bitmasks instead of sets to efficiently track
+    which groups each item appears in. This is significantly faster than
+    set operations, especially for large numbers of groups.
+    
+    Args:
+        groups: Dictionary mapping group keys to lists of items
+        select: SELECT statement with coverage configuration
+        network: Multilayer network
+        G: Core network graph
+        num_groups: Total number of groups
+    
+    Returns:
+        Set of allowed identity values (items passing coverage filter)
+    
+    Coverage Modes:
+        - mode="all": Items in ALL groups (bitwise AND of all bits set)
+        - mode="any": Items in ANY group (always returns all items)
+        - mode="at_least": Items in at least k groups
+        - mode="exact": Items in exactly k groups
+        - mode="fraction": Items in at least fraction p of groups
+    
+    Implementation:
+        - Each group gets an index i in [0, num_groups-1]
+        - For each item in group i, set bit i in its bitmask
+        - Coverage check is then simple bitwise operations:
+          - all: mask == all_mask (all bits set)
+          - at_least k: popcount(mask) >= k
+          - etc.
+    
+    Time Complexity:
+        - Building masks: O(total_items) single pass
+        - Filtering: O(unique_items) with fast bitwise ops
+        - Compare to set-based: O(total_items * groups) for intersections
+    
+    Example:
+        3 groups, 4 items:
+        - Item A in groups 0,1,2: mask = 0b111 = 7
+        - Item B in groups 0,1:   mask = 0b011 = 3
+        - Item C in group 0:      mask = 0b001 = 1
+        
+        mode="all" with 3 groups: only A passes (mask == 7)
+        mode="at_least", k=2: A and B pass (popcount >= 2)
+    """
+    mode = select.coverage_mode
+    k = select.coverage_k
+    p = select.coverage_p
+    
+    # Early return for "any" mode - no filtering needed
+    if mode == "any":
+        # Return all unique identities
+        all_ids = set()
+        for group_items in groups.values():
+            for item in group_items:
+                identity = _get_coverage_identity(item, select, network, G)
+                all_ids.add(identity)
+        return all_ids
+    
+    # Build deterministic group ordering
+    # Sort group keys to ensure deterministic bit assignment
+    group_keys_sorted = sorted(groups.keys(), key=lambda x: str(x))
+    group_to_index = {key: idx for idx, key in enumerate(group_keys_sorted)}
+    
+    # Build bitmask map: identity -> bitmask
+    # Each bit represents presence in a group
+    mask_map: Dict[Any, int] = {}
+    
+    for group_key, group_items in groups.items():
+        group_idx = group_to_index[group_key]
+        bit = 1 << group_idx  # Bit for this group
+        
+        for item in group_items:
+            identity = _get_coverage_identity(item, select, network, G)
+            if identity not in mask_map:
+                mask_map[identity] = 0
+            mask_map[identity] |= bit
+    
+    # Calculate all_mask (all bits set for num_groups)
+    # For 3 groups: all_mask = 0b111 = 7
+    all_mask = (1 << num_groups) - 1
+    
+    # Apply coverage mode to determine allowed identities
+    allowed_ids = set()
+    
+    for item_id, mask in mask_map.items():
+        # Count number of bits set (number of groups item appears in)
+        # Use Brian Kernighan's algorithm for fast popcount
+        count = 0
+        temp_mask = mask
+        while temp_mask:
+            temp_mask &= temp_mask - 1
+            count += 1
+        
+        # Apply coverage mode
+        if mode == "all":
+            if mask == all_mask:
+                allowed_ids.add(item_id)
+        elif mode == "at_least":
+            if k is not None and count >= k:
+                allowed_ids.add(item_id)
+        elif mode == "exact":
+            if k is not None and count == k:
+                allowed_ids.add(item_id)
+        elif mode == "fraction":
+            if p is not None and num_groups > 0:
+                import math
+                # Use ceiling to ensure we require at least p fraction of groups
+                threshold = math.ceil(p * num_groups)
+                if count >= threshold:
+                    allowed_ids.add(item_id)
+    
+    return allowed_ids
 
 
 def _apply_grouping_and_coverage(
@@ -3561,15 +3798,85 @@ def _apply_grouping_and_coverage(
         for key in groups:
             groups[key] = _apply_ordering(groups[key], select.order_by, attributes)
 
-    # Per-group top-k
+    # Per-group top-k (optimized with streaming algorithm)
     if select.limit_per_group is not None:
         k = select.limit_per_group
         if progress:
-            logger.info(f"  Applying per-group top-k (k={k})")
-        for key in groups:
-            groups[key] = groups[key][:k]
+            logger.info(f"  Applying per-group top-k (k={k}) with streaming algorithm")
+        
+        # Build key function and tie-breaker for streaming top-k
+        if select.order_by:
+            # Use the ordering specification for top-k
+            order_item = select.order_by[0]  # Use first order item as primary key
+            key_attr = order_item.key
+            desc = order_item.desc
+            
+            # Parse key for selector syntax (metric__selector)
+            if "__" in key_attr:
+                parts = key_attr.split("__", 1)
+                metric_name = parts[0]
+                selector = parts[1]
+            else:
+                metric_name = key_attr
+                selector = None
+            
+            def key_fn(item):
+                """Extract comparison value from item."""
+                item_key = _get_item_key(item)
+                if metric_name in attributes:
+                    value = attributes[metric_name].get(item_key, 0)
+                    
+                    # Resolve selector if present
+                    if selector:
+                        value = _resolve_selector(value, selector)
+                    else:
+                        # Handle uncertainty dict format: extract 'mean' value by default
+                        if isinstance(value, dict) and "mean" in value:
+                            value = value["mean"]
+                else:
+                    # For edges, try to get from edge data
+                    if (
+                        isinstance(item, tuple)
+                        and len(item) >= 3
+                        and isinstance(item[2], dict)
+                    ):
+                        value = item[2].get(metric_name, 0)
+                    else:
+                        value = 0
+                
+                return float(value) if isinstance(value, (int, float)) else 0.0
+            
+            def tie_breaker_fn(item):
+                """Generate deterministic tie-breaker key."""
+                # For nodes: use (node_id, layer)
+                # For edges: use (src, tgt, src_layer, tgt_layer)
+                if isinstance(item, tuple) and len(item) >= 2:
+                    if not isinstance(item[0], tuple):
+                        # Node: (node_id, layer)
+                        return (str(item[0]), str(item[1]))
+                    else:
+                        # Edge: ((src, src_layer), (tgt, tgt_layer), ...)
+                        src = item[0]
+                        tgt = item[1]
+                        if isinstance(src, tuple) and isinstance(tgt, tuple):
+                            return (str(src[0]), str(src[1]), str(tgt[0]), str(tgt[1]))
+                return str(item)
+            
+            # Apply streaming top-k per group
+            for group_key in groups:
+                groups[group_key] = _top_k_stream(
+                    groups[group_key],
+                    key_fn,
+                    k,
+                    desc=desc,
+                    tie_breaker_fn=tie_breaker_fn
+                )
+        else:
+            # No ordering specified, just slice
+            for group_key in groups:
+                groups[group_key] = groups[group_key][:k]
 
-    # Coverage filtering
+    # Coverage filtering (optimized with bitmask)
     if select.coverage_mode:
         if progress:
             mode_desc = select.coverage_mode
@@ -3577,46 +3884,11 @@ def _apply_grouping_and_coverage(
                 mode_desc += f" k={select.coverage_k}"
             elif select.coverage_p is not None:
                 mode_desc += f" p={select.coverage_p}"
-            logger.info(f"  Applying coverage filter (mode={mode_desc})")
-        # Build coverage map: identity -> set of groups it appears in
-        coverage_map: Dict[Any, Set[Any]] = {}
-        for group_key, group_items in groups.items():
-            for item in group_items:
-                identity = _get_coverage_identity(item, select, network, G)
-                if identity not in coverage_map:
-                    coverage_map[identity] = set()
-                coverage_map[identity].add(group_key)
-
-        # Apply coverage mode to determine allowed identities
+            logger.info(f"  Applying coverage filter (mode={mode_desc}) with bitmask")
+        
+        # Use bitmask-based coverage filtering
         num_groups = len(groups)
-        allowed_ids = set()
-        mode = select.coverage_mode
-        k = select.coverage_k
-        p = select.coverage_p
-
-        for item_id, group_set in coverage_map.items():
-            count = len(group_set)
-            if mode == "all":
-                if count == num_groups:
-                    allowed_ids.add(item_id)
-            elif mode == "any":
-                if count >= 1:
-                    allowed_ids.add(item_id)
-            elif mode == "at_least":
-                if k is not None and count >= k:
-                    allowed_ids.add(item_id)
-            elif mode == "exact":
-                if k is not None and count == k:
-                    allowed_ids.add(item_id)
-            elif mode == "fraction":
-                if p is not None and num_groups > 0:
-                    import math
-
-                    # Use ceiling to ensure we require at least p fraction of groups
-                    # E.g., 67% of 3 groups = ceil(2.01) = 3 groups
-                    threshold = math.ceil(p * num_groups)
-                    if count >= threshold:
-                        allowed_ids.add(item_id)
+        allowed_ids = _coverage_bitmask(groups, select, network, G, num_groups)
 
         # Filter groups to only include allowed identities
         for group_key in groups:
