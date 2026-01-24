@@ -5075,7 +5075,9 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
     # Resolve layers
     resolved_layers = []
     if stmt.layer_expr:
-        resolved_layers = resolve_layer_expr(network, stmt.layer_expr)
+        # Import layer evaluation from dynamics module
+        from py3plex.dynamics.executor import _evaluate_layer_expr
+        resolved_layers = list(_evaluate_layer_expr(stmt.layer_expr, network))
 
     # Build initial conditions
     initial_dict = {}
@@ -5100,6 +5102,7 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
     measures = stmt.track if stmt.track else ["prevalence"]
 
     # Create canonical _DynamicsConfig for provenance
+    n_jobs = getattr(stmt, 'n_jobs', 1)  # Default to 1 if not set
     dynamics_config = _DynamicsConfig(
         model_id=stmt.process_name,
         model_params=stmt.params or {},
@@ -5110,7 +5113,7 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
         track=measures,
         initial_condition=initial_condition,
         seed=stmt.seed,
-        n_jobs=1,  # TODO: Add n_jobs support in Phase 3
+        n_jobs=n_jobs,
         uq_config=None,  # TODO: Add UQ support in Phase 4
     )
 

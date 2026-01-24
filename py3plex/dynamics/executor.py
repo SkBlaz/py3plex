@@ -19,6 +19,91 @@ from .errors import (
 )
 
 
+class _ReplicateRunner:
+    """Picklable runner for a single simulation replicate.
+    
+    This class is used to enable parallel execution via multiprocessing.
+    It encapsulates all the data needed to run a single replicate.
+    """
+    
+    def __init__(self, process_spec: ProcessSpec, 
+                 stmt: SimulationStmt, nodes: List, node_to_idx: Dict,
+                 layer_info: List, adj_matrix: np.ndarray, params: Dict):
+        """Initialize replicate runner.
+        
+        Args:
+            process_spec: Process specification
+            stmt: Simulation statement with configuration
+            nodes: List of node identifiers
+            node_to_idx: Mapping from node to index
+            layer_info: Layer information tuples
+            adj_matrix: Adjacency matrix
+            params: Process parameters
+            
+        Note:
+            We store process_spec and params instead of update_step
+            to enable pickling. The update function is recreated in __call__.
+        """
+        self.process_spec = process_spec
+        self.stmt = stmt
+        self.nodes = nodes
+        self.node_to_idx = node_to_idx
+        self.layer_info = layer_info
+        self.adj_matrix = adj_matrix
+        self.params = params
+    
+    def __call__(self, rep_seed):
+        """Run a single replicate with given seed.
+        
+        Args:
+            rep_seed: Random seed for this replicate
+            
+        Returns:
+            Dict mapping measure name to numpy array of values over time
+        """
+        # Create update function (must be done here, not in __init__, for pickling)
+        update_step = self.process_spec.update_fn(self.params, self.stmt.coupling)
+        
+        # Create RNG for this replicate
+        rng = np.random.default_rng(rep_seed) if rep_seed is not None else np.random.default_rng()
+
+        # Initialize state
+        state = _initialize_state(
+            self.process_spec, self.stmt.initial, self.nodes, self.node_to_idx,
+            self.layer_info, None, rng  # network=None since we don't need it
+        )
+
+        # Storage for this replicate's measures
+        rep_results: Dict[str, List[Any]] = {m: [] for m in self.stmt.measures}
+
+        # Context for measure functions
+        ctx: Dict[str, Any] = {
+            "layer_info": _get_layer_indices(self.layer_info, self.node_to_idx),
+            "prev_state": None,
+            "params": self.params,
+            "step": 0,
+        }
+
+        # Run simulation steps
+        for t in range(self.stmt.steps):
+            ctx["step"] = t
+
+            # Record measures at current state
+            for measure in self.stmt.measures:
+                measure_fn = measure_registry.get(self.process_spec.name, measure)
+                value = measure_fn(state, ctx)
+                rep_results[measure].append(value)
+
+            # Store previous state for incidence calculations
+            ctx["prev_state"] = state.copy()
+
+            # Update state
+            state = update_step(self.adj_matrix, state, rng, self.node_to_idx, self.layer_info)
+
+        # Return replicate results as dict of numpy arrays
+        return {measure: np.array(rep_results[measure]) for measure in self.stmt.measures}
+
+
 def run_simulation(network: Any, stmt: SimulationStmt,
                    backend: str = "numpy") -> SimulationResult:
     """Execute a simulation on a multilayer network.
@@ -28,7 +113,7 @@ def run_simulation(network: Any, stmt: SimulationStmt,
     2. Network projection - extract subgraph over selected layers
     3. Initialization - set up initial state from InitialSpec
     4. Backend & update function - create update step function
-    5. Replicate loop - run simulation for each replicate
+    5. Replicate loop - run simulation for each replicate (parallelized if n_jobs > 1)
     6. Collect results - build SimulationResult
 
     Args:
@@ -41,6 +126,11 @@ def run_simulation(network: Any, stmt: SimulationStmt,
 
     Raises:
         DynamicsError: For various simulation errors
+        
+    Notes:
+        Parallel execution is deterministic: same seed produces identical results
+        regardless of n_jobs value. Replicates are executed with deterministic
+        child seeds spawned from the base seed.
     """
     # Validate configuration
     if stmt.steps < 1:
@@ -82,52 +172,46 @@ def run_simulation(network: Any, stmt: SimulationStmt,
     # Step 3: Create update function
     update_step = process_spec.update_fn(params, stmt.coupling)
 
-    # Step 4: Initialize RNG
+    # Step 4: Initialize RNG and spawn seeds for replicates
     base_seed = stmt.seed if stmt.seed is not None else 42
+    
+    # Get n_jobs from dynamics_config if available, otherwise default to 1
+    n_jobs = 1
+    if hasattr(stmt, '_dynamics_config') and stmt._dynamics_config is not None:
+        n_jobs = stmt._dynamics_config.n_jobs
+    
+    # Import parallel utilities
+    from py3plex._parallel import spawn_seeds, parallel_map
+    
+    # Spawn deterministic seeds for each replicate
+    replicate_seeds = spawn_seeds(base_seed, stmt.replicates)
 
-    # Step 5: Run replicates
+    # Step 5: Run replicates (parallel or serial based on n_jobs)
+    # Create runner instance (picklable for multiprocessing)
+    # Note: We don't pass update_step to enable pickling - it's recreated inside the runner
+    runner = _ReplicateRunner(
+        process_spec=process_spec,
+        stmt=stmt,
+        nodes=nodes,
+        node_to_idx=node_to_idx,
+        layer_info=layer_info,
+        adj_matrix=adj_matrix,
+        params=params
+    )
+    
+    # Execute replicates (serial or parallel)
+    replicate_results = parallel_map(
+        runner,
+        replicate_seeds,
+        n_jobs=n_jobs,
+        desc="Running replicates"
+    )
+    
+    # Collect results from replicates
     all_results: Dict[str, List[np.ndarray]] = {m: [] for m in stmt.measures}
-
-    for rep in range(stmt.replicates):
-        # Create RNG for this replicate
-        rng = np.random.default_rng(base_seed + rep)
-
-        # Initialize state
-        state = _initialize_state(
-            process_spec, stmt.initial, nodes, node_to_idx,
-            layer_info, network, rng
-        )
-
-        # Storage for this replicate's measures
-        rep_results: Dict[str, List[Any]] = {m: [] for m in stmt.measures}
-
-        # Context for measure functions
-        ctx: Dict[str, Any] = {
-            "layer_info": _get_layer_indices(layer_info, node_to_idx),
-            "prev_state": None,
-            "params": params,
-            "step": 0,
-        }
-
-        # Run simulation steps
-        for t in range(stmt.steps):
-            ctx["step"] = t
-
-            # Record measures at current state
-            for measure in stmt.measures:
-                measure_fn = measure_registry.get(process_spec.name, measure)
-                value = measure_fn(state, ctx)
-                rep_results[measure].append(value)
-
-            # Store previous state for incidence calculations
-            ctx["prev_state"] = state.copy()
-
-            # Update state
-            state = update_step(adj_matrix, state, rng, node_to_idx, layer_info)
-
-        # Store replicate results
+    for rep_result in replicate_results:
         for measure in stmt.measures:
-            all_results[measure].append(np.array(rep_results[measure]))
+            all_results[measure].append(rep_result[measure])
 
     # Step 6: Collect results
     data = {}

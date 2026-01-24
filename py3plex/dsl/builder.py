@@ -5609,6 +5609,7 @@ class DynamicsBuilder:
         steps: int = 100,
         replicates: int = 1,
         track: Optional[Union[str, List[str]]] = None,
+        n_jobs: int = 1,
     ) -> "DynamicsBuilder":
         """Set execution parameters.
 
@@ -5616,12 +5617,28 @@ class DynamicsBuilder:
             steps: Number of time steps to simulate
             replicates: Number of independent runs
             track: Measures to track ("all" or list of specific measures)
+            n_jobs: Number of parallel jobs (1 = sequential, -1 = all cores).
+                   Parallel execution is deterministic: same seed produces
+                   identical results regardless of n_jobs value.
 
         Returns:
             Self for chaining
+
+        Example:
+            >>> # Sequential execution
+            >>> builder.run(steps=100, replicates=20, n_jobs=1)
+            
+            >>> # Parallel execution (deterministic with same seed)
+            >>> builder.run(steps=100, replicates=20, n_jobs=4)
         """
         self._stmt.steps = steps
         self._stmt.replicates = replicates
+        
+        # Store n_jobs for use by executor
+        if not hasattr(self._stmt, 'n_jobs'):
+            self._stmt.n_jobs = n_jobs
+        else:
+            self._stmt.n_jobs = n_jobs
 
         if track is not None:
             if isinstance(track, str):
