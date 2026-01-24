@@ -5069,26 +5069,50 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
         ... )
     """
     # Import dynamics components
-    from py3plex.dynamics import run_simulation
+    from py3plex.dynamics import run_simulation, _DynamicsConfig
     from py3plex.dynamics.ast import SimulationStmt, InitialSpec
+
+    # Resolve layers
+    resolved_layers = []
+    if stmt.layer_expr:
+        resolved_layers = resolve_layer_expr(network, stmt.layer_expr)
 
     # Build initial conditions
     initial_dict = {}
+    initial_condition = {}
 
     # Handle seeding
     if stmt.seed_query is not None:
         # Execute the seed query to get nodes
         seed_result = _execute_select(network, stmt.seed_query, params={})
         initial_dict["infected"] = InitialSpec(query=stmt.seed_query)
+        initial_condition["infections_nodes"] = seed_result.items
     elif stmt.seed_fraction is not None:
         # Use fraction-based seeding
         initial_dict["infected"] = InitialSpec(constant=stmt.seed_fraction)
+        initial_condition["infections_fraction"] = stmt.seed_fraction
     else:
         # Default: 1% infected
         initial_dict["infected"] = InitialSpec(constant=0.01)
+        initial_condition["infections_fraction"] = 0.01
 
     # Determine measures to track
     measures = stmt.track if stmt.track else ["prevalence"]
+
+    # Create canonical _DynamicsConfig for provenance
+    dynamics_config = _DynamicsConfig(
+        model_id=stmt.process_name,
+        model_params=stmt.params or {},
+        layers=resolved_layers,
+        layer_expr_original=str(stmt.layer_expr) if stmt.layer_expr else None,
+        steps=stmt.steps or 100,
+        replicates=stmt.replicates or 1,
+        track=measures,
+        initial_condition=initial_condition,
+        seed=stmt.seed,
+        n_jobs=1,  # TODO: Add n_jobs support in Phase 3
+        uq_config=None,  # TODO: Add UQ support in Phase 4
+    )
 
     # Build SimulationStmt
     sim_stmt = SimulationStmt(
@@ -5104,8 +5128,18 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
         export_target=stmt.export_target,
     )
 
+    # Attach dynamics_config to sim_stmt for provenance
+    sim_stmt._dynamics_config = dynamics_config
+
     # Execute simulation using dynamics module
     result = run_simulation(network, sim_stmt)
+
+    # Attach config hash to result metadata for provenance
+    if hasattr(result, 'meta') and result.meta is not None:
+        if 'provenance' not in result.meta:
+            result.meta['provenance'] = {}
+        result.meta['provenance']['dynamics_config_hash'] = dynamics_config.config_hash()
+        result.meta['provenance']['dynamics_config'] = dynamics_config.to_dict()
 
     return result
 

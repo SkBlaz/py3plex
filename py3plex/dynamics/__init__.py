@@ -112,7 +112,7 @@ from .compartmental import (
 )
 
 # Config-based dynamics
-from .config import build_dynamics_from_config
+from .config import build_dynamics_from_config, _DynamicsConfig
 
 __all__ = [
     # AST
@@ -163,6 +163,7 @@ __all__ = [
     "SEIRDynamics",
     # Config-based (NEW)
     "build_dynamics_from_config",
+    "_DynamicsConfig",
 ]
 
 # Module version
