@@ -5,6 +5,18 @@ SQL-like DSL for Multilayer Networks
    :local:
    :depth: 2
 
+.. note::
+
+   **For AI Agents and Advanced Users**: See ``AGENTS.md`` in the repository root for:
+   
+   - Formal DSL v2 specification with RFC 2119 keywords
+   - Complete decision guide (when to use DSL vs graph_ops vs pipeline API)
+   - Multilayer semantics guide (node replicas, degree ambiguity, coverage modes)
+   - Comprehensive testing strategy and correctness guarantees
+   - 30+ advanced topics (UQ, dynamics, temporal, semiring algebra, etc.)
+   
+   This RST guide covers basic usage and quick start. AGENTS.md provides the complete reference.
+
 Overview
 --------
 
@@ -2874,9 +2886,9 @@ Query Algebra provides:
 
 For more examples, see:
 
-- ``examples/dsl/query_algebra_basic.py``
-- ``examples/dsl/query_algebra_uncertainty.py``
-- ``examples/dsl/query_algebra_verification.py``
+- ``examples/dsl_query_zoo/query_algebra_basic.py``
+- ``examples/dsl_query_zoo/query_algebra_uncertainty.py``
+- ``examples/dsl_query_zoo/query_algebra_verification.py``
 
 Semiring Algebra (S builder)
 -----------------------------

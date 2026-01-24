@@ -449,6 +449,11 @@ for claim in claims[:5]:
 
 ## DSL v2 — Formal Specification
 
+**See Also**:
+- **RST Documentation**: `docfiles/user_guide/dsl.rst` - Quick start guide, cheat sheet, and basic examples
+- **Examples**: `examples/network_analysis/example_dsl_builder_api.py` - Comprehensive working examples
+- **Legacy DSL**: See [Legacy DSL (String-Based)](#legacy-dsl-string-based) section below
+
 This section provides a normative, implementation-faithful specification of DSL v2. All behavior is specified using RFC 2119 keywords (MUST, MUST NOT, SHOULD, MAY).
 
 ---
@@ -8144,6 +8149,9 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
   - `test_algorithms_random_generators.py` - 21 tests for BA, ER, and SBM multilayer generators
   - `test_algorithms_attribute_correlation.py` - 23 tests for attribute-centrality correlation
   - `test_visualization_benchmark.py` - 35 tests added/enhanced for benchmark plotting
+- **NEW: AGENTS.md Validation Tests** (This PR):
+  - `test_agents_golden_paths.py` - Validates 5 Golden Path examples from AGENTS.md (8 tests)
+  - `test_agents_ergonomics_features.py` - Tests v1.1+ ergonomics features (.hint(), introspection, warnings) (14 tests)
 
 #### Modules with High Coverage (>70%):
 - `__init__.py` - 100%
@@ -8189,16 +8197,99 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 
 ### Test Organization
 
-- **Unit Tests**: Fast tests in `tests/test_*.py`
-- **Verification Tests**: Comprehensive correctness tests in `tests/test_verification_*.py`
-  - Provenance oracles (26 tests)
-  - API differential testing (22 tests)
-  - Metamorphic transformation harness (19 tests)
-  - Determinism & parallelism (16 tests)
-- **Property Tests**: Hypothesis-based, marked `@pytest.mark.property`
-- **Integration Tests**: Multi-component, marked `@pytest.mark.integration`
-- **Metamorphic Tests**: Invariant-based, marked `@pytest.mark.metamorphic`
-- **Slow Tests**: Marked `@pytest.mark.slow` - skip during development
+**Test Suite Statistics**:
+- **Total test files**: 481 files (495 including __init__.py files)
+- **DSL test files**: 65 files covering DSL v2, legacy DSL, and related features
+- **Verification test files**: 7 files with formal correctness guarantees
+- **Property-based test files**: 13 files in `tests/property/` using Hypothesis
+
+**Test Categories**:
+
+#### 1. DSL Tests (65 files)
+Core DSL v2 functionality, query building, execution, and exports:
+- `test_dsl_v2.py` - DSL v2 core builder API
+- `test_dsl.py` - Legacy DSL string-based queries
+- `test_dsl_executor_*.py` - Query execution engine
+- `test_dsl_ast_equivalence.py` - AST stability (21 tests)
+- `test_dsl_graphops_equivalence.py` - DSL ↔ graph_ops semantic equivalence (13 tests)
+- `test_dsl_aggregation_*.py` - Grouping and aggregation
+- `test_dsl_community_*.py` - Community detection integration
+- `test_dsl_compositional_uq.py` - UQ composition
+- `test_dsl_dynamics_integration.py` - Dynamics simulation integration
+- `test_dsl_edge_*.py` - Edge queries and grouping
+- `test_dsl_ergonomics.py` - Ergonomics features (.hint(), introspection)
+- `test_dsl_errors*.py` - Error handling and diagnostics
+- `test_dsl_explain.py` - Query explanation
+- `test_dsl_export.py` - Result export (pandas, NetworkX, Arrow)
+- `test_dsl_expressions.py` - Field expressions (F.field > value)
+- `test_dsl_grouping_coverage.py` - Coverage filtering
+- `test_dsl_layer_*.py` - Layer algebra (L["a"] + L["b"])
+- `test_dsl_planner.py` - Query optimization
+- `test_dsl_provenance.py` - Provenance tracking
+- `test_dsl_semiring_integration.py` - Semiring algebra integration
+- `test_dsl_temporal_*.py` - Temporal network queries
+- `test_dsl_uncertainty.py` - UQ integration
+- `test_dsl_patterns.py` - Pattern matching
+- `test_dsl_documentation_examples.py` - Documentation code snippets
+
+**NEW: AGENTS.md Documentation Validation**:
+- `test_agents_golden_paths.py` - Validates 5 Golden Path examples from AGENTS.md
+- `test_agents_ergonomics_features.py` - Tests v1.1+ ergonomics features
+
+See `tests/` directory for complete list of 67 DSL test files.
+
+#### 2. Verification Tests (7 files in tests/verification/)
+Formal correctness guarantees with metamorphic and differential testing:
+- `test_verification_provenance_oracles.py` - Provenance completeness (26 tests)
+- `test_verification_api_differential.py` - Cross-API equivalence (22 tests)
+- `test_verification_metamorphic_harness.py` - Transformation invariants (19 tests)
+- `test_verification_determinism_parallelism.py` - Seed determinism (16 tests)
+- `test_dsl_equivalence.py` - DSL semantic equivalence
+- `test_semiring_verification.py` - Semiring algebra correctness
+- `test_centrality_robustness_oracles.py` - Centrality invariant testing
+
+Total: 83+ tests with formal guarantees
+
+#### 3. Property-Based Tests (13 files in tests/property/)
+Hypothesis-driven property testing:
+- `test_dsl_*_properties.py` - DSL property tests (13 files)
+- Covers: aggregation, AST, export, registry, serialization, UQ
+
+#### 4. Core Module Tests
+- `test_core_immutable.py` - Immutable network views (15 tests)
+- `test_core_lazy_evaluation.py` - Lazy properties (15 tests)
+- `test_core_schema_validation.py` - Schema validation (16 tests)
+- `test_compat_exceptions.py` - Compatibility exceptions (19 tests)
+- `test_parallel.py` - Parallel execution (19 tests)
+
+#### 5. Algorithm Tests
+- `test_algorithms_random_generators.py` - BA, ER, SBM generators (21 tests)
+- `test_algorithms_attribute_correlation.py` - Attribute-centrality correlation (23 tests)
+- `test_algorithm_properties.py` - Algorithm invariants
+- `tests/algorithms/` - Specialized algorithm tests (SBM, routing, etc.)
+
+#### 6. Integration Tests
+- `test_cli.py` - CLI functionality (79 tests)
+- `test_workflows.py` - Workflow orchestration
+- `test_temporal.py` - Temporal network operations
+- `test_dynamics_*.py` - Dynamics simulation (39+ test functions)
+- `test_contracts_*.py` - Design by contract
+- `test_readme_flagship_example.py` - README example validation
+
+#### 7. Specialized Tests
+- `test_visualization_*.py` - Visualization utilities (35+ tests)
+- `test_counterexamples.py` - Counterexample generation
+- `test_claim_learning.py` - Claim learning
+- `test_nullmodels_*.py` - Null model generation (6 files)
+- `test_temporal_utils_extended.py` - Duration parsing (40 tests)
+
+**Test Markers**:
+- `@pytest.mark.property` - Property-based (Hypothesis)
+- `@pytest.mark.integration` - Integration tests
+- `@pytest.mark.metamorphic` - Metamorphic invariant tests
+- `@pytest.mark.slow` - Slow tests (>1 second)
+- `@pytest.mark.unit` - Fast unit tests
+- `@pytest.mark.verification` - Correctness verification tests
 
 ### Running Tests
 
