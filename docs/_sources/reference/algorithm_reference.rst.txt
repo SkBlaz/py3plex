@@ -461,6 +461,108 @@ Exact values depend on graph structure and random seeds; treat these arrays as i
 **Related measures:**
   - ``MultilayerCentrality.pagerank_centrality()`` (deterministic only)
 
+Approximate Centrality Algorithms (Fast Path)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**New in version 1.1:** Fast approximate centrality algorithms for large networks.
+
+**Module:** ``py3plex.algorithms.centrality.approx_*``
+
+**Purpose:** Provide fast approximations of expensive centrality measures on large networks (>1000 nodes).
+
+**Supported algorithms:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 30 40
+
+   * - Measure
+     - Algorithm
+     - Typical Speedup
+   * - Betweenness
+     - Sampling-based (Brandes)
+     - 10-100x
+   * - Closeness
+     - Landmark-based
+     - 10-50x
+   * - PageRank
+     - Power iteration
+     - 2-10x
+
+**Runnable Example (DSL v2):**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    from py3plex.core import multinet
+    
+    # Load a large network
+    net = multinet.multi_layer_network(directed=False)
+    net.load_network("large_network.csv", input_type="edgelist")
+    
+    # Exact computation (slow on large networks)
+    # result = Q.nodes().compute("betweenness_centrality").execute(net)
+    
+    # Approximate computation (fast)
+    result = Q.nodes().compute(
+        "betweenness_centrality",
+        approx=True,
+        n_samples=512,  # Trade accuracy for speed
+        seed=42         # Deterministic results
+    ).execute(net)
+    
+    # Check provenance
+    print(f"Fast path: {result.meta['provenance']['backend']['fast_path']}")
+    print(f"Method: {result.meta['approximation']['measures'][0]['method']}")
+
+**Expected output:**
+
+.. code-block:: text
+
+    Fast path: True
+    Method: sampling
+
+**Accuracy guarantees:**
+
+- Approximate values converge to exact values as ``n_samples`` increases
+- Typical relative error: 5-20% depending on parameters
+- Deterministic: same ``seed`` produces identical results
+
+**Available Functions:**
+
+* ``approximate_betweenness_sampling(graph, n_samples, seed)`` - Sampling-based betweenness
+* ``approximate_closeness_landmarks(graph, n_landmarks, seed)`` - Landmark-based closeness  
+* ``approximate_pagerank_power_iteration(graph, tol, max_iter)`` - Power iteration PageRank
+
+**String DSL support:**
+
+.. code-block:: python
+
+    from py3plex.dsl_legacy import execute_query
+    
+    # Use default method
+    result = execute_query(net, 'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE')
+    
+    # Specify method and parameters
+    result = execute_query(net,
+        'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE(method="sampling", n_samples=512, seed=42)'
+    )
+
+**When to use approximation:**
+
+- Networks with >1000 nodes where exact computation takes >1 minute
+- Exploratory analysis where approximate rankings are sufficient
+- Sensitivity analysis requiring multiple runs
+- Production pipelines with predictable time budgets
+
+**Provenance tracking:**
+
+All approximation executions set ``fast_path=True`` and record:
+
+- Algorithm method used
+- All parameters (n_samples, seed, tol, etc.)
+- Convergence diagnostics (where applicable)
+
 Path-Based Measures
 ^^^^^^^^^^^^^^^^^^^
 

@@ -257,6 +257,86 @@ Calculates network measures for filtered nodes::
 
     COMPUTE degree betweenness_centrality closeness_centrality
 
+Approximate Centrality (Fast Path)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For large networks, centrality computation can be slow. Py3plex provides **fast approximate algorithms** as first-class citizens in both DSL syntaxes.
+
+**String DSL with APPROXIMATE keyword:**
+
+.. code-block:: python
+
+    # Use default approximation method
+    execute_query(net, 'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE')
+    
+    # Specify method and parameters
+    execute_query(net, 
+        'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE(method="sampling", n_samples=512, seed=42)'
+    )
+
+**Builder API with approx parameters:**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    
+    # Approximate betweenness (sampling-based)
+    result = Q.nodes().compute(
+        "betweenness_centrality",
+        approx=True,
+        n_samples=512,
+        seed=42
+    ).execute(net)
+    
+    # Approximate closeness (landmark-based)
+    result = Q.nodes().compute(
+        "closeness_centrality",
+        approx=True,
+        n_landmarks=64,
+        seed=42
+    ).execute(net)
+    
+    # Approximate PageRank (power iteration)
+    result = Q.nodes().compute(
+        "pagerank",
+        approx=True,
+        tol=1e-6,
+        max_iter=100
+    ).execute(net)
+
+**Supported approximation methods:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 30 40
+
+   * - Measure
+     - Default Method
+     - Parameters
+   * - ``betweenness_centrality``
+     - ``sampling``
+     - ``n_samples`` (int), ``seed`` (int)
+   * - ``closeness_centrality``
+     - ``landmarks``
+     - ``n_landmarks`` (int), ``seed`` (int)
+   * - ``pagerank``
+     - ``power_iteration``
+     - ``tol`` (float), ``max_iter`` (int)
+
+**Approximation guarantees:**
+
+- **Determinism**: Same ``seed`` produces identical results
+- **Accuracy**: Approximate values are close to exact on small graphs
+- **Provenance**: Approximation parameters recorded in ``result.meta["approximation"]``
+- **Fast path**: ``fast_path=True`` set in provenance when approximation is used
+
+**When to use approximation:**
+
+- Networks with >1000 nodes where exact computation is slow
+- Exploratory analysis where approximate values are sufficient
+- Production pipelines requiring predictable execution time
+- Sensitivity analysis with multiple runs (use different seeds)
+
 DSL Syntax Comparison: String vs Builder API
 ---------------------------------------------
 
@@ -2256,6 +2336,547 @@ Configuration Options
              .execute(net))
 
 For more details, see the **AGENTS.md** file.
+
+Query Algebra
+-------------
+
+**Query Algebra** enables compositional reasoning over queries and their results at the DSL level. Queries become first-class mathematical objects that can be combined using set-theoretic operators before or after execution.
+
+.. admonition:: Why Query Algebra?
+   :class: note
+
+   Traditional network analysis requires manual post-processing to combine results from different queries. Query Algebra provides:
+   
+   - **Compositionality**: Build complex queries from simpler ones
+   - **Multilayer semantics**: Preserve layer information during operations
+   - **Uncertainty propagation**: Correctly handle UQ through algebraic operations
+   - **Scientific rigor**: Explicit semantics prevent silent errors
+
+Design Principle
+~~~~~~~~~~~~~~~~
+
+**Users should reason about network analyses algebraically, not procedurally.**
+
+Query algebra operates at two distinct levels:
+
+1. **Pre-compute algebra**: Logical composition of filters and scopes (queries not yet executed)
+2. **Post-compute algebra**: Combining annotated results (executed queries with attributes)
+
+Algebraic Operators
+~~~~~~~~~~~~~~~~~~~
+
+Four operators are supported for compatible queries:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 30 55
+
+   * - Operator
+     - Symbol
+     - Semantics
+   * - Union
+     - ``q1 | q2``
+     - Items in either query (set union)
+   * - Intersection
+     - ``q1 & q2``
+     - Items in both queries (set intersection)
+   * - Difference
+     - ``q1 - q2``
+     - Items in first query but not second (set difference)
+   * - Symmetric Diff
+     - ``q1 ^ q2``
+     - Items in exactly one query (exclusive or)
+
+**Compatibility Rule**: Only queries with the same target can be combined (nodes with nodes, edges with edges, etc.). Incompatible combinations raise ``IncompatibleQueryError``.
+
+Pre-compute Algebra: Logical Composition
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Pre-compute algebra combines queries **before execution**, creating a logical composition of filters and scopes.
+
+**Example 1: Union of Layer-Filtered Queries**
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+    
+    # Define queries for different layers
+    social_hubs = Q.nodes().from_layers(L["social"]).where(degree__gt=5)
+    work_hubs = Q.nodes().from_layers(L["work"]).where(degree__gt=5)
+    
+    # Union: nodes that are hubs in either layer
+    all_hubs = social_hubs | work_hubs
+    
+    # Execute the composed query
+    result = all_hubs.execute(network)
+
+**Example 2: Intersection for Multi-Criteria Filtering**
+
+.. code-block:: python
+
+    # Define criteria independently
+    high_degree = Q.nodes().where(degree__gt=5)
+    high_betweenness = Q.nodes().where(betweenness_centrality__gt=0.1)
+    
+    # Intersection: nodes meeting both criteria
+    important_hubs = high_degree & high_betweenness
+    
+    result = important_hubs.execute(network)
+
+**Example 3: Difference for Exclusion**
+
+.. code-block:: python
+
+    # All nodes vs. outliers
+    all_nodes = Q.nodes()
+    outliers = Q.nodes().where(degree__gt=10)
+    
+    # Normal nodes (not outliers)
+    normal = all_nodes - outliers
+    
+    result = normal.execute(network)
+
+Post-compute Algebra: Combining Results
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Post-compute algebra operates on **executed results** with computed attributes, merging both items and their associated data.
+
+**Example 4: Union with Attribute Preservation**
+
+.. code-block:: python
+
+    # Execute queries independently
+    social_result = Q.nodes().from_layers(L["social"]).compute("degree").execute(network)
+    work_result = Q.nodes().from_layers(L["work"]).compute("degree").execute(network)
+    
+    # Union: combine results with attributes
+    combined = social_result | work_result
+    
+    # Convert to DataFrame
+    df = combined.to_pandas()
+
+**Example 5: Intersection with Attribute Merging**
+
+.. code-block:: python
+
+    # Query with different metrics
+    result1 = Q.nodes().compute("degree").execute(network)
+    result2 = Q.nodes().compute("pagerank").execute(network)
+    
+    # Intersection merges both attributes
+    merged = result1 & result2
+    
+    # Now each node has both degree and pagerank
+    df = merged.to_pandas()
+    print(df[["node", "layer", "degree", "pagerank"]])
+
+Identity Semantics: by_id vs by_replica
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Critical**: Multilayer networks require explicit identity strategies when comparing nodes.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Strategy
+     - Semantics
+   * - ``by_replica``
+     - Compare nodes by (node_id, layer) tuple. Default. Treats replicas as distinct.
+   * - ``by_id``
+     - Compare nodes by node_id only, ignoring layer. Treats replicas as same entity.
+
+**When is identity ambiguous?**
+
+Ambiguity exists when:
+
+- Both results have multilayer data (multiple layers represented)
+- No explicit identity strategy is specified
+
+**Resolution**: Use ``.resolve(identity="...")`` to specify strategy explicitly.
+
+**Example 6: Identity Strategies**
+
+.. code-block:: python
+
+    # Get nodes from two layers
+    social = Q.nodes().from_layers(L["social"]).execute(network)
+    work = Q.nodes().from_layers(L["work"]).execute(network)
+    
+    # BY_REPLICA: treats (Alice, social) and (Alice, work) as different
+    # This will raise AmbiguousIdentityError if not specified
+    try:
+        union_replica = social | work
+    except AmbiguousIdentityError:
+        # Specify explicitly
+        pass
+    
+    # Option 1: Treat replicas as distinct (default when unambiguous)
+    from py3plex.dsl.algebra import IdentityStrategy
+    social.meta['identity_strategy'] = IdentityStrategy.BY_REPLICA
+    work.meta['identity_strategy'] = IdentityStrategy.BY_REPLICA
+    union_replica = social | work
+    # Result includes both (Alice, social) and (Alice, work)
+    
+    # Option 2: Treat node IDs as identical across layers
+    social.meta['identity_strategy'] = IdentityStrategy.BY_ID
+    work.meta['identity_strategy'] = IdentityStrategy.BY_ID
+    union_id = social | work
+    # Result includes Alice once (merged across layers)
+
+**Best Practice**: Always specify identity strategy for multilayer algebra to avoid ambiguity errors.
+
+Attribute Conflict Resolution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When combining results with computed attributes, conflicts may arise when the same item has different attribute values in each operand.
+
+**Conflict Resolution Strategies**:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Strategy
+     - Behavior
+   * - ``error`` (default)
+     - Raise ``AttributeConflictError`` on any conflict
+   * - ``prefer_left``
+     - Keep value from left operand
+   * - ``prefer_right``
+     - Keep value from right operand
+   * - ``mean``
+     - Average numeric values (works with UQ)
+   * - ``max``
+     - Take maximum numeric value
+   * - ``min``
+     - Take minimum numeric value
+   * - ``keep_both``
+     - Store both values with namespaced keys
+
+**Example 7: Conflict Resolution**
+
+.. code-block:: python
+
+    # Two queries compute the same metric differently
+    result1 = Q.nodes().compute("degree").execute(network)
+    result2 = Q.nodes().compute("degree").execute(network)  # Might differ with UQ
+    
+    # Default: raise error on conflicts
+    try:
+        merged = result1 & result2
+    except AttributeConflictError as e:
+        print(e)
+    
+    # Specify resolution strategy
+    result1.meta['conflict_resolution'] = ConflictResolution.MEAN
+    result2.meta['conflict_resolution'] = ConflictResolution.MEAN
+    merged = result1 & result2  # Averages conflicting values
+
+Alternatively, use the ``.resolve()`` method on queries:
+
+.. code-block:: python
+
+    q1 = Q.nodes().compute("degree")
+    q2 = Q.nodes().compute("pagerank")
+    
+    # Set resolution strategies before execution
+    combined_query = (q1 & q2).resolve(identity="by_id", conflicts="mean")
+    result = combined_query.execute(network)
+
+Uncertainty-Aware Algebra
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Critical**: Query algebra correctly propagates uncertainty when combining results with UQ.
+
+**UQ Propagation Rules**:
+
+1. **Union/Intersection**: Uncertainty information from both operands is merged
+2. **Methods tracked**: Records which UQ methods were used
+3. **Sample sizes preserved**: Maintains n_samples metadata
+4. **Seeds tracked**: If both operands used same seed, it's preserved
+
+**Example 8: Algebra with Uncertainty**
+
+.. code-block:: python
+
+    # Queries with UQ
+    result1 = (
+        Q.nodes()
+         .compute("degree")
+         .uq(method="bootstrap", n_samples=100, seed=42)
+         .execute(network)
+    )
+    
+    result2 = (
+        Q.nodes()
+         .compute("betweenness_centrality")
+         .uq(method="bootstrap", n_samples=100, seed=42)
+         .execute(network)
+    )
+    
+    # Union with UQ propagation
+    combined = result1 | result2
+    
+    # UQ metadata is preserved
+    print(combined.meta['uncertainty'])
+    # {'combined': True, 'methods': ['bootstrap'], 'n_samples': [100, 100], 'seed': 42}
+    
+    # Export with confidence intervals
+    df = combined.to_pandas(expand_uncertainty=True)
+    print(df[["node", "degree_mean", "degree_ci95_low", "degree_ci95_high"]])
+
+**Algebraic Laws Under UQ**:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 25 50
+
+   * - Law
+     - Guaranteed
+     - Notes
+   * - Idempotence
+     - ✓ Yes
+     - ``q | q = q`` (with same seed)
+   * - Commutativity
+     - ✓ Yes
+     - ``q1 | q2 = q2 | q1``
+   * - Associativity
+     - ✓ Yes
+     - ``(q1 | q2) | q3 = q1 | (q2 | q3)``
+   * - Distributivity
+     - ✗ No
+     - ``q1 & (q2 | q3) ≠ (q1 & q2) | (q1 & q3)`` when UQ differs
+
+**Why Distributivity Fails**: UQ introduces probabilistic variation. Filtering before union vs. union before filtering can yield different confidence intervals.
+
+Named Subqueries & Provenance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Assign names to queries for better provenance tracking and debugging.
+
+**Example 9: Named Queries**
+
+.. code-block:: python
+
+    # Name subqueries
+    hubs = Q.nodes().where(degree__gt=5).name("hubs")
+    stable = Q.nodes().uq(method="bootstrap", n_samples=100).name("stable_nodes")
+    
+    # Compose named queries
+    robust_hubs = hubs & stable
+    robust_hubs = robust_hubs.name("robust_hubs")
+    
+    # Execute
+    result = robust_hubs.execute(network)
+    
+    # Names appear in provenance
+    print(result.meta.get('algebra_op'))
+    # {'operation': 'intersection', 'left': 'hubs', 'right': 'stable_nodes'}
+
+Names propagate through:
+
+- Provenance metadata (``result.meta``)
+- Debug output (``result.debug()``)
+- Explanations (``result.explain()``)
+
+Verification & Assertions
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Query algebra enables **verification use cases** for scientific workflows.
+
+**Assertion Methods**:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Method
+     - Use Case
+   * - ``Q.assert_subset(q1, q2)``
+     - Verify q1 ⊆ q2 (monotonicity checks)
+   * - ``Q.assert_nonempty(q)``
+     - Ensure query returns results (validation)
+   * - ``Q.assert_disjoint(q1, q2)``
+     - Verify q1 ∩ q2 = ∅ (partitioning checks)
+
+**Example 10: Regression Testing**
+
+.. code-block:: python
+
+    # Verify that filtering reduces results
+    all_nodes = Q.nodes()
+    filtered = Q.nodes().where(degree__gt=5)
+    
+    # Monotonicity assertion
+    Q.assert_subset(filtered, all_nodes, network)
+    # Raises AssertionError if violated
+
+**Example 11: Intersection Validation**
+
+.. code-block:: python
+
+    # Ensure intersection is meaningful
+    social = Q.nodes().from_layers(L["social"])
+    high_degree = Q.nodes().where(degree__gt=5)
+    
+    intersection = social & high_degree
+    
+    # Verify intersection is non-empty
+    Q.assert_nonempty(intersection, network, 
+                      message="No high-degree nodes in social layer")
+
+**Example 12: Partitioning Validation**
+
+.. code-block:: python
+
+    # Verify layer filters are exclusive
+    social = Q.nodes().from_layers(L["social"])
+    work = Q.nodes().from_layers(L["work"])
+    
+    # By replica, these should be disjoint
+    Q.assert_disjoint(social, work, network, identity="by_replica")
+
+Use Cases
+~~~~~~~~~
+
+**Scientific Claims Validation**:
+
+.. code-block:: python
+
+    # Claim: "High-degree nodes are always high-betweenness"
+    high_degree = Q.nodes().where(degree__gt=10)
+    high_betweenness = Q.nodes().where(betweenness_centrality__gt=0.2)
+    
+    # Test subset relationship
+    try:
+        Q.assert_subset(high_degree, high_betweenness, network)
+        print("Claim holds")
+    except AssertionError:
+        print("Counterexample found")
+
+**Monotonicity Testing**:
+
+.. code-block:: python
+
+    # More restrictive filter should yield subset
+    filter1 = Q.nodes().where(degree__gt=5)
+    filter2 = Q.nodes().where(degree__gt=10)
+    
+    # filter2 should be subset of filter1
+    Q.assert_subset(filter2, filter1, network)
+
+**Coverage Analysis**:
+
+.. code-block:: python
+
+    # Check how much overlap exists between layers
+    social = Q.nodes().from_layers(L["social"]).execute(network)
+    work = Q.nodes().from_layers(L["work"]).execute(network)
+    
+    # By ID: how many physical nodes appear in both?
+    from py3plex.dsl.algebra import IdentityStrategy
+    social.meta['identity_strategy'] = IdentityStrategy.BY_ID
+    work.meta['identity_strategy'] = IdentityStrategy.BY_ID
+    
+    overlap = social & work
+    print(f"Overlap: {len(overlap.items)} / {len(social.items)}")
+
+Failure Cases & Error Handling
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Query algebra fails explicitly and informatively when operations are invalid.
+
+**Error 1: Incompatible Targets**
+
+.. code-block:: python
+
+    nodes_query = Q.nodes()
+    edges_query = Q.edges()
+    
+    try:
+        combined = nodes_query | edges_query
+    except IncompatibleQueryError as e:
+        print(e)
+        # "Cannot combine queries with different targets: nodes vs edges"
+
+**Error 2: Ambiguous Identity**
+
+.. code-block:: python
+
+    social = Q.nodes().from_layers(L["social"]).execute(network)
+    work = Q.nodes().from_layers(L["work"]).execute(network)
+    
+    try:
+        union = social | work
+    except AmbiguousIdentityError as e:
+        print(e)
+        # "Identity strategy is ambiguous for multilayer results. 
+        #  Specify explicitly: result.resolve(identity='by_id') or ..."
+
+**Error 3: Attribute Conflicts**
+
+.. code-block:: python
+
+    result1 = Q.nodes().compute("custom_metric").execute(network)
+    result2 = Q.nodes().compute("custom_metric").execute(network)
+    
+    try:
+        merged = result1 & result2
+    except AttributeConflictError as e:
+        print(e)
+        # "Attribute conflict for 'custom_metric': 5.2 vs 4.8. 
+        #  Use .resolve(conflicts=...) to specify resolution strategy."
+
+**Best Practices**:
+
+1. **Always specify identity strategy** for multilayer algebra
+2. **Use named queries** for complex compositions
+3. **Set conflict resolution** when merging computed attributes
+4. **Leverage assertions** for validation in scientific workflows
+5. **Check provenance** to understand how results were combined
+
+Algebraic Laws & Guarantees
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Guaranteed Laws** (always hold):
+
+- **Idempotence**: ``q | q = q``, ``q & q = q``
+- **Commutativity**: ``q1 | q2 = q2 | q1``, ``q1 & q2 = q2 & q1``
+- **Associativity**: ``(q1 | q2) | q3 = q1 | (q2 | q3)``
+- **Identity**: ``q | ∅ = q``, ``q & U = q`` (where U is universal set)
+- **Annihilation**: ``q & ∅ = ∅``
+
+**Conditional Laws** (hold under specific conditions):
+
+- **Distributivity**: ``q1 & (q2 | q3) = (q1 & q2) | (q1 & q3)`` 
+  
+  - ✓ Holds for deterministic queries
+  - ✗ May not hold with UQ due to probabilistic variation
+
+**Explicitly Unsupported**:
+
+- **Complement**: ``~q`` is not supported (requires universe definition)
+- **De Morgan's Laws**: Cannot be verified without complement
+- **Absorption**: ``q1 | (q1 & q2) = q1`` not guaranteed with different provenance
+
+Summary
+~~~~~~~
+
+Query Algebra provides:
+
+- **Compositionality**: Build complex queries from simple building blocks
+- **Type safety**: Only compatible queries can combine
+- **Explicit semantics**: No silent ambiguity resolution
+- **Multilayer native**: Proper handling of node replicas and layers
+- **Uncertainty aware**: Correct UQ propagation through operations
+- **Verification support**: Assertions for scientific validation
+
+For more examples, see:
+
+- ``examples/dsl/query_algebra_basic.py``
+- ``examples/dsl/query_algebra_uncertainty.py``
+- ``examples/dsl/query_algebra_verification.py``
 
 Semiring Algebra (S builder)
 -----------------------------
