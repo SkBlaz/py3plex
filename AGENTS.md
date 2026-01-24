@@ -1152,6 +1152,7 @@ Attach explanations to results OR get execution plan.
 - `include` (List[str], optional): Explanation blocks (default: ["community", "top_neighbors", "layer_footprint"])
 - `exclude` (List[str], optional): Blocks to exclude
 - `neighbors` (dict, optional): Neighbor config (metric, scope, direction)
+- `attribution` (dict, optional): Attribution configuration (see Attribution Block below)
 - `cache` (bool, default=True): Cache lookups
 - `as_columns` (bool, default=True): Store as top-level columns
 - `prefix` (str, default=""): Column name prefix
@@ -1160,11 +1161,157 @@ Attach explanations to results OR get execution plan.
 - `"community"` - Community membership and size
 - `"top_neighbors"` - Top neighbors by weight/degree
 - `"layer_footprint"` - Layers where node/edge appears
+- `"attribution"` - Shapley-based attribution explanations (see below)
 
 **Example**:
 ```python
 .explain()  # Execution plan
 .explain(neighbors_top=5, include=["top_neighbors"])  # With explanations
+.explain(include=["attribution"], attribution={"metric": "degree", "seed": 42})  # With attribution
+```
+
+##### Attribution Block
+
+The `"attribution"` explanation block provides Shapley-based explanations for metric values or rankings using game-theoretic attribution methods.
+
+**Purpose**: Answers "Why is this node/edge ranked highly?" by decomposing contributions across layers and/or edges.
+
+**Configuration** (via `attribution` parameter dict):
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `metric` | str \| None | Auto-infer | Which computed metric to explain. Required if multiple metrics computed. |
+| `objective` | "value" \| "rank" | "value" | Explain metric value or ranking position. |
+| `levels` | List["layer", "edge"] | ["layer"] | Attribution levels to compute. |
+| `method` | "shapley" \| "shapley_mc" \| "influence" | "shapley_mc" | Computation method. |
+| `feature_space` | "layers" \| "layer_pairs" \| "coupling_types" | "layers" | Layer feature representation. |
+| `n_permutations` | int | 128 | MC Shapley sample count (≥16). |
+| `max_exact_features` | int | 8 | Switch from exact to MC at this threshold. |
+| `seed` | int \| None | None | Random seed for determinism (recommended). |
+| `edge_scope` | "incident" \| "ego_k_hop" \| "shortest_path_sample" \| "global_top_m" | "incident" | Edge candidate selection strategy. |
+| `k_hop` | int | 2 | Ego network radius (for ego_k_hop). |
+| `max_edges` | int | 40 | Maximum candidate edges. |
+| `top_k_layers` | int | 10 | Top layer contributions to return. |
+| `top_k_edges` | int | 20 | Top edge contributions to return. |
+| `include_negative` | bool | True | Include negative contributions. |
+| `cache` | bool | True | Cache subset computations. |
+| `uq` | "off" \| "propagate" \| "summarize_only" | "off" | UQ integration mode. |
+| `ci_level` | float | 0.95 | Confidence interval level for UQ. |
+
+**Output Structure** (JSON-serializable dict):
+```python
+{
+    "metric": "pagerank",
+    "objective": "value",
+    "utility_def": None,  # or "margin_to_cutoff(k=10)" for rank
+    "levels": ["layer", "edge"],
+    "method": "shapley_mc",
+    "seed": 42,
+    "n_permutations": 128,
+    "feature_space": "layers",
+    "full_value": 0.1186,
+    "baseline_value": 0.0500,
+    "delta": 0.0686,
+    "residual": 1e-12,
+    "layer_contrib": [
+        {"layer": "social", "phi": 0.0401},
+        {"layer": "work", "phi": 0.0285}
+    ],
+    "edge_contrib": [
+        {"edge": ["Alice", "Bob", "social", "social"], "phi": 0.0102},
+        # ...
+    ],
+    "warnings": [],
+    "cache_hit_rate": 0.73
+}
+```
+
+**Examples**:
+
+```python
+# Layer attribution for PageRank
+result = (
+    Q.nodes()
+     .compute("pagerank")
+     .explain(
+         include=["attribution"],
+         attribution={
+             "metric": "pagerank",
+             "levels": ["layer"],
+             "method": "shapley",
+             "seed": 42
+         }
+     )
+     .execute(net)
+)
+
+# Edge attribution for betweenness with rank objective
+result = (
+    Q.nodes()
+     .compute("betweenness_centrality")
+     .order_by("-betweenness_centrality")
+     .limit(10)
+     .explain(
+         include=["attribution"],
+         attribution={
+             "objective": "rank",
+             "levels": ["edge"],
+             "edge_scope": "ego_k_hop",
+             "k_hop": 2,
+             "max_edges": 40,
+             "n_permutations": 128,
+             "seed": 42
+         }
+     )
+     .execute(net)
+)
+
+# With UQ propagation
+result = (
+    Q.nodes()
+     .uq(method="perturbation", n_samples=30, seed=42)
+     .compute("pagerank")
+     .explain(
+         include=["attribution"],
+         attribution={
+             "metric": "pagerank",
+             "uq": "propagate",
+             "levels": ["layer"],
+             "seed": 42
+         }
+     )
+     .execute(net)
+)
+```
+
+**Determinism**:
+- Setting `seed` ensures reproducible attribution results
+- Same seed produces identical Shapley values across runs
+- Different seeds produce statistically different but valid attributions
+- Results are independent of parallel execution settings (n_jobs)
+
+**Performance Considerations**:
+- **Exact Shapley**: Only feasible for ≤ `max_exact_features` layers (default 8)
+- **Monte Carlo Shapley**: Scales to larger feature sets via sampling
+- **Edge Attribution**: Bounded by `max_edges` to prevent exponential blowup
+- **Caching**: Enabled by default to reuse subset computations
+
+**UQ Integration**:
+- `uq="off"`: No UQ (default), deterministic scalar Shapley values
+- `uq="propagate"`: Compute attribution per UQ replicate, aggregate mean/std/CI
+- `uq="summarize_only"`: Compute once on base network, wrap in UQ-like structure
+
+**Caveats**:
+- Requires at least one computed metric
+- If multiple metrics computed, must specify `metric` parameter
+- Edge attribution is more expensive than layer attribution
+- Always set `seed` for reproducible research
+
+**Export Compatibility**:
+Attribution data is serialized to JSON strings when using:
+```python
+df = result.to_pandas(expand_explanations=True)
+# df["attribution"] contains JSON-serialized attribution dicts
 ```
 
 ##### `.to_ast() -> Query`
@@ -2215,7 +2362,10 @@ Temporal queries MUST work with `TemporalMultiLayerNetwork` instances that suppo
 - For nodes: Index MUST be `(node_id, layer)` tuple
 - For edges: Index MUST be `(source, target, source_layer, target_layer)` tuple
 - If `expand_uncertainty=True`, MUST expand UQ columns as specified in section 10.4
-- If `expand_explanations=True`, MUST expand explanation dicts (e.g., `top_neighbors`) to JSON strings
+- If `expand_explanations=True`, MUST expand explanation dicts to JSON strings:
+  - `top_neighbors`: JSON-serialized neighbor list
+  - `layer_footprint`: JSON-serialized layer presence info
+  - `attribution`: JSON-serialized attribution results (see Attribution Block section)
 
 ##### `to_networkx() -> nx.Graph or nx.MultiGraph`
 
