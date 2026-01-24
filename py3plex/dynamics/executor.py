@@ -221,6 +221,41 @@ def run_simulation(network: Any, stmt: SimulationStmt,
         else:
             data[measure] = np.array([])
 
+    # Process UQ config if present
+    uq_config = None
+    if hasattr(stmt, '_dynamics_config') and stmt._dynamics_config is not None:
+        uq_config = stmt._dynamics_config.uq_config
+    
+    # Compute UQ-wrapped summary stats if UQ is enabled
+    if uq_config is not None:
+        ci_level = uq_config.get('ci_level', 0.95)
+        
+        # For each measure, compute summary stats with CI
+        for measure in stmt.measures:
+            if measure in data and len(data[measure]) > 0:
+                measure_data = data[measure]  # Shape: (replicates, steps)
+                
+                # Compute summary stats over replicates
+                mean_trajectory = np.mean(measure_data, axis=0)
+                std_trajectory = np.std(measure_data, axis=0, ddof=1) if len(measure_data) > 1 else np.zeros_like(mean_trajectory)
+                
+                # Compute CI using percentile method
+                alpha = 1 - ci_level
+                lower_percentile = (alpha / 2) * 100
+                upper_percentile = (1 - alpha / 2) * 100
+                
+                ci_low_trajectory = np.percentile(measure_data, lower_percentile, axis=0)
+                ci_high_trajectory = np.percentile(measure_data, upper_percentile, axis=0)
+                
+                # Store UQ-wrapped data
+                data[measure + '_uq'] = {
+                    'mean': mean_trajectory,
+                    'std': std_trajectory,
+                    'ci_low': ci_low_trajectory,
+                    'ci_high': ci_high_trajectory,
+                    'raw': measure_data  # Keep raw replicate data
+                }
+
     meta = {
         "steps": stmt.steps,
         "replicates": stmt.replicates,
@@ -228,6 +263,7 @@ def run_simulation(network: Any, stmt: SimulationStmt,
         "coupling": stmt.coupling,
         "seed": base_seed,
         "network_nodes": len(nodes),
+        "uq_config": uq_config,
     }
 
     return SimulationResult(

@@ -5103,6 +5103,7 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
 
     # Create canonical _DynamicsConfig for provenance
     n_jobs = getattr(stmt, 'n_jobs', 1)  # Default to 1 if not set
+    uq_config = getattr(stmt, 'uq_config', None)  # Get UQ config if set
     dynamics_config = _DynamicsConfig(
         model_id=stmt.process_name,
         model_params=stmt.params or {},
@@ -5114,7 +5115,7 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
         initial_condition=initial_condition,
         seed=stmt.seed,
         n_jobs=n_jobs,
-        uq_config=None,  # TODO: Add UQ support in Phase 4
+        uq_config=uq_config,
     )
 
     # Build SimulationStmt

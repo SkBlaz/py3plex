@@ -5748,6 +5748,44 @@ class DynamicsBuilder:
         self._stmt.export_target = target
         return self
 
+    def uq(
+        self, 
+        ci_level: float = 0.95, 
+        method: str = "dynamics_mc"
+    ) -> "DynamicsBuilder":
+        """Enable uncertainty quantification for dynamics results.
+        
+        Wraps per-replicate summary statistics with confidence intervals.
+        
+        Args:
+            ci_level: Confidence interval level (default: 0.95 for 95% CI)
+            method: UQ method (default: "dynamics_mc" for Monte Carlo across replicates)
+        
+        Returns:
+            Self for chaining
+        
+        Example:
+            >>> result = (
+            ...     Q.dynamics("SIS", beta=0.3, mu=0.1)
+            ...      .seed_infections(fraction=0.01)
+            ...      .run(steps=100, replicates=50)
+            ...      .uq(ci_level=0.95, method="dynamics_mc")
+            ...      .execute(network)
+            ... )
+            >>> # Summary stats now include CI bounds:
+            >>> result.mean_peak_time  # {'mean': 45.2, 'ci_low': 40.1, 'ci_high': 50.3}
+        """
+        # Store UQ configuration in statement for executor
+        if not hasattr(self._stmt, 'uq_config'):
+            self._stmt.uq_config = {}
+        
+        self._stmt.uq_config = {
+            'ci_level': ci_level,
+            'method': method,
+        }
+        
+        return self
+
     def execute(self, network: Any) -> Any:
         """Execute dynamics simulation.
 
