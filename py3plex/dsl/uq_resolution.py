@@ -47,6 +47,9 @@ LIBRARY_UQ_DEFAULTS = {
     "n_samples": 50,
     "ci": 0.95,
     "seed": None,
+    "mode": "summarize_only",  # Default to current behavior
+    "keep_samples": None,  # Will be determined based on mode/reduce
+    "reduce": "empirical",  # Default reduction method
 }
 
 # Global defaults storage (mutable)
@@ -68,6 +71,21 @@ class UQUnsupportedError(DslExecutionError):
     pass
 
 
+class UQPropagationError(DslExecutionError):
+    """Error raised when UQ propagation mode encounters an error."""
+    pass
+
+
+class UQIncompatibleConfiguration(DslExecutionError):
+    """Error raised when UQ configurations are incompatible."""
+    pass
+
+
+class UQReductionError(DslExecutionError):
+    """Error raised when UQ reduction operation fails."""
+    pass
+
+
 @dataclass
 class ResolvedUQConfig:
     """Fully resolved and materialized UQ configuration.
@@ -80,21 +98,65 @@ class ResolvedUQConfig:
         n_samples: Number of samples for uncertainty estimation
         ci: Confidence interval level
         seed: Random seed for reproducibility
+        mode: UQ execution mode ('summarize_only' or 'propagate')
+        keep_samples: Whether to keep raw samples
+        reduce: Reduction method ('empirical' or 'gaussian')
         kwargs: Additional method-specific parameters
         provenance: Dict mapping each config key to its source
         context: Where this config applies (metric name, query, global)
+        enabled: Whether UQ is enabled
     """
     method: str
     n_samples: int
     ci: float
     seed: Optional[int]
+    mode: str = "summarize_only"  # New: 'summarize_only' or 'propagate'
+    keep_samples: bool = False  # New: Whether to keep raw samples
+    reduce: str = "empirical"  # New: 'empirical' or 'gaussian'
     kwargs: Dict[str, Any] = field(default_factory=dict)
     provenance: Dict[str, str] = field(default_factory=dict)
     context: str = "unknown"
+    enabled: bool = True  # New: Whether UQ is enabled
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for storage."""
         return asdict(self)
+    
+    @property
+    def structural_hash(self) -> str:
+        """Compute a stable hash for determinism checks.
+        
+        This hash includes all configuration parameters that affect execution.
+        Used to verify that replicate execution is deterministic.
+        """
+        import hashlib
+        import json
+        
+        # Build deterministic dict of all relevant fields
+        config_dict = {
+            "method": self.method,
+            "n_samples": self.n_samples,
+            "ci": self.ci,
+            "seed": self.seed,
+            "mode": self.mode,
+            "keep_samples": self.keep_samples,
+            "reduce": self.reduce,
+            "kwargs": sorted(self.kwargs.items()),  # Stable ordering
+        }
+        
+        # Compute hash
+        config_str = json.dumps(config_dict, sort_keys=True)
+        return hashlib.sha256(config_str.encode()).hexdigest()[:16]
+    
+    def disable_inside_replicate(self) -> "ResolvedUQConfig":
+        """Create a copy with UQ disabled for use inside replicate execution.
+        
+        Returns a copy of this config with enabled=False to prevent nested UQ loops.
+        """
+        import copy
+        disabled = copy.deepcopy(self)
+        disabled.enabled = False
+        return disabled
     
     def validate(self) -> None:
         """Validate the resolved configuration.
@@ -108,6 +170,22 @@ class ResolvedUQConfig:
             raise UQResolutionError(
                 f"Invalid UQ method '{self.method}'. "
                 f"Valid methods: {', '.join(sorted(valid_methods))}"
+            )
+        
+        # Validate mode
+        valid_modes = {"summarize_only", "propagate"}
+        if self.mode not in valid_modes:
+            raise UQResolutionError(
+                f"Invalid UQ mode '{self.mode}'. "
+                f"Valid modes: {', '.join(sorted(valid_modes))}"
+            )
+        
+        # Validate reduce
+        valid_reduce = {"empirical", "gaussian"}
+        if self.reduce not in valid_reduce:
+            raise UQResolutionError(
+                f"Invalid reduce method '{self.reduce}'. "
+                f"Valid methods: {', '.join(sorted(valid_reduce))}"
             )
         
         # Validate n_samples
@@ -261,6 +339,17 @@ def resolve_uq_config(
             resolved["seed"] = query_uq_config.seed
             provenance["seed"] = "query_level"
         
+        # New fields for propagate mode
+        if query_uq_config.mode is not None:
+            resolved["mode"] = query_uq_config.mode
+            provenance["mode"] = "query_level"
+        if query_uq_config.keep_samples is not None:
+            resolved["keep_samples"] = query_uq_config.keep_samples
+            provenance["keep_samples"] = "query_level"
+        if query_uq_config.reduce is not None:
+            resolved["reduce"] = query_uq_config.reduce
+            provenance["reduce"] = "query_level"
+        
         # Merge kwargs
         query_kwargs = query_uq_config.kwargs or {}
         for key, value in query_kwargs.items():
@@ -308,8 +397,36 @@ def resolve_uq_config(
         resolved[key] = value
     
     # Extract kwargs from resolved
-    standard_keys = {"method", "n_samples", "ci", "seed"}
+    standard_keys = {"method", "n_samples", "ci", "seed", "mode", "keep_samples", "reduce"}
     kwargs = {k: v for k, v in resolved.items() if k not in standard_keys}
+    
+    # Determine default keep_samples based on mode and reduce
+    mode = resolved.get("mode", "summarize_only")
+    reduce = resolved.get("reduce", "empirical")
+    keep_samples = resolved.get("keep_samples")
+    
+    if keep_samples is None:
+        # Default: keep samples in propagate mode unless using gaussian reduction
+        if mode == "propagate":
+            keep_samples = (reduce != "gaussian")
+        else:
+            keep_samples = False
+    
+    # Validate mode compatibility in propagate mode
+    if mode == "propagate":
+        # Check if metric-level method conflicts with query method
+        if "method" in provenance and provenance["method"] == "metric_level":
+            # Metric-level method set - check if it matches query method
+            query_method = None
+            if query_uq_config is not None:
+                query_method = query_uq_config.method
+            
+            if query_method is not None and query_method != resolved["method"]:
+                raise UQIncompatibleConfiguration(
+                    f"In propagate mode, per-metric UQ method must match query-level method. "
+                    f"Query method: '{query_method}', metric '{metric_name}' method: '{resolved['method']}'. "
+                    f"Fix: Remove per-metric method parameter or use mode='summarize_only'."
+                )
     
     # Create resolved config
     config = ResolvedUQConfig(
@@ -317,9 +434,13 @@ def resolve_uq_config(
         n_samples=resolved["n_samples"],
         ci=resolved["ci"],
         seed=resolved.get("seed"),
+        mode=mode,
+        keep_samples=keep_samples,
+        reduce=reduce,
         kwargs=kwargs,
         provenance=provenance,
         context=f"metric:{metric_name}",
+        enabled=True,
     )
     
     # Validate before returning
@@ -502,3 +623,102 @@ def wrap_deterministic_as_uq(
         n_samples=resolved_config.n_samples,
         seed=resolved_config.seed,
     )
+
+
+def resolve_query_level_uq(
+    query_uq_config: Optional[UQConfig],
+) -> Optional[ResolvedUQConfig]:
+    """Resolve query-level UQ configuration for execution planning.
+    
+    This is used when we need to determine if UQ propagation should be used,
+    without resolving per-metric configurations.
+    
+    Args:
+        query_uq_config: Query-level UQConfig from .uq() call
+        
+    Returns:
+        ResolvedUQConfig if UQ is enabled at query level, None otherwise
+    """
+    if query_uq_config is None or query_uq_config.method is None:
+        return None
+    
+    provenance = {}
+    
+    # Start with library defaults
+    resolved = LIBRARY_UQ_DEFAULTS.copy()
+    for key in resolved:
+        provenance[key] = "library_default"
+    
+    # Apply global defaults
+    global_defaults = get_global_uq_defaults()
+    for key, value in global_defaults.items():
+        if value is not None:
+            resolved[key] = value
+            provenance[key] = "global_default"
+    
+    # Apply query-level config
+    if query_uq_config.method is not None:
+        resolved["method"] = query_uq_config.method
+        provenance["method"] = "query_level"
+    if query_uq_config.n_samples is not None:
+        resolved["n_samples"] = query_uq_config.n_samples
+        provenance["n_samples"] = "query_level"
+    if query_uq_config.ci is not None:
+        resolved["ci"] = query_uq_config.ci
+        provenance["ci"] = "query_level"
+    if query_uq_config.seed is not None:
+        resolved["seed"] = query_uq_config.seed
+        provenance["seed"] = "query_level"
+    
+    # New fields for propagate mode
+    if query_uq_config.mode is not None:
+        resolved["mode"] = query_uq_config.mode
+        provenance["mode"] = "query_level"
+    if query_uq_config.keep_samples is not None:
+        resolved["keep_samples"] = query_uq_config.keep_samples
+        provenance["keep_samples"] = "query_level"
+    if query_uq_config.reduce is not None:
+        resolved["reduce"] = query_uq_config.reduce
+        provenance["reduce"] = "query_level"
+    
+    # Merge kwargs
+    query_kwargs = query_uq_config.kwargs or {}
+    for key, value in query_kwargs.items():
+        resolved[key] = value
+        provenance[key] = "query_level"
+    
+    # Extract kwargs from resolved
+    standard_keys = {"method", "n_samples", "ci", "seed", "mode", "keep_samples", "reduce"}
+    kwargs = {k: v for k, v in resolved.items() if k not in standard_keys}
+    
+    # Determine default keep_samples based on mode and reduce
+    mode = resolved.get("mode", "summarize_only")
+    reduce = resolved.get("reduce", "empirical")
+    keep_samples = resolved.get("keep_samples")
+    
+    if keep_samples is None:
+        # Default: keep samples in propagate mode unless using gaussian reduction
+        if mode == "propagate":
+            keep_samples = (reduce != "gaussian")
+        else:
+            keep_samples = False
+    
+    # Create resolved config
+    config = ResolvedUQConfig(
+        method=resolved["method"],
+        n_samples=resolved["n_samples"],
+        ci=resolved["ci"],
+        seed=resolved.get("seed"),
+        mode=mode,
+        keep_samples=keep_samples,
+        reduce=reduce,
+        kwargs=kwargs,
+        provenance=provenance,
+        context="query",
+        enabled=True,
+    )
+    
+    # Validate before returning
+    config.validate()
+    
+    return config

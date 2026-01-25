@@ -4146,6 +4146,106 @@ for node, uq_dict in degree_uq.items():
     print(f"  Seed: {uq_dict['seed']}")
 ```
 
+### UQ Execution Modes
+
+py3plex DSL v2 supports two execution modes for uncertainty quantification:
+
+#### Mode 1: summarize_only (DEFAULT)
+
+**Behavior**: Compute metrics with UQ, then apply downstream operations (where, order_by, limit) on the summarized (mean) values.
+
+**Use when**:
+- You want traditional UQ on metric values
+- Downstream operations should use point estimates
+- You're interested in metric uncertainty, not selection uncertainty
+
+**Example**:
+```python
+result = (
+    Q.nodes()
+     .compute("pagerank")
+     .order_by("pagerank", desc=True)
+     .limit(10)
+     .uq(method="bootstrap", n_samples=50, seed=42, mode="summarize_only")
+     .execute(net)
+)
+
+# Result: Top 10 nodes by MEAN pagerank
+# Each pagerank value is a UQ dict with mean, std, CI
+```
+
+#### Mode 2: propagate (NEW)
+
+**Behavior**: Execute the entire query end-to-end per replicate (bootstrap/perturbation/seed), then aggregate replicate results to measure **selection uncertainty**.
+
+**Use when**:
+- You want to know which nodes/edges are stable in rankings
+- You need to quantify selection uncertainty (e.g., "is this node reliably in the top-10?")
+- Downstream operations (where, limit, top_k) should be uncertainty-aware
+
+**Extra Outputs**:
+- **p_present**: Fraction of replicates where item appears in result
+- **p_selected**: Fraction where item is in final selected set (when limit/top_k used)
+- **rank_uq**: UQ over ranks (when ordering + selection used)
+
+**Example**:
+```python
+result = (
+    Q.nodes()
+     .compute("pagerank")
+     .order_by("pagerank", desc=True)
+     .limit(3)
+     .uq(method="perturbation", n_samples=25, seed=42, mode="propagate")
+     .execute(net)
+)
+
+df = result.to_pandas(expand_uncertainty=True)
+# Columns: node, layer, p_present, p_selected, rank_uq, pagerank (with _mean, _std, _ci95_low, etc.)
+# p_selected shows how often each node was in top-3 across replicates
+```
+
+**Mode Comparison**:
+
+| Feature | summarize_only | propagate |
+|---------|---------------|-----------|
+| Metric UQ | ✓ (mean, std, CI) | ✓ (mean, std, CI) |
+| Selection UQ | ✗ | ✓ (p_present, p_selected) |
+| Rank UQ | ✗ | ✓ (rank_uq) |
+| Computational cost | Lower | Higher (n_samples × query) |
+| Use for | Metric uncertainty | Selection stability |
+
+### Extended .uq() Signature
+
+```python
+.uq(
+    method="perturbation",    # UQ method
+    n_samples=50,             # Number of samples/replicates
+    ci=0.95,                  # Confidence interval level
+    seed=None,                # Random seed for determinism
+    mode="summarize_only",    # NEW: "summarize_only" | "propagate"
+    keep_samples=None,        # NEW: bool | None (default: True for propagate)
+    reduce="empirical",       # NEW: "empirical" | "gaussian"
+    **kwargs                  # Method-specific parameters
+)
+```
+
+**New Parameters**:
+
+- **mode**: Execution mode
+  - `"summarize_only"` (default): Traditional UQ on metrics
+  - `"propagate"`: End-to-end replicate execution for selection UQ
+
+- **keep_samples**: Whether to retain raw samples
+  - `None` (default): Auto-decide (True for propagate, False for summarize_only)
+  - `True`: Keep samples (enables empirical reduction)
+  - `False`: Discard samples (use Gaussian approximation)
+
+- **reduce**: Reduction method for aggregating replicate results
+  - `"empirical"` (default): Use empirical quantiles from samples
+  - `"gaussian"`: Assume Gaussian, use mean ± z*std
+
+**Performance Note**: `mode="propagate"` with `reduce="gaussian"` and `keep_samples=False` saves memory for large n_samples.
+
 ### Correctness Guarantees
 
 **Determinism**:
@@ -4210,6 +4310,160 @@ result_grouped = (
 ```
 
 py3plex provides first-class uncertainty quantification for network metrics.
+
+### UQ Modes: Summarize vs. Propagate
+
+**New in v1.1.2**: py3plex DSL v2 supports two UQ execution modes that control how uncertainty propagates through query operations.
+
+#### Mode: `summarize_only` (DEFAULT)
+
+**Behavior**: Compute metrics multiple times, then summarize. Downstream operators (filtering, ordering, selection) operate on **mean values**.
+
+**Use when**:
+- You want traditional UQ on metric values only
+- Query structure is deterministic (no selection/ordering based on uncertain values)
+- Backward compatibility with existing queries
+
+**Example**:
+```python
+result = (
+    Q.nodes()
+     .compute("pagerank")
+     .order_by("pagerank", desc=True)
+     .limit(10)
+     .uq(method="bootstrap", n_samples=50, seed=42, mode="summarize_only")
+     .execute(net)
+)
+
+# Ordering uses mean pagerank values
+# Top 10 nodes are deterministic under fixed seed
+df = result.to_pandas(expand_uncertainty=True)
+# Columns: node, layer, pagerank_mean, pagerank_std, pagerank_ci95_low, pagerank_ci95_high
+```
+
+#### Mode: `propagate` (NEW)
+
+**Behavior**: Execute the **entire query end-to-end per replicate** (bootstrap/perturbation/seed/etc.), then reduce replicate results into a single UQ-aware QueryResult.
+
+**What changes per replicate**:
+- Network structure (bootstrap resampling, edge perturbation)
+- Metric values (computed on perturbed networks)
+- **Query results**: which items pass filters, ordering, selection
+
+**Additional outputs in `propagate` mode**:
+- **`p_present`**: Fraction of replicates where an item appears in the result set
+- **`p_selected`**: Fraction of replicates where an item is in the final selection (when `.limit()` or `.top_k()` used)
+- **`rank_uq`** (optional): Uncertainty over rank positions when selection is used
+
+**Use when**:
+- Selection/ordering depends on uncertain metric values
+- You need to quantify **selection stability** ("is this node reliably in top-10?")
+- You want to identify **borderline cases** (0 < p_selected < 1)
+
+**Example**:
+```python
+result = (
+    Q.nodes()
+     .compute("pagerank")
+     .order_by("pagerank", desc=True)
+     .limit(10)
+     .uq(method="perturbation", n_samples=50, seed=42, mode="propagate")
+     .execute(net)
+)
+
+# Each replicate:
+#   1. Perturb network
+#   2. Compute pagerank on perturbed network
+#   3. Order by perturbed pagerank
+#   4. Select top 10
+# Then aggregate across replicates
+
+df = result.to_pandas(expand_uncertainty=True)
+# Columns: node, layer, pagerank_mean, pagerank_std, pagerank_ci95_low, pagerank_ci95_high,
+#          p_present, p_selected, rank_uq_mean, rank_uq_std, ...
+
+# Identify borderline nodes (sometimes in top-10, sometimes not)
+borderline = df[(df['p_selected'] > 0) & (df['p_selected'] < 1)]
+print(f"Borderline nodes: {len(borderline)}")
+```
+
+#### `.uq()` Parameter Reference
+
+**Updated signature (v1.1.2)**:
+```python
+.uq(
+    method="perturbation",     # UQ method: "bootstrap", "perturbation", "seed", "null_model"
+    n_samples=50,              # Number of replicates
+    ci=0.95,                   # Confidence interval level
+    seed=None,                 # Random seed for determinism
+    mode="summarize_only",     # NEW: "summarize_only" | "propagate"
+    keep_samples=None,         # NEW: Store raw samples (default: True if propagate, False otherwise)
+    reduce="empirical",        # NEW: "empirical" (use quantiles) | "gaussian" (parametric)
+    **kwargs                   # Method-specific parameters
+)
+```
+
+**New Parameters**:
+
+**`mode`** (str, default: `"summarize_only"`):
+- `"summarize_only"`: Traditional UQ on metric values; downstream ops use means
+- `"propagate"`: Execute full query per replicate; quantify selection uncertainty
+
+**`keep_samples`** (bool | None, default: `None`):
+- `None`: Auto-decide (True for propagate, False for summarize_only)
+- `True`: Store raw samples for each metric (memory-intensive)
+- `False`: Discard samples after computing statistics
+
+**`reduce`** (str, default: `"empirical"`):
+- `"empirical"`: Use empirical quantiles from samples (non-parametric)
+- `"gaussian"`: Fit Gaussian and use parametric CI (memory-efficient, assumes normality)
+
+**Performance Notes**:
+- **Propagate mode cost**: O(n_samples × query_cost)
+- Use `reduce="gaussian"` with large n_samples to save memory
+- Start with n_samples=20-30 for exploration, increase for publication
+- Always set `seed` for reproducibility
+
+**Compatibility Rules**:
+- `mode` is **query-level only** (cannot be set per-metric)
+- In `mode="propagate"`, per-metric UQ methods must be unset or equal to query method
+- Mixing propagate mode with per-metric UQ raises `UQIncompatibleConfiguration`
+
+#### Provenance for Propagate Mode
+
+When `mode="propagate"`, provenance includes replicate plan summary:
+
+```python
+result.meta["provenance"]["uq"] = {
+    "enabled": True,
+    "method": "perturbation",
+    "n_samples": 50,
+    "ci": 0.95,
+    "seed": 42,
+    "mode": "propagate",
+    "keep_samples": True,
+    "reduce": "empirical",
+    "plan": {
+        "n_replicates": 50,
+        "replicate_type": "perturbed_network",
+        "deterministic": True,
+        "seed_spawn_method": "splitmix64"
+    }
+}
+
+result.meta["uq_propagation"] = {
+    "n_samples": 50,
+    "mode": "propagate",
+    "selection": {
+        "has_topk": False,
+        "has_limit": True,
+        "key": "pagerank",
+        "k": 10
+    },
+    "p_present_column": "p_present",
+    "p_selected_column": "p_selected"
+}
+```
 
 ### Supported UQ Methods
 
@@ -10079,4 +10333,6 @@ Recommended areas for future test coverage:
 
 ---
 
-**Repo State Note**: As of January 2026, py3plex has 203 new deterministic tests enforcing 10 major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, and edge cases. All tests are automated, CI-friendly, and passing.
+**Repo State Note**: As of January 2026, py3plex has 210 new deterministic tests (203 baseline + 7 for UQ propagation) enforcing 10+ major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, edge cases, and UQ propagation. All tests are automated, CI-friendly, and passing.
+
+**v1.1.2 UQ Propagation Update** (January 2026): Implemented first-class uncertainty propagation semantics with `mode="propagate"` option in `.uq()`. This enables quantification of selection stability (p_present, p_selected, rank_uq) when queries include filtering, ordering, and selection operations. The propagate mode executes the full query end-to-end per replicate, capturing how uncertain metric values affect which items appear in final results. Aggregation now uses UQAlgebra to preserve uncertainty through grouping operations instead of silently dropping it. All changes are backward compatible (default mode="summarize_only"). New test module: tests/test_dsl_uq_propagation.py (7 deterministic tests).

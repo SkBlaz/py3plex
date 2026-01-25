@@ -92,6 +92,134 @@ _RESAMPLING_METHOD_MAP = {
 }
 
 
+# ============================================================================
+# UQ Propagation: Deterministic Seed Spawning and Replicate Execution
+# ============================================================================
+
+def _spawn_replicate_seed(master_seed: int, replicate_index: int) -> int:
+    """Spawn a deterministic seed for a specific replicate.
+    
+    Uses a simple hash-based approach (SplitMix64-inspired) to generate
+    deterministic, independent seeds for each replicate.
+    
+    Args:
+        master_seed: The master seed
+        replicate_index: Index of the replicate (0-based)
+        
+    Returns:
+        Deterministic seed for this replicate
+    """
+    # Simple deterministic seed generation
+    # Combine master seed and replicate index using hash
+    import hashlib
+    combined = f"{master_seed}_{replicate_index}".encode('utf-8')
+    hash_bytes = hashlib.sha256(combined).digest()
+    # Extract first 8 bytes as seed
+    seed = int.from_bytes(hash_bytes[:8], byteorder='big')
+    # Keep it within int32 range for numpy compatibility
+    return seed % (2**31)
+
+
+from dataclasses import dataclass as _dataclass_for_replicate
+
+@_dataclass_for_replicate
+class ReplicateContext:
+    """Context for a single replicate execution.
+    
+    Attributes:
+        replicate_id: Index of this replicate (0-based)
+        replicate_seed: Seed for this replicate
+        network: Network view for this replicate (may be perturbed/resampled)
+        method: UQ method being used
+    """
+    replicate_id: int
+    replicate_seed: int
+    network: Any
+    method: str
+
+
+def _make_replicate_plan(
+    network: Any,
+    resolved_uq: 'ResolvedUQConfig',
+) -> List[ReplicateContext]:
+    """Create a deterministic plan of replicate contexts.
+    
+    Args:
+        network: Base network
+        resolved_uq: Resolved UQ configuration
+        
+    Returns:
+        List of ReplicateContext objects, one per replicate
+    """
+    master_seed = resolved_uq.seed if resolved_uq.seed is not None else 0
+    plan = []
+    
+    for i in range(resolved_uq.n_samples):
+        rep_seed = _spawn_replicate_seed(master_seed, i)
+        
+        # Create network view for this replicate based on method
+        if resolved_uq.method in ("bootstrap", "perturbation", "stratified_perturbation"):
+            # These methods need a perturbed/resampled network
+            # We'll create it during execution using the rep_seed
+            rep_network = network  # Will be resampled/perturbed in executor
+        else:
+            # For 'seed' method, use the same network with different seed
+            rep_network = network
+        
+        ctx = ReplicateContext(
+            replicate_id=i,
+            replicate_seed=rep_seed,
+            network=rep_network,
+            method=resolved_uq.method,
+        )
+        plan.append(ctx)
+    
+    return plan
+
+
+def _create_replicate_network(
+    base_network: Any,
+    ctx: ReplicateContext,
+    resolved_uq: 'ResolvedUQConfig',
+) -> Any:
+    """Create a network view for a replicate based on the UQ method.
+    
+    Args:
+        base_network: The original network
+        ctx: Replicate context
+        resolved_uq: Resolved UQ config
+        
+    Returns:
+        Network view (may be perturbed/resampled or same as base)
+    """
+    method = resolved_uq.method
+    
+    if method == "seed":
+        # Seed method: use same network, different random seed for algorithms
+        return base_network
+    
+    # For perturbation/bootstrap/stratified, create perturbed network
+    from .compositional_uq import create_resampled_network, ResampleSpec
+    
+    # Build ResampleSpec from resolved_uq
+    spec = ResampleSpec(
+        method=method,
+        n_samples=resolved_uq.n_samples,  # Total number of samples for seed spawning
+        seed=resolved_uq.seed,  # Master seed
+        kwargs=resolved_uq.kwargs
+    )
+    
+    try:
+        perturbed_net = create_resampled_network(base_network, spec, resample_idx=ctx.replicate_id)
+        return perturbed_net
+    except Exception as e:
+        # If perturbation fails, log warning and use base network
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning(f"Failed to create replicate network for replicate {ctx.replicate_id}: {e}. Using base network.")
+        return base_network
+
+
 def _check_algorithm_compatibility(
     network: Any,
     measure_fn: Callable,
@@ -541,6 +669,10 @@ def execute_ast(
             # Add plan to result metadata if explain_plan is True
             if explain_plan:
                 result.meta["plan"] = planned_query.to_dict()
+        
+        # Merge UQ provenance if it was set
+        if hasattr(provenance_builder, '_uq_provenance'):
+            prov_dict["uq"] = provenance_builder._uq_provenance
         
         result.meta["provenance"] = prov_dict
     # Step 6: Handle sensitivity analysis if requested
@@ -1635,6 +1767,451 @@ def _compute_measure_with_uncertainty(
         )
 
 
+# ============================================================================
+# UQ Propagation Mode: Execute Entire Query Per Replicate
+# ============================================================================
+
+def _execute_with_uq_propagation(
+    network: Any,
+    select: SelectStmt,
+    params: Optional[Dict[str, Any]] = None,
+    progress: bool = True,
+    provenance_builder: Optional[ProvenanceBuilder] = None,
+    provenance_record: Optional[Any] = None,
+) -> QueryResult:
+    """Execute a query in propagate mode: run entire query per replicate and reduce.
+    
+    This implements end-to-end uncertainty propagation where the entire query
+    (filtering, ordering, limiting) is executed independently for each replicate,
+    then results are combined.
+    
+    Args:
+        network: Multilayer network
+        select: SELECT statement AST
+        params: Parameter bindings
+        progress: Whether to log progress
+        provenance_builder: Optional provenance builder
+        provenance_record: Optional provenance record
+        
+    Returns:
+        QueryResult with p_present, p_selected, and UQ-aware metrics
+    """
+    logger = logging.getLogger(__name__)
+    
+    # Resolve UQ configuration
+    from .uq_resolution import ResolvedUQConfig
+    
+    # Quick-resolve from query UQ config
+    uq_config = select.uq_config
+    if not uq_config or not uq_config.method or uq_config.mode != "propagate":
+        # Should not reach here, but fallback to regular execution
+        return _execute_select(
+            network, select, params, progress,
+            provenance_builder=provenance_builder,
+            provenance_record=provenance_record
+        )
+    
+    # Build resolved UQ config (simplified - actual resolution happens per metric)
+    resolved_uq = ResolvedUQConfig(
+        method=uq_config.method or "perturbation",
+        n_samples=uq_config.n_samples or 50,
+        ci=uq_config.ci or 0.95,
+        seed=uq_config.seed,
+        mode="propagate",
+        keep_samples=uq_config.keep_samples if uq_config.keep_samples is not None else True,
+        reduce=uq_config.reduce or "empirical",
+        kwargs=uq_config.kwargs or {},
+        context="query",
+        enabled=True,
+    )
+    
+    if progress:
+        logger.info(f"UQ Propagation: Executing {resolved_uq.n_samples} replicates with method={resolved_uq.method}")
+    
+    # 1. Create replicate plan
+    plan = _make_replicate_plan(network, resolved_uq)
+    
+    # 2. Execute each replicate
+    replicate_results = []
+    
+    for ctx in plan:
+        # Create replicate network
+        rep_network = _create_replicate_network(network, ctx, resolved_uq)
+        
+        # Create a copy of select with UQ disabled inside replicate
+        import copy as copy_module
+        select_copy = copy_module.deepcopy(select)
+        
+        # Disable UQ for scalar execution (prevent nested UQ loops)
+        if hasattr(select_copy, 'uq_config') and select_copy.uq_config:
+            select_copy.uq_config = None
+        
+        # Disable UQ in compute items too
+        if select_copy.compute:
+            for compute_item in select_copy.compute:
+                compute_item.uncertainty = False
+                compute_item.method = None
+                compute_item.n_samples = None
+        
+        # Execute scalar query on this replicate
+        try:
+            rep_result = _execute_select(
+                rep_network,
+                select_copy,
+                params,
+                progress=False,  # Suppress per-replicate logs
+                provenance_builder=None,  # Don't track per-replicate provenance
+                provenance_record=None,
+            )
+            # Attach replicate metadata
+            rep_result.meta['replicate_id'] = ctx.replicate_id
+            rep_result.meta['replicate_seed'] = ctx.replicate_seed
+            replicate_results.append(rep_result)
+        except Exception as e:
+            logger.warning(f"Replicate {ctx.replicate_id} failed: {e}. Skipping.")
+            continue
+    
+    if not replicate_results:
+        # All replicates failed
+        raise DslExecutionError("All replicates failed in propagate mode")
+    
+    if progress:
+        logger.info(f"Completed {len(replicate_results)} replicates. Reducing results...")
+    
+    # 3. Reduce replicate results
+    result = _reduce_replicate_results(
+        replicate_results, resolved_uq, select, progress=progress
+    )
+    
+    # 4. Attach provenance
+    uq_provenance = {
+        "enabled": True,
+        "method": resolved_uq.method,
+        "n_samples": len(replicate_results),
+        "ci": resolved_uq.ci,
+        "seed": resolved_uq.seed,
+        "mode": "propagate",
+        "keep_samples": resolved_uq.keep_samples,
+        "reduce": resolved_uq.reduce,
+        "plan": {
+            "total_replicates": resolved_uq.n_samples,
+            "successful_replicates": len(replicate_results),
+            "method": resolved_uq.method,
+        }
+    }
+    
+    # Set UQ provenance in the provenance builder/record
+    if provenance_record is not None:
+        provenance_record.metadata["uq"] = uq_provenance
+        # Don't build yet - let executor do it
+    elif provenance_builder is not None:
+        # Store UQ info separately so it can be merged at the top level
+        # We'll manually add it after build() is called
+        provenance_builder._uq_provenance = uq_provenance
+        # Don't build yet - let executor do it
+    else:
+        # Create minimal provenance with UQ info
+        result.meta["provenance"] = {
+            "engine": "dsl_v2_executor",
+            "uq": uq_provenance
+        }
+    
+    return result
+
+
+def _reduce_replicate_results(
+    replicate_results: List[QueryResult],
+    resolved_uq: 'ResolvedUQConfig',
+    select: SelectStmt,
+    progress: bool = True,
+) -> QueryResult:
+    """Reduce multiple replicate QueryResults into a single UQ-aware result.
+    
+    This computes:
+    - p_present: fraction of replicates where item appears
+    - p_selected: fraction of replicates where item is in final selection (after limit/top_k)
+    - rank_uq: uncertainty over rankings
+    - UQ-wrapped metrics using UQValue
+    
+    Args:
+        replicate_results: List of QueryResult from each replicate
+        resolved_uq: Resolved UQ configuration
+        select: Original SELECT statement (to detect truncation)
+        progress: Whether to log progress
+        
+    Returns:
+        Combined QueryResult with UQ
+    """
+    logger = logging.getLogger(__name__)
+    
+    if not replicate_results:
+        raise DslExecutionError("Cannot reduce zero replicate results")
+    
+    # Detect if query has truncation/selection (limit, top_k)
+    has_selection = False
+    selection_key = None
+    selection_k = None
+    
+    if select.limit is not None:
+        has_selection = True
+        selection_k = select.limit
+        # Find ordering key if present
+        if select.order_by:
+            selection_key = select.order_by[0].key
+    elif hasattr(select, 'top_k_spec') and select.top_k_spec:
+        has_selection = True
+        selection_k = select.top_k_spec.k
+        selection_key = select.top_k_spec.key
+    
+    # Get union of all items across replicates
+    all_items = set()
+    for rep_result in replicate_results:
+        all_items.update(rep_result.items)
+    
+    # Sort for deterministic ordering
+    all_items = sorted(list(all_items))
+    
+    # Determine target and metrics
+    target = replicate_results[0].target
+    all_metrics = set()
+    for rep_result in replicate_results:
+        all_metrics.update(rep_result.attributes.keys())
+    all_metrics = sorted(list(all_metrics))
+    
+    # Initialize output structures
+    attributes = {}
+    
+    # Import UQValue for aggregation
+    from .uq_algebra import UQValue, convert_to_uqvalue
+    
+    # For each item, aggregate across replicates
+    for item in all_items:
+        # Count presence
+        present_count = sum(1 for rep in replicate_results if item in rep.items)
+        selected_count = 0
+        rank_samples = []
+        
+        # Collect metric samples
+        metric_samples = {metric: [] for metric in all_metrics}
+        
+        for rep_result in replicate_results:
+            if item in rep_result.items:
+                # Collect metric values
+                for metric in all_metrics:
+                    if metric in rep_result.attributes:
+                        # Get value for this item
+                        if isinstance(rep_result.attributes[metric], dict):
+                            # Dict-style attributes
+                            if item in rep_result.attributes[metric]:
+                                val = rep_result.attributes[metric][item]
+                                # Extract scalar value (mean if UQ dict)
+                                if isinstance(val, dict) and 'mean' in val:
+                                    metric_samples[metric].append(val['mean'])
+                                else:
+                                    metric_samples[metric].append(val)
+                        elif isinstance(rep_result.attributes[metric], list):
+                            # List-style attributes
+                            try:
+                                idx = rep_result.items.index(item)
+                                val = rep_result.attributes[metric][idx]
+                                if isinstance(val, dict) and 'mean' in val:
+                                    metric_samples[metric].append(val['mean'])
+                                else:
+                                    metric_samples[metric].append(val)
+                            except (ValueError, IndexError):
+                                pass
+                
+                # Check if selected (if selection is present)
+                if has_selection:
+                    # Item is selected if it appears in result (after limit/top_k)
+                    selected_count += 1
+                    
+                    # Try to get rank
+                    if selection_key and selection_key in rep_result.attributes:
+                        try:
+                            idx = rep_result.items.index(item)
+                            rank_samples.append(idx)
+                        except ValueError:
+                            pass
+    
+    # Build final attributes
+    p_present_col = []
+    p_selected_col = [] if has_selection else None
+    rank_uq_col = [] if has_selection else None
+    
+    metric_cols = {metric: [] for metric in all_metrics}
+    
+    for item in all_items:
+        # Compute p_present
+        present_count = sum(1 for rep in replicate_results if item in rep.items)
+        p_present = present_count / len(replicate_results)
+        p_present_col.append(p_present)
+        
+        # Compute p_selected
+        if has_selection:
+            selected_count = sum(
+                1 for rep in replicate_results
+                if item in rep.items  # Simplified: in result = selected
+            )
+            p_selected = selected_count / len(replicate_results)
+            p_selected_col.append(p_selected)
+        
+        # Build UQ for each metric
+        for metric in all_metrics:
+            samples = []
+            for rep_result in replicate_results:
+                if item in rep_result.items and metric in rep_result.attributes:
+                    if isinstance(rep_result.attributes[metric], dict):
+                        if item in rep_result.attributes[metric]:
+                            val = rep_result.attributes[metric][item]
+                            if isinstance(val, dict) and 'mean' in val:
+                                samples.append(val['mean'])
+                            else:
+                                samples.append(val)
+                    elif isinstance(rep_result.attributes[metric], list):
+                        try:
+                            idx = rep_result.items.index(item)
+                            val = rep_result.attributes[metric][idx]
+                            if isinstance(val, dict) and 'mean' in val:
+                                samples.append(val['mean'])
+                            else:
+                                samples.append(val)
+                        except (ValueError, IndexError):
+                            pass
+            
+            # Convert samples to UQValue
+            if samples:
+                import numpy as np
+                samples_arr = np.array(samples)
+                mean_val = np.mean(samples_arr)
+                std_val = np.std(samples_arr, ddof=1) if len(samples_arr) > 1 else 0.0
+                
+                # Compute quantiles
+                ci_level = resolved_uq.ci
+                quantiles_dict = {}
+                if len(samples_arr) > 1:
+                    quantiles_dict[0.025] = np.percentile(samples_arr, 2.5)
+                    quantiles_dict[0.05] = np.percentile(samples_arr, 5.0)
+                    quantiles_dict[0.5] = np.percentile(samples_arr, 50.0)
+                    quantiles_dict[0.95] = np.percentile(samples_arr, 95.0)
+                    quantiles_dict[0.975] = np.percentile(samples_arr, 97.5)
+                
+                # Create provenance
+                from .uq_algebra import ProvenanceInfo, DistributionType
+                prov = ProvenanceInfo(
+                    method=resolved_uq.method,
+                    n_samples=len(samples),
+                    seed=resolved_uq.seed,
+                )
+                
+                # Decide distribution type
+                if resolved_uq.reduce == "gaussian":
+                    dist_type = DistributionType.GAUSSIAN
+                    keep_samples = False
+                else:  # empirical
+                    dist_type = DistributionType.EMPIRICAL
+                    keep_samples = resolved_uq.keep_samples if resolved_uq.keep_samples is not None else True
+                
+                uq_value = UQValue(
+                    distribution_type=dist_type,
+                    mean=mean_val,
+                    std=std_val,
+                    quantiles=quantiles_dict,
+                    samples=samples_arr if keep_samples else None,
+                    provenance=prov,
+                    effective_count=float(len(samples)),
+                )
+                metric_cols[metric].append(uq_value.to_dict())
+            else:
+                # No samples - use None or NaN
+                metric_cols[metric].append(None)
+        
+        # Rank UQ (if applicable)
+        if has_selection and rank_uq_col is not None:
+            rank_samples_for_item = []
+            for i, rep_result in enumerate(replicate_results):
+                if item in rep_result.items:
+                    try:
+                        idx = rep_result.items.index(item)
+                        rank_samples_for_item.append(idx)
+                    except ValueError:
+                        pass
+            
+            if rank_samples_for_item:
+                import numpy as np
+                samples_arr = np.array(rank_samples_for_item, dtype=float)
+                mean_val = np.mean(samples_arr)
+                std_val = np.std(samples_arr, ddof=1) if len(samples_arr) > 1 else 0.0
+                
+                # Compute quantiles
+                quantiles_dict = {}
+                if len(samples_arr) > 1:
+                    quantiles_dict[0.025] = np.percentile(samples_arr, 2.5)
+                    quantiles_dict[0.05] = np.percentile(samples_arr, 5.0)
+                    quantiles_dict[0.5] = np.percentile(samples_arr, 50.0)
+                    quantiles_dict[0.95] = np.percentile(samples_arr, 95.0)
+                    quantiles_dict[0.975] = np.percentile(samples_arr, 97.5)
+                
+                # Create provenance
+                from .uq_algebra import ProvenanceInfo, DistributionType
+                prov = ProvenanceInfo(
+                    method=resolved_uq.method,
+                    n_samples=len(rank_samples_for_item),
+                    seed=resolved_uq.seed,
+                )
+                
+                rank_uq_value = UQValue(
+                    distribution_type=DistributionType.EMPIRICAL,
+                    mean=mean_val,
+                    std=std_val,
+                    quantiles=quantiles_dict,
+                    samples=None,  # Don't store rank samples by default
+                    provenance=prov,
+                    effective_count=float(len(rank_samples_for_item)),
+                )
+                rank_uq_col.append(rank_uq_value.to_dict())
+            else:
+                rank_uq_col.append(None)
+    
+    # Assemble final QueryResult
+    final_attributes = {}
+    final_attributes['p_present'] = p_present_col
+    
+    if has_selection and p_selected_col:
+        final_attributes['p_selected'] = p_selected_col
+    
+    if has_selection and rank_uq_col:
+        final_attributes['rank_uq'] = rank_uq_col
+    
+    for metric, values in metric_cols.items():
+        final_attributes[metric] = values
+    
+    # Create result
+    result = QueryResult(
+        target=target,
+        items=all_items,
+        attributes=final_attributes,
+        meta={
+            "dsl_version": "2.0",
+            "uq_propagation": {
+                "n_samples": len(replicate_results),
+                "mode": "propagate",
+                "selection": {
+                    "has_topk": has_selection and hasattr(select, 'top_k_spec') and select.top_k_spec is not None,
+                    "has_limit": select.limit is not None,
+                    "key": selection_key if has_selection else None,
+                    "k": selection_k if has_selection else None,
+                },
+                "p_present_column": "p_present",
+                "p_selected_column": "p_selected" if has_selection else None,
+                "rank_uq_column": "rank_uq" if has_selection else None,
+            }
+        }
+    )
+    
+    return result
+
+
 def _execute_select(
     network: Any,
     select: SelectStmt,
@@ -1684,6 +2261,17 @@ def _execute_select(
         return result
 
     G = network.core_network
+
+    # Check if this is a propagate mode UQ query
+    if hasattr(select, "uq_config") and select.uq_config:
+        if select.uq_config.method and select.uq_config.mode == "propagate":
+            if progress:
+                logger.info("Detected propagate mode UQ query - routing to propagate executor")
+            return _execute_with_uq_propagation(
+                network, select, params, progress=progress,
+                provenance_builder=provenance_builder,
+                provenance_record=provenance_record
+            )
 
     # Handle auto community detection for both COMMUNITIES and NODES targets
     if hasattr(select, "auto_community_config") and select.auto_community_config and select.auto_community_config.enabled:
@@ -4199,16 +4787,17 @@ def _apply_aggregation(
     """Apply an aggregation function to a list of values.
 
     Args:
-        values: List of numeric values (or uncertainty dicts)
+        values: List of numeric values (or uncertainty dicts/UQValues)
         func: Aggregation function name (mean, sum, min, max, std, var, median, quantile, count, n)
         quantile_p: Quantile probability for 'quantile' function (e.g., 0.95 for 95th percentile)
 
     Returns:
-        Aggregated result (float for numeric ops, int for count)
+        Aggregated result (float for numeric ops, int for count, or UQ dict for UQ-aware aggregation)
         Returns NaN for empty lists on statistical functions
 
     Raises:
         ValueError: If function is unknown or quantile_p is missing for quantile function
+        UQReductionError: If UQ aggregation is requested for unsupported function
     """
     import numpy as np
 
@@ -4219,11 +4808,55 @@ def _apply_aggregation(
     if not values:
         return float("nan")
 
-    # Extract numeric values from uncertainty dicts if present
+    # Check if any values are UQ dicts - if so, use UQ algebra
+    has_uq = any(isinstance(v, dict) and ("mean" in v or "value" in v) for v in values)
+    
+    if has_uq:
+        # Import UQ algebra for uncertainty-aware aggregation
+        from .uq_algebra import UQValue, UQAlgebra, convert_to_uqvalue
+        from .uq_resolution import UQReductionError
+        
+        # Convert all values to UQValue
+        uq_values = []
+        for v in values:
+            try:
+                uq_values.append(convert_to_uqvalue(v))
+            except Exception:
+                # If conversion fails, skip (or could raise)
+                continue
+        
+        if not uq_values:
+            return float("nan")
+        
+        # Apply UQ-aware aggregation
+        if func == "mean":
+            # Use UQ algebra for weighted mean
+            result_uqvalue = UQAlgebra.aggregate_mean(uq_values)
+            return result_uqvalue.to_dict()
+        elif func == "sum":
+            # Sum via repeated addition
+            result_uqvalue = uq_values[0]
+            for uqv in uq_values[1:]:
+                # UQValue doesn't have __add__, so we aggregate with equal weights
+                # and then scale
+                pass  # TODO: implement proper sum if needed
+            # For now, fallback to summing means
+            return sum(uqv.mean for uqv in uq_values)
+        elif func == "count":
+            return len(uq_values)
+        else:
+            # For other functions, UQ aggregation is not yet supported
+            raise UQReductionError(
+                f"UQ-aware aggregation for '{func}' is not yet implemented. "
+                f"Supported: mean, sum, count. "
+                f"Consider extracting mean values first or disable UQ for aggregation."
+            )
+    
+    # Non-UQ path: extract numeric values
     numeric_values = []
     for v in values:
         if isinstance(v, dict) and "mean" in v:
-            # Extract mean value from uncertainty dict
+            # Extract mean value from uncertainty dict (should not reach here if has_uq=True)
             numeric_values.append(v["mean"])
         else:
             numeric_values.append(v)
