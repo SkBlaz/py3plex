@@ -204,12 +204,13 @@ def _create_replicate_network(
     # Build ResampleSpec from resolved_uq
     spec = ResampleSpec(
         method=method,
-        seed=ctx.replicate_seed,
-        **resolved_uq.kwargs
+        n_samples=resolved_uq.n_samples,  # Total number of samples for seed spawning
+        seed=resolved_uq.seed,  # Master seed
+        kwargs=resolved_uq.kwargs
     )
     
     try:
-        perturbed_net = create_resampled_network(base_network, spec)
+        perturbed_net = create_resampled_network(base_network, spec, resample_idx=ctx.replicate_id)
         return perturbed_net
     except Exception as e:
         # If perturbation fails, log warning and use base network
@@ -668,6 +669,10 @@ def execute_ast(
             # Add plan to result metadata if explain_plan is True
             if explain_plan:
                 result.meta["plan"] = planned_query.to_dict()
+        
+        # Merge UQ provenance if it was set
+        if hasattr(provenance_builder, '_uq_provenance'):
+            prov_dict["uq"] = provenance_builder._uq_provenance
         
         result.meta["provenance"] = prov_dict
     # Step 6: Handle sensitivity analysis if requested
@@ -1879,25 +1884,37 @@ def _execute_with_uq_propagation(
     )
     
     # 4. Attach provenance
-    if provenance_record is not None:
-        provenance_record.metadata["uq"] = {
-            "enabled": True,
+    uq_provenance = {
+        "enabled": True,
+        "method": resolved_uq.method,
+        "n_samples": len(replicate_results),
+        "ci": resolved_uq.ci,
+        "seed": resolved_uq.seed,
+        "mode": "propagate",
+        "keep_samples": resolved_uq.keep_samples,
+        "reduce": resolved_uq.reduce,
+        "plan": {
+            "total_replicates": resolved_uq.n_samples,
+            "successful_replicates": len(replicate_results),
             "method": resolved_uq.method,
-            "n_samples": len(replicate_results),
-            "ci": resolved_uq.ci,
-            "seed": resolved_uq.seed,
-            "mode": "propagate",
-            "keep_samples": resolved_uq.keep_samples,
-            "reduce": resolved_uq.reduce,
-            "plan": {
-                "total_replicates": resolved_uq.n_samples,
-                "successful_replicates": len(replicate_results),
-                "method": resolved_uq.method,
-            }
         }
-        result.meta["provenance"] = provenance_record.to_dict()
+    }
+    
+    # Set UQ provenance in the provenance builder/record
+    if provenance_record is not None:
+        provenance_record.metadata["uq"] = uq_provenance
+        # Don't build yet - let executor do it
     elif provenance_builder is not None:
-        result.meta["provenance"] = provenance_builder.build()
+        # Store UQ info separately so it can be merged at the top level
+        # We'll manually add it after build() is called
+        provenance_builder._uq_provenance = uq_provenance
+        # Don't build yet - let executor do it
+    else:
+        # Create minimal provenance with UQ info
+        result.meta["provenance"] = {
+            "engine": "dsl_v2_executor",
+            "uq": uq_provenance
+        }
     
     return result
 
@@ -1978,7 +1995,7 @@ def _reduce_replicate_results(
         metric_samples = {metric: [] for metric in all_metrics}
         
         for rep_result in replicate_results:
-            if item in rep.items:
+            if item in rep_result.items:
                 # Collect metric values
                 for metric in all_metrics:
                     if metric in rep_result.attributes:
@@ -2043,7 +2060,7 @@ def _reduce_replicate_results(
         for metric in all_metrics:
             samples = []
             for rep_result in replicate_results:
-                if item in rep.items and metric in rep_result.attributes:
+                if item in rep_result.items and metric in rep_result.attributes:
                     if isinstance(rep_result.attributes[metric], dict):
                         if item in rep_result.attributes[metric]:
                             val = rep_result.attributes[metric][item]
@@ -2064,12 +2081,45 @@ def _reduce_replicate_results(
             
             # Convert samples to UQValue
             if samples:
-                uq_value = UQValue.from_samples(
-                    samples,
-                    ci=resolved_uq.ci,
+                import numpy as np
+                samples_arr = np.array(samples)
+                mean_val = np.mean(samples_arr)
+                std_val = np.std(samples_arr, ddof=1) if len(samples_arr) > 1 else 0.0
+                
+                # Compute quantiles
+                ci_level = resolved_uq.ci
+                quantiles_dict = {}
+                if len(samples_arr) > 1:
+                    quantiles_dict[0.025] = np.percentile(samples_arr, 2.5)
+                    quantiles_dict[0.05] = np.percentile(samples_arr, 5.0)
+                    quantiles_dict[0.5] = np.percentile(samples_arr, 50.0)
+                    quantiles_dict[0.95] = np.percentile(samples_arr, 95.0)
+                    quantiles_dict[0.975] = np.percentile(samples_arr, 97.5)
+                
+                # Create provenance
+                from .uq_algebra import ProvenanceInfo, DistributionType
+                prov = ProvenanceInfo(
                     method=resolved_uq.method,
+                    n_samples=len(samples),
                     seed=resolved_uq.seed,
-                    keep_samples=resolved_uq.keep_samples and resolved_uq.reduce == "empirical",
+                )
+                
+                # Decide distribution type
+                if resolved_uq.reduce == "gaussian":
+                    dist_type = DistributionType.GAUSSIAN
+                    keep_samples = False
+                else:  # empirical
+                    dist_type = DistributionType.EMPIRICAL
+                    keep_samples = resolved_uq.keep_samples if resolved_uq.keep_samples is not None else True
+                
+                uq_value = UQValue(
+                    distribution_type=dist_type,
+                    mean=mean_val,
+                    std=std_val,
+                    quantiles=quantiles_dict,
+                    samples=samples_arr if keep_samples else None,
+                    provenance=prov,
+                    effective_count=float(len(samples)),
                 )
                 metric_cols[metric].append(uq_value.to_dict())
             else:
@@ -2080,7 +2130,7 @@ def _reduce_replicate_results(
         if has_selection and rank_uq_col is not None:
             rank_samples_for_item = []
             for i, rep_result in enumerate(replicate_results):
-                if item in rep.items:
+                if item in rep_result.items:
                     try:
                         idx = rep_result.items.index(item)
                         rank_samples_for_item.append(idx)
@@ -2088,14 +2138,38 @@ def _reduce_replicate_results(
                         pass
             
             if rank_samples_for_item:
-                rank_uq = UQValue.from_samples(
-                    rank_samples_for_item,
-                    ci=resolved_uq.ci,
+                import numpy as np
+                samples_arr = np.array(rank_samples_for_item, dtype=float)
+                mean_val = np.mean(samples_arr)
+                std_val = np.std(samples_arr, ddof=1) if len(samples_arr) > 1 else 0.0
+                
+                # Compute quantiles
+                quantiles_dict = {}
+                if len(samples_arr) > 1:
+                    quantiles_dict[0.025] = np.percentile(samples_arr, 2.5)
+                    quantiles_dict[0.05] = np.percentile(samples_arr, 5.0)
+                    quantiles_dict[0.5] = np.percentile(samples_arr, 50.0)
+                    quantiles_dict[0.95] = np.percentile(samples_arr, 95.0)
+                    quantiles_dict[0.975] = np.percentile(samples_arr, 97.5)
+                
+                # Create provenance
+                from .uq_algebra import ProvenanceInfo, DistributionType
+                prov = ProvenanceInfo(
                     method=resolved_uq.method,
+                    n_samples=len(rank_samples_for_item),
                     seed=resolved_uq.seed,
-                    keep_samples=False,  # Don't store rank samples by default
                 )
-                rank_uq_col.append(rank_uq.to_dict())
+                
+                rank_uq_value = UQValue(
+                    distribution_type=DistributionType.EMPIRICAL,
+                    mean=mean_val,
+                    std=std_val,
+                    quantiles=quantiles_dict,
+                    samples=None,  # Don't store rank samples by default
+                    provenance=prov,
+                    effective_count=float(len(rank_samples_for_item)),
+                )
+                rank_uq_col.append(rank_uq_value.to_dict())
             else:
                 rank_uq_col.append(None)
     
@@ -2125,9 +2199,9 @@ def _reduce_replicate_results(
                 "selection": {
                     "has_topk": has_selection and hasattr(select, 'top_k_spec') and select.top_k_spec is not None,
                     "has_limit": select.limit is not None,
-                    "key": selection_key,
-                    "k": selection_k,
-                } if has_selection else None,
+                    "key": selection_key if has_selection else None,
+                    "k": selection_k if has_selection else None,
+                },
                 "p_present_column": "p_present",
                 "p_selected_column": "p_selected" if has_selection else None,
                 "rank_uq_column": "rank_uq" if has_selection else None,
