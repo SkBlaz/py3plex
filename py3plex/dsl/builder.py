@@ -4945,6 +4945,86 @@ class Q:
 
 
 # ==============================================================================
+# D Factory for Dynamics Simulations
+# ==============================================================================
+
+
+class D:
+    """Dynamics simulation factory for DSL-level dynamics.
+
+    This provides an alternative entry point to Q.dynamics() with a more
+    simulation-oriented naming convention. Both Q.dynamics() and D.simulate()
+    produce the same DynamicsBuilder instances.
+
+    Example:
+        >>> from py3plex.dsl import D, L
+        >>> from py3plex.dynamics import SIRModel
+        >>>
+        >>> # Using model instance
+        >>> sim = (
+        ...     D.simulate(SIRModel(beta=0.3, gamma=0.1))
+        ...      .on_layers(L["social"] + L["work"])
+        ...      .seed_infections(fraction=0.01)
+        ...      .steps(100)
+        ...      .execute(network)
+        ... )
+        >>>
+        >>> # Using model name
+        >>> sim = (
+        ...     D.simulate("SIS", beta=0.3, mu=0.1)
+        ...      .on_layers(L["contacts"])
+        ...      .seed_infections(0.01)
+        ...      .run(steps=100, replicates=10)
+        ...      .execute(network)
+        ... )
+    """
+
+    @staticmethod
+    def simulate(model_or_name: Union[str, Any], **params) -> "DynamicsBuilder":
+        """Create a dynamics simulation builder.
+
+        Args:
+            model_or_name: Either a model name string (e.g., "SIS", "SIR")
+                          or a model instance with parameters
+            **params: Model parameters (only used if model_or_name is a string)
+
+        Returns:
+            DynamicsBuilder for configuring and running simulations
+
+        Example:
+            >>> # From model name
+            >>> D.simulate("SIS", beta=0.3, mu=0.1).steps(100).execute(net)
+            
+            >>> # From model instance (if supported in future)
+            >>> model = SIRModel(beta=0.3, gamma=0.1)
+            >>> D.simulate(model).steps(200).execute(net)
+        """
+        if isinstance(model_or_name, str):
+            # Model name provided
+            return DynamicsBuilder(model_or_name, **params)
+        else:
+            # Model instance provided - extract name and params
+            # For now, assume model has 'name' attribute and params as attributes
+            if hasattr(model_or_name, 'name'):
+                model_name = model_or_name.name
+            else:
+                # Fall back to class name
+                model_name = model_or_name.__class__.__name__.replace('Model', '').upper()
+            
+            # Extract params from model instance
+            model_params = {}
+            if hasattr(model_or_name, '__dict__'):
+                # Get all non-private attributes
+                model_params = {k: v for k, v in model_or_name.__dict__.items() 
+                               if not k.startswith('_')}
+            
+            # Merge with any provided params (provided params override)
+            model_params.update(params)
+            
+            return DynamicsBuilder(model_name, **model_params)
+
+
+# ==============================================================================
 # UQ Profiles for One-Liner Ergonomics
 # ==============================================================================
 
@@ -5529,6 +5609,7 @@ class DynamicsBuilder:
         steps: int = 100,
         replicates: int = 1,
         track: Optional[Union[str, List[str]]] = None,
+        n_jobs: int = 1,
     ) -> "DynamicsBuilder":
         """Set execution parameters.
 
@@ -5536,12 +5617,28 @@ class DynamicsBuilder:
             steps: Number of time steps to simulate
             replicates: Number of independent runs
             track: Measures to track ("all" or list of specific measures)
+            n_jobs: Number of parallel jobs (1 = sequential, -1 = all cores).
+                   Parallel execution is deterministic: same seed produces
+                   identical results regardless of n_jobs value.
 
         Returns:
             Self for chaining
+
+        Example:
+            >>> # Sequential execution
+            >>> builder.run(steps=100, replicates=20, n_jobs=1)
+            
+            >>> # Parallel execution (deterministic with same seed)
+            >>> builder.run(steps=100, replicates=20, n_jobs=4)
         """
         self._stmt.steps = steps
         self._stmt.replicates = replicates
+        
+        # Store n_jobs for use by executor
+        if not hasattr(self._stmt, 'n_jobs'):
+            self._stmt.n_jobs = n_jobs
+        else:
+            self._stmt.n_jobs = n_jobs
 
         if track is not None:
             if isinstance(track, str):
@@ -5567,6 +5664,78 @@ class DynamicsBuilder:
         self._stmt.seed = seed
         return self
 
+    def seed_infections(
+        self,
+        fraction: Optional[float] = None,
+        nodes: Optional[List[Tuple[Any, str]]] = None
+    ) -> "DynamicsBuilder":
+        """Set initial infections for epidemic models (convenience alias for .seed()).
+
+        Args:
+            fraction: Fraction of nodes to infect randomly (e.g., 0.01 for 1%)
+            nodes: Specific nodes to infect as list of (node_id, layer) tuples
+
+        Returns:
+            Self for chaining
+
+        Examples:
+            >>> # Infect 1% randomly
+            >>> builder.seed_infections(fraction=0.01)
+
+            >>> # Infect specific nodes
+            >>> builder.seed_infections(nodes=[('Alice', 'social'), ('Bob', 'work')])
+        """
+        if fraction is not None and nodes is not None:
+            raise ValueError("Provide either 'fraction' or 'nodes', not both")
+        
+        if fraction is not None:
+            self._stmt.seed_fraction = fraction
+        elif nodes is not None:
+            # Convert nodes list to a query-like structure
+            # For now, store directly in seed_nodes (will handle in executor)
+            if not hasattr(self._stmt, 'seed_nodes'):
+                self._stmt.seed_nodes = nodes
+            else:
+                self._stmt.seed_nodes = nodes
+        else:
+            raise ValueError("Must provide either 'fraction' or 'nodes'")
+        
+        return self
+
+    def starting_nodes(self, nodes: List[Tuple[Any, str]]) -> "DynamicsBuilder":
+        """Set starting nodes for random walk dynamics.
+
+        Args:
+            nodes: List of (node_id, layer) tuples to start from
+
+        Returns:
+            Self for chaining
+
+        Example:
+            >>> builder.starting_nodes([('Alice', 'social'), ('Bob', 'work')])
+        """
+        # For random walk, starting nodes are similar to seed infections
+        if not hasattr(self._stmt, 'seed_nodes'):
+            self._stmt.seed_nodes = nodes
+        else:
+            self._stmt.seed_nodes = nodes
+        return self
+
+    def steps(self, n: int) -> "DynamicsBuilder":
+        """Set number of simulation steps (convenience alias for .run(steps=n)).
+
+        Args:
+            n: Number of time steps
+
+        Returns:
+            Self for chaining
+
+        Example:
+            >>> builder.steps(100)
+        """
+        self._stmt.steps = n
+        return self
+
     def to(self, target: str) -> "DynamicsBuilder":
         """Set export target.
 
@@ -5577,6 +5746,44 @@ class DynamicsBuilder:
             Self for chaining
         """
         self._stmt.export_target = target
+        return self
+
+    def uq(
+        self, 
+        ci_level: float = 0.95, 
+        method: str = "dynamics_mc"
+    ) -> "DynamicsBuilder":
+        """Enable uncertainty quantification for dynamics results.
+        
+        Wraps per-replicate summary statistics with confidence intervals.
+        
+        Args:
+            ci_level: Confidence interval level (default: 0.95 for 95% CI)
+            method: UQ method (default: "dynamics_mc" for Monte Carlo across replicates)
+        
+        Returns:
+            Self for chaining
+        
+        Example:
+            >>> result = (
+            ...     Q.dynamics("SIS", beta=0.3, mu=0.1)
+            ...      .seed_infections(fraction=0.01)
+            ...      .run(steps=100, replicates=50)
+            ...      .uq(ci_level=0.95, method="dynamics_mc")
+            ...      .execute(network)
+            ... )
+            >>> # Summary stats now include CI bounds:
+            >>> result.mean_peak_time  # {'mean': 45.2, 'ci_low': 40.1, 'ci_high': 50.3}
+        """
+        # Store UQ configuration in statement for executor
+        if not hasattr(self._stmt, 'uq_config'):
+            self._stmt.uq_config = {}
+        
+        self._stmt.uq_config = {
+            'ci_level': ci_level,
+            'method': method,
+        }
+        
         return self
 
     def execute(self, network: Any) -> Any:

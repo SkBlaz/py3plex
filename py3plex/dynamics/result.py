@@ -41,6 +41,123 @@ class SimulationResult:
         self.measures = measures
         self.data = data
         self.meta = meta or {}
+        
+    @property
+    def mean_peak_time(self):
+        """Mean peak time across replicates, with UQ bounds if enabled.
+        
+        Returns:
+            float or dict: Scalar if no UQ, dict with 'mean', 'ci_low', 'ci_high' if UQ enabled
+        """
+        return self._compute_summary_stat('peak_time')
+    
+    @property
+    def mean_final_infected(self):
+        """Mean final infected fraction, with UQ bounds if enabled.
+        
+        Returns:
+            float or dict: Scalar if no UQ, dict with 'mean', 'ci_low', 'ci_high' if UQ enabled
+        """
+        return self._compute_summary_stat('final_infected')
+    
+    @property
+    def trajectories(self):
+        """Get trajectories as a DataFrame with (step, replicate, state_counts).
+        
+        Returns:
+            pandas.DataFrame: DataFrame with columns ['replicate', 'step', 'infected', 'susceptible', etc.]
+        """
+        import pandas as pd
+        
+        # Get primary measure (typically 'prevalence' for epidemic models)
+        primary_measure = 'prevalence' if 'prevalence' in self.measures else self.measures[0]
+        
+        if primary_measure not in self.data:
+            return pd.DataFrame()
+        
+        measure_data = self.data[primary_measure]
+        
+        if not isinstance(measure_data, np.ndarray) or len(measure_data.shape) != 2:
+            return pd.DataFrame()
+        
+        # Shape: (replicates, steps)
+        n_replicates, n_steps = measure_data.shape
+        
+        # Create long-form DataFrame
+        records = []
+        for rep in range(n_replicates):
+            for step in range(n_steps):
+                records.append({
+                    'replicate': rep,
+                    'step': step,
+                    'infected': measure_data[rep, step],
+                    'susceptible': 1.0 - measure_data[rep, step]
+                })
+        
+        return pd.DataFrame(records)
+
+    
+    def _compute_summary_stat(self, stat_name: str):
+        """Compute a summary statistic from trajectory data.
+        
+        Args:
+            stat_name: Name of stat ('peak_time', 'final_infected', etc.)
+            
+        Returns:
+            float or dict with UQ bounds
+        """
+        # Check if UQ is enabled
+        uq_config = self.meta.get('uq_config')
+        
+        # Get primary measure (typically 'prevalence' for epidemic models)
+        primary_measure = 'prevalence' if 'prevalence' in self.measures else self.measures[0]
+        
+        # Check if we have UQ data
+        uq_key = f"{primary_measure}_uq"
+        if uq_config and uq_key in self.data:
+            # UQ is enabled - use the raw data from UQ dict
+            uq_data = self.data[uq_key]
+            if 'raw' in uq_data:
+                raw_data = uq_data['raw']  # Shape: (replicates, steps)
+                
+                if stat_name == 'peak_time':
+                    # Find peak time for each replicate
+                    peak_times = np.argmax(raw_data, axis=1)
+                    values = peak_times
+                elif stat_name == 'final_infected':
+                    # Final value for each replicate
+                    values = raw_data[:, -1]
+                else:
+                    return None
+                
+                # Compute UQ stats
+                ci_level = uq_config.get('ci_level', 0.95)
+                alpha = 1 - ci_level
+                lower_percentile = (alpha / 2) * 100
+                upper_percentile = (1 - alpha / 2) * 100
+                
+                return {
+                    'mean': float(np.mean(values)),
+                    'ci_low': float(np.percentile(values, lower_percentile)),
+                    'ci_high': float(np.percentile(values, upper_percentile))
+                }
+        
+        # No UQ or UQ data not found - compute from raw measure data
+        if primary_measure in self.data:
+            measure_data = self.data[primary_measure]
+            
+            if isinstance(measure_data, np.ndarray):
+                if len(measure_data.shape) == 2:  # (replicates, steps)
+                    if stat_name == 'peak_time':
+                        # Mean peak time across replicates
+                        peak_times = np.argmax(measure_data, axis=1)
+                        return float(np.mean(peak_times))
+                    elif stat_name == 'final_infected':
+                        # Mean final value
+                        return float(np.mean(measure_data[:, -1]))
+        
+        return None
+
 
     def to_pandas(self, measure: Optional[str] = None):
         """Export results to pandas DataFrame(s).

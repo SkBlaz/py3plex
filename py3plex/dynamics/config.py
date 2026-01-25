@@ -1,8 +1,8 @@
 """Configuration-based dynamics specification.
 
-This module provides a simple way to define compartmental dynamics from
-configuration dictionaries, allowing users to specify dynamics without
-writing Python code.
+This module provides:
+1. _DynamicsConfig: Internal unified configuration dataclass for dynamics
+2. build_dynamics_from_config: Simple way to define compartmental dynamics from config dicts
 
 Example config:
     {
@@ -17,10 +17,73 @@ Example config:
     }
 """
 
+import hashlib
+import json
 import re
-from typing import Any, Callable, Dict
+from dataclasses import dataclass, field
+from typing import Any, Callable, Dict, List, Optional
 
 from .compartmental import CompartmentalDynamics
+
+
+@dataclass
+class _DynamicsConfig:
+    """Internal canonical configuration for dynamics simulations.
+    
+    This dataclass unifies configuration from all entry points (Q.dynamics, D.simulate,
+    legacy D.process) and serves as the single source of truth for dynamics execution.
+    
+    Attributes:
+        model_id: Model identifier (e.g., "SIS", "SIR", "SEIR", "RANDOM_WALK")
+        model_params: Model parameters (e.g., {"beta": 0.3, "mu": 0.1})
+        layers: Resolved list of layer names (empty = all layers)
+        layer_expr_original: Original layer expression (for provenance)
+        steps: Number of simulation steps
+        replicates: Number of independent simulation runs
+        track: What to track ("all" or list of measure names)
+        initial_condition: Initial condition specification
+        seed: Random seed for reproducibility (None = non-deterministic)
+        n_jobs: Number of parallel jobs (1 = sequential)
+        uq_config: Uncertainty quantification configuration (optional)
+    """
+    model_id: str
+    model_params: Dict[str, Any] = field(default_factory=dict)
+    layers: List[str] = field(default_factory=list)
+    layer_expr_original: Optional[str] = None
+    steps: int = 100
+    replicates: int = 1
+    track: List[str] = field(default_factory=lambda: ["all"])
+    initial_condition: Dict[str, Any] = field(default_factory=dict)
+    seed: Optional[int] = None
+    n_jobs: int = 1
+    uq_config: Optional[Dict[str, Any]] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary (for JSON serialization)."""
+        return {
+            "model_id": self.model_id,
+            "model_params": self.model_params,
+            "layers": self.layers,
+            "layer_expr_original": self.layer_expr_original,
+            "steps": self.steps,
+            "replicates": self.replicates,
+            "track": self.track,
+            "initial_condition": self.initial_condition,
+            "seed": self.seed,
+            "n_jobs": self.n_jobs,
+            "uq_config": self.uq_config,
+        }
+    
+    def config_hash(self) -> str:
+        """Compute stable hash for provenance.
+        
+        Returns:
+            16-character SHA256 prefix for use in provenance metadata
+        """
+        # Create canonical JSON representation
+        canonical = json.dumps(self.to_dict(), sort_keys=True, separators=(',', ':'))
+        # Compute SHA256 and return first 16 characters
+        return hashlib.sha256(canonical.encode('utf-8')).hexdigest()[:16]
 
 
 def build_dynamics_from_config(graph: Any, config: dict) -> CompartmentalDynamics:

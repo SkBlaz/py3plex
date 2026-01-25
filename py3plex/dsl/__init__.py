@@ -130,6 +130,7 @@ from .builder import (
     P,
     PathBuilder,
     # Dynamics builders
+    D,
     DynamicsBuilder,
     TrajectoriesBuilder,
     # Semiring algebra builders
@@ -372,6 +373,7 @@ __all__ = [
     "P",
     "PathBuilder",
     # Dynamics Builders
+    "D",
     "DynamicsBuilder",
     "TrajectoriesBuilder",
     # Semiring algebra Builders
