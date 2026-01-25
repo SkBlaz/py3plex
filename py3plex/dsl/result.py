@@ -54,7 +54,7 @@ def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
 
 
 def _expand_uncertainty_value(
-    attr_name: str, value: Any, ci_level: float = 0.95
+    attr_name: str, value: Any, ci_level: float = 0.95, expand_samples: bool = False
 ) -> Dict[str, Any]:
     """Expand an uncertainty value into multiple columns.
 
@@ -62,10 +62,13 @@ def _expand_uncertainty_value(
         attr_name: Base attribute name (e.g., "degree")
         value: The value (may be dict with uncertainty info or scalar)
         ci_level: Confidence interval level (default: 0.95)
+        expand_samples: If True, include raw samples as JSON string (default: False)
 
     Returns:
         Dictionary with expanded columns
     """
+    import json
+    
     result = {}
 
     # Always include the point estimate
@@ -124,6 +127,13 @@ def _expand_uncertainty_value(
             result[f"{attr_name}_ci{ci_pct}_low"] = None
             result[f"{attr_name}_ci{ci_pct}_high"] = None
             result[f"{attr_name}_ci{ci_pct}_width"] = None
+        
+        # Add raw samples if requested
+        if expand_samples and "samples" in value and value["samples"] is not None:
+            try:
+                result[f"{attr_name}_samples"] = json.dumps(value["samples"])
+            except (TypeError, ValueError):
+                result[f"{attr_name}_samples"] = None
     else:
         # Deterministic value - just use as-is
         result[attr_name] = value
@@ -474,6 +484,42 @@ class QueryResult:
         from py3plex.dsl.benchmark_result import BenchmarkResultHelper
 
         return BenchmarkResultHelper(self)
+    
+    def has_uq(self, column: str) -> bool:
+        """Check if a column contains UQ information.
+        
+        Args:
+            column: Name of the column to check
+            
+        Returns:
+            True if the column contains UQ dicts, False otherwise
+        """
+        if column not in self.attributes:
+            return False
+        
+        values = self.attributes[column]
+        
+        # Check if it's a dict-style column
+        if isinstance(values, dict):
+            # Check first value
+            first_val = next(iter(values.values()), None)
+            return isinstance(first_val, dict) and ("mean" in first_val or "value" in first_val)
+        
+        # Check if it's a list-style column
+        if isinstance(values, list) and values:
+            first_val = values[0]
+            return isinstance(first_val, dict) and ("mean" in first_val or "value" in first_val)
+        
+        return False
+    
+    @property
+    def uq_columns(self) -> List[str]:
+        """Get list of columns that contain UQ information.
+        
+        Returns:
+            List of column names containing UQ dicts
+        """
+        return [col for col in self.attributes.keys() if self.has_uq(col)]
 
     def to_pandas(
         self,
@@ -481,6 +527,7 @@ class QueryResult:
         include_grouping: bool = True,
         expand_uncertainty: bool = False,
         expand_explanations: bool = False,
+        expand_samples: bool = False,
     ):
         """Export results to pandas DataFrame.
 
@@ -499,9 +546,15 @@ class QueryResult:
                               - metric_ci95_low (95% CI lower bound)
                               - metric_ci95_high (95% CI upper bound)
                               - metric_ci95_width (CI width)
+                              - p_present (if available from propagate mode)
+                              - p_selected (if available from propagate mode with selection)
+                              - rank_uq_* (if available from propagate mode with selection)
             expand_explanations: If True, expand explanation fields into columns.
                                Explanations are attached via .explain() in the query.
                                Fields like top_neighbors (list) are converted to JSON strings.
+            expand_samples: If True, include raw sample arrays from UQ results as JSON strings.
+                          Only applies when expand_uncertainty=True. Default False to avoid 
+                          overwhelming output.
 
         Returns:
             pandas.DataFrame with items and computed attributes
@@ -539,7 +592,7 @@ class QueryResult:
 
                             if expand_uncertainty:
                                 # Expand uncertainty into multiple columns
-                                expanded = _expand_uncertainty_value(attr_name, value)
+                                expanded = _expand_uncertainty_value(attr_name, value, expand_samples=expand_samples)
                                 row.update(expanded)
                             else:
                                 row[attr_name] = value
@@ -562,7 +615,7 @@ class QueryResult:
 
                             if expand_uncertainty:
                                 # Expand uncertainty into multiple columns
-                                expanded = _expand_uncertainty_value(attr_name, value)
+                                expanded = _expand_uncertainty_value(attr_name, value, expand_samples=expand_samples)
                                 row.update(expanded)
                             else:
                                 row[attr_name] = value
@@ -729,7 +782,7 @@ class QueryResult:
                                 row.update(expanded)
                             elif expand_uncertainty and not is_explanation:
                                 # Expand uncertainty into multiple columns
-                                expanded = _expand_uncertainty_value(attr_name, value)
+                                expanded = _expand_uncertainty_value(attr_name, value, expand_samples=expand_samples)
                                 row.update(expanded)
                             else:
                                 # Preserve original value
@@ -757,7 +810,7 @@ class QueryResult:
                                 row.update(expanded)
                             elif expand_uncertainty and not is_explanation:
                                 # Expand uncertainty into multiple columns
-                                expanded = _expand_uncertainty_value(attr_name, value)
+                                expanded = _expand_uncertainty_value(attr_name, value, expand_samples=expand_samples)
                                 row.update(expanded)
                             else:
                                 # Preserve original value

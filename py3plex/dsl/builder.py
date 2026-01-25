@@ -1070,6 +1070,9 @@ class QueryBuilder:
         n_samples: Optional[int] = None,
         ci: Optional[float] = None,
         seed: Optional[int] = None,
+        mode: str = "summarize_only",
+        keep_samples: Optional[bool] = None,
+        reduce: str = "empirical",
         **kwargs,
     ) -> "QueryBuilder":
         """Set query-scoped uncertainty quantification configuration.
@@ -1089,6 +1092,14 @@ class QueryBuilder:
             ci: Confidence interval level (e.g., 0.95 for 95% CI)
                If None, uses global or library default (0.95).
             seed: Random seed for reproducibility (default: None)
+            mode: UQ execution mode (default: 'summarize_only')
+                 - 'summarize_only': Current behavior, UQ computed per metric
+                 - 'propagate': Execute entire query per replicate, combine results
+            keep_samples: Whether to keep raw samples in results (default: None = auto)
+                         Auto defaults to True for propagate mode, False for summarize_only
+            reduce: Reduction method (default: 'empirical')
+                   - 'empirical': Store full sample statistics
+                   - 'gaussian': Reduce to mean + std Gaussian approximation
             **kwargs: Additional method-specific parameters (e.g., bootstrap_unit='edges',
                      bootstrap_mode='resample', null_model='configuration')
 
@@ -1096,11 +1107,19 @@ class QueryBuilder:
             Self for chaining
 
         Example:
-            >>> # Set uncertainty with explicit parameters
+            >>> # Set uncertainty with explicit parameters (summarize_only)
             >>> (Q.nodes()
             ...   .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)
             ...   .compute("betweenness_centrality")
             ...   .where(betweenness_centrality__mean__gt=0.1)
+            ...   .execute(net))
+
+            >>> # Use propagate mode for end-to-end uncertainty
+            >>> (Q.nodes()
+            ...   .compute("pagerank")
+            ...   .order_by("pagerank", desc=True)
+            ...   .limit(3)
+            ...   .uq(method="perturbation", n_samples=25, seed=42, mode="propagate")
             ...   .execute(net))
 
             >>> # Use global defaults
@@ -1127,7 +1146,14 @@ class QueryBuilder:
         # Create UQConfig - None values will be resolved during execution
         # using the priority order: query > global > library
         self._select.uq_config = UQConfig(
-            method=method, n_samples=n_samples, ci=ci, seed=seed, kwargs=kwargs
+            method=method,
+            n_samples=n_samples,
+            ci=ci,
+            seed=seed,
+            mode=mode,
+            keep_samples=keep_samples,
+            reduce=reduce,
+            kwargs=kwargs,
         )
         return self
 

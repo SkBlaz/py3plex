@@ -211,6 +211,13 @@ class UQConfig:
         n_samples: Number of samples for uncertainty estimation
         ci: Confidence interval level (e.g., 0.95 for 95% CI)
         seed: Random seed for reproducibility
+        mode: UQ execution mode ('summarize_only', 'propagate')
+              - 'summarize_only': Current behavior, UQ computed per metric
+              - 'propagate': Execute entire query per replicate, combine results
+        keep_samples: Whether to keep raw samples in UQValue (None = auto)
+        reduce: Reduction method ('empirical', 'gaussian')
+                - 'empirical': Store full sample statistics
+                - 'gaussian': Reduce to mean + std Gaussian approximation
         kwargs: Additional method-specific parameters (e.g., bootstrap_unit, bootstrap_mode,
                 strata, bins for stratified_perturbation)
 
@@ -220,12 +227,17 @@ class UQConfig:
         ...               kwargs={"bootstrap_unit": "edges", "bootstrap_mode": "resample"})
         >>> uq = UQConfig(method="stratified_perturbation", n_samples=100, ci=0.95, seed=42,
         ...               kwargs={"strata": ["degree", "layer"], "bins": {"degree": 5}})
+        >>> uq = UQConfig(method="perturbation", n_samples=50, ci=0.95, seed=42,
+        ...               mode="propagate", keep_samples=True, reduce="empirical")
     """
 
     method: Optional[str] = None
     n_samples: Optional[int] = None
     ci: Optional[float] = None
     seed: Optional[int] = None
+    mode: str = "summarize_only"  # New: 'summarize_only' or 'propagate'
+    keep_samples: Optional[bool] = None  # New: Whether to keep raw samples
+    reduce: str = "empirical"  # New: 'empirical' or 'gaussian'
     kwargs: Dict[str, Any] = field(default_factory=dict)
 
 
