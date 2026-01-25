@@ -1143,6 +1143,11 @@ class QueryBuilder:
             self._select.uq_config = method
             return self
 
+        # If method=None explicitly, disable UQ (backward compatibility)
+        if method is None:
+            self._select.uq_config = None
+            return self
+
         # Create UQConfig - None values will be resolved during execution
         # using the priority order: query > global > library
         self._select.uq_config = UQConfig(
