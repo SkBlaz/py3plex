@@ -37,6 +37,8 @@ __all__ = [
     # Convenience functions for multi_layer_network
     "save_to_arrow",
     "load_from_arrow",
+    "save_network_to_parquet",
+    "load_network_from_parquet",
     # Converters
     "to_networkx",
     "from_networkx",
@@ -119,3 +121,75 @@ def load_from_arrow(path: Union[str, Path], as_multinet: bool = True, **kwargs):
         return multilayergraph_to_multinet(graph)
     else:
         return graph
+
+
+def save_network_to_parquet(network, path: Union[str, Path], **kwargs) -> None:
+    """
+    Save a multi_layer_network to Parquet directory format.
+    
+    Creates a directory with:
+    - nodes.parquet: Node table with (node, layer) and attributes
+    - edges.parquet: Edge table with (source, target, source_layer, target_layer) and attributes
+    - metadata.json: Network metadata (network_type, directed, coupling, schema version)
+    
+    This format ensures zero-loss roundtrip with atomic writes.
+    
+    Args:
+        network: multi_layer_network instance
+        path: Output directory path
+        **kwargs: Additional arguments (currently unused)
+        
+    Raises:
+        Py3plexIOError: If pyarrow not available or write fails
+        
+    Example:
+        >>> from py3plex.core import multinet
+        >>> from py3plex.io import save_network_to_parquet
+        >>> net = multinet.multi_layer_network()
+        >>> # ... build network ...
+        >>> save_network_to_parquet(net, "network_dir")
+    """
+    try:
+        from .parquet_format import save_network_to_parquet as _save
+        _save(network, path)
+    except ImportError:
+        from py3plex.exceptions import Py3plexIOError
+        raise Py3plexIOError(
+            "PyArrow is required for Parquet support. "
+            "Install it with: pip install pyarrow"
+        )
+
+
+def load_network_from_parquet(path: Union[str, Path], **kwargs):
+    """
+    Load a multi_layer_network from Parquet directory format.
+    
+    Reads:
+    - nodes.parquet: Node table
+    - edges.parquet: Edge table
+    - metadata.json: Network metadata
+    
+    Args:
+        path: Input directory path
+        **kwargs: Additional arguments (currently unused)
+        
+    Returns:
+        multi_layer_network instance
+        
+    Raises:
+        Py3plexIOError: If directory not found, files missing, or read fails
+        
+    Example:
+        >>> from py3plex.io import load_network_from_parquet
+        >>> net = load_network_from_parquet("network_dir")
+    """
+    try:
+        from .parquet_format import load_network_from_parquet as _load
+        return _load(path)
+    except ImportError:
+        from py3plex.exceptions import Py3plexIOError
+        raise Py3plexIOError(
+            "PyArrow is required for Parquet support. "
+            "Install it with: pip install pyarrow"
+        )
+

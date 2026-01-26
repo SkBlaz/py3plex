@@ -91,9 +91,13 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
         ConversionError: If conversion fails
     """
     try:
-        # Create graph with metadata
+        import py3plex
+        
+        # Create graph with comprehensive metadata
         graph_attrs = {
             'network_type': net.network_type,
+            'py3plex_version': py3plex.__version__ if hasattr(py3plex, '__version__') else 'unknown',
+            'py3plex_schema_version': '1.0',
         }
         
         # Add coupling weight if it exists

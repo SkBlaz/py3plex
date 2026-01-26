@@ -779,7 +779,7 @@ class TestArrowRoundtripZeroLoss:
 
 
 class TestParquetRoundtrip:
-    """Test Parquet format roundtrips (to be implemented)."""
+    """Test Parquet format roundtrips."""
     
     def test_parquet_import_available(self):
         """Test that Parquet functionality is available or can be skipped gracefully."""
@@ -789,8 +789,99 @@ class TestParquetRoundtrip:
         except ImportError:
             pytest.skip("PyArrow Parquet not available - tests will be skipped")
     
-    @pytest.mark.skip(reason="Parquet directory format not yet implemented")
-    def test_parquet_directory_roundtrip(self):
-        """Test Parquet directory format roundtrip (nodes.parquet + edges.parquet + metadata.json)."""
-        # TODO: Implement when Parquet directory format is added
-        pass
+    def test_parquet_directory_roundtrip_simple(self):
+        """Test Parquet directory format roundtrip with simple network."""
+        try:
+            from py3plex.io import save_network_to_parquet, load_network_from_parquet
+        except ImportError:
+            pytest.skip("Parquet I/O not available")
+        
+        net = multinet.multi_layer_network(directed=False)
+        nodes = [
+            {'source': 'A', 'type': 'layer1'},
+            {'source': 'B', 'type': 'layer1'},
+        ]
+        net.add_nodes(nodes)
+        edges = [
+            {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1', 'weight': 1.5},
+        ]
+        net.add_edges(edges)
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "network_dir"
+            save_network_to_parquet(net, str(path))
+            
+            # Verify directory structure
+            assert path.exists()
+            assert (path / 'nodes.parquet').exists()
+            assert (path / 'edges.parquet').exists()
+            assert (path / 'metadata.json').exists()
+            
+            # Load and verify
+            loaded_net = load_network_from_parquet(str(path))
+            assert len(list(loaded_net.get_nodes())) == 2
+            assert len(list(loaded_net.get_edges())) == 1
+    
+    def test_parquet_roundtrip_multilayer(self):
+        """Test Parquet roundtrip with multilayer network."""
+        try:
+            from py3plex.io import save_network_to_parquet, load_network_from_parquet
+        except ImportError:
+            pytest.skip("Parquet I/O not available")
+        
+        net = multinet.multi_layer_network(directed=False)
+        nodes = [
+            {'source': 'A', 'type': 'layer1'},
+            {'source': 'B', 'type': 'layer1'},
+            {'source': 'A', 'type': 'layer2'},
+            {'source': 'C', 'type': 'layer2'},
+        ]
+        net.add_nodes(nodes)
+        edges = [
+            {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'},
+            {'source': 'A', 'target': 'C', 'source_type': 'layer2', 'target_type': 'layer2'},
+        ]
+        net.add_edges(edges)
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "multilayer_dir"
+            save_network_to_parquet(net, str(path))
+            loaded_net = load_network_from_parquet(str(path))
+            
+            assert len(list(loaded_net.get_nodes())) == 4  # 4 node replicas
+            assert len(list(loaded_net.get_edges())) == 2
+            layer_names, _, _ = loaded_net.get_layers()
+            assert len(layer_names) == 2
+    
+    def test_parquet_roundtrip_with_attributes(self):
+        """Test Parquet roundtrip preserves node and edge attributes."""
+        try:
+            from py3plex.io import save_network_to_parquet, load_network_from_parquet
+        except ImportError:
+            pytest.skip("Parquet I/O not available")
+        
+        net = multinet.multi_layer_network(directed=False)
+        nodes = [
+            {'source': 'A', 'type': 'layer1'},
+            {'source': 'B', 'type': 'layer1'},
+        ]
+        net.add_nodes(nodes)
+        
+        # Add node attributes
+        net.core_network.nodes[('A', 'layer1')]['score'] = 0.8
+        net.core_network.nodes[('A', 'layer1')]['label'] = 'important'
+        
+        edges = [
+            {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1', 'weight': 2.5},
+        ]
+        net.add_edges(edges)
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "attrs_dir"
+            save_network_to_parquet(net, str(path))
+            loaded_net = load_network_from_parquet(str(path))
+            
+            # Verify attributes preserved
+            assert loaded_net.core_network.nodes[('A', 'layer1')]['score'] == 0.8
+            assert loaded_net.core_network.nodes[('A', 'layer1')]['label'] == 'important'
+
