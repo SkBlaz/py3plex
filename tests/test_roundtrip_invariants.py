@@ -17,6 +17,85 @@ from py3plex.core import multinet
 from py3plex.dsl import Q
 
 
+def assert_network_semantic_equal(net_a, net_b, *, check_attrs=True, check_order_insensitive=True):
+    """
+    Assert that two networks are semantically equal.
+    
+    This is the canonical comparison function for network roundtrip tests.
+    
+    Args:
+        net_a: First network
+        net_b: Second network
+        check_attrs: Whether to check node/edge attributes
+        check_order_insensitive: Whether to ignore ordering of nodes/edges
+    
+    Raises:
+        AssertionError: If networks are not semantically equal
+    """
+    # Check basic properties
+    assert net_a.directed == net_b.directed, "Directed flag mismatch"
+    assert net_a.network_type == net_b.network_type, "Network type mismatch"
+    
+    # Check node replicas
+    nodes_a = set(net_a.get_nodes())
+    nodes_b = set(net_b.get_nodes())
+    assert nodes_a == nodes_b, f"Node replica sets differ: {nodes_a ^ nodes_b}"
+    
+    # Check edge replicas (as multisets for undirected, sets for directed)
+    edges_a = list(net_a.get_edges(data=False))
+    edges_b = list(net_b.get_edges(data=False))
+    
+    if check_order_insensitive:
+        edges_a = sorted(edges_a)
+        edges_b = sorted(edges_b)
+    
+    assert len(edges_a) == len(edges_b), f"Edge count mismatch: {len(edges_a)} vs {len(edges_b)}"
+    assert edges_a == edges_b, "Edge replica sets differ"
+    
+    # Check layers
+    layers_a = set(net_a.get_layers())
+    layers_b = set(net_b.get_layers())
+    assert layers_a == layers_b, f"Layer sets differ: {layers_a ^ layers_b}"
+    
+    if check_attrs:
+        # Check node attributes
+        for node in nodes_a:
+            attrs_a = net_a.core_network.nodes[node]
+            attrs_b = net_b.core_network.nodes[node]
+            # Compare keys
+            assert set(attrs_a.keys()) == set(attrs_b.keys()), \
+                f"Node {node} attribute keys differ"
+            # Compare values
+            for key in attrs_a.keys():
+                val_a = attrs_a[key]
+                val_b = attrs_b[key]
+                # Handle numpy arrays
+                if hasattr(val_a, '__array__') and hasattr(val_b, '__array__'):
+                    import numpy as np
+                    assert np.array_equal(val_a, val_b), \
+                        f"Node {node} attribute {key} arrays differ"
+                else:
+                    assert val_a == val_b, \
+                        f"Node {node} attribute {key} differs: {val_a} vs {val_b}"
+        
+        # Check edge attributes
+        for edge in edges_a:
+            attrs_a = net_a.core_network.edges[edge]
+            attrs_b = net_b.core_network.edges[edge]
+            assert set(attrs_a.keys()) == set(attrs_b.keys()), \
+                f"Edge {edge} attribute keys differ"
+            for key in attrs_a.keys():
+                val_a = attrs_a[key]
+                val_b = attrs_b[key]
+                if hasattr(val_a, '__array__') and hasattr(val_b, '__array__'):
+                    import numpy as np
+                    assert np.array_equal(val_a, val_b), \
+                        f"Edge {edge} attribute {key} arrays differ"
+                else:
+                    assert val_a == val_b, \
+                        f"Edge {edge} attribute {key} differs: {val_a} vs {val_b}"
+
+
 @pytest.fixture
 def sample_network():
     """Create a sample multilayer network for testing."""
@@ -884,4 +963,122 @@ class TestParquetRoundtrip:
             # Verify attributes preserved
             assert loaded_net.core_network.nodes[('A', 'layer1')]['score'] == 0.8
             assert loaded_net.core_network.nodes[('A', 'layer1')]['label'] == 'important'
+
+
+class TestNetworkSemanticEquality:
+    """Test the assert_network_semantic_equal helper function."""
+
+    def test_semantic_equality_arrow_roundtrip(self):
+        """Test that Arrow roundtrip produces semantically equal networks."""
+        pyarrow = pytest.importorskip("pyarrow")
+        from py3plex.io import save_to_arrow, load_from_arrow
+        import numpy as np
+
+        # Create a complex network
+        net = multinet.multi_layer_network(directed=False)
+        nodes = [
+            {'source': 'A', 'type': 'social'},
+            {'source': 'B', 'type': 'social'},
+            {'source': 'A', 'type': 'work'},
+        ]
+        net.add_nodes(nodes)
+        
+        # Add various attribute types
+        net.core_network.nodes[('A', 'social')]['int_attr'] = 42
+        net.core_network.nodes[('A', 'social')]['float_attr'] = 3.14
+        net.core_network.nodes[('A', 'social')]['str_attr'] = 'hello'
+        net.core_network.nodes[('A', 'social')]['array_attr'] = np.array([1, 2, 3])
+        net.core_network.nodes[('A', 'social')]['dict_attr'] = {'key': 'value'}
+        
+        edges = [
+            {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social', 'weight': 1.5},
+        ]
+        net.add_edges(edges)
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "semantic.arrow"
+            save_to_arrow(net, str(path))
+            loaded_net = load_from_arrow(str(path))
+            
+            # Use semantic equality checker
+            assert_network_semantic_equal(net, loaded_net, check_attrs=True)
+
+    def test_semantic_equality_parquet_roundtrip(self):
+        """Test that Parquet roundtrip produces semantically equal networks."""
+        pyarrow = pytest.importorskip("pyarrow")
+        from py3plex.io import save_network_to_parquet, load_network_from_parquet
+        import numpy as np
+
+        # Create a multilayer network
+        net = multinet.multi_layer_network(directed=True)
+        nodes = [
+            {'source': 'X', 'type': 'layer1'},
+            {'source': 'Y', 'type': 'layer1'},
+            {'source': 'X', 'type': 'layer2'},
+        ]
+        net.add_nodes(nodes)
+        
+        # Add attributes
+        net.core_network.nodes[('X', 'layer1')]['value'] = 100
+        net.core_network.nodes[('Y', 'layer1')]['value'] = 200
+        
+        edges = [
+            {'source': 'X', 'target': 'Y', 'source_type': 'layer1', 'target_type': 'layer1', 'weight': 0.9},
+        ]
+        net.add_edges(edges)
+        net.core_network.edges[('X', 'layer1'), ('Y', 'layer1')]['importance'] = 'high'
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "semantic_dir"
+            save_network_to_parquet(net, str(path))
+            loaded_net = load_network_from_parquet(str(path))
+            
+            # Use semantic equality checker
+            assert_network_semantic_equal(net, loaded_net, check_attrs=True)
+
+    def test_semantic_equality_detects_node_difference(self):
+        """Test that semantic equality detects missing nodes."""
+        net1 = multinet.multi_layer_network(directed=False)
+        net2 = multinet.multi_layer_network(directed=False)
+        
+        net1.add_nodes([{'source': 'A', 'type': 'layer1'}])
+        net2.add_nodes([{'source': 'B', 'type': 'layer1'}])
+        
+        with pytest.raises(AssertionError, match="Node replica sets differ"):
+            assert_network_semantic_equal(net1, net2)
+
+    def test_semantic_equality_detects_edge_difference(self):
+        """Test that semantic equality detects different edges."""
+        net1 = multinet.multi_layer_network(directed=False)
+        net2 = multinet.multi_layer_network(directed=False)
+        
+        nodes = [
+            {'source': 'A', 'type': 'layer1'},
+            {'source': 'B', 'type': 'layer1'},
+        ]
+        net1.add_nodes(nodes)
+        net2.add_nodes(nodes)
+        
+        net1.add_edges([
+            {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}
+        ])
+        # net2 has no edges
+        
+        with pytest.raises(AssertionError, match="Edge count mismatch"):
+            assert_network_semantic_equal(net1, net2)
+
+    def test_semantic_equality_detects_attribute_difference(self):
+        """Test that semantic equality detects different attributes."""
+        net1 = multinet.multi_layer_network(directed=False)
+        net2 = multinet.multi_layer_network(directed=False)
+        
+        nodes = [{'source': 'A', 'type': 'layer1'}]
+        net1.add_nodes(nodes)
+        net2.add_nodes(nodes)
+        
+        net1.core_network.nodes[('A', 'layer1')]['value'] = 10
+        net2.core_network.nodes[('A', 'layer1')]['value'] = 20
+        
+        with pytest.raises(AssertionError, match="attribute.*differs"):
+            assert_network_semantic_equal(net1, net2, check_attrs=True)
 

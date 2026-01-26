@@ -81,6 +81,10 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
     - Network type (multilayer vs multiplex)
     - Coupling information
     
+    Note: Since MultiLayerGraph schema doesn't natively support node replicas with
+    per-layer attributes, we store the layer information in a special __layer__ attribute
+    and create separate Node instances for each replica.
+    
     Args:
         net: multi_layer_network instance
         
@@ -122,7 +126,7 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
             graph.add_layer(Layer(id=layer_id, attributes={}))
         
         # Get all node replicas (node_id, layer) with attributes
-        nodes_seen = set()
+        # Store each (node, layer) pair as a separate node with layer in attributes
         for node, layer in net.get_nodes():
             node_id = node
             # Get node attributes if available
@@ -131,14 +135,13 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
                 node_attrs = dict(net.core_network.nodes[(node, layer)])
                 # Encode attributes to handle numpy arrays and complex types
                 node_attrs = _encode_attributes(node_attrs)
-                
-            # MultiLayerGraph uses node id only, not (node, layer)
-            # We need to create separate node instances for each replica
-            # Create a unique key for this node (not layer-specific in MultiLayerGraph)
-            if node_id not in nodes_seen:
-                # First time seeing this node, add it with attributes
-                graph.add_node(Node(id=node_id, attributes=node_attrs))
-                nodes_seen.add(node_id)
+            
+            # Add layer as an attribute so we can reconstruct replicas
+            node_attrs['__layer__'] = layer
+            
+            # Create unique composite ID for this replica
+            composite_id = (node_id, layer)
+            graph.add_node(Node(id=composite_id, attributes=node_attrs))
         
         # Get all edges with attributes
         # get_edges() returns generator of tuples: ((src, src_layer), (dst, dst_layer))
