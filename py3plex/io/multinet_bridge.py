@@ -70,6 +70,21 @@ def _encode_attributes(attrs: Dict[str, Any]) -> Dict[str, Any]:
     return {key: _encode_attribute(value) for key, value in attrs.items()}
 
 
+def _decode_attribute(value: Any) -> Any:
+    """
+    Decode an attribute that was encoded with _encode_attribute.
+    Handles JSON-encoded complex types.
+    """
+    if isinstance(value, str):
+        # Try to parse as JSON if it looks like JSON
+        if value.startswith(('[', '{', '"')) or value in ('null', 'true', 'false'):
+            try:
+                return json.loads(value)
+            except (json.JSONDecodeError, ValueError):
+                pass
+    return value
+
+
 def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
     """
     Convert multi_layer_network to MultiLayerGraph schema.
@@ -136,11 +151,13 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
                 # Encode attributes to handle numpy arrays and complex types
                 node_attrs = _encode_attributes(node_attrs)
             
-            # Add layer as an attribute so we can reconstruct replicas
+            # Store original node ID and layer separately in attributes
+            node_attrs['__node_id__'] = _encode_attribute(node_id)
             node_attrs['__layer__'] = layer
             
-            # Create unique composite ID for this replica
-            composite_id = (node_id, layer)
+            # Create unique string ID for this replica: "node_id@@@layer"
+            # Use @@@ as delimiter (unlikely to appear in real node IDs)
+            composite_id = f"{node_id}@@@{layer}"
             graph.add_node(Node(id=composite_id, attributes=node_attrs))
         
         # Get all edges with attributes
@@ -171,9 +188,13 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
             # Encode attributes to handle numpy arrays and complex types
             edge_attrs = _encode_attributes(edge_attrs)
             
+            # Create composite IDs that match how we created nodes
+            src_composite = f"{src}@@@{src_layer}"
+            dst_composite = f"{dst}@@@{dst_layer}"
+            
             graph.add_edge(Edge(
-                src=src,
-                dst=dst,
+                src=src_composite,
+                dst=dst_composite,
                 src_layer=src_layer,
                 dst_layer=dst_layer,
                 key=0,
@@ -216,45 +237,35 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
         )
         
         # Add nodes
-        # In MultiLayerGraph, nodes don't have layer info directly
-        # We need to infer from edges which layers each node appears in
-        node_layers: Dict[Any, List[Any]] = {}
-        
-        # Collect layer information from edges
-        for edge in graph.edges:
-            if edge.src not in node_layers:
-                node_layers[edge.src] = []
-            if edge.src_layer not in node_layers[edge.src]:
-                node_layers[edge.src].append(edge.src_layer)
-                
-            if edge.dst not in node_layers:
-                node_layers[edge.dst] = []
-            if edge.dst_layer not in node_layers[edge.dst]:
-                node_layers[edge.dst].append(edge.dst_layer)
-        
-        # Also add nodes that might not have edges
-        for node in graph.nodes.values():
-            if node.id not in node_layers:
-                # Node with no edges - need to assign to at least one layer
-                # Use first available layer or create a default one
-                if graph.layers:
-                    node_layers[node.id] = [next(iter(graph.layers.keys()))]
-                else:
-                    # No layers defined, create a default one
-                    node_layers[node.id] = ['default']
-        
-        # Add node replicas
+        # Nodes are stored with composite IDs (node_id, layer) and __layer__ attribute
+        # We need to extract both the node ID and layer from each node
         nodes_to_add = []
-        for node_id, layers in node_layers.items():
-            for layer_id in layers:
-                node_dict = {
-                    'source': node_id,
-                    'type': layer_id
-                }
-                # Add node attributes if available
-                if node_id in graph.nodes:
-                    node_dict.update(graph.nodes[node_id].attributes)
-                nodes_to_add.append(node_dict)
+        
+        for node in graph.nodes.values():
+            # Extract node_id and layer from composite ID
+            if isinstance(node.id, str) and '@@@' in node.id:
+                # Parse composite ID
+                parts = node.id.split('@@@', 1)
+                node_id, layer = parts[0], parts[1]
+                # Try to decode node_id if it was encoded
+                if '__node_id__' in node.attributes:
+                    node_id = _decode_attribute(node.attributes['__node_id__'])
+            else:
+                # Fallback: check for stored attributes
+                node_id = _decode_attribute(node.attributes.get('__node_id__', node.id))
+                layer = node.attributes.get('__layer__', 'default')
+            
+            node_dict = {
+                'source': node_id,
+                'type': layer
+            }
+            
+            # Add node attributes (excluding internal attributes)
+            for key, value in node.attributes.items():
+                if key not in ['__layer__', '__node_id__']:
+                    node_dict[key] = value
+            
+            nodes_to_add.append(node_dict)
         
         if nodes_to_add:
             net.add_nodes(nodes_to_add)
@@ -262,9 +273,20 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
         # Add edges
         edges_to_add = []
         for edge in graph.edges:
+            # Extract actual node IDs from composite IDs
+            if isinstance(edge.src, str) and '@@@' in edge.src:
+                src_id = edge.src.split('@@@', 1)[0]
+            else:
+                src_id = edge.src
+            
+            if isinstance(edge.dst, str) and '@@@' in edge.dst:
+                dst_id = edge.dst.split('@@@', 1)[0]
+            else:
+                dst_id = edge.dst
+            
             edge_dict = {
-                'source': edge.src,
-                'target': edge.dst,
+                'source': src_id,
+                'target': dst_id,
                 'source_type': edge.src_layer,
                 'target_type': edge.dst_layer
             }

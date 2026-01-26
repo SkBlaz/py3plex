@@ -28,7 +28,7 @@ except ImportError:
     PARQUET_AVAILABLE = False
 
 from py3plex.exceptions import Py3plexIOError
-from py3plex.io.schemas import MultiLayerGraph
+from py3plex.io.schema import MultiLayerGraph
 from py3plex.io.multinet_bridge import multinet_to_multilayergraph, multilayergraph_to_multinet
 
 
