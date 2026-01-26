@@ -237,12 +237,116 @@ Persist just one layer to a simpler graph file.
 High-Performance: Apache Arrow/Parquet
 ---------------------------------------
 
-For Large Networks
-~~~~~~~~~~~~~~~~~~
+Zero-Loss Network Interchange (Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use columnar storage (Arrow/Parquet) to handle large edge lists efficiently.
-These formats preserve data types, compress well, and load quickly for analytics
-workloads.
+py3plex provides zero-loss network serialization using Arrow and Parquet formats.
+These preserve multilayer identity, attributes, network type, and directedness.
+
+**Arrow Format (Single File)**
+
+Arrow is the preferred format for single-file storage with embedded metadata.
+
+.. code-block:: python
+
+    from py3plex.io import save_to_arrow, load_from_arrow
+    from py3plex.core import multinet
+    
+    # Create network with attributes
+    network = multinet.multi_layer_network(directed=False)
+    network.add_nodes([
+        {'source': 'Alice', 'type': 'social', 'age': 30},
+        {'source': 'Bob', 'type': 'social', 'age': 25},
+        {'source': 'Alice', 'type': 'work'},
+    ])
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 
+         'source_type': 'social', 'target_type': 'social', 
+         'weight': 1.5, 'timestamp': '2024-01-01'}
+    ])
+    
+    # Save to Arrow (single file)
+    save_to_arrow(network, 'network.arrow')
+    
+    # Load back with zero loss
+    loaded = load_from_arrow('network.arrow')
+    
+    # Verify preservation
+    assert loaded.get_nodes() == network.get_nodes()
+    assert loaded.directed == network.directed
+
+**Parquet Format (Directory)**
+
+Parquet uses a directory layout for organizational clarity.
+
+.. code-block:: python
+
+    from py3plex.io import save_network_to_parquet, load_network_from_parquet
+    
+    # Save to Parquet directory
+    # Creates: network_dir/nodes.parquet
+    #          network_dir/edges.parquet
+    #          network_dir/metadata.json
+    save_network_to_parquet(network, 'network_dir')
+    
+    # Load back
+    loaded = load_network_from_parquet('network_dir')
+
+**Canonical Schema**
+
+Both formats use the same schema internally:
+
+* **Nodes table**: Required columns are ``node`` (ID) and ``layer``. Optional columns for attributes.
+* **Edges table**: Required columns are ``source``, ``target``, ``source_layer``, ``target_layer``. Optional: ``weight`` and other attributes.
+* **Metadata**: Includes ``schema_version``, ``py3plex_version``, ``network_type`` (multilayer/multiplex), ``directed``, attribute type manifest, and JSON-encoded column tracking.
+
+**Complex Attributes**
+
+Non-scalar attributes (dict, list, set, tuple) are JSON-encoded automatically:
+
+.. code-block:: python
+
+    # Add node with complex attribute
+    network.add_nodes([
+        {'source': 'Alice', 'type': 'social', 
+         'tags': ['researcher', 'python'], 
+         'metadata': {'department': 'CS', 'level': 5}}
+    ])
+    
+    # Save and load - complex attributes preserved
+    save_to_arrow(network, 'network.arrow')
+    loaded = load_from_arrow('network.arrow')
+    
+    # Complex attributes reconstructed
+    alice_attrs = loaded.get_node_attributes('Alice', 'social')
+    assert alice_attrs['tags'] == ['researcher', 'python']
+    assert alice_attrs['metadata']['department'] == 'CS'
+
+**QueryResult Export**
+
+Save analysis results in Parquet format:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, save_to_parquet, load_from_parquet
+    
+    # Compute statistics
+    result = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+    )
+    
+    # Save to Parquet
+    save_to_parquet(result, 'node_stats.parquet')
+    
+    # Load back as DataFrame
+    df = load_from_parquet('node_stats.parquet')
+
+Legacy Parquet (Edge Lists Only)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For compatibility with external tools, you can export just edge lists:
 
 .. code-block:: python
 
@@ -277,31 +381,10 @@ workloads.
     # Save as Parquet
     pq.write_table(table, 'network.parquet')
 
-Load from Parquet
-~~~~~~~~~~~~~~~~~
-
-Rebuild a network from a Parquet edge list. Ensure ``pyarrow`` is installed.
-
-.. code-block:: python
-
-    import pyarrow.parquet as pq
-    from py3plex.core import multinet
-    
-    # Load table
-    table = pq.read_table('network.parquet')
-    df = table.to_pandas()
-    
-    # Reconstruct network
-    network = multinet.multi_layer_network()
-    
-    for _, row in df.iterrows():
-        network.add_edge(
-            row['source'], row['source_layer'],
-            row['target'], row['target_layer'],
-            weight=row['weight']
-        )
-    
-    network.basic_stats()
+.. note::
+   The legacy approach above does not preserve node attributes, network type, or 
+   directedness. Use ``save_to_arrow`` or ``save_network_to_parquet`` for zero-loss 
+   preservation.
 
 Export Statistics and Results
 ------------------------------
