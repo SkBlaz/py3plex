@@ -192,7 +192,7 @@ from .communities import (
 from .result import QueryResult
 
 from .executor import execute_ast
-from .export import export_result
+from .export import export_result, save_to_parquet, load_from_parquet
 
 from .errors import (
     DslError,
@@ -420,6 +420,8 @@ __all__ = [
     # Result
     "QueryResult",
     "export_result",
+    "save_to_parquet",
+    "load_from_parquet",
     # Executor
     "execute_ast",
     # Errors (v2)

@@ -483,3 +483,124 @@ class TestExportNormalizationVariants:
 
         with pytest.raises(DslExecutionError):
             export_result({"A": 1}, ExportSpec(path=str(output_file), fmt="parquet"))
+
+
+class TestParquetExport:
+    """Test Parquet export functionality."""
+
+    def test_queryresult_to_parquet(self, sample_network, tmp_path):
+        """Test QueryResult.to_parquet() method."""
+        pyarrow = pytest.importorskip("pyarrow")
+        import pyarrow.parquet as pq
+
+        output_file = tmp_path / "result.parquet"
+
+        result = (
+            Q.nodes()
+            .from_layers(L["social"])
+            .compute("degree")
+            .execute(sample_network)
+        )
+
+        result.to_parquet(str(output_file))
+
+        # Verify file exists and can be read
+        assert output_file.exists()
+        table = pq.read_table(str(output_file))
+        df = table.to_pandas()
+
+        # Check structure
+        assert "id" in df.columns
+        assert "degree" in df.columns
+        assert len(df) == 3  # 3 nodes in social layer
+
+    def test_save_to_parquet_function(self, sample_network, tmp_path):
+        """Test save_to_parquet() function from export module."""
+        pyarrow = pytest.importorskip("pyarrow")
+        from py3plex.dsl import save_to_parquet, load_from_parquet
+
+        output_file = tmp_path / "result.parquet"
+
+        result = (
+            Q.nodes()
+            .from_layers(L["work"])
+            .compute("degree")
+            .execute(sample_network)
+        )
+
+        save_to_parquet(result, str(output_file))
+
+        # Load back and verify
+        df = load_from_parquet(str(output_file))
+        assert "id" in df.columns
+        assert "degree" in df.columns
+        assert len(df) == 2  # 2 nodes in work layer
+
+    def test_parquet_roundtrip_preserves_dtypes(self, sample_network, tmp_path):
+        """Test that Parquet roundtrip preserves data types."""
+        pyarrow = pytest.importorskip("pyarrow")
+        from py3plex.dsl import save_to_parquet, load_from_parquet
+
+        output_file = tmp_path / "result.parquet"
+
+        result = (
+            Q.nodes()
+            .from_layers(L["social"])
+            .compute("degree")
+            .execute(sample_network)
+        )
+
+        # Save and load
+        save_to_parquet(result, str(output_file))
+        df = load_from_parquet(str(output_file))
+
+        # Verify dtypes
+        assert df["degree"].dtype in ["int64", "Int64"]  # Allow nullable int
+
+    def test_parquet_with_complex_attributes(self, tmp_path):
+        """Test Parquet export with complex attributes."""
+        pyarrow = pytest.importorskip("pyarrow")
+        from py3plex.dsl import QueryResult, save_to_parquet, load_from_parquet
+
+        # Create a result with complex attributes (should be JSON-encoded)
+        result = QueryResult(
+            target="nodes",
+            items=["A", "B"],
+            attributes={
+                "score": [1.5, 2.5],
+                "metadata": [{"key": "val1"}, {"key": "val2"}]
+            },
+            meta={}
+        )
+
+        output_file = tmp_path / "complex.parquet"
+        save_to_parquet(result, str(output_file))
+
+        # Load back
+        df = load_from_parquet(str(output_file))
+        assert len(df) == 2
+        assert "score" in df.columns
+        # Complex attributes may be stored as objects/strings
+        assert "metadata" in df.columns
+
+    def test_parquet_empty_result(self, sample_network, tmp_path):
+        """Test Parquet export with empty result."""
+        pyarrow = pytest.importorskip("pyarrow")
+        from py3plex.dsl import save_to_parquet, load_from_parquet
+
+        output_file = tmp_path / "empty.parquet"
+
+        # Query that returns no results
+        result = (
+            Q.nodes()
+            .from_layers(L["social"])
+            .where(degree__gt=1000)  # No nodes have degree > 1000
+            .execute(sample_network)
+        )
+
+        save_to_parquet(result, str(output_file))
+
+        # Load back
+        df = load_from_parquet(str(output_file))
+        assert len(df) == 0
+        assert "id" in df.columns  # Columns should still exist

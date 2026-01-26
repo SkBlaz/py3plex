@@ -992,6 +992,25 @@ class QueryResult:
 
         return pa.table(data)
 
+    def to_parquet(self, path: str):
+        """Export results to Parquet file.
+
+        Args:
+            path: Output file path
+
+        Raises:
+            ImportError: If pyarrow is not available
+        """
+        try:
+            import pyarrow.parquet as pq
+        except ImportError:
+            raise ImportError(
+                "pyarrow is required for to_parquet(). Install with: pip install pyarrow"
+            )
+
+        table = self.to_arrow()
+        pq.write_table(table, path)
+
     def to_dict(self) -> Dict[str, Any]:
         """Export results as a dictionary.
 
