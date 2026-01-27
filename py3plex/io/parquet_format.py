@@ -65,8 +65,9 @@ def save_network_to_parquet(net, path: Union[str, Path]) -> None:
     # Use atomic write: create temp dir, then rename
     temp_dir = None
     try:
-        # Create temp directory
-        temp_dir = Path(tempfile.mkdtemp(prefix='parquet_', dir=path.parent))
+        # Create temp directory in parent if it exists, otherwise use system temp
+        parent_dir = path.parent if path.parent.exists() else None
+        temp_dir = Path(tempfile.mkdtemp(prefix='parquet_', dir=parent_dir))
         
         # Write nodes table
         nodes_data = []
