@@ -311,3 +311,80 @@ def _write_json(rows: List[Dict[str, Any]], columns: List[str], spec: ExportSpec
     
     with open(spec.path, 'w', encoding='utf-8') as f:
         json.dump(output, f, indent=indent)
+
+
+def save_to_parquet(result: Any, path: str, columns: Optional[List[str]] = None) -> None:
+    """Save query result to Parquet file.
+    
+    This is a convenience function for saving QueryResult or similar objects
+    to Parquet format.
+    
+    Args:
+        result: Query result (QueryResult or compatible type)
+        path: Output file path
+        columns: Optional column selection
+        
+    Raises:
+        ImportError: If pyarrow is not available
+        DslExecutionError: If result type is not supported
+    """
+    try:
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+    except ImportError:
+        raise ImportError(
+            "pyarrow is required for Parquet export. Install with: pip install pyarrow"
+        )
+    
+    # If result has a to_parquet method, use it directly
+    if hasattr(result, 'to_parquet'):
+        result.to_parquet(path)
+        return
+    
+    # Otherwise, normalize to rows and convert to Arrow table
+    try:
+        rows, col_names = _normalize_result_to_rows(result, columns)
+    except Exception as e:
+        raise DslExecutionError(
+            f"Cannot export result of type {type(result).__name__} to Parquet: {e}"
+        )
+    
+    # Build Arrow table from rows
+    data = {col: [row.get(col) for row in rows] for col in col_names}
+    table = pa.table(data)
+    
+    # Write to Parquet
+    try:
+        pq.write_table(table, path)
+    except Exception as e:
+        raise DslExecutionError(f"Failed to write Parquet file '{path}': {e}")
+
+
+def load_from_parquet(path: str) -> Any:
+    """Load query result from Parquet file.
+    
+    Args:
+        path: Input file path
+        
+    Returns:
+        pandas DataFrame with the loaded data
+        
+    Raises:
+        ImportError: If pyarrow or pandas is not available
+        DslExecutionError: If file cannot be read
+    """
+    try:
+        import pyarrow.parquet as pq
+        import pandas as pd
+    except ImportError:
+        raise ImportError(
+            "pyarrow and pandas are required for Parquet import. "
+            "Install with: pip install pyarrow pandas"
+        )
+    
+    try:
+        table = pq.read_table(path)
+        return table.to_pandas()
+    except Exception as e:
+        raise DslExecutionError(f"Failed to read Parquet file '{path}': {e}")
+
