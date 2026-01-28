@@ -341,11 +341,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_smallest_community"><code class="docutils literal notranslate"><span class="pre">get_smallest_community()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.lint"><code class="docutils literal notranslate"><span class="pre">lint()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.list_operators"><code class="docutils literal notranslate"><span class="pre">list_operators()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.load_from_parquet"><code class="docutils literal notranslate"><span class="pre">load_from_parquet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.match_pattern"><code class="docutils literal notranslate"><span class="pre">match_pattern()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.plan_query"><code class="docutils literal notranslate"><span class="pre">plan_query()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.register_operator"><code class="docutils literal notranslate"><span class="pre">register_operator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.reset_global_uq_defaults"><code class="docutils literal notranslate"><span class="pre">reset_global_uq_defaults()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.resolve_uq_config"><code class="docutils literal notranslate"><span class="pre">resolve_uq_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.save_to_parquet"><code class="docutils literal notranslate"><span class="pre">save_to_parquet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.select_high_degree_nodes"><code class="docutils literal notranslate"><span class="pre">select_high_degree_nodes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.select_nodes_by_layer"><code class="docutils literal notranslate"><span class="pre">select_nodes_by_layer()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.set_global_cache"><code class="docutils literal notranslate"><span class="pre">set_global_cache()</span></code></a></li>
@@ -14677,6 +14679,20 @@ overwhelming output.</p></li>
 </div>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.QueryResult.to_parquet">
+<span class="sig-name descname"><span class="pre">to_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.QueryResult.to_parquet" title="Link to this definition"></a></dt>
+<dd><p>Export results to Parquet file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – Output file path</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ImportError</strong> – If pyarrow is not available</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="py3plex.dsl.QueryResult.uq_columns">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uq_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#py3plex.dsl.QueryResult.uq_columns" title="Link to this definition"></a></dt>
@@ -18133,6 +18149,26 @@ into a tabular format and dispatches to format-specific writers.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.load_from_parquet">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">load_from_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#py3plex.dsl.load_from_parquet" title="Link to this definition"></a></dt>
+<dd><p>Load query result from Parquet file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – Input file path</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pandas DataFrame with the loaded data</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ImportError</strong> – If pyarrow or pandas is not available</p></li>
+<li><p><a class="reference internal" href="#py3plex.dsl.DslExecutionError" title="py3plex.dsl.DslExecutionError"><strong>DslExecutionError</strong></a> – If file cannot be read</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="py3plex.dsl.match_pattern">
 <span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">match_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py3plex.dsl.PatternGraph" title="py3plex.dsl.patterns.ir.PatternGraph"><span class="pre">PatternGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py3plex.dsl.PatternPlan" title="py3plex.dsl.patterns.compiler.PatternPlan"><span class="pre">PatternPlan</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#py3plex.dsl.MatchRow" title="py3plex.dsl.patterns.ir.MatchRow"><span class="pre">MatchRow</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.match_pattern" title="Link to this definition"></a></dt>
 <dd><p>Execute pattern matching on a network.</p>
@@ -18229,6 +18265,29 @@ into a tabular format and dispatches to format-specific writers.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#py3plex.dsl.UQResolutionError" title="py3plex.dsl.UQResolutionError"><strong>UQResolutionError</strong></a> – If conflicting configs at same priority level</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.save_to_parquet">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">save_to_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.dsl.save_to_parquet" title="Link to this definition"></a></dt>
+<dd><p>Save query result to Parquet file.</p>
+<p>This is a convenience function for saving QueryResult or similar objects
+to Parquet format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> – Query result (QueryResult or compatible type)</p></li>
+<li><p><strong>path</strong> – Output file path</p></li>
+<li><p><strong>columns</strong> – Optional column selection</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ImportError</strong> – If pyarrow is not available</p></li>
+<li><p><a class="reference internal" href="#py3plex.dsl.DslExecutionError" title="py3plex.dsl.DslExecutionError"><strong>DslExecutionError</strong></a> – If result type is not supported</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

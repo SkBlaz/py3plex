@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jan 27, 2026}
+\date{Jan 28, 2026}
 \release{1.1.2}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -14704,12 +14704,137 @@ Persist just one layer to a simpler graph file.
 \subsubsection{High\sphinxhyphen{}Performance: Apache Arrow/Parquet}
 \label{\detokenize{how-to/export_serialize:high-performance-apache-arrow-parquet}}
 
-\paragraph{For Large Networks}
-\label{\detokenize{how-to/export_serialize:for-large-networks}}
+\paragraph{Zero\sphinxhyphen{}Loss Network Interchange (Recommended)}
+\label{\detokenize{how-to/export_serialize:zero-loss-network-interchange-recommended}}
 \sphinxAtStartPar
-Use columnar storage (Arrow/Parquet) to handle large edge lists efficiently.
-These formats preserve data types, compress well, and load quickly for analytics
-workloads.
+py3plex provides zero\sphinxhyphen{}loss network serialization using Arrow and Parquet formats.
+These preserve multilayer identity, attributes, network type, and directedness.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Arrow Format (Single File)}
+
+\sphinxAtStartPar
+Arrow is the preferred format for single\sphinxhyphen{}file storage with embedded metadata.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{io}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{save\PYGZus{}to\PYGZus{}arrow}\PYG{p}{,} \PYG{n}{load\PYGZus{}from\PYGZus{}arrow}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+
+\PYG{c+c1}{\PYGZsh{} Create network with attributes}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{age}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{30}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{age}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{25}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{work}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+     \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+     \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{weight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{1.5}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{timestamp}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2024\PYGZhy{}01\PYGZhy{}01}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Save to Arrow (single file)}
+\PYG{n}{save\PYGZus{}to\PYGZus{}arrow}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{network.arrow}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Load back with zero loss}
+\PYG{n}{loaded} \PYG{o}{=} \PYG{n}{load\PYGZus{}from\PYGZus{}arrow}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{network.arrow}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Verify preservation}
+\PYG{k}{assert} \PYG{n}{loaded}\PYG{o}{.}\PYG{n}{get\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)} \PYG{o}{==} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}
+\PYG{k}{assert} \PYG{n}{loaded}\PYG{o}{.}\PYG{n}{directed} \PYG{o}{==} \PYG{n}{network}\PYG{o}{.}\PYG{n}{directed}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Parquet Format (Directory)}
+
+\sphinxAtStartPar
+Parquet uses a directory layout for organizational clarity.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{io}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{save\PYGZus{}network\PYGZus{}to\PYGZus{}parquet}\PYG{p}{,} \PYG{n}{load\PYGZus{}network\PYGZus{}from\PYGZus{}parquet}
+
+\PYG{c+c1}{\PYGZsh{} Save to Parquet directory}
+\PYG{c+c1}{\PYGZsh{} Creates: network\PYGZus{}dir/nodes.parquet}
+\PYG{c+c1}{\PYGZsh{}          network\PYGZus{}dir/edges.parquet}
+\PYG{c+c1}{\PYGZsh{}          network\PYGZus{}dir/metadata.json}
+\PYG{n}{save\PYGZus{}network\PYGZus{}to\PYGZus{}parquet}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{network\PYGZus{}dir}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Load back}
+\PYG{n}{loaded} \PYG{o}{=} \PYG{n}{load\PYGZus{}network\PYGZus{}from\PYGZus{}parquet}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{network\PYGZus{}dir}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Canonical Schema}
+
+\sphinxAtStartPar
+Both formats use the same schema internally:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Nodes table}: Required columns are \sphinxcode{\sphinxupquote{node}} (ID) and \sphinxcode{\sphinxupquote{layer}}. Optional columns for attributes.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Edges table}: Required columns are \sphinxcode{\sphinxupquote{source}}, \sphinxcode{\sphinxupquote{target}}, \sphinxcode{\sphinxupquote{source\_layer}}, \sphinxcode{\sphinxupquote{target\_layer}}. Optional: \sphinxcode{\sphinxupquote{weight}} and other attributes.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Metadata}: Includes \sphinxcode{\sphinxupquote{schema\_version}}, \sphinxcode{\sphinxupquote{py3plex\_version}}, \sphinxcode{\sphinxupquote{network\_type}} (multilayer/multiplex), \sphinxcode{\sphinxupquote{directed}}, attribute type manifest, and JSON\sphinxhyphen{}encoded column tracking.
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Complex Attributes}
+
+\sphinxAtStartPar
+Non\sphinxhyphen{}scalar attributes (dict, list, set, tuple) are JSON\sphinxhyphen{}encoded automatically:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Add node with complex attribute}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+     \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tags}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{researcher}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{python}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}
+     \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{metadata}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{department}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{CS}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{level}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{5}\PYG{p}{\PYGZcb{}}\PYG{p}{\PYGZcb{}}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Save and load \PYGZhy{} complex attributes preserved}
+\PYG{n}{save\PYGZus{}to\PYGZus{}arrow}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{network.arrow}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{loaded} \PYG{o}{=} \PYG{n}{load\PYGZus{}from\PYGZus{}arrow}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{network.arrow}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Complex attributes reconstructed}
+\PYG{n}{alice\PYGZus{}attrs} \PYG{o}{=} \PYG{n}{loaded}\PYG{o}{.}\PYG{n}{get\PYGZus{}node\PYGZus{}attributes}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{k}{assert} \PYG{n}{alice\PYGZus{}attrs}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tags}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{==} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{researcher}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{python}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+\PYG{k}{assert} \PYG{n}{alice\PYGZus{}attrs}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{metadata}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{department}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{CS}\PYG{l+s+s1}{\PYGZsq{}}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{QueryResult Export}
+
+\sphinxAtStartPar
+Save analysis results in Parquet format:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{save\PYGZus{}to\PYGZus{}parquet}\PYG{p}{,} \PYG{n}{load\PYGZus{}from\PYGZus{}parquet}
+
+\PYG{c+c1}{\PYGZsh{} Compute statistics}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Save to Parquet}
+\PYG{n}{save\PYGZus{}to\PYGZus{}parquet}\PYG{p}{(}\PYG{n}{result}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node\PYGZus{}stats.parquet}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Load back as DataFrame}
+\PYG{n}{df} \PYG{o}{=} \PYG{n}{load\PYGZus{}from\PYGZus{}parquet}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{node\PYGZus{}stats.parquet}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Legacy Parquet (Edge Lists Only)}
+\label{\detokenize{how-to/export_serialize:legacy-parquet-edge-lists-only}}
+\sphinxAtStartPar
+For compatibility with external tools, you can export just edge lists:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{pyarrow}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{pa}
@@ -14744,32 +14869,12 @@ workloads.
 \PYG{n}{pq}\PYG{o}{.}\PYG{n}{write\PYGZus{}table}\PYG{p}{(}\PYG{n}{table}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{network.parquet}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
-
-\paragraph{Load from Parquet}
-\label{\detokenize{how-to/export_serialize:load-from-parquet}}
+\begin{sphinxadmonition}{note}{Note:}
 \sphinxAtStartPar
-Rebuild a network from a Parquet edge list. Ensure \sphinxcode{\sphinxupquote{pyarrow}} is installed.
-
-\begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{pyarrow}\PYG{n+nn}{.}\PYG{n+nn}{parquet}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{pq}
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
-
-\PYG{c+c1}{\PYGZsh{} Load table}
-\PYG{n}{table} \PYG{o}{=} \PYG{n}{pq}\PYG{o}{.}\PYG{n}{read\PYGZus{}table}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{network.parquet}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
-\PYG{n}{df} \PYG{o}{=} \PYG{n}{table}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
-
-\PYG{c+c1}{\PYGZsh{} Reconstruct network}
-\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
-
-\PYG{k}{for} \PYG{n}{\PYGZus{}}\PYG{p}{,} \PYG{n}{row} \PYG{o+ow}{in} \PYG{n}{df}\PYG{o}{.}\PYG{n}{iterrows}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
-    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edge}\PYG{p}{(}
-        \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}
-        \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}
-        \PYG{n}{weight}\PYG{o}{=}\PYG{n}{row}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{weight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
-    \PYG{p}{)}
-
-\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
-\end{sphinxVerbatim}
+The legacy approach above does not preserve node attributes, network type, or
+directedness. Use \sphinxcode{\sphinxupquote{save\_to\_arrow}} or \sphinxcode{\sphinxupquote{save\_network\_to\_parquet}} for zero\sphinxhyphen{}loss
+preservation.
+\end{sphinxadmonition}
 
 
 \subsubsection{Export Statistics and Results}
@@ -55909,6 +56014,31 @@ pandas.DataFrame with items and computed attributes
 
 \end{fulllineitems}\end{savenotes}
 
+\index{to\_parquet() (py3plex.dsl.QueryResult method)@\spxentry{to\_parquet()}\spxextra{py3plex.dsl.QueryResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryResult.to_parquet}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_parquet}}}
+{\sphinxparam{\DUrole{n}{path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Export results to Parquet file.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} Output file path
+
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ImportError}} \textendash{} If pyarrow is not available
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{uq\_columns (py3plex.dsl.QueryResult property)@\spxentry{uq\_columns}\spxextra{py3plex.dsl.QueryResult property}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -62372,6 +62502,42 @@ Dictionary mapping operator names to DSLOperator instances
 
 \end{fulllineitems}\end{savenotes}
 
+\index{load\_from\_parquet() (in module py3plex.dsl)@\spxentry{load\_from\_parquet()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.load_from_parquet}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{load\_from\_parquet}}}
+{\sphinxparam{\DUrole{n}{path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
+{{ $\rightarrow$ Any}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Load query result from Parquet file.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} Input file path
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+pandas DataFrame with the loaded data
+
+\sphinxlineitem{Raises}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ImportError}} \textendash{} If pyarrow or pandas is not available
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxstyleliteralstrong{\sphinxupquote{DslExecutionError}}}}} \textendash{} If file cannot be read
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{match\_pattern() (in module py3plex.dsl)@\spxentry{match\_pattern()}\spxextra{in module py3plex.dsl}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -62582,6 +62748,53 @@ ResolvedUQConfig if UQ is enabled, None otherwise
 \sphinxlineitem{Raises}
 \sphinxAtStartPar
 {\hyperref[\detokenize{reference/api_index:py3plex.dsl.UQResolutionError}]{\sphinxcrossref{\sphinxstyleliteralstrong{\sphinxupquote{UQResolutionError}}}}} \textendash{} If conflicting configs at same priority level
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{save\_to\_parquet() (in module py3plex.dsl)@\spxentry{save\_to\_parquet()}\spxextra{in module py3plex.dsl}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.save_to_parquet}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{save\_to\_parquet}}}
+{\sphinxparam{\DUrole{n}{result}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{columns}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Save query result to Parquet file.
+
+\sphinxAtStartPar
+This is a convenience function for saving QueryResult or similar objects
+to Parquet format.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{result}} \textendash{} Query result (QueryResult or compatible type)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{path}} \textendash{} Output file path
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{columns}} \textendash{} Optional column selection
+
+\end{itemize}
+
+\sphinxlineitem{Raises}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ImportError}} \textendash{} If pyarrow is not available
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxstyleliteralstrong{\sphinxupquote{DslExecutionError}}}}} \textendash{} If result type is not supported
+
+\end{itemize}
 
 \end{description}\end{quote}
 

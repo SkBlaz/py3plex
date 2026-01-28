@@ -88,8 +88,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#high-performance-apache-arrow-parquet">High-Performance: Apache Arrow/Parquet</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#for-large-networks">For Large Networks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#load-from-parquet">Load from Parquet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zero-loss-network-interchange-recommended">Zero-Loss Network Interchange (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#legacy-parquet-edge-lists-only">Legacy Parquet (Edge Lists Only)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#export-statistics-and-results">Export Statistics and Results</a><ul>
@@ -403,11 +403,101 @@ the same ID across layers.</p>
 </section>
 <section id="high-performance-apache-arrow-parquet">
 <h2>High-Performance: Apache Arrow/Parquet<a class="headerlink" href="#high-performance-apache-arrow-parquet" title="Link to this heading"></a></h2>
-<section id="for-large-networks">
-<h3>For Large Networks<a class="headerlink" href="#for-large-networks" title="Link to this heading"></a></h3>
-<p>Use columnar storage (Arrow/Parquet) to handle large edge lists efficiently.
-These formats preserve data types, compress well, and load quickly for analytics
-workloads.</p>
+<section id="zero-loss-network-interchange-recommended">
+<h3>Zero-Loss Network Interchange (Recommended)<a class="headerlink" href="#zero-loss-network-interchange-recommended" title="Link to this heading"></a></h3>
+<p>py3plex provides zero-loss network serialization using Arrow and Parquet formats.
+These preserve multilayer identity, attributes, network type, and directedness.</p>
+<p><strong>Arrow Format (Single File)</strong></p>
+<p>Arrow is the preferred format for single-file storage with embedded metadata.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_to_arrow</span><span class="p">,</span> <span class="n">load_from_arrow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create network with attributes</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-01&#39;</span><span class="p">}</span>
+<span class="p">])</span>
+
+<span class="c1"># Save to Arrow (single file)</span>
+<span class="n">save_to_arrow</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load back with zero loss</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_from_arrow</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+
+<span class="c1"># Verify preservation</span>
+<span class="k">assert</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span> <span class="o">==</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">loaded</span><span class="o">.</span><span class="n">directed</span> <span class="o">==</span> <span class="n">network</span><span class="o">.</span><span class="n">directed</span>
+</pre></div>
+</div>
+<p><strong>Parquet Format (Directory)</strong></p>
+<p>Parquet uses a directory layout for organizational clarity.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_network_to_parquet</span><span class="p">,</span> <span class="n">load_network_from_parquet</span>
+
+<span class="c1"># Save to Parquet directory</span>
+<span class="c1"># Creates: network_dir/nodes.parquet</span>
+<span class="c1">#          network_dir/edges.parquet</span>
+<span class="c1">#          network_dir/metadata.json</span>
+<span class="n">save_network_to_parquet</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;network_dir&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load back</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_network_from_parquet</span><span class="p">(</span><span class="s1">&#39;network_dir&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Canonical Schema</strong></p>
+<p>Both formats use the same schema internally:</p>
+<ul class="simple">
+<li><p><strong>Nodes table</strong>: Required columns are <code class="docutils literal notranslate"><span class="pre">node</span></code> (ID) and <code class="docutils literal notranslate"><span class="pre">layer</span></code>. Optional columns for attributes.</p></li>
+<li><p><strong>Edges table</strong>: Required columns are <code class="docutils literal notranslate"><span class="pre">source</span></code>, <code class="docutils literal notranslate"><span class="pre">target</span></code>, <code class="docutils literal notranslate"><span class="pre">source_layer</span></code>, <code class="docutils literal notranslate"><span class="pre">target_layer</span></code>. Optional: <code class="docutils literal notranslate"><span class="pre">weight</span></code> and other attributes.</p></li>
+<li><p><strong>Metadata</strong>: Includes <code class="docutils literal notranslate"><span class="pre">schema_version</span></code>, <code class="docutils literal notranslate"><span class="pre">py3plex_version</span></code>, <code class="docutils literal notranslate"><span class="pre">network_type</span></code> (multilayer/multiplex), <code class="docutils literal notranslate"><span class="pre">directed</span></code>, attribute type manifest, and JSON-encoded column tracking.</p></li>
+</ul>
+<p><strong>Complex Attributes</strong></p>
+<p>Non-scalar attributes (dict, list, set, tuple) are JSON-encoded automatically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add node with complex attribute</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;researcher&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">],</span>
+     <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="s1">&#39;CS&#39;</span><span class="p">,</span> <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}}</span>
+<span class="p">])</span>
+
+<span class="c1"># Save and load - complex attributes preserved</span>
+<span class="n">save_to_arrow</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_from_arrow</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+
+<span class="c1"># Complex attributes reconstructed</span>
+<span class="n">alice_attrs</span> <span class="o">=</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">alice_attrs</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;researcher&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">alice_attrs</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;department&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CS&#39;</span>
+</pre></div>
+</div>
+<p><strong>QueryResult Export</strong></p>
+<p>Save analysis results in Parquet format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">save_to_parquet</span><span class="p">,</span> <span class="n">load_from_parquet</span>
+
+<span class="c1"># Compute statistics</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Save to Parquet</span>
+<span class="n">save_to_parquet</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;node_stats.parquet&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load back as DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">load_from_parquet</span><span class="p">(</span><span class="s1">&#39;node_stats.parquet&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="legacy-parquet-edge-lists-only">
+<h3>Legacy Parquet (Edge Lists Only)<a class="headerlink" href="#legacy-parquet-edge-lists-only" title="Link to this heading"></a></h3>
+<p>For compatibility with external tools, you can export just edge lists:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.parquet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pq</span>
 
@@ -440,29 +530,11 @@ workloads.</p>
 <span class="n">pq</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="load-from-parquet">
-<h3>Load from Parquet<a class="headerlink" href="#load-from-parquet" title="Link to this heading"></a></h3>
-<p>Rebuild a network from a Parquet edge list. Ensure <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> is installed.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.parquet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pq</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-
-<span class="c1"># Load table</span>
-<span class="n">table</span> <span class="o">=</span> <span class="n">pq</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-
-<span class="c1"># Reconstruct network</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
-        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;source_layer&#39;</span><span class="p">],</span>
-        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;target_layer&#39;</span><span class="p">],</span>
-        <span class="n">weight</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span>
-    <span class="p">)</span>
-
-<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The legacy approach above does not preserve node attributes, network type, or
+directedness. Use <code class="docutils literal notranslate"><span class="pre">save_to_arrow</span></code> or <code class="docutils literal notranslate"><span class="pre">save_network_to_parquet</span></code> for zero-loss
+preservation.</p>
 </div>
 </section>
 </section>
