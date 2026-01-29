@@ -819,6 +819,29 @@ class multi_layer_network:
         """
         return len(self) == 0
 
+    @property
+    def layer_names(self) -> List[Any]:
+        """Alias for `layers` property - list of unique layer identifiers.
+
+        This property provides backward compatibility with code that uses
+        `layer_names` instead of `layers`.
+
+        Returns:
+            list: Sorted list of layer identifiers
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> _ = net.add_nodes([
+            ...     {'source': 'A', 'type': 'social'},
+            ...     {'source': 'B', 'type': 'work'}
+            ... ])
+            >>> net.layer_names
+            ['social', 'work']
+            >>> net.layer_names == net.layers  # Alias relationship
+            True
+        """
+        return self.layers
+
     # ─────────────────────────────────────────────────────────────────────────
     # Convenience Factory Methods
     # ─────────────────────────────────────────────────────────────────────────
