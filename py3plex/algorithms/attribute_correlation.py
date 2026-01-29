@@ -421,3 +421,195 @@ def multilayer_assortativity(
             return {'global': assortativity}
         except:
             return {'global': 0.0}
+
+
+def compute_attribute_assortativity(
+    network: Any,
+    attribute_name: str,
+    by_layer: bool = True
+) -> Dict[Any, float]:
+    """Compute attribute assortativity for multilayer network.
+    
+    This is an alias for multilayer_assortativity with explicit attribute name.
+    Measures tendency of nodes with similar attribute values to connect.
+    
+    Args:
+        network: Multilayer network object
+        attribute_name: Node attribute for assortativity computation
+        by_layer: Compute per layer or globally
+        
+    Returns:
+        Dictionary mapping layers (or 'global') to assortativity coefficients
+        
+    Example:
+        >>> net = load_network(...)
+        >>> result = compute_attribute_assortativity(net, 'group', by_layer=True)
+        >>> for layer, assort in result.items():
+        ...     print(f"{layer}: {assort:.3f}")
+        
+    References:
+        - Newman, M. E. (2002). "Assortative mixing in networks."
+          Physical Review Letters, 89(20), 208701.
+    """
+    return multilayer_assortativity(network, attribute_name, by_layer)
+
+
+def attribute_centrality_independence_test(
+    network: Any,
+    attribute_name: str,
+    centrality_type: str = "degree",
+    test_method: str = "chi2"
+) -> Dict[str, Any]:
+    """Test statistical independence between node attribute and centrality.
+    
+    Tests the null hypothesis that attribute values and centrality are independent.
+    
+    Args:
+        network: Multilayer network object
+        attribute_name: Node attribute to test
+        centrality_type: Type of centrality ('degree', 'betweenness', 'closeness')
+        test_method: Statistical test method ('chi2' for contingency, 'correlation' for continuous)
+        
+    Returns:
+        Dictionary with test statistics, p-value, and interpretation
+        
+    Example:
+        >>> net = load_network(...)
+        >>> result = attribute_centrality_independence_test(net, 'category', 'degree')
+        >>> print(f"Chi-square: {result['statistic']}, p-value: {result['p_value']}")
+        >>> if result['p_value'] < 0.05:
+        ...     print("Significant dependence detected")
+        
+    References:
+        - Agresti, A. (2002). "Categorical Data Analysis" (2nd ed.). Wiley.
+    """
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        raise NetworkConstructionError(
+            "Network object has no core_network attribute",
+            suggestions=[
+                "Ensure the network has been properly initialized",
+                "Add edges to the network before analysis"
+            ]
+        )
+    
+    import networkx as nx
+    
+    G = network.core_network
+    
+    # Compute centrality
+    valid_centrality_types = ["degree", "betweenness", "closeness", "eigenvector"]
+    if centrality_type == "degree":
+        centrality = dict(G.degree())
+    elif centrality_type == "betweenness":
+        centrality = nx.betweenness_centrality(G)
+    elif centrality_type == "closeness":
+        centrality = nx.closeness_centrality(G)
+    elif centrality_type == "eigenvector":
+        try:
+            centrality = nx.eigenvector_centrality(G, max_iter=1000)
+        except:
+            centrality = dict(G.degree())  # Fallback
+    else:
+        from py3plex.errors import find_similar
+        did_you_mean = find_similar(centrality_type, valid_centrality_types)
+        raise AlgorithmError(
+            f"Centrality type '{centrality_type}' is not recognized",
+            algorithm_name=centrality_type,
+            valid_algorithms=valid_centrality_types,
+            did_you_mean=did_you_mean
+        )
+    
+    # Get node attributes
+    node_attrs = nx.get_node_attributes(G, attribute_name)
+    
+    # Collect paired values
+    attrs = []
+    cents = []
+    
+    for node in G.nodes():
+        if node in node_attrs and node in centrality:
+            attrs.append(node_attrs[node])
+            cents.append(centrality[node])
+    
+    if len(attrs) < 2:
+        return {
+            'statistic': 0,
+            'p_value': 1.0,
+            'method': test_method,
+            'interpretation': 'insufficient_data',
+            'n_nodes': len(attrs)
+        }
+    
+    attrs = np.array(attrs)
+    cents = np.array(cents)
+    
+    if test_method == "chi2":
+        # Use contingency table approach
+        # Discretize both into bins
+        n_bins = min(5, len(attrs) // 2)
+        if n_bins < 2:
+            n_bins = 2
+        
+        try:
+            attr_bins = np.linspace(np.min(attrs), np.max(attrs), n_bins + 1)
+            cent_bins = np.linspace(np.min(cents), np.max(cents), n_bins + 1)
+            
+            attr_binned = np.digitize(attrs, attr_bins[:-1]) - 1
+            cent_binned = np.digitize(cents, cent_bins[:-1]) - 1
+            
+            # Clamp to valid range
+            attr_binned = np.clip(attr_binned, 0, n_bins - 1)
+            cent_binned = np.clip(cent_binned, 0, n_bins - 1)
+            
+            # Create contingency table
+            contingency = np.zeros((n_bins, n_bins))
+            for a, c in zip(attr_binned, cent_binned):
+                contingency[a, c] += 1
+            
+            # Chi-square test
+            from scipy.stats import chi2_contingency
+            chi2, p_value, dof, expected = chi2_contingency(contingency)
+            
+            # Clamp p-value to valid range
+            p_value = np.clip(p_value, 0.0, 1.0)
+            
+            return {
+                'statistic': chi2,
+                'p_value': p_value,
+                'dof': dof,
+                'method': 'chi2_contingency',
+                'interpretation': 'independent' if p_value > 0.05 else 'dependent',
+                'n_nodes': len(attrs),
+                'contingency_table': contingency.tolist()
+            }
+        except Exception as e:
+            # Fallback to correlation test
+            pass
+    
+    # Fallback: Use correlation test for continuous data
+    try:
+        corr, p_value = pearsonr(attrs, cents)
+        
+        # Handle NaN/inf cases
+        if not np.isfinite(corr):
+            corr = 0.0
+        if not np.isfinite(p_value) or p_value < 0 or p_value > 1:
+            p_value = np.clip(p_value, 0.0, 1.0)
+        
+        return {
+            'statistic': corr,
+            'p_value': p_value,
+            'method': 'pearson_correlation',
+            'interpretation': 'independent' if abs(corr) < 0.3 and p_value > 0.05 else 'dependent',
+            'n_nodes': len(attrs)
+        }
+    except Exception as e:
+        return {
+            'statistic': 0,
+            'p_value': 1.0,
+            'method': 'fallback',
+            'interpretation': 'error',
+            'error': str(e),
+            'n_nodes': len(attrs)
+        }
+

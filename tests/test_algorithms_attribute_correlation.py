@@ -10,7 +10,7 @@ from py3plex.core import multinet
 from py3plex.algorithms.attribute_correlation import (
     correlate_attributes_with_centrality,
     compute_attribute_assortativity,
-    test_attribute_centrality_independence,
+    attribute_centrality_independence_test,
 )
 
 
@@ -160,7 +160,7 @@ class TestAttributeCentralityIndependence:
         ])
         
         try:
-            result = test_attribute_centrality_independence(
+            result = attribute_centrality_independence_test(
                 net, 'category', centrality_type='degree'
             )
             assert isinstance(result, dict)
@@ -178,7 +178,7 @@ class TestAttributeCentralityIndependence:
         ])
         
         try:
-            result = test_attribute_centrality_independence(
+            result = attribute_centrality_independence_test(
                 net, 'attr', centrality_type='degree'
             )
             assert result is not None

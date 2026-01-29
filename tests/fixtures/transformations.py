@@ -31,6 +31,7 @@ def relabel_nodes(net: multi_layer_network, mapping: Dict[Any, Any]) -> multi_la
         New multilayer network with relabeled nodes
         
     Example:
+        >>> from tests.fixtures.canonical_graphs import tiny_two_layer
         >>> net = tiny_two_layer()
         >>> mapping = {'A': 'node_0', 'B': 'node_1', 'C': 'node_2', 'D': 'node_3'}
         >>> relabeled = relabel_nodes(net, mapping)
@@ -87,6 +88,7 @@ def permute_layers(net: multi_layer_network, perm: Dict[int, int]) -> multi_laye
         New multilayer network with permuted layer IDs
         
     Example:
+        >>> from tests.fixtures.canonical_graphs import small_three_layer
         >>> net = small_three_layer()
         >>> perm = {0: 2, 1: 0, 2: 1}  # Rotate layers
         >>> permuted = permute_layers(net, perm)
