@@ -81,7 +81,10 @@ def main():
         cmap="Blues"
     )
 
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
+    # Use repo-local output directory
+    import os
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(repo_root, "example_images")
 
 
     os.makedirs(output_dir, exist_ok=True)
@@ -103,7 +106,10 @@ def main():
         cmap="viridis"
     )
 
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
+    # Use repo-local output directory
+    import os
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(repo_root, "example_images")
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "multilayer_supra_heatmap_inter.png")
     fig.savefig(output_path, dpi=150, bbox_inches='tight')
@@ -123,7 +129,10 @@ def main():
         cmap="RdYlBu_r"
     )
 
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
+    # Use repo-local output directory
+    import os
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(repo_root, "example_images")
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "multilayer_supra_heatmap_rdylbu.png")
     fig.savefig(output_path, dpi=150, bbox_inches='tight')
