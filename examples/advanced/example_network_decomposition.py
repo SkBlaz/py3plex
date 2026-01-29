@@ -23,10 +23,9 @@ for decomposition in multilayer_network.get_decomposition():
                                    repetitions=5,
                                    normalization_scheme="freq"))
 
-    # results frame
+    # results frame (placeholder for type consistency)
     validation_results = pd.DataFrame()
 
-# construct a single dataframe
-for x in result_frames:
-    validation_results = validation_results.append(x, ignore_index=True)
+# construct a single dataframe using pd.concat
+validation_results = pd.concat(result_frames, ignore_index=True)
 print(validation_results)
