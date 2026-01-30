@@ -33,7 +33,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      timeout-minutes: 2
+      with:
+        fetch-depth: 1  # Shallow clone for faster checkout
+      timeout-minutes: 10  # Increased from 2 to handle network delays
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -141,7 +143,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      timeout-minutes: 2
+      with:
+        fetch-depth: 1  # Shallow clone for faster checkout
+      timeout-minutes: 10  # Increased from 2 to handle network delays
 
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
@@ -187,7 +191,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      timeout-minutes: 2
+      with:
+        fetch-depth: 1  # Shallow clone for faster checkout
+      timeout-minutes: 10  # Increased from 2 to handle network delays
 
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
