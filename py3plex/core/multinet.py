@@ -824,7 +824,8 @@ class multi_layer_network:
         """Alias for `layers` property - list of unique layer identifiers.
 
         This property provides backward compatibility with code that uses
-        `layer_names` instead of `layers`.
+        `layer_names` instead of `layers`. Can be set explicitly (e.g., by
+        `split_to_layers()`) or defaults to the `layers` property.
 
         Returns:
             list: Sorted list of layer identifiers
@@ -840,7 +841,17 @@ class multi_layer_network:
             >>> net.layer_names == net.layers  # Alias relationship
             True
         """
-        return self.layers
+        # Return explicitly set value if available, otherwise fall back to layers
+        return getattr(self, '_layer_names', None) or self.layers
+
+    @layer_names.setter
+    def layer_names(self, value: List[Any]) -> None:
+        """Set layer names explicitly.
+
+        Args:
+            value: List of layer identifiers
+        """
+        self._layer_names = value
 
     # ─────────────────────────────────────────────────────────────────────────
     # Convenience Factory Methods
