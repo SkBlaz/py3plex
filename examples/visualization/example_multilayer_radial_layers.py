@@ -87,7 +87,10 @@ def main():
         edge_alpha=0.5
     )
 
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
+    # Use repo-local output directory
+    import os
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(repo_root, "example_images")
 
 
     os.makedirs(output_dir, exist_ok=True)
@@ -112,7 +115,10 @@ def main():
         edge_alpha=0.6
     )
 
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
+    # Use repo-local output directory
+    import os
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(repo_root, "example_images")
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "multilayer_radial_intra_only.png")
     fig.savefig(output_path, dpi=150, bbox_inches='tight')
@@ -134,7 +140,10 @@ def main():
         edge_alpha=0.4
     )
 
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
+    # Use repo-local output directory
+    import os
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(repo_root, "example_images")
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "multilayer_radial_compact.png")
     fig.savefig(output_path, dpi=150, bbox_inches='tight')

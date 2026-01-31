@@ -83,7 +83,9 @@ def main():
 
     # Ensure output directory exists
     import os
-    output_dir = "/home/runner/work/py3plex/py3plex/example_images"
+    # Use repo-local output directory
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(repo_root, "example_images")
     os.makedirs(output_dir, exist_ok=True)
 
     # Example 1: Small multiples with shared layout
