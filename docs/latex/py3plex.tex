@@ -76,8 +76,8 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jan 28, 2026}
-\release{1.1.2}
+\date{Jan 31, 2026}
+\release{1.1.3}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
 \renewcommand{\releasename}{Release}
@@ -32257,6 +32257,47 @@ int
 \PYG{g+gp}{... }\PYG{p}{]}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net}\PYG{o}{.}\PYG{n}{layer\PYGZus{}count}
 \PYG{g+go}{2}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{layer\_names (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{layer\_names}\spxextra{py3plex.core.multinet.multi\_layer\_network property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network.layer_names}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{layer\_names}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Alias for \sphinxtitleref{layers} property \sphinxhyphen{} list of unique layer identifiers.
+
+\sphinxAtStartPar
+This property provides backward compatibility with code that uses
+\sphinxtitleref{layer\_names} instead of \sphinxtitleref{layers}. Can be set explicitly (e.g., by
+\sphinxtitleref{split\_to\_layers()}) or defaults to the \sphinxtitleref{layers} property.
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Sorted list of layer identifiers
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+list
+
+\end{description}\end{quote}
+\subsubsection*{Examples}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net} \PYG{o}{=} \PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{work}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+\PYG{g+gp}{... }\PYG{p}{]}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net}\PYG{o}{.}\PYG{n}{layer\PYGZus{}names}
+\PYG{g+go}{[\PYGZsq{}social\PYGZsq{}, \PYGZsq{}work\PYGZsq{}]}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net}\PYG{o}{.}\PYG{n}{layer\PYGZus{}names} \PYG{o}{==} \PYG{n}{net}\PYG{o}{.}\PYG{n}{layers}  \PYG{c+c1}{\PYGZsh{} Alias relationship}
+\PYG{g+go}{True}
 \end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
