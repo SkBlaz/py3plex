@@ -29,7 +29,7 @@
   - Remediation recommendations
   - Summary statistics
 
-- [x] **FLAKY_TEST_SUMMARY.md** - Executive summary (200+ lines)
+- [x] **FLAKY_TESTS_SUMMARY.md** - Executive summary (200+ lines)
   - Overview of deliverables
   - Key findings
   - Test suite health assessment
@@ -162,7 +162,7 @@ $ pip install -e .[dev]
 
 ### Internal Documents
 1. `FLAKY_TESTS_REPORT.md` - Detailed technical analysis
-2. `FLAKY_TEST_SUMMARY.md` - Executive summary
+2. `FLAKY_TESTS_SUMMARY.md` - Executive summary
 3. `docs/flaky_tests_guide.md` - Best practices
 4. `DELIVERABLES.md` - This file
 

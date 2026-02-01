@@ -1,6 +1,6 @@
 # Flaky Test Identification - Complete Index
 
-> **Quick Navigation:** Start with `FLAKY_TESTS_README.md` for a complete guide
+> **Quick Navigation:** Start with `FLAKY_TESTS_SUMMARY.md` for a complete guide
 
 ---
 
@@ -9,15 +9,14 @@
 This index provides a complete map of all deliverables from the flaky test identification project.
 
 ### 🎯 Start Here
-**`FLAKY_TESTS_README.md`** - Master guide with quick start, usage examples, and project overview
+**`FLAKY_TESTS_SUMMARY.md`** - Executive summary with key findings and project overview
 
 ---
 
 ## 📚 Documentation Files
 
 ### 1. Executive Summaries
-- **`FLAKY_TEST_SUMMARY.md`** (5.1K) - High-level project summary
-- **`FLAKY_TESTS_SUMMARY.md`** (5.7K) - Alternative summary format
+- **`FLAKY_TESTS_SUMMARY.md`** (5.7K) - High-level project summary
 - **`PROJECT_SUMMARY.txt`** (5.8K) - Visual ASCII summary
 
 ### 2. Technical Documentation
@@ -228,10 +227,9 @@ done
 ## 🔗 Quick Links
 
 ### Documentation
-- [Master Guide](FLAKY_TESTS_README.md) - Start here
+- [Executive Summary](FLAKY_TESTS_SUMMARY.md) - Start here
 - [Technical Report](FLAKY_TESTS_REPORT.md) - Detailed analysis
 - [Best Practices](docs/flaky_tests_guide.md) - Developer guide
-- [Executive Summary](FLAKY_TEST_SUMMARY.md) - High-level overview
 - [Project Checklist](DELIVERABLES.md) - Complete deliverables
 
 ### Tools
@@ -257,7 +255,7 @@ done
 ## 📞 Need Help?
 
 ### For Quick Start
-→ Read `FLAKY_TESTS_README.md`
+→ Read `FLAKY_TESTS_SUMMARY.md`
 
 ### For Technical Details
 → Read `FLAKY_TESTS_REPORT.md`
