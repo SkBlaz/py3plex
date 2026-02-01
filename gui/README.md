@@ -217,5 +217,3 @@ docker compose up -d
 - **API Documentation**: http://localhost:8080/api/docs (when running)
 - **Job Monitoring**: http://localhost:5555 (Flower dashboard)
 - **Main Documentation**: [../README.md](../README.md)
-- **Ergonomics Guide**: [ERGONOMICS.md](ERGONOMICS.md)
-- **Development Summary**: [SUMMARY.md](SUMMARY.md)
