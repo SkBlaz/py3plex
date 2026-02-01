@@ -34,10 +34,9 @@ Modified Files (2):
   ✅ pyproject.toml                           - Infrastructure upgrade
   ✅ tests/verification/test_uq_correctness.py - Flaky marker added
 
-New Documentation (7 files, 500+ lines):
-  ✅ FLAKY_TESTS_README.md                    - Master guide (5.0K)
+New Documentation (6 files, 500+ lines):
   ✅ FLAKY_TESTS_REPORT.md                    - Technical report (7.3K)
-  ✅ FLAKY_TEST_SUMMARY.md                    - Executive summary (5.1K)
+  ✅ FLAKY_TESTS_SUMMARY.md                   - Executive summary (5.7K)
   ✅ docs/flaky_tests_guide.md                - Best practices (3.6K)
   ✅ DELIVERABLES.md                          - Project checklist (5.8K)
   ✅ detect_flaky_tests.py                    - Detection script (14K)
@@ -68,7 +67,7 @@ Detect Flaky Tests:
   $ python detect_flaky_tests.py --runs 10 --output report.json
 
 Read Documentation:
-  Start → FLAKY_TESTS_README.md (master guide)
+  Start → FLAKY_TESTS_SUMMARY.md (executive summary)
   Deep → FLAKY_TESTS_REPORT.md (technical details)
   Best → docs/flaky_tests_guide.md (best practices)
 
@@ -97,11 +96,10 @@ Backward Compatibility:  🟢 Maintained
 🔗 DOCUMENTATION INDEX
 ────────────────────────────────────────────────────────────────────────────────
 
-1. FLAKY_TESTS_README.md    - Master guide with quick start
+1. FLAKY_TESTS_SUMMARY.md    - Executive summary
 2. FLAKY_TESTS_REPORT.md    - Detailed technical analysis
-3. FLAKY_TEST_SUMMARY.md    - Executive summary
-4. docs/flaky_tests_guide.md - Developer best practices
-5. DELIVERABLES.md          - Complete project checklist
+3. docs/flaky_tests_guide.md - Developer best practices
+4. DELIVERABLES.md          - Complete project checklist
 
 ────────────────────────────────────────────────────────────────────────────────
 🚀 NEXT STEPS (OPTIONAL)
@@ -133,7 +131,7 @@ RECOMMENDATION:      ✅ READY TO MERGE
 
 Project successfully identifies and mitigates flaky tests with:
   • Zero production code changes
-  • Comprehensive documentation (7 files)
+  • Comprehensive documentation (6 files)
   • Robust detection tooling (2 scripts)
   • Clear path for continuous monitoring
 
