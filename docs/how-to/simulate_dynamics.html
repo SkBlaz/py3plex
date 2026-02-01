@@ -1135,7 +1135,7 @@ Adoption rate: 100.00%
 <p>To use DSL for querying simulation results, first attach the dynamics state to the network as node attributes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">Q</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1168,16 +1168,14 @@ Adoption rate: 100.00%
 <section id="query-infected-nodes">
 <h3>Query Infected Nodes<a class="headerlink" href="#query-infected-nodes" title="Link to this heading"></a></h3>
 <p><strong>Find all currently infected nodes:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using string syntax</span>
-<span class="n">infected</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes WHERE sir_state=&quot;I&quot;&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Builder API</span>
+<span class="n">infected</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s2">&quot;I&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">infected_nodes</span> <span class="o">=</span> <span class="n">infected</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
-<span class="n">infected_count</span> <span class="o">=</span> <span class="n">infected</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">infected_nodes</span><span class="p">))</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Infected nodes: </span><span class="si">{</span><span class="n">infected_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Infected nodes: </span><span class="si">{</span><span class="n">infected</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample infected:&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">infected_nodes</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1332,13 +1330,14 @@ Time  node7     node12    node3
 <section id="extract-subpopulations">
 <h3>Extract Subpopulations<a class="headerlink" href="#extract-subpopulations" title="Link to this heading"></a></h3>
 <p><strong>Extract network of recovered nodes:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query recovered nodes</span>
-<span class="n">recovered_nodes</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes WHERE sir_state=&quot;R&quot;&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query recovered nodes (Builder API)</span>
+<span class="n">recovered_result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">recovered_matches</span> <span class="o">=</span> <span class="n">recovered_nodes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
+<span class="n">recovered_matches</span> <span class="o">=</span> <span class="n">recovered_result</span><span class="o">.</span><span class="n">items</span>  <span class="c1"># List of (node, layer) tuples</span>
 
 <span class="c1"># Extract induced subgraph</span>
 <span class="n">recovered_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">recovered_matches</span><span class="p">)</span>
@@ -1359,13 +1358,14 @@ Time  node7     node12    node3
 <p><strong>Analyze connectivity within susceptible population:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
-<span class="c1"># Get susceptible nodes</span>
-<span class="n">susceptible</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes WHERE sir_state=&quot;S&quot;&#39;</span>
+<span class="c1"># Get susceptible nodes (Builder API)</span>
+<span class="n">susceptible_result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">susceptible_nodes</span> <span class="o">=</span> <span class="n">susceptible</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
+<span class="n">susceptible_nodes</span> <span class="o">=</span> <span class="n">susceptible_result</span><span class="o">.</span><span class="n">items</span>  <span class="c1"># List of (node, layer) tuples</span>
 
 <span class="c1"># Extract subgraph</span>
 <span class="n">S_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">susceptible_nodes</span><span class="p">)</span>

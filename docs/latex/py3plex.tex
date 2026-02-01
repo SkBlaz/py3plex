@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jan 31, 2026}
+\date{Feb 01, 2026}
 \release{1.1.3}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -9241,7 +9241,7 @@ Familiarity with DSL basics (see {\hyperref[\detokenize{how-to/query_with_dsl::d
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}wrapper}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{louvain\PYGZus{}communities}
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}
 
 \PYG{c+c1}{\PYGZsh{} Load network and detect communities}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
@@ -9256,21 +9256,22 @@ Familiarity with DSL basics (see {\hyperref[\detokenize{how-to/query_with_dsl::d
 \PYG{k}{for} \PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}\PYG{p}{,} \PYG{n}{comm\PYGZus{}id} \PYG{o+ow}{in} \PYG{n}{communities}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
     \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}\PYG{p}{]}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{community}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{comm\PYGZus{}id}
 
-\PYG{c+c1}{\PYGZsh{} DSL Query: Find nodes in community 0}
-\PYG{n}{result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-    \PYG{n}{network}\PYG{p}{,}
-    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE community=0}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{c+c1}{\PYGZsh{} DSL Query (Builder API): Find nodes in community 0}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{community}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
 \PYG{p}{)}
 
-\PYG{n}{nodes\PYGZus{}in\PYGZus{}comm0} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{nodes\PYGZus{}in\PYGZus{}comm0} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{items}  \PYG{c+c1}{\PYGZsh{} List of (node, layer) tuples}
 
-\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Nodes in community 0: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{nodes\PYGZus{}in\PYGZus{}comm0}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Nodes in community 0: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{nodes\PYGZus{}in\PYGZus{}comm0}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{5}\PYG{p}{]}\PYG{p}{:}
     \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Note:} \sphinxcode{\sphinxupquote{execute\_query}} returns a dictionary; access node matches via \sphinxcode{\sphinxupquote{result{[}"nodes"{]}}} (not the dict length) to avoid counting metadata keys.
+\sphinxstylestrong{Note:} The Builder API (\sphinxcode{\sphinxupquote{Q.nodes()}}) provides \sphinxcode{\sphinxupquote{result.items}} for the list of node\sphinxhyphen{}layer tuples and \sphinxcode{\sphinxupquote{result.count}} for the number of items.
 
 \sphinxAtStartPar
 \sphinxstylestrong{Expected output:}
@@ -9336,15 +9337,18 @@ High\PYGZhy{}degree nodes in community 0:
 \sphinxstylestrong{Count nodes per community:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}
+
 \PYG{c+c1}{\PYGZsh{} Get all communities}
 \PYG{n}{community\PYGZus{}ids} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{communities}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
 
 \PYG{k}{for} \PYG{n}{comm\PYGZus{}id} \PYG{o+ow}{in} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{community\PYGZus{}ids}\PYG{p}{)}\PYG{p}{:}
-    \PYG{n}{result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-        \PYG{n}{network}\PYG{p}{,}
-        \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE community=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{comm\PYGZus{}id}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{community}\PYG{o}{=}\PYG{n}{comm\PYGZus{}id}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
     \PYG{p}{)}
-    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Community }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{comm\PYGZus{}id}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Community }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{comm\PYGZus{}id}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -9458,12 +9462,13 @@ layer3: 3 communities, 40 nodes
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}
 
 \PYG{c+c1}{\PYGZsh{} Extract community 0}
-\PYG{n}{comm\PYGZus{}0\PYGZus{}result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-    \PYG{n}{network}\PYG{p}{,}
-    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE community=0}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{n}{comm\PYGZus{}0\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{community}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
 \PYG{p}{)}
 
-\PYG{n}{comm\PYGZus{}0\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{comm\PYGZus{}0\PYGZus{}result}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{comm\PYGZus{}0\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{comm\PYGZus{}0\PYGZus{}result}\PYG{o}{.}\PYG{n}{items}  \PYG{c+c1}{\PYGZsh{} List of (node, layer) tuples}
 
 \PYG{c+c1}{\PYGZsh{} Get induced subgraph}
 \PYG{n}{subgraph} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{subgraph}\PYG{p}{(}\PYG{n}{comm\PYGZus{}0\PYGZus{}nodes}\PYG{p}{)}
@@ -13267,7 +13272,7 @@ To use DSL for querying simulation results, first attach the dynamics state to t
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{SIRDynamics}
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}\PYG{p}{,} \PYG{n}{Q}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}
 
 \PYG{c+c1}{\PYGZsh{} Load network}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
@@ -13303,16 +13308,14 @@ To use DSL for querying simulation results, first attach the dynamics state to t
 \sphinxstylestrong{Find all currently infected nodes:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{c+c1}{\PYGZsh{} Using string syntax}
-\PYG{n}{infected} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-    \PYG{n}{network}\PYG{p}{,}
-    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE sir\PYGZus{}state=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{I}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{c+c1}{\PYGZsh{} Using Builder API}
+\PYG{n}{infected} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{sir\PYGZus{}state}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{I}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
 \PYG{p}{)}
 
-\PYG{n}{infected\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{infected}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
-\PYG{n}{infected\PYGZus{}count} \PYG{o}{=} \PYG{n}{infected}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{count}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{infected\PYGZus{}nodes}\PYG{p}{)}\PYG{p}{)}
-
-\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Infected nodes: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{infected\PYGZus{}count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Infected nodes: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{infected}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Sample infected:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{infected\PYGZus{}nodes}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{5}\PYG{p}{]}\PYG{p}{:}
     \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
@@ -13497,13 +13500,14 @@ Time  node7     node12    node3
 \sphinxstylestrong{Extract network of recovered nodes:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{c+c1}{\PYGZsh{} Query recovered nodes}
-\PYG{n}{recovered\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-    \PYG{n}{network}\PYG{p}{,}
-    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE sir\PYGZus{}state=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{R}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{c+c1}{\PYGZsh{} Query recovered nodes (Builder API)}
+\PYG{n}{recovered\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{sir\PYGZus{}state}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{R}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
 \PYG{p}{)}
 
-\PYG{n}{recovered\PYGZus{}matches} \PYG{o}{=} \PYG{n}{recovered\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{recovered\PYGZus{}matches} \PYG{o}{=} \PYG{n}{recovered\PYGZus{}result}\PYG{o}{.}\PYG{n}{items}  \PYG{c+c1}{\PYGZsh{} List of (node, layer) tuples}
 
 \PYG{c+c1}{\PYGZsh{} Extract induced subgraph}
 \PYG{n}{recovered\PYGZus{}subgraph} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{subgraph}\PYG{p}{(}\PYG{n}{recovered\PYGZus{}matches}\PYG{p}{)}
@@ -13530,13 +13534,14 @@ Recovered subnetwork:
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
 
-\PYG{c+c1}{\PYGZsh{} Get susceptible nodes}
-\PYG{n}{susceptible} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-    \PYG{n}{network}\PYG{p}{,}
-    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE sir\PYGZus{}state=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{S}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{c+c1}{\PYGZsh{} Get susceptible nodes (Builder API)}
+\PYG{n}{susceptible\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{sir\PYGZus{}state}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{S}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
 \PYG{p}{)}
 
-\PYG{n}{susceptible\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{susceptible}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{susceptible\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{susceptible\PYGZus{}result}\PYG{o}{.}\PYG{n}{items}  \PYG{c+c1}{\PYGZsh{} List of (node, layer) tuples}
 
 \PYG{c+c1}{\PYGZsh{} Extract subgraph}
 \PYG{n}{S\PYGZus{}subgraph} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{subgraph}\PYG{p}{(}\PYG{n}{susceptible\PYGZus{}nodes}\PYG{p}{)}
@@ -14100,7 +14105,7 @@ Random walks and embeddings on large networks can be computationally expensive. 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{wrappers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{train\PYGZus{}node2vec}
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{execute\PYGZus{}query}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}
 
 \PYG{c+c1}{\PYGZsh{} Load network}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
@@ -14251,15 +14256,14 @@ Generated embeddings for 105 multilayer nodes
     \PYG{n}{embedding\PYGZus{}norm} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{vector}\PYG{p}{)}
     \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[}\PYG{n}{node}\PYG{p}{]}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{embedding\PYGZus{}norm}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{embedding\PYGZus{}norm}
 
-\PYG{c+c1}{\PYGZsh{} Query nodes with large embedding norms}
-\PYG{n}{large\PYGZus{}norm\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-    \PYG{n}{network}\PYG{p}{,}
-    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE embedding\PYGZus{}norm \PYGZgt{} 10.0}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{c+c1}{\PYGZsh{} Query nodes with large embedding norms (Builder API)}
+\PYG{n}{large\PYGZus{}norm\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{embedding\PYGZus{}norm\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mf}{10.0}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
 \PYG{p}{)}
 
-\PYG{n}{norm\PYGZus{}matches} \PYG{o}{=} \PYG{n}{large\PYGZus{}norm\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
-\PYG{n}{count} \PYG{o}{=} \PYG{n}{large\PYGZus{}norm\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{count}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{norm\PYGZus{}matches}\PYG{p}{)}\PYG{p}{)}
-\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Nodes with large embedding norms: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Nodes with large embedding norms: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{large\PYGZus{}norm\PYGZus{}result}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 
@@ -20017,17 +20021,21 @@ Combine several verbs to narrow down to the most active nodes. This example assu
 Mix dplyr\sphinxhyphen{}style operations with DSL queries to narrow down candidates, then enrich them:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{graph\PYGZus{}ops}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{nodes}
 
 \PYG{c+c1}{\PYGZsh{} Use the same network as above}
-\PYG{c+c1}{\PYGZsh{} Use DSL to select nodes and compute measures once}
-\PYG{n}{dsl\PYGZus{}result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-    \PYG{n}{network}\PYG{p}{,}
-    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE degree \PYGZgt{} 5 COMPUTE betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{c+c1}{\PYGZsh{} Use DSL (Builder API) to select nodes and compute measures once}
+\PYG{n}{dsl\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
 \PYG{p}{)}
-\PYG{n}{selected} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{dsl\PYGZus{}result}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
-\PYG{n}{betweenness} \PYG{o}{=} \PYG{n}{dsl\PYGZus{}result}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{computed}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZsh{} Extract nodes and betweenness values}
+\PYG{n}{selected} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{dsl\PYGZus{}result}\PYG{o}{.}\PYG{n}{items}\PYG{p}{)}
+\PYG{n}{df\PYGZus{}dsl} \PYG{o}{=} \PYG{n}{dsl\PYGZus{}result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
 
 \PYG{c+c1}{\PYGZsh{} Use dplyr\PYGZhy{}style to filter and transform the same nodes}
 \PYG{n}{final\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
@@ -20375,7 +20383,7 @@ The config captures \sphinxstyleemphasis{what} to run (input format, metrics, al
 \sphinxstylestrong{Goal:} Use py3plex’s DSL to create reproducible, declarative analysis pipelines.
 
 \sphinxAtStartPar
-The DSL expresses analysis workflows as queries rather than imperative code, keeping them readable and reproducible. \sphinxcode{\sphinxupquote{Q}} builds a query, \sphinxcode{\sphinxupquote{L}} is a layer helper, and \sphinxcode{\sphinxupquote{execute\_query}} returns dictionaries keyed by \sphinxcode{\sphinxupquote{(node\_id, layer)}} tuples.
+The DSL expresses analysis workflows as queries rather than imperative code, keeping them readable and reproducible. \sphinxcode{\sphinxupquote{Q}} builds a query, \sphinxcode{\sphinxupquote{L}} is a layer helper. Use the Builder API (\sphinxcode{\sphinxupquote{Q.nodes()}}) for production code with type hints, or the legacy string DSL (\sphinxcode{\sphinxupquote{execute\_query()}}) for backward compatibility.
 
 
 \paragraph{Basic DSL Workflow Pattern}
@@ -20385,7 +20393,7 @@ The DSL expresses analysis workflows as queries rather than imperative code, kee
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}\PYG{p}{,} \PYG{n}{execute\PYGZus{}query}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
 
 \PYG{c+c1}{\PYGZsh{} 1. Load network}
 \PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
@@ -20587,7 +20595,7 @@ The thresholds (degree \textgreater{} 7, overlap counts) match the bundled \sphi
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}wrapper}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{louvain\PYGZus{}communities}
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{execute\PYGZus{}query}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{collections}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Counter}
 
 \PYG{c+c1}{\PYGZsh{} Detect communities}
@@ -20604,14 +20612,7 @@ The thresholds (degree \textgreater{} 7, overlap counts) match the bundled \sphi
 \PYG{n}{community\PYGZus{}ids} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{communities}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
 
 \PYG{k}{for} \PYG{n}{comm\PYGZus{}id} \PYG{o+ow}{in} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{community\PYGZus{}ids}\PYG{p}{)}\PYG{p}{:}
-    \PYG{c+c1}{\PYGZsh{} Use DSL to get community members}
-    \PYG{n}{comm\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}
-        \PYG{n}{network}\PYG{p}{,}
-        \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE community=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{comm\PYGZus{}id}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}
-    \PYG{p}{)}
-    \PYG{n}{members} \PYG{o}{=} \PYG{n}{comm\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
-
-    \PYG{c+c1}{\PYGZsh{} Compute community metrics}
+    \PYG{c+c1}{\PYGZsh{} Use DSL Builder API to get community members and compute metrics}
     \PYG{n}{comm\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
         \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
          \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{community}\PYG{o}{=}\PYG{n}{comm\PYGZus{}id}\PYG{p}{)}
@@ -20619,10 +20620,13 @@ The thresholds (degree \textgreater{} 7, overlap counts) match the bundled \sphi
          \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
     \PYG{p}{)}
 
+    \PYG{n}{members} \PYG{o}{=} \PYG{n}{comm\PYGZus{}result}\PYG{o}{.}\PYG{n}{items}  \PYG{c+c1}{\PYGZsh{} Get node\PYGZhy{}layer tuples}
+
     \PYG{c+c1}{\PYGZsh{} Statistics}
-    \PYG{k}{if} \PYG{n}{comm\PYGZus{}result}\PYG{p}{:}
-        \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{d}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{k}{for} \PYG{n}{d} \PYG{o+ow}{in} \PYG{n}{comm\PYGZus{}result}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)} \PYG{o}{/} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{comm\PYGZus{}result}\PYG{p}{)}
-        \PYG{n}{avg\PYGZus{}betw} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{d}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{k}{for} \PYG{n}{d} \PYG{o+ow}{in} \PYG{n}{comm\PYGZus{}result}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)} \PYG{o}{/} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{comm\PYGZus{}result}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{comm\PYGZus{}result}\PYG{o}{.}\PYG{n}{count} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+        \PYG{n}{df} \PYG{o}{=} \PYG{n}{comm\PYGZus{}result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{avg\PYGZus{}betw} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
     \PYG{k}{else}\PYG{p}{:}
         \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{n}{avg\PYGZus{}betw} \PYG{o}{=} \PYG{l+m+mf}{0.0}
 
@@ -20637,7 +20641,7 @@ The thresholds (degree \textgreater{} 7, overlap counts) match the bundled \sphi
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Notes:} \sphinxcode{\sphinxupquote{execute\_query}} returns a dictionary; access community members via \sphinxcode{\sphinxupquote{result{[}"nodes"{]}}} as shown. If a community has no nodes (rare with Louvain), averages safely fall back to \sphinxcode{\sphinxupquote{0.0}}. Community labels live on the NetworkX backing graph (\sphinxcode{\sphinxupquote{network.core\_network}}), so they persist across subsequent DSL queries.
+\sphinxstylestrong{Notes:} The Builder API (\sphinxcode{\sphinxupquote{Q.nodes()}}) provides \sphinxcode{\sphinxupquote{result.items}} for node\sphinxhyphen{}layer tuples, \sphinxcode{\sphinxupquote{result.count}} for the count, and \sphinxcode{\sphinxupquote{.to\_pandas()}} for DataFrame conversion. If a community has no nodes (rare with Louvain), averages safely fall back to \sphinxcode{\sphinxupquote{0.0}}. Community labels live on the NetworkX backing graph (\sphinxcode{\sphinxupquote{network.core\_network}}), so they persist across subsequent DSL queries.
 
 
 \paragraph{Dynamics + DSL Workflow}

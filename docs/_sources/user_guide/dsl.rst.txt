@@ -17,12 +17,18 @@ SQL-like DSL for Multilayer Networks
    
    This RST guide covers basic usage and quick start. AGENTS.md provides the complete reference.
 
+.. important::
+
+   **Current DSL Version: 2.1**
+   
+   This documentation covers **DSL v2 (Builder API)** as the recommended approach. The legacy string-based DSL remains available for backward compatibility but is not recommended for new code.
+
 Overview
 --------
 
 Py3plex provides a Domain-Specific Language (DSL) for querying and analyzing multilayer networks using SQL-like syntax. This intuitive interface allows users to filter nodes and edges, compute network measures, and perform complex analyses with simple, readable queries.
 
-**DSL v2** introduces several major improvements:
+**DSL v2 (Current)** introduces several major improvements:
 
 - **Python Builder API**: Chainable, type-hinted query construction
 - **Layer Algebra**: Union, difference, and intersection operations on layers
@@ -139,10 +145,12 @@ DSL Cheat Sheet
 Quick Start Example
 -------------------
 
-Here's a complete working example to get you started::
+**Recommended: Using Builder API (DSL v2)**
+
+Here's a complete working example using the modern Builder API::
 
     from py3plex.core import multinet
-    from py3plex.dsl import execute_query, format_result
+    from py3plex.dsl import Q, L
     
     # Create a multilayer network
     network = multinet.multi_layer_network(directed=False)
@@ -164,21 +172,24 @@ Here's a complete working example to get you started::
     ])
     
     # Query 1: Select all nodes in the social layer
-    result = execute_query(network, 'SELECT nodes WHERE layer="social"')
-    print(f"Found {result['count']} nodes in social layer")
-    print(result['nodes'])
+    result = Q.nodes().from_layers(L["social"]).execute(network)
+    print(f"Found {result.count} nodes in social layer")
+    print(result.items[:5])  # Show first 5
     
     # Query 2: Find high-degree nodes
-    result = execute_query(network, 'SELECT nodes WHERE degree > 1')
-    print(format_result(result))
+    result = Q.nodes().where(degree__gt=1).execute(network)
+    print(f"Found {result.count} high-degree nodes")
     
     # Query 3: Compute centrality for filtered nodes
-    result = execute_query(
-        network,
-        'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality'
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("betweenness_centrality")
+         .execute(network)
     )
-    for node, centrality in result['computed']['betweenness_centrality'].items():
-        print(f"{node}: {centrality:.4f}")
+    # Export to pandas for analysis
+    df = result.to_pandas()
+    print(df[['node', 'betweenness_centrality']].head())
 
 **Expected Output:**
 
@@ -187,16 +198,16 @@ Here's a complete working example to get you started::
     Found 3 nodes in social layer
     [('Alice', 'social'), ('Bob', 'social'), ('Charlie', 'social')]
     
-    Query: SELECT nodes WHERE degree > 1
-    Target: nodes
-    Count: 1
+    Found 1 high-degree nodes
     
-    Nodes (showing 1 of 1):
-      ('Bob', 'social')
-    
-    ('Alice', 'social'): 0.0000
-    ('Bob', 'social'): 1.0000
-    ('Charlie', 'social'): 0.0000
+           node  betweenness_centrality
+    0  (Alice, social)              0.0000
+    1    (Bob, social)              1.0000
+    2 (Charlie, social)             0.0000
+
+.. note::
+
+   **Legacy String DSL**: The original string-based DSL using ``execute_query()`` and ``format_result()`` is still available for backward compatibility but is **not recommended for new code**. See the "String DSL (Legacy)" section below for details.
 
 Query Components
 ----------------
@@ -977,11 +988,26 @@ DSL v2 includes a centralized registry for network measures. View available meas
     desc = measure_registry.get_description("betweenness_centrality")
     print(desc)
 
+String DSL (Legacy)
+-------------------
+
+.. warning::
+
+   **Legacy API**: The string-based DSL using ``execute_query()`` is maintained for **backward compatibility only**. New code should use the **Builder API (DSL v2)** shown in the examples above. The string DSL has the following limitations:
+   
+   - No type hints or IDE autocompletion
+   - Limited error messages
+   - No layer algebra operations
+   - No EXPLAIN mode
+   - Dictionary-based results (less ergonomic than Builder API's QueryResult objects)
+
+If you're maintaining legacy code or need SQL-like syntax for teaching, the string DSL is still available:
+
 Example Queries
----------------
+~~~~~~~~~~~~~~~
 
 Basic Queries
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 Select all nodes in a layer::
 
@@ -996,7 +1022,7 @@ Select all nodes (no filter)::
     result = execute_query(network, 'SELECT nodes')
 
 Complex Queries
-~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^
 
 Combine multiple conditions::
 
@@ -1023,7 +1049,7 @@ Degree range filtering::
     )
 
 Analytical Queries
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 Compute centrality for a layer::
 
@@ -1043,8 +1069,8 @@ Multiple measures for filtered nodes::
         'SELECT nodes WHERE degree > 3 COMPUTE degree_centrality closeness_centrality'
     )
 
-Working with Results
---------------------
+Working with Legacy Results
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``execute_query`` function returns a dictionary containing:
 
@@ -1080,7 +1106,7 @@ Example::
     ('Charlie', 'social')
 
 Formatting Results
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 Use ``format_result`` for human-readable output::
 
@@ -1089,8 +1115,8 @@ Use ``format_result`` for human-readable output::
     result = execute_query(network, 'SELECT nodes WHERE degree > 3')
     print(format_result(result, limit=10))
 
-Convenience Functions
----------------------
+Legacy Convenience Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The DSL module provides convenience functions for common operations:
 
@@ -1120,66 +1146,86 @@ Compute centrality for a layer::
         centrality='betweenness_centrality'
     )
 
-Use Cases
----------
+.. note::
+
+   **End of Legacy DSL Section**: The sections above document the legacy string-based DSL for backward compatibility. For new code, use the Builder API (DSL v2) shown in the examples below.
+
+Use Cases with Builder API
+---------------------------
 
 Hub Identification
 ~~~~~~~~~~~~~~~~~~
 
 Find important nodes in each layer::
 
-    for layer in ['social', 'work', 'transport']:
-        result = execute_query(
-            network,
-            f'SELECT nodes WHERE layer="{layer}" AND degree > 5'
+    from py3plex.dsl import Q, L
+    
+    for layer_name in ['social', 'work', 'transport']:
+        result = (
+            Q.nodes()
+             .from_layers(L[layer_name])
+             .where(degree__gt=5)
+             .execute(network)
         )
-        print(f"Hubs in {layer}: {result['count']}")
+        print(f"Hubs in {layer_name}: {result.count}")
 
 Layer Comparison
 ~~~~~~~~~~~~~~~~
 
 Compare network properties across layers::
 
-    layers = ['social', 'work', 'transport']
+    from py3plex.dsl import Q, L
+    import pandas as pd
     
-    for layer in layers:
-        result = execute_query(
-            network,
-            f'SELECT nodes WHERE layer="{layer}" COMPUTE degree'
+    layers = ['social', 'work', 'transport']
+    stats = []
+    
+    for layer_name in layers:
+        result = (
+            Q.nodes()
+             .from_layers(L[layer_name])
+             .compute("degree")
+             .execute(network)
         )
-        degrees = result['computed']['degree']
-        avg_degree = sum(degrees.values()) / len(degrees)
-        print(f"{layer} average degree: {avg_degree:.2f}")
+        df = result.to_pandas()
+        avg_degree = df['degree'].mean()
+        stats.append({'layer': layer_name, 'avg_degree': avg_degree})
+    
+    stats_df = pd.DataFrame(stats)
+    print(stats_df)
 
 Node Importance Ranking
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Rank nodes by multiple measures::
 
-    result = execute_query(
-        network,
-        'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality degree_centrality'
+    from py3plex.dsl import Q, L
+    
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("betweenness_centrality", "degree_centrality")
+         .execute(network)
     )
     
-    # Combine measures for ranking
-    scores = {}
-    for node in result['nodes']:
-        betweenness = result['computed']['betweenness_centrality'].get(node, 0)
-        degree_cent = result['computed']['degree_centrality'].get(node, 0)
-        scores[node] = betweenness + degree_cent
+    # Convert to pandas for easy analysis
+    df = result.to_pandas()
+    df['combined_score'] = df['betweenness_centrality'] + df['degree_centrality']
+    df = df.sort_values('combined_score', ascending=False)
     
     # Show top nodes
-    for node, score in sorted(scores.items(), key=lambda x: x[1], reverse=True)[:5]:
-        print(f"{node}: {score:.4f}")
+    print(df[['node', 'combined_score']].head())
 
 Network Filtering
 ~~~~~~~~~~~~~~~~~
 
 Create subnetworks based on queries::
 
+    from py3plex.dsl import Q
+    
     # Get high-degree nodes
-    result = execute_query(network, 'SELECT nodes WHERE degree > 5')
-    high_degree_nodes = result['nodes']
+    result = Q.nodes().where(degree__gt=5).execute(network)
+    high_degree_nodes = result.items
     
     # Create subnetwork with these nodes
     subnetwork = network.subnetwork(

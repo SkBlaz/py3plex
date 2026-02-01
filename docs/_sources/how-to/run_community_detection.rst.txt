@@ -891,7 +891,7 @@ DSL Basics for Communities
 
     from py3plex.core import multinet
     from py3plex.algorithms.community_detection.community_wrapper import louvain_communities
-    from py3plex.dsl import execute_query
+    from py3plex.dsl import Q
     
     # Load network and detect communities
     network = multinet.multi_layer_network(directed=False)
@@ -906,19 +906,20 @@ DSL Basics for Communities
     for (node, layer), comm_id in communities.items():
         network.core_network.nodes[(node, layer)]['community'] = comm_id
     
-    # DSL Query: Find nodes in community 0
-    result = execute_query(
-        network, 
-        'SELECT nodes WHERE community=0'
+    # DSL Query (Builder API): Find nodes in community 0
+    result = (
+        Q.nodes()
+         .where(community=0)
+         .execute(network)
     )
     
-    nodes_in_comm0 = result.get("nodes", [])
+    nodes_in_comm0 = result.items  # List of (node, layer) tuples
     
-    print(f"Nodes in community 0: {len(nodes_in_comm0)}")
+    print(f"Nodes in community 0: {result.count}")
     for node in nodes_in_comm0[:5]:
         print(f"  {node}")
 
-**Note:** ``execute_query`` returns a dictionary; access node matches via ``result["nodes"]`` (not the dict length) to avoid counting metadata keys.
+**Note:** The Builder API (``Q.nodes()``) provides ``result.items`` for the list of node-layer tuples and ``result.count`` for the number of items.
 
 **Expected output:**
 
@@ -981,15 +982,18 @@ Community-Level Queries
 
 .. code-block:: python
 
+    from py3plex.dsl import Q
+    
     # Get all communities
     community_ids = set(communities.values())
     
     for comm_id in sorted(community_ids):
-        result = execute_query(
-            network,
-            f'SELECT nodes WHERE community={comm_id}'
+        result = (
+            Q.nodes()
+             .where(community=comm_id)
+             .execute(network)
         )
-        print(f"Community {comm_id}: {result.get('count', 0)} nodes")
+        print(f"Community {comm_id}: {result.count} nodes")
 
 **Find inter-community edges:**
 
@@ -1097,12 +1101,13 @@ Extract Community Subnetworks
     from py3plex.dsl import Q
     
     # Extract community 0
-    comm_0_result = execute_query(
-        network,
-        'SELECT nodes WHERE community=0'
+    comm_0_result = (
+        Q.nodes()
+         .where(community=0)
+         .execute(network)
     )
     
-    comm_0_nodes = comm_0_result.get("nodes", [])
+    comm_0_nodes = comm_0_result.items  # List of (node, layer) tuples
     
     # Get induced subgraph
     subgraph = network.core_network.subgraph(comm_0_nodes)

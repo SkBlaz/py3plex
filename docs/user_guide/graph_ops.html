@@ -709,45 +709,52 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Feature</p></th>
-<th class="head"><p>DSL</p></th>
+<th class="head"><p>DSL (Builder API / String)</p></th>
 <th class="head"><p>graph_ops</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><strong>Syntax</strong></p></td>
-<td><p>SQL-like strings or Builder API</p></td>
+<td><p>SQL-like strings or Builder API (Q, L)</p></td>
 <td><p>Python method chaining</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Filtering</strong></p></td>
-<td><p>WHERE clauses</p></td>
+<td><p>WHERE clauses / <code class="docutils literal notranslate"><span class="pre">.where()</span></code> method</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.filter()</span></code> with lambdas</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Aggregation</strong></p></td>
-<td><p>COMPUTE measures</p></td>
+<td><p>COMPUTE measures / <code class="docutils literal notranslate"><span class="pre">.compute()</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.group_by().summarise()</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Custom logic</strong></p></td>
-<td><p>Limited</p></td>
+<td><p>Limited to predefined measures</p></td>
 <td><p>Full Python expressiveness</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Type safety</strong></p></td>
-<td><p>None (strings) / Partial (Builder API)</p></td>
+<td><p>Builder API: Full type hints; String DSL: None</p></td>
 <td><p>Full with type hints</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Best for</strong></p></td>
-<td><p>Quick queries, exploration</p></td>
+<td><p>Network-specific queries, multilayer operations</p></td>
 <td><p>Complex transformations, data pipelines</p></td>
 </tr>
 </tbody>
 </table>
 <section id="when-to-use-which">
 <h3><a class="toc-backref" href="#id31" role="doc-backlink">When to Use Which</a><a class="headerlink" href="#when-to-use-which" title="Link to this heading"></a></h3>
-<p><strong>Use DSL when:</strong></p>
+<p><strong>Use DSL (Builder API) when:</strong></p>
 <ul class="simple">
-<li><p>You need quick, exploratory queries</p></li>
-<li><p>You want SQL-like syntax for familiar, readable code</p></li>
-<li><p>You’re doing simple filtering and centrality computation</p></li>
-<li><p>You need to quickly prototype an analysis</p></li>
+<li><p>You need network-specific queries (layer algebra, centrality, etc.)</p></li>
+<li><p>You want type-safe, IDE-friendly code (use <code class="docutils literal notranslate"><span class="pre">Q.nodes()</span></code>, <code class="docutils literal notranslate"><span class="pre">L[]</span></code>)</p></li>
+<li><p>You’re doing filtering and centrality computation with multilayer semantics</p></li>
+<li><p>You want autocompletion and inline documentation</p></li>
+<li><p>You need to quickly prototype network analysis</p></li>
+</ul>
+<p><strong>Use String DSL when:</strong></p>
+<ul class="simple">
+<li><p>You need quick, exploratory queries in notebooks or REPL</p></li>
+<li><p>You prefer SQL-like syntax for familiar, readable one-liners</p></li>
+<li><p>You’re migrating legacy code (maintained for backward compatibility)</p></li>
 </ul>
 <p><strong>Use graph_ops when:</strong></p>
 <ul class="simple">
@@ -762,7 +769,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <section id="see-also">
 <h2><a class="toc-backref" href="#id32" role="doc-backlink">See Also</a><a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> - SQL-like DSL for network queries (use for quick exploratory queries)</p></li>
+<li><p><a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> - SQL-like DSL for network queries (Builder API recommended, string DSL available for backward compatibility)</p></li>
 <li><p><a class="reference internal" href="networks.html"><span class="doc">Working with Networks</span></a> - Working with multilayer networks</p></li>
 <li><p><a class="reference internal" href="statistics.html"><span class="doc">Network Statistics</span></a> - Network statistics and measures</p></li>
 </ul>
