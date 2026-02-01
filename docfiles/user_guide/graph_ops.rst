@@ -526,36 +526,43 @@ The graph_ops module complements the existing SQL-like DSL:
    :widths: 20 40 40
 
    * - Feature
-     - DSL
+     - DSL (Builder API / String)
      - graph_ops
    * - **Syntax**
-     - SQL-like strings or Builder API
+     - SQL-like strings or Builder API (Q, L)
      - Python method chaining
    * - **Filtering**
-     - WHERE clauses
+     - WHERE clauses / ``.where()`` method
      - ``.filter()`` with lambdas
    * - **Aggregation**
-     - COMPUTE measures
+     - COMPUTE measures / ``.compute()``
      - ``.group_by().summarise()``
    * - **Custom logic**
-     - Limited
+     - Limited to predefined measures
      - Full Python expressiveness
    * - **Type safety**
-     - None (strings) / Partial (Builder API)
+     - Builder API: Full type hints; String DSL: None
      - Full with type hints
    * - **Best for**
-     - Quick queries, exploration
+     - Network-specific queries, multilayer operations
      - Complex transformations, data pipelines
 
 When to Use Which
 ~~~~~~~~~~~~~~~~~
 
-**Use DSL when:**
+**Use DSL (Builder API) when:**
 
-- You need quick, exploratory queries
-- You want SQL-like syntax for familiar, readable code
-- You're doing simple filtering and centrality computation
-- You need to quickly prototype an analysis
+- You need network-specific queries (layer algebra, centrality, etc.)
+- You want type-safe, IDE-friendly code (use ``Q.nodes()``, ``L[]``)
+- You're doing filtering and centrality computation with multilayer semantics
+- You want autocompletion and inline documentation
+- You need to quickly prototype network analysis
+
+**Use String DSL when:**
+
+- You need quick, exploratory queries in notebooks or REPL
+- You prefer SQL-like syntax for familiar, readable one-liners
+- You're migrating legacy code (maintained for backward compatibility)
 
 **Use graph_ops when:**
 
@@ -568,6 +575,6 @@ When to Use Which
 See Also
 --------
 
-- :doc:`dsl` - SQL-like DSL for network queries (use for quick exploratory queries)
+- :doc:`dsl` - SQL-like DSL for network queries (Builder API recommended, string DSL available for backward compatibility)
 - :doc:`networks` - Working with multilayer networks
 - :doc:`statistics` - Network statistics and measures
