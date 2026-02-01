@@ -144,7 +144,7 @@ DSL-Driven Analysis Workflows
 
 **Goal:** Use py3plex's DSL to create reproducible, declarative analysis pipelines.
 
-The DSL expresses analysis workflows as queries rather than imperative code, keeping them readable and reproducible. ``Q`` builds a query, ``L`` is a layer helper, and ``execute_query`` returns dictionaries keyed by ``(node_id, layer)`` tuples.
+The DSL expresses analysis workflows as queries rather than imperative code, keeping them readable and reproducible. ``Q`` builds a query, ``L`` is a layer helper. Use the Builder API (``Q.nodes()``) for production code with type hints, or the legacy string DSL (``execute_query()``) for backward compatibility.
 
 Basic DSL Workflow Pattern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -154,7 +154,7 @@ Basic DSL Workflow Pattern
 .. code-block:: python
 
     from py3plex.core import multinet
-    from py3plex.dsl import Q, L, execute_query
+    from py3plex.dsl import Q, L
     
     # 1. Load network
     network = multinet.multi_layer_network(directed=False)
@@ -351,7 +351,7 @@ Community Detection + DSL Workflow
 .. code-block:: python
 
     from py3plex.algorithms.community_detection.community_wrapper import louvain_communities
-    from py3plex.dsl import Q, execute_query
+    from py3plex.dsl import Q
     from collections import Counter
 
     # Detect communities
@@ -368,14 +368,7 @@ Community Detection + DSL Workflow
     community_ids = set(communities.values())
     
     for comm_id in sorted(community_ids):
-        # Use DSL to get community members
-        comm_nodes = execute_query(
-            network,
-            f'SELECT nodes WHERE community={comm_id}'
-        )
-        members = comm_nodes.get("nodes", [])
-        
-        # Compute community metrics
+        # Use DSL Builder API to get community members and compute metrics
         comm_result = (
             Q.nodes()
              .where(community=comm_id)
@@ -383,10 +376,13 @@ Community Detection + DSL Workflow
              .execute(network)
         )
         
+        members = comm_result.items  # Get node-layer tuples
+        
         # Statistics
-        if comm_result:
-            avg_degree = sum(d['degree'] for d in comm_result.values()) / len(comm_result)
-            avg_betw = sum(d['betweenness_centrality'] for d in comm_result.values()) / len(comm_result)
+        if comm_result.count > 0:
+            df = comm_result.to_pandas()
+            avg_degree = df['degree'].mean()
+            avg_betw = df['betweenness_centrality'].mean()
         else:
             avg_degree = avg_betw = 0.0
         
@@ -399,7 +395,7 @@ Community Detection + DSL Workflow
         print(f"  Avg betweenness: {avg_betw:.6f}")
         print(f"  Layer composition: {dict(layer_counts)}")
 
-**Notes:** ``execute_query`` returns a dictionary; access community members via ``result["nodes"]`` as shown. If a community has no nodes (rare with Louvain), averages safely fall back to ``0.0``. Community labels live on the NetworkX backing graph (``network.core_network``), so they persist across subsequent DSL queries.
+**Notes:** The Builder API (``Q.nodes()``) provides ``result.items`` for node-layer tuples, ``result.count`` for the count, and ``.to_pandas()`` for DataFrame conversion. If a community has no nodes (rare with Louvain), averages safely fall back to ``0.0``. Community labels live on the NetworkX backing graph (``network.core_network``), so they persist across subsequent DSL queries.
 
 Dynamics + DSL Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~

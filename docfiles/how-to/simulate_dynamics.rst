@@ -1003,7 +1003,7 @@ To use DSL for querying simulation results, first attach the dynamics state to t
 
     from py3plex.core import multinet
     from py3plex.dynamics import SIRDynamics
-    from py3plex.dsl import execute_query, Q
+    from py3plex.dsl import Q
     
     # Load network
     network = multinet.multi_layer_network(directed=False)
@@ -1038,16 +1038,14 @@ Query Infected Nodes
 
 .. code-block:: python
 
-    # Using string syntax
-    infected = execute_query(
-        network,
-        'SELECT nodes WHERE sir_state="I"'
+    # Using Builder API
+    infected = (
+        Q.nodes()
+         .where(sir_state="I")
+         .execute(network)
     )
     
-    infected_nodes = infected.get("nodes", [])
-    infected_count = infected.get("count", len(infected_nodes))
-    
-    print(f"Infected nodes: {infected_count}")
+    print(f"Infected nodes: {infected.count}")
     print(f"Sample infected:")
     for node in infected_nodes[:5]:
         print(f"  {node}")
@@ -1222,13 +1220,14 @@ Extract Subpopulations
 
 .. code-block:: python
 
-    # Query recovered nodes
-    recovered_nodes = execute_query(
-        network,
-        'SELECT nodes WHERE sir_state="R"'
+    # Query recovered nodes (Builder API)
+    recovered_result = (
+        Q.nodes()
+         .where(sir_state="R")
+         .execute(network)
     )
     
-    recovered_matches = recovered_nodes.get("nodes", [])
+    recovered_matches = recovered_result.items  # List of (node, layer) tuples
     
     # Extract induced subgraph
     recovered_subgraph = network.core_network.subgraph(recovered_matches)
@@ -1253,13 +1252,14 @@ Extract Subpopulations
 
     import networkx as nx
     
-    # Get susceptible nodes
-    susceptible = execute_query(
-        network,
-        'SELECT nodes WHERE sir_state="S"'
+    # Get susceptible nodes (Builder API)
+    susceptible_result = (
+        Q.nodes()
+         .where(sir_state="S")
+         .execute(network)
     )
     
-    susceptible_nodes = susceptible.get("nodes", [])
+    susceptible_nodes = susceptible_result.items  # List of (node, layer) tuples
     
     # Extract subgraph
     S_subgraph = network.core_network.subgraph(susceptible_nodes)
