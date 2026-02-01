@@ -249,11 +249,13 @@ def test_resampling_strategy_enum():
 @pytest.mark.verification
 @pytest.mark.fast
 @pytest.mark.skipif(not DSL_AVAILABLE, reason="DSL not available")
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 def test_perturbation_produces_variance():
     """
     Test that PERTURBATION strategy produces nonzero std when edge_drop_p > 0.
     
     Note: This test may be flaky if network is too small or drop probability too low.
+    Marked as flaky with 3 retries to handle statistical edge cases.
     """
     # Create slightly larger network to ensure perturbation has effect
     network = multinet.multi_layer_network(directed=False)

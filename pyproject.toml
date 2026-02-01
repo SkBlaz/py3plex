@@ -52,6 +52,7 @@ dev = [
     "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
     "pytest-benchmark>=4.0,<5.0",  # 5.0+ requires Python >=3.9, but we support 3.8
+    "pytest-rerunfailures>=12.0",  # Flaky test handling
     "black>=23.0",
     "ruff>=0.1.0",
     "mypy>=1.0",
@@ -67,6 +68,7 @@ tests = [
     "pytest>=7.0",
     "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
+    "pytest-rerunfailures>=12.0",  # Flaky test handling
     "hypothesis>=6.0",
     "hypothesis-networkx>=0.2.0",  # Hypothesis strategies for NetworkX graphs
     "networkx>=2.5",
@@ -249,6 +251,7 @@ markers = [
     "fuzz: fuzzing tests for discovering edge cases",
     "cli: CLI command tests",
     "verification: verification and correctness tests",
+    "flaky: tests that may fail intermittently (handled by pytest-rerunfailures)",
 ]
 timeout = 300
 doctest_optionflags = [
