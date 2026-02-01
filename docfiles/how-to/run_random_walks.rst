@@ -320,7 +320,7 @@ Filter High-Degree Nodes
 
     from py3plex.core import multinet
     from py3plex.wrappers import train_node2vec
-    from py3plex.dsl import Q, execute_query
+    from py3plex.dsl import Q
     
     # Load network
     network = multinet.multi_layer_network(directed=False)
@@ -466,15 +466,14 @@ Combine Embeddings with Node Attributes
         embedding_norm = np.linalg.norm(vector)
         network.core_network.nodes[node]['embedding_norm'] = embedding_norm
     
-    # Query nodes with large embedding norms
-    large_norm_nodes = execute_query(
-        network,
-        'SELECT nodes WHERE embedding_norm > 10.0'
+    # Query nodes with large embedding norms (Builder API)
+    large_norm_result = (
+        Q.nodes()
+         .where(embedding_norm__gt=10.0)
+         .execute(network)
     )
     
-    norm_matches = large_norm_nodes.get("nodes", [])
-    count = large_norm_nodes.get("count", len(norm_matches))
-    print(f"Nodes with large embedding norms: {count}")
+    print(f"Nodes with large embedding norms: {large_norm_result.count}")
 
 Layer-Specific Embedding Analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

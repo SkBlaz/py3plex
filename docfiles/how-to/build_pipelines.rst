@@ -159,17 +159,21 @@ Mix dplyr-style operations with DSL queries to narrow down candidates, then enri
 
 .. code-block:: python
 
-    from py3plex.dsl import execute_query
+    from py3plex.dsl import Q
     from py3plex.graph_ops import nodes
     
     # Use the same network as above
-    # Use DSL to select nodes and compute measures once
-    dsl_result = execute_query(
-        network,
-        'SELECT nodes WHERE degree > 5 COMPUTE betweenness_centrality'
+    # Use DSL (Builder API) to select nodes and compute measures once
+    dsl_result = (
+        Q.nodes()
+         .where(degree__gt=5)
+         .compute("betweenness_centrality")
+         .execute(network)
     )
-    selected = set(dsl_result["nodes"])
-    betweenness = dsl_result["computed"]["betweenness_centrality"]
+    
+    # Extract nodes and betweenness values
+    selected = set(dsl_result.items)
+    df_dsl = dsl_result.to_pandas()
     
     # Use dplyr-style to filter and transform the same nodes
     final_result = (
