@@ -27,6 +27,7 @@ jobs:
 
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        timeout-minutes: 5
 
       - name: Install build backend
         run: |

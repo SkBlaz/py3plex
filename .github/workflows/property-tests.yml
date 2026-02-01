@@ -32,7 +32,7 @@ jobs:
     
     - name: Install uv
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      timeout-minutes: 2
+      timeout-minutes: 5
     
     - name: Cache uv dependencies
       uses: actions/cache@v3
@@ -96,7 +96,7 @@ jobs:
     
     - name: Install uv
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      timeout-minutes: 2
+      timeout-minutes: 5
     
     - name: Cache uv dependencies
       uses: actions/cache@v3
@@ -157,7 +157,7 @@ jobs:
     
     - name: Install uv
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      timeout-minutes: 2
+      timeout-minutes: 5
     
     - name: Install minimal dependencies
       run: |
