@@ -328,7 +328,6 @@ Important Files
 For Contributors
 ~~~~~~~~~~~~~~~~
 
-* ``CONTRIBUTING.md`` - Contribution guidelines (if exists)
 * ``docfiles/dev/contributing.rst`` - Contribution documentation
 * ``Makefile`` - Available development commands
 * ``pyproject.toml`` - Package dependencies

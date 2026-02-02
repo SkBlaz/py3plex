@@ -9102,8 +9102,6 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `docfiles/` - Documentation source files
 - `examples/` - **170+ example scripts** demonstrating all features
 - `docs/py3plex_book.pdf` (106 pages) - Technical documentation
-- `CHANGELOG.md` - Version history
-- `CONTRIBUTING.md` - Contribution guidelines
 - `CITATION.cff` - Citation information
 
 ### Test Suite
