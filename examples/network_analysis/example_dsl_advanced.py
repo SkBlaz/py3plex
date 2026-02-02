@@ -1,17 +1,28 @@
-"""Example: Advanced DSL Queries for Multilayer Networks
+"""Example: Advanced DSL v2 Queries for Multilayer Networks
 
-This example demonstrates advanced usage of the DSL including:
+This example demonstrates advanced usage of DSL v2 Query Builder including:
 - Working with real-world-like network structures
 - Filtering based on computed centrality measures
 - Combining multiple analysis operators
-- Using DSL for network comparison across layers
+- Using DSL v2 for network comparison across layers
+- Per-layer analysis and aggregations
+
+DSL v2 patterns used:
+- Q.nodes() query builder
+- Layer algebra with L["layer"]
+- Django-style lookups (degree__gt, layer__in)
+- Per-layer grouping with .per_layer()
+- Chained operations for complex analysis
+
+This example aligns with AGENTS.md Golden Paths showing advanced multilayer
+network analysis patterns. For basic DSL v2 examples, see example_dsl_queries.py.
 """
 
 from py3plex.core import multinet
-from py3plex.dsl import execute_query, format_result
+from py3plex.dsl import Q, L
 
 print("=" * 80)
-print("ADVANCED DSL QUERIES FOR MULTILAYER NETWORKS")
+print("ADVANCED DSL V2 QUERIES FOR MULTILAYER NETWORKS")
 print("=" * 80)
 
 # Create a more complex multilayer network representing a transportation system
@@ -70,19 +81,21 @@ print(f"Stations: {len(stations)}")
 print(f"Total node-layer pairs: {len(list(network.get_nodes()))}")
 print(f"Total connections: {len(list(network.get_edges()))}")
 
-# Example 1: Find hub stations (high degree) in each layer
+# Example 1: Find hub stations (high degree) in each layer using DSL v2
 print("\n" + "=" * 80)
 print("[2] Example 1: Identify hub stations in each transport layer")
 print("-" * 80)
 
 for layer in layers:
     print(f"\nLayer: {layer.upper()}")
-    print(f"Query: SELECT nodes WHERE layer=\"{layer}\" AND degree > 1")
-    result = execute_query(network, f'SELECT nodes WHERE layer="{layer}" AND degree > 1')
-    print(f"Hub stations (degree > 1): {len(result['nodes'])}")
-    for node in result['nodes']:
-        degree = network.core_network.degree(node)
-        print(f"  {node}: degree={degree}")
+    print(f"Query: Q.nodes().from_layers(L['{layer}']).where(degree__gt=1).compute('degree').execute(network)")
+    
+    result = Q.nodes().from_layers(L[layer]).where(degree__gt=1).compute('degree').execute(network)
+    df = result.to_pandas()
+    
+    print(f"Hub stations (degree > 1): {len(df)}")
+    for _, row in df.iterrows():
+        print(f"  {row['id']}: degree={row['degree']}")
 
 # Example 2: Compare betweenness centrality across layers
 print("\n" + "=" * 80)
@@ -92,152 +105,168 @@ print("-" * 80)
 layer_centralities = {}
 for layer in layers:
     print(f"\nAnalyzing {layer.upper()} layer...")
-    result = execute_query(
-        network,
-        f'SELECT nodes WHERE layer="{layer}" COMPUTE betweenness_centrality'
-    )
-    layer_centralities[layer] = result['computed']['betweenness_centrality']
-
+    print(f"Query: Q.nodes().from_layers(L['{layer}']).compute('betweenness_centrality').execute(network)")
+    
+    result = Q.nodes().from_layers(L[layer]).compute('betweenness_centrality').execute(network)
+    df = result.to_pandas()
+    
     # Show top 3 nodes
-    sorted_nodes = sorted(
-        layer_centralities[layer].items(),
-        key=lambda x: x[1],
-        reverse=True
-    )[:3]
-
+    top_3 = df.nlargest(3, 'betweenness_centrality')
     print("Top 3 by betweenness centrality:")
-    for node, centrality in sorted_nodes:
-        print(f"  {node}: {centrality:.4f}")
+    for _, row in top_3.iterrows():
+        print(f"  {row['id']}: {row['betweenness_centrality']:.4f}")
 
 # Example 3: Find well-connected stations across all layers
 print("\n" + "=" * 80)
 print("[4] Example 3: Find well-connected stations (degree > 2 in any layer)")
 print("-" * 80)
-print("Query: SELECT nodes WHERE degree > 2")
+print("Query: Q.nodes().where(degree__gt=2).compute('degree').execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE degree > 2')
-print(format_result(result, limit=20))
+result = Q.nodes().where(degree__gt=2).compute('degree').execute(network)
+df = result.to_pandas()
+print(f"Found {len(df)} well-connected nodes:")
+print(df[['id', 'layer', 'degree']].head(20).to_string(index=False))
 
-# Example 4: Analysis of specific stations
+# Example 4: Analysis of specific stations using grouping
 print("\n" + "=" * 80)
 print("[5] Example 4: Analyze specific hub stations (D, E, F, H)")
 print("-" * 80)
 
 hub_stations = ['D', 'E', 'F', 'H']
+print("Query: Q.nodes().where(id__in=['D', 'E', 'F', 'H']).compute('degree').execute(network)")
+print()
+
+# Note: DSL v2 doesn't have id__in, so we'll query and filter
+result = Q.nodes().compute('degree').execute(network)
+df = result.to_pandas()
+df_hubs = df[df['id'].isin(hub_stations)]
+
 for station in hub_stations:
     print(f"\nStation {station} analysis:")
-    for layer in layers:
-        # Find this specific node-layer pair
-        node = (station, layer)
-        if node in list(network.get_nodes()):
-            degree = network.core_network.degree(node)
-            print(f"  {layer}: degree={degree}")
+    station_df = df_hubs[df_hubs['id'] == station]
+    for _, row in station_df.iterrows():
+        print(f"  {row['layer']}: degree={row['degree']}")
 
-# Example 5: Layer comparison - which layer is most connected?
+# Example 5: Layer comparison using per-layer aggregation
 print("\n" + "=" * 80)
-print("[6] Example 5: Layer connectivity comparison")
+print("[6] Example 5: Layer connectivity comparison (Advanced Pattern)")
 print("-" * 80)
+print("Query: Q.nodes().per_layer().compute('degree').execute(network)")
+print()
+
+result = Q.nodes().per_layer().compute('degree').execute(network)
+df = result.to_pandas()
 
 print("\nAverage degree per layer:")
 for layer in layers:
-    result = execute_query(network, f'SELECT nodes WHERE layer="{layer}" COMPUTE degree')
-    degrees = result['computed']['degree']
-    avg_degree = sum(degrees.values()) / len(degrees) if degrees else 0
+    layer_df = df[df['layer'] == layer]
+    avg_degree = layer_df['degree'].mean()
     print(f"  {layer}: {avg_degree:.2f}")
 
 # Example 6: Find isolated or low-connectivity nodes
 print("\n" + "=" * 80)
 print("[7] Example 6: Find low-connectivity nodes (degree <= 1)")
 print("-" * 80)
-print("Query: SELECT nodes WHERE degree <= 1")
+print("Query: Q.nodes().where(degree__lte=1).compute('degree').execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE degree <= 1')
-print(format_result(result, limit=20))
+result = Q.nodes().where(degree__lte=1).compute('degree').execute(network)
+df = result.to_pandas()
+print(f"Found {len(df)} low-connectivity nodes:")
+print(df[['id', 'layer', 'degree']].head(20).to_string(index=False))
 
 # Example 7: Multiple centrality measures for major hubs
 print("\n" + "=" * 80)
 print("[8] Example 7: Comprehensive analysis of metro hubs")
 print("-" * 80)
-print("Query: SELECT nodes WHERE layer=\"metro\" AND degree >= 2")
-print(" COMPUTE degree betweenness_centrality closeness_centrality")
+print("Query: Q.nodes().from_layers(L['metro']).where(degree__gte=2)")
+print("           .compute('degree', 'betweenness_centrality', 'closeness_centrality')")
+print("           .execute(network)")
 print()
 
-result = execute_query(
-    network,
-    'SELECT nodes WHERE layer="metro" AND degree >= 2 COMPUTE degree betweenness_centrality closeness_centrality'
+result = (
+    Q.nodes()
+    .from_layers(L['metro'])
+    .where(degree__gte=2)
+    .compute('degree', 'betweenness_centrality', 'closeness_centrality')
+    .execute(network)
 )
+df = result.to_pandas()
 
-print(f"Metro hubs found: {result['count']}")
+print(f"Metro hubs found: {len(df)}")
 print("\nDetailed analysis:")
-for node in result['nodes']:
-    print(f"\n  {node}:")
-    for measure, values in result['computed'].items():
-        if node in values:
-            print(f"    {measure}: {values[node]:.4f}")
+print(df[['id', 'degree', 'betweenness_centrality', 'closeness_centrality']].to_string(index=False))
 
-# Example 8: Cross-layer analysis
+# Example 8: Cross-layer analysis using Layer Algebra
 print("\n" + "=" * 80)
-print("[9] Example 8: Cross-layer station importance")
+print("[9] Example 8: Multi-layer analysis with Layer Algebra")
 print("-" * 80)
+print("Query: Q.nodes().from_layers(L['*']).compute('degree').execute(network)")
+print()
 
-print("\nStations appearing in all layers with high connectivity:")
-station_scores = {}
+result = Q.nodes().from_layers(L['*']).compute('degree').execute(network)
+df = result.to_pandas()
 
-for station in stations:
-    total_degree = 0
-    present_in_layers = 0
-
-    for layer in layers:
-        node = (station, layer)
-        if node in list(network.get_nodes()):
-            degree = network.core_network.degree(node)
-            total_degree += degree
-            present_in_layers += 1
-
-    if present_in_layers == len(layers):  # Present in all layers
-        station_scores[station] = total_degree
-
-# Show top stations
-sorted_stations = sorted(station_scores.items(), key=lambda x: x[1], reverse=True)
+print("\nStations with high total degree across all layers:")
+# Group by station and sum degrees
+station_totals = df.groupby('id')['degree'].sum().sort_values(ascending=False)
 print("\nTop stations by total degree across all layers:")
-for station, score in sorted_stations[:5]:
-    print(f"  Station {station}: total degree = {score}")
+for station, total_degree in station_totals.head(5).items():
+    print(f"  Station {station}: total degree = {total_degree}")
 
-# Example 9: Using NOT operator to exclude layers
+# Example 9: Using Layer Difference (exclusion pattern)
 print("\n" + "=" * 80)
-print("[9] Example 9: Find stations NOT in bus layer")
+print("[10] Example 9: Find stations NOT in bus layer (Layer Algebra)")
 print("-" * 80)
-print("Query: SELECT nodes WHERE NOT layer=\"bus\" AND degree > 1")
+print("Query: Q.nodes().from_layers(L['*'] - L['bus']).where(degree__gt=1).compute('degree').execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE NOT layer="bus" AND degree > 1')
-print(format_result(result, limit=15))
+result = Q.nodes().from_layers(L['*'] - L['bus']).where(degree__gt=1).compute('degree').execute(network)
+df = result.to_pandas()
+print(f"Found {len(df)} high-degree nodes not in bus layer:")
+print(df[['id', 'layer', 'degree']].head(15).to_string(index=False))
 
-# Example 10: Complex conditional query with multiple conditions
+# Example 10: Complex query with Layer Union and chaining
 print("\n" + "=" * 80)
-print("[10] Example 10: Complex query - metro or train with high degree")
+print("[11] Example 10: Complex query - metro or train with sorted results")
 print("-" * 80)
-print("Query: SELECT nodes WHERE layer=\"metro\" OR layer=\"train\" COMPUTE degree_centrality")
+print("Query: Q.nodes().from_layers(L['metro'] + L['train'])")
+print("           .compute('degree_centrality')")
+print("           .order_by('degree_centrality', desc=True)")
+print("           .limit(10)")
+print("           .execute(network)")
 print()
 
-result = execute_query(
-    network,
-    'SELECT nodes WHERE layer="metro" OR layer="train" COMPUTE degree_centrality'
+result = (
+    Q.nodes()
+    .from_layers(L['metro'] + L['train'])
+    .compute('degree_centrality')
+    .order_by('degree_centrality', desc=True)
+    .limit(10)
+    .execute(network)
 )
-print(format_result(result, limit=15))
+df = result.to_pandas()
+print(f"Top 10 nodes by degree centrality in metro/train:")
+print(df[['id', 'layer', 'degree_centrality']].to_string(index=False))
 
 # Summary
 print("\n" + "=" * 80)
-print("ADVANCED DSL ANALYSIS COMPLETE")
+print("ADVANCED DSL V2 ANALYSIS COMPLETE")
 print("=" * 80)
-print("\nKey insights demonstrated:")
-print(" Layer-specific hub identification")
-print(" Cross-layer centrality comparison")
-print(" Multi-measure node analysis")
-print(" Network connectivity patterns")
-print(" Comprehensive station importance ranking")
-print(" Using NOT operator for layer exclusion")
-print(" Complex conditional queries with OR")
-print("\nThe DSL enables complex multilayer network analysis with simple queries!")
+print("\nKey DSL v2 patterns demonstrated:")
+print("  ✓ Q.nodes() - Query builder")
+print("  ✓ .from_layers(L['layer']) - Single layer selection")
+print("  ✓ .from_layers(L['a'] + L['b']) - Layer union")
+print("  ✓ .from_layers(L['*'] - L['a']) - Layer exclusion")
+print("  ✓ .where(attr__op=value) - Django-style filtering")
+print("  ✓ .compute('metric1', 'metric2') - Multiple measures")
+print("  ✓ .order_by('attr', desc=True) - Sorting")
+print("  ✓ .limit(n) - Result limiting")
+print("  ✓ .per_layer() - Grouped analysis")
+print("  ✓ .to_pandas() - DataFrame export")
+print("\nComparison operators:")
+print("  __gt (>), __gte (>=), __lt (<), __lte (<=), __eq (=), __ne (!=)")
+print("\nDSL v2 enables complex multilayer network analysis with chainable operations!")
+print("\nFor more patterns, see AGENTS.md Golden Paths")
+

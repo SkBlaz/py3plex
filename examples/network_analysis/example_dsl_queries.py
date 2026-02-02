@@ -1,35 +1,33 @@
-"""Example: SQL-like DSL for Multilayer Network Queries
+"""Example: DSL v2 Query Builder for Multilayer Network Analysis
 
-This example demonstrates the Domain-Specific Language (DSL) for querying
-and analyzing multilayer networks using SQL-like syntax.
+This example demonstrates the preferred DSL v2 Query Builder API for querying
+and analyzing multilayer networks using the modern Q builder pattern.
 
-The DSL supports:
-- SELECT nodes/edges with filtering conditions
-- WHERE clauses with logical operators (AND, OR, NOT)
-- Comparison operators (>, <, =, >=, <=, !=)
-- COMPUTE clauses for analytical measures
-- Layer-based filtering
-- Degree and centrality-based filtering
+DSL v2 Features:
+- Chainable builder API: Q.nodes().where(...).compute(...).execute()
+- Type-safe with IDE autocomplete support
+- Django-style lookups (degree__gt, layer__in, etc.)
+- Layer algebra: L["social"] + L["work"]
+- Native UQ integration with .uq()
+- Better error messages and provenance tracking
+
+This example aligns with AGENTS.md Golden Paths and shows the preferred patterns
+for network analysis in py3plex. For legacy string DSL, see documentation.
 
 Examples cover:
 1. Basic node selection by layer
-2. Filtering by degree
-3. Complex queries with multiple conditions
+2. Filtering by degree with comparison operators
+3. Complex queries with layer algebra
 4. Computing centrality measures
-5. Using convenience functions
+5. Chaining operations for advanced analysis
+6. Using pandas export for data analysis
 """
 
 from py3plex.core import multinet
-from py3plex.dsl import (
-    execute_query,
-    format_result,
-    select_nodes_by_layer,
-    select_high_degree_nodes,
-    compute_centrality_for_layer,
-)
+from py3plex.dsl import Q, L
 
 print("=" * 80)
-print("SQL-LIKE DSL FOR MULTILAYER NETWORK QUERIES")
+print("DSL V2 QUERY BUILDER FOR MULTILAYER NETWORK ANALYSIS")
 print("=" * 80)
 
 # Create a sample multilayer network
@@ -88,167 +86,208 @@ print(f"Total edges: {len(list(network.get_edges()))}")
 print("\n" + "=" * 80)
 print("[2] Example 1: Select all nodes in 'social' layer")
 print("-" * 80)
-print("Query: SELECT nodes WHERE layer=\"social\"")
+print("Query: Q.nodes().from_layers(L['social']).execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE layer="social"')
-print(format_result(result))
+result = Q.nodes().from_layers(L['social']).execute(network)
+print(f"Found {result.count} nodes in 'social' layer:")
+for node in result.items[:5]:  # Show first 5
+    print(f"  - {node}")
+if result.count > 5:
+    print(f"  ... and {result.count - 5} more")
 
 # Example 2: Select nodes with high degree
 print("\n" + "=" * 80)
 print("[3] Example 2: Select nodes with degree > 2")
 print("-" * 80)
-print("Query: SELECT nodes WHERE degree > 2")
+print("Query: Q.nodes().where(degree__gt=2).execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE degree > 2')
-print(format_result(result))
+result = Q.nodes().where(degree__gt=2).execute(network)
+print(f"Found {result.count} nodes with degree > 2:")
+for node in result.items[:5]:
+    print(f"  - {node}")
+if result.count > 5:
+    print(f"  ... and {result.count - 5} more")
 
-# Example 3: Combine layer and degree filters with AND
+# Example 3: Combine layer and degree filters
 print("\n" + "=" * 80)
 print("[4] Example 3: Select high-degree nodes in 'transport' layer")
 print("-" * 80)
-print("Query: SELECT nodes WHERE layer=\"transport\" AND degree > 1")
+print("Query: Q.nodes().from_layers(L['transport']).where(degree__gt=1).execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE layer="transport" AND degree > 1')
-print(format_result(result))
+result = Q.nodes().from_layers(L['transport']).where(degree__gt=1).execute(network)
+print(f"Found {result.count} nodes:")
+for node in result.items:
+    print(f"  - {node}")
 
-# Example 4: Use OR operator
+# Example 4: Use layer algebra for multiple layers
 print("\n" + "=" * 80)
-print("[5] Example 4: Select nodes in 'social' OR 'work' layer")
+print("[5] Example 4: Select nodes in 'social' OR 'work' layer (Layer Algebra)")
 print("-" * 80)
-print("Query: SELECT nodes WHERE layer=\"social\" OR layer=\"work\"")
+print("Query: Q.nodes().from_layers(L['social'] + L['work']).execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE layer="social" OR layer="work"')
-print(format_result(result, limit=15))
+result = Q.nodes().from_layers(L['social'] + L['work']).execute(network)
+print(f"Found {result.count} nodes in social or work layers")
+# Group by layer for clarity
+df = result.to_pandas()
+print(f"\nBreakdown by layer:")
+print(df['layer'].value_counts())
 
 # Example 5: Compute centrality for filtered nodes
 print("\n" + "=" * 80)
 print("[6] Example 5: Compute betweenness centrality for 'social' layer")
 print("-" * 80)
-print("Query: SELECT nodes WHERE layer=\"social\" COMPUTE betweenness_centrality")
+print("Query: Q.nodes().from_layers(L['social']).compute('betweenness_centrality').execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality')
-print(format_result(result))
+result = Q.nodes().from_layers(L['social']).compute('betweenness_centrality').execute(network)
+df = result.to_pandas()
+print(f"Computed betweenness for {len(df)} nodes:")
+print(df[['id', 'layer', 'betweenness_centrality']].sort_values('betweenness_centrality', ascending=False).head())
 
-# Example 6: Multiple measures
+# Example 6: Multiple measures with chaining
 print("\n" + "=" * 80)
-print("[7] Example 6: Compute multiple measures for high-degree nodes")
+print("[7] Example 6: Compute multiple measures and sort")
 print("-" * 80)
-print("Query: SELECT nodes WHERE degree > 2 COMPUTE degree_centrality closeness_centrality")
+print("Query: Q.nodes().where(degree__gt=2).compute('degree_centrality', 'closeness_centrality')")
+print("           .order_by('degree_centrality', desc=True).limit(5).execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE degree > 2 COMPUTE degree_centrality closeness_centrality')
-print(format_result(result))
+result = (
+    Q.nodes()
+    .where(degree__gt=2)
+    .compute('degree_centrality', 'closeness_centrality')
+    .order_by('degree_centrality', desc=True)
+    .limit(5)
+    .execute(network)
+)
+df = result.to_pandas()
+print(f"Top 5 nodes by degree centrality:")
+print(df[['id', 'layer', 'degree_centrality', 'closeness_centrality']])
 
-# Example 7: Using convenience functions
+# Example 7: Per-layer analysis with grouping
 print("\n" + "=" * 80)
-print("[8] Example 7: Using convenience functions")
+print("[8] Example 7: Per-layer top nodes (Advanced Pattern)")
 print("-" * 80)
+print("Query: Q.nodes().per_layer().compute('degree')")
+print("           .order_by('degree', desc=True).execute(network)")
+print()
 
-print("\na) Select nodes by layer:")
-social_nodes = select_nodes_by_layer(network, 'social')
-print(f"   Nodes in 'social' layer: {len(social_nodes)}")
-print(f"   {social_nodes}")
-
-print("\nb) Select high-degree nodes:")
-high_degree_nodes = select_high_degree_nodes(network, min_degree=3)
-print(f"   Nodes with degree > 3: {len(high_degree_nodes)}")
-print(f"   {high_degree_nodes}")
-
-print("\nc) Compute centrality for layer:")
-centrality = compute_centrality_for_layer(network, 'transport', 'degree_centrality')
-print("   Degree centrality for 'transport' layer:")
-for node, value in sorted(centrality.items(), key=lambda x: x[1], reverse=True):
-    print(f"     {node}: {value:.4f}")
+result = (
+    Q.nodes()
+    .per_layer()
+    .compute('degree')
+    .execute(network)
+)
+df = result.to_pandas()
+print(f"Nodes grouped by layer:")
+# Show top 3 per layer
+for layer in df['layer'].unique():
+    layer_df = df[df['layer'] == layer].nlargest(3, 'degree')
+    print(f"\nTop 3 in layer '{layer}':")
+    print(layer_df[['id', 'degree']].to_string(index=False))
 
 # Example 8: Complex query with degree range
 print("\n" + "=" * 80)
-print("[9] Example 8: Complex query - nodes with degree between 2 and 4")
+print("[9] Example 8: Nodes with degree between 2 and 4")
 print("-" * 80)
-print("Query: SELECT nodes WHERE degree >= 2 AND degree <= 4")
+print("Query: Q.nodes().where(degree__gte=2, degree__lte=4).execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE degree >= 2 AND degree <= 4')
-print(format_result(result, limit=20))
+result = Q.nodes().where(degree__gte=2, degree__lte=4).execute(network)
+print(f"Found {result.count} nodes with 2 <= degree <= 4:")
+for node in result.items[:10]:
+    print(f"  - {node}")
+if result.count > 10:
+    print(f"  ... and {result.count - 10} more")
 
-# Example 9: All nodes (no filter)
+# Example 9: All nodes with pandas export
 print("\n" + "=" * 80)
-print("[10] Example 9: Select all nodes (no WHERE clause)")
+print("[10] Example 9: Export all nodes to pandas DataFrame")
 print("-" * 80)
-print("Query: SELECT nodes")
+print("Query: Q.nodes().execute(network).to_pandas()")
 print()
 
-result = execute_query(network, 'SELECT nodes')
-print(format_result(result, limit=15))
+result = Q.nodes().execute(network)
+df = result.to_pandas()
+print(f"Total nodes: {len(df)}")
+print(f"\nDataFrame preview:")
+print(df.head(10))
 
 # Example 10: Compute degree for all nodes
 print("\n" + "=" * 80)
 print("[11] Example 10: Compute degree for all nodes")
 print("-" * 80)
-print("Query: SELECT nodes COMPUTE degree")
+print("Query: Q.nodes().compute('degree').execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes COMPUTE degree')
-print(format_result(result, limit=15))
+result = Q.nodes().compute('degree').execute(network)
+df = result.to_pandas()
+print(f"Degree statistics:")
+print(df['degree'].describe())
 
-# Example 11: Using NOT operator
+# Example 11: Layer difference (exclusion pattern)
 print("\n" + "=" * 80)
-print("[12] Example 11: Using NOT operator to exclude a layer")
+print("[12] Example 11: Exclude a layer using Layer Algebra")
 print("-" * 80)
-print("Query: SELECT nodes WHERE NOT layer=\"social\"")
+print("Query: Q.nodes().from_layers(L['*'] - L['social']).execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE NOT layer="social"')
-print(format_result(result, limit=15))
+result = Q.nodes().from_layers(L['*'] - L['social']).execute(network)
+print(f"Found {result.count} nodes NOT in 'social' layer:")
+df = result.to_pandas()
+print(f"Layers present: {df['layer'].unique()}")
 
-# Example 12: Filtering by centrality measures
+# Example 12: Clustering coefficient
 print("\n" + "=" * 80)
-print("[13] Example 12: Filter nodes by betweenness centrality")
+print("[13] Example 12: Compute clustering coefficient for social layer")
 print("-" * 80)
-print("Query: SELECT nodes WHERE betweenness >= 0 COMPUTE betweenness_centrality")
+print("Query: Q.nodes().from_layers(L['social']).compute('clustering').execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE betweenness >= 0 COMPUTE betweenness_centrality')
-print(format_result(result, limit=10))
+result = Q.nodes().from_layers(L['social']).compute('clustering').execute(network)
+df = result.to_pandas()
+print(f"Clustering coefficient for social layer:")
+print(df[['id', 'clustering']].sort_values('clustering', ascending=False).head())
 
-# Example 13: Clustering coefficient
+# Example 13: PageRank computation
 print("\n" + "=" * 80)
-print("[14] Example 13: Compute clustering coefficient for nodes")
+print("[14] Example 13: Compute PageRank for all nodes")
 print("-" * 80)
-print("Query: SELECT nodes WHERE layer=\"social\" COMPUTE clustering")
+print("Query: Q.nodes().compute('pagerank').order_by('pagerank', desc=True).limit(5).execute(network)")
 print()
 
-result = execute_query(network, 'SELECT nodes WHERE layer="social" COMPUTE clustering')
-print(format_result(result, limit=10))
-
-# Example 14: PageRank computation
-print("\n" + "=" * 80)
-print("[15] Example 14: Compute PageRank for all nodes")
-print("-" * 80)
-print("Query: SELECT nodes COMPUTE pagerank")
-print()
-
-result = execute_query(network, 'SELECT nodes COMPUTE pagerank')
-print(format_result(result, limit=10))
+result = (
+    Q.nodes()
+    .compute('pagerank')
+    .order_by('pagerank', desc=True)
+    .limit(5)
+    .execute(network)
+)
+df = result.to_pandas()
+print(f"Top 5 nodes by PageRank:")
+print(df[['id', 'layer', 'pagerank']])
 
 # Summary
 print("\n" + "=" * 80)
-print("DSL QUERY EXAMPLES COMPLETE")
+print("DSL V2 QUERY EXAMPLES COMPLETE")
 print("=" * 80)
-print("\nSupported DSL syntax:")
-print("  SELECT nodes|edges [WHERE conditions] [COMPUTE measures]")
-print("\nWHERE conditions:")
-print("  - layer = \"value\"")
-print("  - degree >/</>=/<=/=/!= value")
-print("  - betweenness/closeness/eigenvector >= value")
-print("  - Logical: AND, OR, NOT")
-print("\nCOMPUTE measures:")
-print("  - degree, degree_centrality")
-print("  - betweenness_centrality, closeness_centrality")
-print("  - eigenvector_centrality, pagerank")
-print("  - clustering")
-print("\nFor more information, see: py3plex.dsl module documentation")
+print("\nKey DSL v2 Patterns Demonstrated:")
+print("  ✓ Q.nodes() - Node query builder")
+print("  ✓ .from_layers(L[...]) - Layer filtering with algebra")
+print("  ✓ .where(attr__op=value) - Django-style filtering")
+print("  ✓ .compute('metric') - Centrality computation")
+print("  ✓ .order_by('attr', desc=True) - Sorting")
+print("  ✓ .limit(n) - Result limiting")
+print("  ✓ .per_layer() - Grouped analysis")
+print("  ✓ .to_pandas() - Export to DataFrame")
+print("\nComparison operators in .where():")
+print("  __gt (>), __gte (>=), __lt (<), __lte (<=), __eq (=), __ne (!=)")
+print("\nAvailable measures for .compute():")
+print("  degree, degree_centrality, betweenness_centrality")
+print("  closeness_centrality, eigenvector_centrality, pagerank, clustering")
+print("\nFor more patterns, see AGENTS.md Golden Paths")
+

@@ -1,30 +1,34 @@
-"""Example: Community Detection via DSL for Multilayer Networks
+"""Example: Community Detection for Multilayer Networks (Legacy DSL)
 
-This example demonstrates how to use the SQL-like DSL for community detection
-in multilayer networks. It covers:
+This example demonstrates community detection in multilayer networks using 
+legacy DSL convenience functions. These are maintained for backward compatibility.
 
-1. Basic community detection via DSL COMPUTE clause
-2. Using convenience functions for community analysis
+LEGACY PATTERNS (shown here):
+    result = execute_query(network, 'SELECT nodes COMPUTE communities')
+    communities = detect_communities(network)
+
+PREFERRED PATTERN (DSL v2):
+    from py3plex.algorithms.community_detection import leiden_multilayer
+    partition = leiden_multilayer(network, random_state=42)
+    # OR use AutoCommunity for automatic algorithm selection
+
+This example covers:
+1. Basic community detection via legacy string DSL
+2. Using legacy convenience functions for backward compatibility
 3. Analyzing community statistics (biggest, smallest, distribution)
-4. Layer-specific community detection
+4. Combining community detection with centrality measures
 
-The DSL supports computing communities using:
-    SELECT nodes COMPUTE communities
-
-Convenience functions include:
-    - detect_communities() - Full community analysis
-    - get_biggest_community() - Get largest community
-    - get_smallest_community() - Get smallest community
-    - get_num_communities() - Count communities
-    - get_community_sizes() - Size of each community
-    - get_community_size_distribution() - Size distribution
+Note: For new code using DSL v2, see:
+- examples/network_analysis/flagship_example.py for modern patterns
+- AGENTS.md for Golden Paths documentation
+- Direct algorithm functions: leiden_multilayer, label_propagation_*
 """
 
 from py3plex.core import multinet
 from py3plex.dsl import (
-    execute_query,
+    execute_query,  # Legacy string DSL
     format_result,
-    detect_communities,
+    detect_communities,  # Legacy convenience function
     get_community_partition,
     get_biggest_community,
     get_smallest_community,
@@ -34,8 +38,12 @@ from py3plex.dsl import (
 )
 
 print("=" * 80)
-print("COMMUNITY DETECTION VIA DSL FOR MULTILAYER NETWORKS")
+print("COMMUNITY DETECTION FOR MULTILAYER NETWORKS (Legacy DSL)")
 print("=" * 80)
+print("\nThis example demonstrates legacy DSL patterns for backward compatibility.")
+print("For modern DSL v2 patterns, see examples/network_analysis/flagship_example.py")
+print("and AGENTS.md documentation.")
+print()
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Create a sample network with clear community structure
@@ -94,11 +102,11 @@ network.add_edges(edges)
 print(f"Network created: {len(list(network.get_nodes()))} nodes, {len(list(network.get_edges()))} edges")
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Example 1: Basic community detection via DSL
+# Example 1: Basic community detection via legacy string DSL
 # ═══════════════════════════════════════════════════════════════════════════════
 
 print("\n" + "=" * 80)
-print("[2] Example 1: Basic Community Detection via DSL")
+print("[2] Example 1: Basic Community Detection via Legacy String DSL")
 print("-" * 80)
 print("Query: SELECT nodes COMPUTE communities")
 print()
@@ -115,7 +123,7 @@ for node, community_id in sorted(result['computed']['communities'].items()):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 print("\n" + "=" * 80)
-print("[3] Example 2: Full Community Analysis")
+print("[3] Example 2: Full Community Analysis with Convenience Function")
 print("-" * 80)
 
 communities = detect_communities(network)
@@ -221,26 +229,32 @@ for node in sorted(result['nodes']):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 print("\n" + "=" * 80)
-print("DSL COMMUNITY DETECTION EXAMPLES COMPLETE")
+print("LEGACY DSL COMMUNITY DETECTION EXAMPLES COMPLETE")
 print("=" * 80)
-print("\nSupported DSL syntax for community detection:")
-print(" SELECT nodes COMPUTE communities")
-print(" SELECT nodes COMPUTE community") # alias
-print(" SELECT nodes WHERE layer=\"name\" COMPUTE communities")
+print("\nLegacy string DSL syntax (backward compatibility):")
+print("  SELECT nodes COMPUTE communities")
+print("  SELECT nodes COMPUTE community  # alias")
+print("  SELECT nodes WHERE layer=\"name\" COMPUTE communities")
 print()
-print("Convenience functions:")
-print(" detect_communities(network) - Full analysis with all statistics")
-print(" get_community_partition(network) - Node to community mapping")
-print(" get_biggest_community(network) - Returns (id, size, nodes)")
-print(" get_smallest_community(network) - Returns (id, size, nodes)")
-print(" get_num_communities(network) - Number of communities")
-print(" get_community_sizes(network) - Dict of community sizes")
-print(" get_community_size_distribution(network) - Sorted size list")
+print("Legacy convenience functions:")
+print("  detect_communities(network) - Full analysis with all statistics")
+print("  get_community_partition(network) - Node to community mapping")
+print("  get_biggest_community(network) - Returns (id, size, nodes)")
+print("  get_smallest_community(network) - Returns (id, size, nodes)")
+print("  get_num_communities(network) - Number of communities")
+print("  get_community_sizes(network) - Dict of community sizes")
+print("  get_community_size_distribution(network) - Sorted size list")
 print()
-print("Use cases covered:")
-print(" Biggest community")
-print(" Smallest community")
-print(" Number of communities")
-print(" Distribution of community sizes")
+print("PREFERRED PATTERNS (for new code):")
+print("  Use algorithm functions directly:")
+print("    from py3plex.algorithms.community_detection import leiden_multilayer")
+print("    partition = leiden_multilayer(network, random_state=42)")
 print()
-print("For more information, see: py3plex.dsl module documentation")
+print("  Or use AutoCommunity for automatic algorithm selection:")
+print("    from py3plex.algorithms.community_detection import AutoCommunity")
+print("    result = AutoCommunity().candidates('leiden', 'louvain').execute(network)")
+print()
+print("For more information:")
+print("  - AGENTS.md: Section on Community Detection")
+print("  - examples/network_analysis/flagship_example.py: Modern patterns")
+print("  - docfiles/user_guide/community_detection.rst: Full documentation")
