@@ -1,7 +1,7 @@
 Changelog
 =========
 
-This page summarizes the release history of py3plex. For granular, date-stamped entries, see `GitHub Releases <https://github.com/SkBlaz/py3plex/releases>`_ or the root ``CHANGELOG.md``.
+This page summarizes the release history of py3plex. For granular, date-stamped entries, see `GitHub Releases <https://github.com/SkBlaz/py3plex/releases>`_.
 
 Release History
 ---------------
@@ -242,7 +242,7 @@ Use this section to triage warnings during upgrades; deprecated items will be re
 Contributing to Changelog
 --------------------------
 
-When submitting PRs, update the "Unreleased" section in ``CHANGELOG.md`` (repository root) and mirror major notes here if they affect users:
+When submitting PRs, mirror major notes here if they affect users:
 
 * Brief description of changes
 * Link to issue (if applicable)
