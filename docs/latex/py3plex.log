@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.2)  2 FEB 2026 03:02
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.6)  6 FEB 2026 05:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -40055,7 +40055,7 @@ Package rerunfilecheck Info: File `py3plex.out' has not changed.
 Here is how much of TeX's memory you used:
  27798 strings out of 476182
  612228 string characters out of 5795596
- 1982975 words of memory out of 5000000
+ 1983975 words of memory out of 5000000
  44023 multiletter control sequences out of 15000+600000
  681381 words of font info for 121 fonts, out of 8000000 for 9000
  15 hyphenation exceptions out of 8191
@@ -40077,7 +40077,7 @@ texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/
 lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on py3plex.pdf (1026 pages, 4526014 bytes).
+Output written on py3plex.pdf (1026 pages, 4525846 bytes).
 PDF statistics:
  17454 PDF objects out of 18468 (max. 8388607)
  16210 compressed objects within 163 object streams
