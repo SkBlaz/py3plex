@@ -83,7 +83,7 @@ jobs:
     - name: Setup development environment
       run: |
         echo "🔧 Setting up development environment with uv..."
-        uv venv .venv
+        uv venv --clear .venv
         if [ "$RUNNER_OS" == "Windows" ]; then
           source .venv/Scripts/activate
         else
@@ -159,7 +159,7 @@ jobs:
 
     - name: Install minimal dependencies
       run: |
-        uv venv .venv
+        uv venv --clear .venv
         source .venv/bin/activate
         uv pip install setuptools wheel
         # Only install absolutely required dependencies
@@ -207,7 +207,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        uv venv .venv
+        uv venv --clear .venv
         source .venv/bin/activate
         uv pip install -e .[tests]
       timeout-minutes: 10
