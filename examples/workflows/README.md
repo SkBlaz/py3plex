@@ -233,7 +233,7 @@ See `example_plugin_usage.py` for complete examples.
 
 ## Additional Resources
 
-- See [PLUGIN_GUIDE.md](../../PLUGIN_GUIDE.md) for detailed plugin documentation
+- See [Plugin System Documentation](../../docfiles/plugin_system.rst) for detailed plugin documentation
 - Check config files in this directory for examples
 - Explore notebooks for interactive workflows
 - Online docs: https://skblaz.github.io/py3plex/config_workflows.html
