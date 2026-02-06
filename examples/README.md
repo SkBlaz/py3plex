@@ -125,7 +125,7 @@ python .github/scripts/run_examples.py --fast-only --timeout 30
 ## Additional Resources
 
 - **API Documentation**: https://skblaz.github.io/py3plex/
-- **Plugin Guide**: [PLUGIN_GUIDE.md](../PLUGIN_GUIDE.md)
+- **Plugin Guide**: [Plugin System Documentation](../docfiles/plugin_system.rst)
 - **CLI Tutorial**: Run `py3plex quickstart` for interactive demo
 
 ## Contributing Examples
