@@ -43,7 +43,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          uv venv .venv
+          uv venv --clear .venv
           source .venv/bin/activate
           uv pip install crosshair-tool icontract z3-solver
           # Install minimal required dependencies for py3plex

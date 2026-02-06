@@ -54,7 +54,7 @@ jobs:
     
     - name: Install test dependencies
       run: |
-        uv venv .venv
+        uv venv --clear .venv
         source .venv/bin/activate
         uv pip install -e .[tests]
         # Install optional deps for comprehensive tests
@@ -117,7 +117,7 @@ jobs:
     
     - name: Install test dependencies
       run: |
-        uv venv .venv
+        uv venv --clear .venv
         source .venv/bin/activate
         uv pip install -e .[tests]
         uv pip install python-louvain || echo "⚠️ python-louvain not available"
@@ -161,7 +161,7 @@ jobs:
     
     - name: Install minimal dependencies
       run: |
-        uv venv .venv
+        uv venv --clear .venv
         source .venv/bin/activate
         uv pip install pytest hypothesis networkx numpy scipy
         # Skip hypothesis-networkx, python-louvain
