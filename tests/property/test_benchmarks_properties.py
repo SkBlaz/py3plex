@@ -79,7 +79,6 @@ def test_budget_creation_valid(params):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_budget_requires_at_least_one_limit():
     """Property: Budget creation fails without any limits."""
     with pytest.raises(ValueError, match="at least one limit"):
@@ -429,7 +428,6 @@ def test_community_metric_dataclass_properties(name):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_budget_zero_charges_work():
     """Property: Charging zero amounts is valid."""
     budget = Budget(limit_ms=100.0, limit_evals=10)

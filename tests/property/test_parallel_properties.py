@@ -161,7 +161,6 @@ def test_parallel_map_serial_equals_parallel(items):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_parallel_map_empty_input():
     """Property: parallel_map handles empty input gracefully."""
     result = parallel_map(square, [], n_jobs=1)
@@ -356,7 +355,6 @@ def test_spawn_seeds_none_produces_correct_count(n):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_parallel_map_with_none_seeds_works():
     """Property: parallel_map works when seeds are None."""
     # This tests that the system doesn't crash with None seeds

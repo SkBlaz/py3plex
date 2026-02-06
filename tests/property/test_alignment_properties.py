@@ -272,7 +272,6 @@ def test_total_degree_equals_sum_of_per_layer(n_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_isolated_node_has_zero_degrees():
     """Property: Isolated nodes have zero degree and entropy."""
     # Create network with isolated node
@@ -293,7 +292,6 @@ def test_isolated_node_has_zero_degrees():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_features_deterministic():
     """Property: Same network produces same features."""
     nodes = [0, 1, 2]
@@ -316,7 +314,6 @@ def test_features_deterministic():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=5)
 def test_empty_network_returns_empty_features():
     """Property: Empty network returns empty feature dict."""
     net = multinet.multi_layer_network(directed=False)
@@ -402,7 +399,6 @@ def test_layer_selection_affects_feature_dimension(n_layers):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_layer_order_preserved():
     """Property: Layer ordering in features follows input order."""
     nodes = [0, 1, 2]
@@ -445,7 +441,6 @@ def test_layer_order_preserved():
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_uniform_distribution_has_max_entropy():
     """Property: Node with uniform degree distribution has maximum entropy."""
     # Create node with equal degree in all layers
@@ -477,7 +472,6 @@ def test_uniform_distribution_has_max_entropy():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_single_layer_node_has_zero_entropy():
     """Property: Node active in only one layer has zero entropy."""
     nodes = [0, 1, 2]
