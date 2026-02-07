@@ -8386,14 +8386,14 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 
 ## Testing Strategy
 
-### Current Test Coverage State (Updated: January 2026)
+### Current Test Coverage State (Updated: February 2026)
 
 **Overall Coverage**: ~8% (30,595 of 33,254 statements uncovered)
 
 **Note**: This low overall coverage reflects that py3plex is a mature library with extensive functionality, but test coverage has historically focused on core algorithms and DSL functionality. Many utility modules, visualization features, and specialized algorithms have limited or no test coverage.
 
-**Recent Test Improvements** (This PR):
-- **203 new comprehensive tests added** for previously untested modules:
+**Recent Test Improvements**:
+- **210+ new comprehensive tests added** for previously untested modules:
   - `test_core_schema_validation.py` - 16 tests for FieldValidator and ValidationError
   - `test_core_lazy_evaluation.py` - 15 tests for LazyProperty and CacheManager  
   - `test_core_immutable.py` - 15 tests for ImmutableNetworkView
@@ -8403,7 +8403,8 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
   - `test_algorithms_random_generators.py` - 21 tests for BA, ER, and SBM multilayer generators
   - `test_algorithms_attribute_correlation.py` - 23 tests for attribute-centrality correlation
   - `test_visualization_benchmark.py` - 35 tests added/enhanced for benchmark plotting
-- **NEW: AGENTS.md Validation Tests** (This PR):
+  - `test_dsl_uq_propagation.py` - 7 tests for UQ propagation semantics
+- **AGENTS.md Validation Tests**:
   - `test_agents_golden_paths.py` - Validates 5 Golden Path examples from AGENTS.md (8 tests)
   - `test_agents_ergonomics_features.py` - Tests v1.1+ ergonomics features (.hint(), introspection, warnings) (14 tests)
 
@@ -8452,8 +8453,8 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 ### Test Organization
 
 **Test Suite Statistics**:
-- **Total test files**: 481 files (495 including __init__.py files)
-- **DSL test files**: 65 files covering DSL v2, legacy DSL, and related features
+- **Total test files**: 495 files (509 including __init__.py files)
+- **DSL test files**: 67 files covering DSL v2, legacy DSL, and related features
 - **Verification test files**: 7 files with formal correctness guarantees
 - **Property-based test files**: 13 files in `tests/property/` using Hypothesis
 
@@ -8591,30 +8592,30 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 ### Overview Statistics
 
-**Version**: py3plex 1.1.2  
+**Version**: py3plex 1.1.3  
 **Python Support**: 3.8+  
-**Repository Size**: 187.8K lines of code  
-**Test Coverage**: 7.7K tests across 366 test files (~8% statement coverage)  
-**Key Modules**: 239 Python files across core, algorithms, DSL, and utilities  
+**Repository Size**: 383K lines of code  
+**Test Coverage**: 8.0K tests across 495 test files (~8% statement coverage)  
+**Key Modules**: 410 Python files across core, algorithms, DSL, and utilities  
 
 ### Major Subsystems
 
-**Core Infrastructure** (13 modules):
+**Core Infrastructure** (16 modules):
 - Network representations (multinet, temporal_multinet, immutable views)
 - I/O and data loading (parsers, converters, supporting)
 - Network generation (random_generators, advanced_random_generators)
 - Schema validation and lazy evaluation
 
-**DSL Subsystem** (26 modules):
-- Query builder (builder.py - 223KB, most complex module)
+**DSL Subsystem** (62 modules):
+- Query builder (builder.py - 6.9K lines, central module)
 - AST representation and execution (ast.py, executor.py, executor_semiring.py)
-- Result handling (result.py - 72KB)
+- Result handling (result.py - 2.2K lines)
 - Layer algebra and expressions (layers.py, expressions.py)
 - Query planning and optimization (planner.py)
 - Uncertainty quantification integration (uq_algebra.py, uq_resolution.py)
 - Provenance tracking (provenance.py)
 
-**Algorithms** (110+ modules across 16 categories):
+**Algorithms** (119 modules across 16 categories):
 - Community detection (16 modules, 6 algorithms)
 - Centrality measures (multilayer, supra-matrix, versatility)
 - Statistical analysis (11 modules)
@@ -8622,7 +8623,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - Multilayer-specific algorithms (entanglement, multirank, multixrank)
 - Specialized methods (curvature, routing, classification)
 
-**Uncertainty Quantification** (26 modules):
+**Uncertainty Quantification** (25 modules):
 - Bootstrap and resampling methods
 - Partition UQ and community ensemble
 - Noise models and null model comparison
@@ -8645,19 +8646,19 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 | Category | Modules | Lines of Code | Purpose |
 |----------|---------|---------------|---------|
-| Core | 13 | ~50K | Network data structures and I/O |
-| DSL | 26 | ~80K | Query language and execution |
-| Algorithms | 110+ | ~70K | Network analysis algorithms |
-| Uncertainty | 26 | ~25K | UQ and robustness analysis |
+| Core | 16 | ~50K | Network data structures and I/O |
+| DSL | 62 | ~80K | Query language and execution |
+| Algorithms | 119 | ~70K | Network analysis algorithms |
+| Uncertainty | 25 | ~25K | UQ and robustness analysis |
 | Dynamics | 14 | ~15K | Spreading processes |
 | Utilities | 50+ | ~30K | CLI, validation, profiling, visualization |
 
 ### Test Infrastructure
 
 **Test Organization**:
-- **366 test files** with **7,700+ individual tests**
+- **495 test files** with **8,000+ individual tests**
 - **83 verification tests** across 4 specialized modules (provenance, differential, metamorphic, determinism)
-- **203 new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization)
+- **210+ new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization, UQ propagation)
 - Property-based tests using Hypothesis
 - Metamorphic tests for invariant checking
 - Integration tests for end-to-end workflows
@@ -8672,6 +8673,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 ### Repository Growth
 
 **Recent Additions** (v1.1.x):
+- Version 1.1.3 enhancements and documentation updates
 - Successive Halving for algorithm racing
 - SBM (Stochastic Block Model) integration
 - Partition UQ with entropy and stability metrics
@@ -8687,7 +8689,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 ### Core Modules
 
-- `py3plex/core/multinet.py` (167KB) - Main `multi_layer_network` class with 200+ methods
+- `py3plex/core/multinet.py` (4.3K lines) - Main `multi_layer_network` class with 200+ methods
 - `py3plex/core/temporal_multinet.py` (19KB) - Temporal network support with time-stamped edges
 - `py3plex/core/parsers.py` (30KB) - Network format parsers (edgelist, GML, GraphML, JSON)
 - `py3plex/core/random_generators.py` (14KB) - Random network generation (ER, BA, SBM)
@@ -8713,11 +8715,11 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `py3plex_mcp/errors.py` - Typed error handling
 - `py3plex_mcp/safe_paths.py` - Path validation and safety
 
-### DSL v2 Internals (26 modules, ~80K lines)
+### DSL v2 Internals (62 modules, ~80K lines)
 
 **Core Builder API**:
 - `py3plex/dsl/__init__.py` (14KB) - Public API exports (Q, L, UQ, Param, F, C, N, P, D, S)
-- `py3plex/dsl/builder.py` (223KB) - Q, L, UQ, Param builders - **largest module in repo**
+- `py3plex/dsl/builder.py` (6.9K lines) - Q, L, UQ, Param builders - **central DSL module**
   - QueryBuilder (nodes, edges, communities)
   - LayerExprBuilder and LayerSet for layer algebra
   - UQBuilder for uncertainty quantification
@@ -8727,7 +8729,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 **AST and Execution**:
 - `py3plex/dsl/ast.py` (59KB) - AST node definitions (SelectStmt, CompareStmt, PathStmt, etc.)
-- `py3plex/dsl/executor.py` (221KB) - Query execution engine with measure registry
+- `py3plex/dsl/executor.py` (6.9K lines) - Query execution engine with measure registry
 - `py3plex/dsl/executor_semiring.py` (10KB) - Semiring path query executor
 - `py3plex/dsl/planner.py` (29KB) - Query optimization and stage reordering
 - `py3plex/dsl/cache.py` (7KB) - Query result caching
@@ -9100,7 +9102,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `AGENTS.md` (8,900+ lines) - **This file** - Comprehensive AI agent documentation
 - `README.md` - Quick start and project overview
 - `docfiles/` - Documentation source files
-- `examples/` - **170+ example scripts** demonstrating all features
+- `examples/` - **242 example scripts** demonstrating all features
 - `docs/py3plex_book.pdf` (106 pages) - Technical documentation
 - `CITATION.cff` - Citation information
 
@@ -9294,11 +9296,12 @@ raise Py3plexException("Invalid configuration")
 ```python
 import py3plex
 
-print(py3plex.__version__)  # "1.1.2"
+print(py3plex.__version__)  # "1.1.3"
 ```
 
 **Version History**:
-- **1.1.2** (Current): Removed redundant documentation files
+- **1.1.3** (Current): Repository state updates and documentation improvements
+- **1.1.2**: Removed redundant documentation files
 - **1.1.1**: Documentation updates and AutoCommunity examples
 - **1.1.0**: DSL v2, Dynamics, UQ, Temporal, Null models, Counterexamples, Claim learning
 - **1.0.0**: Initial stable release
@@ -9782,7 +9785,7 @@ Check that the server is running and stdio transport is properly configured.
 
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-01-15 (for py3plex v1.1.2 + MCP v1.0.0)
+**Last Updated**: 2026-02-07 (for py3plex v1.1.3)
 
 
 ---
@@ -10331,6 +10334,8 @@ Recommended areas for future test coverage:
 
 ---
 
-**Repo State Note**: As of January 2026, py3plex has 210 new deterministic tests (203 baseline + 7 for UQ propagation) enforcing 10+ major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, edge cases, and UQ propagation. All tests are automated, CI-friendly, and passing.
+**Repo State Note**: As of February 2026, py3plex has 210+ new deterministic tests (203 baseline + 7 for UQ propagation) enforcing 10+ major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, edge cases, and UQ propagation. All tests are automated, CI-friendly, and passing.
+
+**v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 495 test files, 410 Python modules in py3plex, 383K total lines of code, and 242 example scripts. Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
 
 **v1.1.2 UQ Propagation Update** (January 2026): Implemented first-class uncertainty propagation semantics with `mode="propagate"` option in `.uq()`. This enables quantification of selection stability (p_present, p_selected, rank_uq) when queries include filtering, ordering, and selection operations. The propagate mode executes the full query end-to-end per replicate, capturing how uncertain metric values affect which items appear in final results. Aggregation now uses UQAlgebra to preserve uncertainty through grouping operations instead of silently dropping it. All changes are backward compatible (default mode="summarize_only"). New test module: tests/test_dsl_uq_propagation.py (7 deterministic tests).
