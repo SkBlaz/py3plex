@@ -38,7 +38,7 @@ def test_conf_exposes_expected_metadata(conf_module):
     module, expected_path = conf_module
 
     assert module.project == "Practical Multilayer Network Analysis with Py3plex"
-    assert module.version == module.release == "1.1.2"
+    assert module.version == module.release == "1.1.3"
     assert module.language == "en"
     assert module.master_doc == "index"
     assert module.templates_path == ["_templates"]

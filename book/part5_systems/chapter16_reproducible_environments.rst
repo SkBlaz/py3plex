@@ -84,7 +84,7 @@ Lock exact package versions to ensure reproducibility:
        pip-compile requirements.in --output-file requirements.txt
        
        # This creates entries like:
-       # py3plex==1.1.0
+       # py3plex==1.1.3
        # numpy==1.24.3
        # networkx==3.1
        # matplotlib==3.7.1
@@ -126,7 +126,7 @@ Lock exact package versions to ensure reproducibility:
 .. code-block:: text
 
     # Core dependencies (exact versions)
-    py3plex==1.1.0
+    py3plex==1.1.3
     numpy==1.24.3
     scipy==1.10.1
     networkx==3.1
@@ -233,7 +233,7 @@ Record environment details for publication and replication:
 **Include in papers/reports:**
 
 * Python version (e.g., Python 3.10.8)
-* py3plex version (e.g., 1.1.0)
+* py3plex version (e.g., 1.1.3)
 * Key dependency versions (NumPy, NetworkX, SciPy)
 * Operating system (Linux, macOS, Windows)
 * Hardware details for performance-critical analyses
