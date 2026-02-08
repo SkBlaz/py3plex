@@ -516,7 +516,7 @@ Contributors are recognized in:
 
 * GitHub contributors page
 * Release notes
-* :doc:`acknowledgements` section in the documentation
+* :doc:`../acknowledgements` section in the documentation
 
 Getting Help
 ------------
@@ -528,8 +528,8 @@ Getting Help
 Next Steps
 ----------
 
-* Read :doc:`development` for development workflow details
-* See :doc:`architecture` for system architecture
+* Read :doc:`../development` for development workflow details
+* See :doc:`../architecture` for system architecture
 * Browse `existing issues <https://github.com/SkBlaz/py3plex/issues>`_
 * Check `good first issues <https://github.com/SkBlaz/py3plex/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22>`_
 
