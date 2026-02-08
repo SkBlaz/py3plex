@@ -1260,7 +1260,7 @@ Complex DSL Workflows
 **Next steps with DSL:**
 
 * **Full DSL tutorial:** :doc:`query_with_dsl` - Comprehensive guide with advanced patterns
-* **Builder API reference:** :doc:`../reference/dsl_api` - Complete API documentation
+* **Builder API reference:** :doc:`../reference/dsl_reference` - Complete API documentation
 * **Temporal queries:** :doc:`query_with_dsl` (Temporal Queries section) - Time-varying networks
 
 Compare Algorithms
@@ -2666,8 +2666,8 @@ Next Steps
 
 * **Algorithms:** :doc:`../concepts/algorithm_landscape` - Deep dive into community detection theory
 * **Visualization:** :doc:`visualize_networks` - Advanced community visualization techniques
-* **Benchmark:** :doc:`../tutorials/benchmark_communities` - Compare with ground-truth communities
-* **Temporal analysis:** :doc:`../tutorials/temporal_communities` - Track community evolution over time
+* **Benchmark:** :doc:`../tutorials/community_detection` - Compare with ground-truth communities
+* **Temporal analysis:** :doc:`../tutorials/community_detection` - Track community evolution over time
 
 **Recommended workflows:**
 

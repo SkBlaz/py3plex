@@ -558,9 +558,9 @@ Best Practices
 See Also
 --------
 
-- :doc:`query_with_dsl` - DSL query basics
-- :doc:`query_zoo` - Query examples and patterns
-- :doc:`/api/dsl` - Complete DSL API reference
+- :doc:`../how-to/query_with_dsl` - DSL query basics
+- :doc:`../how-to/query_zoo` - Query examples and patterns
+- :doc:`dsl_reference` - Complete DSL API reference
 
 .. note::
    Layer Set Algebra is available in py3plex DSL v2.1+. It's fully backward

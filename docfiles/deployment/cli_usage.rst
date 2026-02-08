@@ -926,6 +926,6 @@ See Also
 --------
 
 * :doc:`../getting_started/tutorial_10min` - 10-minute Python tutorial
-* :doc:`./community_detection` - Community detection algorithms in detail
-* :doc:`./multilayer_centrality` - Centrality measures for multilayer networks
+* :doc:`../tutorials/community_detection` - Community detection algorithms in detail
+* :doc:`../tutorials/multilayer_centrality` - Centrality measures for multilayer networks
 * :doc:`../index` - Main documentation index
