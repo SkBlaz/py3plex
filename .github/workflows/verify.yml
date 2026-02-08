@@ -45,10 +45,12 @@ jobs:
         run: |
           uv venv --clear .venv
           source .venv/bin/activate
-          uv pip install crosshair-tool icontract z3-solver
+          # Install z3-solver with binary wheel to avoid slow source build
+          uv pip install --only-binary z3-solver z3-solver
+          uv pip install crosshair-tool icontract
           # Install minimal required dependencies for py3plex
           uv pip install numpy scipy networkx
-        timeout-minutes: 10
+        timeout-minutes: 20
       
       - name: Run CrossHair verification
         run: |

@@ -328,7 +328,7 @@ We maintain a list of publications using py3plex to showcase applications and bu
 See Also
 --------
 
-* :doc:`acknowledgements` - Full acknowledgments
+* :doc:`../acknowledgements` - Full acknowledgments
 * :doc:`../algorithm_guide` - Complete algorithm citations with references
 * `py3plex GitHub <https://github.com/SkBlaz/py3plex>`_ - Source code and issues
 * `Applied Network Science paper <https://doi.org/10.1007/s41109-019-0203-7>`_ - Primary publication

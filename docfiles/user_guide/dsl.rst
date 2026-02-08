@@ -1731,7 +1731,7 @@ The py3plex DSL extends beyond network queries to support declarative dynamics
 simulation on multilayer networks. This section demonstrates how to use the
 dynamics DSL for epidemic modeling and other dynamical processes.
 
-For detailed documentation and formalism, see :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows`.
+For detailed documentation and formalism, see `advanced queries documentation <../how-to/query_zoo.html>`_.
 
 Quickstart
 ~~~~~~~~~~~
@@ -1886,7 +1886,7 @@ Further Reading
 
 For mathematical formalism and detailed documentation:
 
-- :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows` - Complete dynamics DSL guide with formalism
+- `advanced queries documentation <../how-to/query_zoo.html>`_ - Complete dynamics DSL guide with formalism
 - ``examples/network_analysis/example_dsl_dynamics.py`` - Comprehensive dynamics examples
 - ``examples/advanced/example_dynamics_core.py`` - Core dynamics classes (OOP-style)
 - :doc:`../sir_epidemic_simulator` - SIR multiplex simulator documentation

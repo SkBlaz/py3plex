@@ -204,7 +204,7 @@ See ``examples/README.md`` for complete guidelines.
 Related Documentation
 ---------------------
 
-* :doc:`../getting_started/quickstart` - Quick start guide
+* :doc:`../getting_started/tutorial_10min` - Quick start guide
 * :doc:`../user_guide/networks` - Working with networks
 * :doc:`../user_guide/dsl` - DSL reference
 * :doc:`../user_guide/visualization` - Visualization guide
