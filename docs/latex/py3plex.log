@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.6)  6 FEB 2026 18:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.8)  8 FEB 2026 06:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -27618,7 +27618,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [947]
-<gui_load_data.png, id=13496, 1053.9375pt x 677.53125pt>
+<gui_load_data.png, id=13502, 1053.9375pt x 677.53125pt>
 File: gui_load_data.png Graphic file (type png)
 <use gui_load_data.png>
 Package pdftex.def Info: gui_load_data.png  used on input line 100560.
@@ -28032,7 +28032,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [949]
-<gui_visualize.png, id=13505, 1053.9375pt x 677.53125pt>
+<gui_visualize.png, id=13511, 1053.9375pt x 677.53125pt>
 File: gui_visualize.png Graphic file (type png)
 <use gui_visualize.png>
 Package pdftex.def Info: gui_visualize.png  used on input line 100729.
@@ -28047,12 +28047,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [950 <./gui_visualize.png (PNG copy)>]
-<gui_analyze.png, id=13510, 1053.9375pt x 677.53125pt>
+<gui_analyze.png, id=13516, 1053.9375pt x 677.53125pt>
 File: gui_analyze.png Graphic file (type png)
 <use gui_analyze.png>
 Package pdftex.def Info: gui_analyze.png  used on input line 100762.
 (pdftex.def)             Requested size: 452.97523pt x 291.21902pt.
-<gui_export.png, id=13511, 1053.9375pt x 677.53125pt>
+<gui_export.png, id=13517, 1053.9375pt x 677.53125pt>
 File: gui_export.png Graphic file (type png)
 <use gui_export.png>
 Package pdftex.def Info: gui_export.png  used on input line 100799.
@@ -28076,7 +28076,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [952 <./gui_export.png (PNG copy)>]
-<gui_flower_dashboard.png, id=13520, 1053.9375pt x 677.53125pt>
+<gui_flower_dashboard.png, id=13526, 1053.9375pt x 677.53125pt>
 File: gui_flower_dashboard.png Graphic file (type png)
 <use gui_flower_dashboard.png>
 Package pdftex.def Info: gui_flower_dashboard.png  used on input line 100866.
@@ -40077,10 +40077,10 @@ texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/
 lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on py3plex.pdf (1026 pages, 4525846 bytes).
+Output written on py3plex.pdf (1026 pages, 4526074 bytes).
 PDF statistics:
- 17454 PDF objects out of 18468 (max. 8388607)
- 16210 compressed objects within 163 object streams
+ 17460 PDF objects out of 18468 (max. 8388607)
+ 16216 compressed objects within 163 object streams
  5312 named destinations out of 6186 (max. 500000)
  9935 words of extra memory for PDF output out of 10000 (max. 10000000)
 

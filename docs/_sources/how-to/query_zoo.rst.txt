@@ -831,7 +831,7 @@ Further Reading
 * :doc:`query_with_dsl` — Complete DSL reference with syntax and operators
 * :doc:`../concepts/multilayer_networks_101` — Theory of multilayer networks
 * :doc:`../reference/dsl_reference` — Full DSL grammar and API reference
-* :doc:`../tutorials/tutorial_10min` — Quick start tutorial
+* :doc:`../getting_started/tutorial_10min` — Quick start tutorial
 
 .. admonition:: Contributing Queries
    :class: tip

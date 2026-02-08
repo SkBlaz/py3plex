@@ -623,5 +623,5 @@ See Also
 --------
 
 * :doc:`contributing` - Contributing guidelines
-* :doc:`development` - Development workflow
-* :doc:`core` - Core API documentation
+* :doc:`../development` - Development workflow
+* :doc:`../core` - Core API documentation

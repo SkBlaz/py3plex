@@ -849,7 +849,7 @@ See :doc:`dsl` for the complete query DSL documentation, which shares these desi
 **See also:**
 
 - :doc:`dsl` — Complete network query DSL documentation with builder API details
-- :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows` — Advanced dynamics DSL with mathematical formalism
+- `DSL documentation <dsl.html>`_ — Advanced dynamics DSL with mathematical formalism
 
 ----
 
