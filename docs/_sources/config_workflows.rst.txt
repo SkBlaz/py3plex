@@ -428,4 +428,4 @@ Further Reading
 
 * :doc:`CLI Guide <getting_started/tutorial_10min>` - Command-line interface
 * :doc:`API Documentation <apidocs>` - Python API reference
-* :doc:`Examples <example>` - More examples
+* :doc:`Examples <examples_reference>` - More examples
