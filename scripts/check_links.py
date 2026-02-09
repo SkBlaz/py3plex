@@ -98,13 +98,21 @@ def check_local_file_references(root: Path, file_path: Path, links: List[Tuple[s
         for match in re.finditer(r'\[([^\]]*)\]\(([^)]+)\)', content):
             link = match.group(2)
             if not link.startswith('http') and not link.startswith('#'):
+                # Split off anchor if present
+                file_part = link.split('#')[0]
+                anchor_part = link.split('#')[1] if '#' in link else None
+                
+                # Skip pure anchors
+                if not file_part:
+                    continue
+                
                 # Relative file path
-                if not link.startswith('/'):
+                if not file_part.startswith('/'):
                     # Relative to current file
-                    target_path = (file_path.parent / link).resolve()
+                    target_path = (file_path.parent / file_part).resolve()
                 else:
                     # Absolute from repo root
-                    target_path = (root / link.lstrip('/')).resolve()
+                    target_path = (root / file_part.lstrip('/')).resolve()
                 
                 if not target_path.exists():
                     errors.append(f"  Broken local link: {link} -> {target_path}")

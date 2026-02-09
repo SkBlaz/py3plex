@@ -736,7 +736,6 @@ Additional Resources
 * :doc:`CLI Tutorial <./cli_usage>`
 * `Docker Documentation <https://docs.docker.com/>`_
 * `Docker Compose Documentation <https://docs.docker.com/compose/>`_
-* `DOCKER.md <https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md>`_ - Main Docker guide in the repository
 
 Support
 -------
