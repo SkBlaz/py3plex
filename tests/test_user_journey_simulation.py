@@ -29,8 +29,10 @@ def test_first_time_user_journey():
     
     net = user_journey_simulation.simulate_first_time_user()
     assert net is not None
-    assert len(net.get_layers()) == 2
-    assert len(net.get_nodes()) == 8  # 4 people × 2 layers
+    layers = net.get_layers()[0]  # get_layers returns (layer_list, graphs, dict)
+    nodes = list(net.get_nodes())
+    assert len(layers) == 2
+    assert len(nodes) == 8  # 4 people × 2 layers
 
 
 def test_intermediate_user_journey():
@@ -39,8 +41,10 @@ def test_intermediate_user_journey():
     
     net = user_journey_simulation.simulate_intermediate_user()
     assert net is not None
-    assert len(net.get_layers()) == 3
-    assert len(net.get_nodes()) > 0
+    layers = net.get_layers()[0]  # get_layers returns (layer_list, graphs, dict)
+    nodes = list(net.get_nodes())
+    assert len(layers) == 3
+    assert len(nodes) > 0
 
 
 def test_advanced_user_journey():
@@ -49,7 +53,8 @@ def test_advanced_user_journey():
     
     net = user_journey_simulation.simulate_advanced_user()
     assert net is not None
-    assert len(net.get_nodes()) > 0
+    nodes = list(net.get_nodes())
+    assert len(nodes) > 0
 
 
 def test_ergonomic_improvements_documented():
