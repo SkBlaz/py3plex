@@ -9,6 +9,7 @@ Tests multilayer random graph generation algorithms including:
 
 import pytest
 import networkx as nx
+import numpy as np
 from py3plex.algorithms.advanced_random_generators import (
     multilayer_barabasi_albert,
     multilayer_erdos_renyi,
@@ -116,13 +117,13 @@ class TestMultilayerStochasticBlockModel:
     def test_basic_generation(self):
         """Test basic SBM generation."""
         block_sizes = [5, 5, 5]
-        p_matrix = [[0.8, 0.1, 0.1],
-                    [0.1, 0.8, 0.1],
-                    [0.1, 0.1, 0.8]]
+        block_probs = np.array([[0.8, 0.1, 0.1],
+                                [0.1, 0.8, 0.1],
+                                [0.1, 0.1, 0.8]])
         
         G = multilayer_stochastic_block_model(
             block_sizes=block_sizes,
-            p_matrix=p_matrix,
+            block_probs=block_probs,
             num_layers=2,
             seed=42
         )
@@ -132,18 +133,18 @@ class TestMultilayerStochasticBlockModel:
     def test_determinism_with_seed(self):
         """Test that same seed produces same network."""
         block_sizes = [4, 4]
-        p_matrix = [[0.7, 0.2],
-                    [0.2, 0.7]]
+        block_probs = np.array([[0.7, 0.2],
+                                [0.2, 0.7]])
         
         G1 = multilayer_stochastic_block_model(
             block_sizes=block_sizes,
-            p_matrix=p_matrix,
+            block_probs=block_probs,
             num_layers=2,
             seed=55
         )
         G2 = multilayer_stochastic_block_model(
             block_sizes=block_sizes,
-            p_matrix=p_matrix,
+            block_probs=block_probs,
             num_layers=2,
             seed=55
         )
@@ -154,12 +155,12 @@ class TestMultilayerStochasticBlockModel:
     def test_block_structure(self):
         """Test that network respects block structure."""
         block_sizes = [10, 10]
-        p_matrix = [[0.9, 0.05],  # High intra-block, low inter-block
-                    [0.05, 0.9]]
+        block_probs = np.array([[0.9, 0.05],  # High intra-block, low inter-block
+                                [0.05, 0.9]])
         
         G = multilayer_stochastic_block_model(
             block_sizes=block_sizes,
-            p_matrix=p_matrix,
+            block_probs=block_probs,
             num_layers=2,
             seed=42
         )
