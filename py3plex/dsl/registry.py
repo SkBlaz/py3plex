@@ -575,13 +575,13 @@ if _APPROX_AVAILABLE:
             Tuple of (values_dict, convergence_info_dict or None)
         """
         pr, conv = approximate_pagerank_power_iteration(
-            G, alpha=alpha, tol=tol, max_iter=max_iter, personalization=personalization
+            G, alpha=alpha, tol=tol, max_iter=max_iter, personalization=personalization,
+            diagnostics=diagnostics
         )
         
         if nodes is not None:
             pr = {node: pr.get(node, 0) for node in nodes}
         
-        # Return convergence info as second element if diagnostics enabled
-        return pr, (conv if diagnostics else None)
+        return pr, conv
 
 
