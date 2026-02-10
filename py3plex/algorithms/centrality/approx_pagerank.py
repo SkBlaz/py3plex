@@ -20,8 +20,9 @@ def approximate_pagerank_power_iteration(
     alpha: float = 0.85,
     tol: float = 1e-6,
     max_iter: int = 100,
-    personalization: Optional[Dict[Any, float]] = None
-) -> Tuple[Dict[Any, float], Dict[str, Any]]:
+    personalization: Optional[Dict[Any, float]] = None,
+    diagnostics: bool = False
+) -> Tuple[Dict[Any, float], Optional[Dict[str, Any]]]:
     """Compute PageRank using power iteration with explicit convergence.
     
     This implementation provides:
@@ -35,11 +36,13 @@ def approximate_pagerank_power_iteration(
         tol: Convergence tolerance for L1 norm (default: 1e-6)
         max_iter: Maximum number of iterations (default: 100)
         personalization: Optional personalization vector (dict mapping nodes to values)
+        diagnostics: Whether to return convergence diagnostics (default: False)
         
     Returns:
         Tuple of (pagerank_dict, convergence_info) where:
         - pagerank_dict: PageRank score for each node
         - convergence_info: Dict with 'iterations', 'residual_l1', 'converged', 'tol', 'max_iter'
+                           (None if diagnostics=False)
         
     Note:
         - Time complexity: O(max_iter * m) where m is number of edges
@@ -50,7 +53,7 @@ def approximate_pagerank_power_iteration(
     n = len(nodes)
     
     if n == 0:
-        return {}, {"iterations": 0, "residual_l1": 0.0, "converged": True, "tol": tol, "max_iter": max_iter}
+        return {}, None
     
     # Build node index for efficient array operations
     idx = {v: i for i, v in enumerate(nodes)}
@@ -119,15 +122,17 @@ def approximate_pagerank_power_iteration(
     # Convert to dict
     pagerank = {nodes[i]: x[i] for i in range(n)}
     
-    # Convergence info
-    converged = (residual < tol)
-    conv_info = {
-        "iterations": it,
-        "residual_l1": residual,
-        "converged": converged,
-        "tol": tol,
-        "max_iter": max_iter
-    }
+    # Convergence info (only if diagnostics requested)
+    conv_info = None
+    if diagnostics:
+        converged = (residual < tol)
+        conv_info = {
+            "iterations": it,
+            "residual_l1": residual,
+            "converged": converged,
+            "tol": tol,
+            "max_iter": max_iter
+        }
     
     return pagerank, conv_info
 
@@ -139,10 +144,11 @@ def approximate_pagerank(
     max_iter: int = 100,
     **kwargs
 ) -> Dict[Any, float]:
-    """Compute approximate PageRank (without convergence info).
+    """Compute approximate PageRank (without diagnostics).
     
     This is a convenience wrapper that returns only the PageRank values
-    without convergence diagnostics.
+    without convergence diagnostics, consistent with other approximate
+    centrality functions.
     
     Args:
         G: NetworkX graph
@@ -154,5 +160,7 @@ def approximate_pagerank(
     Returns:
         Dict mapping each node to its approximate PageRank score
     """
-    pagerank, _ = approximate_pagerank_power_iteration(G, alpha, tol, max_iter)
+    pagerank, _ = approximate_pagerank_power_iteration(
+        G, alpha, tol, max_iter, diagnostics=False
+    )
     return pagerank

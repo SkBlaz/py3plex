@@ -11,7 +11,7 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, List, Optional
+from typing import List, Optional, Union
 import numpy as np
 import networkx as nx
 
@@ -23,7 +23,7 @@ def multilayer_barabasi_albert(
     interlayer_prob: float = 0.1,
     directed: bool = False,
     seed: Optional[int] = None
-) -> Any:
+) -> Union[nx.MultiGraph, nx.MultiDiGraph]:
     """Generate multilayer Barabási-Albert preferential attachment network.
     
     Creates a scale-free network in each layer with preferential attachment,
@@ -33,12 +33,16 @@ def multilayer_barabasi_albert(
         n: Number of nodes per layer
         m: Number of edges to attach from new node (m < n)
         num_layers: Number of layers
-        interlayer_prob: Probability of inter-layer edges
+        interlayer_prob: Probability of inter-layer edges (must be in [0, 1])
         directed: Whether to create directed networks
         seed: Random seed for reproducibility
         
     Returns:
         NetworkX MultiGraph or MultiDiGraph with multilayer structure
+        
+    Raises:
+        ValueError: If parameters are invalid (n <= 0, m <= 0, m >= n, 
+                   num_layers <= 0, or interlayer_prob not in [0, 1])
         
     Algorithm:
         For each layer:
@@ -51,8 +55,23 @@ def multilayer_barabasi_albert(
         - Gómez, S., et al. (2013). "Diffusion dynamics on multiplex networks."
           Physical Review Letters, 110(2), 028701.
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # Parameter validation
+    if n <= 0:
+        raise ValueError(f"n must be positive, got {n}")
+    if m <= 0:
+        raise ValueError(f"m must be positive, got {m}")
+    if m >= n:
+        raise ValueError(f"m must be less than n, got m={m}, n={n}")
+    if num_layers <= 0:
+        raise ValueError(f"num_layers must be positive, got {num_layers}")
+    if not 0 <= interlayer_prob <= 1:
+        raise ValueError(f"interlayer_prob must be in [0, 1], got {interlayer_prob}")
+    
+    # Initialize RNG consistently
+    rng = np.random.RandomState(seed)
+    
+    # Use RNG to generate seed for NetworkX functions
+    nx_seed = None if seed is None else rng.randint(0, 2**31)
     
     if directed:
         G = nx.MultiDiGraph()
@@ -61,7 +80,7 @@ def multilayer_barabasi_albert(
     
     # Generate BA network for each layer
     for layer in range(num_layers):
-        layer_graph = nx.barabasi_albert_graph(n, m, seed=seed)
+        layer_graph = nx.barabasi_albert_graph(n, m, seed=nx_seed)
         
         # Add nodes with layer information
         for node in layer_graph.nodes():
@@ -76,7 +95,7 @@ def multilayer_barabasi_albert(
         for node in range(n):
             for l1 in range(num_layers):
                 for l2 in range(l1 + 1, num_layers):
-                    if np.random.random() < interlayer_prob:
+                    if rng.random() < interlayer_prob:
                         G.add_edge(
                             (node, l1), (node, l2),
                             edge_type='inter',
@@ -93,7 +112,7 @@ def multilayer_stochastic_block_model(
     interlayer_prob: float = 0.1,
     directed: bool = False,
     seed: Optional[int] = None
-) -> Any:
+) -> Union[nx.MultiGraph, nx.MultiDiGraph]:
     """Generate multilayer stochastic block model network.
     
     Creates networks with community structure in each layer, where edges
@@ -103,12 +122,16 @@ def multilayer_stochastic_block_model(
         block_sizes: List of block sizes (number of nodes in each block)
         block_probs: Matrix of edge probabilities between blocks (k x k)
         num_layers: Number of layers
-        interlayer_prob: Probability of inter-layer edges
+        interlayer_prob: Probability of inter-layer edges (must be in [0, 1])
         directed: Whether to create directed networks
         seed: Random seed for reproducibility
         
     Returns:
         NetworkX MultiGraph or MultiDiGraph with block structure
+        
+    Raises:
+        ValueError: If parameters are invalid (empty block_sizes, num_layers <= 0,
+                   or interlayer_prob not in [0, 1])
         
     Example:
         >>> # Two blocks with strong within-block, weak between-block connections
@@ -122,8 +145,21 @@ def multilayer_stochastic_block_model(
         - Bazzi, M., et al. (2016). "Community detection in temporal multilayer
           networks." SIAM Journal on Applied Mathematics, 76(2), 504-537.
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # Parameter validation
+    if not block_sizes:
+        raise ValueError("block_sizes cannot be empty")
+    if any(s <= 0 for s in block_sizes):
+        raise ValueError(f"All block sizes must be positive, got {block_sizes}")
+    if num_layers <= 0:
+        raise ValueError(f"num_layers must be positive, got {num_layers}")
+    if not 0 <= interlayer_prob <= 1:
+        raise ValueError(f"interlayer_prob must be in [0, 1], got {interlayer_prob}")
+    
+    # Initialize RNG consistently
+    rng = np.random.RandomState(seed)
+    
+    # Use RNG to generate seed for NetworkX functions
+    nx_seed = None if seed is None else rng.randint(0, 2**31)
     
     if directed:
         G = nx.MultiDiGraph()
@@ -133,7 +169,7 @@ def multilayer_stochastic_block_model(
     # Generate SBM for each layer
     for layer in range(num_layers):
         layer_graph = nx.stochastic_block_model(
-            block_sizes, block_probs, directed=directed, seed=seed
+            block_sizes, block_probs, directed=directed, seed=nx_seed
         )
         
         # Add nodes with layer information
@@ -150,7 +186,7 @@ def multilayer_stochastic_block_model(
         for node in range(total_nodes):
             for l1 in range(num_layers):
                 for l2 in range(l1 + 1, num_layers):
-                    if np.random.random() < interlayer_prob:
+                    if rng.random() < interlayer_prob:
                         G.add_edge(
                             (node, l1), (node, l2),
                             edge_type='inter',
@@ -166,7 +202,7 @@ def multilayer_sbm_with_dependencies(
     interlayer_probs: np.ndarray,
     directed: bool = False,
     seed: Optional[int] = None
-) -> Any:
+) -> Union[nx.MultiGraph, nx.MultiDiGraph]:
     """Generate multilayer SBM with layer-dependent block probabilities.
     
     Each layer can have different within/between block connection probabilities,
@@ -181,6 +217,9 @@ def multilayer_sbm_with_dependencies(
         
     Returns:
         NetworkX MultiGraph or MultiDiGraph with dependent block structure
+        
+    Raises:
+        ValueError: If parameters are invalid (empty block_sizes, empty intralayer_probs)
         
     Example:
         >>> sizes = [30, 30]
@@ -198,8 +237,16 @@ def multilayer_sbm_with_dependencies(
         - Peixoto, T. P. (2015). "Inferring the mesoscale structure of layered,
           edge-valued, and time-varying networks." Physical Review E, 92(4), 042807.
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # Parameter validation
+    if not block_sizes:
+        raise ValueError("block_sizes cannot be empty")
+    if any(s <= 0 for s in block_sizes):
+        raise ValueError(f"All block sizes must be positive, got {block_sizes}")
+    if not intralayer_probs:
+        raise ValueError("intralayer_probs cannot be empty")
+    
+    # Initialize RNG consistently
+    rng = np.random.RandomState(seed)
     
     num_layers = len(intralayer_probs)
     total_nodes = sum(block_sizes)
@@ -230,7 +277,7 @@ def multilayer_sbm_with_dependencies(
                 block_v = node_blocks[v]
                 prob = layer_probs[block_u, block_v]
                 
-                if np.random.random() < prob:
+                if rng.random() < prob:
                     G.add_edge((u, layer), (v, layer), layer=layer, edge_type='intra')
     
     # Add inter-layer edges based on block-dependent probabilities
@@ -240,7 +287,7 @@ def multilayer_sbm_with_dependencies(
                 block = node_blocks[node]
                 prob = interlayer_probs[l1, l2, block]
                 
-                if np.random.random() < prob:
+                if rng.random() < prob:
                     G.add_edge(
                         (node, l1), (node, l2),
                         edge_type='inter',
@@ -257,29 +304,46 @@ def multilayer_erdos_renyi(
     interlayer_prob: float = 0.1,
     directed: bool = False,
     seed: Optional[int] = None
-) -> Any:
+) -> Union[nx.MultiGraph, nx.MultiDiGraph]:
     """Generate multilayer Erdős-Rényi random network.
     
     Creates independent ER graphs in each layer with inter-layer connections.
     
     Args:
         n: Number of nodes per layer
-        p: Intra-layer edge probability
+        p: Intra-layer edge probability (must be in [0, 1])
         num_layers: Number of layers
-        interlayer_prob: Probability of inter-layer edges
+        interlayer_prob: Probability of inter-layer edges (must be in [0, 1])
         directed: Whether to create directed networks
         seed: Random seed for reproducibility
         
     Returns:
         NetworkX MultiGraph or MultiDiGraph
         
+    Raises:
+        ValueError: If parameters are invalid (n <= 0, p not in [0, 1], 
+                   num_layers <= 0, or interlayer_prob not in [0, 1])
+        
     References:
         - Erdős, P., & Rényi, A. (1960). "On the evolution of random graphs."
           Publication of the Mathematical Institute of the Hungarian Academy
           of Sciences, 5(1), 17-60.
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # Parameter validation
+    if n <= 0:
+        raise ValueError(f"n must be positive, got {n}")
+    if not 0 <= p <= 1:
+        raise ValueError(f"p must be in [0, 1], got {p}")
+    if num_layers <= 0:
+        raise ValueError(f"num_layers must be positive, got {num_layers}")
+    if not 0 <= interlayer_prob <= 1:
+        raise ValueError(f"interlayer_prob must be in [0, 1], got {interlayer_prob}")
+    
+    # Initialize RNG consistently
+    rng = np.random.RandomState(seed)
+    
+    # Use RNG to generate seed for NetworkX functions
+    nx_seed = None if seed is None else rng.randint(0, 2**31)
     
     if directed:
         G = nx.MultiDiGraph()
@@ -288,7 +352,7 @@ def multilayer_erdos_renyi(
     
     # Generate ER network for each layer
     for layer in range(num_layers):
-        layer_graph = nx.erdos_renyi_graph(n, p, seed=seed, directed=directed)
+        layer_graph = nx.erdos_renyi_graph(n, p, seed=nx_seed, directed=directed)
         
         # Add nodes with layer information
         for node in layer_graph.nodes():
@@ -303,7 +367,7 @@ def multilayer_erdos_renyi(
         for node in range(n):
             for l1 in range(num_layers):
                 for l2 in range(l1 + 1, num_layers):
-                    if np.random.random() < interlayer_prob:
+                    if rng.random() < interlayer_prob:
                         G.add_edge(
                             (node, l1), (node, l2),
                             edge_type='inter',
@@ -318,26 +382,38 @@ def multilayer_configuration_model(
     interlayer_edges: int = 0,
     directed: bool = False,
     seed: Optional[int] = None
-) -> Any:
+) -> Union[nx.MultiGraph, nx.MultiDiGraph]:
     """Generate multilayer network with specified degree sequences.
     
     Creates networks where each layer has a specific degree distribution.
     
     Args:
         degree_sequences: List of degree sequences, one per layer
-        interlayer_edges: Number of random inter-layer edges to add
+        interlayer_edges: Number of random inter-layer edges to add (must be >= 0)
         directed: Whether to create directed networks
         seed: Random seed for reproducibility
         
     Returns:
         NetworkX MultiGraph or MultiDiGraph
         
+    Raises:
+        ValueError: If parameters are invalid (empty degree_sequences or interlayer_edges < 0)
+        
     References:
         - Newman, M. E. (2003). "The structure and function of complex networks."
           SIAM Review, 45(2), 167-256.
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # Parameter validation
+    if not degree_sequences:
+        raise ValueError("degree_sequences cannot be empty")
+    if interlayer_edges < 0:
+        raise ValueError(f"interlayer_edges must be non-negative, got {interlayer_edges}")
+    
+    # Initialize RNG consistently
+    rng = np.random.RandomState(seed)
+    
+    # Use RNG to generate seed for NetworkX functions
+    nx_seed = None if seed is None else rng.randint(0, 2**31)
     
     if directed:
         G = nx.MultiDiGraph()
@@ -353,10 +429,10 @@ def multilayer_configuration_model(
                 # For directed, need in-degree and out-degree sequences
                 # Here we use the same sequence for both
                 layer_graph = nx.directed_configuration_model(
-                    degree_seq, degree_seq, seed=seed
+                    degree_seq, degree_seq, seed=nx_seed
                 )
             else:
-                layer_graph = nx.configuration_model(degree_seq, seed=seed)
+                layer_graph = nx.configuration_model(degree_seq, seed=nx_seed)
             
             # Remove self-loops and parallel edges
             layer_graph = nx.Graph(layer_graph)
@@ -392,12 +468,12 @@ def multilayer_configuration_model(
             attempts += 1
             
             # Pick two random layers
-            l1, l2 = np.random.choice(num_layers, size=2, replace=False)
+            l1, l2 = rng.choice(num_layers, size=2, replace=False)
             
             # Pick random nodes from each layer
             if l1 in nodes_per_layer and l2 in nodes_per_layer:
-                node1 = np.random.choice(nodes_per_layer[l1])
-                node2 = np.random.choice(nodes_per_layer[l2])
+                node1 = rng.choice(nodes_per_layer[l1])
+                node2 = rng.choice(nodes_per_layer[l2])
                 
                 # Add edge if it doesn't exist
                 if not G.has_edge((node1, l1), (node2, l2)):
