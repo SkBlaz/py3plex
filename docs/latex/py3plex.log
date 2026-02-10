@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.8)  8 FEB 2026 16:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.10)  10 FEB 2026 21:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -27352,22 +27352,22 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [933]
-Underfull \hbox (badness 10000) in paragraph at lines 99348--99350
+Underfull \hbox (badness 10000) in paragraph at lines 99340--99342
 []|\T1/lmr/m/n/10.95 Small (<100
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99374--99376
+Underfull \hbox (badness 10000) in paragraph at lines 99366--99368
 []|\T1/lmr/m/n/10.95 Large (1k-10k
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99387--99389
+Underfull \hbox (badness 10000) in paragraph at lines 99379--99381
 []|\T1/lmr/m/n/10.95 Very Large
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99396--99399
+Underfull \hbox (badness 10000) in paragraph at lines 99388--99391
 []|\T1/lmr/m/n/10.95 Sam-pling re-quired, con-sider
  []
 
@@ -27407,12 +27407,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [937]
-Underfull \hbox (badness 10000) in paragraph at lines 99670--99672
+Underfull \hbox (badness 10000) in paragraph at lines 99662--99664
 []|\T1/lmr/m/n/10.95 O(iterations x
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99677--99679
+Underfull \hbox (badness 10000) in paragraph at lines 99669--99671
 []|\T1/lmr/m/n/10.95 Com-mu-nity de-tec-tion
  []
 
@@ -27488,67 +27488,67 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [945]
-Underfull \hbox (badness 7379) in paragraph at lines 100433--100435
+Underfull \hbox (badness 7379) in paragraph at lines 100425--100427
 []|\T1/lmr/b/n/10.95 Load Net-work \T1/lmr/m/n/10.95 (up-load
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100436--100439
+Underfull \hbox (badness 10000) in paragraph at lines 100428--100431
 []|\T1/lmtt/m/n/10.95 network = multinet.multi_layer_network().
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100447--100449
+Underfull \hbox (badness 10000) in paragraph at lines 100439--100441
 []|\T1/lmr/b/n/10.95 Com-pute Statis-tics $\OMS/lmsy/m/n/10.95 !$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100450--100454
+Underfull \hbox (badness 10000) in paragraph at lines 100442--100446
 []|\T1/lmtt/m/n/10.95 from py3plex.algorithms.statistics
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100450--100454
+Underfull \hbox (badness 10000) in paragraph at lines 100442--100446
 \T1/lmtt/m/n/10.95 import multilayer_statistics as mls mls.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100458--100462
+Underfull \hbox (badness 10000) in paragraph at lines 100450--100454
 []|\T1/lmtt/m/n/10.95 from py3plex.algorithms.community_detection import
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100458--100462
+Underfull \hbox (badness 10000) in paragraph at lines 100450--100454
 \T1/lmtt/m/n/10.95 community_louvain partition = community_louvain.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100466--100471
+Underfull \hbox (badness 10000) in paragraph at lines 100458--100463
 []|\T1/lmtt/m/n/10.95 from py3plex.algorithms.multilayer_algorithms.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100466--100471
+Underfull \hbox (badness 10000) in paragraph at lines 100458--100463
 \T1/lmtt/m/n/10.95 centrality import MultilayerCentrality calc =
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100466--100471
+Underfull \hbox (badness 10000) in paragraph at lines 100458--100463
 \T1/lmtt/m/n/10.95 MultilayerCentrality(network) degree = calc.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100475--100479
+Underfull \hbox (badness 10000) in paragraph at lines 100467--100471
 []|\T1/lmtt/m/n/10.95 from py3plex.visualization.multilayer
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100475--100479
+Underfull \hbox (badness 10000) in paragraph at lines 100467--100471
 \T1/lmtt/m/n/10.95 import draw_multilayer_default
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100483--100486
+Underfull \hbox (badness 10000) in paragraph at lines 100475--100478
 []|\T1/lmtt/m/n/10.95 network.save_network("output.json",
  []
 
@@ -27568,7 +27568,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100550 ...97a1/license-BSD--3--Clause-blue}.svg}
+l.100542 ...97a1/license-BSD--3--Clause-blue}.svg}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -27580,7 +27580,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100550 ...97a1/license-BSD--3--Clause-blue}.svg}
+l.100542 ...97a1/license-BSD--3--Clause-blue}.svg}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -27592,7 +27592,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100552 ...36ea7c037ce7/docker-compose-blue}.svg}
+l.100544 ...36ea7c037ce7/docker-compose-blue}.svg}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -27604,7 +27604,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100552 ...36ea7c037ce7/docker-compose-blue}.svg}
+l.100544 ...36ea7c037ce7/docker-compose-blue}.svg}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -27618,10 +27618,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [947]
-<gui_load_data.png, id=13502, 1053.9375pt x 677.53125pt>
+<gui_load_data.png, id=13498, 1053.9375pt x 677.53125pt>
 File: gui_load_data.png Graphic file (type png)
 <use gui_load_data.png>
-Package pdftex.def Info: gui_load_data.png  used on input line 100560.
+Package pdftex.def Info: gui_load_data.png  used on input line 100552.
 (pdftex.def)             Requested size: 452.97523pt x 291.21902pt.
 
 
@@ -27641,7 +27641,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100644 ...��───────────┐
+l.100636 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27654,7 +27654,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100644 ...��───────────┐
+l.100636 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27667,7 +27667,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100647 ...��───────────┘
+l.100639 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27680,7 +27680,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100647 ...��───────────┘
+l.100639 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27693,7 +27693,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100647 ...��───────────┘
+l.100639 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27706,7 +27706,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100649         ▼                        ▼
+l.100641         ▼                        ▼
                                                
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27719,7 +27719,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100649         ▼                        ▼
+l.100641         ▼                        ▼
                                                
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27732,7 +27732,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100650 ...��───────────┐
+l.100642 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27745,7 +27745,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100650 ...��───────────┐
+l.100642 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27758,7 +27758,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100650 ...��───────────┐
+l.100642 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27771,7 +27771,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100650 ...��───────────┐
+l.100642 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27784,7 +27784,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100654 ...��───────────┘
+l.100646 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27797,7 +27797,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100654 ...��───────────┘
+l.100646 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27810,7 +27810,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100654 ...��───────────┘
+l.100646 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27823,7 +27823,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100656 ...��───────────┐
+l.100648 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27836,7 +27836,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100656 ...��───────────┐
+l.100648 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27849,7 +27849,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100656 ...��───────────┐
+l.100648 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27862,7 +27862,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100657 ...▼                                ▼
+l.100649 ...▼                                ▼
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27875,7 +27875,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100657 ...▼                                ▼
+l.100649 ...▼                                ▼
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27888,7 +27888,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100658 ...��───────────┐
+l.100650 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27901,7 +27901,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100658 ...��───────────┐
+l.100650 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27914,7 +27914,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100658 ...��───────────┐
+l.100650 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27927,7 +27927,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100658 ...��───────────┐
+l.100650 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27940,7 +27940,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100660 ...──────│    Worker    │
+l.100652 ...──────│    Worker    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27953,7 +27953,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100662 ...��───────────┘
+l.100654 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27966,7 +27966,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100662 ...��───────────┘
+l.100654 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27979,7 +27979,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100664                     ▼
+l.100656                     ▼
                                 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27992,7 +27992,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100665 ...��───────────┐
+l.100657 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28005,7 +28005,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100665 ...��───────────┐
+l.100657 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28018,7 +28018,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.100670 ...��───────────┘
+l.100662 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28032,10 +28032,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [949]
-<gui_visualize.png, id=13511, 1053.9375pt x 677.53125pt>
+<gui_visualize.png, id=13507, 1053.9375pt x 677.53125pt>
 File: gui_visualize.png Graphic file (type png)
 <use gui_visualize.png>
-Package pdftex.def Info: gui_visualize.png  used on input line 100729.
+Package pdftex.def Info: gui_visualize.png  used on input line 100721.
 (pdftex.def)             Requested size: 452.97523pt x 291.21902pt.
 
 
@@ -28047,15 +28047,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [950 <./gui_visualize.png (PNG copy)>]
-<gui_analyze.png, id=13516, 1053.9375pt x 677.53125pt>
+<gui_analyze.png, id=13512, 1053.9375pt x 677.53125pt>
 File: gui_analyze.png Graphic file (type png)
 <use gui_analyze.png>
-Package pdftex.def Info: gui_analyze.png  used on input line 100762.
+Package pdftex.def Info: gui_analyze.png  used on input line 100754.
 (pdftex.def)             Requested size: 452.97523pt x 291.21902pt.
-<gui_export.png, id=13517, 1053.9375pt x 677.53125pt>
+<gui_export.png, id=13513, 1053.9375pt x 677.53125pt>
 File: gui_export.png Graphic file (type png)
 <use gui_export.png>
-Package pdftex.def Info: gui_export.png  used on input line 100799.
+Package pdftex.def Info: gui_export.png  used on input line 100791.
 (pdftex.def)             Requested size: 452.97523pt x 291.21902pt.
 
 
@@ -28076,10 +28076,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [952 <./gui_export.png (PNG copy)>]
-<gui_flower_dashboard.png, id=13526, 1053.9375pt x 677.53125pt>
+<gui_flower_dashboard.png, id=13522, 1053.9375pt x 677.53125pt>
 File: gui_flower_dashboard.png Graphic file (type png)
 <use gui_flower_dashboard.png>
-Package pdftex.def Info: gui_flower_dashboard.png  used on input line 100866.
+Package pdftex.def Info: gui_flower_dashboard.png  used on input line 100858.
 (pdftex.def)             Requested size: 452.97523pt x 291.21902pt.
 
 
@@ -28116,7 +28116,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.101122 ...89f5a6d7d93e54df14ae68fa5/badge}.svg}}
+l.101114 ...89f5a6d7d93e54df14ae68fa5/badge}.svg}}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -28128,7 +28128,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.101122 ...89f5a6d7d93e54df14ae68fa5/badge}.svg}}
+l.101114 ...89f5a6d7d93e54df14ae68fa5/badge}.svg}}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -28231,7 +28231,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102020 ...��───────────┐
+l.102012 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28244,7 +28244,137 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102020 ...��───────────┐
+l.102012 ...��───────────┐
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┘ (U+2518)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102015 ...��───────────┘
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┌ (U+250C)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102017 ...��───────────┐
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┐ (U+2510)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102017 ...��───────────┐
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┌ (U+250C)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102019 ...�──────────┐ │
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┬ (U+252C)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102019 ...�──────────┐ │
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┬ (U+252C)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102019 ...�──────────┐ │
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┐ (U+2510)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102019 ...�──────────┐ │
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┴ (U+2534)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102022 ...�──────────┘ │
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┴ (U+2534)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102022 ...�──────────┘ │
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ┘ (U+2518)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.102022 ...�──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28478,7 +28608,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102038 ...�──────────┘ │
+l.102039 ...�──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28491,7 +28621,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102038 ...�──────────┘ │
+l.102039 ...�──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28504,7 +28634,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102038 ...�──────────┘ │
+l.102039 ...�──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28517,7 +28647,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102039 ...��───────────┘
+l.102040 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28530,7 +28660,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102041 ...��───────────┐
+l.102042 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28543,85 +28673,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102041 ...��───────────┐
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┌ (U+250C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102043 ...�──────────┐ │
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┬ (U+252C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102043 ...�──────────┐ │
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┬ (U+252C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102043 ...�──────────┐ │
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┐ (U+2510)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102043 ...�──────────┐ │
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┴ (U+2534)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102047 ...�──────────┘ │
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┴ (U+2534)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102047 ...�──────────┘ │
+l.102042 ...��───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28634,59 +28686,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102047 ...�──────────┘ │
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┘ (U+2518)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102048 ...��───────────┘
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┌ (U+250C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102050 ...��───────────┐
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┐ (U+2510)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102050 ...��───────────┐
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ┘ (U+2518)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102053 ...��───────────┘
+l.102045 ...��───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28708,7 +28708,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102109 Layer management (string ↔
+l.102101 Layer management (string ↔
                                       integer IDs, delimiter handling)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28793,7 +28793,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.102752 ... downstream to avoid repeated dense↔
+l.102744 ... downstream to avoid repeated dense↔
                                                   sparse conversions.
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28833,173 +28833,173 @@ Chapter 5.
 [979
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 102944--102945
+Underfull \hbox (badness 10000) in paragraph at lines 102936--102937
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.centrality_toolkit\T1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (103.48677pt too wide) in paragraph at lines 102945--102946
+Overfull \hbox (103.48677pt too wide) in paragraph at lines 102937--102938
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.community_detection.community_louvain\T
 1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (109.2355pt too wide) in paragraph at lines 102946--102947
+Overfull \hbox (109.2355pt too wide) in paragraph at lines 102938--102939
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.community_detection.community_measures\
 T1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (103.48677pt too wide) in paragraph at lines 102947--102948
+Overfull \hbox (103.48677pt too wide) in paragraph at lines 102939--102940
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.community_detection.community_ranking\T
 1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (103.48677pt too wide) in paragraph at lines 102948--102949
+Overfull \hbox (103.48677pt too wide) in paragraph at lines 102940--102941
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.community_detection.community_wrapper\T
 1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (120.73297pt too wide) in paragraph at lines 102949--102950
+Overfull \hbox (120.73297pt too wide) in paragraph at lines 102941--102942
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.community_detection.multilayer_benchmar
 k\T1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (126.4817pt too wide) in paragraph at lines 102950--102951
+Overfull \hbox (126.4817pt too wide) in paragraph at lines 102942--102943
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.community_detection.multilayer_modulari
 ty\T1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (28.75323pt too wide) in paragraph at lines 102951--102952
+Overfull \hbox (28.75323pt too wide) in paragraph at lines 102943--102944
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.community_detection.NoRC\T1/lmr/m/n/10.
 95 ,
  []
 
 
-Overfull \hbox (74.7431pt too wide) in paragraph at lines 102952--102953
+Overfull \hbox (74.7431pt too wide) in paragraph at lines 102944--102945
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.general.benchmark_classification\T1/lmr
 /m/n/10.95 ,
  []
 
 
-Overfull \hbox (17.25577pt too wide) in paragraph at lines 102955--102956
+Overfull \hbox (17.25577pt too wide) in paragraph at lines 102947--102948
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.core.converters\T1/lmr/m/n/10.95
  ,
  []
 
 
-Overfull \hbox (11.50703pt too wide) in paragraph at lines 102958--102959
+Overfull \hbox (11.50703pt too wide) in paragraph at lines 102950--102951
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.core.predicate\T1/lmr/m/n/10.95 
 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 102959--102960
+Underfull \hbox (badness 10000) in paragraph at lines 102951--102952
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.core.rule\T1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (5.7583pt too wide) in paragraph at lines 102960--102961
+Overfull \hbox (5.7583pt too wide) in paragraph at lines 102952--102953
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.core.settings\T1/lmr/m/n/10.95 ,
 
  []
 
 
-Overfull \hbox (28.75323pt too wide) in paragraph at lines 102961--102962
+Overfull \hbox (28.75323pt too wide) in paragraph at lines 102953--102954
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.learners.bottomup\T1/lmr/m/n/10.
 95 ,
  []
 
 
-Overfull \hbox (23.0045pt too wide) in paragraph at lines 102962--102963
+Overfull \hbox (23.0045pt too wide) in paragraph at lines 102954--102955
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.learners.learner\T1/lmr/m/n/10.9
 5 ,
  []
 
 
-Overfull \hbox (23.0045pt too wide) in paragraph at lines 102963--102964
+Overfull \hbox (23.0045pt too wide) in paragraph at lines 102955--102956
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.learners.optimal\T1/lmr/m/n/10.9
 5 ,
  []
 
 
-Overfull \hbox (45.99944pt too wide) in paragraph at lines 102964--102965
+Overfull \hbox (45.99944pt too wide) in paragraph at lines 102956--102957
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.stats.scorefunctions\T1/lmr/m/n/
 10.95 ,
  []
 
 
-Overfull \hbox (11.50703pt too wide) in paragraph at lines 102965--102966
+Overfull \hbox (11.50703pt too wide) in paragraph at lines 102957--102958
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.hedwig.stats.validate\T1/lmr/m/n/10.95 
 ,
  []
 
 
-Overfull \hbox (74.7431pt too wide) in paragraph at lines 102967--102968
+Overfull \hbox (74.7431pt too wide) in paragraph at lines 102959--102960
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.multilayer_algorithms.centrality\T1/lmr
 /m/n/10.95 ,
  []
 
 
-Overfull \hbox (86.24057pt too wide) in paragraph at lines 102968--102969
+Overfull \hbox (86.24057pt too wide) in paragraph at lines 102960--102961
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.multilayer_algorithms.entanglement\T1/l
 mr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (74.7431pt too wide) in paragraph at lines 102969--102970
+Overfull \hbox (74.7431pt too wide) in paragraph at lines 102961--102962
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.multilayer_algorithms.multixrank\T1/lmr
 /m/n/10.95 ,
  []
 
 
-Overfull \hbox (201.21524pt too wide) in paragraph at lines 102970--102971
+Overfull \hbox (201.21524pt too wide) in paragraph at lines 102962--102963
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.multilayer_algorithms.supra_matrix_func
 tion_centrality\T1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (17.25577pt too wide) in paragraph at lines 102971--102972
+Overfull \hbox (17.25577pt too wide) in paragraph at lines 102963--102964
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.network_classification\T1/lmr/m/n/10.95
  ,
  []
 
 
-Overfull \hbox (34.50197pt too wide) in paragraph at lines 102973--102974
+Overfull \hbox (34.50197pt too wide) in paragraph at lines 102965--102966
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.node_ranking.node_ranking\T1/lmr/m/n/10
 .95 ,
  []
 
 
-Overfull \hbox (45.99944pt too wide) in paragraph at lines 102974--102975
+Overfull \hbox (45.99944pt too wide) in paragraph at lines 102966--102967
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.statistics.basic_statistics\T1/lmr/m/n/
 10.95 ,
  []
 
 
-Overfull \hbox (28.75323pt too wide) in paragraph at lines 102975--102976
+Overfull \hbox (28.75323pt too wide) in paragraph at lines 102967--102968
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.statistics.bayesiantests\T1/lmr/m/n/10.
 95 ,
  []
 
 
-Overfull \hbox (68.99437pt too wide) in paragraph at lines 102976--102977
+Overfull \hbox (68.99437pt too wide) in paragraph at lines 102968--102969
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.statistics.correlation_networks\T1/lmr/
 m/n/10.95 ,
  []
 
 
-Overfull \hbox (74.7431pt too wide) in paragraph at lines 102977--102978
+Overfull \hbox (74.7431pt too wide) in paragraph at lines 102969--102970
 []\T1/lmtt/m/n/10.95 py3plex.algorithms.statistics.multilayer_statistics\T1/lmr
 /m/n/10.95 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 102982--102983
+Underfull \hbox (badness 10000) in paragraph at lines 102974--102975
 []\T1/lmtt/m/n/10.95 py3plex.core.HINMINE.dataStructures\T1/lmr/m/n/10.95 ,
  []
 
@@ -29007,36 +29007,36 @@ Underfull \hbox (badness 10000) in paragraph at lines 102982--102983
 
 
 ]
-Overfull \hbox (45.99944pt too wide) in paragraph at lines 103002--103003
+Overfull \hbox (45.99944pt too wide) in paragraph at lines 102994--102995
 []\T1/lmtt/m/n/10.95 py3plex.visualization.benchmark_visualizations\T1/lmr/m/n/
 10.95 ,
  []
 
 
-Overfull \hbox (5.7583pt too wide) in paragraph at lines 103005--103006
+Overfull \hbox (5.7583pt too wide) in paragraph at lines 102997--102998
 []\T1/lmtt/m/n/10.95 py3plex.visualization.drawing_machinery\T1/lmr/m/n/10.95 ,
 
  []
 
 
-Overfull \hbox (178.2203pt too wide) in paragraph at lines 103006--103007
+Overfull \hbox (178.2203pt too wide) in paragraph at lines 102998--102999
 []\T1/lmtt/m/n/10.95 py3plex.visualization.embedding_visualization.embedding_vi
 sualization\T1/lmr/m/n/10.95 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 103008--103009
+Underfull \hbox (badness 10000) in paragraph at lines 103000--103001
 []\T1/lmtt/m/n/10.95 py3plex.visualization.fa2.forceatlas2\T1/lmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (5.7583pt too wide) in paragraph at lines 103009--103010
+Overfull \hbox (5.7583pt too wide) in paragraph at lines 103001--103002
 []\T1/lmtt/m/n/10.95 py3plex.visualization.layout_algorithms\T1/lmr/m/n/10.95 ,
 
  []
 
 
-Overfull \hbox (17.25577pt too wide) in paragraph at lines 103013--103014
+Overfull \hbox (17.25577pt too wide) in paragraph at lines 103005--103006
 []\T1/lmtt/m/n/10.95 py3plex.wrappers.train_node2vec_embedding\T1/lmr/m/n/10.95
  ,
  []
@@ -40049,14 +40049,14 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `py3plex.out' has not changed.
-(rerunfilecheck)             Checksum: B0CA90CFAAE207F3F4BE2CAC4270D259;223042.
+(rerunfilecheck)             Checksum: 6AEEFEB5BC26E1C36A5D66D1A4B40241;223042.
 
  ) 
 Here is how much of TeX's memory you used:
- 27798 strings out of 476182
- 612228 string characters out of 5795596
- 1983975 words of memory out of 5000000
- 44023 multiletter control sequences out of 15000+600000
+ 27795 strings out of 476182
+ 612187 string characters out of 5795595
+ 1982975 words of memory out of 5000000
+ 44022 multiletter control sequences out of 15000+600000
  681381 words of font info for 121 fonts, out of 8000000 for 9000
  15 hyphenation exceptions out of 8191
  72i,24n,83p,4224b,1301s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -40077,10 +40077,10 @@ texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/
 lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on py3plex.pdf (1026 pages, 4526074 bytes).
+Output written on py3plex.pdf (1026 pages, 4525095 bytes).
 PDF statistics:
- 17460 PDF objects out of 18468 (max. 8388607)
- 16216 compressed objects within 163 object streams
- 5312 named destinations out of 6186 (max. 500000)
+ 17455 PDF objects out of 18468 (max. 8388607)
+ 16211 compressed objects within 163 object streams
+ 5310 named destinations out of 6186 (max. 500000)
  9935 words of extra memory for PDF output out of 10000 (max. 10000000)
 
