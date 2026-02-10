@@ -33,11 +33,10 @@ The [dsl_patterns_quick_reference.py](getting_started/dsl_patterns_quick_referen
 | **Basic Filtering** | `Q.nodes().where(degree__gt=5)` | Filter nodes by properties |
 | **Cross-Layer Hubs** | `.per_layer().top_k(10).coverage(mode="all")` | Nodes in multiple layers |
 | **Uncertainty** | `.uq(method="bootstrap", n_samples=100, seed=42)` | Confidence intervals |
-| **Communities** | `AutoCommunity().candidates(...).execute()` | Auto-select algorithm |
-| **Custom Metrics** | `.mutate(normalized=lambda r: r["x"]/max(r["x"], 1))` | Derive new metrics |
 | **Layer Algebra** | `.from_layers(L["social"] + L["work"])` | Combine layers |
+| **Custom Metrics** | `.mutate(normalized=lambda r: r["x"]/max(r["x"], 1))` | Derive new metrics |
 | **Aggregation** | `.per_layer().aggregate(avg="mean(degree)")` | Layer statistics |
-| **Interactive** | `Q.nodes().hint()` | Learn as you build |
+| **Export** | `.to_pandas()`, `.to_networkx()`, `.to_arrow()` | Save results |
 
 **💡 Run the file**: `python getting_started/dsl_patterns_quick_reference.py` to see all patterns with live output!
 

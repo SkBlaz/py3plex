@@ -144,16 +144,18 @@ df = result.to_pandas(expand_uncertainty=True)
 print(df[["node", "pagerank", "pagerank_ci95_low", "pagerank_ci95_high"]])
 ```
 
-### 4. Community Detection with AutoCommunity
+### 4. Layer Algebra
 ```python
-# Automatic algorithm selection with multi-objective optimization
+# Combine layers with set operations
 result = (
-    Q.communities(mode="pareto")       # Pareto-optimal selection
-     .uq(uq=True, uq_n_samples=30)    # Stability via perturbation
-     .nodes()                          # Switch to node-level
-     .where(degree__gt=3)              # Filter peripheral nodes
+    Q.nodes()
+     .from_layers(L["social"] + L["work"])  # Union
+     .compute("degree")
      .execute(network)
 )
+
+# Or use difference
+result = Q.nodes().from_layers(L["*"] - L["test"]).execute(network)
 ```
 
 ### 5. Data Transformation with Mutate
@@ -170,18 +172,20 @@ result = (
 )
 ```
 
-### 6. Layer Algebra
+### 6. Per-Layer Aggregation
 ```python
-# Combine layers with set operations
+# Compare layers statistically
 result = (
     Q.nodes()
-     .from_layers(L["social"] + L["work"])  # Union
+     .per_layer()
      .compute("degree")
+     .aggregate(
+         avg_degree="mean(degree)",
+         max_degree="max(degree)",
+         node_count="count()"
+     )
      .execute(network)
 )
-
-# Or use difference
-result = Q.nodes().from_layers(L["*"] - L["test"]).execute(network)
 ```
 
 ### 7. Export to Multiple Formats
@@ -207,16 +211,17 @@ table = result.to_arrow()
 - **New to py3plex?** Start with Pattern 1 (basic filtering)
 - **Need cross-layer insights?** Use Pattern 2 (hub analysis)
 - **Research publication?** Add Pattern 3 (uncertainty quantification)
-- **Community structure?** Use Pattern 4 (AutoCommunity)
+- **Multiple data sources?** Use Pattern 4 (layer algebra)
 - **Custom metrics?** Use Pattern 5 (mutate)
-- **Multiple data sources?** Use Pattern 6 (layer algebra)
+- **Compare layers?** Use Pattern 6 (per-layer aggregation)
+- **Save results?** Use Pattern 7 (export formats)
 
 **📚 More Examples**: See [examples/](examples/) for 170+ complete examples:
-- **Getting Started**: [examples/getting_started/](examples/getting_started/) - 10-minute tutorial and quick patterns
+- **Getting Started**: [examples/getting_started/](examples/getting_started/) - 10-minute tutorial and 7 essential patterns
 - **DSL Patterns**: [examples/getting_started/dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) - Executable pattern reference
 - **Ergonomics**: [examples/getting_started/example_ergonomics_demo.py](examples/getting_started/example_ergonomics_demo.py) - Interactive query building with `.hint()`
 - **Advanced DSL**: [examples/network_analysis/](examples/network_analysis/) - Complete DSL v2 showcase
-- **Comprehensive Guide**: See [AGENTS.md](AGENTS.md#quick-start-golden-paths) for 5 essential patterns covering 80% of use cases
+- **Comprehensive Guide**: See [AGENTS.md](AGENTS.md#quick-start-golden-paths) for complete documentation
 
 ## Getting Started
 

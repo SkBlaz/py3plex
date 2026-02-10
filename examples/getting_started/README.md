@@ -7,7 +7,7 @@ This directory contains introductory examples to help you get started with py3pl
 **New to py3plex?** Follow this path:
 
 1. **5-Minute Introduction**: [dsl_patterns_quick_reference.py](dsl_patterns_quick_reference.py) 
-   - 8 essential DSL patterns (executable, copy-paste ready)
+   - 7 essential DSL patterns (executable, copy-paste ready)
    - Covers 80% of typical use cases
    - **⭐ Start here for fastest onboarding**
 
@@ -24,18 +24,17 @@ This directory contains introductory examples to help you get started with py3pl
 
 ## 🎯 Essential Patterns (from dsl_patterns_quick_reference.py)
 
-The `dsl_patterns_quick_reference.py` file contains **8 copy-paste patterns** for immediate use:
+The `dsl_patterns_quick_reference.py` file contains **7 copy-paste patterns** for immediate use:
 
 | Pattern | Use Case | When to Use |
 |---------|----------|-------------|
 | **1. Basic Filtering** | Find high-degree nodes | Start here for most analyses |
 | **2. Cross-Layer Hubs** | Nodes appearing in multiple layers | Multilayer structure insights |
 | **3. Uncertainty Quantification** | Confidence intervals for metrics | Research publications |
-| **4. Community Detection** | Find network communities | Structural analysis |
+| **4. Layer Algebra** | Complex layer selection | Advanced multilayer queries |
 | **5. Custom Metrics** | Derive new metrics from existing | Feature engineering |
-| **6. Layer Algebra** | Complex layer selection | Advanced multilayer queries |
-| **7. Per-Layer Aggregation** | Compare layers statistically | Layer-level analysis |
-| **8. Interactive Hints** | Learn DSL as you build | Onboarding & discovery |
+| **6. Per-Layer Aggregation** | Compare layers statistically | Layer-level analysis |
+| **7. Export Formats** | Save results in various formats | Data integration |
 
 **💡 Pro Tip**: Run `dsl_patterns_quick_reference.py` to see all patterns with live output!
 
