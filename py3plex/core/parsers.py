@@ -4,7 +4,7 @@ import glob
 import gzip
 import itertools
 import json
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -191,7 +191,7 @@ def parse_matrix_to_nx(file_name: str, directed: bool) -> Union[nx.Graph, nx.DiG
     "result must be a MultiGraph or MultiDiGraph",
 )
 def parse_gpickle(
-    file_name: str, directed: bool = False, layer_separator: Union[str, None] = None
+    file_name: str, directed: bool = False, layer_separator: Optional[str] = None
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     A parser for generic Gpickle as stored by Py3plex.
@@ -738,7 +738,7 @@ def parse_network(
     input_name: Union[str, Any],
     f_type: str = "gml",
     directed: bool = False,
-    label_delimiter: Union[str, None] = None,
+    label_delimiter: Optional[str] = None,
     network_type: str = "multilayer",
 ) -> Tuple[Any, Any, Any]:
     """
@@ -841,7 +841,7 @@ def load_edge_activity_raw(activity_file: str, layer_mappings: dict) -> pd.DataF
 
 
 def load_edge_activity_file(
-    fname: str, layer_mapping: Union[str, None] = None
+    fname: str, layer_mapping: Optional[str] = None
 ) -> pd.DataFrame:
 
     # Example edge looks like this: 11 11 1375695069 RE
@@ -873,8 +873,8 @@ def load_edge_activity_file(
 
 
 def load_temporal_edge_information(
-    input_network: str, input_type: str, layer_mapping: Union[str, None] = None
-) -> Union[pd.DataFrame, None]:
+    input_network: str, input_type: str, layer_mapping: Optional[str] = None
+) -> Optional[pd.DataFrame]:
 
     if input_type == "edge_activity":
         return load_edge_activity_file(input_network, layer_mapping=layer_mapping)

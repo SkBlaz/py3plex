@@ -80,7 +80,7 @@ def correlate_attributes_with_centrality(
     elif centrality_type == "eigenvector":
         try:
             centrality = nx.eigenvector_centrality(G, max_iter=1000)
-        except:
+        except (nx.PowerIterationFailedConvergence, nx.NetworkXError):
             centrality = dict(G.degree())  # Fallback
     else:
         from py3plex.errors import find_similar
@@ -304,7 +304,7 @@ def attribute_structural_contingency(
     try:
         from scipy.stats import chi2_contingency
         chi2, p_value, _, _ = chi2_contingency(contingency)
-    except:
+    except Exception:
         chi2, p_value = 0, 1
     
     return {
@@ -406,7 +406,7 @@ def multilayer_assortativity(
                         subgraph, attribute_name
                     )
                 results[layer] = assortativity
-            except:
+            except Exception:
                 results[layer] = 0.0
         
         return results
@@ -419,7 +419,7 @@ def multilayer_assortativity(
             else:
                 assortativity = nx.attribute_assortativity_coefficient(G, attribute_name)
             return {'global': assortativity}
-        except:
+        except Exception:
             return {'global': 0.0}
 
 
@@ -507,7 +507,7 @@ def attribute_centrality_independence_test(
     elif centrality_type == "eigenvector":
         try:
             centrality = nx.eigenvector_centrality(G, max_iter=1000)
-        except:
+        except (nx.PowerIterationFailedConvergence, nx.NetworkXError):
             centrality = dict(G.degree())  # Fallback
     else:
         from py3plex.errors import find_similar
