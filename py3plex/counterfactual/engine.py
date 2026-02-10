@@ -251,17 +251,17 @@ class CounterfactualEngine:
         # Try to get network info
         try:
             n_nodes = len(list(self.network.get_nodes()))
-        except:
+        except Exception:
             n_nodes = None
         
         try:
             n_edges = len(list(self.network.get_edges()))
-        except:
+        except Exception:
             n_edges = None
         
         try:
             n_layers = len(self.network.get_layers())
-        except:
+        except Exception:
             n_layers = None
         
         meta = {

@@ -1,6 +1,6 @@
 # node ranking algorithms
 from itertools import product
-from typing import Any, List, Tuple, Union, cast
+from typing import Any, List, Optional, Tuple, Union, cast
 
 import networkx as nx
 import numpy as np
@@ -139,7 +139,7 @@ def page_rank_kernel(index_row: int) -> Tuple[int, np.ndarray]:
 
 def sparse_page_rank(
     matrix: sp.spmatrix,
-    start_nodes: Union[List[int], range, None],
+    start_nodes: Optional[Union[List[int], range]],
     epsilon: float = 1e-6,
     max_steps: int = 100000,
     damping: float = 0.5,
