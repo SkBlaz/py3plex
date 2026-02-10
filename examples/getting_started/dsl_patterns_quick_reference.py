@@ -65,8 +65,8 @@ def pattern_1_basic_filtering():
     result = (
         Q.nodes()
          .from_layers(L["social"])              # Select layer
-         .where(degree__gt=2)                    # Filter by attribute
-         .compute("betweenness_centrality")      # Compute metrics
+         .compute("degree", "betweenness_centrality")  # Compute metrics first
+         .where(degree__gt=2)                    # Then filter by attribute
          .execute(net)
     )
     """)
@@ -74,15 +74,15 @@ def pattern_1_basic_filtering():
     result = (
         Q.nodes()
          .from_layers(L["social"])
+         .compute("degree", "betweenness_centrality")
          .where(degree__gt=2)
-         .compute("betweenness_centrality")
          .execute(net)
     )
     
     print(f"\nResult: Found {result.count} high-degree nodes in social layer")
     df = result.to_pandas()
     print("\nTop results:")
-    print(df[['node', 'degree', 'betweenness_centrality']].head())
+    print(df[['id', 'degree', 'betweenness_centrality']].head())
 
 
 def pattern_2_cross_layer_hubs():
@@ -125,8 +125,8 @@ def pattern_2_cross_layer_hubs():
     print(f"\nResult: Found {result.count} cross-layer hubs")
     df = result.to_pandas()
     print("\nCross-layer hubs:")
-    for node in df['node'].unique():
-        layers = df[df['node'] == node]['layer'].tolist()
+    for node in df['id'].unique():
+        layers = df[df['id'] == node]['layer'].tolist()
         print(f"  - {node}: present in {layers}")
 
 
@@ -167,7 +167,7 @@ def pattern_3_uncertainty_quantification():
     df = result.to_pandas(expand_uncertainty=True)
     print(f"\nResult: Computed PageRank with confidence intervals for {len(df)} nodes")
     print("\nSample with confidence intervals:")
-    print(df[['node', 'pagerank', 'pagerank_ci95_low', 'pagerank_ci95_high']].head())
+    print(df[['id', 'pagerank', 'pagerank_ci95_low', 'pagerank_ci95_high']].head())
 
 
 def pattern_4_layer_algebra():
@@ -249,7 +249,7 @@ def pattern_5_mutate_transform():
     print("\nCategory distribution:")
     print(df['category'].value_counts())
     print("\nSample with derived columns:")
-    print(df[['node', 'degree', 'clustering', 'hub_score', 'category']].head())
+    print(df[['id', 'degree', 'clustering', 'hub_score', 'category']].head())
 
 
 def pattern_6_aggregation():
@@ -293,11 +293,11 @@ def pattern_6_aggregation():
     
     print(f"\nResult: Computed per-layer statistics")
     print("\nPer-layer summary:")
-    for item, avg_deg in zip(result.items, result.attributes['avg_degree']):
-        idx = result.items.index(item)
-        max_deg = result.attributes['max_degree'][idx]
-        count = result.attributes['node_count'][idx]
-        print(f"  - {item}: {count} nodes, avg degree = {avg_deg:.2f}, max = {max_deg}")
+    for layer_name in result.items:
+        avg_deg = result.attributes['avg_degree'][layer_name]
+        max_deg = result.attributes['max_degree'][layer_name]
+        count = result.attributes['node_count'][layer_name]
+        print(f"  - {layer_name}: {count} nodes, avg degree = {avg_deg:.2f}, max = {max_deg}")
 
 
 def pattern_7_export_formats():
@@ -339,12 +339,15 @@ def pattern_7_export_formats():
     graph = result.to_networkx()
     print(f"✓ NetworkX graph: {graph.number_of_nodes()} nodes, {graph.number_of_edges()} edges")
     
-    # Arrow
-    table = result.to_arrow()
-    print(f"✓ Apache Arrow table: {len(table)} rows × {len(table.columns)} columns")
+    # Arrow (optional - requires pyarrow)
+    try:
+        table = result.to_arrow()
+        print(f"✓ Apache Arrow table: {len(table)} rows × {len(table.columns)} columns")
+    except ImportError:
+        print("✓ Apache Arrow: (skipped - pyarrow not installed)")
     
     print("\nDataFrame preview:")
-    print(df[['node', 'layer', 'degree']].head())
+    print(df[['id', 'layer', 'degree']].head())
 
 
 def main():
