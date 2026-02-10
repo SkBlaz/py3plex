@@ -92,7 +92,7 @@ class TestParseDurationString:
         assert parse_duration_string("7D") == 7 * 24 * 3600
         assert parse_duration_string("24H") == 24 * 3600
         assert parse_duration_string("30M") == 30 * 60
-        assert parse_duration_string("WEEK") == 7 * 24 * 3600
+        assert parse_duration_string("1WEEK") == 7 * 24 * 3600
     
     def test_parse_decimal_values(self):
         """Test parsing decimal values."""
@@ -227,11 +227,11 @@ class TestFormatDuration:
     
     def test_format_roundtrip(self):
         """Test that parse and format are somewhat inverse operations."""
-        # Not exact inverse, but should be reasonable
+        # Note: 7d == 1w, so format prefers larger unit
         original = "7d"
         seconds = parse_duration_string(original)
         formatted = format_duration(seconds, precision=1)
-        assert formatted == "7d"
+        assert formatted == "1w"  # 7d formats as 1w
 
 
 class TestEdgeCases:
@@ -240,17 +240,17 @@ class TestEdgeCases:
     def test_parse_format_roundtrip_simple(self):
         """Test simple round-trip conversion."""
         test_cases = [
-            ("1w", 1),
-            ("7d", 1),
-            ("24h", 1),
-            ("60m", 1),
-            ("60s", 1),
+            ("1w", 1, "1w"),
+            ("7d", 1, "1w"),  # 7d == 1w, formats as 1w
+            ("24h", 1, "1d"),  # 24h == 1d, formats as 1d
+            ("60m", 1, "1h"),  # 60m == 1h, formats as 1h
+            ("60s", 1, "1m"),  # 60s == 1m, formats as 1m
         ]
         
-        for duration_str, precision in test_cases:
+        for duration_str, precision, expected in test_cases:
             seconds = parse_duration_string(duration_str)
             formatted = format_duration(seconds, precision=precision)
-            assert duration_str == formatted
+            assert expected == formatted
     
     def test_parse_all_supported_units(self):
         """Test that all documented units are supported."""

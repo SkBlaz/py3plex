@@ -161,3 +161,103 @@ class TestGetRNG:
         val2 = rng2.random()
         
         assert val1 == val2, "Independent RNGs should not affect each other"
+
+
+class TestDeprecated:
+    """Test the deprecated decorator for marking deprecated functions."""
+    
+    def test_deprecated_basic(self):
+        """Test basic deprecation warning."""
+        from py3plex.utils import deprecated
+        
+        @deprecated(reason="This function is obsolete")
+        def old_func():
+            return "result"
+        
+        with pytest.warns(DeprecationWarning, match="old_func is deprecated.*obsolete"):
+            result = old_func()
+        
+        assert result == "result", "Function should still work"
+    
+    def test_deprecated_with_version(self):
+        """Test deprecation with version information."""
+        from py3plex.utils import deprecated
+        
+        @deprecated(reason="No longer needed", version="1.0.0")
+        def old_func_v1():
+            return 42
+        
+        with pytest.warns(DeprecationWarning, match="since version 1.0.0"):
+            result = old_func_v1()
+        
+        assert result == 42
+    
+    def test_deprecated_with_alternative(self):
+        """Test deprecation with alternative suggestion."""
+        from py3plex.utils import deprecated
+        
+        @deprecated(reason="Use new API", alternative="new_func()")
+        def old_func_alt():
+            return "old"
+        
+        with pytest.warns(DeprecationWarning, match="Use new_func\\(\\) instead"):
+            result = old_func_alt()
+        
+        assert result == "old"
+    
+    def test_deprecated_with_all_params(self):
+        """Test deprecation with all parameters."""
+        from py3plex.utils import deprecated
+        
+        @deprecated(
+            reason="API redesign",
+            version="2.0.0",
+            alternative="better_func()"
+        )
+        def old_func_full():
+            return True
+        
+        with pytest.warns(DeprecationWarning) as record:
+            result = old_func_full()
+        
+        assert result is True
+        assert len(record) == 1
+        warning_msg = str(record[0].message)
+        assert "old_func_full is deprecated" in warning_msg
+        assert "since version 2.0.0" in warning_msg
+        assert "API redesign" in warning_msg
+        assert "Use better_func() instead" in warning_msg
+    
+    def test_deprecated_preserves_function_name(self):
+        """Test that decorator preserves function metadata."""
+        from py3plex.utils import deprecated
+        
+        @deprecated(reason="Test")
+        def test_func():
+            """Test function docstring."""
+            pass
+        
+        assert test_func.__name__ == "test_func"
+        assert test_func.__doc__ == "Test function docstring."
+
+
+class TestWarnIfDeprecated:
+    """Test the warn_if_deprecated function."""
+    
+    def test_warn_basic(self):
+        """Test basic deprecation warning."""
+        from py3plex.utils import warn_if_deprecated
+        
+        with pytest.warns(DeprecationWarning, match="old_param is deprecated.*no longer used"):
+            warn_if_deprecated("old_param", "This parameter is no longer used")
+    
+    def test_warn_with_alternative(self):
+        """Test warning with alternative."""
+        from py3plex.utils import warn_if_deprecated
+        
+        with pytest.warns(DeprecationWarning, match="Use new_param instead"):
+            warn_if_deprecated(
+                "old_feature",
+                "Replaced by new feature",
+                alternative="new_param"
+            )
