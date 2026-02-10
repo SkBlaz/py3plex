@@ -520,4 +520,4 @@ Next Steps
 - :doc:`user_guide/community_detection` - Community detection algorithms  
 - :doc:`visualization_guide` - Visualization options
 
-For Python examples with R code snippets, see `examples/r_interop_example.py <https://github.com/SkBlaz/py3plex/blob/main/examples/r_interop_example.py>`_ in the GitHub repository.
+For Python examples with R code snippets, see `examples/advanced/r_interop_example.py <https://github.com/SkBlaz/py3plex/blob/main/examples/advanced/r_interop_example.py>`_ in the GitHub repository.
