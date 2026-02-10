@@ -1,4 +1,24 @@
-# decompose a complex network into a simple, homogeneous network according to a heuristic
+"""Example: Network Decomposition for Classification
+
+This example demonstrates how to:
+- Load a heterogeneous network (IMDB with actors/movies/directors)
+- Decompose network into homogeneous projections
+- Validate label propagation classification on each projection
+- Compare classification performance across decompositions
+
+Network decomposition extracts different views of a heterogeneous
+network, each capturing specific relationship patterns. By testing
+classification on each view, we can identify which relationships
+are most predictive for the task.
+
+The IMDB network is decomposed and validated using:
+- Label propagation classifier
+- 5-fold cross-validation
+- Frequency normalization for feature vectors
+
+Results show which meta-paths (relationship patterns) are most
+informative for predicting node labels.
+"""
 # SKIP_CI: slow - Network decomposition and validation takes more than 10 seconds
 
 #from py3plex.algorithms import *

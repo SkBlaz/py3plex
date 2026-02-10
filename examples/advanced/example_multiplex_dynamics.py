@@ -1,4 +1,24 @@
-# visualize multiplex network dynamics
+"""Example: Visualizing Multiplex Network Dynamics Over Time
+
+This example demonstrates how to:
+- Load a temporal multiplex network (MLKing dataset)
+- Map layer IDs to human-readable names
+- Load temporal edge activity information
+- Visualize network structure at different time slices
+- Track edge dynamics across layers over time
+- Create time series plots of network evolution
+
+The MLKing dataset contains social media interactions (retweets, mentions,
+replies) over time. This example shows how to:
+1. Split network into time windows
+2. Visualize network structure per time slice
+3. Plot temporal edge dynamics per layer
+
+Useful for analyzing:
+- Communication patterns over time
+- Layer-specific activity patterns
+- Temporal evolution of network structure
+"""
 # SKIP_CI: external_deps - Requires seaborn and specific datasets
 
 from py3plex.visualization.multilayer import draw_multilayer_default

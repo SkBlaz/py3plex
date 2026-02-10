@@ -1,4 +1,19 @@
-# a simple FET-based partition enrichment..
+"""Example: Semantic Enrichment using Fisher's Exact Test
+
+This example demonstrates how to:
+- Load a biological network (epigenetics dataset)
+- Detect communities using Louvain algorithm
+- Extract UniProt protein nodes from communities
+- Perform GO (Gene Ontology) functional enrichment using FET
+- Apply FDR correction (Benjamini-Hochberg) for multiple testing
+
+Functional enrichment identifies over-represented biological functions
+in network communities, revealing biological significance of network structure.
+
+Requirements:
+- statsmodels package for statistical testing
+- GO annotation file (goa_human.gaf.gz)
+"""
 # SKIP_CI: slow - Community detection and enrichment takes more than 10 seconds
 
 try:

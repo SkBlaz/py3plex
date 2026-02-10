@@ -1,4 +1,13 @@
-# tensor-based operations examples
+"""Example: Tensor-based Operations and Network Access
+
+This example demonstrates how to:
+- Generate random Erdős-Rényi multilayer networks
+- Visualize the adjacency tensor as a matrix
+- Access node and edge data using bracket notation (tensor-like indexing)
+
+The network can be accessed like a tensor, with nodes and edges indexed
+using bracket notation for direct data retrieval.
+"""
 # SKIP_CI: external_deps - Requires visualization with display=True
 
 from py3plex.core import random_generators

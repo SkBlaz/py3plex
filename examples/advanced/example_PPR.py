@@ -1,4 +1,20 @@
-# personalized pagerank for node classification
+"""Example: Personalized PageRank for Node Classification
+
+This example demonstrates how to:
+- Load a sparse network (CORA citation network)
+- Use Personalized PageRank (PPR) as feature vectors
+- Train a multiclass SVM classifier
+- Validate classification performance with cross-validation
+- Visualize benchmark results
+
+PPR embeddings capture local network structure around each node,
+making them effective features for node classification tasks.
+The CORA dataset contains scientific papers with citation links
+and ground-truth topic labels.
+
+Note: This example uses a linear SVM kernel which works well
+for multiclass (not multilabel) classification problems.
+"""
 # SKIP_CI: slow - PPR validation takes more than 10 seconds
 
 from py3plex.core import multinet
