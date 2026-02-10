@@ -47,6 +47,7 @@ def quick_network(
     
     Examples
     --------
+    Basic Usage:
     >>> from py3plex.ergonomics import quick_network
     >>> 
     >>> # Create empty network with nodes
@@ -55,13 +56,24 @@ def quick_network(
     ...     layers=['work', 'social']
     ... )
     >>> 
-    >>> # Create network with connections
+    >>> # Create network with connections (intra-layer)
     >>> net = quick_network(
     ...     people=['Alice', 'Bob', 'Carol'],
     ...     layers=['work', 'social'],
     ...     connections=[
-    ...         ('Alice', 'Bob', 'work'),
-    ...         ('Bob', 'Carol', 'social'),
+    ...         ('Alice', 'Bob', 'work'),      # Alice-Bob in work layer
+    ...         ('Bob', 'Carol', 'social'),    # Bob-Carol in social layer
+    ...     ]
+    ... )
+    
+    Advanced Usage (Inter-layer edges):
+    >>> # Create network with inter-layer connections (4-tuples)
+    >>> net = quick_network(
+    ...     people=['Alice', 'Bob'],
+    ...     layers=['work', 'social'],
+    ...     connections=[
+    ...         ('Alice', 'Bob', 'work', 'work'),      # Same layer
+    ...         ('Alice', 'Bob', 'work', 'social'),    # Cross-layer
     ...     ]
     ... )
     
@@ -147,18 +159,49 @@ def quick_analysis(
     
     Examples
     --------
+    Basic Usage:
     >>> from py3plex.ergonomics import quick_network, quick_analysis
     >>> 
     >>> net = quick_network(['Alice', 'Bob'], ['work'])
     >>> results = quick_analysis(net, metrics=['degree'])
     >>> print(results['dataframe'])
-    >>> 
-    >>> # With filtering
+    
+    Filter and Order:
+    >>> # Get top 10 high-degree nodes
     >>> results = quick_analysis(
     ...     net, 
     ...     metrics=['degree', 'betweenness_centrality'],
     ...     min_degree=2,
     ...     top_k=10
+    ... )
+    >>> print(f"Found {results['count']} nodes")
+    
+    Multi-layer Analysis:
+    >>> # Analyze specific layers only
+    >>> results = quick_analysis(
+    ...     net,
+    ...     metrics=['pagerank', 'clustering'],
+    ...     layers=['social', 'work']  # Analyze only these layers
+    ... )
+    
+    Common Patterns:
+    >>> # Pattern 1: Quick degree distribution
+    >>> results = quick_analysis(net, metrics=['degree'])
+    >>> df = results['dataframe']
+    >>> print(df['degree'].describe())  # Mean, std, quartiles
+    >>> 
+    >>> # Pattern 2: Find hubs (high betweenness)
+    >>> results = quick_analysis(
+    ...     net, 
+    ...     metrics=['betweenness_centrality'],
+    ...     top_k=20
+    ... )
+    >>> 
+    >>> # Pattern 3: Filter by degree and get multiple metrics
+    >>> results = quick_analysis(
+    ...     net,
+    ...     metrics=['degree', 'clustering', 'betweenness_centrality'],
+    ...     min_degree=5
     ... )
     
     Ergonomic Improvement

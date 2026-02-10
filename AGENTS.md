@@ -10,6 +10,8 @@
 
 **Version**: py3plex 1.1.2 | DSL v2.1 | Python 3.8+
 
+**🚀 New to py3plex?** Jump to [Quick Start: Golden Paths](#quick-start-golden-paths) for 5 essential patterns that cover 80% of use cases!
+
 ---
 
 ## Table of Contents
