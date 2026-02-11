@@ -1,6 +1,6 @@
 # DSL Zoo: Runnable Examples for Multilayer Network Analysis
 
-This directory contains 42 runnable examples demonstrating the full multilayer analysis surface of py3plex using single-invocation DSL calls.
+This directory contains 61 runnable examples demonstrating the full multilayer analysis surface of py3plex using single-invocation DSL calls.
 
 ## Overview
 
@@ -53,7 +53,7 @@ Each example demonstrates a specific DSL feature with:
 - `24_semiring_closure.py` - Semiring algebra closure computation with S.closure()
 - `25_arrow_export.py` - Export query results to Apache Arrow format
 
-### Extended DSL Features (26-35, 42)
+### Extended DSL Features (26-35)
 - `26_coverage_cross_layer.py` - Cross-layer coverage filtering with .coverage(mode="all")
 - `28_field_expressions.py` - Complex filtering with F expressions (F.degree > 2) & (F.clustering < 0.5)
 - `29_parameterized_queries.py` - Parameterized queries with Param placeholders
@@ -63,7 +63,42 @@ Each example demonstrates a specific DSL feature with:
 - `33_zscore_normalization.py` - Z-score normalization per layer with .zscore()
 - `34_random_sampling.py` - Random sampling of results with .sample()
 - `35_distinct_unique.py` - Get unique/distinct rows with .distinct()
+
+### Stochastic Block Models (36-41)
+- `36_sbm_basic.py` - Basic SBM inference with automatic K selection
+- `37_sbm_degree_corrected.py` - Degree-corrected SBM (DC-SBM) for heterogeneous networks
+- `38_sbm_mixed_membership.py` - Mixed-membership SBM with overlapping communities
+- `39_sbm_multilayer_shared.py` - Multilayer SBM with shared memberships
+- `40_sbm_multilayer_coupled.py` - Multilayer SBM with layer coupling
+- `41_autocommunity_with_sbm.py` - AutoCommunity with SBM as candidate algorithm
 - `42_compositional_uq.py` - Compositional UQ with per-layer aggregates and ranking stability
+
+### Dplyr-Style Operations (43-52)
+- `43_mutate_transform.py` - Transform and add columns with .mutate() lambda expressions
+- `44_arrange_sort.py` - Sort results with .arrange() (alias for .order_by())
+- `45_filter_alias.py` - Filter rows with .filter() (alias for .where())
+- `46_filter_expr_string.py` - String-based filter expressions with .filter_expr()
+- `47_tail_last_n.py` - Get last n items with .tail()
+- `48_slice_range.py` - Array slicing with .slice(start, end)
+- `49_first_item.py` - Get first item with .first()
+- `50_last_item.py` - Get last item with .last()
+- `51_pluck_column.py` - Extract single column with .pluck()
+- `52_collect_noop.py` - No-op .collect() for API compatibility
+
+### Ergonomic Features (53-57)
+- `53_hint_suggestions.py` - Interactive query building with .hint() suggestions
+- `54_explain_query.py` - Human-readable query explanation with .explain()
+- `55_debug_technical.py` - Technical debugging information with .debug()
+- `56_provenance_metadata.py` - Access provenance metadata for reproducibility
+- `57_replay_provenance.py` - Replay queries from provenance metadata
+
+### Export Formats (58-60)
+- `58_export_networkx.py` - Export results to NetworkX graphs with .to_networkx()
+- `59_export_json.py` - Export results to JSON format with .to_json()
+- `60_export_csv.py` - Export results to CSV files with .to_csv()
+
+### Advanced Transformations (61)
+- `61_normalize_columns.py` - Column normalization and transformation utilities
 
 ## Running Examples
 
