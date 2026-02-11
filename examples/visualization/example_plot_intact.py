@@ -1,5 +1,29 @@
-# simple plot of a larger file
+"""Example: Visualizing Large Networks with Node2Vec Embeddings
+
+This example demonstrates how to:
+- Load a large network (IntAct protein-protein interactions)
+- Generate node2vec embeddings for layout initialization
+- Reduce embeddings to 2D using t-SNE
+- Detect communities using Louvain algorithm
+- Create hairball visualization with community colors
+- Export high-resolution images (PNG and PDF)
+
+The workflow combines:
+1. **node2vec**: Generates structural embeddings via random walks
+2. **t-SNE**: Projects embeddings to 2D for visualization
+3. **Louvain**: Identifies network communities
+4. **Hairball plot**: Visualizes network with custom layout
+
+This approach is effective for large networks (>1000 nodes) where
+force-directed layouts are too slow. The embedding-based layout
+preserves network structure while being computationally tractable.
+
+Note: Requires node2vec binary (not bundled) and IntAct dataset files.
+For faster t-SNE, install Multicore-TSNE: 
+pip install git+https://github.com/DmitryUlyanov/Multicore-TSNE
+"""
 # SKIP_CI: external_deps - Requires specific dataset files (intact02.gpickle)
+
 from collections import Counter
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.visualization.embedding_visualization import embedding_tools

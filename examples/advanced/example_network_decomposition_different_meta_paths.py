@@ -1,4 +1,17 @@
-## decomposition via different meta paths
+"""Example: Network Decomposition via Different Meta-Paths
+
+This example demonstrates how to:
+- Load a heterogeneous network (IMDB dataset with actors, movies, directors)
+- Identify meta-path cycles (triplets of node types)
+- Decompose the network along specific meta-paths using TF heuristic
+- Aggregate decompositions across multiple paths (HINMINE approach)
+
+Meta-path decomposition extracts homogeneous projections from heterogeneous
+networks, enabling analysis along specific relationship patterns.
+
+Note: This example requires labeled nodes where labels indicate node types
+(e.g., 'actor', 'movie', 'director').
+"""
 # SKIP_CI: slow - Meta-path decomposition takes more than 10 seconds
 
 from py3plex.core import multinet

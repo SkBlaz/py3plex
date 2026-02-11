@@ -101,8 +101,8 @@ def simple_label_propagation(
                             neighbors.append((tgt, tgt_layer))
                         elif tgt == node and tgt_layer == layer:
                             neighbors.append((src, src_layer))
-            except:
-                # Fallback: iterate all edges
+            except (AttributeError, KeyError, TypeError):
+                # Fallback: iterate all edges if get_edges_by_node() not available
                 for edge in network.get_edges():
                     if len(edge) >= 4:
                         src, src_layer, tgt, tgt_layer = edge[:4]
