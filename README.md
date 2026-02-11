@@ -94,6 +94,135 @@ print(df[["id", "layer", "community_id",
 
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
+## Common DSL Patterns
+
+**Quick reference for the most frequently used query patterns:**
+
+### 1. Basic Node Query with Filtering
+```python
+from py3plex.dsl import Q, L
+
+# Find high-degree nodes in a specific layer
+result = (
+    Q.nodes()
+     .from_layers(L["social"])         # Select layer(s)
+     .where(degree__gt=5)               # Filter by attribute
+     .compute("betweenness_centrality") # Compute metrics
+     .execute(network)
+)
+```
+
+### 2. Cross-Layer Hub Analysis
+```python
+# Find nodes that are important across multiple layers
+result = (
+    Q.nodes()
+     .from_layers(L["*"])              # All layers
+     .compute("degree", "pagerank")
+     .per_layer()                       # Group by layer
+       .top_k(10, "degree")             # Top 10 per layer
+     .end_grouping()
+     .coverage(mode="at_least", k=2)   # Keep nodes in ≥2 layers
+     .execute(network)
+)
+```
+
+### 3. Uncertainty Quantification
+```python
+# Get confidence intervals for centrality measures
+result = (
+    Q.nodes()
+     .compute("pagerank")
+     .uq(method="bootstrap",           # Bootstrap resampling
+         n_samples=100,                 # 100 samples
+         ci=0.95,                       # 95% confidence interval
+         seed=42)                       # Reproducibility
+     .execute(network)
+)
+
+df = result.to_pandas(expand_uncertainty=True)
+print(df[["node", "pagerank", "pagerank_ci95_low", "pagerank_ci95_high"]])
+```
+
+### 4. Layer Algebra
+```python
+# Combine layers with set operations
+result = (
+    Q.nodes()
+     .from_layers(L["social"] + L["work"])  # Union
+     .compute("degree")
+     .execute(network)
+)
+
+# Or use difference
+result = Q.nodes().from_layers(L["*"] - L["test"]).execute(network)
+```
+
+### 5. Data Transformation with Mutate
+```python
+# Create derived columns with lambda functions
+result = (
+    Q.nodes()
+     .compute("degree", "clustering")
+     .mutate(
+         hub_score=lambda row: row.get("degree", 0) * row.get("clustering", 0),
+         category=lambda row: "high" if row.get("degree", 0) > 10 else "low"
+     )
+     .execute(network)
+)
+```
+
+### 6. Per-Layer Aggregation
+```python
+# Compare layers statistically
+result = (
+    Q.nodes()
+     .per_layer()
+     .compute("degree")
+     .aggregate(
+         avg_degree="mean(degree)",
+         max_degree="max(degree)",
+         node_count="count()"
+     )
+     .execute(network)
+)
+```
+
+### 7. Export to Multiple Formats
+```python
+result = Q.nodes().compute("degree").execute(network)
+
+# Pandas DataFrame
+df = result.to_pandas()
+
+# NetworkX graph
+graph = result.to_networkx()
+
+# CSV file
+df.to_csv("results.csv", index=False)
+
+# Apache Arrow (high-performance)
+table = result.to_arrow()
+```
+
+**💡 Tip**: Chain these patterns together! The DSL is designed for composability.
+
+**🎯 Pattern Selection Guide**:
+- **New to py3plex?** Start with Pattern 1 (basic filtering)
+- **Need cross-layer insights?** Use Pattern 2 (hub analysis)
+- **Research publication?** Add Pattern 3 (uncertainty quantification)
+- **Multiple data sources?** Use Pattern 4 (layer algebra)
+- **Custom metrics?** Use Pattern 5 (mutate)
+- **Compare layers?** Use Pattern 6 (per-layer aggregation)
+- **Save results?** Use Pattern 7 (export formats)
+
+**📚 More Examples**: See [examples/](examples/) for 170+ complete examples:
+- **Getting Started**: [examples/getting_started/](examples/getting_started/) - 10-minute tutorial and 7 essential patterns
+- **DSL Patterns**: [examples/getting_started/dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) - Executable pattern reference
+- **Ergonomics**: [examples/getting_started/example_ergonomics_demo.py](examples/getting_started/example_ergonomics_demo.py) - Interactive query building with `.hint()`
+- **Advanced DSL**: [examples/network_analysis/](examples/network_analysis/) - Complete DSL v2 showcase
+- **Comprehensive Guide**: See [AGENTS.md](AGENTS.md#quick-start-golden-paths) for complete documentation
+
 ## Getting Started
 
 ### Installation

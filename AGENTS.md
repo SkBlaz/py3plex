@@ -10,6 +10,11 @@
 
 **Version**: py3plex 1.1.2 | DSL v2.1 | Python 3.8+
 
+**🚀 New to py3plex?** 
+- **5 minutes**: See [dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) for 7 copy-paste patterns
+- **15 minutes**: Jump to [Quick Start: Golden Paths](#quick-start-golden-paths) for 5 essential patterns that cover 80% of use cases
+- **Deep dive**: Continue reading this comprehensive guide
+
 ---
 
 ## Table of Contents

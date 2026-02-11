@@ -2,17 +2,43 @@
 
 This directory contains 170+ example scripts demonstrating various features of py3plex. Examples are organized by topic to provide an intuitive learning path.
 
-## Quick Start
+## 🚀 Quick Start Paths
 
-**New to py3plex?** Start here:
+**Choose your learning style:**
 
-```bash
-# Run the 10-minute tutorial
-python examples/getting_started/tutorial_10min.py
+### Path 1: Pattern-First (Fastest ⚡)
+Perfect for experienced developers who want to dive right in:
+1. **[DSL Patterns Quick Reference](getting_started/dsl_patterns_quick_reference.py)** - 8 essential patterns (5 minutes)
+2. **[Ergonomics Demo](getting_started/example_ergonomics_demo.py)** - Interactive query building with `.hint()`
+3. **[AGENTS.md](../AGENTS.md#quick-start-golden-paths)** - Comprehensive documentation
 
-# Generate your first network
-python examples/getting_started/example_random_generator.py
-```
+### Path 2: Tutorial-First (Recommended 🎓)
+Perfect for learners who prefer guided introduction:
+1. **[10-Minute Tutorial](getting_started/tutorial_10min.py)** - Complete workflow demonstration
+2. **[Built-in Datasets](getting_started/example_datasets.py)** - Load and analyze sample networks
+3. **[DSL Patterns Quick Reference](getting_started/dsl_patterns_quick_reference.py)** - Copy-paste patterns
+
+### Path 3: Example-Driven (Exploratory 🔍)
+Perfect for learning by browsing real code:
+1. Browse by topic below (e.g., [Network Analysis](network_analysis/))
+2. Run examples that match your use case
+3. Adapt patterns to your data
+
+## 📚 Most Common DSL Patterns
+
+The [dsl_patterns_quick_reference.py](getting_started/dsl_patterns_quick_reference.py) file provides **executable, copy-paste ready patterns** that cover 80% of use cases:
+
+| Pattern | Code Snippet | Use Case |
+|---------|--------------|----------|
+| **Basic Filtering** | `Q.nodes().where(degree__gt=5)` | Filter nodes by properties |
+| **Cross-Layer Hubs** | `.per_layer().top_k(10).coverage(mode="all")` | Nodes in multiple layers |
+| **Uncertainty** | `.uq(method="bootstrap", n_samples=100, seed=42)` | Confidence intervals |
+| **Layer Algebra** | `.from_layers(L["social"] + L["work"])` | Combine layers |
+| **Custom Metrics** | `.mutate(normalized=lambda r: r["x"]/max(r["x"], 1))` | Derive new metrics |
+| **Aggregation** | `.per_layer().aggregate(avg="mean(degree)")` | Layer statistics |
+| **Export** | `.to_pandas()`, `.to_networkx()`, `.to_arrow()` | Save results |
+
+**💡 Run the file**: `python getting_started/dsl_patterns_quick_reference.py` to see all patterns with live output!
 
 ## Browse Examples by Topic
 
