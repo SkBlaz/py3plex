@@ -1,6 +1,6 @@
 # DSL Zoo: Runnable Examples for Multilayer Network Analysis
 
-This directory contains 61 runnable examples demonstrating the full multilayer analysis surface of py3plex using single-invocation DSL calls.
+This directory contains 61 core examples plus 4 benchmark examples demonstrating the full multilayer analysis surface of py3plex using single-invocation DSL calls.
 
 ## Overview
 
@@ -156,6 +156,15 @@ done
 3. **Fast**: All examples run in <3 seconds
 4. **Demonstrative**: Clear focus on one DSL feature per example
 5. **Spec-Aligned**: Uses canonical method names from AGENTS.md specification
+
+## Benchmark Examples
+
+These examples demonstrate performance comparisons and computational trade-offs:
+
+- `benchmark_autocommunity_vs_grid.py` - Compare AutoCommunity vs grid search performance
+- `benchmark_budgeted_fairness.py` - Evaluate budget allocation fairness in algorithm racing
+- `benchmark_pareto_selection.py` - Performance analysis of Pareto-optimal selection
+- `example_cost_and_budget.py` - Cost modeling and budget specification examples
 
 ## Notes
 
