@@ -4,7 +4,7 @@
 FAST: <1s runtime
 Dependencies: py3plex (core)
 
-Demonstrates .to_json() for exporting results to JSON format.
+Demonstrates JSON export pattern: QueryResult -> pandas -> JSON.
 """
 from py3plex.core import multinet
 from py3plex.dsl import Q, L
@@ -28,9 +28,10 @@ result = (
 )
 
 # Export to JSON string
-json_str = result.to_json()
+# Pattern: QueryResult -> pandas DataFrame -> JSON
+# (pandas properly handles tuple keys and provides clean JSON structure)
+df = result.to_pandas()
+json_str = df.to_json(orient='records', indent=2)
 print("JSON export:")
 print("=" * 60)
-# Pretty-print the JSON
-parsed = json.loads(json_str)
-print(json.dumps(parsed, indent=2))
+print(json_str)
