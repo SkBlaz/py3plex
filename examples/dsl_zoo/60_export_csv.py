@@ -4,7 +4,8 @@
 FAST: <1s runtime
 Dependencies: py3plex (core)
 
-Demonstrates .to_csv() for exporting results to CSV file.
+Demonstrates exporting query results to CSV via .to_pandas().to_csv().
+QueryResult doesn't have a direct .to_csv() method - convert to pandas first.
 """
 from py3plex.core import multinet
 from py3plex.dsl import Q, L
@@ -30,11 +31,12 @@ result = (
      .execute(net)
 )
 
-# Export to temporary CSV file
+# Export to temporary CSV file (convert to pandas first)
 with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
     csv_path = f.name
 
-result.to_csv(csv_path, index=False)
+# Correct pattern: QueryResult -> pandas DataFrame -> CSV
+result.to_pandas().to_csv(csv_path, index=False)
 print(f"Exported to: {csv_path}")
 
 # Read and display the CSV content
