@@ -34,6 +34,7 @@ import networkx as nx
 
 from py3plex.core import multinet, random_generators
 from py3plex.logging_config import get_logger
+from py3plex.utils import get_layer_names
 
 logger = get_logger(__name__)
 
@@ -461,7 +462,7 @@ class ComputeStats(PipelineStep):
         if self.include_layer_stats:
             from py3plex.algorithms.statistics import multilayer_statistics as mls
             
-            layers = self._get_layer_names(data)
+            layers = get_layer_names(data)
             if layers:
                 stats['layers'] = len(layers)
                 stats['layer_densities'] = {
@@ -472,17 +473,6 @@ class ComputeStats(PipelineStep):
         logger.info(f"  Stats: {stats['nodes']} nodes, {stats['edges']} edges")
         
         return stats
-    
-    def _get_layer_names(self, network: multinet.multi_layer_network) -> List[str]:
-        """Extract layer names from network."""
-        layers = set()
-        try:
-            for node in network.core_network.nodes():
-                if isinstance(node, tuple) and len(node) >= 2:
-                    layers.add(node[1])
-        except Exception:
-            pass
-        return sorted(layers)
 
 
 class FilterNodes(PipelineStep):

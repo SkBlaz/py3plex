@@ -447,3 +447,41 @@ def get_background_knowledge_dir() -> str:
         >>> dir_path = get_background_knowledge_dir()
     """
     return get_data_path("background_knowledge")
+
+
+def get_layer_names(network) -> list:
+    """
+    Extract layer names from a multilayer network.
+    
+    This utility function extracts layer identifiers from network nodes,
+    which are typically stored as (node_id, layer) tuples in multilayer networks.
+    
+    Args:
+        network: A multilayer network object with a core_network attribute
+    
+    Returns:
+        list: Sorted list of unique layer names found in the network
+    
+    Examples:
+        >>> from py3plex.utils import get_layer_names
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network()
+        >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+        >>> net.add_nodes([{'source': 'B', 'type': 'layer2'}])
+        >>> layers = get_layer_names(net)
+        >>> 'layer1' in layers and 'layer2' in layers
+        True
+    
+    Note:
+        This function is used by both workflows.py and pipeline.py to avoid
+        code duplication. It safely handles networks where nodes may not follow
+        the expected tuple format.
+    """
+    layers = set()
+    try:
+        for node in network.core_network.nodes():
+            if isinstance(node, tuple) and len(node) >= 2:
+                layers.add(node[1])
+    except Exception:
+        pass
+    return sorted(layers)
