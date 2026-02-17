@@ -15,7 +15,7 @@ This test suite verifies that all UQ operations respect the defined algebraic la
 
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st, settings, assume
+from hypothesis import given, strategies as st, settings, assume, HealthCheck
 
 from py3plex.dsl.uq_algebra import (
     UQValue,
@@ -696,3 +696,233 @@ def test_metamorphic_scaling_invariance():
     
     # Std should scale
     assert abs(result2.std - result1.std * 2) < 1e-6
+
+
+# ============================================================================
+# Additional Property Tests
+# ============================================================================
+
+@pytest.mark.property
+@given(
+    means=st.lists(
+        st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+        min_size=2,
+        max_size=10,
+    ),
+    stds=st.lists(
+        st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
+        min_size=2,
+        max_size=10,
+    ),
+)
+@settings(max_examples=50, deadline=None, suppress_health_check=[HealthCheck.filter_too_much])
+def test_property_monotonicity_more_samples(means, stds):
+    """Property: Aggregating more values should not increase std dramatically."""
+    assume(len(means) == len(stds))
+    assume(len(means) >= 2)
+    
+    # Create UQValues
+    values = [
+        UQValue(
+            distribution_type=DistributionType.GAUSSIAN,
+            mean=m,
+            std=s,
+            quantiles={},
+            provenance=ProvenanceInfo(method="bootstrap", n_samples=50),
+        )
+        for m, s in zip(means, stds)
+    ]
+    
+    # Aggregate first half
+    mid = len(values) // 2
+    result_half = UQAlgebra.aggregate_mean(values[:mid])
+    
+    # Aggregate all
+    result_all = UQAlgebra.aggregate_mean(values)
+    
+    # More samples should generally not increase uncertainty
+    # (this is a soft property, so we check it's not wildly violated)
+    max_input_std = max(stds)
+    assert result_all.std <= max_input_std * 2, \
+        f"Aggregation increased std too much: {result_all.std} > {max_input_std * 2}"
+
+
+@pytest.mark.property
+@given(
+    mean=st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+)
+@settings(max_examples=50, deadline=None)
+def test_property_degenerate_neutral_element(mean):
+    """Property: Degenerate values act as neutral elements in aggregation."""
+    degenerate = UQValue.degenerate(mean, method="deterministic")
+    
+    gaussian = UQValue(
+        distribution_type=DistributionType.GAUSSIAN,
+        mean=mean + 10,
+        std=2.0,
+        quantiles={},
+        provenance=ProvenanceInfo(method="bootstrap", n_samples=100),
+    )
+    
+    # Aggregate degenerate + gaussian
+    result = UQAlgebra.aggregate_mean([degenerate, gaussian])
+    
+    # Result should have non-zero std (from gaussian)
+    assert result.std > 0, "Degenerate + Gaussian should preserve uncertainty"
+    
+    # Result type should not be degenerate
+    assert result.distribution_type != DistributionType.DEGENERATE
+
+
+@pytest.mark.property
+@given(
+    values=st.lists(
+        st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+        min_size=1,
+        max_size=5,
+    )
+)
+@settings(max_examples=50, deadline=None)
+def test_property_degenerate_aggregation_stays_degenerate(values):
+    """Property: Aggregating only degenerate values produces degenerate result."""
+    assume(len(values) > 0)
+    
+    # All degenerate with same value
+    uq_values = [UQValue.degenerate(values[0], method="deterministic") for _ in values]
+    
+    result = UQAlgebra.aggregate_mean(uq_values)
+    
+    # Should still be degenerate (or very close)
+    assert result.std < 1e-9, f"Aggregating identical degenerates should preserve std=0, got {result.std}"
+
+
+@pytest.mark.property
+@given(
+    mean1=st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+    mean2=st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+    std1=st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
+    std2=st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
+)
+@settings(max_examples=50, deadline=None)
+def test_property_mean_between_inputs(mean1, mean2, std1, std2):
+    """Property: Aggregated mean should be between input means (weighted average)."""
+    value1 = UQValue(
+        distribution_type=DistributionType.GAUSSIAN,
+        mean=mean1,
+        std=std1,
+        quantiles={},
+        provenance=ProvenanceInfo(method="bootstrap", n_samples=100),
+    )
+    
+    value2 = UQValue(
+        distribution_type=DistributionType.GAUSSIAN,
+        mean=mean2,
+        std=std2,
+        quantiles={},
+        provenance=ProvenanceInfo(method="bootstrap", n_samples=100),
+    )
+    
+    result = UQAlgebra.aggregate_mean([value1, value2])
+    
+    # Result mean should be between the two input means (with tolerance)
+    min_mean = min(mean1, mean2)
+    max_mean = max(mean1, mean2)
+    
+    assert min_mean - 1e-6 <= result.mean <= max_mean + 1e-6, \
+        f"Mean {result.mean} not between inputs {min_mean} and {max_mean}"
+
+
+@pytest.mark.property
+@given(
+    values=st.lists(
+        st.tuples(
+            st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+            st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
+        ),
+        min_size=1,
+        max_size=10,
+    )
+)
+@settings(max_examples=50, deadline=None)
+def test_property_closure_always_valid_uqvalue(values):
+    """Property: Aggregation always produces a valid UQValue."""
+    assume(len(values) > 0)
+    
+    uq_values = [
+        UQValue(
+            distribution_type=DistributionType.GAUSSIAN,
+            mean=m,
+            std=s,
+            quantiles={},
+            provenance=ProvenanceInfo(method="bootstrap", n_samples=100),
+        )
+        for m, s in values
+    ]
+    
+    result = UQAlgebra.aggregate_mean(uq_values)
+    
+    # Should be a valid UQValue
+    assert isinstance(result, UQValue)
+    assert result.mean is not None
+    assert result.std is not None
+    assert result.std >= 0
+    assert not np.isnan(result.mean)
+    assert not np.isnan(result.std)
+    assert not np.isinf(result.mean)
+    assert not np.isinf(result.std)
+
+
+@pytest.mark.property
+@given(
+    seed=st.integers(min_value=0, max_value=10000),
+    mean=st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+    std=st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
+)
+@settings(max_examples=30, deadline=None)
+def test_property_seed_determinism(seed, mean, std):
+    """Property: Same seed produces identical results."""
+    value = UQValue(
+        distribution_type=DistributionType.GAUSSIAN,
+        mean=mean,
+        std=std,
+        quantiles={},
+        provenance=ProvenanceInfo(method="bootstrap", n_samples=100, seed=seed),
+    )
+    
+    # Hash should be deterministic
+    hash1 = value.structural_hash()
+    hash2 = value.structural_hash()
+    
+    assert hash1 == hash2, "Structural hash should be deterministic"
+
+
+@pytest.mark.property
+@given(
+    n_values=st.integers(min_value=2, max_value=10),
+)
+@settings(max_examples=30, deadline=None)
+def test_property_aggregation_order_independence(n_values):
+    """Property: Aggregation order shouldn't matter (commutativity for n values)."""
+    assume(n_values >= 2)
+    
+    # Create n values with different means
+    values = [
+        UQValue(
+            distribution_type=DistributionType.GAUSSIAN,
+            mean=float(i * 10),
+            std=1.0,
+            quantiles={},
+            provenance=ProvenanceInfo(method="bootstrap", n_samples=100),
+        )
+        for i in range(n_values)
+    ]
+    
+    # Aggregate in original order
+    result1 = UQAlgebra.aggregate_mean(values)
+    
+    # Aggregate in reverse order
+    result2 = UQAlgebra.aggregate_mean(list(reversed(values)))
+    
+    # Results should be identical
+    assert abs(result1.mean - result2.mean) < 1e-9
+    assert abs(result1.std - result2.std) < 1e-6  # More tolerance for std

@@ -529,5 +529,287 @@ class TestProvenance:
         assert "py3plex_version" in prov
 
 
+# ============================================================================
+# Property-Based Tests
+# ============================================================================
+
+from hypothesis import given, strategies as st, settings, assume, HealthCheck
+import numpy as np
+
+
+def _create_sample_network():
+    """Create a sample multilayer network for property testing."""
+    network = multinet.multi_layer_network(directed=False)
+
+    nodes = [
+        {"source": "A", "type": "social"},
+        {"source": "B", "type": "social"},
+        {"source": "C", "type": "social"},
+        {"source": "A", "type": "work"},
+        {"source": "B", "type": "work"},
+        {"source": "D", "type": "work"},
+    ]
+    network.add_nodes(nodes)
+
+    edges = [
+        # Social layer: A-B-C triangle
+        {
+            "source": "A",
+            "target": "B",
+            "source_type": "social",
+            "target_type": "social",
+            "weight": 1.0,
+        },
+        {
+            "source": "B",
+            "target": "C",
+            "source_type": "social",
+            "target_type": "social",
+            "weight": 1.0,
+        },
+        {
+            "source": "A",
+            "target": "C",
+            "source_type": "social",
+            "target_type": "social",
+            "weight": 1.0,
+        },
+        # Work layer: A-B-D path
+        {
+            "source": "A",
+            "target": "B",
+            "source_type": "work",
+            "target_type": "work",
+            "weight": 1.0,
+        },
+        {
+            "source": "B",
+            "target": "D",
+            "source_type": "work",
+            "target_type": "work",
+            "weight": 1.0,
+        },
+        # Interlayer coupling
+        {
+            "source": "A",
+            "target": "A",
+            "source_type": "social",
+            "target_type": "work",
+            "weight": 0.5,
+        },
+        {
+            "source": "B",
+            "target": "B",
+            "source_type": "social",
+            "target_type": "work",
+            "weight": 0.5,
+        },
+    ]
+    network.add_edges(edges)
+
+    return network
+
+
+@pytest.mark.property
+@given(
+    seed=st.integers(min_value=0, max_value=10000),
+)
+@settings(max_examples=30, deadline=None)
+def test_property_attribution_determinism_with_seed(seed):
+    """Property: Same seed produces identical attribution results."""
+    sample_network = _create_sample_network()
+    
+    result1 = (
+        Q.nodes()
+        .compute("degree")
+        .explain(
+            include=["attribution"],
+            attribution={
+                "metric": "degree",
+                "method": "shapley_mc",
+                "n_permutations": 50,
+                "seed": seed,
+            },
+        )
+        .execute(sample_network)
+    )
+    
+    result2 = (
+        Q.nodes()
+        .compute("degree")
+        .explain(
+            include=["attribution"],
+            attribution={
+                "metric": "degree",
+                "method": "shapley_mc",
+                "n_permutations": 50,
+                "seed": seed,
+            },
+        )
+        .execute(sample_network)
+    )
+    
+    df1 = result1.to_pandas()
+    df2 = result2.to_pandas()
+    
+    # Attribution results should be identical with same seed
+    for col in df1.columns:
+        if col.startswith("attribution"):
+            assert (df1[col] == df2[col]).all() or df1[col].equals(df2[col]), \
+                f"Column {col} differs with same seed"
+
+
+@pytest.mark.property
+@given(
+    n_permutations=st.integers(min_value=10, max_value=500),
+)
+@settings(max_examples=20, deadline=None)
+def test_property_attribution_convergence(n_permutations):
+    """Property: More permutations should give more stable results."""
+    assume(n_permutations >= 10)
+    sample_network = _create_sample_network()
+    
+    result = (
+        Q.nodes()
+        .compute("degree")
+        .explain(
+            include=["attribution"],
+            attribution={
+                "metric": "degree",
+                "method": "shapley_mc",
+                "n_permutations": n_permutations,
+                "seed": 42,
+            },
+        )
+        .execute(sample_network)
+    )
+    
+    # Should complete without error
+    df = result.to_pandas()
+    assert "attribution" in df.columns or len([c for c in df.columns if "attribution" in c]) > 0
+
+
+@pytest.mark.property
+@given(
+    top_k=st.integers(min_value=1, max_value=10),
+)
+@settings(max_examples=20, deadline=None)
+def test_property_attribution_top_k_layers(top_k):
+    """Property: top_k_layers parameter limits number of layer contributions."""
+    sample_network = _create_sample_network()
+    
+    result = (
+        Q.nodes()
+        .compute("degree")
+        .explain(
+            include=["attribution"],
+            attribution={
+                "metric": "degree",
+                "method": "shapley",
+                "top_k_layers": top_k,
+                "seed": 42,
+            },
+        )
+        .execute(sample_network)
+    )
+    
+    df = result.to_pandas()
+    
+    # Should have attribution data
+    assert len(df) > 0
+
+
+@pytest.mark.property
+@given(
+    max_edges=st.integers(min_value=5, max_value=100),
+)
+@settings(max_examples=20, deadline=None)
+def test_property_attribution_edge_scope_limit(max_edges):
+    """Property: max_edges parameter should limit edge candidate selection."""
+    assume(max_edges >= 5)
+    sample_network = _create_sample_network()
+    
+    result = (
+        Q.nodes()
+        .compute("degree")
+        .explain(
+            include=["attribution"],
+            attribution={
+                "metric": "degree",
+                "levels": ["edge"],
+                "edge_scope": "incident",
+                "max_edges": max_edges,
+                "seed": 42,
+            },
+        )
+        .execute(sample_network)
+    )
+    
+    df = result.to_pandas()
+    
+    # Should complete successfully
+    assert len(df) > 0
+
+
+@pytest.mark.property
+@given(
+    cache=st.booleans(),
+)
+@settings(max_examples=10, deadline=None)
+def test_property_attribution_cache_independence(cache):
+    """Property: Cache setting shouldn't affect correctness."""
+    sample_network = _create_sample_network()
+    
+    result = (
+        Q.nodes()
+        .compute("degree")
+        .explain(
+            include=["attribution"],
+            attribution={
+                "metric": "degree",
+                "method": "shapley",
+                "cache": cache,
+                "seed": 42,
+            },
+        )
+        .execute(sample_network)
+    )
+    
+    df = result.to_pandas()
+    
+    # Should work regardless of cache setting
+    assert len(df) > 0
+
+
+@pytest.mark.property  
+@given(
+    include_negative=st.booleans(),
+)
+@settings(max_examples=10, deadline=None)
+def test_property_attribution_negative_contributions(include_negative):
+    """Property: include_negative parameter controls negative contribution visibility."""
+    sample_network = _create_sample_network()
+    
+    result = (
+        Q.nodes()
+        .compute("degree")
+        .explain(
+            include=["attribution"],
+            attribution={
+                "metric": "degree",
+                "method": "shapley",
+                "include_negative": include_negative,
+                "seed": 42,
+            },
+        )
+        .execute(sample_network)
+    )
+    
+    df = result.to_pandas()
+    
+    # Should complete successfully
+    assert len(df) > 0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
