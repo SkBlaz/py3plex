@@ -25,9 +25,11 @@ This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like q
             .compute("betweenness_centrality", "pagerank")
             .order_by("-betweenness_centrality")
             .limit(20)
-            .export_csv("top_influencers.csv")
             .execute(network)
        )
+       
+       # Export to CSV
+       result.to_pandas().to_csv("top_influencers.csv", index=False)
 
    Express complex analyses in a few readable lines!
 
@@ -721,14 +723,14 @@ Pattern 3: Conditional Export
 .. code-block:: python
 
     # Export high-degree nodes to CSV
-    (
+    result = (
         Q.nodes()
          .where(degree__gt=5)
          .compute("degree", "betweenness_centrality")
          .order_by("-degree")
-         .export_csv("high_degree_nodes.csv")
          .execute(network)
     )
+    result.to_pandas().to_csv("high_degree_nodes.csv", index=False)
 
 Summary
 -------
