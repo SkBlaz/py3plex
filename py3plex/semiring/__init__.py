@@ -23,7 +23,7 @@ Package structure:
 - pareto: Multiobjective/Pareto frontier support
 """
 
-from .core import SemiringSpec
+from .core import SemiringSpec, SemiringError, SemiringValidationError, SemiringExecutionError
 from .registry import (
     register_semiring,
     get_semiring,
@@ -42,6 +42,9 @@ from .engine import (
 __all__ = [
     # Core
     "SemiringSpec",
+    "SemiringError",
+    "SemiringValidationError", 
+    "SemiringExecutionError",
     # Registry
     "register_semiring",
     "get_semiring",
