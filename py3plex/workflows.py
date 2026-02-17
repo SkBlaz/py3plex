@@ -21,6 +21,7 @@ import networkx as nx
 from py3plex.core import multinet
 from py3plex.logging_config import get_logger
 from py3plex.exceptions import Py3plexIOError, Py3plexFormatError, AlgorithmError
+from py3plex.utils import get_layer_names
 
 logger = get_logger(__name__)
 
@@ -371,7 +372,7 @@ class WorkflowRunner:
         stats["edges"] = network.core_network.number_of_edges()
 
         # Layer densities
-        layers = self._get_layer_names(network)
+        layers = get_layer_names(network)
         if layers:
             stats["layer_densities"] = {
                 layer: float(mls.layer_density(network, layer)) for layer in layers
@@ -527,17 +528,6 @@ class WorkflowRunner:
             )
 
         return str(output_path)
-
-    def _get_layer_names(self, network: multinet.multi_layer_network) -> List[str]:
-        """Extract layer names from network."""
-        layers = set()
-        try:
-            for node in network.core_network.nodes():
-                if isinstance(node, tuple) and len(node) >= 2:
-                    layers.add(node[1])
-        except Exception:
-            pass
-        return sorted(layers)
 
     def save_results(self) -> None:
         """Save workflow results to output files."""
