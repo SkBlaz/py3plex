@@ -35,8 +35,8 @@ def mock_query_result(draw, n_items=None):
     # Create simple list of items (node names)
     items = [f"node_{i}" for i in range(n_items)]
     
-    # Return dict mimicking QueryResult structure
-    return {"items": items}
+    # Return list directly (JaccardAtK._extract_top_k expects list or QueryResult)
+    return items
 
 
 # ============================================================================
@@ -154,16 +154,17 @@ class TestJaccardComputationProperties:
     @given(
         k=st.integers(min_value=1, max_value=20),
         n_baseline=st.integers(min_value=1, max_value=50),
+        data=st.data(),
     )
     @settings(max_examples=50)
-    def test_identical_sets_have_jaccard_one(self, k, n_baseline):
+    def test_identical_sets_have_jaccard_one(self, k, n_baseline, data):
         """Jaccard(A, A) = 1.0 for identical sets."""
         assume(n_baseline >= k)
         
         pred = JaccardAtK(k=k, threshold=0.5)
         
         # Create identical baseline and perturbed results
-        baseline = mock_query_result(n_items=n_baseline).example()
+        baseline = data.draw(mock_query_result(n_items=n_baseline))
         perturbed_results = [(0.0, baseline)]  # No perturbation
         
         passed, evidence = pred.evaluate(baseline, perturbed_results)
@@ -175,15 +176,16 @@ class TestJaccardComputationProperties:
     @pytest.mark.property
     @given(
         k=st.integers(min_value=1, max_value=20),
+        data=st.data(),
     )
     @settings(max_examples=50)
-    def test_jaccard_is_between_zero_and_one(self, k):
+    def test_jaccard_is_between_zero_and_one(self, k, data):
         """Jaccard similarity is always in [0, 1]."""
         pred = JaccardAtK(k=k, threshold=0.5)
         
         # Create baseline and different perturbed result
-        baseline = mock_query_result(n_items=k * 2).example()
-        perturbed = mock_query_result(n_items=k * 2).example()
+        baseline = data.draw(mock_query_result(n_items=k * 2))
+        perturbed = data.draw(mock_query_result(n_items=k * 2))
         perturbed_results = [(0.1, perturbed)]
         
         passed, evidence = pred.evaluate(baseline, perturbed_results)
@@ -196,17 +198,18 @@ class TestJaccardComputationProperties:
     @given(
         k=st.integers(min_value=2, max_value=20),
         n_baseline=st.integers(min_value=3, max_value=50),
+        data=st.data(),
     )
     @settings(max_examples=50)
-    def test_jaccard_is_symmetric(self, k, n_baseline):
+    def test_jaccard_is_symmetric(self, k, n_baseline, data):
         """Jaccard(A, B) = Jaccard(B, A) - symmetry property."""
         assume(n_baseline >= k)
         
         pred = JaccardAtK(k=k, threshold=0.5)
         
         # Create two different results
-        baseline = mock_query_result(n_items=n_baseline).example()
-        perturbed = mock_query_result(n_items=n_baseline).example()
+        baseline = data.draw(mock_query_result(n_items=n_baseline))
+        perturbed = data.draw(mock_query_result(n_items=n_baseline))
         
         # Compute Jaccard(baseline, perturbed)
         _, evidence1 = pred.evaluate(baseline, [(0.1, perturbed)])
@@ -232,13 +235,14 @@ class TestDomainSemantics:
     @given(
         k=st.integers(min_value=1, max_value=10),
         threshold=st.floats(min_value=0.5, max_value=0.99),
+        data=st.data(),
     )
     @settings(max_examples=50)
-    def test_all_domain_requires_all_pass(self, k, threshold):
+    def test_all_domain_requires_all_pass(self, k, threshold, data):
         """'all_p_leq_pmax' domain requires all perturbations pass threshold."""
         pred = JaccardAtK(k=k, threshold=threshold)
         
-        baseline = mock_query_result(n_items=k).example()
+        baseline = data.draw(mock_query_result(n_items=k))
         
         # Create perturbed results where all pass threshold
         perturbed_results = [(p, baseline) for p in [0.0, 0.1, 0.2]]  # Identical = Jaccard 1.0
@@ -253,14 +257,15 @@ class TestDomainSemantics:
     @given(
         k=st.integers(min_value=1, max_value=10),
         threshold=st.floats(min_value=0.5, max_value=0.99),
+        data=st.data(),
     )
     @settings(max_examples=50)
-    def test_exists_domain_requires_one_pass(self, k, threshold):
+    def test_exists_domain_requires_one_pass(self, k, threshold, data):
         """'exists_p_leq_pmax' domain requires at least one perturbation pass."""
         pred = JaccardAtK(k=k, threshold=threshold)
         
-        baseline = mock_query_result(n_items=k).example()
-        different = mock_query_result(n_items=k).example()
+        baseline = data.draw(mock_query_result(n_items=k))
+        different = data.draw(mock_query_result(n_items=k))
         
         # Mix: one identical (pass), others different (may fail)
         perturbed_results = [
@@ -285,13 +290,13 @@ class TestJaccardAtKEdgeCases:
     """Test edge cases and boundary conditions."""
     
     @pytest.mark.property
-    @given(k=st.integers(min_value=1, max_value=20))
+    @given(k=st.integers(min_value=1, max_value=20), data=st.data())
     @settings(max_examples=50)
-    def test_empty_baseline_fails_gracefully(self, k):
+    def test_empty_baseline_fails_gracefully(self, k, data):
         """Empty baseline should fail with informative error."""
         pred = JaccardAtK(k=k, threshold=0.85)
         
-        baseline = mock_query_result(n_items=0).example()
+        baseline = data.draw(mock_query_result(n_items=0))
         perturbed_results = [(0.1, baseline)]
         
         passed, evidence = pred.evaluate(baseline, perturbed_results)
@@ -301,15 +306,15 @@ class TestJaccardAtKEdgeCases:
         assert evidence["error"] == "insufficient_baseline"
     
     @pytest.mark.property
-    @given(k=st.integers(min_value=1, max_value=20))
+    @given(k=st.integers(min_value=1, max_value=20), data=st.data())
     @settings(max_examples=50)
-    def test_baseline_smaller_than_k_fails(self, k):
+    def test_baseline_smaller_than_k_fails(self, k, data):
         """Baseline with fewer than k items should fail."""
         assume(k > 1)
         
         pred = JaccardAtK(k=k, threshold=0.85)
         
-        baseline = mock_query_result(n_items=k - 1).example()
+        baseline = data.draw(mock_query_result(n_items=k - 1))
         perturbed_results = [(0.1, baseline)]
         
         passed, evidence = pred.evaluate(baseline, perturbed_results)
@@ -318,14 +323,14 @@ class TestJaccardAtKEdgeCases:
         assert evidence["baseline_size"] < k
     
     @pytest.mark.property
-    @given(k=st.integers(min_value=1, max_value=20))
+    @given(k=st.integers(min_value=1, max_value=20), data=st.data())
     @settings(max_examples=50)
-    def test_empty_perturbed_results_has_zero_jaccard(self, k):
+    def test_empty_perturbed_results_has_zero_jaccard(self, k, data):
         """Empty perturbed result should yield Jaccard = 0."""
         pred = JaccardAtK(k=k, threshold=0.5)
         
-        baseline = mock_query_result(n_items=k * 2).example()
-        perturbed_empty = mock_query_result(n_items=0).example()
+        baseline = data.draw(mock_query_result(n_items=k * 2))
+        perturbed_empty = data.draw(mock_query_result(n_items=0))
         perturbed_results = [(0.1, perturbed_empty)]
         
         passed, evidence = pred.evaluate(baseline, perturbed_results)
@@ -334,13 +339,13 @@ class TestJaccardAtKEdgeCases:
         assert evidence["jaccard_scores"][0.1] == 0.0
     
     @pytest.mark.property
-    @given(k=st.integers(min_value=1, max_value=20))
+    @given(k=st.integers(min_value=1, max_value=20), data=st.data())
     @settings(max_examples=50)
-    def test_no_perturbed_results_completes_successfully(self, k):
+    def test_no_perturbed_results_completes_successfully(self, k, data):
         """No perturbed results should complete without error."""
         pred = JaccardAtK(k=k, threshold=0.5)
         
-        baseline = mock_query_result(n_items=k * 2).example()
+        baseline = data.draw(mock_query_result(n_items=k * 2))
         perturbed_results = []  # Empty list
         
         passed, evidence = pred.evaluate(baseline, perturbed_results)
@@ -373,11 +378,11 @@ class TestJaccardAtKInvariants:
         assert 0.0 <= pred.threshold <= 1.0
     
     @pytest.mark.property
-    @given(pred=jaccard_predicate())
+    @given(pred=jaccard_predicate(), data=st.data())
     @settings(max_examples=50)
-    def test_evaluate_returns_tuple(self, pred):
+    def test_evaluate_returns_tuple(self, pred, data):
         """evaluate() should always return (bool, dict) tuple."""
-        baseline = mock_query_result(n_items=pred.k * 2).example()
+        baseline = data.draw(mock_query_result(n_items=pred.k * 2))
         perturbed_results = [(0.1, baseline)]
         
         result = pred.evaluate(baseline, perturbed_results)
@@ -388,11 +393,11 @@ class TestJaccardAtKInvariants:
         assert isinstance(result[1], dict)
     
     @pytest.mark.property
-    @given(pred=jaccard_predicate())
+    @given(pred=jaccard_predicate(), data=st.data())
     @settings(max_examples=50)
-    def test_evidence_contains_required_fields(self, pred):
+    def test_evidence_contains_required_fields(self, pred, data):
         """Evidence dict should contain required fields."""
-        baseline = mock_query_result(n_items=pred.k * 2).example()
+        baseline = data.draw(mock_query_result(n_items=pred.k * 2))
         perturbed_results = [(0.1, baseline)]
         
         _, evidence = pred.evaluate(baseline, perturbed_results)
