@@ -8600,7 +8600,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 **Version**: py3plex 1.1.3  
 **Python Support**: 3.8+  
 **Repository Size**: 385K lines of code  
-**Test Coverage**: 8.0K tests across 500 test files (~14.7% statement coverage)  
+**Test Coverage**: 8.0K tests across 525 test files (~14.7% statement coverage)  
 **Key Modules**: 411 Python files across core, algorithms, DSL, and utilities  
 
 ### Major Subsystems
@@ -8661,7 +8661,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 ### Test Infrastructure
 
 **Test Organization**:
-- **500 test files** with **8,000+ individual tests**
+- **525 test files** with **8,000+ individual tests**
 - **83 verification tests** across 4 specialized modules (provenance, differential, metamorphic, determinism)
 - **210+ new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization, UQ propagation)
 - Property-based tests using Hypothesis
@@ -9111,7 +9111,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `AGENTS.md` (8,900+ lines) - **This file** - Comprehensive AI agent documentation
 - `README.md` - Quick start and project overview
 - `docfiles/` - Documentation source files
-- `examples/` - **244 example scripts** demonstrating all features
+- `examples/` - **264 example scripts** demonstrating all features
 - `docs/py3plex_book.pdf` (106 pages) - Technical documentation
 - `CITATION.cff` - Citation information
 
@@ -10345,6 +10345,6 @@ Recommended areas for future test coverage:
 
 **Repo State Note**: As of February 2026, py3plex has 210+ new deterministic tests (203 baseline + 7 for UQ propagation) enforcing 10+ major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, edge cases, and UQ propagation. All tests are automated, CI-friendly, and passing. Test coverage has improved from 8% to 14.7% through focused testing of core modules, utilities, and validation infrastructure.
 
-**v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 500 test files (~14.7% coverage), 411 Python modules in py3plex, 385K total lines of code, and 244 example scripts. Test coverage significantly improved from 8% to 14.7% through focused efforts on cli.py (70.2%), utils.py (37.1%), validation.py (82.6%), and temporal_utils_extended.py (100%). Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
+**v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 525 test files (~14.7% coverage), 411 Python modules in py3plex, 385K total lines of code, and 264 example scripts. Test coverage significantly improved from 8% to 14.7% through focused efforts on cli.py (70.2%), utils.py (37.1%), validation.py (82.6%), and temporal_utils_extended.py (100%). Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
 
 **v1.1+ UQ Propagation Update** (January 2026): Implemented first-class uncertainty propagation semantics with `mode="propagate"` option in `.uq()`. This enables quantification of selection stability (p_present, p_selected, rank_uq) when queries include filtering, ordering, and selection operations. The propagate mode executes the full query end-to-end per replicate, capturing how uncertain metric values affect which items appear in final results. Aggregation now uses UQAlgebra to preserve uncertainty through grouping operations instead of silently dropping it. All changes are backward compatible (default mode="summarize_only"). New test module: tests/test_dsl_uq_propagation.py (7 deterministic tests).
